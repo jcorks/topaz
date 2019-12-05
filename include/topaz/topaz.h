@@ -50,12 +50,12 @@ typedef struct topaz_t topaz_t;
 /// No other functions should be used prior to calling this function.
 ///
 ///
-topaz_t * topaz_create();
+topaz_t * topaz_context_create();
 
 
-/// Returns whether Dynacoe has been initialized successfully.
+/// Returns whether topaz has been initialized successfully.
 ///
-int topaz_is_initialized(const topaz_t *);
+int topaz_context_is_initialized(const topaz_t *);
 
 
 /// Begins the Engine execution loop.
@@ -63,98 +63,90 @@ int topaz_is_initialized(const topaz_t *);
 /// Once run is initiated, all drawing to the screen and logic updating
 /// is automated. While running, it is also possible to utilize the
 /// debugging features such as the console and Entity debugger.
-int topaz_run(const topaz_t *);
+int topaz_context_run(const topaz_t *);
     
     
 /// Pauses the Engine execution loop.
 ///
 /// Once in a paused state, only critical objects (managers marked with pausable == false),
 /// will be updated.
-void topaz_pause(topaz_t *);
+void topaz_context_pause(topaz_t *);
 
     
 /// Immediately pauses the execution loop.
 ///
 /// Like Pause() but disrupts the engine immediately rather than safely waiting 
 /// until the next iteration. Most useful for debugging purposes.
-void topaz_break(topaz_t *);
+void topaz_context_break(topaz_t *);
 
 
 
 ///  resumes from a paused or broken state.
 ///
-void topaz_resume(topaz_t *);    
+void topaz_context_resume(topaz_t *);    
     
 /// Updates the main engine.
 ///
 ///  Not equivalent to a frame, since frame throttling can occur.
-void topaz_iterate(topaz_t *); 
+void topaz_context_iterate(topaz_t *); 
 
 
 ///  returns whether the engine is in a paused or broken state.
 ///
-bool topaz_is_paused(const topaz_t *);
+bool topaz_context_is_paused(const topaz_t *);
 
 /// Returns the toplevel Entity. 
 ///
 /// From here, you can 
 /// set the Entity that holds the toplevel of the project. 
 /// By default there is none.
-topazEntityID_t topaz_get_root(const topaz_t *);
-topazEntityID_t topaz_set_root(topaz_t *);
+topazEntityID_t topaz_context_get_root(const topaz_t *);
+topazEntityID_t topaz_context_set_root(topaz_t *);
 
 
 /// Attaches a management-type entity.
 ///
 /// If pausable is false, the manager will continue to update even when 
 /// the engine is in a paused state.
-void topaz_attach_manager(topazEntityID_t id);
-void topaz_attach_manager_unpausable(topazEntityID_t id);
+void topaz_context_attach_manager(topazEntityID_t id);
+void topaz_context_attach_manager_unpausable(topazEntityID_t id);
 
 
 
 /// Ends the Engine execution loop.
 ///
-void topaz_quit(topaz_t *);
+void topaz_context_quit(topaz_t *);
 
 /// Sleeps until the time required for the target frames-per-second is reached.
 ///
 /// @param FPS  The target FPS; useful for loops.
 ///
 /// The actual resolution is machine-dependent, but it tends to be millisecond resolution.
-void topaz_wait(topaz_t *. int FPS);
+void topaz_context_wait(topaz_t *. int FPS);
 
 
-/// Sets the ideal frame per second that the main loop should clock at.
+/// Retrieves the specified parameter.
 ///
-void topaz_set_max_fps(topaz_t *, int i);
-
-
-/// Gets the maximum FPS allowable by the Engine.
+/// List of known parameters:
 ///
-int topaz_get_max_fps(const topaz_t *);
+///     "fps"               - frames per second for the engine loop 
+///     "version-minor"     - minor version 
+///     "version-major"     - major version 
+///     "git-hash"          - hash for this commit
+///     "base-directory"    - start directory for this instance 
+///     "draw-time-ms"      - time it took to complete a draw cycle last frame 
+///     "step-time-ms"      - time it took to complete a step cycle last frame 
+///     "system-time-ms"    - time it took to complete engine tasks last frame 
+///     "engine-real-ms"    - time it took to complete the entire last frame
+double topaz_get_parameter(const topaz_t *, const topazString_t *);
 
-/// Returns the starting directory of Dynacoe.
+/// Sets a parameter. Some parameters are read-only. In such a case, 
+/// 0 is returned.
+int topaz_context_set_parameter(const topaz_t *, const topazString_t *, double);
+
+/// Retrieves an array of all parameter names known.
 ///
-/// Reutrns an empty string if unavailable.
-const topazString_t * topaz_get_base_directory(const topaz_t *);
-
-
-/// Returns the version of the Dynacoe library as a whole.
-///
-const topazString_t * topaz_get_version(const topaz_t *);
-    
-    
-    
-typedef struct {
-    float drawTimeMS;
-    float stepTimeMS;
-    float systemTimeMS;
-    float engineRealTimeMS;        
-    int currentFPS;
-} topazDiagnostics_t;
-    
-topazDiagnostics_t & topaz_get_diagnostics(const topaz_t *);
+const topazArray_t * topaz_get_parameter_names(const topaz *);
 
 
 
