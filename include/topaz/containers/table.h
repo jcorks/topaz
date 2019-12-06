@@ -29,48 +29,55 @@ DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef H_TOPAZDC__HASH__INCLUDED
-#define H_TOPAZDC__HASH__INCLUDED
+#ifndef H_TOPAZDC__TABLE__INCLUDED
+#define H_TOPAZDC__TABLE__INCLUDED
 
 /*
 
-    Hash
+    Table
     -----
 
     Dynamically resizing container
 
 
 */
-typedef struct topazHash_t topazHash_t;
+typedef struct topazTable_t topazTable_t;
 
 
-topazHash_t * topaz_hash_create_type_string();
-topazHash_t * topaz_hash_create_type_buffer(uint32_t n);
-topazHash_t * topaz_hash_create_type_pointer();
+topazTable_t * topaz_table_create_hash_string();
+topazTable_t * topaz_table_create_hash_buffer(int n);
+topazTable_t * topaz_table_create_hash_pointer();
 
-void topaz_hash_insert(topazHash_t *, void * key, void * value);
 
-void * topaz_hash_find(topazHash_t *, void * key);
+// copy of the key is made: value copy if a pointer, 
+// shallow copy if string or buffer
+void topaz_table_insert(topazTable_t *, void * key, void * value);
 
-void topaz_hash_remove(topazHash_t *, void *);
 
-void topaz_hash_clear(topazHash_t *);
+void * topaz_table_find(const topazTable_t *, void * key);
+
+
+int topaz_table_entry_exists(const topazTable_t *, void * key);
+
+void topaz_table_remove(topazTable_t *, void *);
+
+void topaz_table_clear(topazTable_t *);
 
 
 /*
 
-    HashIter
+    TableIter
     --------
 
     Helper class for iterating through hash tables
 
 
 */
-typedef struct topazHashIter_t topazHashIter_t;
-topazHashIter_t * topaz_hash_iter_create();
-void topaz_hash_iter_start(topazHashIter_t *, topazHash_t *);
-void topaz_hash_iter_next(topazHashIter_t *);
-int topaz_hash_iter_end(const topazHashIter_t *);
+typedef struct topazTableIter_t topazTableIter_t;
+topazTableIter_t * topaz_table_iter_create();
+void topaz_table_iter_start(topazTableIter_t *, topazTable_t *);
+void topaz_table_iter_next(topazTableIter_t *);
+int topaz_table_iter_end(const topazTableIter_t *);
 
-void * topaz_hash_iter_get_key(const topazHashIter_t *);
-void * topaz_hash_iter_get_value(const topazHashIter_t *);
+void * topaz_table_iter_get_key(const topazTableIter_t *);
+void * topaz_table_iter_get_value(const topazTableIter_t *);
