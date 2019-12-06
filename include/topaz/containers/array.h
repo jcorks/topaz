@@ -32,6 +32,9 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__ARRAY__INCLUDED
 #define H_TOPAZDC__ARRAY__INCLUDED
 
+
+#include <stdint.h>
+
 /*
 
     Array

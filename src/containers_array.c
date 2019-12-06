@@ -1,6 +1,7 @@
 #include <topaz/compat.h>
 #include <topaz/containers/array.h>
 
+#include <stdlib.h>
 #include <string.h>
 
 #ifdef TOPAZDC_DEBUG
@@ -25,6 +26,7 @@ topazArray_t * topaz_array_create(uint32_t typesize) {
     a->size = 0;
     a->allocSize = array_presize_amt;
     a->data = malloc(typesize*array_presize_amt);
+    return a;
 }
 
 void topaz_array_destroy(topazArray_t * t) {
@@ -39,7 +41,7 @@ void topaz_array_destroy(topazArray_t * t) {
 
 topazArray_t * topaz_array_clone(const topazArray_t * src) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazArray_t pointer cannot be NULL.");
+        assert(src && "topazArray_t pointer cannot be NULL.");
     #endif
     topazArray_t * a = malloc(sizeof(topazArray_t));
 
@@ -65,7 +67,7 @@ void topaz_array_push_n(topazArray_t * t, void * elements, uint32_t count) {
     #endif
     while(t->size + count > t->allocSize) {
         t->allocSize += t->allocSize*array_presize_amt;
-        t->data = realloc(t->allocSize*t->sizeofType);
+        t->data = realloc(t->data, t->allocSize*t->sizeofType);
     }
     memcpy(
         (t->data)+(t->size*t->sizeofType), 
@@ -81,7 +83,7 @@ void topaz_array_remove(topazArray_t * t, uint32_t index) {
         assert(index < t->size);
     #endif
 
-    uint32_t indexByte = index*t->sizeofType
+    uint32_t indexByte = index*t->sizeofType;
     memmove(
         t->data+(indexByte),
         t->data+(indexByte + t->sizeofType),
@@ -99,7 +101,7 @@ void * topaz_array_get_data(const topazArray_t * t) {
 }
 
 
-void topaz_array_clear(const topazArray_t * t) {
+void topaz_array_clear(topazArray_t * t) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazArray_t pointer cannot be NULL.");
     #endif
@@ -112,7 +114,7 @@ void topaz_array_set_size(topazArray_t * t, uint32_t size) {
     #endif
     while(size > t->allocSize) {
         t->allocSize += t->allocSize*array_presize_amt;
-        t->data = realloc(t->allocSize*t->sizeofType);
+        t->data = realloc(t->data, t->allocSize*t->sizeofType);
     }
     t->size = size;
 }

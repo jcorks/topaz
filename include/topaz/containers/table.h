@@ -37,47 +37,125 @@ DEALINGS IN THE SOFTWARE.
     Table
     -----
 
-    Dynamically resizing container
+    Hashtable able to handle various kinds of keys 
+
+    For buffer and string keys, key copies are created, so 
+    the source key does not need to be kept in memory
+    once created.
 
 
 */
 typedef struct topazTable_t topazTable_t;
 
-
+/// Creates a new table whose keys are C-strings.
+///
 topazTable_t * topaz_table_create_hash_string();
+
+
+/// Creates a new table whose keys are a byte-buffer of 
+/// the specified length.
+///
 topazTable_t * topaz_table_create_hash_buffer(int n);
+
+
+/// Creates a new table whose keys are a pointer value.
+///
 topazTable_t * topaz_table_create_hash_pointer();
 
 
-// copy of the key is made: value copy if a pointer, 
-// shallow copy if string or buffer
+
+
+/// Frees the given table.
+///
+void topaz_table_destroy(topazTable_t *);
+
+
+/// Inserts a new key-value pair into the table.
+/// If a key is already within the table, the value 
+/// corresponding to that key is updated with the new copy.
+///
+/// Notes regarding keys: when copied into the table, a value copy 
+/// is performed if this hash table's keys are pointer values.
+/// If a buffer or string, a new buffer is stored and kept until 
+/// key-value removal.
+///
 void topaz_table_insert(topazTable_t *, void * key, void * value);
 
 
+/// Returns the value corresponding to the given key.
+/// If none is found, NULL is returned. Note that this 
+/// implies useful output only if key-value pair contains 
+/// non-null data. You can use "topaz_table_entry_exists()" to 
+/// handle NULL values.
+///
 void * topaz_table_find(const topazTable_t *, void * key);
 
 
+/// Returns TRUE if an entry correspodning to the 
+/// given key exists and FALSE otherwise.
+///
 int topaz_table_entry_exists(const topazTable_t *, void * key);
 
-void topaz_table_remove(topazTable_t *, void *);
 
+/// Removes the key-value pair from the table whose key matches 
+/// the one given. If no such pair exists, no action is taken.
+///
+void topaz_table_remove(topazTable_t *, void * key);
+
+
+/// Removes all key-value pairs.
+///
 void topaz_table_clear(topazTable_t *);
+
+
+
+
 
 
 /*
 
     TableIter
-    --------
+    ---------
 
     Helper class for iterating through hash tables
 
 
 */
-typedef struct topazTableIter_t topazTableIter_t;
-topazTableIter_t * topaz_table_iter_create();
-void topaz_table_iter_start(topazTableIter_t *, topazTable_t *);
-void topaz_table_iter_next(topazTableIter_t *);
-int topaz_table_iter_end(const topazTableIter_t *);
 
+typedef struct topazTableIter_t topazTableIter_t;
+
+
+/// Creates a new hash table iterator.
+/// This iterator can be used with any table, but needs 
+/// to be "started" with the table in question.
+///
+topazTableIter_t * topaz_table_iter_create();
+
+
+/// Begins the iterating process by initializing the iter 
+/// to contain the first key-value pair within the table.
+///
+void topaz_table_iter_start(topazTableIter_t *, topazTable_t *);
+
+
+/// Goes to the next available key-value pair in the table 
+/// 
+void topaz_table_iter_proceed(topazTableIter_t *);
+
+/// Returns whether the end of the table has been reached.
+///
+int topaz_table_iter_is_end(const topazTableIter_t *);
+
+
+/// Returns the key (owned by the table) for the current 
+/// key-value pair. If none, returns NULL.
+///
 void * topaz_table_iter_get_key(const topazTableIter_t *);
+
+/// Returns the value for the current 
+/// key-value pair. If none, returns NULL.
+///
 void * topaz_table_iter_get_value(const topazTableIter_t *);
+
+
+#endif
