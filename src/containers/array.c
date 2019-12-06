@@ -28,6 +28,9 @@ topazArray_t * topaz_array_create(uint32_t typesize) {
 }
 
 void topaz_array_destroy(topazArray_t * t) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazArray_t pointer cannot be NULL.");
+    #endif
     free(t->data);
     free(t);
 }
@@ -35,6 +38,9 @@ void topaz_array_destroy(topazArray_t * t) {
 
 
 topazArray_t * topaz_array_clone(const topazArray_t * src) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazArray_t pointer cannot be NULL.");
+    #endif
     topazArray_t * a = malloc(sizeof(topazArray_t));
 
     // do not clone pre-alloc size
@@ -47,11 +53,17 @@ topazArray_t * topaz_array_clone(const topazArray_t * src) {
 
 
 uint32_t topaz_array_get_size(const topazArray_t * t) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazArray_t pointer cannot be NULL.");
+    #endif
     return t->size;
 }
 
 void topaz_array_push_n(topazArray_t * t, void * elements, uint32_t count) {
-    if (t->size + count > t->allocSize) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazArray_t pointer cannot be NULL.");
+    #endif
+    while(t->size + count > t->allocSize) {
         t->allocSize += t->allocSize*array_presize_amt;
         t->data = realloc(t->allocSize*t->sizeofType);
     }
@@ -65,6 +77,7 @@ void topaz_array_push_n(topazArray_t * t, void * elements, uint32_t count) {
 
 void topaz_array_remove(topazArray_t * t, uint32_t index) {
     #ifdef TOPAZDC_DEBUG
+        assert(t && "topazArray_t pointer cannot be NULL.");
         assert(index < t->size);
     #endif
 
@@ -74,4 +87,32 @@ void topaz_array_remove(topazArray_t * t, uint32_t index) {
         t->data+(indexByte + t->sizeofType),
         (t->size-1)*t->sizeofType
     );
+}
+
+
+
+void * topaz_array_get_data(const topazArray_t * t) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazArray_t pointer cannot be NULL.");
+    #endif
+    return t->data;
+}
+
+
+void topaz_array_clear(const topazArray_t * t) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazArray_t pointer cannot be NULL.");
+    #endif
+    t->size = 0;
+}
+
+void topaz_array_set_size(topazArray_t * t, uint32_t size) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazArray_t pointer cannot be NULL.");
+    #endif
+    while(size > t->allocSize) {
+        t->allocSize += t->allocSize*array_presize_amt;
+        t->data = realloc(t->allocSize*t->sizeofType);
+    }
+    t->size = size;
 }

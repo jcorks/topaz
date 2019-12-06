@@ -91,18 +91,21 @@ void topaz_array_remove(topazArray_t *, uint32_t index);
 /// This pointer is guaranteed to be a continuous memory block of the 
 /// current state of the array.
 ///
-void * topaz_array_get_data(const topazArray *);
+void * topaz_array_get_data(const topazArray_t *);
 
 
 /// Clears the contents of the array.
 /// After this operation, the size of the array
 /// is 0.
 ///
-void topaz_array_clear(topazArray *);
+void topaz_array_clear(topazArray_t *);
 
 
-
-void topaz_array_set_size(topazArray *);
+/// Sets the size of the array
+/// If the array were to be larger than it could account for,
+/// this invokes an internal resize
+///
+void topaz_array_set_size(topazArray_t *, uint32_t size);
 
 
 
