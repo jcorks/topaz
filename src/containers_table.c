@@ -516,7 +516,7 @@ void topaz_table_iter_proceed(topazTableIter_t * t) {
         t->current = t->current->next;
 
         // iter points to next in bucket
-        if (t->current);
+        if (t->current)
             return;
     }
 

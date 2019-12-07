@@ -79,6 +79,9 @@ uint32_t topaz_array_get_size(const topazArray_t *);
 /// "i = 12; topaz_array_push(array, i);" would work.
 #define topaz_array_push(__A__, __VAL__) (topaz_array_push_n(__A__, &__VAL__, 1))
 
+/// Gets the value at the given index 
+///
+#define topaz_array_at(__A__, __T__, __I__) (((__T__*)topaz_array_get_data(__A__))[__I__])
 
 /// Adds a contiguous set of elements to the array 
 ///

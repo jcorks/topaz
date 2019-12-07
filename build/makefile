@@ -15,7 +15,7 @@ debug:
 
 
 test:
-	$(CC) -I../include/ $(OPTS_RELEASE) ../src/* ../tests/* -o libtopaz_test
+	$(CC) -I../include/ $(OPTS_DEBUG) ../src/* ../tests/* -o libtopaz_test
 
 
 clean: 

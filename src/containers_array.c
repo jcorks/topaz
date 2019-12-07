@@ -80,6 +80,7 @@ topazArray_t * topaz_array_clone(const topazArray_t * src) {
     a->size = src->size;
     a->sizeofType = src->sizeofType;
     a->data = malloc(src->size*a->sizeofType);
+    memcpy(a->data, src->data, src->size*a->sizeofType);
     return a;
 }
 
@@ -104,6 +105,7 @@ void topaz_array_push_n(topazArray_t * t, void * elements, uint32_t count) {
         elements, 
         count*t->sizeofType
     );
+    t->size++;
 }
 
 
@@ -117,8 +119,9 @@ void topaz_array_remove(topazArray_t * t, uint32_t index) {
     memmove(
         t->data+(indexByte),
         t->data+(indexByte + t->sizeofType),
-        (t->size-1)*t->sizeofType
+        ((t->size-1)*t->sizeofType) - indexByte
     );
+    t->size--;
 }
 
 
