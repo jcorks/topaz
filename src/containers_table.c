@@ -137,7 +137,7 @@ static uint32_t hash_fn_buffer(uint8_t * data, uint32_t len) {
 }
 
 static int key_cmp_fn_buffer(void * a, void * b, uint32_t len) {
-    return memcmp(a, b, len);
+    return memcmp(a, b, len)==0;
 }
 
 
@@ -206,6 +206,7 @@ static void topaz_table_resize(topazTable_t * t) {
             prev->next = entry;
         }
     }
+    free(entries);
         
 
     
@@ -238,7 +239,7 @@ static topazTableEntry_t * topaz_table_new_entry(topazTable_t * t, void * key, v
 
     out = malloc(sizeof(topazTableEntry_t));
     out->value = value;
-
+    out->next = NULL;
     out->keyLen = keyLen;
     // if the key is dynamically allocated, we need a local copy 
     if (keyLen) {    
@@ -259,14 +260,14 @@ static void topaz_table_remove_entry(topazTable_t * t, topazTableEntry_t * entry
     #endif
 
     if (entry->keyLen) {
-        free(entry->value);
+        free(entry->key);
     }
     free(entry);
 }
 
 
 topazTable_t * topaz_table_create_hash_pointer() {
-    topazTable_t * t = calloc(sizeof(topazTableEntry_t), 1);
+    topazTable_t * t = calloc(sizeof(topazTable_t), 1);
     t->hash   = hash_fn_value;
     t->keyCmp = key_cmp_fn_value;
     t->keyLen = 0;
@@ -274,7 +275,7 @@ topazTable_t * topaz_table_create_hash_pointer() {
 }
 
 topazTable_t * topaz_table_create_hash_string() {
-    topazTable_t * t = calloc(sizeof(topazTableEntry_t), 1);
+    topazTable_t * t = calloc(sizeof(topazTable_t), 1);
     t->hash   = (KeyHashFunction)hash_fn_buffer;
     t->keyCmp = key_cmp_fn_buffer;
     t->keyLen = -1;
@@ -285,7 +286,7 @@ topazTable_t * topaz_table_create_hash_buffer(int size) {
     #ifdef TOPAZDC_DEBUG
         assert(size > 0 && "topaz_table_create_hash_buffer() requires non-zero size.");
     #endif
-    topazTable_t * t = calloc(sizeof(topazTableEntry_t), 1);
+    topazTable_t * t = calloc(sizeof(topazTable_t), 1);
     t->hash   = (KeyHashFunction)hash_fn_buffer;
     t->keyCmp = key_cmp_fn_buffer;
     t->keyLen = size;
@@ -330,14 +331,7 @@ void topaz_table_insert(topazTable_t * t, void * key, void * value) {
         bucketLen++;
     }    
 
-    // invariant broken, expand and reform the hashtable.
-    if (bucketLen > table_bucket_max_size) {
-        topaz_table_resize(t);
 
-        // try again.
-        topaz_table_insert(t, key, value);
-        return;
-    }
     
 
     // add to chain at the end
@@ -358,6 +352,15 @@ void topaz_table_insert(topazTable_t * t, void * key, void * value) {
         t->buckets[bucketID] = src;
     }
     t->size++;
+
+    // invariant broken, expand and reform the hashtable.
+    if (bucketLen > table_bucket_max_size) {
+        topaz_table_resize(t);
+
+        // try again.
+        topaz_table_insert(t, key, value);
+        return;
+    }
 
 }
 
@@ -522,7 +525,7 @@ void topaz_table_iter_proceed(topazTableIter_t * t) {
 
     
     // need to move to next buckt
-    uint32_t i = t->currentBucketID;
+    uint32_t i = t->currentBucketID+1;
     for(; i < t->src->nBuckets; ++i) {
         if (t->src->buckets[i]) {
             t->current = t->src->buckets[i];

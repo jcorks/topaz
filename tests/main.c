@@ -4,7 +4,8 @@
 int test__array_simple();
 int test__array_advanced();
 
-
+int test__table_simple();
+int test__table_advanced();
 
 int main() {
     topazTest_t * driver = topaz_test_create();
@@ -14,12 +15,15 @@ int main() {
 
         topaz_test_add(driver, "Array - Simple  ", test__array_simple);
         topaz_test_add(driver, "Array - Advanced", test__array_advanced);
+        topaz_test_add(driver, "Table - Simple  ", test__table_simple);
+        topaz_test_add(driver, "Table - Advanced", test__table_advanced);
 
 
     //// ^^^^^^^^^^^^^^^
     //////////////////// 
 
     int result = topaz_test_run(driver);
+    topaz_test_destroy(driver);
     if (result) {
         printf("A test has failed.\n");
     }

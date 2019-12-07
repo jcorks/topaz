@@ -42,6 +42,7 @@ int topaz_test_run(topazTest_t * t) {
     uint32_t i;
     for(i = 0; i < t->count; ++i) {
         printf("Performing test %s (%d of %d): ", t->tests[i].label, (int)i+1, (int)t->count);
+        fflush(stdout);
         int result = t->tests[i].fn();
         if (result == 0) {
             printf("Pass.\n");

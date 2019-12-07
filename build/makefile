@@ -1,7 +1,7 @@
 CC=gcc
 RM=rm
 OPTS_RELEASE = -Wall -Werror -pedantic -O2
-OPTS_DEBUG = -Wall -Werror -pedantic -g -DTOPAZDC_DEBUG
+OPTS_DEBUG = -Wall -Werror -pedantic -g -DTOPAZDC_DEBUG -fsanitize=address -fsanitize=undefined
 
 
 release:
