@@ -114,14 +114,17 @@ uint32_t topaz_string_get_length(const topazString_t *);
 /// 
 /// Chain functions can be used to 
 /// work on strings in a token-like fashion.
-
+/// Each token is referred to as a "link" in the chain.
 
 /// Resets the chain state of the string. Using topaz_string_chain_current()
 /// will return the first token according to the delimiters given.
+/// The first link is returned. If no such link exists, an empty 
+/// link is returned.
 ///
-void topaz_string_chain_start(topazString_t * t, const topazString_t * delimiters);
+const topazString_t * topaz_string_chain_start(topazString_t * t, const topazString_t * delimiters);
 
-/// Returns the current token in the chain.
+/// Returns the current link in the chain.
+/// If the end has been reached, this is an empty string.
 ///
 const topazString_t * topaz_string_chain_current(topazString_t * t);
 
@@ -129,9 +132,10 @@ const topazString_t * topaz_string_chain_current(topazString_t * t);
 ///
 int topaz_string_chain_is_end(const topazString_t * t);
 
-/// Goes to the next token in the chain.
+/// Goes to the next token in the chain and returns that token.
+/// The new token is returned.
 /// 
-void topaz_string_chain_proceed(topazString_t * t);
+const topazString_t * topaz_string_chain_proceed(topazString_t * t);
 
 #endif
 

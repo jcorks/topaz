@@ -189,14 +189,14 @@ uint32_t topaz_string_get_length(const topazString_t * t) {
 
 
 
-void topaz_string_chain_start(topazString_t * t, const topazString_t * delimiters) {
+const topazString_t * topaz_string_chain_start(topazString_t * t, const topazString_t * delimiters) {
     t->iter = 0;
     if (!t->chain) {
         t->chain = topaz_string_create();
         t->delimiters = topaz_string_create();
     }
     topaz_string_set(t->delimiters, delimiters);
-    topaz_string_chain_proceed(t);
+    return topaz_string_chain_proceed(t);
 }
 
 const topazString_t * topaz_string_chain_current(topazString_t * t) {
@@ -208,16 +208,11 @@ const topazString_t * topaz_string_chain_current(topazString_t * t) {
 }
 
 int topaz_string_chain_is_end(const topazString_t * t) {
-    return t->iter == t->len;
+    return t->iter > t->len;
 }
 
-void topaz_string_chain_proceed(topazString_t * t) {
-    if (t->iter >= t->len) {
-        t->iter = t->len;
-        return;
-    }
+const topazString_t * topaz_string_chain_proceed(topazString_t * t) {
 
-    uint32_t i;
     char * del = t->delimiters->cstr;
     char * iter;    
 
@@ -225,17 +220,40 @@ void topaz_string_chain_proceed(topazString_t * t) {
     char chunk[chunk_size];
     uint32_t chunkLen = 0;
 
-    topaz_string_set_cstr(t->chain, "", 0);
+
     char c;
-    for(i = 0; i < t->len; ++i, t->iter++) {
-        c = t->cstr[i];
+
+    // skip over leading delimiters
+    for(; t->iter < t->len; t->iter++) {
+        c = t->cstr[t->iter];
+
+        // delimiter marks the end.
+        for(iter = del; *iter; ++iter) {
+            if (*iter == c) {
+                break;                
+            }
+        }
+        if (!*iter) break;
+    }
+
+    // reset for next link
+    topaz_string_set_cstr(t->chain, "", 0);
+
+    // check if at end
+    if (t->iter >= t->len) {
+        t->iter = t->len+1;
+        return t->chain;
+    }
+
+    for(; t->iter < t->len; t->iter++) {
+        c = t->cstr[t->iter];
 
         // delimiter marks the end.
         for(iter = del; *iter; ++iter) {
             if (*iter == c && chunkLen) {
                 chunk[chunkLen] = 0;
                 topaz_string_concat_cstr(t->chain, chunk, chunkLen);                
-                return;
+                return t->chain;
             }
         }         
 
@@ -244,13 +262,14 @@ void topaz_string_chain_proceed(topazString_t * t) {
             topaz_string_concat_cstr(t->chain, chunk, chunkLen);                
             chunkLen = 0;
         }
-        chunk[chunkLen++] = t->cstr[i];
+        chunk[chunkLen++] = c;
    }
 
     // reached the end of the string 
     t->iter = t->len;
     chunk[chunkLen] = 0;
-    topaz_string_concat_cstr(t->chain, chunk, chunkLen);                
+    topaz_string_concat_cstr(t->chain, chunk, chunkLen);         
+    return t->chain;       
 }
 
 
