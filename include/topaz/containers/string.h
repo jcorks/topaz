@@ -92,13 +92,18 @@ const topazString_t * topaz_string_get_substr(
 
 /// Gets a read-only pointer to a c-string representation of the 
 /// string.
+///
 const char * topaz_string_get_c_str(const topazString_t *);
 
 /// Gets the number of characters within the string.
 ///
 uint32_t topaz_string_get_length(const topazString_t *);
 
-/// Creates a temporary 
+/// Creates a temporary string from a C-string. This 
+/// string is valid until the next call from this thread.
+/// This string is only valid in use for functions that require 
+/// const topazString_t * as the argument. 
+///
 const topazString_t * topaz_string_cast_from_c_str(const char *);
 
 

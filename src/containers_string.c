@@ -33,6 +33,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <stdlib.h>
 #include <string.h>
+#include <threads.h>
 
 #ifdef TOPAZDC_DEBUG
 #include <assert.h>
@@ -66,7 +67,12 @@ topazString_t * topaz_string_create() {
 
 topazString_t * topaz_string_create_from_c_str(const char * str) {
     topazString_t * out = topaz_string_create();
-    topaz_string_set(out, topaz_string_cast_from_c_str(str));
+    topazString_t temp;
+    memset(&temp, 0, sizeof(topazString_t));
+    temp.cstr = str;
+    temp.len = strlen(str);
+    temp.alloc = temp.len;
+    topaz_string_set(out, &temp);
     return out;
 }
 
@@ -115,8 +121,16 @@ void topaz_string_concat_printf(topazString_t * s, const char * format, ...) {
     vsnprintf(newBuffer, lenReal, format, args);
     va_end(args);
     
-    topaz_string_concat(s, topaz_string_cast_from_c_str(newBuffer));
-    free(newBuffer;
+
+    topazString_t temp;
+    memset(&temp, 0, sizeof(topazString_t));
+    temp.cstr = newBuffer;
+    temp.len = lenReal;
+    temp.alloc = temp.len;
+    topaz_string_set(out, &temp);
+
+    topaz_string_concat(s, &temp);
+    free(newBuffer);
 }
 
 void topaz_string_concat(topazString_t * s, const topazString_t * src) {
@@ -170,7 +184,25 @@ uint32_t topaz_string_get_length(const topazString_t * t) {
 }
 
 
+const topazString_t * topaz_string_cast_from_c_str(const char * str) {
+    #define CAST_STRING_COUNT 16
+    static thread_local topazString_t casts[CAST_STRING_COUNT];
+    static thread_local int castsLen = 0;
 
+    if (castsLen >= CAST_STRING_COUNT)
+        castsLen = 0;
+    
+    topazString_t * out = casts[castsLen++];
+    memset(out, 0, sizeof(topazString_t));
+    out->cstr = str;
+    out->len = strlen(str);
+    out->alloc = len;
+    return out;
+}
+
+
+
+void topaz_string_chain_string(topazString_t * t, const topazString_t * delimiters);
 
 
 
