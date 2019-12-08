@@ -1,4 +1,4 @@
-CC=gcc
+CC=gcc -std=c11 -lpthread
 RM=rm
 OPTS_RELEASE = -Wall -Werror -pedantic -O2
 OPTS_DEBUG = -Wall -Werror -pedantic -g -DTOPAZDC_DEBUG -fsanitize=address -fsanitize=undefined

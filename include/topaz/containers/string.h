@@ -32,6 +32,8 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__STRING__INCLUDED
 #define H_TOPAZDC__STRING__INCLUDED
 
+#include <stdint.h>
+
 /*
 
     String
@@ -68,6 +70,10 @@ void topaz_string_destroy(topazString_t *);
 ///
 void topaz_string_set(topazString_t * A, const topazString_t * B);
 
+/// Resets the contents of the string.
+///
+void topaz_string_clear(topazString_t *);
+
 /// Adds the given C printf-formatted string and accompanying arguments 
 /// to the given string.
 ///
@@ -99,13 +105,6 @@ const char * topaz_string_get_c_str(const topazString_t *);
 ///
 uint32_t topaz_string_get_length(const topazString_t *);
 
-/// Creates a temporary string from a C-string. This 
-/// string is valid until the next call from this thread.
-/// This string is only valid in use for functions that require 
-/// const topazString_t * as the argument. 
-///
-const topazString_t * topaz_string_cast_from_c_str(const char *);
-
 
 
 
@@ -128,7 +127,7 @@ const topazString_t * topaz_string_chain_current(topazString_t * t);
 
 /// Returns whether the last link in the chain has been reached.
 ///
-int topaz_string_chain_is_end(topazString_t * t);
+int topaz_string_chain_is_end(const topazString_t * t);
 
 /// Goes to the next token in the chain.
 /// 

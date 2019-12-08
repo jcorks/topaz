@@ -33,7 +33,8 @@ DEALINGS IN THE SOFTWARE.
 
 #include <stdlib.h>
 #include <string.h>
-#include <threads.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 #ifdef TOPAZDC_DEBUG
 #include <assert.h>
@@ -56,6 +57,23 @@ struct topazString_t {
     topazString_t * lastSubstr;
 };
 
+static void topaz_string_concat_cstr(topazString_t * s, const char * cstr, uint32_t len) {
+    while (s->len + len + 1 >= s->alloc) {
+        s->alloc*=1.4;
+        s->cstr = realloc(s->cstr, s->alloc);
+    }
+
+    memcpy(s->cstr+s->len, cstr, len+1);
+    s->len+=len;
+}
+
+static void topaz_string_set_cstr(topazString_t * s, const char * cstr, uint32_t len) {
+    s->len = 0;
+    topaz_string_concat_cstr(s, cstr, len);
+}
+
+
+
 
 topazString_t * topaz_string_create() {
     topazString_t * out = calloc(1, sizeof(topazString_t));
@@ -67,12 +85,7 @@ topazString_t * topaz_string_create() {
 
 topazString_t * topaz_string_create_from_c_str(const char * str) {
     topazString_t * out = topaz_string_create();
-    topazString_t temp;
-    memset(&temp, 0, sizeof(topazString_t));
-    temp.cstr = str;
-    temp.len = strlen(str);
-    temp.alloc = temp.len;
-    topaz_string_set(out, &temp);
+    topaz_string_set_cstr(out, str, strlen(str));
     return out;
 }
 
@@ -87,60 +100,47 @@ void topaz_string_destroy(topazString_t * s) {
     if (s->delimiters) topaz_string_destroy(s->delimiters);
     if (s->chain) topaz_string_destroy(s->chain);
     if (s->lastSubstr) topaz_string_destroy(s->lastSubstr);
+    free(s);
 }
 
-
+void topaz_string_clear(topazString_t * s) {
+    s->len = 0;
+}
 
 void topaz_string_set(topazString_t * s, const topazString_t * src) {
     free(s->cstr);
     s->len = src->len;
     s->alloc = src->alloc;
     s->cstr = malloc(s->alloc);
-    memcpy(s->cstr, src->cstr, src->len);
+    memcpy(s->cstr, src->cstr, src->len+1);
 
     if (s->delimiters) topaz_string_destroy(s->delimiters);
     if (s->chain) topaz_string_destroy(s->chain);
-    s->iter = src->iter;
-    
-    s->delimiters = topaz_string_clone(s->delimiters);
-    s->chain = topaz_string_clone(s->chain);
-    
+
 }
 
 
 
 void topaz_string_concat_printf(topazString_t * s, const char * format, ...) {
     va_list args;
-    va_start(args, s);
+    va_start(args, format);
     int lenReal = vsnprintf(NULL, 0, format, args);
     va_end(args);
 
 
-    char * newBuffer = malloc(lenReal+1);
-    va_start(args, s);    
-    vsnprintf(newBuffer, lenReal, format, args);
+    char * newBuffer = malloc(lenReal+2);
+    va_start(args, format);    
+    vsnprintf(newBuffer, lenReal+1, format, args);
     va_end(args);
     
 
-    topazString_t temp;
-    memset(&temp, 0, sizeof(topazString_t));
-    temp.cstr = newBuffer;
-    temp.len = lenReal;
-    temp.alloc = temp.len;
-    topaz_string_set(out, &temp);
 
-    topaz_string_concat(s, &temp);
+    topaz_string_concat_cstr(s, newBuffer, lenReal);
     free(newBuffer);
 }
 
 void topaz_string_concat(topazString_t * s, const topazString_t * src) {
-    if (s->len + src->len >= s->alloc) {
-        s->alloc*=1.4;
-        s->cstr = realloc(s->cstr, s->alloc);
-    }
-
-    memcpy(s->cstr+s->size, src->cstr, src->size);
-    s->size+=src->size;
+    topaz_string_concat_cstr(s, src->cstr, src->len);
 }
 
 
@@ -161,13 +161,17 @@ const topazString_t * topaz_string_get_substr(
         from = temp;
     }
 
-    if (s->lastSubstr) {
-        topaz_string_destroy(s->lastSubstr);
+    if (!s->lastSubstr) {
+        ((topazString_t *)s)->lastSubstr = topaz_string_create();
     }
 
     char realAtTo = s->cstr[to];
     s->cstr[to] = 0;
-    s->lastSubstr = topaz_string_create_from_c_str(s->cstr+from);
+    topaz_string_set_cstr(
+        s->lastSubstr, 
+        s->cstr+from, 
+        to - from
+    );
     s->cstr[to] = realAtTo;    
 
     return s->lastSubstr;    
@@ -184,25 +188,73 @@ uint32_t topaz_string_get_length(const topazString_t * t) {
 }
 
 
-const topazString_t * topaz_string_cast_from_c_str(const char * str) {
-    #define CAST_STRING_COUNT 16
-    static thread_local topazString_t casts[CAST_STRING_COUNT];
-    static thread_local int castsLen = 0;
 
-    if (castsLen >= CAST_STRING_COUNT)
-        castsLen = 0;
-    
-    topazString_t * out = casts[castsLen++];
-    memset(out, 0, sizeof(topazString_t));
-    out->cstr = str;
-    out->len = strlen(str);
-    out->alloc = len;
-    return out;
+void topaz_string_chain_start(topazString_t * t, const topazString_t * delimiters) {
+    t->iter = 0;
+    if (!t->chain) {
+        t->chain = topaz_string_create();
+        t->delimiters = topaz_string_create();
+    }
+    topaz_string_set(t->delimiters, delimiters);
+    topaz_string_chain_proceed(t);
+}
+
+const topazString_t * topaz_string_chain_current(topazString_t * t) {
+    if (!t->chain) {
+        t->chain = topaz_string_create();
+        t->delimiters = topaz_string_create();
+    }
+    return t->chain;
+}
+
+int topaz_string_chain_is_end(const topazString_t * t) {
+    return t->iter == t->len;
+}
+
+void topaz_string_chain_proceed(topazString_t * t) {
+    if (t->iter >= t->len) {
+        t->iter = t->len;
+        return;
+    }
+
+    uint32_t i;
+    char * del = t->delimiters->cstr;
+    char * iter;    
+
+    #define chunk_size 32
+    char chunk[chunk_size];
+    uint32_t chunkLen = 0;
+
+    topaz_string_set_cstr(t->chain, "", 0);
+    char c;
+    for(i = 0; i < t->len; ++i, t->iter++) {
+        c = t->cstr[i];
+
+        // delimiter marks the end.
+        for(iter = del; *iter; ++iter) {
+            if (*iter == c && chunkLen) {
+                chunk[chunkLen] = 0;
+                topaz_string_concat_cstr(t->chain, chunk, chunkLen);                
+                return;
+            }
+        }         
+
+        if (chunkLen == chunk_size-1) {
+            chunk[chunkLen] = 0;
+            topaz_string_concat_cstr(t->chain, chunk, chunkLen);                
+            chunkLen = 0;
+        }
+        chunk[chunkLen++] = t->cstr[i];
+   }
+
+    // reached the end of the string 
+    t->iter = t->len;
+    chunk[chunkLen] = 0;
+    topaz_string_concat_cstr(t->chain, chunk, chunkLen);                
 }
 
 
 
-void topaz_string_chain_string(topazString_t * t, const topazString_t * delimiters);
 
 
 

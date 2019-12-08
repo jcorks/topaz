@@ -51,12 +51,12 @@ int test__array_simple() {
 int test__array_advanced() {
     uint32_t i = 0;
     topazArray_t * arr = topaz_array_create(sizeof(uint32_t));
-
-    for(; i < 100000; ++i) {
+    #define testsize 10000
+    for(; i < testsize; ++i) {
         topaz_array_push(arr, i);
     }
 
-    for(i = 0; i < 100000; ++i) {
+    for(i = 0; i < testsize; ++i) {
         if (topaz_array_at(arr, uint32_t, i) != i) {
             return 1;
         }
@@ -69,19 +69,19 @@ int test__array_advanced() {
         }
     }
 
-    if (topaz_array_get_size(arr) != 100000/2) {
+    if (topaz_array_get_size(arr) != testsize/2) {
         return 2;
     }
 
 
-    for(i = 0; i < 100000/2; ++i) {
+    for(i = 0; i < testsize/2; ++i) {
         if (topaz_array_at(arr, uint32_t, i) % 2 == 0) {
             return 3;            
         }
     }
     topazArray_t * copy = topaz_array_clone(arr);
 
-    for(i = 0; i < 100000/2; ++i) {
+    for(i = 0; i < testsize/2; ++i) {
         if (topaz_array_at(copy, uint32_t, i) % 2 == 0) {
             return 4;            
         }

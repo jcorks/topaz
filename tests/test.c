@@ -30,9 +30,12 @@ void topaz_test_destroy(topazTest_t * t) {
     free(t);
 }
 
+
+
 void topaz_test_add(topazTest_t * t, const char * label, int (*fn)()) {
     topazTestEntry_t * entry = t->tests+t->count++;
-    entry->label = strdup(label);
+    entry->label = malloc(strlen(label)+1);
+    memcpy(entry->label, label, strlen(label)+1);
     entry->fn = fn;
 }
 
