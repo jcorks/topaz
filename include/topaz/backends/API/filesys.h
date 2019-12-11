@@ -29,8 +29,8 @@ DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef H_TOPAZDC__THREAD_API__INCLUDED
-#define H_TOPAZDC__THREAD_API__INCLUDED
+#ifndef H_TOPAZDC__FILESYS_API__INCLUDED
+#define H_TOPAZDC__FILESYS_API__INCLUDED
 
 
 typedef struct topazFilesys_t topazFilesys_t;
@@ -72,7 +72,7 @@ typedef struct {
 
     /// \brief return the current working directory.
     ///
-    topazString_t * (*api_get_cwd)();
+    const topazString_t * (*api_get_cwd)();
 
     /// \brief Creates a directory with the given name.
     /// The directory is relative to the current working directory.
@@ -81,18 +81,18 @@ typedef struct {
 
     /// Reads a file within the directory
     ///
-    topazIBuffer * (*api_read)(const topazString_t *);
+    topazInBuffer * (*api_read)(const topazString_t *);
 
 
     /// Writes the given file 
     ///
-    void (*api_write)(const topazString_t *, const topazOBuffer_t *);
+    void (*api_write)(const topazString_t *, const topazOutBuffer_t *);
 
 
     /// \brief return all the object names in the current working directory as 
     /// an array of topazString_t
     ///  	
-    topazArray_t * (*api_query_directory)();
+    const topazArray_t * (*api_query_directory)();
 
 
     /// \brief returns whether the given name is a file or note.

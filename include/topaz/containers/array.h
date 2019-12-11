@@ -70,6 +70,9 @@ topazArray_t * topaz_array_clone(const topazArray_t *);
 ///
 uint32_t topaz_array_get_size(const topazArray_t *);
 
+/// Returns the size of each element in bytes.
+///
+uint32_t topaz_array_get_type_size(const topazArray_t *);
 
 /// Adds an additional element to the array.
 ///
@@ -94,8 +97,8 @@ void topaz_array_remove(topazArray_t *, uint32_t index);
 
 
 /// Gets a pointer to the raw data of the array
-/// This pointer is guaranteed to be a continuous memory block of the 
-/// current state of the array.
+/// This pointer is guaranteed to be a contiguous memory block of the 
+/// current state of the array. It is editable.
 ///
 void * topaz_array_get_data(const topazArray_t *);
 

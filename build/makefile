@@ -1,4 +1,4 @@
-CC=gcc -std=c11 -lpthread
+CC=gcc -std=c11
 RM=rm
 OPTS_RELEASE = -Wall -Werror -pedantic -O2
 OPTS_DEBUG = -Wall -Werror -pedantic -g -DTOPAZDC_DEBUG -fsanitize=address -fsanitize=undefined
@@ -15,7 +15,7 @@ debug:
 
 
 test:
-	$(CC) -I../include/ $(OPTS_DEBUG) ../src/* ../tests/* -o libtopaz_test
+	$(CC) -I../include/ $(OPTS_DEBUG) ../src/* ../tests/* -o libtopaz_test -lm
 
 
 clean: 

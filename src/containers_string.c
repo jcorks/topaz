@@ -187,19 +187,6 @@ uint32_t topaz_string_get_length(const topazString_t * t) {
     return t->len;
 }
 
-const topazString_t * topaz_string_temporary_from_c_str(const char * s) {
-    #define topaz_string_temp_max_calls 64;
-    static topazString_t tempVals[max_calls];
-    static int tempIter = 0;
-
-    if (tempIter >= topaz_string_temp_max_calls) tempIter = topaz_string_temp_max_calls;
-    topazString_t * t = tempVals+tempIter++;
-    memset(t, 0, sizeof(topazString_t));
-    t->cstr = s;
-    t->len = strlen(s);
-    t->alloc = t->len;
-    return t;
-}
 
 const topazString_t * topaz_string_chain_start(topazString_t * t, const topazString_t * delimiters) {
     t->iter = 0;
@@ -287,6 +274,27 @@ const topazString_t * topaz_string_chain_proceed(topazString_t * t) {
 
 
 
+
+
+
+#define topaz_string_temp_max_calls 128
+static topazString_t * tempVals[topaz_string_temp_max_calls];
+static int tempIter = 0;
+static int tempInit = FALSE;
+
+const topazString_t * topaz_string_temporary_from_c_str(const char * s) {
+    if (!tempInit) {
+        uint32_t i;
+        for(i = 0; i < topaz_string_temp_max_calls; ++i)
+            tempVals[i] = topaz_string_create();
+        tempInit = TRUE;
+    }    
+
+    if (tempIter >= topaz_string_temp_max_calls) tempIter = topaz_string_temp_max_calls;
+    topazString_t * t = tempVals[tempIter++];
+    topaz_string_set_cstr(t, s, strlen(s));
+    return t;
+}
 
 
 

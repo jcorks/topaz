@@ -71,8 +71,6 @@ void topaz_string_destroy(topazString_t *);
 ///     - This must only be used on the main thread. It is not thread-safe
 ///     - The reference fizzles after subsequent calls to this function. 
 ///       The string must only be used for quick operations. 
-///     - The lifetime of the CString must be at least as long 
-///       as this temporary references.
 ///
 /// If your use case does not adhere to these, you should 
 /// allocate a new string instead.
