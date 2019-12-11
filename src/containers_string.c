@@ -187,7 +187,19 @@ uint32_t topaz_string_get_length(const topazString_t * t) {
     return t->len;
 }
 
+const topazString_t * topaz_string_temporary_from_c_str(const char * s) {
+    #define topaz_string_temp_max_calls 64;
+    static topazString_t tempVals[max_calls];
+    static int tempIter = 0;
 
+    if (tempIter >= topaz_string_temp_max_calls) tempIter = topaz_string_temp_max_calls;
+    topazString_t * t = tempVals+tempIter++;
+    memset(t, 0, sizeof(topazString_t));
+    t->cstr = s;
+    t->len = strlen(s);
+    t->alloc = t->len;
+    return t;
+}
 
 const topazString_t * topaz_string_chain_start(topazString_t * t, const topazString_t * delimiters) {
     t->iter = 0;

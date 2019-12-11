@@ -31,7 +31,7 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__COMPAT__INCLUDED
 #define H_TOPAZDC__COMPAT__INCLUDED
 
-
+#include <topaz/version.h>
 /*
     Copmatability defines and standards are here. 
     

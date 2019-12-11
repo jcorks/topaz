@@ -28,53 +28,17 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
+#ifndef H_TOPAZDC__VERSION__INCLUDED
+#define H_TOPAZDC__VERSION__INCLUDED
 
-#ifndef H_TOPAZDC__THREAD__INCLUDED
-#define H_TOPAZDC__THREAD__INCLUDED
-
-#include <stdint.h>
-
+#include <topaz/version.h>
 /*
-
-    Thread
-    -----
-    
-    A simplified threading primitive.
-
-
+    Information about the version.
 */
-typedef struct topazThread_t topazThread_t;
 
-
-/// Creates a new thread with the given main function
-///
-topazThread_t * topaz_thread_create(int (*main)());
-
-/// Returns the return status of the thread.
-/// If the the thread is still running, 
-/// -1 is returned.
-///
-int topaz_thread_status(const topazThread_t *);
-
-/// Attempts to halt the given thread.
-///
-void topaz_thread_halt(const topazThread_t *);
-
-/// Destroys the thread. In the cause that the thread is still running,
-/// this stops the thread.
-///
-topaz_thread_destroy(topazThread_t *);
-
-
-
-/// Updates thread-local data with the given name.
-///
-void topaz_thread_local_storage_update(const char * id, void *);
-
-/// Returns thread-local data associated with the given name.
-/// 
-void * topaz_thread_local_storage(const char * id);
-
+#define TOPAZ__VERSION__MAJOR 0
+#define TOPAZ__VERSION__MINOR 1
+#define TOPAZ__VERSION__MICRO 0
 
 
 #endif

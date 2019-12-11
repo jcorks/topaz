@@ -57,13 +57,27 @@ topazString_t * topaz_string_create_from_c_str(const char *);
 ///
 topazString_t * topaz_string_clone(const topazString_t *);
 
-/// Destroyes and frees a topaz string 
+/// Destroys and frees a topaz string 
 ///
 void topaz_string_destroy(topazString_t *);
 
 
 
 
+
+/// Returns a temporary string built from the given cstring 
+/// It is meant as a convenience function, but it has the following 
+/// restrictions:
+///     - This must only be used on the main thread. It is not thread-safe
+///     - The reference fizzles after subsequent calls to this function. 
+///       The string must only be used for quick operations. 
+///     - The lifetime of the CString must be at least as long 
+///       as this temporary references.
+///
+/// If your use case does not adhere to these, you should 
+/// allocate a new string instead.
+const topazString_t * topaz_string_temporary_from_c_str(const char *);
+#define TOPAZ_STR_CAST(__s__) topaz_string_temporary_from_c_str(__s__)
 
 
 /// Sets the contents of the string A to the contents of string B
