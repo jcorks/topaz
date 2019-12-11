@@ -32,6 +32,9 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__BACKEND__INCLUDED
 #define H_TOPAZDC__BACKEND__INCLUDED
 
+
+#include <topaz/containers/string.h>
+
 /*
 
     Backend
@@ -62,25 +65,50 @@ topazBackend_t * topaz_backend_create(
 
 
 
-    /// Called when initializing the backend
-    int (*on_init)(void *);
+    /// Called when initializing the backend. Backend is passed.
+    ///
+    int (*on_init)(topazBackend_t *),
 
-    /// Called after all on_inits are called.
-    int (*on_init_late)(void *);
+    /// Called after all on_inits are called. Backend is passed.
+    ///
+    int (*on_init_late)(topazBackend_t *),
 
-    /// Called when the backend is stepped    
-    void (*on_step)(void *);
+    /// Called when the backend is stepped. Backend is passed.
+    ///  
+    void (*on_step)(topazBackend_t *),
 
-    /// Called after all the backends are stepped
-    void (*on_step_late)(void *);
+    /// Called after all the backends are stepped. Backend is passed.
+    ///
+    void (*on_step_late)(topazBackend_t *),
 
-    /// Called when the backend is drawn
-    void (*on_draw)(void *);
+    /// Called when the backend is drawn. Backend is passed.
+    ///
+    void (*on_draw)(topazBackend_t *),
 
-    /// Called after all the backends have drawn
-    void (*on_draw_late(void *)
+    /// Called after all the backends have drawn. Backend is passed.
+    ///
+    void (*on_draw_late)(topazBackend_t *),
+
+    /// User-provided data.
+    ///
+    void * userData,
+
+
+    /// Topaz major version number
+    ///
+    int topazMajorVersion,
+
+    /// Topaz minor version number
+    ///
+    int topazMinorVersion,
+
+    /// Topaz micro version number
+    ///
+    int topazMicroVersion
 
 );
+
+
 
 
 /// Returns the major version of the topaz library 
@@ -100,6 +128,8 @@ int topaz_backend_get_topaz_micro_version(const topazBackend_t *);
 
 
 
+
+
 /// Gets the name of this backend.
 ///
 const topazString_t * topaz_backend_get_name   (const topazBackend_t *);
@@ -115,7 +145,7 @@ const topazString_t * topaz_backend_get_author (const topazBackend_t *);
 
 /// Gets the description 
 ///
-const topazString_t * topaz_backend_get_author (const topazBackend_t *);
+const topazString_t * topaz_backend_get_description(const topazBackend_t *);
 
 
 
@@ -145,8 +175,9 @@ void topaz_backend_draw(topazBackend_t *);
 void topaz_backend_draw_late(topazBackend_t *);
 
 
-
-
+/// Returns the userdata that belongs to this instance.
+///
+void * topaz_backend_get_user_data(topazBackend_t *);
 
 
 
