@@ -56,6 +56,9 @@ topazRbuffer_t * topaz_rbuffer_create() {
 }
 
 void topaz_rbuffer_destroy(topazRbuffer_t * t) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazRbuffer_t pointer cannot be NULL.");
+    #endif
     if (t->readString) topaz_string_destroy(t->readString);
     if (t->readBytes) topaz_array_destroy(t->readBytes);
     free(t->readOverflow);
@@ -65,6 +68,12 @@ void topaz_rbuffer_destroy(topazRbuffer_t * t) {
 
 
 void topaz_rbuffer_open(topazRbuffer_t * t, const uint8_t * data, uint64_t size) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t    && "topazRbuffer_t pointer cannot be NULL.");
+        assert(data && "source buffer to open as a topazRbuffer_t cannot be NULL");
+        assert(size && "source buffer to open as a topazRbuffer_t cannot be zero-sized");
+    #endif
+
     free(t->buffer);
     t->buffer = malloc(size);
     memcpy(t->buffer, data, size);
@@ -74,6 +83,10 @@ void topaz_rbuffer_open(topazRbuffer_t * t, const uint8_t * data, uint64_t size)
 
 
 const topazString_t * topaz_rbuffer_read_string(topazRbuffer_t * t, uint64_t nBytes) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazRbuffer_t pointer cannot be NULL.");
+    #endif
+
     if (!t->readString) {
         t->readString = topaz_string_create();
     }
@@ -99,6 +112,10 @@ const topazString_t * topaz_rbuffer_read_string(topazRbuffer_t * t, uint64_t nBy
 }
 
 const topazArray_t * topaz_rbuffer_read_bytes(topazRbuffer_t * t, uint64_t nBytes) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazRbuffer_t pointer cannot be NULL.");
+    #endif
+
     if (!t->readBytes) {
         t->readBytes = topaz_array_create(sizeof(uint8_t));
     }
@@ -118,6 +135,10 @@ const topazArray_t * topaz_rbuffer_read_bytes(topazRbuffer_t * t, uint64_t nByte
 
 
 const void * topaz_rbuffer_get_buffer(topazRbuffer_t * t, uint64_t numBytes) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazRbuffer_t pointer cannot be NULL.");
+    #endif
+
     if (t->bufferPos + numBytes >= t->size) {
         return NULL;
     }
@@ -130,6 +151,10 @@ const void * topaz_rbuffer_get_buffer(topazRbuffer_t * t, uint64_t numBytes) {
 
 // same as getPtr but does not return null;
 const void * topaz_rbuffer_get_buffer_nnull(topazRbuffer_t * t, uint64_t numBytes) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazRbuffer_t pointer cannot be NULL.");
+    #endif
+
     if (t->bufferPos + numBytes >= t->size) {
         free(t->readOverflow);
         t->readOverflow = calloc(1, numBytes);
@@ -145,6 +170,10 @@ const void * topaz_rbuffer_get_buffer_nnull(topazRbuffer_t * t, uint64_t numByte
 
 
 void topaz_rbuffer_go_to_byte(topazRbuffer_t * t, uint64_t i) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazRbuffer_t pointer cannot be NULL.");
+    #endif
+
     if (i < t->size)
         t->bufferPos = i;
     else 
@@ -153,14 +182,26 @@ void topaz_rbuffer_go_to_byte(topazRbuffer_t * t, uint64_t i) {
 
 
 uint64_t topaz_rbuffer_get_size(const topazRbuffer_t * t) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazRbuffer_t pointer cannot be NULL.");
+    #endif
+
     return t->size;
 }
 
 uint64_t topaz_rbuffer_get_bytes_left(const topazRbuffer_t * t) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazRbuffer_t pointer cannot be NULL.");
+    #endif
+
     return t->size - t->bufferPos;
 }
 
 int topaz_rbuffer_is_empty(const topazRbuffer_t * t) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazRbuffer_t pointer cannot be NULL.");
+    #endif
+
     return t->size == t->bufferPos;
 }
 

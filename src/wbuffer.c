@@ -52,6 +52,9 @@ topazWbuffer_t * topaz_wbuffer_create() {
 }
 
 void topaz_wbuffer_destroy(topazWbuffer_t * t) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazWbuffer_t pointer cannot be NULL.");
+    #endif
     topaz_array_destroy(t->data);
     free(t);
 }
@@ -75,6 +78,11 @@ void topaz_wbuffer_write_c_string(topazWbuffer_t * t, const topazString_t * str)
 }
 
 void topaz_wbuffer_write_buffer(topazWbuffer_t * t, const void * src, uint64_t lenBytes) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazWbuffer_t pointer cannot be NULL.");
+        assert(!src &&  lenBytes && "topazWbuffer_t writing disallows a NULL buffer with a non-zero size");
+    #endif
+
     uint8_t * data = topaz_array_get_data(t->data);
 
     topaz_array_set_size(t->data, lenBytes + t->bufferPos);
@@ -89,6 +97,10 @@ void topaz_wbuffer_write_buffer(topazWbuffer_t * t, const void * src, uint64_t l
 
 
 void topaz_wbuffer_go_to_byte(topazWbuffer_t * t, uint64_t n) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazWbuffer_t pointer cannot be NULL.");
+    #endif
+
     if (n < topaz_array_get_size(t->data))
         t->bufferPos = n;
     else 
@@ -96,14 +108,26 @@ void topaz_wbuffer_go_to_byte(topazWbuffer_t * t, uint64_t n) {
 }
 
 const topazArray_t * topaz_wbuffer_get_data(const topazWbuffer_t * t) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazWbuffer_t pointer cannot be NULL.");
+    #endif
+
     return t->data;
 }
 
 int topaz_wbuffer_get_size(const topazWbuffer_t * t) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazWbuffer_t pointer cannot be NULL.");
+    #endif
+
     return topaz_array_get_size(t->data);
 }
 
 void topaz_wbuffer_clear(const topazWbuffer_t * t) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazWbuffer_t pointer cannot be NULL.");
+    #endif
+
     topaz_array_set_size(t->data, 0);
 }
 
