@@ -27,7 +27,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 */
-
+#include <topaz/vector.h>
 
 #ifndef H_TOPAZDC__MATH__INCLUDED
 #define H_TOPAZDC__MATH__INCLUDED
@@ -49,7 +49,7 @@ DEALINGS IN THE SOFTWARE.
 /// Clamping bounds the first argument, val, to be within min and max.
 /// If val is less than min, it is set to min. If it is greater than max,
 /// va; is set to max.
-#define topaz_math_clamp(__VAL__, __MIN__, __MAX__) ((__VAL__ < __MIN__ ? __MIN__ : __VAL__) > __MAX__ ? __MAX__ : __VAL__)
+#define topaz_math_clamp(__VAL__, __MIN__, __MAX__) (__VAL__ = ((__VAL__ < __MIN__ ? __MIN__ : __VAL__) > __MAX__ ? __MAX__ : __VAL__))
 
 /// Snapping binds a value, i, to the nearest multiple of a value,
 /// subdiv.
@@ -87,7 +87,14 @@ DEALINGS IN THE SOFTWARE.
 
 /// Modifies a vector, pos, to emulate parallax given a maximum regression depth
 /// 
-topazVector_t topaz_math_parallaxize(const topazVector_t *, float screenWidth, float screenHeight, float sceenMaxDepth);
+topazVector_t topaz_math_parallaxize(
+    const topazVector_t *, 
+    const topazVector_t * camera,
+
+    float screenWidth, 
+    float screenHeight, 
+    float screenMaxDepth
+);
 
 
 
