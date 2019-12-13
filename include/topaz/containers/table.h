@@ -79,7 +79,7 @@ void topaz_table_destroy(topazTable_t *);
 /// If a buffer or string, a new buffer is stored and kept until 
 /// key-value removal.
 ///
-void topaz_table_insert(topazTable_t *, void * key, void * value);
+void topaz_table_insert(topazTable_t *, const void * key, void * value);
 
 
 /// Returns the value corresponding to the given key.
@@ -88,19 +88,19 @@ void topaz_table_insert(topazTable_t *, void * key, void * value);
 /// non-null data. You can use "topaz_table_entry_exists()" to 
 /// handle NULL values.
 ///
-void * topaz_table_find(const topazTable_t *, void * key);
+void * topaz_table_find(const topazTable_t *, const void * key);
 
 
 /// Returns TRUE if an entry correspodning to the 
 /// given key exists and FALSE otherwise.
 ///
-int topaz_table_entry_exists(const topazTable_t *, void * key);
+int topaz_table_entry_exists(const topazTable_t *, const void * key);
 
 
 /// Removes the key-value pair from the table whose key matches 
 /// the one given. If no such pair exists, no action is taken.
 ///
-void topaz_table_remove(topazTable_t *, void * key);
+void topaz_table_remove(topazTable_t *, const void * key);
 
 
 /// Removes all key-value pairs.
@@ -150,7 +150,7 @@ int topaz_table_iter_is_end(const topazTableIter_t *);
 /// Returns the key (owned by the table) for the current 
 /// key-value pair. If none, returns NULL.
 ///
-void * topaz_table_iter_get_key(const topazTableIter_t *);
+const void * topaz_table_iter_get_key(const topazTableIter_t *);
 
 /// Returns the value for the current 
 /// key-value pair. If none, returns NULL.

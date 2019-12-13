@@ -15,7 +15,7 @@ debug:
 
 
 test:
-	$(CC) -I../include/ $(OPTS_DEBUG) ../src/* ../tests/* -o libtopaz_test -lm
+	$(CC) -I../include/ $(OPTS_DEBUG) ../src/* ../tests/* ../system/time_posix/src/*.c -o libtopaz_test -lm
 
 
 clean: 

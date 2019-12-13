@@ -62,10 +62,10 @@ struct topazTableEntry_t {
 
 
 // converts data to a hash
-typedef uint32_t (*KeyHashFunction)(void * data, uint32_t param);
+typedef uint32_t (*KeyHashFunction)(const void * data, uint32_t param);
 
 // compares data 
-typedef int (*KeyCompareFunction)(void * dataA, void * dataB, uint32_t param);
+typedef int (*KeyCompareFunction)(const void * dataA, const void * dataB, uint32_t param);
 
 
 
@@ -136,7 +136,7 @@ static uint32_t hash_fn_buffer(uint8_t * data, uint32_t len) {
     return hash;
 }
 
-static int key_cmp_fn_buffer(void * a, void * b, uint32_t len) {
+static int key_cmp_fn_buffer(const void * a, const void * b, uint32_t len) {
     return memcmp(a, b, len)==0;
 }
 
@@ -144,11 +144,11 @@ static int key_cmp_fn_buffer(void * a, void * b, uint32_t len) {
 
 
 // pointer / value to a table directly
-static uint32_t hash_fn_value(void * data, uint32_t nu) {
+static uint32_t hash_fn_value(const void * data, uint32_t nu) {
     return (uint32_t)(int64_t)data;
 }
 
-static int key_cmp_fn_value(void * a, void * b, uint32_t nu) {
+static int key_cmp_fn_value(const void * a, const void * b, uint32_t nu) {
     return a==b;
 }
 
@@ -230,7 +230,7 @@ static topazTable_t * topaz_table_initialize(topazTable_t * t) {
 
 
 
-static topazTableEntry_t * topaz_table_new_entry(topazTable_t * t, void * key, void * value, uint32_t keyLen, uint32_t hash) {
+static topazTableEntry_t * topaz_table_new_entry(topazTable_t * t, const void * key, void * value, uint32_t keyLen, uint32_t hash) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazTable_t pointer cannot be NULL.");
     #endif
@@ -245,8 +245,8 @@ static topazTableEntry_t * topaz_table_new_entry(topazTable_t * t, void * key, v
     if (keyLen) {    
         out->key = malloc(keyLen);
         memcpy(out->key, key, keyLen);
-    } else { // else simple copy
-        out->key = key;
+    } else { // else simple copy (no modify)
+        out->key = (void*)key;
     }
     out->hash = hash;
     return out;
@@ -301,7 +301,7 @@ void topaz_table_destroy(topazTable_t * t) {
 }
 
 
-void topaz_table_insert(topazTable_t * t, void * key, void * value) {
+void topaz_table_insert(topazTable_t * t, const void * key, void * value) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazTable_t pointer cannot be NULL.");
     #endif
@@ -366,7 +366,7 @@ void topaz_table_insert(topazTable_t * t, void * key, void * value) {
 
 
 
-void * topaz_table_find(const topazTable_t * t, void * key) {
+void * topaz_table_find(const topazTable_t * t, const void * key) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazTable_t pointer cannot be NULL.");
     #endif
@@ -393,7 +393,7 @@ void * topaz_table_find(const topazTable_t * t, void * key) {
     return NULL;
 }
 
-int topaz_table_entry_exists(const topazTable_t * t, void * key) {
+int topaz_table_entry_exists(const topazTable_t * t, const void * key) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazTable_t pointer cannot be NULL.");
     #endif
@@ -419,7 +419,7 @@ int topaz_table_entry_exists(const topazTable_t * t, void * key) {
 }
 
 
-void topaz_table_remove(topazTable_t * t, void * key) {
+void topaz_table_remove(topazTable_t * t, const void * key) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazTable_t pointer cannot be NULL.");
     #endif
@@ -545,7 +545,7 @@ int topaz_table_iter_is_end(const topazTableIter_t * t) {
     return t->isEnd;
 }
 
-void * topaz_table_iter_get_key(const topazTableIter_t * t) {
+const void * topaz_table_iter_get_key(const topazTableIter_t * t) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazTableIter_t pointer cannot be NULL.");
     #endif

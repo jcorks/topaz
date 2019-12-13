@@ -1,0 +1,39 @@
+Within this directory, you may find some default 
+implementations of backends for common systems.
+
+Each directory represents a compliant library/environment
+that is required to build with this backend. 
+
+Each directory is in the following format:
+
+[backend_name]_[environment_name]/
+    |-C_INCLUDES   
+    |-C_LIBRARIES
+    |-C_SOURCES
+    |-src/
+        |-[files].c/h
+        |-backend.h
+
+
+C_LIBRARIES is a text file that contains the linker
+libraries required to compile. C_INCLUDES is a text 
+file that contains the includes required for this
+to compile with the topaz project. [files] is a 
+placeholder for all the sources/headers that 
+make up this backend implementation. C_SOURCES
+shoudl be an enumeration of just the source file names.
+
+
+backend.h will always exist within src and contains a single
+function. This is the public-facing api and it creates a 
+single instance of the backend in question. It is of the 
+format:
+
+
+
+#ifndef H_TOPAZDC__[backend_name][environment_name]__INCLUDED
+#define H_TOPAZDC__[backend_name][environment_name]__INCLUDED
+
+topaz[backend_name]_t * topaz_system_[backend_name]_[environment_name]();
+
+#endif
