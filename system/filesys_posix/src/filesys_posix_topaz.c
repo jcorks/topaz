@@ -110,9 +110,9 @@ static void topaz_filesys_posix_populate_objects(PosixFilesysData * fs) {
             !strcmp(ls[i]->d_name, "..")) continue;
 
 		if (ls[i]->d_type == DT_DIR)  // directory detected
-			isFile = false;    
+			isFile = FALSE;    
 		else
-			isFile = true	;
+			isFile = TRUE;
 
 
         str = topaz_string_create_from_c_str(ls[i]->d_name);
@@ -124,7 +124,7 @@ static void topaz_filesys_posix_populate_objects(PosixFilesysData * fs) {
 }
 
 
-static int topaz_filesys_posix__change_directory(topazFilesysAPI_t * t, const topazString_t * str) {
+static int topaz_filesys_posix__set_path(topazFilesysAPI_t * t, const topazString_t * str) {
     char pathTemp[PATH_MAX];
   	if (!realpath(topaz_string_get_c_str(str), pathTemp)) 
         return FALSE;
@@ -144,7 +144,7 @@ static int topaz_filesys_posix__go_to_child(topazFilesysAPI_t * api, const topaz
     topazString_t * child = topaz_string_clone(fs->currentPath);
     topaz_string_concat_printf(child, "%c", '/');
     topaz_string_concat(child, str); 
-    int result = topaz_filesys_posix__change_directory(t, child);
+    int result = topaz_filesys_posix__set_path(t, child);
     topaz_string_destroy(child);
     return result;
 }
@@ -161,12 +161,12 @@ static int topaz_filesys_posix__go_to_parent(topazFilesysAPI_t * api) {
 	return ChangeDir(topaz_string_get_substr(fs->currentPath, 0, index));
 }
 
-static const topazString_t * topaz_filesys_posix__get_cwd(topazFilesysAPI_t * api) {
+static const topazString_t * topaz_filesys_posix__get_path(topazFilesysAPI_t * api) {
     PosixFilesysData * fs = api.implementationData;
     return fs->currentPath;    
 }
 
-static int topaz_filesys_posix__create_dir(topazFilesysAPI_t * api, const topazString_t * dir) {
+static int topaz_filesys_posix__create_node(topazFilesysAPI_t * api, const topazString_t * dir) {
     PosixFilesysData * fs = api.implementationData;
 
     topazString_t * newPath = topaz_string_clone(fs->currentPath);
@@ -177,7 +177,7 @@ static int topaz_filesys_posix__create_dir(topazFilesysAPI_t * api, const topazS
 }
 
 
-topazRbuffer_t * topaz_filesys_posix__read(topazFilesysAPI_t * api, const topazString_t * dir) {
+static topazRbuffer_t * topaz_filesys_posix__read(topazFilesysAPI_t * api, const topazString_t * dir) {
     PosixFilesysData * fs = api.implementationData;
     topazString_t * fullPath = topaz_string_clone(fs->currentPath);
     topaz_string_concat_printf(fullPath, "%c", '/');
@@ -186,25 +186,90 @@ topazRbuffer_t * topaz_filesys_posix__read(topazFilesysAPI_t * api, const topazS
     FILE * f = fopen("rb", topaz_string_get_c_str(fullPath));
     topazRbuffer_t * buffer = topaz_rbuffer_create();
     if (f) {
-        topazArray_t * fullData = topaz_array_create();
+        topazArray_t * fullData = topaz_array_create(sizeof(uint8_t));
 
         // read in chunks
-        #define chunk_size_read (2048*4);        
+        #define chunk_size_read (2048*48);        
         uint8_t chunk[chunk_size_read];
         uint32_t chunkRead;
 
-        chunkRead = fread(f, 
+        while(chunkRead = fread(chunk, 1, chunk_size_read, f)) {
+            topaz_array_push_n(fullData, chunk, chunkRead);
+        }
+
+        topaz_rbuffer_open(
+            buffer, 
+            topaz_array_get_data(fullData),
+            topaz_array_get_size(fullData)
+        );
+         
+        topaz_array_destroy(fullData);
+        fclose(f);
 
     }
     topaz_string_destroy(fullPath);
+    return buffer;
+}
+
+static int topaz_filesys_posix__write(
+    topazFilesysAPI_t * api, 
+    const topazString_t * fname, 
+    const topazWbuffer_t * data) 
+{
+    PosixFilesysData * fs = api.implementationData;
+    topazString_t * fullPath = topaz_string_clone(fs->currentPath);
+    topaz_string_concat_printf(fullPath, "%c", '/');
+    topaz_string_concat(fullPath, fname);
+    
+    topazArray_t * arr = topaz_wbuffer_get_data(data);
+    FILE * f = fopen("wb", topaz_string_get_c_str(fullPath));
+    if (f) {
+        fwrite(
+            topaz_array_get_data(arr),
+            1,
+            topaz_array_get_length(arr),
+            f
+        );
+        fclose(f);
+    }
+
+    topaz_string_destroy(fullPath);
+    return f!=NULL;
 }
 
 
+static const topazArray_t * topaz_filesys_posix__query(topazFilesysAPI_t * api) {
+    PosixFilesysData * fs = api.implementationData;
+    return fs->dirObjects;
+}
 
+static int topaz_filesys_posix__is_node(topazFilesysAPI_t * api, const topazArray_t * t) {
+    PosixFilesysData * fs = api.implementationData;
+    uint32_t i;
+    for(i = 0; i < topaz_array_get_length(fs->dirObjects); ++i) {
+        if (topaz_string_test_eq(
+                topaz_array_at(fs->dirObjects, topazString_t*, i),
+                t
+            )) {
+            return !topaz_array_at(fs->dirIsFile);
+        }
+    }
+    return FALSE;
+}
 
-static const topazArray_t * topaz_filesys_posix__query_directory
-
-
+static int topaz_filesys_posix__is_child(topazFilesysAPI_t * api, const topazArray_t * t) {
+    PosixFilesysData * fs = api.implementationData;
+    uint32_t i;
+    for(i = 0; i < topaz_array_get_length(fs->dirObjects); ++i) {
+        if (topaz_string_test_eq(
+                topaz_array_at(fs->dirObjects, topazString_t*, i),
+                t
+            )) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
 
 
 
@@ -217,16 +282,16 @@ topazFilesys_t * topaz_system_filesys_posix() {
     api.filesys_create  = topaz_filesys_posix__create;
     api.filesys_destroy = topaz_filesys_posix__destroy;
 
-    api.filesys_change_directory = topaz_filesys_posix__change_directory;
+    api.filesys_set_path = topaz_filesys_posix__set_path;
     api.filesys_go_to_child = topaz_filesys_posix__go_to_child;
     api.filesys_go_to_parent = topaz_filesys_posix__go_to_parent;
-    api.filesys_get_cwd = topaz_filesys_posix__get_cwd;
-    api.filesys_create_dir = topaz_filesys_posix__create_dir;
+    api.filesys_get_path = topaz_filesys_posix__get_path;
+    api.filesys_create_node = topaz_filesys_posix__create_node;
     api_filesys_read = topaz_filesys_posix__read;
     api.filesys_write = topaz_filesys_posix__write;
-    api.filesys_query_directory = topaz_filesys_posix__query_directory;
-    api.filesys_is_file = topaz_filesys_posix__is_file;
-    api.filesys_child_exists = topaz_filesys_posix__child_exists;
+    api.filesys_query = topaz_filesys_posix__query;
+    api.filesys_is_node = topaz_filesys_posix__is_node;
+    api.filesys_is_child = topaz_filesys_posix__is_child;
 
 
 
@@ -242,7 +307,7 @@ topazFilesys_t * topaz_system_filesys_posix() {
             TOPAZ_STR_CAST("Johnathan Corkery, 2019"),
 
             // desc 
-            TOPAZ_STR_CAST("Basic Filesys backend for POSIX-compliant systems."),
+            TOPAZ_STR_CAST("Basic filesystem backend for POSIX-compliant systems."),
 
 
 
@@ -253,6 +318,7 @@ topazFilesys_t * topaz_system_filesys_posix() {
             // On init late
             NULL,
 
+            // TODO: could implement "partially" async reading using this
             // on step 
             NULL,
             

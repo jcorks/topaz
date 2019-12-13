@@ -86,6 +86,7 @@ void topaz_string_set(topazString_t * A, const topazString_t * B);
 ///
 void topaz_string_clear(topazString_t *);
 
+
 /// Adds the given C printf-formatted string and accompanying arguments 
 /// to the given string.
 ///
@@ -117,6 +118,23 @@ const char * topaz_string_get_c_str(const topazString_t *);
 ///
 uint32_t topaz_string_get_length(const topazString_t *);
 
+
+
+
+//////// Tests
+/// Returns whether substr is found within the given string 
+///
+int topaz_string_test_contains(const topazString_t *, const topazString_t * substr);
+
+/// Returns wither 2 strings are equivalent 
+///
+int topaz_string_test_eq(const topazString_t *, const topazString_t * other);
+
+/// Compares the 2 strings in a sort-ready fashion:
+/// Returns < 0 if a alphabetically comes before b
+/// Returns > 0 if a alphabetically comes after b
+/// Returns = 0 if a and b are equivalent
+int topaz_string_topaz_compare(const topazString_t * a, const topazString_t * b);
 
 
 

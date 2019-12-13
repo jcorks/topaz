@@ -23,16 +23,16 @@ topazFilesys_t * topaz_filesys_create(topazBackend_t * b, topazFilesysAPI_t api)
         assert(b && "topazBackend_t pointer cannot be NULL.");
         assert(api.filesys_create);
         assert(api.filesys_destroy);
-        assert(api.filesys_change_directory);
+        assert(api.filesys_set_path);
         assert(api.filesys_go_to_child);
         assert(api.filesys_go_to_parent);
-        assert(api.filesys_get_cwd);
-        assert(api.filesys_create_dir);
+        assert(api.filesys_get_path);
+        assert(api.filesys_create_node);
         assert(api.filesys_read);
         assert(api.filesys_write);
-        assert(api.filesys_query_directory);
-        assert(api.filesys_is_file);
-        assert(api.filesys_child_exists);
+        assert(api.filesys_query);
+        assert(api.filesys_is_node);
+        assert(api.filesys_is_child);
     #endif
     topazFilesys_t * out = calloc(1, sizeof(topazFilesys_t));
     out->api = api;
@@ -72,13 +72,13 @@ topazFilesysAPI_t topaz_filesys_get_api(topazFilesys_t * t) {
 
 
 
-int topaz_filesys_change_directory(topazFilesys_t * t, const topazString_t * str) {
+int topaz_filesys_set_path(topazFilesys_t * t, const topazString_t * str) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazBackend_t pointer cannot be NULL.");
         assert(str && "topazString_t pointer cannot be NULL.");
     #endif
 
-    return t->api.filesys_change_directory(&t->api, str);
+    return t->api.filesys_set_path(&t->api, str);
 }
 
 
@@ -101,24 +101,24 @@ int topaz_filesys_go_to_parent(topazFilesys_t * t) {
 }
 
 
-const topazString_t * topaz_filesys_get_cwd(topazFilesys_t * t) {
+const topazString_t * topaz_filesys_get_path(topazFilesys_t * t) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazBackend_t pointer cannot be NULL.");
     #endif
 
-    return t->api.filesys_get_cwd(&t->api);
+    return t->api.filesys_get_path(&t->api);
 }
 
 
 
 
-int topaz_filesys_create_dir(topazFilesys_t * t, const topazString_t * str) {
+int topaz_filesys_create_node(topazFilesys_t * t, const topazString_t * str) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazBackend_t pointer cannot be NULL.");
         assert(str && "topazString_t pointer cannot be NULL.");
     #endif
 
-    return t->api.filesys_create_dir(&t->api, str);    
+    return t->api.filesys_create_node(&t->api, str);    
 }
 
 topazRbuffer_t * topaz_filesys_read(topazFilesys_t * t, const topazString_t * str) {
@@ -134,40 +134,40 @@ topazRbuffer_t * topaz_filesys_read(topazFilesys_t * t, const topazString_t * st
 
 
 
-void topaz_filesys_write(topazFilesys_t * t, const topazString_t * str, const topazWbuffer_t * b) {
+int topaz_filesys_write(topazFilesys_t * t, const topazString_t * str, const topazWbuffer_t * b) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazBackend_t pointer cannot be NULL.");
         assert(str && "topazString_t pointer cannot be NULL.");
         assert(str && "topazWbuffer_t pointer cannot be NULL.");
     #endif
 
-    t->api.filesys_write(&t->api, str, b);
+    return t->api.filesys_write(&t->api, str, b);
 }
 
-const topazArray_t * topaz_filesys_query_directory(topazFilesys_t * t) {
+const topazArray_t * topaz_filesys_query(topazFilesys_t * t) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazBackend_t pointer cannot be NULL.");
     #endif
 
-    return t->api.filesys_query_directory(&t->api);
+    return t->api.filesys_query(&t->api);
 }
 
-int topaz_filesys_is_file(topazFilesys_t * t, const topazString_t * str) {
-    #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
-        assert(str && "topazString_t pointer cannot be NULL.");
-    #endif
-
-    return t->api.filesys_is_file(&t->api, str);
-}
-
-int topaz_filesys_child_exists(topazFilesys_t * t, const topazString_t * str) {
+int topaz_filesys_is_node(topazFilesys_t * t, const topazString_t * str) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazBackend_t pointer cannot be NULL.");
         assert(str && "topazString_t pointer cannot be NULL.");
     #endif
 
-    return t->api.filesys_child_exists(&t->api, str);
+    return t->api.filesys_is_node(&t->api, str);
+}
+
+int topaz_filesys_is_child(topazFilesys_t * t, const topazString_t * str) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(str && "topazString_t pointer cannot be NULL.");
+    #endif
+
+    return t->api.filesys_is_child(&t->api, str);
 }
 
 

@@ -188,6 +188,23 @@ uint32_t topaz_string_get_length(const topazString_t * t) {
 }
 
 
+
+int topaz_string_test_contains(const topazString_t * a, const topazString_t * b) {
+    return strstr(a->cstr, b->cstr) != NULL;
+}
+
+int topaz_string_test_eq(const topazString_t * a, const topazString_t * b) {
+    return strcmp(a->cstr, b->cstr) == 0;
+}
+
+int topaz_string_topaz_compare(const topazString_t * a, const topazString_t * b) {
+    return strcmp(a->cstr, b->cstr);
+}
+
+
+
+
+
 const topazString_t * topaz_string_chain_start(topazString_t * t, const topazString_t * delimiters) {
     t->iter = 0;
     if (!t->chain) {

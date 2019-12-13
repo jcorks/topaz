@@ -62,18 +62,21 @@ struct topazFilesysAPI_t {
     void                    (*filesys_create)           (topazFilesysAPI_t *);
     void                    (*filesys_destroy)          (topazFilesysAPI_t *);
 
-    int                     (*filesys_change_directory) (topazFilesysAPI_t *, const topazString_t *);
+
+    const topazArray_t *    (*filesys_query)            (topazFilesysAPI_t *);
+    int                     (*filesys_set_path)         (topazFilesysAPI_t *, const topazString_t *);
+    const topazString_t *   (*filesys_get_path)         (topazFilesysAPI_t *);
+
+
     int                     (*filesys_go_to_child)      (topazFilesysAPI_t *, const topazString_t *);
     int                     (*filesys_go_to_parent)     (topazFilesysAPI_t *);
-    const topazString_t *   (*filesys_get_cwd)          (topazFilesysAPI_t *);
-    int                     (*filesys_create_dir)       (topazFilesysAPI_t *, const topazString_t *);
+    int                     (*filesys_create_node)      (topazFilesysAPI_t *, const topazString_t *);
     topazRbuffer_t *        (*filesys_read)             (topazFilesysAPI_t *, const topazString_t *);
-    void                    (*filesys_write)            (topazFilesysAPI_t *, const topazString_t *, const topazWbuffer_t *);
+    int                     (*filesys_write)            (topazFilesysAPI_t *, const topazString_t *, const topazWbuffer_t *);
 
 
-    const topazArray_t *    (*filesys_query_directory)  (topazFilesysAPI_t *);
-    int                     (*filesys_is_file)          (topazFilesysAPI_t *, const topazString_t * t);
-    int                     (*filesys_child_exists)     (topazFilesysAPI_t *, const topazString_t * t);
+    int                     (*filesys_is_node)          (topazFilesysAPI_t *, const topazString_t * t);
+    int                     (*filesys_is_child)         (topazFilesysAPI_t *, const topazString_t * t);
 
 
 
