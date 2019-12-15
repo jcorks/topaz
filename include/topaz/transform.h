@@ -51,6 +51,15 @@ DEALINGS IN THE SOFTWARE.
 typedef struct topazTransform_t topazTransform_t;
 
 
+/// Creates a new transform object 
+///
+topazTransform_t * topaz_transform_create();
+
+
+/// Destroys a transform object 
+///
+void topaz_transform_destroy(topazTransform_t *);
+
 
     
 /// Gets a read-only, quick reference to the rotation component.
@@ -84,7 +93,7 @@ topazVector_t * topaz_transform_scale(topazTransform_t *);
 /// Sets whether to reverse the node's interpretation of 
 /// of translation for transform calculation. Rarely useful.
 ///
-void topaz_transform_set_reverse_translation(topazTransform_t *, bool);
+void topaz_transform_set_reverse_translation(topazTransform_t *, int);
 
 
 
@@ -96,7 +105,7 @@ void topaz_transform_set_reverse_translation(topazTransform_t *, bool);
 /// the transform are processed. If any such request was made, 
 /// the transform is updated and any OnTransformUpdate functors 
 /// are called.
-const topazMatrix_t * topaz_transform_get_matrix(const topazTransform_t *);
+const topazMatrix_t * topaz_transform_get_matrix(topazTransform_t *);
 
 /// Returns whether an update to this transform is 
 /// pending.
@@ -108,12 +117,11 @@ int topaz_transform_needs_update(const topazTransform_t *);
 
 /// Adds a transform update.
 ///
-void AddTransformCallback(topazTransform_t *
+void AddTransformCallback(topazTransform_t *,
     /// Function called when the transform.
     /// The first argument is the transform in question.
-    /// The second argument is whether the callback has ownership
-    /// over the transform. The last argument is the userdata.
-    void (*topazTransform, int, void *),
+    /// The last argument is the userdata.
+    void (*topazTransform)(topazTransform_t *, void *),
 
     void * userData
 );
@@ -121,7 +129,7 @@ void AddTransformCallback(topazTransform_t *
 /// Removes the given callback
 ///
 void RemoveTransformCallback(topazTransform_t *,
-    void (*topazTransform, int, void *)
+    void (*topazTransform)(topazTransform_t *, void *)
 );
 
 
