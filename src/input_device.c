@@ -68,7 +68,7 @@ void topaz_input_device_push_event(topazInputDevice_t * t, const topazInputDevic
 
         if (t->iterBack >= t->allocated) {
             t->allocated *= 1.4;
-            realloc(t->data, t->allocated*sizeof(topazInputDeviceEvent_t));
+            t->data = realloc(t->data, t->allocated*sizeof(topazInputDeviceEvent_t));
         }
     }
 

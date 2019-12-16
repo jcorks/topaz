@@ -60,7 +60,7 @@ typedef enum {
     ///
     topaz_InputDevice_Class_Gamepad,
 
-    /// Input device id for a pointer.
+    /// Input device id for a pointer/touchpad.
     ///
     topaz_InputDevice_Class_Pointer,
 } topazInputDevice_Class;

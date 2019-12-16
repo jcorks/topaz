@@ -29,10 +29,18 @@ DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef H_TOPAZDC__VECTOR__INCLUDED
-#define H_TOPAZDC__VECTOR__INCLUDED
+#ifndef H_TOPAZDC__INPUT_MANAGER__INCLUDED
+#define H_TOPAZDC__INPUT_MANAGER__INCLUDED
 
-#include <topaz/containers/string.h>
+#include <topaz/input_device.h>
+#include <topaz/backends/api/input_manager_api.h>
+#include <topaz/backends/backend.h>
+
+
+/// Forward declare.
+///
+typedef struct topazDisplay_t topazDisplay_t;
+
 
 /*
 
@@ -46,7 +54,11 @@ DEALINGS IN THE SOFTWARE.
 */
 typedef struct topazInputManager_t topazInputManager_t;
 
-enum topazUserInput {
+
+
+/// Standard input buttons for the keyboard buttons.
+///
+enum {
     topazNotAnInput,
     topazKey_0, ///< 0
     topazKey_1, ///< 1
@@ -213,40 +225,80 @@ enum topazUserInput {
     topazPad_axisL4,    
 
     topazPad_options,
-
+    topazInput_Count
 };
 
 
-topazInputManager_t * topaz_input_manager_create();
 
-void topaz_input_manager_destroy(topazInputManager_t *);
-
-
-static const char * topaz_input_manager_id_to_string(int);
-
-typedef enum  {
-    Keyboard = 0x1,
-    Gamepad  = 0x01,
-    Mouse    = 0x001,
-    Touchpad = 0x0001  
-} InputType;   
-
+/// Preset device IDs
+/// See topaz_input_manager_query_device()
+///
 enum {
+    /// The standard device ID for the system keyboard.
+    ///
     topazInputManager_DefaultDevice_Keyboard,
+
+    /// The standard device ID for the system pointer/mouse.
+    ///
     topazInputManager_DefaultDevice_Mouse,
+
+    /// The standard device ID for the system touchpad
+    ///
     topazInputManager_DefaultDevice_Touchpad,
+
+    /// The standard device ID for the gamepad, slot 1
+    ///
     topazInputManager_DefaultDevice_Pad1,
+
+    /// The standard device ID for the gamepad, slot 2
+    ///
     topazInputManager_DefaultDevice_Pad2,
+
+    /// The standard device ID for the gamepad, slot 3
+    ///
     topazInputManager_DefaultDevice_Pad3,
+
+    /// The standard device ID for the gamepad, slot 4
+    ///
     topazInputManager_DefaultDevice_Pad4,
+
+    /// The count of default devices.
+    ///
     topazInputManager_NumDefaultDevices
 };
 
-/// Returns if the given InputType is supported
-/// If an input type is not supported, querying the associated device 
-/// will result in NULL
+
+
+
+
+/// Creates a new audio manager object. 
 ///
-int topaz_input_manager_is_supported(topazInputManager_t *, InputType);
+topazInputManager_t * topaz_input_manager_create(topazBackend_t *, topazInputManagerAPI_t);
+
+
+/// Destroys and cleans up an audio manager object
+///
+void topaz_input_manager_destroy(topazInputManager_t *);
+
+
+
+
+
+/// Retrieves the backend for this audio manager object.
+///
+topazBackend_t * topaz_input_manager_get_backend(topazInputManager_t *);
+
+
+/// Returns the API for this audio manager.
+///
+topazInputManagerAPI_t topaz_input_manager_get_api(topazInputManager_t *);
+
+
+
+/// Returns a read-only C-string representation of 
+/// the given input id.
+///
+const char * topaz_input_manager_id_to_string(int);
 
 
 /// Updates the state of registered devices.
@@ -256,16 +308,17 @@ int topaz_input_manager_handle_events(topazInputManager_t *);
 
 /// Returns a reference to the internally maintained input device.
 /// Do not free or modify the contents of the device. The first few slots 
-/// up to DefaultDeviceSlots::NumDefaultDevices will match the device expected
+/// up to topazInputManager_NumDefaultDevices will match the device expected.
+/// If the device is unsupported, NULL will be returned.
 ///
-topazInputDevice * topaz_input_manager_query_device(topazInputManager_t *, int ID);
+topazInputDevice_t * topaz_input_manager_query_device(topazInputManager_t *, int ID);
 
 /// Returns the number of additional devices available.
 /// up to MaxDevices(). Typically, any overflow devices that weren't able to 
 /// fit in the first 4 slots will be put here.
 /// Given an array of sise MaxDevices(), IDs will be filled 
 /// with the index to a device available through QueryDevice that isnt 
-/// a default device
+/// a default device.
 ///
 int topaz_input_manager_query_auxiliary_devices(topazInputManager_t *, int * IDs);
 
@@ -283,7 +336,7 @@ int topaz_input_manager_max_devices(topazInputManager_t *);
 /// Passing in nullptr should disable input until a 
 /// valid display is given.
 ///
-void topaz_input_manager_set_focus(topazInputManager_t *, Display *);
+void topaz_input_manager_set_focus(topazInputManager_t *, topazDisplay_t *);
 
 /// Returns the current focus. The default is NULL
 ///
