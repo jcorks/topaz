@@ -81,6 +81,16 @@ void topaz_table_destroy(topazTable_t *);
 ///
 void topaz_table_insert(topazTable_t *, const void * key, void * value);
 
+/// Same as topaz_table_insert, but treats the key as a signed integer
+/// Convenient for hash_pointer tables where keys are direct pointers.
+/// 
+#define topaz_table_insert_by_int(__T__, __K__, __V__) (topaz_table_insert(__T__, (void*)(intptr_t)__K__, __V__))
+
+/// Same as topaz_table_insert, but treats the key as an un signed integer
+/// Convenient for hash_pointer tables where keys are direct pointers.
+/// 
+#define topaz_table_insert_by_uint(__T__, __K__, __V__) (topaz_table_insert(__T__, (void*)(uintptr_t)__K__, __V__))
+
 
 /// Returns the value corresponding to the given key.
 /// If none is found, NULL is returned. Note that this 
@@ -90,6 +100,15 @@ void topaz_table_insert(topazTable_t *, const void * key, void * value);
 ///
 void * topaz_table_find(const topazTable_t *, const void * key);
 
+/// Same as topaz_table_find, but treats the key as a signed integer
+/// Convenient for hash_pointer tables where keys are direct pointers.
+/// 
+#define topaz_table_find_by_int(__T__, __K__) (topaz_table_find(__T__, (void*)(intptr_t)(__K__)))
+
+/// Same as topaz_table_find, but treats the key as an unsignedinteger
+/// Convenient for hash_pointer tables where keys are direct pointers.
+/// 
+#define topaz_table_find_by_uint(__T__, __K__) (topaz_table_find(__T__, (void*)(uintptr_t)(__K__)))
 
 /// Returns TRUE if an entry correspodning to the 
 /// given key exists and FALSE otherwise.

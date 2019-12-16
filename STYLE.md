@@ -73,6 +73,38 @@ typedef struct topazExampleClass_t topazExampleClass_t;
 
 
 
+/// Description of this enum overall
+///
+typedef enum {
+    /// Value A contains this description.
+    ///
+    topazExampleClas_Enum_ValueA,
+
+    /// Value B contains this description.
+    ///
+    topazExampleClas_Enum_ValueB
+
+} topazExampleClass_Enum;
+
+
+
+/// A naked, open struct used as a helper to this class.
+///
+typedef struct {
+    /// explanation of this member
+    ///
+    int dataA;
+
+    /// explanation of this member.
+    ///
+    float dataB;
+
+} topazExampleClass_HelperStruct;
+
+
+
+
+
 
 
 /// Description of the creation function.
@@ -92,3 +124,5 @@ int topaz_example_class_do_action(topazExampleClass_t *, int argument);
 
 #endif
 ```
+
+
