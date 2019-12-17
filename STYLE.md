@@ -64,7 +64,7 @@ Example header (all headers will employ the opaque class pattern):
 
 /*
     ExampleClass
-    ------------
+    -----
     
     Description of ExampleClass.
 
@@ -99,9 +99,7 @@ typedef struct {
     ///
     float dataB;
 
-} topazExampleClass_HelperStruct;
-
-
+} topazExampleClass_HelperOpenStruct;
 
 
 
@@ -120,6 +118,30 @@ void topaz_example_class_destroy(topazExampleClass_t *);
 /// Description of member function
 ///
 int topaz_example_class_do_action(topazExampleClass_t *, int argument);
+
+
+/* 
+
+    ExampleClass_Helper
+    -----
+
+    A second helper class that shares its implementation with 
+    the main class.
+
+*/
+
+typedef struct topazExampleClass_Helper_t topazExampleClass_Helper_t;
+
+/// Description of the creation function.
+///
+topazExampleClass_Helper_t * topaz_example_class_helper_create(topazExampleClass_t *);
+
+
+/// Description of the destruction function.
+///
+void topaz_example_class_helper_destroy(topazExampleClass_Helper_t *);
+
+
 
 
 #endif
