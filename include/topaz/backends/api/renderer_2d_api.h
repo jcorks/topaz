@@ -29,11 +29,12 @@ DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef H_TOPAZDC__RENDERER_API__INCLUDED
-#define H_TOPAZDC__RENDERER_API__INCLUDED
+#ifndef H_TOPAZDC__RENDERER_2D_API__INCLUDED
+#define H_TOPAZDC__RENDERER_2D_API__INCLUDED
 
 #include <stdint.h>
-#include <topaz/backends/renderer.h>
+#include <topaz/backends/renderer_2d.h>
+
 
 typedef struct topazRenderer_t topazRenderer_t;
 
@@ -41,7 +42,7 @@ typedef struct topazRenderer_t topazRenderer_t;
 
 /*
 
-    RendererAPI
+    Renderer_2DAPI
     -----
     
     The set of functions that define how the renderer abstraction should 
@@ -49,38 +50,59 @@ typedef struct topazRenderer_t topazRenderer_t;
     populated.
 
     These API functions are called as underlying implementations for the symbols 
-    within <topaz/backends/renderer.h> and provide a way for custom, possibly 
+    within <topaz/backends/renderer_2d.h> and provide a way for custom, possibly 
     system-dependent behavior to account for an environment in a robust way.
 
 */
-typedef struct topazRendererAPI_t    topazRendererAPI_t;
+typedef struct topazRenderer_2DAPI_t    topazRenderer_2DAPI_t;
 
 /// Each function is an implementation-facing copy of 
-/// the user-side API for topazRenderer_t. See <topaz/backends/Renderer.h>
+/// the user-side API for topazRenderer_t. See <topaz/backends/renderer_2d.h>
 ///
-struct topazRendererAPI_t {
+struct topazRenderer_2DAPI_t {
 
 
-    void                    (*renderer_create)              (topazRendererAPI_t *);
-    void                    (*renderer_destroy)             (topazRendererAPI_t *);
+    void                    (*renderer_2d_create)              (topazRendererAPI_t *);
+    void                    (*renderer_2d_destroy)             (topazRenderer_2DAPI_t *);
 
 
 
-    void                    (*renderer_draw_2d)             (topazRenderer_t *, topazRenderer_2D_t *, const topazRenderer_2D_Context *, const topazRenderer_ProcessAttribs *);
-    void                    (*renderer_draw_3d)             (topazRenderer_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs *);
-    topazRenderer_Buffer_t *(*renderer_get_3d_viewing_matrix)();
-    topazRenderer_Buffer_t *(*renderer_get_3d_projection_matrix)();
+    int (*renderer_2d_add_objects)(topazRenderer_2DAPI_t *, uint32_t * output, uint32_t count);
+    void (*renderer_2d_remove_objects)(topazRenderer_2DAPI_t *, uint32_t * idsuint32_t count);
 
 
-    void                    (*renderer_clear_data)          (topazRenderer_t *);
-    void                    (*renderer_clear_layer)         (topazRenderer_t *, topazRenderer_DataLayer);
+    void (*renderer_2d_queue_vertices)(
+        topazRenderer_2D_t *,
+        const uint32_t * objects,
+        uint32_t count
+    );
 
-    topazRenderer_Parameters(*renderer_get_parameters)      (topazRenderer_t *);
+    void (*renderer_2d_clear_queue)(topazRenderer_2DAPI_t *);
+    int (*renderer_2d_add_vertices)(topazRenderer_2DAPI_t *, uint32_t * output, uint32_t count);
+    void (*renderer_2d_remove_vertices)(topazRenderer_2DAPI_t *, uint32_t * objects, uint32_t count);
+    void (*renderer_2d_set_vertices)(
+        topazRenderer_2DAPI_t *, 
+        uint32_t * vertices, 
+        const topazRenderer_2D_Vertex *, 
+        uint32_t count
+    );
+
+    void (*renderer_2d_get_vertices)(
+        topazRenderer_2DAPI_t *, 
+        const uint32_t * vertexIDs, 
+        topazRenderer_2D_Vertex * output,
+        uint32_t count
+    );
 
 
-    void                    (*renderer_sync)                (topazRenderer_t *);
-    void                    (*renderer_attach_target)       (topazRenderer_t *, Framebuffer *);
-    const topazArray_t *    (*renderer_get_supported_framebuffers)(topazRenderer_t *);
+
+    void (*renderer_2d_set_object_params)(
+        topazRenderer_2DAPI_t *, 
+        uint32_t object, 
+        const topazRenderer_2D_ObjectParams *
+    );
+
+
 
     /// User-given data. This is expected to data needed to persist
     /// throughout the liferenderer of the Renderer
