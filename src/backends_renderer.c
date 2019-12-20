@@ -20,12 +20,13 @@ struct topazRenderer_t {
     topazRenderer_TextureAPI_t  textureAPI;    
     topazRenderer_2DAPI_t       twodAPI;    
     topazRenderer_LightAPI_t    lightAPI;
+    topazRenderer_FramebufferAPI_t fbAPI;
 
     topazMatrix_t mv;
     topazMatrix_t proj;
 
     
-    topazFramebuffer_t * fb;
+    topazRenderer_Framebuffer_t * fb;
 };
 
 
@@ -64,6 +65,81 @@ void topaz_renderer_buffer_read(topazRenderer_Buffer_t * t, float * outputData, 
 int topaz_renderer_buffer_get_size(topazRenderer_Buffer_t * t) {
     return t->numElt;
 }
+
+
+
+
+////////////////////// framebuffer 
+struct topazRenderer_Framebuffer_t {
+    topazRenderer_FramebufferAPI_t api;
+    int w;
+    int h;
+    int filterHint;
+};
+
+
+
+
+
+
+topazRenderer_Framebuffer_t * topaz_renderer_framebuffer_create(topazRenderer_t * t) {
+    topazRenderer_Framebuffer_t * out = calloc(1, sizeof(topazRenderer_FramebufferAPI_t));
+    out->api = t->fbAPI;
+    out->w = -1;
+    out->h = -1;
+    out->filterHint = TRUE;
+    out->api.renderer_framebuffer_create(&t->api, &out->api);
+    return out;
+}
+
+
+void topaz_renderer_framebuffer_destroy(topazRenderer_Framebuffer_t * t) {
+    t->api.renderer_framebuffer_destroy(&t->api);
+}
+
+
+int topaz_renderer_framebuffer_resize(topazRenderer_Framebuffer_t * t, int newW, int newH) {
+    if (t->api.renderer_framebuffer_resize(&t->api, newW, newH)) {
+        t->w = newW;
+        t->h = newH;
+        return TRUE;    
+    }
+    return FALSE;
+}
+
+
+int topaz_renderer_framebuffer_get_width(topazRenderer_Framebuffer_t * t) {
+    return t->w;
+}
+
+int topaz_renderer_framebuffer_get_height(topazRenderer_Framebuffer_t * t) {
+    return t->h;
+}
+
+
+topazRenderer_Framebuffer_Handle topaz_renderer_framebuffer_get_handle_type(topazRenderer_Framebuffer_t * t) {
+    return t->api.renderer_framebuffer_get_handle_type(&t->api);
+}
+
+void * topaz_renderer_framebuffer_get_handle(topazRenderer_Framebuffer_t * t) {
+    return t->api.renderer_framebuffer_get_handle(&t->api);
+}
+
+int topaz_renderer_framebuffer_get_raw_data(topazRenderer_Framebuffer_t * t, uint8_t * d) {
+    return t->api.renderer_framebuffer_get_raw_data(&t->api, d);
+}
+
+void topaz_renderer_framebuffer_set_filtered_hint(topazRenderer_Framebuffer_t * t, int filter) {
+    t->api.renderer_framebuffer_set_filtered_hint(&t->api, filter);
+    t->filterHint = filter;
+}
+
+int topaz_renderer_framebuffer_get_filtered_hint(topazRenderer_Framebuffer_t * t) {
+    return t->filterHint;
+}
+
+
+
 
 
 
@@ -341,7 +417,8 @@ topazRenderer_t * topaz_renderer_create(
     topazRenderer_ProgramAPI_t  programAPI,    
     topazRenderer_TextureAPI_t  textureAPI,    
     topazRenderer_2DAPI_t       twodAPI,    
-    topazRenderer_LightAPI_t    lightAPI
+    topazRenderer_LightAPI_t    lightAPI,
+    topazRenderer_FramebufferAPI_t fbAPI
 ) {
     #ifdef TOPAZDC_DEBUG
         assert(b && "topazBackend_t pointer cannot be NULL.");
@@ -368,6 +445,7 @@ topazRenderer_t * topaz_renderer_create(
     out->textureAPI = textureAPI;
     out->twodAPI = twodAPI;
     out->lightAPI = lightAPI;
+    out->fbAPI = fbAPI;
 
     topaz_matrix_set_identity(&out->mv);
     topaz_matrix_set_identity(&out->proj);
@@ -437,13 +515,13 @@ void topaz_renderer_sync(topazRenderer_t * t) {
     t->api.renderer_sync(&t->api);
 } 
 
-void topaz_renderer_attach_target(topazRenderer_t * t, topazFramebuffer_t * f) {
+void topaz_renderer_attach_target(topazRenderer_t * t, topazRenderer_Framebuffer_t * f) {
     t->fb = f;
     t->api.renderer_attach_target(&t->api, f);
 }
 
 
-topazFramebuffer_t * topaz_renderer_get_target(topazRenderer_t * t) {
+topazRenderer_Framebuffer_t * topaz_renderer_get_target(topazRenderer_t * t) {
     return t->fb;
 }
 

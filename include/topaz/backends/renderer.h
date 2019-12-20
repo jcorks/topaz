@@ -37,7 +37,6 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/backends/backend.h>
 #include <topaz/matrix.h>
 #include <topaz/containers/array.h>
-typedef struct topazFramebuffer_t topazFramebuffer_t;
 
 
 
@@ -647,6 +646,128 @@ void topaz_renderer_program_destroy(topazRenderer_Program_t *);
 
 
 
+/// Vertex for 3D rendering.
+///
+typedef struct topazRenderer_3D_Vertex_t topazRenderer_3D_Vertex_t;
+
+
+struct topazRenderer_3D_Vertex_t {
+    /// Positional 3D coordinates
+    ///
+    float x, y, z;
+
+    /// Normal vector, normalized
+    ///
+    float normalX, normalY, normalZ;
+
+    /// Texture UVs. [0, 1]
+    ///
+    float texX, texY;
+
+    /// User-define data (for programs)
+    ///
+    float userDefinedData[4];
+
+};
+
+
+
+
+
+/*
+
+    RendererFramebuffer
+    -----
+    
+
+
+*/
+
+typedef struct topazRenderer_Framebuffer_t topazRenderer_Framebuffer_t;
+
+
+
+/// \brief Types refer to the internal class by which visual information is
+/// passed to the Display.
+///
+typedef enum {
+    topazRenderer_Framebuffer_Handle_RGBA_PixelArray, ///< (uint8_t *) RGBA-ordered pixel array with no padding, matched to the dimensions given
+    topazRenderer_Framebuffer_Handle_GLFBPacket,      ///< (GLRenderTarget **)  A pointer to a pointer to
+                     /// a GLRenderTarget instance.
+    topazRenderer_Framebuffer_Handle_Unknown,         ///< The framebuffer's data contents are unknown and should not be relied on.
+} topazRenderer_Framebuffer_Handle;
+
+
+
+
+/// Creates a new framebuffer for the renderer. Framebuffers hold 
+/// results of drawing operations from the renderer.
+///
+topazRenderer_Framebuffer_t * topaz_renderer_framebuffer_create(topazRenderer_t *);
+
+
+/// Destroys a framebuffer.
+///
+void topaz_renderer_framebuffer_destroy(topazRenderer_Framebuffer_t *);
+
+
+
+
+/// Resizes the framebuffer. Success is returned.
+///
+int topaz_renderer_framebuffer_resize(topazRenderer_Framebuffer_t *, int newW, int newH);
+
+
+/// Returns the width of the framebuffer.
+///
+int topaz_renderer_framebuffer_get_width(topazRenderer_Framebuffer_t *);
+
+/// Returns the height of the framebuffer.
+///
+int topaz_renderer_framebuffer_get_height(topazRenderer_Framebuffer_t *);
+
+/// Returns what type the handle refers to
+///
+topazRenderer_Framebuffer_Handle topaz_renderer_framebuffer_get_handle_type(topazRenderer_Framebuffer_t *);
+
+/// Returns the source data that reflects the framebuffer's data
+/// in the context of the implemented child. For example, on an OpenGL-variant
+/// backend, the handle is likely an OpenGL texture object id.
+/// This allows things like topazDisplay_t to utilize the rendered data.
+///
+void * topaz_renderer_framebuffer_get_handle(topazRenderer_Framebuffer_t *);
+
+
+
+/// returns a RGBF pixel reduction by setting the
+/// buffer given. if this isnt possible, false is returned.
+/// the buffer should be of size Width*Height*4. Note that on
+/// hardware-accelerated implementations, calling this could be very costly.
+/// Alpha color information is always 1.f
+int topaz_renderer_framebuffer_get_raw_data(topazRenderer_Framebuffer_t *, uint8_t *);
+
+/// Sets whether to interpret the Framebuffer's data
+/// in a filtered way.
+///
+/// It is not defined by topaz as to exactly what this means, other than some sort of pixel
+/// interpolation to make the visual data smoother than otherwise when displayed to a user.
+/// This is most applicable when using the Framebuffer where
+/// its natural size cannot be expressed (i.e. displaying the framebuffer
+/// visual on a system window of a different size). It should also be mentioned,
+/// that any module that utilizes the Framebuffer may choose to ignore the
+/// the filtered hint. As such, you should expect the filtered setting
+/// to be a purely cosmetic effect after all graphics processing as finished. 
+/// The default is true.
+void topaz_renderer_framebuffer_set_filtered_hint(topazRenderer_Framebuffer_t *, int filter);
+
+/// \brief Returns whether to interpret the Framebuffer's data in a filtered
+/// way.
+///
+/// See set_filtered_hint().
+int topaz_renderer_framebuffer_get_filtered_hint(topazRenderer_Framebuffer_t *);
+
+
+
 
 
 
@@ -691,7 +812,7 @@ struct topazRenderer_3D_t {
     /// during rendering. If the samplebuffer is null,
     /// the no source framebuffer will be made available
     ///
-    topazFramebuffer_t * samplebuffer;
+    topazRenderer_Framebuffer_t * samplebuffer;
 
 
     /// specifies the textures to be used. Each pair is a slot referred to by 
@@ -713,29 +834,7 @@ struct topazRenderer_3D_t {
 
 
 
-/// Vertex for 3D rendering.
-///
-typedef struct topazRenderer_3D_Vertex_t topazRenderer_3D_Vertex_t;
 
-
-struct topazRenderer_3D_Vertex_t {
-    /// Positional 3D coordinates
-    ///
-    float x, y, z;
-
-    /// Normal vector, normalized
-    ///
-    float normalX, normalY, normalZ;
-
-    /// Texture UVs. [0, 1]
-    ///
-    float texX, texY;
-
-    /// User-define data (for programs)
-    ///
-    float userDefinedData[4];
-
-};
 
 
 
@@ -782,7 +881,14 @@ topazRenderer_t * topaz_renderer_create(
     /// API for the light renderer, which provides lighting control 
     /// for 3d scenes.
     ///
-    topazRenderer_LightAPI_t
+    topazRenderer_LightAPI_t,
+
+    /// API for the renderer framebuffer, which is the target of rendering 
+    /// operations.
+    ///
+    topazRenderer_FramebufferAPI_t
+
+    
 );
 
 
@@ -886,13 +992,13 @@ void topaz_renderer_sync(topazRenderer_t *);
 /// Framebuffer is not one of the types from SupportedFramebuffers, no
 /// action is taken. If NULL is passed, rendering will have no effect.
 ///
-void topaz_renderer_attach_target(topazRenderer_t *, topazFramebuffer_t *);
+void topaz_renderer_attach_target(topazRenderer_t *, topazRenderer_Framebuffer_t *);
 
 
 /// Returns the current target for renderings. The default is
 /// NULL.
 ///
-topazFramebuffer_t * topaz_renderer_get_target(topazRenderer_t *);
+topazRenderer_Framebuffer_t * topaz_renderer_get_target(topazRenderer_t *);
 
 
 /// Returns the framebuffer types that this renderer supports.

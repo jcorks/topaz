@@ -291,6 +291,43 @@ struct topazRenderer_BufferAPI_t {
 
 
 
+/*
+
+    Renderer_FramebufferAPI
+    -----
+
+
+*/
+typedef struct topazRenderer_FramebufferAPI_t    topazRenderer_FramebufferAPI_t;
+
+/// Each function is an implementation-facing copy of 
+/// the user-side API for topazRenderer_t. See <topaz/backends/renderer_buffer.h>
+///
+struct topazRenderer_FramebufferAPI_t {
+
+
+    void                    (*renderer_framebuffer_create)              (topazRendererAPI_t *, topazRenderer_FramebufferAPI_t *);
+    void                    (*renderer_framebuffer_destroy)             (topazRenderer_FramebufferAPI_t *);
+
+
+    int      (*renderer_framebuffer_resize)(topazRenderer_FramebufferAPI_t *, int w, int h);
+    void *     (*renderer_framebuffer_get_handle)(topazRenderer_FramebufferAPI_t *);
+    int      (*renderer_framebuffer_get_raw_data)(topazRenderer_FramebufferAPI_t *, uint8_t *);
+    void     (*renderer_framebuffer_set_filtered_hint)(topazRenderer_FramebufferAPI_t *, int);
+    topazRenderer_Framebuffer_Handle (*renderer_framebuffer_get_handle_type)(topazRenderer_FramebufferAPI_t *);
+
+    /// User-given data. This is expected to data needed to persist
+    /// throughout the liferenderer of the Renderer
+    ///
+    void * implementationData;
+
+
+};
+
+
+
+
+
 
 
 
@@ -319,7 +356,7 @@ struct topazRendererAPI_t {
 
 
     void                    (*renderer_sync)                (topazRendererAPI_t *);
-    void                    (*renderer_attach_target)       (topazRendererAPI_t *, topazFramebuffer_t *);
+    void                    (*renderer_attach_target)       (topazRendererAPI_t *, topazRenderer_Framebuffer_t *);
     const topazArray_t *    (*renderer_get_supported_framebuffers)(topazRendererAPI_t *);
 
     /// User-given data. This is expected to data needed to persist
