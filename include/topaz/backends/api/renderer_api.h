@@ -36,6 +36,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/backends/renderer.h>
 
 typedef struct topazRenderer_t topazRenderer_t;
+typedef struct topazRenderer_2D_t topazRenderer_2D_t;
 
 
 
@@ -66,21 +67,22 @@ struct topazRendererAPI_t {
 
 
 
-    void                    (*renderer_draw_2d)             (topazRenderer_t *, topazRenderer_2D_t *, const topazRenderer_2D_Context *, const topazRenderer_ProcessAttribs *);
-    void                    (*renderer_draw_3d)             (topazRenderer_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs *);
-    topazRenderer_Buffer_t *(*renderer_get_3d_viewing_matrix)();
-    topazRenderer_Buffer_t *(*renderer_get_3d_projection_matrix)();
+
+    void                    (*renderer_draw_2d)             (topazRendererAPI_t *, topazRenderer_2DAPI_t *, const topazRenderer_2D_Context_t *, const topazRenderer_ProcessAttribs_t *);
+    void                    (*renderer_draw_3d)             (topazRendererAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *);
+    void                    (*renderer_set_3d_viewing_matrix)(topazRendererAPI_t *, const topazMatrix_t *);
+    void                    (*renderer_set_3d_projection_matrix)(topazRendererAPI_t *, const topazMatrix_t *);
 
 
-    void                    (*renderer_clear_data)          (topazRenderer_t *);
-    void                    (*renderer_clear_layer)         (topazRenderer_t *, topazRenderer_DataLayer);
+    void                    (*renderer_clear_data)          (topazRendererAPI_t *);
+    void                    (*renderer_clear_layer)         (topazRendererAPI_t *, topazRenderer_DataLayer);
 
-    topazRenderer_Parameters(*renderer_get_parameters)      (topazRenderer_t *);
+    topazRenderer_Parameters_t(*renderer_get_parameters)      (topazRendererAPI_t *);
 
 
-    void                    (*renderer_sync)                (topazRenderer_t *);
-    void                    (*renderer_attach_target)       (topazRenderer_t *, Framebuffer *);
-    const topazArray_t *    (*renderer_get_supported_framebuffers)(topazRenderer_t *);
+    void                    (*renderer_sync)                (topazRendererAPI_t *);
+    void                    (*renderer_attach_target)       (topazRendererAPI_t *, topazFramebuffer_t *);
+    const topazArray_t *    (*renderer_get_supported_framebuffers)(topazRendererAPI_t *);
 
     /// User-given data. This is expected to data needed to persist
     /// throughout the liferenderer of the Renderer

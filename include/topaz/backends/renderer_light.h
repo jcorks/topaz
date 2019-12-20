@@ -64,7 +64,7 @@ typedef enum {
 // Creates a new light. When the light is first created, the state of the light
 // is undefined. (It is expected that you will update the lights attributes
 // before drawing);
-topazRenderer_Light_t * topaz_renderer_light_create(topazRendererAPI_t *, topazRenderer_LightType);
+topazRenderer_Light_t * topaz_renderer_light_create(topazRenderer_t *, topazRenderer_LightType);
 
 // Removes all resources associated with the light ID.
 void topaz_renderer_light_destroy(topazRenderer_Light_t *);
@@ -78,7 +78,7 @@ void topaz_renderer_light_destroy(topazRenderer_Light_t *);
 void topaz_renderer_light_update_attribs(topazRenderer_Light_t *, float *);
 
 // Enables or diables the light by default, once added, the light is enabled by default
-void topaz_renderer_light_enable(topazRenderer_Light_t *, bool doIt);
+void topaz_renderer_light_enable(topazRenderer_Light_t *, int doIt);
 
 
 

@@ -62,11 +62,11 @@ typedef struct topazRenderer_LightAPI_t    topazRenderer_LightAPI_t;
 struct topazRenderer_LightAPI_t {
 
 
-    void                    (*renderer_light_create)              (topazRendererAPI_t *, topazRenderer_LightType);
+    void                    (*renderer_light_create)              (topazRendererAPI_t *, topazRenderer_LightAPI_t *, topazRenderer_LightType);
     void                    (*renderer_light_destroy)             (topazRenderer_LightAPI_t *);
 
     void (*renderer_light_update_attribs)(topazRenderer_LightAPI_t *, float *);
-    void (*renderer_light_enable)(topazRenderer_LightAPI_t *, bool doIt);
+    void (*renderer_light_enable)(topazRenderer_LightAPI_t *, int doIt);
 
 
     /// User-given data. This is expected to data needed to persist

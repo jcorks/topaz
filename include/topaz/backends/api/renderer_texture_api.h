@@ -62,13 +62,12 @@ typedef struct topazRenderer_TextureAPI_t    topazRenderer_TextureAPI_t;
 struct topazRenderer_TextureAPI_t {
 
 
-    void                    (*renderer_texture_create)              (topazRenderer_t *, int w, int h, const uint8_t * rgbaTextureData);
+    void                    (*renderer_texture_create)              (topazRendererAPI_t *, topazRenderer_TextureAPI_t *,  int w, int h, const uint8_t * rgbaTextureData);
     void                    (*renderer_texture_destroy)             (topazRenderer_TextureAPI_t *);
 
 
-    void                    (*renderer_texture_destroy)(topazRenderer_Texture_t *);
-    void                    (*renderer_texture_update)(topazRenderer_Texture_t *, const uint8_t * newData);
-    void                    (*renderer_texture_get)(topazRenderer_Texture_t *, uint8_t *);
+    void                    (*renderer_texture_update)(topazRenderer_TextureAPI_t *, const uint8_t * newData);
+    void                    (*renderer_texture_get)(topazRenderer_TextureAPI_t *, uint8_t *);
 
 
     /// User-given data. This is expected to data needed to persist

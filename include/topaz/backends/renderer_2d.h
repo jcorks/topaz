@@ -58,7 +58,9 @@ typedef struct topazRenderer_2D_t topazRenderer_2D_t;
 /// Dynamic vertices do not support lighting or 
 /// custom graphics programs.
 ///
-typedef struct {
+typedef struct topazRenderer_2D_Vertex_t topazRenderer_2D_Vertex_t;
+
+struct topazRenderer_2D_Vertex_t{
     /// vertex position
     ///
     float x, y;       
@@ -78,14 +80,16 @@ typedef struct {
     /// the transform reference object
     ///
     float object;                         
-} topazRenderer_2D_Vertex;
+};
 
 
 
 /// Context parameters used to give additional information 
 /// when drawing a collection of 2D vertices.
 ///
-typedef struct {
+typedef struct topazRenderer_2D_Context_t topazRenderer_2D_Context_t;
+
+struct topazRenderer_2D_Context_t {
     /// Output display width.
     ///
     float width;
@@ -103,13 +107,22 @@ typedef struct {
     /// for the transformation.
     ///
     float * transform;
-} topazRenderer_2D_Context;
+};
 
-typedef struct {
+
+typedef struct topazRenderer_2D_ObjectParams_t topazRenderer_2D_ObjectParams_t;
+
+struct topazRenderer_2D_ObjectParams_t {
     // transform
     float data[16];
     
-} topazRenderer_2D_ObjectParams;
+};
+
+
+
+
+
+
 
 
 /// Creates a 2D render object.
@@ -129,7 +142,7 @@ int topaz_renderer_2d_add_objects(topazRenderer_2D_t *, uint32_t * output, uint3
 
 /// Removes a collection of objects.
 ///
-void ropaz_renderer_2d_remove_objects(topazRenderer_2D_t *, uint32_t * idsuint32_t count);
+void ropaz_renderer_2d_remove_objects(topazRenderer_2D_t *, uint32_t * ids, uint32_t count);
 
 
 /// Requests that an additional set of objects 
@@ -165,7 +178,7 @@ void topaz_renderer_2d_remove_vertices(topazRenderer_2D_t *, uint32_t * objects,
 void topaz_renderer_2d_set_vertices(
     topazRenderer_2D_t *, 
     uint32_t * vertices, 
-    const topazRenderer_2D_Vertex *, 
+    const topazRenderer_2D_Vertex_t *, 
     uint32_t count
 );
 
@@ -174,17 +187,17 @@ void topaz_renderer_2d_set_vertices(
 void topaz_renderer_2d_get_vertices(
     topazRenderer_2D_t *, 
     const uint32_t * vertexIDs, 
-    topazRenderer_2D_Vertex * output,
+    topazRenderer_2D_Vertex_t * output,
     uint32_t count
 );
 
 
 /// Sets parameters for a specific object
 ///
-void opaz_renderer_2d_set_object_params(
+void topaz_renderer_2d_set_object_params(
     topazRenderer_2D_t *, 
     uint32_t object, 
-    const topazRenderer_2D_ObjectParams *
+    const topazRenderer_2D_ObjectParams_t *
 );
 
 

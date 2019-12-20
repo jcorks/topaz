@@ -33,26 +33,23 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__RENDERER_3D__INCLUDED
 #define H_TOPAZDC__RENDERER_3D__INCLUDED
 
+#include <topaz/containers/array.h>
 
 
 
-#include <topaz/backends/renderer.h>
+/// A 3D rendering object 
+///
+typedef struct topazRenderer_3D_t topazRenderer_3D_t;
 
 
-/*
-
-    Renderer3D
-
-*/
-
-typedef struct {
+struct topazRenderer_3D_t {
     
     /// Vertices points to a renderbuffer containing all the vertex dat  a pertinent to the RenderObject.
     /// Each vertex consists of:
     ///      3-components for position,
     ///      3-components for the normal.
     ///      2-copmonents for UVs (texture coordinates)
-    ///      4-components for user-defined data. Meant to be unitlized with custom programs.
+    ///      4-components for user-defined data. Meant to be utilized with custom programs.
     ///
     topazRenderer_Buffer_t * vertices;
     
@@ -96,13 +93,16 @@ typedef struct {
     topazArray_t * indices;    
 
 
-} topazRenderer_3D;
+};
 
 
 
 /// Vertex for 3D rendering.
 ///
-typedef struct  {
+typedef struct topazRenderer_3D_Vertex_t topazRenderer_3D_Vertex_t;
+
+
+struct topazRenderer_3D_Vertex_t {
     /// Positional 3D coordinates
     ///
     float x, y, z;
@@ -119,6 +119,10 @@ typedef struct  {
     ///
     float userDefinedData[4];
 
-} topazRenderer_3D_Vertex;
+};
+
+
+#include <topaz/backends/renderer.h>
+
 
 #endif

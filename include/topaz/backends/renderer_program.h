@@ -80,15 +80,16 @@ topazRenderer_Program_t * topaz_renderer_program_create(
     topazString_t *         log
 );
 
-topazRenderer_Program_t * topaz_renderer_program_destroy(topazRenderer_Program_t *);
+
+// Returns a new renderer program from built-in params.
+topazRenderer_Program_t * topaz_renderer_program_create_preset(
+    topazRenderer_t *,
+    topazRenderer_PresetProgram
+);
 
 
-/// Returns a string denoting the name of the shading language supported.
-/// If shaders are not supported, an empty string is returned.
-const topazString_t * topaz_renderer_program_get_language();
+void topaz_renderer_program_destroy(topazRenderer_Program_t *);
 
-// Returns the id referring to a builtin shader.
-topazRenderer_Program_t * topaz_renderer_program_get_preset(topazRenderer_PresetProgram);
 
 
 

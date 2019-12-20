@@ -62,14 +62,12 @@ typedef struct topazRenderer_BufferAPI_t    topazRenderer_BufferAPI_t;
 struct topazRenderer_BufferAPI_t {
 
 
-    void                    (*renderer_buffer_create)              (topazRendererAPI_t *);
+    void                    (*renderer_buffer_create)              (topazRendererAPI_t *, topazRenderer_BufferAPI_t *, float * data, int numElements);
     void                    (*renderer_buffer_destroy)             (topazRenderer_BufferAPI_t *);
 
 
-    void                    (*renderer_buffer_update)               (topazRenderer_BufferAPI_t * float * newData, int offset, int numElements);
+    void                    (*renderer_buffer_update)               (topazRenderer_BufferAPI_t *, float * newData, int offset, int numElements);
     void                    (*renderer_buffer_read)                 (topazRenderer_BufferAPI_t *, float * ouputData, int offset, int numELements);
-
-    int                     (*renderer_buffer_get_size)             (topazRenderer_BufferAPI_t *);
 
 
     /// User-given data. This is expected to data needed to persist

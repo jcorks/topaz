@@ -34,7 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-
+#include <topaz/matrix.h>
 #include <topaz/backends/backend.h>
 
 
@@ -52,6 +52,8 @@ DEALINGS IN THE SOFTWARE.
 typedef struct topazRenderer_t topazRenderer_t;
 
 
+
+typedef struct topazFramebuffer_t topazFramebuffer_t;
 
 
 
@@ -153,24 +155,33 @@ typedef enum {
 /// in a general sense. This is usually independent of the processing 
 /// program in the case of 3D rendering.
 ///
-typedef struct {
+typedef struct topazRenderer_ProcessAttribs_t topazRenderer_ProcessAttribs_t;
+
+struct topazRenderer_ProcessAttribs_t {
     /// The primitive. See topazRenderer_Primitive
     ///
-    topazRenderer_Primitive primitive,
+    topazRenderer_Primitive primitive;
 
     /// The depth test. See topazRenderer_DepthTest
     ///
-    topazRenderer_DepthTest depthTest,
+    topazRenderer_DepthTest depthTest;
 
     /// The alpha rule. See topazRenderer_AlphaRule
     ///
-    topazRenderer_AlphaRule alphaRule
+    topazRenderer_AlphaRule alphaRule;
 
     /// The texture filtering hint. See topazRenderer_TextureFilterHint
     ///
     topazRenderer_TextureFilterHint textureFilter;
 
-} topazRenderer_ProcessAttribs;
+};
+
+
+
+
+
+
+
 
 
 /// Allows for etching, which will ignore rendered results if they arent in the etch.
@@ -225,9 +236,12 @@ typedef enum {
 
 
 
+/// Parameters that define how geometry is drawn and processed in 
+/// a general sense.
+///
+typedef struct topazRenderer_Parameters_t topazRenderer_Parameters_t;
 
-
-typedef struct {
+struct topazRenderer_Parameters_t {
     // Returns the maximum number of textures that can be referred to
     // by a StaticObject when rendering.
     int maxSimultaneousTextures;
@@ -238,10 +252,27 @@ typedef struct {
     // returns the number of lightx currently in use.
     int numLights;
 
-} topazRenderer_Parameters;
+    // C string with the name of the renderer program language.
+    // If blank, custom renderer programs are unsupported.
+    //
+    char programLanguage[256];
+
+};
 
 
+typedef struct topazRendererAPI_t topazRendererAPI_t;
+#include <topaz/backends/renderer_texture.h>
+#include <topaz/backends/renderer_light.h>
+#include <topaz/backends/renderer_program.h>
+#include <topaz/backends/renderer_buffer.h>
+#include <topaz/backends/renderer_3d.h>
+#include <topaz/backends/renderer_2d.h>
 
+#include <topaz/backends/api/renderer_buffer_api.h>
+#include <topaz/backends/api/renderer_light_api.h>
+#include <topaz/backends/api/renderer_2d_api.h>
+#include <topaz/backends/api/renderer_program_api.h>
+#include <topaz/backends/api/renderer_texture_api.h>
 #include <topaz/backends/api/renderer_api.h>
 
 
@@ -249,10 +280,42 @@ typedef struct {
 
 
 
-
-/// Creates a new renderer object
+/// Creates a new renderer object. The renderer implementation is made up 
+/// of a number of components that, together, provide complete behavior of the 
+/// renderer. The indivudal components are meant to be part of the renderer as 
+/// a whole even though they are separate objects.
 ///
-topazRenderer_t * topaz_renderer_create(topazBackend_t *, topazRendererAPI_t);
+topazRenderer_t * topaz_renderer_create(
+    topazBackend_t *, 
+
+    /// API for the renderer direct functions    
+    ///
+    topazRendererAPI_t,
+
+    /// API for renderer buffers, which provide renderer 
+    /// storage.
+    ///
+    topazRenderer_BufferAPI_t,    
+
+    /// API for renderer programs, which provide a way to 
+    /// generate dynamic renderer programs such as shaders.
+    ///
+    topazRenderer_ProgramAPI_t,    
+
+    /// API for renderer textures, which provide image data.
+    /// 
+    topazRenderer_TextureAPI_t,    
+
+    /// API for the 2d renderer, which provides operations optimized 
+    /// for 2d geometry (small batch, dynamic visuals)
+    ///
+    topazRenderer_2DAPI_t,    
+
+    /// API for the light renderer, which provides lighting control 
+    /// for 3d scenes.
+    ///
+    topazRenderer_LightAPI_t
+);
 
 
 /// Destroys and cleans up a renderer
@@ -280,6 +343,8 @@ topazRendererAPI_t topaz_renderer_get_api(topazRenderer_t *);
 
 ///////////// Drawing Requests
 
+
+
 /// Unlike 2D requests, 3D render execution times are entirely up
 /// to the renderer and backend. The only guarantee is that the object will render
 /// on the committed display. The benefit of this mode is utilizing custom graphics programs
@@ -288,8 +353,8 @@ topazRendererAPI_t topaz_renderer_get_api(topazRenderer_t *);
 /// here are transformed by the renderer.
 void topaz_renderer_draw_3d(
     topazRenderer_t *,
-    topazRenderer_3D_t *
-    const topazRenderer_ProcessAttribs *
+    topazRenderer_3D_t *,
+    const topazRenderer_ProcessAttribs_t *
 );
 
 
@@ -299,17 +364,22 @@ void topaz_renderer_draw_3d(
 void topaz_renderer_draw_2d(
     topazRenderer_t *,
     topazRenderer_2D_t *,
-    const topazRenderer_2D_Context *,
-    const topazRenderer_ProcessAttribs *,
+    const topazRenderer_2D_Context_t *,
+    const topazRenderer_ProcessAttribs_t *
 
 );
 
 /// Returns the transformation matrix buffer IDs for static rendering.
 /// All RenderStatic positional vertices are multiplied by the Viewing and
-/// projection matrices respectively. Once determined by the renderer,
-/// these ID's values will not change per instance.
-topazRenderer_Buffer_t * topaz_renderer_get_3d_viewing_matrix();
-topazRenderer_Buffer_t * topaz_renderer_get_3d_projection_matrix();
+/// projection matrices respectively. 
+const topazMatrix_t * topaz_renderer_get_3d_viewing_matrix(topazRenderer_t *);
+const topazMatrix_t * topaz_renderer_get_3d_projection_matrix(topazRenderer_t *);
+
+void topaz_renderer_set_3d_viewing_matrix(topazRenderer_t *, const topazMatrix_t *);
+void topaz_renderer_set_3d_projection_matrix(topazRenderer_t *, const topazMatrix_t *);
+
+
+
 
 
 
@@ -331,7 +401,7 @@ void topaz_renderer_clear_layer(topazRenderer_t *, topazRenderer_DataLayer);
 /// Gets logistical information about the renderer.
 /// Some backends may not given meanginful information here.
 ///
-topazRenderer_Parameters topaz_renderer_get_parameters(topazRenderer_t *);
+topazRenderer_Parameters_t topaz_renderer_get_parameters(topazRenderer_t *);
 
 
 
@@ -348,7 +418,7 @@ void topaz_renderer_sync(topazRenderer_t *);
 /// Framebuffer is not one of the types from SupportedFramebuffers, no
 /// action is taken. If NULL is passed, rendering will have no effect.
 ///
-void topaz_renderer_attach_target(topazRenderer_t *, Framebuffer *);
+void topaz_renderer_attach_target(topazRenderer_t *, topazFramebuffer_t *);
 
 
 /// Returns the current target for renderings. The default is

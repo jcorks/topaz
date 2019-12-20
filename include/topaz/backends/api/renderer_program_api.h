@@ -62,15 +62,16 @@ typedef struct topazRenderer_ProgramAPI_t    topazRenderer_ProgramAPI_t;
 struct topazRenderer_ProgramAPI_t {
 
 
-    rende                 (*renderer_program_create)              (   topazRendererAPI_t *,
+    topazRenderer_Program_t * (*renderer_program_create)              (topazRendererAPI_t *,
+                                                                        topazRenderer_ProgramAPI_t *,
                                                                         const topazString_t *, 
                                                                         const topazString_t *, 
                                                                         topazString_t *);
+    topazRenderer_Program_t * (*renderer_program_create_preset)        (topazRendererAPI_t *,
+                                                                        topazRenderer_ProgramAPI_t *,
+                                                                        topazRenderer_PresetProgram);
+
     void                    (*renderer_program_destroy)             (topazRenderer_ProgramAPI_t *);
-
-    const topazString_t *   (*renderer_program_get_language)();
-
-    topazRenderer_Program_t * (*renderer_program_get_preset)(topazRenderer_PresetProgram);
 
 
 

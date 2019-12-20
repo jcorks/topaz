@@ -62,17 +62,17 @@ typedef struct topazRenderer_2DAPI_t    topazRenderer_2DAPI_t;
 struct topazRenderer_2DAPI_t {
 
 
-    void                    (*renderer_2d_create)              (topazRendererAPI_t *);
+    void                    (*renderer_2d_create)              (topazRendererAPI_t *, topazRenderer_2DAPI_t *);
     void                    (*renderer_2d_destroy)             (topazRenderer_2DAPI_t *);
 
 
 
     int (*renderer_2d_add_objects)(topazRenderer_2DAPI_t *, uint32_t * output, uint32_t count);
-    void (*renderer_2d_remove_objects)(topazRenderer_2DAPI_t *, uint32_t * idsuint32_t count);
+    void (*renderer_2d_remove_objects)(topazRenderer_2DAPI_t *, uint32_t * ids, uint32_t count);
 
 
     void (*renderer_2d_queue_vertices)(
-        topazRenderer_2D_t *,
+        topazRenderer_2DAPI_t *,
         const uint32_t * objects,
         uint32_t count
     );
@@ -83,14 +83,14 @@ struct topazRenderer_2DAPI_t {
     void (*renderer_2d_set_vertices)(
         topazRenderer_2DAPI_t *, 
         uint32_t * vertices, 
-        const topazRenderer_2D_Vertex *, 
+        const topazRenderer_2D_Vertex_t *, 
         uint32_t count
     );
 
     void (*renderer_2d_get_vertices)(
         topazRenderer_2DAPI_t *, 
         const uint32_t * vertexIDs, 
-        topazRenderer_2D_Vertex * output,
+        topazRenderer_2D_Vertex_t * output,
         uint32_t count
     );
 
@@ -99,7 +99,7 @@ struct topazRenderer_2DAPI_t {
     void (*renderer_2d_set_object_params)(
         topazRenderer_2DAPI_t *, 
         uint32_t object, 
-        const topazRenderer_2D_ObjectParams *
+        const topazRenderer_2D_ObjectParams_t *
     );
 
 
