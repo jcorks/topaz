@@ -36,7 +36,6 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/backends/renderer.h>
 
 typedef struct topazRenderer_t topazRenderer_t;
-typedef struct topazRenderer_2D_t topazRenderer_2D_t;
 
 
 
@@ -55,6 +54,245 @@ typedef struct topazRenderer_2D_t topazRenderer_2D_t;
 
 */
 typedef struct topazRendererAPI_t    topazRendererAPI_t;
+
+
+
+
+/*
+
+    Renderer_TextureAPI
+    -----
+    
+
+*/
+typedef struct topazRenderer_TextureAPI_t    topazRenderer_TextureAPI_t;
+
+/// Each function is an implementation-facing copy of 
+/// the user-side API for topazRenderer_t. See <topaz/backends/renderer_texture.h>
+///
+struct topazRenderer_TextureAPI_t {
+
+
+    void                    (*renderer_texture_create)              (topazRendererAPI_t *, topazRenderer_TextureAPI_t *,  int w, int h, const uint8_t * rgbaTextureData);
+    void                    (*renderer_texture_destroy)             (topazRenderer_TextureAPI_t *);
+
+
+    void                    (*renderer_texture_update)(topazRenderer_TextureAPI_t *, const uint8_t * newData);
+    void                    (*renderer_texture_get)(topazRenderer_TextureAPI_t *, uint8_t *);
+
+
+    /// User-given data. This is expected to data needed to persist
+    /// throughout the liferenderer of the Renderer
+    ///
+    void * implementationData;
+
+
+};
+
+/*
+
+    Renderer_ProgramAPI
+    -----
+
+
+*/
+typedef struct topazRenderer_ProgramAPI_t    topazRenderer_ProgramAPI_t;
+
+/// Each function is an implementation-facing copy of 
+/// the user-side API for topazRenderer_t. See <topaz/backends/renderer_program.h>
+///
+struct topazRenderer_ProgramAPI_t {
+
+
+    topazRenderer_Program_t * (*renderer_program_create)              (topazRendererAPI_t *,
+                                                                        topazRenderer_ProgramAPI_t *,
+                                                                        const topazString_t *, 
+                                                                        const topazString_t *, 
+                                                                        topazString_t *);
+    topazRenderer_Program_t * (*renderer_program_create_preset)        (topazRendererAPI_t *,
+                                                                        topazRenderer_ProgramAPI_t *,
+                                                                        topazRenderer_PresetProgram);
+
+    void                    (*renderer_program_destroy)             (topazRenderer_ProgramAPI_t *);
+
+
+
+    /// User-given data. This is expected to data needed to persist
+    /// throughout the liferenderer of the Renderer
+    ///
+    void * implementationData;
+
+
+};
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+    Renderer_2DAPI
+    -----
+    
+
+*/
+typedef struct topazRenderer_2DAPI_t    topazRenderer_2DAPI_t;
+
+/// Each function is an implementation-facing copy of 
+/// the user-side API for topazRenderer_t. See <topaz/backends/renderer_2d.h>
+///
+struct topazRenderer_2DAPI_t {
+
+
+    void                    (*renderer_2d_create)              (topazRendererAPI_t *, topazRenderer_2DAPI_t *);
+    void                    (*renderer_2d_destroy)             (topazRenderer_2DAPI_t *);
+
+
+
+    int (*renderer_2d_add_objects)(topazRenderer_2DAPI_t *, uint32_t * output, uint32_t count);
+    void (*renderer_2d_remove_objects)(topazRenderer_2DAPI_t *, uint32_t * ids, uint32_t count);
+
+
+    void (*renderer_2d_queue_vertices)(
+        topazRenderer_2DAPI_t *,
+        const uint32_t * objects,
+        uint32_t count
+    );
+
+    void (*renderer_2d_clear_queue)(topazRenderer_2DAPI_t *);
+    int (*renderer_2d_add_vertices)(topazRenderer_2DAPI_t *, uint32_t * output, uint32_t count);
+    void (*renderer_2d_remove_vertices)(topazRenderer_2DAPI_t *, uint32_t * objects, uint32_t count);
+    void (*renderer_2d_set_vertices)(
+        topazRenderer_2DAPI_t *, 
+        uint32_t * vertices, 
+        const topazRenderer_2D_Vertex_t *, 
+        uint32_t count
+    );
+
+    void (*renderer_2d_get_vertices)(
+        topazRenderer_2DAPI_t *, 
+        const uint32_t * vertexIDs, 
+        topazRenderer_2D_Vertex_t * output,
+        uint32_t count
+    );
+
+
+
+    void (*renderer_2d_set_object_params)(
+        topazRenderer_2DAPI_t *, 
+        uint32_t object, 
+        const topazRenderer_2D_ObjectParams_t *
+    );
+
+
+
+    /// User-given data. This is expected to data needed to persist
+    /// throughout the liferenderer of the Renderer
+    ///
+    void * implementationData;
+
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+    Renderer_LightAPI
+    -----
+
+*/
+typedef struct topazRenderer_LightAPI_t    topazRenderer_LightAPI_t;
+
+/// Each function is an implementation-facing copy of 
+/// the user-side API for topazRenderer_t. See <topaz/backends/renderer_light.h>
+///
+struct topazRenderer_LightAPI_t {
+
+
+    void                    (*renderer_light_create)              (topazRendererAPI_t *, topazRenderer_LightAPI_t *, topazRenderer_LightType);
+    void                    (*renderer_light_destroy)             (topazRenderer_LightAPI_t *);
+
+    void (*renderer_light_update_attribs)(topazRenderer_LightAPI_t *, float *);
+    void (*renderer_light_enable)(topazRenderer_LightAPI_t *, int doIt);
+
+
+    /// User-given data. This is expected to data needed to persist
+    /// throughout the liferenderer of the Renderer
+    ///
+    void * implementationData;
+
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+    Renderer_BufferAPI
+    -----
+
+
+*/
+typedef struct topazRenderer_BufferAPI_t    topazRenderer_BufferAPI_t;
+
+/// Each function is an implementation-facing copy of 
+/// the user-side API for topazRenderer_t. See <topaz/backends/renderer_buffer.h>
+///
+struct topazRenderer_BufferAPI_t {
+
+
+    void                    (*renderer_buffer_create)              (topazRendererAPI_t *, topazRenderer_BufferAPI_t *, float * data, int numElements);
+    void                    (*renderer_buffer_destroy)             (topazRenderer_BufferAPI_t *);
+
+
+    void                    (*renderer_buffer_update)               (topazRenderer_BufferAPI_t *, float * newData, int offset, int numElements);
+    void                    (*renderer_buffer_read)                 (topazRenderer_BufferAPI_t *, float * ouputData, int offset, int numELements);
+
+
+    /// User-given data. This is expected to data needed to persist
+    /// throughout the liferenderer of the Renderer
+    ///
+    void * implementationData;
+
+
+};
+
+
+
+
+
+
+
+
 
 /// Each function is an implementation-facing copy of 
 /// the user-side API for topazRenderer_t. See <topaz/backends/Renderer.h>
