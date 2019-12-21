@@ -29,8 +29,8 @@ DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef H_TOPAZDC__FILESYS__INCLUDED
-#define H_TOPAZDC__FILESYS__INCLUDED
+#ifndef H_TOPAZDC__TIME__INCLUDED
+#define H_TOPAZDC__TIME__INCLUDED
 
 #include <topaz/backends/api/time_api.h>
 #include <topaz/backends/backend.h>

@@ -422,12 +422,63 @@ topazRenderer_t * topaz_renderer_create(
 ) {
     #ifdef TOPAZDC_DEBUG
         assert(b && "topazBackend_t pointer cannot be NULL.");
+
+        assert(textureAPI.renderer_texture_create);
+        assert(textureAPI.renderer_texture_destroy);
+        assert(textureAPI.renderer_texture_update);
+        assert(textureAPI.renderer_texture_get);
+
+
+
+        assert(programAPI.renderer_program_create);
+        assert(programAPI.renderer_program_create_preset);
+        assert(programAPI.renderer_program_destroy);
+
+
+        assert(twodAPI.renderer_2d_create);
+        assert(twodAPI.renderer_2d_destroy);
+        assert(twodAPI.renderer_2d_add_objects);
+        assert(twodAPI.renderer_2d_remove_objects);
+        assert(twodAPI.renderer_2d_queue_vertices);
+        assert(twodAPI.renderer_2d_clear_queue);
+        assert(twodAPI.renderer_2d_add_vertices);
+        assert(twodAPI.renderer_2d_remove_vertices);
+        assert(twodAPI.renderer_2d_get_vertices);
+        assert(twodAPI.renderer_2d_set_object_params);
+
+
+
+
+        assert(lightAPI.renderer_light_create);
+        assert(lightAPI.renderer_light_destroy);
+        assert(lightAPI.renderer_light_update_attribs);
+        assert(lightAPI.renderer_light_enable);
+
+
+
+
+        assert(bufferAPI.renderer_buffer_create);
+        assert(bufferAPI.renderer_buffer_destroy);
+        assert(bufferAPI.renderer_buffer_update);
+        assert(bufferAPI.renderer_buffer_read);
+
+
+        assert(fbAPI.renderer_framebuffer_create);
+        assert(fbAPI.renderer_framebuffer_destroy);
+        assert(fbAPI.renderer_framebuffer_resize);
+        assert(fbAPI.renderer_framebuffer_get_handle);
+        assert(fbAPI.renderer_framebuffer_get_raw_data);
+        assert(fbAPI.renderer_framebuffer_set_filtered_hint);
+        assert(fbAPI.renderer_framebuffer_get_handle_type);
+
+
+
         assert(api.renderer_create);
         assert(api.renderer_destroy);
         assert(api.renderer_draw_2d);
         assert(api.renderer_draw_3d);
-        assert(api.renderer_get_3d_viewing_matrix);
-        assert(api.renderer_get_3d_projection_matrix);
+        assert(api.renderer_set_3d_projection_matrix);
+        assert(api.renderer_set_3d_viewing_matrix);
         assert(api.renderer_clear_data);
         assert(api.renderer_clear_layer);
         assert(api.renderer_get_parameters);
