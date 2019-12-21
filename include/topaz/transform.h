@@ -117,7 +117,7 @@ int topaz_transform_needs_update(const topazTransform_t *);
 
 /// Adds a transform update.
 ///
-void AddTransformCallback(topazTransform_t *,
+void topaz_transform_add_callback(topazTransform_t *,
     /// Function called when the transform.
     /// The first argument is the transform in question.
     /// The last argument is the userdata.
@@ -128,8 +128,10 @@ void AddTransformCallback(topazTransform_t *,
 
 /// Removes the given callback
 ///
-void RemoveTransformCallback(topazTransform_t *,
-    void (*topazTransform)(topazTransform_t *, void *)
+void topaz_transform_remove_callback(topazTransform_t *,
+    void (*topazTransform)(topazTransform_t *, void *),
+
+    void * userData
 );
 
 

@@ -214,7 +214,7 @@ int topaz_transform_needs_update(const topazTransform_t * t) {
 
 
 
-void AddTransformCallback(
+void topaz_transform_add_callback(
     topazTransform_t * t,
     void (*topazTransform)(topazTransform_t *, void *),
     void * userData
@@ -226,14 +226,18 @@ void AddTransformCallback(
     topaz_array_push(t->callbacks, cb);
 }
 
-void RemoveTransformCallback(
+void topaz_transform_remove_callback(
     topazTransform_t * t,
-    void (*topazTransform)(topazTransform_t *, void *)
+    void (*topazTransform)(topazTransform_t *, void *),
+    void * userData
 ) {
     uint32_t i;
     uint32_t len = topaz_array_get_size(t->callbacks);
     for(i = 0; i < len; ++i) {
-        if (topaz_array_at(t->callbacks, TransformCallback, i).fn == topazTransform) {
+        TransformCallback * cb = &topaz_array_at(t->callbacks, TransformCallback, i);
+        if (cb->fn   == topazTransform &&
+            cb->data == userData) {
+
             topaz_array_remove(t->callbacks, i);            
             return;
         }
