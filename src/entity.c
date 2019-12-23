@@ -466,26 +466,22 @@ int topaz_entity_is_drawing(const topazEntity_t * e) {
 
 }
 
-/// Whether the engine should call Step() automatically for this entity.
-/// Note that topaz_entity_step() calls also manage components and child entities.
-/// The default is true.
-///
-void topaz_entity_set_stepping(topazEntity_t *, int);
+void topaz_entity_set_stepping(topazEntity_t * e, int d) {
+    e->step = d;
+}
 
-/// Whether the engine should call Draw() automatically for this entity.
-/// Note that topaz_entity_draw() calls also manage components and child entities.
-/// The default is true.
-///
-void topaz_entity_set_drawing(topazEntity_t *, int);
+void topaz_entity_set_drawing(topazEntity_t * e, int d) {
+    e->draw = d;
+}
 
 
-/// Returns whether this entity is currently stepping.
-///
-int topaz_entity_get_stepping(const topazEntity_t *);
+int topaz_entity_get_stepping(const topazEntity_t * e) {
+    return e->step;
+}
 
-/// Returns whether this entity is currently drawing.
-///
-int topaz_entity_get_drawing(const topazEntity_t *);
+int topaz_entity_get_drawing(const topazEntity_t * e) {
+    return e->draw;
+}
 
 
 
@@ -493,30 +489,57 @@ int topaz_entity_get_drawing(const topazEntity_t *);
 
 
 
-/// \brief Attaches a component to this entity.
-///
-/// Once attached, the component's
-/// Step and Draw functions will be called before this entity's Step and Draw.
-/// 
-void topaz_entity_add_component(topazEntity *, topazComponent_t *);
+void topaz_entity_add_component(topazEntity * e, topazComponent_t * t) {
+    if (topaz_component_get_host(t) == e) return;
+    topaz_array_push(e->components, t);
+    topaz_array_push(e->componentsBefore, t);
+    topaz_component_attach(t, e);
+}
 
-/// Same as topaz_entity_add_component(), but the component is updated 
-/// after this entity's Step and Draw functions.
-void topaz_entity_add_component_after(topazEntity *, topazComponent_t *);
+void topaz_entity_add_component_after(topazEntity *, topazComponent_t *) {
+    if (topaz_component_get_host(t) == e) return;
+    topaz_array_push(e->components, t);
+    topaz_array_push(e->componentsAfter, t);
+    topaz_component_attach(t, e);
+}
 
-/// Returns all components
-///
+
 const topazArray_t * topaz_entity_get_components(topazEntity_t * t) {
     return t->components;
 }
 
-/// Returns the first component with the given tag.
-///
-topazComponent_t * topaz_component_query(topazEntity_t *, const topazString_t *);
+topazComponent_t * topaz_component_query(topazEntity_t * e, const topazString_t * str) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(e->components);
+    for(i = 0; i < len; ++i) {
+        if (topaz_string_test_eq(
+                str, 
+                topaz_array_at(
+                    e->components,
+                    topazComponent_t *,
+                    i
+                )
+            )
+        ) {
+
+        }
+    }
+}
 
 /// Removes the given component from the entity.
 ///
-void topaz_entity_remove_component(topazEntity_t *, topazComponent_t *);
+void topaz_entity_remove_component(topazEntity_t * e, topazComponent_t * t) {
+    uint32_t i;
+    uint32_t len; 
+
+    len = topaz_array_get_size(t->components);
+    for(i = 0; i < len; ++i) {
+        topazComponent_t * c = topaz_array_at(e->components, topazComponent_t *, i);
+        if (c == t) {
+            topaz_array
+        }
+    }
+}
 
 /// Sets the name of the entity. Once set, it will not change.
 ///
