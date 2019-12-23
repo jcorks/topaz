@@ -34,7 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/containers/string.h>
 #include <topaz/containers/array.h>
-
+typedef struct topazComponent_t topazComponent_t;
 /*
 
     Entity
@@ -49,13 +49,17 @@ DEALINGS IN THE SOFTWARE.
     Entities are also inherently hierarchical. By Attach()ing other Entities,
     you can create trees of self-managed Entities.
 
+    NULL is not accepted as an argument for any entity functions.
+    Instead, use the topaz_entity_null() value to represent this 
+    no-entity state. 
+
 
 */
 typedef struct topazEntity_t topazEntity_t;
 
 
 
-typedef struct topazEntity_Attributes_t topazEntity_Logic_t;
+typedef struct topazEntity_Attributes_t topazEntity_Attributes_t;
 
 struct topazEntity_Attributes_t {
 
@@ -106,7 +110,7 @@ topazEntity_t * topaz_entity_create_with_attributes(const topazEntity_Attributes
 
 /// Sets the attributes for the entity. Attributes determine how the 
 /// entity changes over time. 
-void topaz_entity_set_attributes(topazEntity_t *, const topasEntity_Attributes_t *);
+void topaz_entity_set_attributes(topazEntity_t *, const topazEntity_Attributes_t *);
 
 /// Gets the attributes of an entity.
 ///
@@ -116,7 +120,15 @@ topazEntity_Attributes_t topaz_entity_get_attributes(const topazEntity_t *);
 /// If the given pointer was not returned from a topaz_entity_create*() 
 /// call, behavior is undefined.
 ///
-int topaz_component_is_valid(const topazEntity_t *);
+int topaz_entity_is_valid(const topazEntity_t *);
+
+/// Returns the "NULL" entity, which represents an entity that doesn't 
+/// exist. NULL is not accepted as an argument for any entity functions, 
+/// nor should any entity functions return 0x0 NULL. Instead, 
+/// topaz_entity_null() is used. topaz_entity_null() is the same for the 
+/// duration of the program.
+topazEntity_t * topaz_entity_null();
+#define TOPAZ_ENULL (topaz_entity_null())
 
 
 
@@ -218,11 +230,11 @@ int topaz_entity_get_drawing(const topazEntity_t *);
 /// Once attached, the component's
 /// Step and Draw functions will be called before this entity's Step and Draw.
 /// 
-void topaz_entity_add_component(topazEntity *, topazComponent_t *);
+void topaz_entity_add_component(topazEntity_t *, topazComponent_t *);
 
 /// Same as topaz_entity_add_component(), but the component is updated 
 /// after this entity's Step and Draw functions.
-void topaz_entity_add_component_after(topazEntity *, topazComponent_t *);
+void topaz_entity_add_component_after(topazEntity_t *, topazComponent_t *);
 
 /// Returns all components
 ///

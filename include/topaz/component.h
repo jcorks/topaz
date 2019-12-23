@@ -64,6 +64,10 @@ struct topazComponent_Attributes_t {
     ///
     void (*on_attach)(topazComponent_t *, void *);
 
+    /// Function called when attaching the component to the entity.
+    ///
+    void (*on_detach)(topazComponent_t *, void *);
+
     /// Function called before destroying the component.
     ///
     void (*on_destroy)(topazComponent_t *, void *);
@@ -75,58 +79,110 @@ struct topazComponent_Attributes_t {
 
 
 
-// Creates a new component
+/// Creates a new component
+///
 topazComponent_t * topaz_component_create();
 
+/// Creates a new component with the specified attributes
+///
 topazComponent_t * topaz_component_create_with_attributes(const topazComponent_Attributes_t *);
 
+
+/// Returns the attributes of the component.
+///
 const topazComponent_Attributes_t * topaz_component_get_attributes(const topazComponent_t *);
 
+/// Sets the attributes of the component. This is applied immediately.
+///
 void topaz_component_set_attributes(topazComponent_t *, const topazComponent_Attributes_t *);
 
+
+
+
+
+
+/// Destroys a component. This detaches the component from the entity 
+/// which emits the detach event.
+///
 void topaz_component_destroy(topazComponent_t *);
 
 
+/// Attaches the component to an entity. This triggers the attach event.
+///
 void topaz_component_attach(topazComponent_t *, topazEntity_t *);
 
-void topaz_component_detach(topazComponent_t *)
+/// Detaches the component from an entity. This triggers the detach event.
+///
+void topaz_component_detach(topazComponent_t *);
 
 
+
+/// Steps the component.
+///
 void topaz_component_step(topazComponent_t *);
 
+/// Draws the component.
+///
 void topaz_component_draw(topazComponent_t *);
 
 
+
+/// Gets whether this component will update when a step 
+/// is requested.
+///
 int topaz_component_get_stepping(const topazComponent_t *);
 
+/// Gets whether this component will draw when a draw
+/// is requested.
+///
 int topaz_component_get_drawing(const topazComponent_t *);
 
 
+
+/// Sets whether this component will step.
+///
 void topaz_component_set_stepping(topazComponent_t *, int);
 
+/// Sets whether this component will draw.
+///
 void topaz_component_set_drawing(topazComponent_t *, int);
 
+/// Returns the tag for the component.
+///
 const topazString_t * topaz_component_get_tag();
 
+/// Sets the tag for the component.
+///
+void topaz_component_set_tag(topazComponent_t *, const topazString_t *);
 
 /// Returns the set host of the component. If no host is set,
 /// nullptr is returned.
 ///
-topazEntity_t * topaz_entity_get_host(const topazEntity_t *);
-
-const topazString_t * topaz_entity_get_info(const topazComponent_t *);
+topazEntity_t * topaz_component_get_host(const topazComponent_t *);
 
 
 
 
 
+/// Function type for all event signals.
+///
 typedef int (*topaz_event_handler)(
-        topazComponent_t * component, 
-        topazEntity_t * self, 
-        void * dataEvent,
-        topazEntity_t * source, 
-        void * sourceEvent
-)
+    /// The component instance handling this event.
+    ///
+    topazComponent_t * component, 
+
+    /// The user data specifified when setting this handler.
+    ///
+    void * dataEvent,
+
+    /// The entity that triggered this event.
+    /// 
+    topazEntity_t * source, 
+
+    /// Data sent when the emitted event.
+    ///
+    void * sourceEvent
+);
 
 
 
@@ -166,7 +222,7 @@ void topaz_component_uninstall_hook(topazComponent_t *, const topazString_t * ev
 /// Handlers that are added are run in LIFO order
 /// and their return values dictate whether the event should propogate.
 /// the last handler run for an event is always the main handler of the event.
-void topaz_component_install_handler(topazCopmonent_t *, const topazString_t * eventName, topaz_event_handler, void *);
+void topaz_component_install_handler(topazComponent_t *, const topazString_t * eventName, topaz_event_handler, void *);
 
 /// Removes a handler added with InstallHandler()
 ///
@@ -175,7 +231,7 @@ void topaz_component_uninstall_handler(topazComponent_t *, const topazString_t *
 
 /// Returns a list of event names that this eventsystem is able to process
 ///
-topazArray_t topaz_component_get_known_events() const;
+topazArray_t * topaz_component_get_known_events(topazComponent_t *);
 
 
 
@@ -184,11 +240,11 @@ topazArray_t topaz_component_get_known_events() const;
 ///
 /// if mainHandler is nullptr, the event is still added, but has no default
 /// handler is set. The default handler is always guaranteed to run first for the event.
-void topaz_component_install_event(topazCopmonent_t *, const topazString_t * eventName, topaz_event_handler, void *);
+void topaz_component_install_event(topazComponent_t *, const topazString_t * eventName, topaz_event_handler, void *);
 
 /// removes a handler of an event
 ///
-void topaz_component_uninstall_event(topazCopmonent_t *, const topazString_t * eventName);
+void topaz_component_uninstall_event(topazComponent_t *, const topazString_t * eventName);
 
 
 

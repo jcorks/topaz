@@ -30,12 +30,13 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/compat.h>
 #include <topaz/entity.h>
+#include <topaz/component.h>
+#include <topaz/spatial.h>
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <math.h>
 #ifdef TOPAZDC_DEBUG
 #include <assert.h>
 #endif
@@ -49,13 +50,8 @@ DEALINGS IN THE SOFTWARE.
 static topazArray_t * dead  = NULL;
 static uint64_t idPool = 1;
 
-struct toapzEntity_t {
-    int protectd;
-    int priority;
-    int step;
-    int draw;
-    uint64_t id; //<- if 0, the entity has been removed
-    Entity * world;
+struct topazEntity_t {
+    topazEntity_t * parent;
     topazString_t * name;
 
     topazArray_t * children;     // normal entity list
@@ -67,13 +63,33 @@ struct toapzEntity_t {
 
     topazEntity_Attributes_t api;
     topazSpatial_t * spatial;
+
+    int protectd;
+    int priority;
+    int step;
+    int draw;
+    int valid;
 };
 
 int priority_comp(const topazEntity_t * a, const topazEntity_t * b) {
     return a->priority < b->priority;
 }
 
+const topazEntity_t * topaz_entity_null() {
+    static topazEntity_t * e = NULL;
+    if (!e) {
+        e = calloc(1, sizeof(topazEntity_t));
+        e->name = topaz_string_create();
+        e->children         = topaz_array_create(sizeof(topazEntity_t *));
+        e->components       = topaz_array_create(sizeof(topazComponent_t *));
+        e->componentsBefore = topaz_array_create(sizeof(topazComponent_t *));
+        e->componentsAfter  = topaz_array_create(sizeof(topazComponent_t *));
+        e->activeSet = topaz_array_create(sizeof(void*));
+        e->spatial = topaz_spatial_create();
 
+    }
+    return e;
+}
 
 topazEntity_t * topaz_entity_create_with_attributes(const topazEntity_Attributes_t * a) {
     topazEntity_t * out;
@@ -82,32 +98,31 @@ topazEntity_t * topaz_entity_create_with_attributes(const topazEntity_Attributes
     } 
     uint32_t deadLen = topaz_array_get_size(dead);
     if (deadLen) {
-        out = topaz_array_at(dead, topazEntity_t *, deadLen-1;
+        out = topaz_array_at(dead, topazEntity_t *, deadLen-1);
         topaz_array_set_size(dead, deadLen-1);
-        topaz_string_clear(out->name);
-        topaz_array_set_size(out->components, 0);
-        topaz_array_set_size(out->componentsBefore, 0);
-        topaz_array_set_size(out->componentsAfter, 0);
-        memset(&out->api, 0, sizeof(topazEntity_Attributes_t));
         
     } else {
         out = calloc(1, sizeof(topazEntity_t));
         out->name = topaz_string_create();
-        out->priorityList     = topaz_array_create(sizeof(topazEntity_t *));
+        out->children         = topaz_array_create(sizeof(topazEntity_t *));
         out->components       = topaz_array_create(sizeof(topazComponent_t *));
         out->componentsBefore = topaz_array_create(sizeof(topazComponent_t *));
         out->componentsAfter  = topaz_array_create(sizeof(topazComponent_t *));
         out->activeSet = topaz_array_create(sizeof(void*));
         out->spatial = topaz_spatial_create();
+        out->parent = topaz_entity_null();
     }
-    out->id = idPool++;
+    out->valid = TRUE;
     out->step = TRUE;
     out->draw = TRUE;
     out->protectd = FALSE;
     out->api = *a;
 
-
+    return out;
 }
+
+
+
 
 topazEntity_t * topaz_entity_create() {
     topazEntity_Attributes_t attrib;
@@ -118,69 +133,82 @@ topazEntity_t * topaz_entity_create() {
     attrib.on_step = NULL;
     attrib.on_pre_draw = NULL;
     attrib.on_draw = NULL;
-    attrib.userData;
+    attrib.userData = NULL;
     return topaz_entity_create(&attrib);
 }
 
 
-void topaz_entity_set_attributes(topazEntity_t * e, const topasEntity_Attributes_t * a) {
+void topaz_entity_set_attributes(topazEntity_t * e, const topazEntity_Attributes_t * a) {
     e->api = *a;
 }
 
 topazEntity_Attributes_t topaz_entity_get_attributes(const topazEntity_t * e) {
+    // for null entities, its already empty. No need for Id check
     return e->api;
 }
 
 
 int topaz_component_is_valid(const topazEntity_t * e) {
-    return e->id != 0;
+    return e->valid;
 }
 
 void topaz_entity_remove(topazEntity_t * e) {
-    if (!e->id) return;
+    if (!e->valid) return;
+
+    if (e->api.on_remove) 
+        e->api.on_remove(e, e->api.userData);
+
 
     uint32_t i;
     uint32_t len = topaz_array_get_size(e->components);
     for(i = 0; i < len; ++i) {
         topazComponent_t * c = topaz_array_at(e->components, topazComponent_t *, i);
-        topaz_component_emit_event(c, TOPAZ_STR_CAST("on-detach"), e, NULL);
-    }
-    if (e->api.on_remove) 
-        e->api.on_remove(e, e->api.userData);
+        topaz_component_destroy(c);
 
-    uint32_t len = children.size();
+    }
+
+
+
+    len = topaz_array_get_size(e->children);
     for(uint32_t i = 0; i < len; ++i) {
-        topazComponent_t * c = topaz_array_at(e->components, topazComponent_t *, i);
+        topazEntity_t * c = topaz_array_at(e->children, topazEntity_t *, i);
         if (topaz_entity_is_valid(c))
             topaz_entity_remove(c);
     }
     topaz_entity_detach(e);
 
-    e->id = 0;
+    topaz_string_clear(e->name);
+    topaz_array_set_size(e->children, 0);
+    topaz_array_set_size(e->components, 0);
+    topaz_array_set_size(e->componentsBefore, 0);
+    topaz_array_set_size(e->componentsAfter, 0);
+    e->valid = 0;
+
     topaz_array_push(dead, e);
 }
 
 
 
 const topazArray_t * topaz_entity_get_children(const topazEntity_t * e) {
-    return t->children;
+    // for null entities, its already empty. No need for Id check
+    return e->children;
 }
 
 void topaz_entity_step(topazEntity_t * e) {
     if (!e->step) return;
-    uint64_t self = e->id;
+    uint64_t self = e->valid;
 
 
 
 
     // PRE STEP
-    if (e->api.on_pre_step) e->api->on_pre_step(e, e->api.userData);
-    if (self != e->id) return;
+    if (e->api.on_pre_step) e->api.on_pre_step(e, e->api.userData);
+    if (self != e->valid) return;
 
 
     topazEntity_t * curEnt;
     topazComponent_t * curComp;
-
+    uint32_t n;
 
 
     // BEFORE-STEP COMPONENTS
@@ -195,13 +223,13 @@ void topaz_entity_step(topazEntity_t * e) {
     for(n = 0; n < numComp; ++n) {
         curComp = topaz_array_get_data(e->componentsBefore);
         topaz_component_step(curComp);
-        if (self != e->id) return;
+        if (self != e->valid) return;
     }
 
 
 
     // CHILDREN-STEP
-    uint32_t numEnts = topaz_array_get_size(e->children), n;
+    uint32_t numEnts = topaz_array_get_size(e->children);
     topaz_array_set_size(e->activeSet, numEnts);
     memcpy(
         topaz_array_get_data(e->activeSet),
@@ -209,10 +237,10 @@ void topaz_entity_step(topazEntity_t * e) {
         sizeof(void*)*numEnts
     );
 
-    for(int i = 0; i < numEnts; i++) {
-        curEnt = topaz_array_at(e->children, topazEntity_t *, i);
+    for(n = 0; n < numEnts; n++) {
+        curEnt = topaz_array_at(e->children, topazEntity_t *, n);
         topaz_entity_step(curEnt);
-        if (self != e->id) return;        
+        if (self != e->valid) return;        
     }
 
 
@@ -240,7 +268,7 @@ void topaz_entity_step(topazEntity_t * e) {
     for(n = 0; n < numComp; ++n) {
         curComp = topaz_array_get_data(e->componentsBefore);
         topaz_component_step(curComp);
-        if (self != e->id) return;
+        if (self != e->valid) return;
     }
 
     topaz_spatial_check_update(e->spatial);
@@ -248,21 +276,21 @@ void topaz_entity_step(topazEntity_t * e) {
 
 /// Updates this entity, all child entities, and components
 ///
-void topaz_entity_draw(topazEntity_t *) {
+void topaz_entity_draw(topazEntity_t * e) {
     if (!e->draw) return;
-    uint64_t self = e->id;
+    uint64_t self = e->valid;
 
 
 
 
     // PRE draw
-    if (e->api.on_pre_draw) e->api->on_pre_draw(e, e->api.userData);
-    if (self != e->id) return;
+    if (e->api.on_pre_draw) e->api.on_pre_draw(e, e->api.userData);
+    if (self != e->valid) return;
 
 
     topazEntity_t * curEnt;
     topazComponent_t * curComp;
-
+    uint32_t n;
 
 
     // BEFORE-DRAW COMPONENTS
@@ -277,13 +305,13 @@ void topaz_entity_draw(topazEntity_t *) {
     for(n = 0; n < numComp; ++n) {
         curComp = topaz_array_get_data(e->componentsBefore);
         topaz_component_draw(curComp);
-        if (self != e->id) return;
+        if (self != e->valid) return;
     }
 
 
 
     // CHILDREN-DRAW
-    uint32_t numEnts = topaz_array_get_size(e->children), n;
+    uint32_t numEnts = topaz_array_get_size(e->children);
     topaz_array_set_size(e->activeSet, numEnts);
     memcpy(
         topaz_array_get_data(e->activeSet),
@@ -294,7 +322,7 @@ void topaz_entity_draw(topazEntity_t *) {
     for(int i = 0; i < numEnts; i++) {
         curEnt = topaz_array_at(e->children, topazEntity_t *, i);
         topaz_entity_draw(curEnt);
-        if (self != e->id) return;        
+        if (self != e->valid) return;        
     }
 
 
@@ -322,7 +350,7 @@ void topaz_entity_draw(topazEntity_t *) {
     for(n = 0; n < numComp; ++n) {
         curComp = topaz_array_get_data(e->componentsBefore);
         topaz_component_draw(curComp);
-        if (self != e->id) return;
+        if (self != e->valid) return;
     }
 
     topaz_spatial_check_update(e->spatial);
@@ -333,18 +361,22 @@ void topaz_entity_draw(topazEntity_t *) {
 
 void topaz_entity_attach(topazEntity_t * e, topazEntity_t * child) {
     if (child == e ||
-        !child->id) {
+        !child->valid) {
         return;
     }
 
-    if (child->parent) {
+    if (child->parent->valid) {
         topaz_entity_detach(child);
     } 
 
     if (!topaz_array_get_size(e->children)) {
         topaz_array_push(e->children, child);
     } else {
-        uint32_t iter = topaz_array_lower_bound(e->children, child, priority_comp);
+        uint32_t iter = topaz_array_lower_bound(
+            e->children, 
+            child, 
+            (int(*)(const void *, const void *))priority_comp
+        );
         topaz_array_insert(e->children, iter, child);
     }
 
@@ -355,13 +387,13 @@ void topaz_entity_attach(topazEntity_t * e, topazEntity_t * child) {
 
 
 void topaz_entity_detach(topazEntity_t * e) {
-    if (!e->id) return;
-    if (!e->parent) return;
+    if (!e->valid) return;
+    if (!e->parent->valid) return;
 
     uint32_t iter = topaz_array_lower_bound(
         e->parent->children, 
         e,
-        priority_comp
+        (int(*)(const void *, const void *))priority_comp
     );
 
     uint32_t i;
@@ -375,7 +407,7 @@ void topaz_entity_detach(topazEntity_t * e) {
     #endif
     topaz_array_remove(e->parent->children, i);
 
-    e->world = nullptr;
+    e->parent = topaz_entity_null();
     topaz_spatial_set_as_parent(e->spatial, NULL);
 
 
@@ -384,33 +416,35 @@ void topaz_entity_detach(topazEntity_t * e) {
 }
 
 topazEntity_t * topaz_entity_get_parent(const topazEntity_t * e) {
-    return r->parent;
+    return e->parent;
 }
 
 
 
 
 void topaz_entity_set_priority(topazEntity_t * e, int priority) {
-    if (!e->id) return;
+    if (!e->valid) return;
 
-    if (e->parent) {
+    if (e->parent->valid) {
         void(*tempAttach)(topazEntity_t *, void *) = e->api.on_attach;
         void(*tempDetach)(topazEntity_t *, void *) = e->api.on_detach;
+
         topazEntity_t * parent = e->parent;
         topaz_entity_detach(e);
         e->priority = priority;
-        topaz_entity_attach(e->parent, e);
+        topaz_entity_attach(parent, e);
 
         e->api.on_attach = tempAttach;
         e->api.on_detach = tempDetach;
     } else {
-        priority = p;
+        e->priority = priority;
     }
 
 }
 
 void topaz_entity_set_priority_last(topazEntity_t * e) {
     if (!e->parent) return;
+    if (!e->valid) return;
 
     topaz_entity_set_priority(
         e,
@@ -425,6 +459,7 @@ void topaz_entity_set_priority_last(topazEntity_t * e) {
 
 void topaz_entity_set_priority_first(topazEntity_t * e) {
     if (!e->parent) return;
+    if (!e->valid) return;
 
     topaz_entity_set_priority(
         e,
@@ -439,6 +474,7 @@ void topaz_entity_set_priority_first(topazEntity_t * e) {
 
 
 int topaz_entity_get_priority(const topazEntity_t * e) {
+    // for null entities, its already 0. No need for Id check
     return e->priority;
 }
 
@@ -447,30 +483,32 @@ int topaz_entity_get_priority(const topazEntity_t * e) {
 
 int topaz_entity_is_stepping(const topazEntity_t * e) {
     if (!e->step) return FALSE;
-    if (!e->parent) return true;
+    if (!e->parent->valid) return TRUE;
     do {
         e = e->parent;
         if (!e->step) return FALSE;
-    } while(e->parent);
+    } while(e->parent->valid);
     return TRUE;
 }
 
 int topaz_entity_is_drawing(const topazEntity_t * e) {
     if (!e->draw) return FALSE;
-    if (!e->parent) return TRUE;
+    if (!e->parent->valid) return TRUE;
     do {
         e = e->parent;
         if (!e->draw) return FALSE;
-    } while(e->parent;
+    } while(e->parent->valid);
     return TRUE;
 
 }
 
 void topaz_entity_set_stepping(topazEntity_t * e, int d) {
+    if (!e->valid) return;
     e->step = d;
 }
 
 void topaz_entity_set_drawing(topazEntity_t * e, int d) {
+    if (!e->valid) return;
     e->draw = d;
 }
 
@@ -489,14 +527,16 @@ int topaz_entity_get_drawing(const topazEntity_t * e) {
 
 
 
-void topaz_entity_add_component(topazEntity * e, topazComponent_t * t) {
+void topaz_entity_add_component(topazEntity_t * e, topazComponent_t * t) {
+    if (!e->valid) return;
     if (topaz_component_get_host(t) == e) return;
     topaz_array_push(e->components, t);
     topaz_array_push(e->componentsBefore, t);
     topaz_component_attach(t, e);
 }
 
-void topaz_entity_add_component_after(topazEntity *, topazComponent_t *) {
+void topaz_entity_add_component_after(topazEntity_t * e, topazComponent_t * t) {
+    if (!e->valid) return;
     if (topaz_component_get_host(t) == e) return;
     topaz_array_push(e->components, t);
     topaz_array_push(e->componentsAfter, t);
@@ -505,6 +545,7 @@ void topaz_entity_add_component_after(topazEntity *, topazComponent_t *) {
 
 
 const topazArray_t * topaz_entity_get_components(topazEntity_t * t) {
+    // For null entities, its already empty.
     return t->components;
 }
 
@@ -514,39 +555,70 @@ topazComponent_t * topaz_component_query(topazEntity_t * e, const topazString_t 
     for(i = 0; i < len; ++i) {
         if (topaz_string_test_eq(
                 str, 
-                topaz_array_at(
-                    e->components,
-                    topazComponent_t *,
-                    i
+                topaz_component_get_tag(
+                    topaz_array_at(
+                        e->components,
+                        topazComponent_t *,
+                        i
+                    )
                 )
             )
         ) {
-
+            return topaz_array_at(
+                e->components,
+                topazComponent_t *,
+                i
+            );
         }
     }
+    return NULL;
 }
 
 /// Removes the given component from the entity.
 ///
 void topaz_entity_remove_component(topazEntity_t * e, topazComponent_t * t) {
+    if (topaz_component_get_host(t) != e) return;
+    topaz_component_detach(t);    
+
     uint32_t i;
     uint32_t len; 
 
-    len = topaz_array_get_size(t->components);
+    len = topaz_array_get_size(e->components);
     for(i = 0; i < len; ++i) {
         topazComponent_t * c = topaz_array_at(e->components, topazComponent_t *, i);
         if (c == t) {
-            topaz_array
+            topaz_array_remove(e->components, i);
+            break;
         }
     }
+
+    len = topaz_array_get_size(e->componentsBefore);
+    for(i = 0; i < len; ++i) {
+        topazComponent_t * c = topaz_array_at(e->componentsBefore, topazComponent_t *, i);
+        if (c == t) {
+            topaz_array_remove(e->componentsBefore, i);
+            break;
+        }
+    }
+
+    len = topaz_array_get_size(e->componentsAfter);
+    for(i = 0; i < len; ++i) {
+        topazComponent_t * c = topaz_array_at(e->componentsAfter, topazComponent_t *, i);
+        if (c == t) {
+            topaz_array_remove(e->componentsAfter, i);
+            break;
+        }
+    }
+
 }
 
-/// Sets the name of the entity. Once set, it will not change.
-///
-void topaz_entity_set_name(topazEntity_t *, const topazString_t *);
+void topaz_entity_set_name(topazEntity_t * e, const topazString_t * s) {
+    if (!e->valid) return;
+    topaz_string_set(e->name, s);
+}
 
-/// Gets the name of the entity.
-///
-const topazString_t * topaz_entity_get_name(const topazEntity_t *);
+const topazString_t * topaz_entity_get_name(const topazEntity_t * e) {
+    return e->name;
+}
 
 
