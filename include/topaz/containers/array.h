@@ -96,6 +96,33 @@ void topaz_array_push_n(topazArray_t *, void * element, uint32_t count);
 void topaz_array_remove(topazArray_t *, uint32_t index);
 
 
+/// Returns the index that this element should be inserted into 
+/// given that the rest of the array is sorted.
+///
+uint32_t topaz_array_lower_bound(
+    const topazArray_t *, 
+
+    /// The element in question
+    ///    
+    const void * element, 
+
+    /// Returns whether the value that a points to is "less" than 
+    /// the value that b points to.
+    ///
+    int(*less)(const void * a, const void * b)
+);
+
+/// Inserts the given value at the given position. 
+///
+#define topaz_array_insert(__A__, __I__, __V__) (topaz_array_insert_n(__A__, __I__, &(__V__), 1))
+
+
+
+/// Inserts the given number of elements at the given index.
+///
+void topaz_array_insert_n(topazArray_t *, uint32_t index, void * ele, uint32_t count);
+
+
 /// Gets a pointer to the raw data of the array
 /// This pointer is guaranteed to be a contiguous memory block of the 
 /// current state of the array. It is editable.

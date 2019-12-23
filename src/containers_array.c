@@ -84,6 +84,40 @@ topazArray_t * topaz_array_clone(const topazArray_t * src) {
     return a;
 }
 
+uint32_t topaz_array_lower_bound(const topazArray_t * t, const void * ptrToEle, int(*comp)(const void * a, const void * b)) {
+    int64_t lo = 0;
+    int64_t hi = t->size;
+    int64_t mid;
+    while(lo < hi) {
+        mid = lo + ((hi-lo) >> 1);
+        void * val = t->data + t->sizeofType*mid;
+        if (comp(ptrToEle, val)) {
+            hi = mid;
+        } else {
+            lo = mid+1;
+        }
+    }
+
+    return lo;
+}
+
+uint32_t topaz_array_insert_n(topazArray_t * t, uint32_t index, void * ele, uint32_t count) {
+    topaz_array_set_size(t, t->size+count);
+
+    memmove(
+        t->data+(t->sizeofType*index),
+        t->data+(t->sizeofType*(index+count)),
+        t->size-(t->sizeofType*index)
+    );
+    t->size+=count;
+
+    memcpy(
+        t->data+(t->sizeofType*index),
+        ele,
+        count*(t->sizeofType)
+    );
+}
+
 
 uint32_t topaz_array_get_size(const topazArray_t * t) {
     #ifdef TOPAZDC_DEBUG
