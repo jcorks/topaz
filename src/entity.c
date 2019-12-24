@@ -48,7 +48,6 @@ DEALINGS IN THE SOFTWARE.
 
 // Entities are never deleted and freed. Instead, they are recycled.
 static topazArray_t * dead  = NULL;
-static uint64_t idPool = 1;
 
 struct topazEntity_t {
     topazEntity_t * parent;
@@ -75,7 +74,7 @@ int priority_comp(const topazEntity_t * a, const topazEntity_t * b) {
     return a->priority < b->priority;
 }
 
-const topazEntity_t * topaz_entity_null() {
+topazEntity_t * topaz_entity_null() {
     static topazEntity_t * e = NULL;
     if (!e) {
         e = calloc(1, sizeof(topazEntity_t));
@@ -148,7 +147,7 @@ topazEntity_Attributes_t topaz_entity_get_attributes(const topazEntity_t * e) {
 }
 
 
-int topaz_component_is_valid(const topazEntity_t * e) {
+int topaz_entity_is_valid(const topazEntity_t * e) {
     return e->valid;
 }
 
@@ -530,17 +529,17 @@ int topaz_entity_get_drawing(const topazEntity_t * e) {
 void topaz_entity_add_component(topazEntity_t * e, topazComponent_t * t) {
     if (!e->valid) return;
     if (topaz_component_get_host(t) == e) return;
+    topaz_component_attach(t, e);
     topaz_array_push(e->components, t);
     topaz_array_push(e->componentsBefore, t);
-    topaz_component_attach(t, e);
 }
 
 void topaz_entity_add_component_after(topazEntity_t * e, topazComponent_t * t) {
     if (!e->valid) return;
     if (topaz_component_get_host(t) == e) return;
+    topaz_component_attach(t, e);
     topaz_array_push(e->components, t);
     topaz_array_push(e->componentsAfter, t);
-    topaz_component_attach(t, e);
 }
 
 
@@ -571,7 +570,7 @@ topazComponent_t * topaz_component_query(topazEntity_t * e, const topazString_t 
             );
         }
     }
-    return NULL;
+    return topaz_component_null();
 }
 
 /// Removes the given component from the entity.

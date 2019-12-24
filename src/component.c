@@ -32,10 +32,11 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/component.h>
 #include <topaz/entity.h>
 #include <topaz/spatial.h>
+#include <topaz/containers/table.h>
+#include <topaz/containers/array.h>
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdarg.h>
 #include <stdio.h>
 #ifdef TOPAZDC_DEBUG
 #include <assert.h>
@@ -63,6 +64,7 @@ struct topazComponent_t {
     
     topazTable_t * events;
     topazArray_t * eventStore;
+    topazArray_t * eventStoreDead;
 
     topazComponent_Attributes_t api;
 
@@ -93,13 +95,17 @@ topazComponent_t * topaz_component_create_with_attributes(const topazComponent_A
     topazComponent_t * out;
     uint32_t deadLen = topaz_array_get_size(dead);
     if (deadLen) {
-
+        out = topaz_array_at(dead, topazComponent_t *, deadLen-1);
+        topaz_array_set_size(dead, deadLen-1);  
     } else {
         out = calloc(1, sizeof(topazComponent_t));
         out->host = TOPAZ_ENULL;
-        out->events = topaz_table_create_hash_string();
-        out->eventStore = topaz_array_new(sizeof(EventSet));
+        out->events = topaz_table_create_hash_topaz_string();
+        out->eventStore = topaz_array_create(sizeof(EventSet));
+        out->eventStoreDead = topaz_array_create(sizeof(int));
+        out->tag = topaz_string_create();
     }
+    topaz_array_set_size(out->eventStore, 1);    
     out->step = TRUE;
     out->draw = TRUE;
     out->api = *api;
@@ -123,11 +129,11 @@ void topaz_component_set_attributes(topazComponent_t * c, const topazComponent_A
 }
 
 
-topazComponent_t topaz_component_null() {
+topazComponent_t * topaz_component_null() {
     static topazComponent_t * c = NULL;
     if (!c) {
         c = calloc(1, sizeof(topazComponent_t));
-        c->events = topaz_table_create_hash_string();
+        c->events = topaz_table_create_hash_topaz_string();
         c->host = TOPAZ_ENULL;
     }
     return c;
@@ -142,7 +148,10 @@ void topaz_component_destroy(topazComponent_t * c) {
     }    
 
     topaz_array_set_size(c->eventStore, 0);
+    topaz_array_set_size(c->eventStoreDead, 0);
     topaz_table_clear(c->events);
+    topaz_string_clear(c->tag);
+
     c->step = FALSE;
     c->draw = FALSE;
     c->valid = FALSE;
@@ -152,146 +161,352 @@ void topaz_component_destroy(topazComponent_t * c) {
 
 void topaz_component_attach(topazComponent_t * c, topazEntity_t * e) {
     if (!c->valid) return;
-    
+    if (topaz_entity_is_valid(c->host)) {
+        topaz_component_detach(c);
+    }
+    c->host = e;
+    topaz_component_emit_event(c, TOPAZ_STR_CAST("on-attach"), e, NULL);    
 }
 
-/// Detaches the component from an entity. This triggers the detach event.
-///
-void topaz_component_detach(topazComponent_t *) {
-    topaz_component_emit_event(c, TOPAZ_STR_CAST("on-detach"), e, NULL);
-    
+void topaz_component_detach(topazComponent_t * t) {
+    if (t->valid!=TRUE) return;
+    if (!topaz_entity_is_valid(t->host)) return;
+
+    t->valid = 2; // prevent self-recursion
+    topaz_entity_remove_component(t->host, t);
+    t->valid = TRUE;
+
+
+    topaz_component_emit_event(t, TOPAZ_STR_CAST("on-detach"), TOPAZ_ENULL, NULL);
+    t->host = TOPAZ_ENULL;
+            
 }
 
 
 
-/// Steps the component.
-///
-void topaz_component_step(topazComponent_t *);
+void topaz_component_step(topazComponent_t * c) {
+    if (c->step && c->api.on_step)
+        c->api.on_step(c, c->api.userData);
+}
 
-/// Draws the component.
-///
-void topaz_component_draw(topazComponent_t *);
-
-
-
-/// Gets whether this component will update when a step 
-/// is requested.
-///
-int topaz_component_get_stepping(const topazComponent_t *);
-
-/// Gets whether this component will draw when a draw
-/// is requested.
-///
-int topaz_component_get_drawing(const topazComponent_t *);
+void topaz_component_draw(topazComponent_t * c) {
+    if (c->draw && c->api.on_draw)
+        c->api.on_draw(c, c->api.userData);
+}
 
 
 
-/// Sets whether this component will step.
-///
-void topaz_component_set_stepping(topazComponent_t *, int);
+int topaz_component_get_stepping(const topazComponent_t * c) {
+    return c->step;
+}
 
-/// Sets whether this component will draw.
-///
-void topaz_component_set_drawing(topazComponent_t *, int);
-
-/// Returns the tag for the component.
-///
-const topazString_t * topaz_component_get_tag();
-
-/// Sets the tag for the component.
-///
-void topaz_component_set_tag(topazComponent_t *, const topazString_t *);
-
-/// Returns the set host of the component. If no host is set,
-/// nullptr is returned.
-///
-topazEntity_t * topaz_component_get_host(const topazComponent_t *);
+int topaz_component_get_drawing(const topazComponent_t * c) {
+    return c->draw;
+}
 
 
 
+void topaz_component_set_stepping(topazComponent_t * c, int d) {
+    if (!c->valid) return;
+    c->step = d;
+}
+
+void topaz_component_set_drawing(topazComponent_t * c, int d) {
+    if (!c->valid) return;
+    c->draw = d;
+}
+
+const topazString_t * topaz_component_get_tag(const topazComponent_t * c) {
+    return c->tag;
+}
+
+void topaz_component_set_tag(topazComponent_t * c, const topazString_t * s) {
+    if (!c->valid) return;
+    topaz_string_set(c->tag, s);
+}
+
+topazEntity_t * topaz_component_get_host(const topazComponent_t * c) {
+    return c->host;
+}
 
 
-/// Function type for all event signals.
-///
-typedef int (*topaz_event_handler)(
-    /// The component instance handling this event.
-    ///
-    topazComponent_t * component, 
 
-    /// The user data specifified when setting this handler.
-    ///
-    void * dataEvent,
-
-    /// The entity that triggered this event.
-    /// 
+int topaz_component_emit_event(
+    topazComponent_t * c, 
+    const topazString_t * eventName, 
     topazEntity_t * source, 
+    void * sourceData) 
+{
+    int index = (int)(intptr_t)topaz_table_find(c->events, eventName);
+    if (!index) {
+        #ifdef TOPAZDC_DEBUG
+            printf(
+                "topaz_component_emit_event: (component %s) unknown signal %s\n", 
+                topaz_string_get_c_str(c->tag),
+                topaz_string_get_c_str(eventName)
+            );
+        #endif
+        return FALSE;
+    }
 
-    /// Data sent when the emitted event.
-    ///
-    void * sourceEvent
-);
-
-
-
-/// Triggers the specified event for this EventSystem
-///
-/// Returns whether the event was allowed to propogate all the
-/// way to the main handler (in other words, lets you know whether
-/// all the handlers allowed the event to happen)
-/// Source is passed to the handler and is usually the source of the event (but does not have to be)
-/// @param eventName Name of the event. This should match the name that was installed.
-/// @param source Optional ID that indicates the source of the event. For example, in a collision, this may be the object collided with.
-/// @param args Optional string vector with additional information to be used by the event.
-int topaz_component_emit_event(topazComponent_t *, const topazString_t * eventName, topazEntity_t * source, void * sourceData);
-
-/// Same as topaz_component_emit_event() but the source entity and source data are NULL
-///
-int topaz_component_emit_event_anonymous(topazComponent_t *, const topazString_t * eventName);
-
-/// Returns whether there exists at least one handler for the given event
-///
-int topaz_component_can_handle_event(topazComponent_t *, const topazString_t * eventName);
+    #ifdef TOPAZDC_DEBUG
+        assert(source && "Entity source of an even emission must not be NULL.");
+    #endif
 
 
-/// Adds a hook to the event. 
-///
-/// A hook happens at the end of a given event after all the
-/// handlers have been run. Hooks occur regardless of event handler propogation.
-/// (the return value is ignored for all hooks)
-void topaz_component_install_hook(topazComponent_t *, const topazString_t * eventName, topaz_event_handler, void * eventData);
+    #ifdef TOPAZDC_DEBUG
+        assert(index > 0 && index < topaz_array_get_size(c->eventStore));
+    #endif
+
+
+    EventSet * set = &topaz_array_at(c->eventStore, EventSet, index);
+
+
+    int retval = TRUE;
+
+    uint32_t handlersLen = topaz_array_get_size(set->handlers);
+    EventHandler * handler;
+
+    uint32_t i;
+    if (handlersLen) {
+        // reverse order
+        for(i = handlersLen - 1; i >= 0; --i) {
+            handler = &topaz_array_at(set->handlers, EventHandler, i);            
+            if (!handler->fn(
+                c,
+                handler->data,
+                source,
+                sourceData
+            )) {
+                // request cancellation
+                retval = FALSE;
+                break;
+            }
+        }
+    }
+
+    uint32_t hooksLen = topaz_array_get_size(set->hooks);
+    for(i = 0; i < hooksLen; ++i) {
+        handler = &topaz_array_at(set->hooks, EventHandler, i);     
+        handler->fn(
+            c,
+            handler->data,
+            source,
+            sourceData
+        );
+    }
+
+    return retval;    
+}
+
+int topaz_component_emit_event_anonymous(topazComponent_t * c, const topazString_t * eventName) {
+    return topaz_component_emit_event(
+        c,
+        eventName,
+        TOPAZ_ENULL,
+        NULL
+    );
+}
+
+int topaz_component_can_handle_event(topazComponent_t * c, const topazString_t * eventName) {
+    if (!c->valid) return FALSE;
+    if (topaz_table_entry_exists(c->events, eventName)) {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+
+void topaz_component_install_hook(topazComponent_t * c, const topazString_t * eventName, topaz_event_handler fn, void * eventData) {
+    if (!fn) return;
+    int index = (int)(intptr_t)topaz_table_find(c->events, eventName);
+    if (!index) {
+        #ifdef TOPAZDC_DEBUG
+            printf(
+                "topaz_component_emit_event: (component %s) unknown signal %s\n", 
+                topaz_string_get_c_str(c->tag),
+                topaz_string_get_c_str(eventName)
+            );
+        #endif
+        return;
+    }
+
+
+    #ifdef TOPAZDC_DEBUG
+        assert(index > 0 && index < topaz_array_get_size(c->eventStore));
+    #endif
+
+
+    EventSet * set = &topaz_array_at(c->eventStore, EventSet, index);
+    EventHandler handler;
+    handler.fn = fn;
+    handler.data = eventData;
+    topaz_array_push(set->hooks, handler);
+}
     
-/// Removes a hook added with InstallHook()
-///
-void topaz_component_uninstall_hook(topazComponent_t *, const topazString_t * eventName, topaz_event_handler, void *);
 
-/// Adds a handler to an event. 
-///
-/// Handlers that are added are run in LIFO order
-/// and their return values dictate whether the event should propogate.
-/// the last handler run for an event is always the main handler of the event.
-void topaz_component_install_handler(topazComponent_t *, const topazString_t * eventName, topaz_event_handler, void *);
-
-/// Removes a handler added with InstallHandler()
-///
-void topaz_component_uninstall_handler(topazComponent_t *, const topazString_t * eventName, topaz_event_handler, void *);
-
-
-/// Returns a list of event names that this eventsystem is able to process
-///
-topazArray_t * topaz_component_get_known_events(topazComponent_t *);
+void topaz_component_uninstall_hook(topazComponent_t * c, const topazString_t * eventName, topaz_event_handler fn, void * eventData) {
+    if (!fn) return;
+    int index = (int)(intptr_t)topaz_table_find(c->events, eventName);
+    if (!index) {
+        #ifdef TOPAZDC_DEBUG
+            printf(
+                "topaz_component_emit_event: (component %s) unknown signal %s\n", 
+                topaz_string_get_c_str(c->tag),
+                topaz_string_get_c_str(eventName)
+            );
+        #endif
+        return;
+    }
 
 
+    #ifdef TOPAZDC_DEBUG
+        assert(index > 0 && index < topaz_array_get_size(c->eventStore));
+    #endif
 
 
-/// Adds a new event to be recognized by the EventSystem.
-///
-/// if mainHandler is nullptr, the event is still added, but has no default
-/// handler is set. The default handler is always guaranteed to run first for the event.
-void topaz_component_install_event(topazComponent_t *, const topazString_t * eventName, topaz_event_handler, void *);
+    EventSet * set = &topaz_array_at(c->eventStore, EventSet, index);
+    uint32_t i;
+    for(i = 0; i < topaz_array_get_size(set->hooks); ++i) {
+        if (topaz_array_at(set->hooks, EventHandler, i).fn   == fn &&
+            topaz_array_at(set->hooks, EventHandler, i).data == eventData) {
+            topaz_array_remove(set->hooks, i);
+        }
+    }
+}
 
-/// removes a handler of an event
-///
-void topaz_component_uninstall_event(topazComponent_t *, const topazString_t * eventName);
+void topaz_component_install_handler(topazComponent_t * c, const topazString_t * eventName, topaz_event_handler fn, void * eventData) {
+    if (!fn) return;
+    int index = (int)(intptr_t)topaz_table_find(c->events, eventName);
+    if (!index) {
+        #ifdef TOPAZDC_DEBUG
+            printf(
+                "topaz_component_emit_event: (component %s) unknown signal %s\n", 
+                topaz_string_get_c_str(c->tag),
+                topaz_string_get_c_str(eventName)
+            );
+        #endif
+        return;
+    }
+
+
+    #ifdef TOPAZDC_DEBUG
+        assert(index > 0 && index < topaz_array_get_size(c->eventStore));
+    #endif
+
+
+    EventSet * set = &topaz_array_at(c->eventStore, EventSet, index);
+    EventHandler handler;
+    handler.fn = fn;
+    handler.data = eventData;
+    topaz_array_push(set->handlers, handler);
+}
+
+void topaz_component_uninstall_handler(topazComponent_t * c, const topazString_t * eventName, topaz_event_handler fn, void * eventData) {
+
+    if (!fn) return;
+    int index = (int)(intptr_t)topaz_table_find(c->events, eventName);
+    if (!index) {
+        #ifdef TOPAZDC_DEBUG
+            printf(
+                "topaz_component_emit_event: (component %s) unknown signal %s\n", 
+                topaz_string_get_c_str(c->tag),
+                topaz_string_get_c_str(eventName)
+            );
+        #endif
+        return;
+    }
+
+
+    #ifdef TOPAZDC_DEBUG
+        assert(index > 0 && index < topaz_array_get_size(c->eventStore));
+    #endif
+
+
+    EventSet * set = &topaz_array_at(c->eventStore, EventSet, index);
+    uint32_t i;
+    for(i = 0; i < topaz_array_get_size(set->handlers); ++i) {
+        if (topaz_array_at(set->handlers, EventHandler, i).fn   == fn &&
+            topaz_array_at(set->handlers, EventHandler, i).data == eventData) {
+
+            topaz_array_remove(set->handlers, i);
+        }
+    }
+}
+
+
+topazArray_t * topaz_component_get_known_events(topazComponent_t * c) {
+    topazArray_t * out = topaz_array_create(sizeof(topazString_t*));
+    if (!c->valid) return out;
+
+    topazTableIter_t * iter = topaz_table_iter_create();
+    for( topaz_table_iter_start(iter, c->events);
+        !topaz_table_iter_is_end(iter);
+         topaz_table_iter_proceed(iter)) {
+
+        topazString_t * str = topaz_string_clone(
+            topaz_table_iter_get_key(iter)
+        );
+
+        topaz_array_push(out, str);
+    }
+    topaz_table_iter_destroy(iter);
+    return out;
+}
+
+
+
+
+void topaz_component_install_event(
+    topazComponent_t * c, 
+    const topazString_t * eventName, 
+    topaz_event_handler handler, 
+    void * data) 
+{
+    if (!c->valid) return;
+    if (topaz_table_entry_exists(c->events, eventName)) {
+        return;
+    }
+
+    EventSet * set;
+    uint32_t deadLen = topaz_array_get_size(c->eventStoreDead);
+    int index;
+    if (deadLen) {
+        index = topaz_array_at(c->eventStoreDead, int, deadLen-1);
+        topaz_array_set_size(c->eventStoreDead, deadLen-1);
+
+        set = &topaz_array_at(c->eventStore, EventSet, index);
+        topaz_array_set_size(set->hooks,    0);
+        topaz_array_set_size(set->handlers, 0);
+    } else {
+        index = topaz_array_get_size(c->eventStore);
+        topaz_array_set_size(c->eventStore, index+1);
+
+        set = &topaz_array_at(c->eventStore, EventSet, index);
+        set->hooks    = topaz_array_create(sizeof(EventHandler));
+        set->handlers = topaz_array_create(sizeof(EventHandler));
+    }
+    topaz_table_insert(c->events, eventName, (void*)(intptr_t)index);
+
+    if (handler) {
+        EventHandler h;
+        h.fn = handler;
+        h.data = data;
+
+        topaz_array_push(set->handlers, h);
+    }
+    
+
+}
+
+void topaz_component_uninstall_event(topazComponent_t * c, const topazString_t * eventName) {
+    if (!c->valid) return;
+    int deadIndex = (int)(intptr_t)topaz_table_find(c->events, eventName);
+    if (deadIndex) {
+        topaz_array_push(c->eventStoreDead, deadIndex);
+        topaz_table_remove(c->events, eventName);   
+    }
+}
 
 
 

@@ -105,11 +105,10 @@ void topaz_array_insert_n(topazArray_t * t, uint32_t index, void * ele, uint32_t
     topaz_array_set_size(t, t->size+count);
 
     memmove(
-        t->data+(t->sizeofType*index),
         t->data+(t->sizeofType*(index+count)),
-        t->size-(t->sizeofType*index)
+        t->data+(t->sizeofType*index),
+        t->sizeofType*(t->size-index)
     );
-    t->size+=count;
 
     memcpy(
         t->data+(t->sizeofType*index),

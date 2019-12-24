@@ -119,6 +119,16 @@ const char * topaz_string_get_c_str(const topazString_t *);
 uint32_t topaz_string_get_length(const topazString_t *);
 
 
+/// Gets the byte length of the data representation 
+/// of this string. Depending on the context, this could 
+/// match the length of the string, or it could be wider.
+///
+uint32_t topaz_string_get_byte_length(const topazString_t *);
+
+/// Gets the byte data pointer for this strings. Its length is equal to 
+/// topaz_string_get_byte_length()
+///
+void * topaz_string_get_byte_data(const topazString_t *);
 
 
 //////// Tests

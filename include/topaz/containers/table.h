@@ -49,7 +49,11 @@ typedef struct topazTable_t topazTable_t;
 
 /// Creates a new table whose keys are C-strings.
 ///
-topazTable_t * topaz_table_create_hash_string();
+topazTable_t * topaz_table_create_hash_c_string();
+
+/// Creates a new table while keys are topaz strings.
+///
+topazTable_t * topaz_table_create_hash_topaz_string();
 
 
 /// Creates a new table whose keys are a byte-buffer of 
@@ -150,6 +154,10 @@ typedef struct topazTableIter_t topazTableIter_t;
 ///
 topazTableIter_t * topaz_table_iter_create();
 
+
+/// Destroys a table iter.
+///
+void topaz_table_iter_destroy(topazTableIter_t *);
 
 /// Begins the iterating process by initializing the iter 
 /// to contain the first key-value pair within the table.

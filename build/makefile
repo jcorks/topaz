@@ -1,7 +1,7 @@
 CC=gcc -std=c11
 RM=rm
 OPTS_RELEASE = -Wall -Werror -pedantic -O2
-OPTS_DEBUG = -Wall -Werror -pedantic -g -DTOPAZDC_DEBUG
+OPTS_DEBUG = -fsanitize=address -fsanitize=undefined -Wall -Werror -pedantic -g -DTOPAZDC_DEBUG
 
 
 release:
@@ -15,7 +15,7 @@ debug:
 
 
 test:
-	$(CC) -I../include/ $(OPTS_DEBUG) ../src/* ../tests/* ../system/time_posix/src/*.c -o libtopaz_test -lm
+	$(CC) -I../include/ $(OPTS_DEBUG) ../src/* ../tests/* -o libtopaz_test -lm
 
 
 clean: 

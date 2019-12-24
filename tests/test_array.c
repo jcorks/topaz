@@ -48,6 +48,10 @@ int test__array_simple() {
     return 0;
 }
 
+static int int_cmp(const void * a, const void * b) {
+    return *(int*)a < *(int*)b;
+}
+
 int test__array_advanced() {
     uint32_t i = 0;
     topazArray_t * arr = topaz_array_create(sizeof(uint32_t));
@@ -87,6 +91,42 @@ int test__array_advanced() {
         }
     }
 
+
+    topaz_array_set_size(copy, 0);
+    i = 10; topaz_array_push(copy, i);
+    i = 15; topaz_array_push(copy, i);
+    i = 100; topaz_array_push(copy, i);
+    i = 101; topaz_array_push(copy, i);
+    i = 101; topaz_array_push(copy, i);
+    i = 121; topaz_array_push(copy, i);
+    i = 1210; topaz_array_push(copy, i);
+    
+    i = 40;
+    if (topaz_array_lower_bound(copy, &i, int_cmp)!=2) {
+        return 5;
+    }
+
+    i = 9;
+    if (topaz_array_lower_bound(copy, &i, int_cmp)!=0) {
+        return 6;
+    }
+    
+    i = 1221;
+    if (topaz_array_lower_bound(copy, &i, int_cmp)!=topaz_array_get_size(copy)) {
+        return 7;
+    }
+
+
+
+    i = 103;
+    topaz_array_insert(copy, 5, i);
+
+    i = 104;
+    if (topaz_array_get_size(copy) != 8 ||
+        topaz_array_lower_bound(copy, &i, int_cmp) != 6 ||
+        topaz_array_at(copy, int, 5) != 103) {
+        return 8;
+    }
     
 
     topaz_array_destroy(copy);

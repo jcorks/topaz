@@ -34,7 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/containers/string.h>
 #include <topaz/containers/array.h>
-
+typedef struct topazEntity_t topazEntity_t;
 /*
 
     Component
@@ -149,7 +149,7 @@ void topaz_component_set_drawing(topazComponent_t *, int);
 
 /// Returns the tag for the component.
 ///
-const topazString_t * topaz_component_get_tag();
+const topazString_t * topaz_component_get_tag(const topazComponent_t *);
 
 /// Sets the tag for the component.
 ///
@@ -160,8 +160,11 @@ void topaz_component_set_tag(topazComponent_t *, const topazString_t *);
 ///
 topazEntity_t * topaz_component_get_host(const topazComponent_t *);
 
-
-
+/// Returns the emtpy component. This value is consistent across all 
+/// invocations.
+///
+topazComponent_t * topaz_component_null();
+#define TOPAZ_CNULL (topaz_component_null())
 
 
 /// Function type for all event signals.

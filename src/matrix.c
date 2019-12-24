@@ -25,7 +25,7 @@ static topazMatrix_t scaleScratch;
 
 
 
-void topaz_matrix_set_to_identity(topazMatrix_t * m) {
+void topaz_matrix_set_identity(topazMatrix_t * m) {
     memcpy(m->data, identity_matrix, sizeof(float)*16);
 }
 

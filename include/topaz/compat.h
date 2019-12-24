@@ -52,7 +52,7 @@ DEALINGS IN THE SOFTWARE.
 #endif
 
 #ifndef FALSE 
-#define FALSE 1
+#define FALSE 0
 #endif
 
 

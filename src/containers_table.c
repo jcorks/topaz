@@ -30,6 +30,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/compat.h>
 #include <topaz/containers/table.h>
+#include <topaz/containers/string.h>
 
 #include <string.h>
 #include <stdlib.h>
@@ -68,7 +69,7 @@ typedef uint32_t (*KeyHashFunction)(const void * data, uint32_t param);
 typedef int (*KeyCompareFunction)(const void * dataA, const void * dataB, uint32_t param);
 
 
-
+typedef void (*KeyCleanFunction)(void * dataA);
 
 
 struct topazTable_t {
@@ -88,6 +89,10 @@ struct topazTable_t {
 
     // Compares keys
     KeyCompareFunction keyCmp;
+
+    // frees a key once its destroyed
+    KeyCleanFunction keyRemove;
+
     
     // for static key sizes. If -1, is dynamic (i.e. strings)
     // if 0, the key has no allocated size (pointer / value direct keys)
@@ -117,7 +122,7 @@ struct topazTableIter_t {
     int isEnd;
 };
 
-
+static void key_destroy_dont(void * k) {}
 
 // convert a table to a bucket index
 static uint32_t hash_to_index(const topazTable_t * t, uint32_t hash) {
@@ -141,6 +146,32 @@ static int key_cmp_fn_buffer(const void * a, const void * b, uint32_t len) {
 }
 
 
+static int key_cmp_fn_c_str(const void * a, const void * b, uint32_t len) {
+    return strcmp(a, b)==0;
+}
+
+
+static uint32_t hash_fn_topaz_str(uint8_t * src, uint32_t len) {
+    topazString_t * str = (void*)src;
+    uint8_t * data = topaz_string_get_byte_data(str);
+    len = topaz_string_get_byte_length(str);
+
+    uint32_t hash = 5381;
+
+    uint32_t i;
+    for(i = 0; i < len; ++i, ++data) {
+        hash = (hash<<5) + hash + *data;
+    } 
+    return hash;
+}
+
+static int key_cmp_fn_topaz_str(const void * a, const void * b, uint32_t len) {
+    return topaz_string_test_eq(a, b);
+}
+
+
+
+
 
 
 // pointer / value to a table directly
@@ -151,6 +182,9 @@ static uint32_t hash_fn_value(const void * data, uint32_t nu) {
 static int key_cmp_fn_value(const void * a, const void * b, uint32_t nu) {
     return a==b;
 }
+
+
+
 
 
 
@@ -259,26 +293,36 @@ static void topaz_table_remove_entry(topazTable_t * t, topazTableEntry_t * entry
         assert(entry && "topazTableEntry_t pointer cannot be NULL.");
     #endif
 
-    if (entry->keyLen) {
-        free(entry->key);
-    }
+    t->keyRemove(entry->key);
     free(entry);
 }
 
 
 topazTable_t * topaz_table_create_hash_pointer() {
     topazTable_t * t = calloc(sizeof(topazTable_t), 1);
-    t->hash   = hash_fn_value;
-    t->keyCmp = key_cmp_fn_value;
-    t->keyLen = 0;
+    t->hash      = hash_fn_value;
+    t->keyCmp    = key_cmp_fn_value;
+    t->keyRemove = key_destroy_dont;
+    t->keyLen    = 0;
     return topaz_table_initialize(t);
 }
 
-topazTable_t * topaz_table_create_hash_string() {
+topazTable_t * topaz_table_create_hash_c_string() {
     topazTable_t * t = calloc(sizeof(topazTable_t), 1);
-    t->hash   = (KeyHashFunction)hash_fn_buffer;
-    t->keyCmp = key_cmp_fn_buffer;
-    t->keyLen = -1;
+    t->hash      = (KeyHashFunction)hash_fn_buffer;
+    t->keyCmp    = key_cmp_fn_c_str;
+    t->keyRemove = (KeyCleanFunction)free;
+    t->keyLen    = -1;
+    return topaz_table_initialize(t);
+}
+
+
+topazTable_t * topaz_table_create_hash_topaz_string() {
+    topazTable_t * t = calloc(sizeof(topazTable_t), 1);
+    t->hash      = (KeyHashFunction)hash_fn_topaz_str;
+    t->keyCmp    = key_cmp_fn_topaz_str;
+    t->keyRemove = (KeyCleanFunction)topaz_string_destroy;
+    t->keyLen    = -2;
     return topaz_table_initialize(t);
 }
 
@@ -287,9 +331,10 @@ topazTable_t * topaz_table_create_hash_buffer(int size) {
         assert(size > 0 && "topaz_table_create_hash_buffer() requires non-zero size.");
     #endif
     topazTable_t * t = calloc(sizeof(topazTable_t), 1);
-    t->hash   = (KeyHashFunction)hash_fn_buffer;
-    t->keyCmp = key_cmp_fn_buffer;
-    t->keyLen = size;
+    t->hash      = (KeyHashFunction)hash_fn_buffer;
+    t->keyCmp    = key_cmp_fn_buffer;
+    t->keyRemove = (KeyCleanFunction)free;
+    t->keyLen    = size;
     return topaz_table_initialize(t);    
 }
 
@@ -305,7 +350,7 @@ void topaz_table_insert(topazTable_t * t, const void * key, void * value) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazTable_t pointer cannot be NULL.");
     #endif
-    uint32_t keyLen = t->keyLen == -1 ? strlen(key) : t->keyLen;
+    uint32_t keyLen = t->keyLen == -1 ? strlen(key)+1 : t->keyLen == -2 ? 0 : t->keyLen;
     uint32_t hash = t->hash(key, keyLen);
     uint32_t bucketID = hash_to_index(t, hash);
 
@@ -331,8 +376,10 @@ void topaz_table_insert(topazTable_t * t, const void * key, void * value) {
         bucketLen++;
     }    
 
-
-    
+    // case for 
+    if (t->keyLen == -2) {
+        key = topaz_string_clone(key);
+    }    
 
     // add to chain at the end
     src = topaz_table_new_entry(
@@ -370,7 +417,7 @@ void * topaz_table_find(const topazTable_t * t, const void * key) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazTable_t pointer cannot be NULL.");
     #endif
-    uint32_t keyLen = t->keyLen == -1 ? strlen(key) : t->keyLen;
+    uint32_t keyLen = t->keyLen == -1 ? strlen(key)+1 : t->keyLen == -2 ? 0 : t->keyLen;
     uint32_t hash = t->hash(key, keyLen);
     uint32_t bucketID = hash_to_index(t, hash);
 
@@ -397,7 +444,7 @@ int topaz_table_entry_exists(const topazTable_t * t, const void * key) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazTable_t pointer cannot be NULL.");
     #endif
-    uint32_t keyLen = t->keyLen == -1 ? strlen(key) : t->keyLen;
+    uint32_t keyLen = t->keyLen == -1 ? strlen(key)+1 : t->keyLen == -2 ? 0 : t->keyLen;
     uint32_t hash = t->hash(key, keyLen);
     uint32_t bucketID = hash_to_index(t, hash);
 
@@ -423,7 +470,7 @@ void topaz_table_remove(topazTable_t * t, const void * key) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazTable_t pointer cannot be NULL.");
     #endif
-    uint32_t keyLen = t->keyLen == -1 ? strlen(key) : t->keyLen;
+    uint32_t keyLen = t->keyLen == -1 ? strlen(key)+1 : t->keyLen == -2 ? 0 : t->keyLen;
     uint32_t hash = t->hash(key, keyLen);
     uint32_t bucketID = hash_to_index(t, hash);
 

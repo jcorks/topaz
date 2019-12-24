@@ -187,7 +187,14 @@ uint32_t topaz_string_get_length(const topazString_t * t) {
     return t->len;
 }
 
+uint32_t topaz_string_get_byte_length(const topazString_t * t) {
+    // for now same as string length. will change when unicode is supported.
+    return t->len;
+}
 
+void * topaz_string_get_byte_data(const topazString_t * t) {
+    return t->cstr;
+}
 
 int topaz_string_test_contains(const topazString_t * a, const topazString_t * b) {
     return strstr(a->cstr, b->cstr) != NULL;
@@ -297,14 +304,14 @@ const topazString_t * topaz_string_chain_proceed(topazString_t * t) {
 #define topaz_string_temp_max_calls 128
 static topazString_t * tempVals[topaz_string_temp_max_calls];
 static int tempIter = 0;
-static int tempInit = FALSE;
+static int tempInit = 0;
 
 const topazString_t * topaz_string_temporary_from_c_str(const char * s) {
     if (!tempInit) {
         uint32_t i;
         for(i = 0; i < topaz_string_temp_max_calls; ++i)
             tempVals[i] = topaz_string_create();
-        tempInit = TRUE;
+        tempInit = 1;
     }    
 
     if (tempIter >= topaz_string_temp_max_calls) tempIter = topaz_string_temp_max_calls;
