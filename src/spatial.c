@@ -39,6 +39,10 @@ static void transform_update(topazTransform_t * t, void * s) {
     topaz_spatial_invalidate(s);
 }
 
+topazTransform_t * topaz_spatial_get_node(topazSpatial_t * t) {
+    // TODO: should we have immediate updates? previous version we didnt...
+    return t->node;
+}
 
 topazSpatial_t * topaz_spatial_create() {
     topazSpatial_t * o = calloc(1, sizeof(topazSpatial_t));
@@ -51,6 +55,20 @@ topazSpatial_t * topaz_spatial_create() {
     topaz_transform_add_callback(o->node, transform_update, o);
     send_update_signal(o);
     return o;
+}
+
+
+void topaz_spatial_reset(topazSpatial_t * s) {
+    topaz_spatial_set_as_parent(s, NULL);
+
+    topaz_transform_reset(s->transformOwned);
+
+    s->node = s->transformOwned;
+    topaz_array_set_size(s->children, 0);
+    topaz_array_set_size(s->callbacks, 0);
+    
+    topaz_transform_add_callback(s->node, transform_update, s);
+    send_update_signal(s);
 }
 
 
@@ -100,7 +118,7 @@ void topaz_spatial_set_as_parent(topazSpatial_t * s, topazSpatial_t * newParent)
     }
 
 
-    if (newParent) return;
+    if (!newParent) return;
     
     s->parent = newParent;
     #ifdef TOPAZDC_DEBUG
@@ -154,7 +172,7 @@ void send_update_signal(topazSpatial_t * s) {
         uint32_t ct = topaz_array_get_size(current->children);
         uint32_t i;
         for(i = 0; i < ct; ++i) {
-            topaz_array_push(current->children, topaz_array_at(current->children, topazSpatial_t *, i));
+            topaz_array_push(s->localStack, topaz_array_at(current->children, topazSpatial_t *, i));
             count++;
         }
     }

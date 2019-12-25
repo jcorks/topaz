@@ -62,6 +62,10 @@ topazSpatial_t * topaz_spatial_create();
 void topaz_spatial_destroy(topazSpatial_t *);
 
 
+/// Resets the spatial back to the default state
+///
+void topaz_spatial_reset(topazSpatial_t *);
+
 
 /// Gets the transform for this spatial object alone.
 /// Modifications to it affect the global transform calculations

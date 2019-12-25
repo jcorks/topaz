@@ -34,7 +34,9 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/containers/string.h>
 #include <topaz/containers/array.h>
+#include <topaz/vector.h>
 typedef struct topazComponent_t topazComponent_t;
+typedef struct topazSpatial_t topazSpatial_t;
 /*
 
     Entity
@@ -60,6 +62,13 @@ typedef struct topazEntity_t topazEntity_t;
 
 
 typedef struct topazEntity_Attributes_t topazEntity_Attributes_t;
+
+
+/// Standard function for all entity attribute callbacks
+///
+typedef void (*topaz_entity_attribute_callback)(topazEntity_t *, void *);
+
+
 
 struct topazEntity_Attributes_t {
 
@@ -184,6 +193,55 @@ void topaz_entity_set_priority_first(topazEntity_t *);
 /// Gets the priority of this entity. This determines its order within its parent entity.
 ///
 int topaz_entity_get_priority(const topazEntity_t *);
+
+
+
+//////////// Transform information
+
+
+/// Convenience function for getting a read-only reference to 
+/// the rotation.
+const topazVector_t * topaz_entity_get_rotation(const topazEntity_t *);
+
+/// Convenience function for getting a read-only reference to 
+/// the position.
+const topazVector_t * topaz_entity_get_position(const topazEntity_t *);
+
+/// Convenience function for getting a read-only reference to 
+/// the scale.
+const topazVector_t * topaz_entity_get_scale(const topazEntity_t *);
+
+
+
+/// Convenience function for getting a writeable reference to 
+/// the rotation.
+topazVector_t * topaz_entity_rotation(topazEntity_t *);
+
+/// Convenience function for getting a writeable reference to 
+/// the position.
+topazVector_t * topaz_entity_position(topazEntity_t *);
+
+/// Convenience function for getting a writeable reference to 
+/// the scale.
+topazVector_t * topaz_entity_scale(topazEntity_t *);
+
+
+
+
+/// Gets the position of the entity taking into account parent entity transforms
+///
+topazVector_t topaz_entity_get_global_position(const topazEntity_t *);
+
+
+
+/// Gets a reference to the spatial reference.
+///
+topazSpatial_t * topaz_entity_get_spatial(const topazEntity_t *);
+
+
+
+
+
 
 
 

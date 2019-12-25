@@ -10,6 +10,9 @@ int test__table_advanced();
 int test__string_simple();
 int test__string_advanced();
 
+int test__entity_simple();
+int test__entity_advanced();
+
 int main() {
     topazTest_t * driver = topaz_test_create();
     
@@ -22,7 +25,8 @@ int main() {
         topaz_test_add(driver, "Table  - Advanced",   test__table_advanced);
         topaz_test_add(driver, "String - Simple  ",     test__string_simple);
         topaz_test_add(driver, "String - Advanced",   test__string_advanced);
-
+        topaz_test_add(driver, "Entity - Simple  ",   test__entity_simple);
+        topaz_test_add(driver, "Entity - Advanced",   test__entity_advanced);
 
     //// ^^^^^^^^^^^^^^^
     //////////////////// 

@@ -128,15 +128,30 @@ static void compute_local(topazTransform_t * t) {
 }
     
 topazTransform_t * topaz_transform_create() {
-    topazTransform_t * out = calloc(1, sizeof(topazTransform_t));
-    out->scale.x = 0;
-    out->scale.y = 0;
-    out->scale.z = 0;
-    out->needsUpdate = FALSE;
-
+    topazTransform_t * out = malloc(sizeof(topazTransform_t));
     out->callbacks = topaz_array_create(sizeof(TransformCallback));
+    topaz_transform_reset(out);
     return out;
 }
+
+void topaz_transform_reset(topazTransform_t * t) {
+
+    t->scale.x = 1;
+    t->scale.y = 1;
+    t->scale.z = 1;
+
+    t->position.x = t->position.y = t->position.z = 
+    t->rotation.x = t->rotation.y = t->rotation.z = 0.f;
+    
+    topaz_array_set_size(t->callbacks, 0);
+
+    topaz_matrix_set_identity(&t->localTransform);
+
+    t->reverse = 0;
+    t->needsUpdate = FALSE;
+
+}
+
 
 
 void topaz_transform_destroy(topazTransform_t * t) {

@@ -181,6 +181,7 @@ void topaz_entity_remove(topazEntity_t * e) {
     topaz_array_set_size(e->components, 0);
     topaz_array_set_size(e->componentsBefore, 0);
     topaz_array_set_size(e->componentsAfter, 0);
+    topaz_spatial_reset(e->spatial);
     e->valid = 0;
 
     topaz_array_push(dead, e);
@@ -388,24 +389,26 @@ void topaz_entity_attach(topazEntity_t * e, topazEntity_t * child) {
 void topaz_entity_detach(topazEntity_t * e) {
     if (!e->valid) return;
     if (!e->parent->valid) return;
-
-    uint32_t iter = topaz_array_lower_bound(
-        e->parent->children, 
-        e,
-        (int(*)(const void *, const void *))priority_comp
-    );
-
-    uint32_t i;
     uint32_t len = topaz_array_get_size(e->parent->children);
-    for(i = iter; i < len; ++i) {
-        if (topaz_array_at(e->parent->children, topazEntity_t *, i) == e) break;
+    if (len > 1) {
+        uint32_t iter = topaz_array_lower_bound(
+            e->parent->children, 
+            e,
+            (int(*)(const void *, const void *))priority_comp
+        );
+
+        uint32_t i;
+        for(i = iter; i < len; ++i) {
+            if (topaz_array_at(e->parent->children, topazEntity_t *, i) == e) break;
+        }
+
+        #ifdef TOPAZDC_DEBUG
+            assert(i < topaz_array_get_size(e->parent->children));
+        #endif
+        topaz_array_remove(e->parent->children, i);
+    } else if (len == 1) {
+        topaz_array_set_size(e->parent->children, 0);
     }
-
-    #ifdef TOPAZDC_DEBUG
-        assert(i < topaz_array_get_size(e->parent->children));
-    #endif
-    topaz_array_remove(e->parent->children, i);
-
     e->parent = topaz_entity_null();
     topaz_spatial_set_as_parent(e->spatial, NULL);
 
@@ -620,4 +623,49 @@ const topazString_t * topaz_entity_get_name(const topazEntity_t * e) {
     return e->name;
 }
 
+
+
+
+const topazVector_t * topaz_entity_get_rotation(const topazEntity_t * e) {
+    return topaz_transform_get_rotation(topaz_spatial_get_node(e->spatial));
+}
+
+const topazVector_t * topaz_entity_get_position(const topazEntity_t * e) {
+    return topaz_transform_get_position(topaz_spatial_get_node(e->spatial));
+}
+
+const topazVector_t * topaz_entity_get_scale(const topazEntity_t * e) {
+    return topaz_transform_get_scale(topaz_spatial_get_node(e->spatial));
+}
+
+
+
+
+
+topazVector_t * topaz_entity_rotation(topazEntity_t * e) {
+    return topaz_transform_rotation(topaz_spatial_get_node(e->spatial));
+}
+
+topazVector_t * topaz_entity_position(topazEntity_t * e) {
+    return topaz_transform_position(topaz_spatial_get_node(e->spatial));
+}
+
+topazVector_t * topaz_entity_scale(topazEntity_t * e) {
+    return topaz_transform_scale(topaz_spatial_get_node(e->spatial));
+}
+
+
+
+
+topazVector_t topaz_entity_get_global_position(const topazEntity_t * s) {
+    topazVector_t e;
+    e.x = e.y = e.z = 0.f;
+    return topaz_matrix_transform(topaz_spatial_get_global_transform(s->spatial), &e);
+}
+
+
+
+topazSpatial_t * topaz_entity_get_spatial(const topazEntity_t * e) {
+    return e->spatial;
+}   
 

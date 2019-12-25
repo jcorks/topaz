@@ -61,6 +61,11 @@ topazTransform_t * topaz_transform_create();
 void topaz_transform_destroy(topazTransform_t *);
 
 
+/// Rests the transform to the initial transform state.
+///
+void topaz_transform_reset(topazTransform_t *);
+
+
     
 /// Gets a read-only, quick reference to the rotation component.
 ///
