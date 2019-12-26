@@ -110,11 +110,11 @@ struct topazEntity_Attributes_t {
 
 /// Creates a new entity.
 ///
-topazEntity_t * topaz_entity_create();
+topazEntity_t * topaz_entity_create(topaz_t *);
 
 /// Creates a new entity with attributes
 ///
-topazEntity_t * topaz_entity_create_with_attributes(const topazEntity_Attributes_t *);
+topazEntity_t * topaz_entity_create_with_attributes(topaz_t *, const topazEntity_Attributes_t *);
 
 
 /// Sets the attributes for the entity. Attributes determine how the 
@@ -123,7 +123,7 @@ void topaz_entity_set_attributes(topazEntity_t *, const topazEntity_Attributes_t
 
 /// Gets the attributes of an entity.
 ///
-topazEntity_Attributes_t topaz_entity_get_attributes(const topazEntity_t *);
+const topazEntity_Attributes_t * topaz_entity_get_attributes(const topazEntity_t *);
 
 /// Returns whether this instance is valid or not.
 /// If the given pointer was not returned from a topaz_entity_create*() 

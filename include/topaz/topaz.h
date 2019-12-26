@@ -32,6 +32,8 @@ DEALINGS IN THE SOFTWARE.
 #define H_TOPAZDC__TOPAZ__INCLUDED
 
 
+#include <topaz/all.h>      
+
 /*
     Topaz   
     -----
@@ -41,6 +43,47 @@ DEALINGS IN THE SOFTWARE.
 */
 typedef struct topaz_t topaz_t;
 
+typedef struct topaz_Attributes_t topaz_Attributes_t;
+struct topaz_Attributes_t {
+
+    /// Provides functionality on the system for 
+    /// time-related functions.
+    ///
+    topazBackend_t * timeBackend;
+    topazTimeAPI_t   timeAPI;
+
+    /// Provides functionality on the system for 
+    /// filesystem abstraction functions.
+    ///    
+    topazBackend_t *    filesysBackend;
+    topazFilesysAPI_t   filesys;
+    
+    /// Provides functionality on the system for 
+    /// display/window functions
+    ///    
+    topazBackend_t *  displayBackend;
+    topazDisplayAPI_t displayAPI;
+
+    /// Provides functionality on the system for 
+    /// audio-related functions
+    ///
+    topazBackend_t *       audioManagerBackend;
+    topazAudioManagerAPI_t audioManagerAPI;
+
+    /// Provides functionality on the system for 
+    /// input-related functions.
+    ///
+    topazBackend_t *       inputManagerBackend;
+    topazInputManagerAPI_t inputManagerAPI;    
+    
+    /// Provides functionality on the system for 
+    /// renderer-related functions.
+    ///    
+    topazBackend_t *   rendererBackend;
+    topazRendererAPI_t rendererAPI;
+};
+
+
 
 /// Initializes all topaz assets.
 ///
@@ -49,11 +92,19 @@ typedef struct topaz_t topaz_t;
 /// No other functions should be used prior to calling this function.
 ///
 ///
-topaz_t * topaz_context_create(
-    topazBackend_t *,       topazTimeAPI_t,
-    topazBackend_t *,       topazFilesysAPI_t
+topaz_t * topaz_context_create(const topaz_Attributes_t *);
 
-);
+
+ 
+/// Creates an empty topaz context with no environment-specific 
+/// behavior. Not particularly useful.
+///
+topaz_t * topaz_context_create_empty();
+
+
+/// Returns the attributes that this context was instantiated with 
+///
+const topaz_Attributes_t * topaz_context_get_attributes(const topaz_t *);
 
 
 
@@ -92,24 +143,24 @@ void topaz_context_iterate(topaz_t *);
 
 ///  returns whether the engine is in a paused or broken state.
 ///
-bool topaz_context_is_paused(const topaz_t *);
+int topaz_context_is_paused(const topaz_t *);
 
 /// Returns the toplevel Entity. 
 ///
 /// From here, you can 
 /// set the Entity that holds the toplevel of the project. 
 /// By default there is none.
-topazEntityID_t topaz_context_get_root(const topaz_t *);
-topazEntityID_t topaz_context_set_root(topaz_t *);
+topazEntity_t *topaz_context_get_root(const topaz_t *);
+
+void topaz_context_set_root(topaz_t *, topazEntity_t *);
 
 
 /// Attaches a management-type entity.
 ///
 /// If pausable is false, the manager will continue to update even when 
 /// the engine is in a paused state.
-void topaz_context_attach_manager(topazEntityID_t id);
-void topaz_context_attach_manager_unpausable(topazEntityID_t id);
-
+void topaz_context_attach_manager(topaz_t *, topazEntity_t * id);
+void topaz_context_attach_manager_unpausable(topaz_t *, topazEntity_t * id);
 
 
 /// Ends the Engine execution loop.
@@ -128,20 +179,15 @@ void topaz_context_wait(topaz_t *. int FPS);
 ///
 /// List of known parameters:
 ///
-///     "fps"               - frames per second for the engine loop 
+///     "framerate"         - target frames per second for the engine loop 
+///     "version-micro"     - micro version
 ///     "version-minor"     - minor version 
 ///     "version-major"     - major version 
-///     "git-hash"          - hash for this commit
-///     "base-directory"    - start directory for this instance 
-///     "draw-time-ms"      - time it took to complete a draw cycle last frame 
-///     "step-time-ms"      - time it took to complete a step cycle last frame 
-///     "system-time-ms"    - time it took to complete engine tasks last frame 
-///     "engine-real-ms"    - time it took to complete the entire last frame
-double topaz_get_parameter(const topaz_t *, const topazString_t *);
+const topazString_t * topaz_get_parameter(const topaz_t *, const topazString_t *);
 
 /// Sets a parameter. Some parameters are read-only. In such a case, 
 /// 0 is returned.
-int topaz_context_set_parameter(const topaz_t *, const topazString_t *, double);
+int topaz_context_set_parameter(const topaz_t *, const topazString_t *, const topazString_t *);
 
 /// Retrieves an array of all parameter names known.
 ///
@@ -149,4 +195,17 @@ const topazArray_t * topaz_get_parameter_names(const topaz *);
 
 
 
-#endif // H_TOPAZDC_MAIN_INCLUDED
+
+
+
+topazFilesysAPI_t * topaz_filesys_create(const topaz_t *);
+
+
+
+
+
+
+
+
+
+#endif

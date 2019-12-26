@@ -83,9 +83,22 @@ topazString_t * topaz_string_create() {
     return out;
 }
 
-topazString_t * topaz_string_create_from_c_str(const char * str) {
+topazString_t * topaz_string_create_from_c_str(const char * format, ...) {
+    va_list args;
+    va_start(args, format);
+    int lenReal = vsnprintf(NULL, 0, format, args);
+    va_end(args);
+
+
+    char * newBuffer = malloc(lenReal+2);
+    va_start(args, format);    
+    vsnprintf(newBuffer, lenReal+1, format, args);
+    va_end(args);
+    
+
     topazString_t * out = topaz_string_create();
-    topaz_string_set_cstr(out, str, strlen(str));
+    topaz_string_set_cstr(out, newBuffer, lenReal);
+    free(newBuffer);
     return out;
 }
 

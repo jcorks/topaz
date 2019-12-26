@@ -141,9 +141,9 @@ void topaz_entity_set_attributes(topazEntity_t * e, const topazEntity_Attributes
     e->api = *a;
 }
 
-topazEntity_Attributes_t topaz_entity_get_attributes(const topazEntity_t * e) {
+topazEntity_Attributes_t * topaz_entity_get_attributes(const topazEntity_t * e) {
     // for null entities, its already empty. No need for Id check
-    return e->api;
+    return &e->api;
 }
 
 

@@ -51,7 +51,7 @@ topazString_t * topaz_string_create();
 
 /// Creates a new string initialized with the contents of the given C-string 
 ///
-topazString_t * topaz_string_create_from_c_str(const char *);
+topazString_t * topaz_string_create_from_c_str(const char *, ...);
 
 /// Creates a new string as a copy of the given string 
 ///
