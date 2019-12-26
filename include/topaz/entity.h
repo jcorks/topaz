@@ -141,7 +141,7 @@ topazEntity_t * topaz_entity_null();
 
 
 
-/// Flags an entity for destruction
+/// Flags an entity for destruction. This destroys all attached components as well.
 ///
 void topaz_entity_remove(topazEntity_t *);
 

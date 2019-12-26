@@ -133,7 +133,7 @@ topazEntity_t * topaz_entity_create() {
     attrib.on_pre_draw = NULL;
     attrib.on_draw = NULL;
     attrib.userData = NULL;
-    return topaz_entity_create(&attrib);
+    return topaz_entity_create_with_attributes(&attrib);
 }
 
 
@@ -221,7 +221,7 @@ void topaz_entity_step(topazEntity_t * e) {
     );
 
     for(n = 0; n < numComp; ++n) {
-        curComp = topaz_array_get_data(e->componentsBefore);
+        curComp = topaz_array_at(e->activeSet, topazComponent_t *, n);
         topaz_component_step(curComp);
         if (self != e->valid) return;
     }
@@ -257,16 +257,16 @@ void topaz_entity_step(topazEntity_t * e) {
 
 
     // AFTER-STEP COMPONENTS
-    numComp = topaz_array_get_size(e->componentsBefore);
+    numComp = topaz_array_get_size(e->componentsAfter);
     topaz_array_set_size(e->activeSet, numComp);
     memcpy(
         topaz_array_get_data(e->activeSet),
-        topaz_array_get_data(e->componentsBefore),
+        topaz_array_get_data(e->componentsAfter),
         sizeof(void*)*numComp
     );
 
     for(n = 0; n < numComp; ++n) {
-        curComp = topaz_array_get_data(e->componentsBefore);
+        curComp = topaz_array_at(e->activeSet, topazComponent_t *, n);
         topaz_component_step(curComp);
         if (self != e->valid) return;
     }
@@ -303,7 +303,7 @@ void topaz_entity_draw(topazEntity_t * e) {
     );
 
     for(n = 0; n < numComp; ++n) {
-        curComp = topaz_array_get_data(e->componentsBefore);
+        curComp = topaz_array_at(e->activeSet, topazComponent_t *, n);
         topaz_component_draw(curComp);
         if (self != e->valid) return;
     }
@@ -339,16 +339,16 @@ void topaz_entity_draw(topazEntity_t * e) {
 
 
     // AFTER-DRAW COMPONENTS
-    numComp = topaz_array_get_size(e->componentsBefore);
+    numComp = topaz_array_get_size(e->componentsAfter);
     topaz_array_set_size(e->activeSet, numComp);
     memcpy(
         topaz_array_get_data(e->activeSet),
-        topaz_array_get_data(e->componentsBefore),
+        topaz_array_get_data(e->componentsAfter),
         sizeof(void*)*numComp
     );
 
     for(n = 0; n < numComp; ++n) {
-        curComp = topaz_array_get_data(e->componentsBefore);
+        curComp = topaz_array_at(e->activeSet, topazComponent_t *, n);
         topaz_component_draw(curComp);
         if (self != e->valid) return;
     }

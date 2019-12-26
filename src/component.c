@@ -146,6 +146,7 @@ void topaz_component_destroy(topazComponent_t * c) {
     if (topaz_entity_is_valid(c->host)) {
         topaz_component_detach(c);
     }    
+    if (c->api.on_destroy) c->api.on_destroy(c, c->api.userData);
 
     topaz_array_set_size(c->eventStore, 0);
     topaz_array_set_size(c->eventStoreDead, 0);
@@ -165,12 +166,15 @@ void topaz_component_attach(topazComponent_t * c, topazEntity_t * e) {
         topaz_component_detach(c);
     }
     c->host = e;
+    if (c->api.on_attach) c->api.on_attach(c, c->api.userData);
     topaz_component_emit_event(c, TOPAZ_STR_CAST("on-attach"), e, NULL);    
 }
 
 void topaz_component_detach(topazComponent_t * t) {
     if (t->valid!=TRUE) return;
     if (!topaz_entity_is_valid(t->host)) return;
+
+    if (t->api.on_detach) t->api.on_detach(t, t->api.userData);
 
     t->valid = 2; // prevent self-recursion
     topaz_entity_remove_component(t->host, t);
@@ -267,7 +271,7 @@ int topaz_component_emit_event(
     uint32_t handlersLen = topaz_array_get_size(set->handlers);
     EventHandler * handler;
 
-    uint32_t i;
+    int64_t i;
     if (handlersLen) {
         // reverse order
         for(i = handlersLen - 1; i >= 0; --i) {

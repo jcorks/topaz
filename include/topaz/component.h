@@ -49,6 +49,12 @@ typedef struct topazComponent_t topazComponent_t;
 
 typedef struct topazComponent_Attributes_t topazComponent_Attributes_t;
 
+
+/// Standard callback for all component attributes.
+///
+typedef void (*topaz_component_attribute_callback)(topazComponent_t *, void *);
+
+
 /// Attributes of the component. Attributes define a baseline behavior 
 /// in response to common events. 
 struct topazComponent_Attributes_t {

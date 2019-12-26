@@ -42,7 +42,6 @@ DEALINGS IN THE SOFTWARE.
 typedef struct topaz_t topaz_t;
 
 
-
 /// Initializes all topaz assets.
 ///
 /// Upon encountering an irrecoverable error, the statup
@@ -50,12 +49,12 @@ typedef struct topaz_t topaz_t;
 /// No other functions should be used prior to calling this function.
 ///
 ///
-topaz_t * topaz_context_create();
+topaz_t * topaz_context_create(
+    topazBackend_t *,       topazTimeAPI_t,
+    topazBackend_t *,       topazFilesysAPI_t
 
+);
 
-/// Returns whether topaz has been initialized successfully.
-///
-int topaz_context_is_initialized(const topaz_t *);
 
 
 /// Begins the Engine execution loop.

@@ -1,5 +1,6 @@
 #include <topaz/compat.h>
 #include <topaz/entity.h>
+#include <topaz/component.h>
 #include <string.h>
 
 typedef struct {
@@ -144,7 +145,123 @@ int test__entity_simple() {
 }
 
 
+
+
+
+typedef struct {
+    int handler1;
+    int handler2;
+    int step;
+    int draw;
+    int detach;
+    int attach;
+    int remove;
+} ComponentType;
+
+static int event_handler1(topazComponent_t * c, void * dataEvent, topazEntity_t * source, void * sourceEvent) {
+    ComponentType *cData = topaz_component_get_attributes(c)->userData;
+    cData->handler1 = (int)(intptr_t)dataEvent;
+    return TRUE;
+}
+
+static int event_handler2(topazComponent_t * c, void * dataEvent, topazEntity_t * source, void * sourceEvent) {
+    ComponentType *cData = topaz_component_get_attributes(c)->userData;
+    cData->handler2 = (int)(intptr_t)sourceEvent;
+    return TRUE;
+}
+
+
+
+
+static void component_step(topazComponent_t * c, ComponentType * data) {
+    topaz_component_emit_event(c, TOPAZ_STR_CAST("event2"), TOPAZ_ENULL, (void*)(intptr_t)8);
+    data->step++;
+}
+
+static void component_draw(topazComponent_t * c, ComponentType * data) {
+    data->draw++;
+}
+
+static void component_attach(topazComponent_t * c, ComponentType * data) {
+    data->attach++;
+}
+
+static void component_detach(topazComponent_t * c, ComponentType * data) {
+    data->detach++;
+}
+
+static void component_destroy(topazComponent_t * c, ComponentType * data) {
+    data->remove++;
+}
+
+
+
+
+
 int test__entity_advanced() {
+    topazComponent_t * c = topaz_component_create();
+    topazComponent_Attributes_t attrib;
+    memset(&attrib, 0, sizeof(topazComponent_Attributes_t));
+    
+    attrib.on_step = (topaz_component_attribute_callback)component_step;
+    attrib.on_draw = (topaz_component_attribute_callback)component_draw;
+    attrib.on_detach = (topaz_component_attribute_callback)component_detach;
+    attrib.on_attach = (topaz_component_attribute_callback)component_attach;
+    attrib.on_destroy = (topaz_component_attribute_callback)component_destroy;
+    ComponentType cdata;
+    memset(&cdata, 0, sizeof(ComponentType));
+    attrib.userData = &cdata;    
+
+    topaz_component_set_attributes(c, &attrib);
+
+
+    topaz_component_install_event(c, TOPAZ_STR_CAST("event1"), event_handler1, (void*)(intptr_t)1);
+    topaz_component_install_event(c, TOPAZ_STR_CAST("event2"), event_handler2, (void*)(intptr_t)2);
+
+
+    topaz_component_emit_event_anonymous(c, TOPAZ_STR_CAST("event1"));
+    topaz_component_emit_event_anonymous(c, TOPAZ_STR_CAST("event2"));
+
+    if (cdata.handler1 != 1 || cdata.handler2 != 0) {
+        return 1;
+    }
+
+    topaz_component_emit_event(c, TOPAZ_STR_CAST("event1"), TOPAZ_ENULL, (void*)(intptr_t)3);
+    topaz_component_emit_event(c, TOPAZ_STR_CAST("event2"), TOPAZ_ENULL, (void*)(intptr_t)4);
+
+    if (cdata.handler1 != 1 || cdata.handler2 != 4) {
+        return 2;
+    }
+
+
+    topazEntity_t * e = topaz_entity_create();
+    topaz_entity_add_component(e, c);
+
+    if (cdata.attach != 1) {
+        return 3;
+    }
+
+
+    topaz_entity_step(e);
+    topaz_entity_draw(e);
+
+    if (cdata.step != 1 ||
+        cdata.draw != 1)
+        return 4;
+
+    if (cdata.handler2 != 8) {
+        return 5;
+    }
+
+
+
+
+
+    topaz_entity_remove(e);
+
+    if (cdata.remove != 1 ||
+        cdata.detach != 1) 
+        return 6;
 
     return 0;
 }
