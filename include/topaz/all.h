@@ -37,12 +37,6 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/compat.h>
 
-#include <topaz/backends/api/audio_manager_api.h>
-#include <topaz/backends/api/display_api.h>
-#include <topaz/backends/api/filesys_api.h>
-#include <topaz/backends/api/input_manager_api.h>
-#include <topaz/backends/api/renderer_api.h>
-#include <topaz/backends/api/time_api.h>
 
 #include <topaz/backends/audio_manager.h>
 #include <topaz/backends/backend.h>

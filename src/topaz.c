@@ -53,22 +53,27 @@ struct topaz_t {
     
     
     topazEntity_t * graphics;
+    topazTime_t * timeRef;
+    uint64_t frameEnd;
+    uint64_t frameStart;
     
     int quit;
     int paused;
     int fps;
 };
 
+static intptr_t api_nothing(){return 0;}
 
 
 
 topaz_t * topaz_context_create(const topaz_Attributes_t * a) {
-    topaz_t * out = malloc(sizeof(topaz_t));
+    topaz_t * out = calloc(1, sizeof(topaz_t));
     out->fps = 60;
     out->paused = FALSE;
     out->quit = FALSE;
     out->api = *a;
     out->params = topaz_table_create_hash_topaz_string();
+    out->timeRef = topaz_time_create(a->timeBackend, out->api.timeAPI);
 
     // defaultParams
     topaz_table_insert(out->params, TOPAZ_STR_CAST("framerate"),     topaz_string_create_from_c_str("%d", 60));
@@ -79,10 +84,10 @@ topaz_t * topaz_context_create(const topaz_Attributes_t * a) {
 
     out->universe = topaz_entity_null();
     out->managers = topaz_entity_create(out);
-    out->managerNP = topaz_entity_create(out);
+    out->managersNP = topaz_entity_create(out);
     out->modules  = topaz_array_create(sizeof(topazEntity_t*));
     
-    
+    out->graphics = TOPAZ_ENULL;
     /// create modules    
     //out->graphics = topaz_graphics_create(a->rendererBackend, &a->rendererAPI);
     //topaz_array_push(out->modules, out->graphics);
@@ -93,7 +98,7 @@ topaz_t * topaz_context_create(const topaz_Attributes_t * a) {
     uint32_t i;
     for(i = 0; i < topaz_array_get_size(out->modules); ++i) {
         topazEntity_t * e = topaz_array_at(out->modules, topazEntity_t *, i);
-        const topazEntity_Attributes_t * api = topaz_enttiy_get_attributes(e);
+        const topazEntity_Attributes_t * api = topaz_entity_get_attributes(e);
         if (api->on_attach) api->on_attach(e, api->userData);
     }
     return out;
@@ -104,17 +109,112 @@ const topaz_Attributes_t * topaz_context_get_attributes(const topaz_t * t) {
 }
 
 
+void topaz_context_destroy(topaz_t * t) {
+    topaz_time_destroy(t->timeRef);
+    
+    // other modules here.
+    topaz_entity_remove(t->graphics);
 
+
+    topaz_entity_remove(t->universe);
+    topaz_entity_remove(t->managers);
+    topaz_entity_remove(t->managersNP);
+    topaz_array_destroy(t->modules);
+
+    topazTableIter_t * iter = topaz_table_iter_create();
+    for(topaz_table_iter_start(iter, t->params);
+        !topaz_table_iter_is_end(iter);
+        topaz_table_iter_proceed(iter)) {
+
+        topaz_string_destroy(topaz_table_iter_get_value(iter));
+    }
+    topaz_table_iter_destroy(iter);
+    topaz_table_destroy(t->params);
+    free(t);
+        
+}
 
 
 topaz_t * topaz_context_create_empty() {
     // TODO
-    return NULL;
+    topaz_Attributes_t attr;
+    memset(&attr, 0xff, sizeof(topaz_Attributes_t));
+
+    attr.audioManagerAPI.audio_manager_create          = (void (*)(topazAudioManagerAPI_t *)) api_nothing;
+    attr.audioManagerAPI.audio_manager_destroy         = (void (*)(topazAudioManagerAPI_t *)) api_nothing;
+    attr.audioManagerAPI.audio_manager_connect         = (int  (*)(topazAudioManagerAPI_t *, void (*audioStreamHandler)(topazAudioManager_t *, uint32_t, float *, void *), void *)) api_nothing;
+    attr.audioManagerAPI.audio_manager_set_sample_rate = (void (*)(topazAudioManagerAPI_t *, uint32_t)) api_nothing;
+    attr.audioManagerAPI.audio_manager_get_sample_rate = (uint32_t (*)(topazAudioManagerAPI_t *)) api_nothing;
+    attr.audioManagerAPI.audio_manager_is_underrun     = (int (*)(topazAudioManagerAPI_t *)) api_nothing;
+    attr.audioManagerAPI.audio_manager_enable_output   = (void (*)(topazAudioManagerAPI_t *, int)) api_nothing;
+    attr.audioManagerAPI.audio_manager_set_volume_multiplier = (void (*)(topazAudioManagerAPI_t *, float)) api_nothing;
+    attr.audioManagerAPI.audio_manager_get_volume_multiplier = (float (*)(topazAudioManagerAPI_t *)) api_nothing;
+    attr.audioManagerAPI.audio_manager_get_current_output_sample = (float (*)(topazAudioManagerAPI_t *)) api_nothing;
+
+
+    attr.displayAPI.display_create = (void (*)(topazDisplayAPI_t *)) api_nothing;
+    attr.displayAPI.display_destroy = (void (*)(topazDisplayAPI_t *)) api_nothing;
+    attr.displayAPI.display_resize = (void (*)(topazDisplayAPI_t *, int, int)) api_nothing;
+    attr.displayAPI.display_set_position = (void (*)(topazDisplayAPI_t *, int, int)) api_nothing;
+    attr.displayAPI.display_hide = (void (*)(topazDisplayAPI_t *, int)) api_nothing;
+    attr.displayAPI.display_has_input_focus = (int (*)(topazDisplayAPI_t *)) api_nothing;
+    attr.displayAPI.display_lock_client_resize = (void (*)(topazDisplayAPI_t *, int)) api_nothing;
+    attr.displayAPI.display_lock_client_position = (void (*)(topazDisplayAPI_t *, int)) api_nothing;
+    attr.displayAPI.display_set_view_policy = (void (*)(topazDisplayAPI_t *, topazDisplay_ViewPolicy)) api_nothing;
+    attr.displayAPI.display_get_height = (int (*)(topazDisplayAPI_t *)) api_nothing;
+    attr.displayAPI.display_get_width = (int (*)(topazDisplayAPI_t *)) api_nothing;
+    attr.displayAPI.display_get_x = (int (*)(topazDisplayAPI_t *)) api_nothing;
+    attr.displayAPI.display_get_y = (int (*)(topazDisplayAPI_t *)) api_nothing;
+    attr.displayAPI.display_set_name = (void (*)(topazDisplayAPI_t *, const topazString_t *)) api_nothing;
+    attr.displayAPI.display_add_resize_callback = (void (*)(topazDisplayAPI_t *, void(*)(int w, int h, void *), void *)) api_nothing;
+    attr.displayAPI.display_remove_resize_callback = (void (*)(topazDisplayAPI_t *, void(*)(int w, int h, void *))) api_nothing;
+    attr.displayAPI.display_add_close_callback = (void (*)(topazDisplayAPI_t *, void(*)(void *), void *)) api_nothing;
+    attr.displayAPI.display_remove_close_callback = (void (*)(topazDisplayAPI_t *, void(*)(void *))) api_nothing;
+    attr.displayAPI.display_is_capable = (int (*)(topazDisplayAPI_t *, topazDisplay_Capability)) api_nothing;
+    attr.displayAPI.display_update = (void (*)(topazDisplayAPI_t *, topazRenderer_Framebuffer_t *)) api_nothing;
+    attr.displayAPI.display_supported_framebuffers = (const topazArray_t * (*)(topazDisplayAPI_t *)) api_nothing;
+    attr.displayAPI.display_get_system_handle_type = (topazDisplay_Handle (*)(topazDisplayAPI_t *)) api_nothing;
+    attr.displayAPI.display_get_system_handle = (void * (*)(topazDisplayAPI_t *)) api_nothing;
+    attr.displayAPI.display_get_system_event_type = (topazDisplay_Event (*)(topazDisplayAPI_t *)) api_nothing;
+    attr.displayAPI.display_get_last_system_event = (void * (*)(topazDisplayAPI_t *)) api_nothing;
+    attr.displayAPI.display_get_current_clipboard = (topazArray_t * (*)(topazDisplayAPI_t *)) api_nothing;
+    attr.displayAPI.display_set_current_clipboard = (void (*)(topazDisplayAPI_t *, const topazArray_t *)) api_nothing;
+    attr.filesysAPI.filesys_create = (void (*)(topazFilesysAPI_t *))api_nothing;
+    attr.filesysAPI.filesys_destroy = (void (*)(topazFilesysAPI_t *))api_nothing;
+    attr.filesysAPI.filesys_query = (const topazArray_t * (*)(topazFilesysAPI_t *))api_nothing;
+    attr.filesysAPI.filesys_set_path = (int (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
+    attr.filesysAPI.filesys_get_path = (const topazString_t * (*)(topazFilesysAPI_t *))api_nothing;
+    attr.filesysAPI.filesys_go_to_child = (int (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
+    attr.filesysAPI.filesys_go_to_parent = (int (*)(topazFilesysAPI_t *))api_nothing;
+    attr.filesysAPI.filesys_create_node = (int (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
+    attr.filesysAPI.filesys_read = (topazRbuffer_t * (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
+    attr.filesysAPI.filesys_write = (int (*)(topazFilesysAPI_t *, const topazString_t *, const topazWbuffer_t *))api_nothing;
+    attr.filesysAPI.filesys_is_node = (int (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
+    attr.filesysAPI.filesys_is_child = (int (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
+    attr.inputManagerAPI.input_manager_create = (void (*)(topazInputManagerAPI_t *)) api_nothing;
+    attr.inputManagerAPI.input_manager_destroy = (void (*)(topazInputManagerAPI_t *)) api_nothing;
+    attr.inputManagerAPI.input_manager_id_to_string = (const char * (*)(int)) api_nothing;
+    attr.inputManagerAPI.input_manager_handle_events = (int (*)(topazInputManagerAPI_t *)) api_nothing;
+    attr.inputManagerAPI.input_manager_query_device = (topazInputDevice_t * (*)(topazInputManagerAPI_t *, int)) api_nothing;
+    attr.inputManagerAPI.input_manager_query_auxiliary_devices = (int (*)(topazInputManagerAPI_t *, int *)) api_nothing;
+    attr.inputManagerAPI.input_manager_max_devices = (int (*)(topazInputManagerAPI_t *)) api_nothing;
+    attr.inputManagerAPI.input_manager_set_focus = (void (*)(topazInputManagerAPI_t *, topazDisplay_t *)) api_nothing;
+    attr.inputManagerAPI.input_manager_get_focus = (topazDisplay_t * (*)(topazInputManagerAPI_t *)) api_nothing;
+    attr.inputManagerAPI.input_manager_show_virtual_keyboard = (void (*)(topazInputManagerAPI_t *, int)) api_nothing;
+    attr.timeAPI.time_create = (void (*)(topazTimeAPI_t *)) api_nothing;
+    attr.timeAPI.time_destroy = (void (*)(topazTimeAPI_t *)) api_nothing;
+    attr.timeAPI.time_sleep_ms = (void (*)(topazTimeAPI_t *, uint64_t)) api_nothing;
+    attr.timeAPI.time_ms_since_startup = (uint64_t (*)(topazTimeAPI_t *)) api_nothing;
+    
+
+
+
+    return topaz_context_create(&attr);
 }
 
 
-int topaz_context_run(const topaz_t * t) {
-    if (quit == TRUE) {
+int topaz_context_run(topaz_t * t) {
+    if (t->quit == TRUE) {
         // requested early termination?
         return -2;
     }
@@ -179,7 +279,7 @@ void topaz_context_iterate(topaz_t * t) {
     }
     
     
-    if (!t->paused);
+    if (!t->paused) {
         topaz_entity_step(t->managers);
     }    
     topaz_entity_step(t->managersNP);
@@ -219,7 +319,7 @@ void topaz_context_iterate(topaz_t * t) {
     }
     
     
-    if (!t->paused);
+    if (!t->paused) {
         topaz_entity_draw(t->managers);
     }    
     topaz_entity_draw(t->managersNP);
@@ -229,7 +329,7 @@ void topaz_context_iterate(topaz_t * t) {
     
     /// throttle 
     if (t->fps >= 0) {
-        topaz_engine_wait(t->fps);
+        topaz_context_wait(t, t->fps);
         
     }
 }
@@ -250,48 +350,79 @@ void topaz_context_set_root(topaz_t * t, topazEntity_t * u) {
 }
 
 
-/// Attaches a management-type entity.
-///
-/// If pausable is false, the manager will continue to update even when 
-/// the engine is in a paused state.
-void topaz_context_attach_manager(topazEntityID_t id);
-void topaz_context_attach_manager_unpausable(topazEntityID_t id);
+void topaz_context_attach_manager(topaz_t * t, topazEntity_t * id) {
+    topaz_entity_attach(t->managers, id);
+}
+
+void topaz_context_attach_manager_unpausable(topaz_t * t, topazEntity_t * id) {
+    topaz_entity_attach(t->managersNP, id);
+
+}
 
 
 
-/// Ends the Engine execution loop.
-///
-void topaz_context_quit(topaz_t *);
+void topaz_context_quit(topaz_t * t) {
+    t->quit = TRUE;
+}
 
-/// Sleeps until the time required for the target frames-per-second is reached.
-///
-/// @param FPS  The target FPS; useful for loops.
-///
-/// The actual resolution is machine-dependent, but it tends to be millisecond resolution.
-void topaz_context_wait(topaz_t *. int FPS);
+void topaz_context_wait(topaz_t * t, int FPS) {
+    t->frameEnd = topaz_context_get_time(t);
+    uint64_t realEnd = t->frameEnd;
+
+    
+    // TODO: swap to just sleep for the time difference directly?
+    while (realEnd - t->frameStart < 1000.0 / ((float)FPS)) {
+        topaz_time_sleep_ms(t->timeRef, 1);
+        realEnd = topaz_context_get_time(t);
+    }
+
+    t->frameStart = topaz_context_get_time(t);
+}
 
 
-/// Retrieves the specified parameter.
-///
-/// List of known parameters:
-///
-///     "fps"               - frames per second for the engine loop 
-///     "version-minor"     - minor version 
-///     "version-major"     - major version 
-///     "git-hash"          - hash for this commit
-///     "base-directory"    - start directory for this instance 
-///     "draw-time-ms"      - time it took to complete a draw cycle last frame 
-///     "step-time-ms"      - time it took to complete a step cycle last frame 
-///     "system-time-ms"    - time it took to complete engine tasks last frame 
-///     "engine-real-ms"    - time it took to complete the entire last frame
-double topaz_get_parameter(const topaz_t *, const topazString_t *);
+const topazString_t * topaz_get_parameter(const topaz_t * t, const topazString_t * str) {
+    topazString_t * out = topaz_table_find(t->params, str);
+    if (!out) {
+        return TOPAZ_STR_CAST("");
+    }
+    return out;
+}
 
-/// Sets a parameter. Some parameters are read-only. In such a case, 
-/// 0 is returned.
-int topaz_context_set_parameter(const topaz_t *, const topazString_t *, double);
 
-/// Retrieves an array of all parameter names known.
-///
-const topazArray_t * topaz_get_parameter_names(const topaz *);
+int topaz_context_set_parameter(const topaz_t * t, const topazString_t * key, const topazString_t * data) {
+    topazString_t * oldRef = topaz_table_find(t->params, key);
+    if (!oldRef) {
+        return 0;
+    }
+
+    topaz_string_set(oldRef, data);
+    return 1;
+}
+
+
+topazArray_t * topaz_get_parameter_names(const topaz_t * t) {
+    topazArray_t * names = topaz_array_create(sizeof(topazString_t*));
+
+    topazTableIter_t * iter = topaz_table_iter_create();
+    for( topaz_table_iter_start(iter, t->params);
+        !topaz_table_iter_is_end(iter);
+         topaz_table_iter_proceed(iter)) {
+    
+        topazString_t * t = topaz_table_iter_get_value(iter);        
+        topaz_array_push(names, t);
+    }
+    topaz_table_iter_destroy(iter);
+    return names;
+}
+
+
+uint64_t topaz_context_get_time(topaz_t * t) {
+    return topaz_time_ms_since_startup(t->timeRef);
+}
+
+topazFilesys_t * topaz_context_filesys_create(const topaz_t * t) {
+    return topaz_filesys_create(t->api.filesysBackend, t->api.filesysAPI);
+}
+
 
 

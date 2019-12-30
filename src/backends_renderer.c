@@ -15,12 +15,6 @@ struct topazRenderer_t {
     topazRendererAPI_t api;
     topazBackend_t * backend;
 
-    topazRenderer_BufferAPI_t   bufferAPI;  
-    topazRenderer_ProgramAPI_t  programAPI;    
-    topazRenderer_TextureAPI_t  textureAPI;    
-    topazRenderer_2DAPI_t       twodAPI;    
-    topazRenderer_LightAPI_t    lightAPI;
-    topazRenderer_FramebufferAPI_t fbAPI;
 
     topazMatrix_t mv;
     topazMatrix_t proj;
@@ -42,7 +36,7 @@ struct topazRenderer_Buffer_t {
 
 topazRenderer_Buffer_t * topaz_renderer_buffer_create(topazRenderer_t * t, float * data, int numElements) {
     topazRenderer_Buffer_t * b = calloc(1, sizeof(topazRenderer_Buffer_t));
-    b->api = t->bufferAPI;
+    b->api = t->api.buffer;
     b->numElt = 0;
     b->api.renderer_buffer_create(&t->api, &b->api, data, numElements);   
     return b;
@@ -84,7 +78,7 @@ struct topazRenderer_Framebuffer_t {
 
 topazRenderer_Framebuffer_t * topaz_renderer_framebuffer_create(topazRenderer_t * t) {
     topazRenderer_Framebuffer_t * out = calloc(1, sizeof(topazRenderer_FramebufferAPI_t));
-    out->api = t->fbAPI;
+    out->api = t->api.fb;
     out->w = -1;
     out->h = -1;
     out->filterHint = TRUE;
@@ -160,7 +154,7 @@ struct topazRenderer_2D_t {
 
 topazRenderer_2D_t * topaz_renderer_2d_create(topazRenderer_t * t) {
     topazRenderer_2D_t * out = calloc(1, sizeof(topazRenderer_2D_t));
-    out->api = t->twodAPI;
+    out->api = t->api.twod;
     out->api.renderer_2d_create(&t->api, &out->api);
     return out;
 }
@@ -242,7 +236,7 @@ struct topazRenderer_Light_t {
 
 topazRenderer_Light_t * topaz_renderer_light_create(topazRenderer_t * t, topazRenderer_LightType type) {
     topazRenderer_Light_t * out = calloc(1, sizeof(topazRenderer_Light_t));
-    out->api = t->lightAPI;
+    out->api = t->api.light;
     out->api.renderer_light_create(&t->api, &out->api, type);
     return out;
 }
@@ -279,7 +273,7 @@ topazRenderer_Program_t * topaz_renderer_program_create(
     topazString_t *         log
 ) {
     topazRenderer_Program_t * out = calloc(1, sizeof(topazRenderer_ProgramAPI_t));
-    out->api = t->programAPI;
+    out->api = t->api.program;
     out->api.renderer_program_create(&t->api, &out->api, vertexSrc, fragSrc, log);
     return out;
 }
@@ -291,7 +285,7 @@ topazRenderer_Program_t * topaz_renderer_program_create_preset(
     topazRenderer_PresetProgram preset
 ) {
     topazRenderer_Program_t * out = calloc(1, sizeof(topazRenderer_ProgramAPI_t));
-    out->api = t->programAPI;
+    out->api = t->api.program;
     out->api.renderer_program_create_preset(&t->api, &out->api, preset);
     return out;
 }
@@ -325,7 +319,7 @@ topazRenderer_Texture_t * topaz_renderer_texture_create(topazRenderer_t * t, int
     topazRenderer_Texture_t * out = calloc(1, sizeof(topazRenderer_Texture_t));
     out->w = w;
     out->h = h;
-    out->api = t->textureAPI;
+    out->api = t->api.texture;
     out->api.renderer_texture_create(&t->api, &out->api, w, h, rgbaTextureData);
     return out;
 }
@@ -370,7 +364,7 @@ void topaz_renderer_destroy(topazRenderer_t * t) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazBackend_t pointer cannot be NULL.");
     #endif
-    t->api.renderer_destroy(&t->api);
+    t->api.core.renderer_destroy(&t->api.core);
 }
 
 
@@ -410,93 +404,79 @@ topazRendererAPI_t topaz_renderer_get_api(topazRenderer_t * t) {
 
 topazRenderer_t * topaz_renderer_create(
     topazBackend_t * b, 
-
-    topazRendererAPI_t api,
-
-    topazRenderer_BufferAPI_t   bufferAPI,    
-    topazRenderer_ProgramAPI_t  programAPI,    
-    topazRenderer_TextureAPI_t  textureAPI,    
-    topazRenderer_2DAPI_t       twodAPI,    
-    topazRenderer_LightAPI_t    lightAPI,
-    topazRenderer_FramebufferAPI_t fbAPI
+    topazRendererAPI_t api
 ) {
     #ifdef TOPAZDC_DEBUG
         assert(b && "topazBackend_t pointer cannot be NULL.");
 
-        assert(textureAPI.renderer_texture_create);
-        assert(textureAPI.renderer_texture_destroy);
-        assert(textureAPI.renderer_texture_update);
-        assert(textureAPI.renderer_texture_get);
+        assert(api.texture.renderer_texture_create);
+        assert(api.texture.renderer_texture_destroy);
+        assert(api.texture.renderer_texture_update);
+        assert(api.texture.renderer_texture_get);
 
 
 
-        assert(programAPI.renderer_program_create);
-        assert(programAPI.renderer_program_create_preset);
-        assert(programAPI.renderer_program_destroy);
+        assert(api.program.renderer_program_create);
+        assert(api.program.renderer_program_create_preset);
+        assert(api.program.renderer_program_destroy);
 
 
-        assert(twodAPI.renderer_2d_create);
-        assert(twodAPI.renderer_2d_destroy);
-        assert(twodAPI.renderer_2d_add_objects);
-        assert(twodAPI.renderer_2d_remove_objects);
-        assert(twodAPI.renderer_2d_queue_vertices);
-        assert(twodAPI.renderer_2d_clear_queue);
-        assert(twodAPI.renderer_2d_add_vertices);
-        assert(twodAPI.renderer_2d_remove_vertices);
-        assert(twodAPI.renderer_2d_get_vertices);
-        assert(twodAPI.renderer_2d_set_object_params);
-
-
-
-
-        assert(lightAPI.renderer_light_create);
-        assert(lightAPI.renderer_light_destroy);
-        assert(lightAPI.renderer_light_update_attribs);
-        assert(lightAPI.renderer_light_enable);
+        assert(api.twod.renderer_2d_create);
+        assert(api.twod.renderer_2d_destroy);
+        assert(api.twod.renderer_2d_add_objects);
+        assert(api.twod.renderer_2d_remove_objects);
+        assert(api.twod.renderer_2d_queue_vertices);
+        assert(api.twod.renderer_2d_clear_queue);
+        assert(api.twod.renderer_2d_add_vertices);
+        assert(api.twod.renderer_2d_remove_vertices);
+        assert(api.twod.renderer_2d_get_vertices);
+        assert(api.twod.renderer_2d_set_object_params);
 
 
 
 
-        assert(bufferAPI.renderer_buffer_create);
-        assert(bufferAPI.renderer_buffer_destroy);
-        assert(bufferAPI.renderer_buffer_update);
-        assert(bufferAPI.renderer_buffer_read);
-
-
-        assert(fbAPI.renderer_framebuffer_create);
-        assert(fbAPI.renderer_framebuffer_destroy);
-        assert(fbAPI.renderer_framebuffer_resize);
-        assert(fbAPI.renderer_framebuffer_get_handle);
-        assert(fbAPI.renderer_framebuffer_get_raw_data);
-        assert(fbAPI.renderer_framebuffer_set_filtered_hint);
-        assert(fbAPI.renderer_framebuffer_get_handle_type);
+        assert(api.light.renderer_light_create);
+        assert(api.light.renderer_light_destroy);
+        assert(api.light.renderer_light_update_attribs);
+        assert(api.light.renderer_light_enable);
 
 
 
-        assert(api.renderer_create);
-        assert(api.renderer_destroy);
-        assert(api.renderer_draw_2d);
-        assert(api.renderer_draw_3d);
-        assert(api.renderer_set_3d_projection_matrix);
-        assert(api.renderer_set_3d_viewing_matrix);
-        assert(api.renderer_clear_data);
-        assert(api.renderer_clear_layer);
-        assert(api.renderer_get_parameters);
-        assert(api.renderer_sync);
-        assert(api.renderer_attach_target);
-        assert(api.renderer_get_supported_framebuffers);
+
+        assert(api.buffer.renderer_buffer_create);
+        assert(api.buffer.renderer_buffer_destroy);
+        assert(api.buffer.renderer_buffer_update);
+        assert(api.buffer.renderer_buffer_read);
+
+
+        assert(api.fb.renderer_framebuffer_create);
+        assert(api.fb.renderer_framebuffer_destroy);
+        assert(api.fb.renderer_framebuffer_resize);
+        assert(api.fb.renderer_framebuffer_get_handle);
+        assert(api.fb.renderer_framebuffer_get_raw_data);
+        assert(api.fb.renderer_framebuffer_set_filtered_hint);
+        assert(api.fb.renderer_framebuffer_get_handle_type);
+
+
+
+        assert(api.core.renderer_create);
+        assert(api.core.renderer_destroy);
+        assert(api.core.renderer_draw_2d);
+        assert(api.core.renderer_draw_3d);
+        assert(api.core.renderer_set_3d_projection_matrix);
+        assert(api.core.renderer_set_3d_viewing_matrix);
+        assert(api.core.renderer_clear_data);
+        assert(api.core.renderer_clear_layer);
+        assert(api.core.renderer_get_parameters);
+        assert(api.core.renderer_sync);
+        assert(api.core.renderer_attach_target);
+        assert(api.core.renderer_get_supported_framebuffers);
     #endif
     topazRenderer_t * out = calloc(1, sizeof(topazRenderer_t));
     out->api = api;
     out->backend = b;
-    out->api.renderer_create(&out->api);
+    out->api.core.renderer_create(&out->api.core);
 
-    out->bufferAPI = bufferAPI;
-    out->programAPI = programAPI;
-    out->textureAPI = textureAPI;
-    out->twodAPI = twodAPI;
-    out->lightAPI = lightAPI;
-    out->fbAPI = fbAPI;
 
     topaz_matrix_set_identity(&out->mv);
     topaz_matrix_set_identity(&out->proj);
@@ -517,7 +497,7 @@ void topaz_renderer_draw_3d(
     topazRenderer_3D_t * threed,
     const topazRenderer_ProcessAttribs_t * attribs
 ) {
-    t->api.renderer_draw_3d(&t->api, threed, attribs);    
+    t->api.core.renderer_draw_3d(&t->api.core, threed, attribs);    
 }
 
 
@@ -529,7 +509,7 @@ void topaz_renderer_draw_2d(
     const topazRenderer_ProcessAttribs_t * attribs
 
 ) {
-    t->api.renderer_draw_2d(&t->api, &twod->api, ctx, attribs);
+    t->api.core.renderer_draw_2d(&t->api.core, &twod->api, ctx, attribs);
 }
 
 const topazMatrix_t * topaz_renderer_get_3d_viewing_matrix(topazRenderer_t * t) {
@@ -542,33 +522,33 @@ const topazMatrix_t * topaz_renderer_get_3d_projection_matrix(topazRenderer_t * 
 
 void topaz_renderer_set_3d_viewing_matrix(topazRenderer_t * t, const topazMatrix_t * m) {
     t->mv = *m;
-    t->api.renderer_set_3d_viewing_matrix(&t->api, m);
+    t->api.core.renderer_set_3d_viewing_matrix(&t->api.core, m);
 }
 void topaz_renderer_set_3d_projection_matrix(topazRenderer_t * t, const topazMatrix_t * m) {
     t->proj = *m;
-    t->api.renderer_set_3d_projection_matrix(&t->api, m);
+    t->api.core.renderer_set_3d_projection_matrix(&t->api.core, m);
 }
 
 
 void topaz_renderer_clear_data(topazRenderer_t * t) {
-    t->api.renderer_clear_data(&t->api);
+    t->api.core.renderer_clear_data(&t->api.core);
 }
 
 void topaz_renderer_clear_layer(topazRenderer_t * t, topazRenderer_DataLayer layer) {
-    t->api.renderer_clear_layer(&t->api, layer);
+    t->api.core.renderer_clear_layer(&t->api.core, layer);
 }
 
 topazRenderer_Parameters_t topaz_renderer_get_parameters(topazRenderer_t * t) {
-    return t->api.renderer_get_parameters(&t->api);
+    return t->api.core.renderer_get_parameters(&t->api.core);
 }
 
 void topaz_renderer_sync(topazRenderer_t * t) {
-    t->api.renderer_sync(&t->api);
+    t->api.core.renderer_sync(&t->api.core);
 } 
 
 void topaz_renderer_attach_target(topazRenderer_t * t, topazRenderer_Framebuffer_t * f) {
     t->fb = f;
-    t->api.renderer_attach_target(&t->api, f);
+    t->api.core.renderer_attach_target(&t->api.core, f);
 }
 
 
@@ -578,7 +558,7 @@ topazRenderer_Framebuffer_t * topaz_renderer_get_target(topazRenderer_t * t) {
 
 
 const topazArray_t * topaz_renderer_get_supported_framebuffers(topazRenderer_t * t) {
-    return t->api.renderer_get_supported_framebuffers(&t->api);
+    return t->api.core.renderer_get_supported_framebuffers(&t->api.core);
 }
 
 

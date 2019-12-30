@@ -1,5 +1,6 @@
 #include <topaz/compat.h>
 #include <topaz/entity.h>
+#include <topaz/topaz.h>
 #include <topaz/component.h>
 #include <string.h>
 
@@ -46,6 +47,7 @@ static void on_draw(topazEntity_t * src, TestEntity * e) {
 
 
 int test__entity_simple() {   
+    topaz_t * ctx = topaz_context_create_empty();
     TestEntity data;
     memset(&data, 0, sizeof(TestEntity));
     topazEntity_Attributes_t attr;
@@ -59,7 +61,7 @@ int test__entity_simple() {
     attr.on_draw = (topaz_entity_attribute_callback)on_draw;
     attr.userData = &data;
 
-    topazEntity_t * e = topaz_entity_create_with_attributes(&attr);    
+    topazEntity_t * e = topaz_entity_create_with_attributes(ctx, &attr);    
     if (!topaz_entity_is_valid(e)) return 1;
     if (topaz_array_get_size(topaz_entity_get_children(e)) != 0) return 2;
     if (topaz_entity_get_parent(e) != TOPAZ_ENULL) return 3;
@@ -89,7 +91,7 @@ int test__entity_simple() {
 
 
 
-    topazEntity_t * child = topaz_entity_create_with_attributes(&attr);
+    topazEntity_t * child = topaz_entity_create_with_attributes(ctx, &attr);
     topaz_entity_attach(e, child);
 
     if (topaz_entity_get_parent(child) != e) return 8;
@@ -138,7 +140,7 @@ int test__entity_simple() {
 
 
     if (topaz_entity_is_valid(e)) return 99;    
-
+    topaz_context_destroy(ctx);
     
 
     return 0;
@@ -199,7 +201,8 @@ static void component_destroy(topazComponent_t * c, ComponentType * data) {
 
 
 int test__entity_advanced() {
-    topazComponent_t * c = topaz_component_create();
+    topaz_t * ctx = topaz_context_create_empty();
+    topazComponent_t * c = topaz_component_create(ctx);
     topazComponent_Attributes_t attrib;
     memset(&attrib, 0, sizeof(topazComponent_Attributes_t));
     
@@ -234,7 +237,7 @@ int test__entity_advanced() {
     }
 
 
-    topazEntity_t * e = topaz_entity_create();
+    topazEntity_t * e = topaz_entity_create(ctx);
     topaz_entity_add_component(e, c);
 
     if (cdata.attach != 1) {
@@ -264,4 +267,5 @@ int test__entity_advanced() {
         return 6;
 
     return 0;
+    topaz_context_destroy(ctx);
 }

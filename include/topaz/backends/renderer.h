@@ -854,41 +854,7 @@ struct topazRenderer_3D_t {
 ///
 topazRenderer_t * topaz_renderer_create(
     topazBackend_t *, 
-
-    /// API for the renderer direct functions    
-    ///
-    topazRendererAPI_t,
-
-    /// API for renderer buffers, which provide renderer 
-    /// storage.
-    ///
-    topazRenderer_BufferAPI_t,    
-
-    /// API for renderer programs, which provide a way to 
-    /// generate dynamic renderer programs such as shaders.
-    ///
-    topazRenderer_ProgramAPI_t,    
-
-    /// API for renderer textures, which provide image data.
-    /// 
-    topazRenderer_TextureAPI_t,    
-
-    /// API for the 2d renderer, which provides operations optimized 
-    /// for 2d geometry (small batch, dynamic visuals)
-    ///
-    topazRenderer_2DAPI_t,    
-
-    /// API for the light renderer, which provides lighting control 
-    /// for 3d scenes.
-    ///
-    topazRenderer_LightAPI_t,
-
-    /// API for the renderer framebuffer, which is the target of rendering 
-    /// operations.
-    ///
-    topazRenderer_FramebufferAPI_t
-
-    
+    topazRendererAPI_t 
 );
 
 

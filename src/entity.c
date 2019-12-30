@@ -62,6 +62,7 @@ struct topazEntity_t {
 
     topazEntity_Attributes_t api;
     topazSpatial_t * spatial;
+    topaz_t * context;
 
     int protectd;
     int priority;
@@ -85,12 +86,12 @@ topazEntity_t * topaz_entity_null() {
         e->componentsAfter  = topaz_array_create(sizeof(topazComponent_t *));
         e->activeSet = topaz_array_create(sizeof(void*));
         e->spatial = topaz_spatial_create();
-
+        e->context = NULL;
     }
     return e;
 }
 
-topazEntity_t * topaz_entity_create_with_attributes(const topazEntity_Attributes_t * a) {
+topazEntity_t * topaz_entity_create_with_attributes(topaz_t * ctx, const topazEntity_Attributes_t * a) {
     topazEntity_t * out;
     if (!dead) {
         dead = topaz_array_create(sizeof(topazEntity_t *));
@@ -111,6 +112,7 @@ topazEntity_t * topaz_entity_create_with_attributes(const topazEntity_Attributes
         out->spatial = topaz_spatial_create();
         out->parent = topaz_entity_null();
     }
+    out->context = ctx;
     out->valid = TRUE;
     out->step = TRUE;
     out->draw = TRUE;
@@ -123,7 +125,7 @@ topazEntity_t * topaz_entity_create_with_attributes(const topazEntity_Attributes
 
 
 
-topazEntity_t * topaz_entity_create() {
+topazEntity_t * topaz_entity_create(topaz_t * ctx) {
     topazEntity_Attributes_t attrib;
     attrib.on_attach = NULL;
     attrib.on_detach = NULL;
@@ -133,7 +135,7 @@ topazEntity_t * topaz_entity_create() {
     attrib.on_pre_draw = NULL;
     attrib.on_draw = NULL;
     attrib.userData = NULL;
-    return topaz_entity_create_with_attributes(&attrib);
+    return topaz_entity_create_with_attributes(ctx, &attrib);
 }
 
 
@@ -141,7 +143,7 @@ void topaz_entity_set_attributes(topazEntity_t * e, const topazEntity_Attributes
     e->api = *a;
 }
 
-topazEntity_Attributes_t * topaz_entity_get_attributes(const topazEntity_t * e) {
+const topazEntity_Attributes_t * topaz_entity_get_attributes(const topazEntity_t * e) {
     // for null entities, its already empty. No need for Id check
     return &e->api;
 }

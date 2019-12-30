@@ -98,11 +98,11 @@ typedef enum {
 
 
 
-topazRender2D_t * topaz_render2d_create()
+topazRender2D_t * topaz_render2d_create();
 
 
 
-
+/*
 class Render2D : public Component, public Spatial {
   public:
 
@@ -162,5 +162,6 @@ class Render2D : public Component, public Spatial {
      bool absolute;
      Renderer::Polygon polygon;
 };
+*/
 
 #endif

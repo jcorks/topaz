@@ -56,7 +56,7 @@ struct topaz_Attributes_t {
     /// filesystem abstraction functions.
     ///    
     topazBackend_t *    filesysBackend;
-    topazFilesysAPI_t   filesys;
+    topazFilesysAPI_t   filesysAPI;
     
     /// Provides functionality on the system for 
     /// display/window functions
@@ -102,6 +102,9 @@ topaz_t * topaz_context_create(const topaz_Attributes_t *);
 topaz_t * topaz_context_create_empty();
 
 
+void topaz_context_destroy();
+
+
 /// Returns the attributes that this context was instantiated with 
 ///
 const topaz_Attributes_t * topaz_context_get_attributes(const topaz_t *);
@@ -113,7 +116,7 @@ const topaz_Attributes_t * topaz_context_get_attributes(const topaz_t *);
 /// Once run is initiated, all drawing to the screen and logic updating
 /// is automated. While running, it is also possible to utilize the
 /// debugging features such as the console and Entity debugger.
-int topaz_context_run(const topaz_t *);
+int topaz_context_run(topaz_t *);
     
     
 /// Pauses the Engine execution loop.
@@ -172,14 +175,19 @@ void topaz_context_quit(topaz_t *);
 /// @param FPS  The target FPS; useful for loops.
 ///
 /// The actual resolution is machine-dependent, but it tends to be millisecond resolution.
-void topaz_context_wait(topaz_t *. int FPS);
+///
+void topaz_context_wait(topaz_t *, int FPS);
+
+
+/// Gets the number of milliseconds since creating this context.
+///
+uint64_t topaz_context_get_time(topaz_t *);
 
 
 /// Retrieves the specified parameter.
 ///
 /// List of known parameters:
 ///
-///     "framerate"         - target frames per second for the engine loop 
 ///     "version-micro"     - micro version
 ///     "version-minor"     - minor version 
 ///     "version-major"     - major version 
@@ -190,15 +198,15 @@ const topazString_t * topaz_get_parameter(const topaz_t *, const topazString_t *
 int topaz_context_set_parameter(const topaz_t *, const topazString_t *, const topazString_t *);
 
 /// Retrieves an array of all parameter names known.
+/// The array should be freed when done.
 ///
-const topazArray_t * topaz_get_parameter_names(const topaz *);
+topazArray_t * topaz_context_get_parameter_names(const topaz_t *);
 
 
 
-
-
-
-topazFilesysAPI_t * topaz_filesys_create(const topaz_t *);
+/// Creates a new, standard filesys instance.
+///
+topazFilesys_t * topaz_context_filesys_create(const topaz_t *);
 
 
 

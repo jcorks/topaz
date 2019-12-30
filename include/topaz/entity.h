@@ -37,6 +37,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/vector.h>
 typedef struct topazComponent_t topazComponent_t;
 typedef struct topazSpatial_t topazSpatial_t;
+typedef struct topaz_t topaz_t;
 /*
 
     Entity
@@ -141,7 +142,8 @@ topazEntity_t * topaz_entity_null();
 
 
 
-/// Flags an entity for destruction. This destroys all attached components as well.
+/// Flags an entity for destruction. This destroys all attached components 
+/// and child entities as well.
 ///
 void topaz_entity_remove(topazEntity_t *);
 

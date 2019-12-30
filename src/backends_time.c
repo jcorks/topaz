@@ -40,6 +40,7 @@ void topaz_time_destroy(topazTime_t * t) {
         assert(t && "topazBackend_t pointer cannot be NULL.");
     #endif
     t->api.time_destroy(&t->api);
+    free(t);
 }
 
 

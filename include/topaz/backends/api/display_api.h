@@ -30,7 +30,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 #ifndef H_TOPAZDC__DISPLAY_API__INCLUDED
-#define H_TOPAZDC__TIME_API__INCLUDED
+#define H_TOPAZDC__DISPLAY_API__INCLUDED
 
 #include <stdint.h>
 #include <topaz/containers/array.h>
