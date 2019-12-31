@@ -418,7 +418,7 @@ int topaz_renderer_2d_add_objects(topazRenderer_2D_t *, uint32_t * output, uint3
 
 /// Removes a collection of objects.
 ///
-void ropaz_renderer_2d_remove_objects(topazRenderer_2D_t *, uint32_t * ids, uint32_t count);
+void topaz_renderer_2d_remove_objects(topazRenderer_2D_t *, uint32_t * ids, uint32_t count);
 
 
 /// Requests that an additional set of objects 

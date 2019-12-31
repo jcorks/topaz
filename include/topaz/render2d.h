@@ -34,134 +34,86 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/containers/string.h>
 #include <topaz/containers/array.h>
+#include <topaz/backends/renderer.h>
+#include <topaz/spatial.h>
 
 /*
 
     Render2D
     -----
-    Base component to render a 2D object.
+    Base object to render a 2D object.
     
 
 */
 typedef struct topazRender2D_t topazRender2D_t;
 
-/// A RenderMode specifies how the aspect should be expressed.
+
+
+/// Creates a new 2d object
 ///
-typedef enum {
+topazRender2D_t * topaz_render2d_create(topaz_t *);
 
-    /// This is the default. Colors are interpreted as you would normally expect
-    /// with the alpha channle being expressed as a transparency value.
-    ///
-    topazRender2D_Mode_Normal, 
-
-    /// Ignores transparency overall.        
-    ///
-    topazRender2D_Mode_Opaque, 
-
-    /// Translucency in Dynacoe is a way of expressing transparency. When an Aspect is
-    /// translucent, the aspect's colors are added to whatever is drawn underneath it.
-    /// This is referred to in some places as additive blending.
-    ///
-    topazRender2D_Mode_Translucent, 
-
-    /// If an aspect's render mode is None, it will not be drawn.
-    ///
-    topazRender2D_Mode_None, 
-
-} topazRender2D_Mode;
+/// Destroys the 2d object.
+///
+void topaz_render2d_destroy(topaz_t *);
 
 
 
-typedef enum {
+/// Gets the currently set etch rule, which determines how the 
+/// etch rules is applied when rendering this 2d object.
+/// Default is topazRenderer_EtchRule_Out
+///
+topazRenderer_EtchRule topaz_render2d_get_etch_rule(const topazRender2D_t *);
 
-    /// Ignores etching.
-    ///
-    topazRender2D_EtchMode_Ignore,   
-
-    /// Defines the etchable region, but with no visual
-    ///
-    topazRender2D_EtchMode_Define,   
-
-    /// Undefines a previously defined region
-    ///
-    topazRender2D_EtchMode_Undefine, 
-
-    /// Draws only on regions with the etch defined
-    ///
-    topazRender2D_EtchMode_In,       
-
-    /// Draws only on regions with the etch not defined. THis is the default
-    ///
-    topazRender2D_EtchMode_Out,      
-
-} topazRender2D_EtchMode;
+/// Sets the etch rule.
+///
+void topaz_render2d_set_etch_rule(topazRender2D_t *, topazRenderer_EtchRule);
 
 
+/// Retrieves the transparency rule for the 2D object.
+/// Default is topazRenderer_AlphaRule_Allow
+///
+topazRenderer_AlphaRule topaz_render2d_get_alpha_rule(const topazRender2D_t *);
 
-topazRender2D_t * topaz_render2d_create();
+/// Sets how transparency is applied when rendering this 2d object.
+///
+void topaz_render2d_set_alpha_rule(topazRender2D_t *, topazRenderer_AlphaRule);
 
 
+/// Gets whether this 2D object is renderered in abolute coordinates
+///
+int topaz_render2d_get_absolute(const topazRender2D_t *);
 
-/*
-class Render2D : public Component, public Spatial {
-  public:
-
-    /// \brief A RenderMode specifies how the aspect should be expressed.
-    ///
-    enum class RenderMode {
-    };
+/// Sets whether drawing calculations from the node should be interpreted as absolute 
+/// pixel values on the display or should be within the hierarchy. 
+/// The default is false.
+///
+void topaz_render2d_set_absolute(topazRender2D_t *, int);
 
 
 
-    /// \brief  The visual mode for rendered vertices
-    ///
-    /// See Renderer.h
-    RenderMode mode;
+/// Gets the primitive for this 2D object. The default is 
+/// topazRenderer_Primitive_Triangle
+///
+topazRenderer_Primitive topaz_render2d_get_primitive(const topazRender2D_t *);
+
+/// Sets the primitive for the 2D object
+///
+void topaz_render2d_set_primitive(topazRender2D_t *, topazRenderer_Primitive);
+
+/// Gets the spatial object for this 2D instance
+///
+topazSpatial_t * topaz_render2d_get_spatial(topazRender2D_t *);
 
 
-    /// \brief The etch mode for rendered vertices
-    ///
-    /// See Renderer.h
-    EtchMode etch;
+/// Gets the vertices for this 2d object.
+///
+const topazArray_t * topaz_render2d_get_vertices(const topazRender2D_t *);
+
+/// Sets the vertices 
+///
+void topaz_render2d_set_vertices(topazRender2D_t *, const topazArray_t *);
 
 
-    /// \brief Sets whether drawing calculations from the node should be interpreted as absolute 
-    /// pixel values on the display or should be within the hierarchy. The default is false.
-    ///
-    void SetAbsolute(bool);
-
-    /// \brief Gets the absolute field. See SetAbsolute().
-    ///
-    bool GetAbsolute() const;
-
-    /// \brief Returns the raw vertices compiled for the renderable object 
-    ///
-    /// See Renderer.h
-    std::vector<Renderer::Vertex2D> GetVertices() const;    
-    
-    uint32_t GetObjectID() const;
-    
-    const std::vector<uint32_t> & GetVertexIDs() const;
-    
-    /// \brief Returns the polygon to be used when drawing the vertices 
-    ///
-    /// See Renderer.h
-    Renderer::Polygon GetPolygon() const;
-    ~Render2D();
-
-  protected:
-    Render2D(const std::string &);
-
-    void SetVertices(const std::vector<Renderer::Vertex2D> &);
-    void SetPolygon(Renderer::Polygon);
-    void OnUpdateTransform();
-
-  private:
-     std::vector<uint32_t> vertexSrc;
-     int objectID;
-     bool absolute;
-     Renderer::Polygon polygon;
-};
-*/
 
 #endif

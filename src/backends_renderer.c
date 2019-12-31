@@ -168,7 +168,7 @@ int topaz_renderer_2d_add_objects(topazRenderer_2D_t * t, uint32_t * output, uin
     return t->api.renderer_2d_add_objects(&t->api, output, count);
 }
 
-void ropaz_renderer_2d_remove_objects(topazRenderer_2D_t * t, uint32_t * ids, uint32_t count) {
+void topaz_renderer_2d_remove_objects(topazRenderer_2D_t * t, uint32_t * ids, uint32_t count) {
     t->api.renderer_2d_remove_objects(&t->api, ids, count);
 }
 
