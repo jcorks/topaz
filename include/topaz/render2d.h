@@ -51,11 +51,11 @@ typedef struct topazRender2D_t topazRender2D_t;
 
 /// Creates a new 2d object
 ///
-topazRender2D_t * topaz_render2d_create(topaz_t *);
+topazRender2D_t * topaz_render2d_create(topazRenderer_2D_t *);
 
 /// Destroys the 2d object.
 ///
-void topaz_render2d_destroy(topaz_t *);
+void topaz_render2d_destroy(topazRender2D_t *);
 
 
 

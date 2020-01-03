@@ -37,12 +37,12 @@ DEALINGS IN THE SOFTWARE.
 #include <assert.h>
 #endif
 
-struct topazRender2D {
+struct topazRender2D_t {
     topazArray_t * vertexSrc;
-    int objectID;
+    uint32_t objectID;
     int absolute;
     topazRenderer_EtchRule etch;
-    topazRenderer_AlphaRule alpha;
+    topazRenderer_AlphaRule alphaRule;
     topazRenderer_Primitive polygon;
 
     topazSpatial_t * spatial;    
@@ -50,6 +50,20 @@ struct topazRender2D {
     topazArray_t * vertexCopy;
 };
 
+
+static void topaz_render2d_update_transform(topazSpatial_t * sp, topazRender2D_t * r) {
+    if (!r->absolute) {
+        topazMatrix_t m = *topaz_spatial_get_global_transform(sp);
+        topaz_matrix_reverse_majority(&m);
+        topazRenderer_2D_ObjectParams_t * obj = (void*)m.data;
+
+        topaz_renderer_2d_set_object_params(
+            r->renderer,
+            r->objectID,
+            obj
+        );
+    } 
+}
 
 
 topazRender2D_t * topaz_render2d_create(topazRenderer_2D_t * r) {
@@ -62,7 +76,12 @@ topazRender2D_t * topaz_render2d_create(topazRenderer_2D_t * r) {
     out->etch = topazRenderer_EtchRule_Out;
     out->polygon = topazRenderer_Primitive_Triangle;
     out->alphaRule = topazRenderer_AlphaRule_Allow;
-
+    
+    topaz_spatial_add_update_callback(
+        out->spatial,
+        (void(*)(topazSpatial_t *, void *))topaz_render2d_update_transform,
+        out
+    );
     
     return out;
 }
@@ -77,7 +96,7 @@ void topaz_render2d_destroy(topazRender2D_t * t) {
     topaz_array_destroy(t->vertexSrc);
     topaz_spatial_destroy(t->spatial);
     if (t->vertexCopy) topaz_array_destroy(t->vertexCopy);
-    free(out);
+    free(t);
 }
 
 
@@ -107,6 +126,18 @@ int topaz_render2d_get_absolute(const topazRender2D_t * t) {
 
 void topaz_render2d_set_absolute(topazRender2D_t * t, int a) {
     if (t->absolute == a) return;
+    
+    // reset transform to be identity
+    if (a) {
+        topazMatrix_t m; topaz_matrix_set_identity(&m);
+        topazRenderer_2D_ObjectParams_t * obj = (void*)m.data;
+        topaz_renderer_2d_set_object_params(
+            t->renderer,
+            t->objectID,
+            obj
+        );
+    }
+
     t->absolute = a;
     topaz_spatial_invalidate(t->spatial);
 }
@@ -114,11 +145,11 @@ void topaz_render2d_set_absolute(topazRender2D_t * t, int a) {
 
 
 topazRenderer_Primitive topaz_render2d_get_primitive(const topazRender2D_t * t) {
-    return t->primitive;
+    return t->polygon;
 }
 
 void topaz_render2d_set_primitive(topazRender2D_t * t, topazRenderer_Primitive p) {
-    t->primitive = p;
+    t->polygon = p;
 }
 
 
@@ -129,7 +160,7 @@ topazSpatial_t * topaz_render2d_get_spatial(topazRender2D_t * t) {
 
 const topazArray_t * topaz_render2d_get_vertices(const topazRender2D_t * t) {
     if (!t->vertexCopy) {
-        t->vertexCopy = topaz_array_create(sizeof(topazRenderer_2D_Vertex_t));
+        ((topazRender2D_t *)t)->vertexCopy = topaz_array_create(sizeof(topazRenderer_2D_Vertex_t));
     }
 
     uint32_t len = topaz_array_get_size(t->vertexSrc);
@@ -144,11 +175,33 @@ const topazArray_t * topaz_render2d_get_vertices(const topazRender2D_t * t) {
     return t->vertexCopy;
 }
 
-/// Sets the vertices 
-///
 void topaz_render2d_set_vertices(topazRender2D_t * t, const topazArray_t * src) {
-    while(topaz_array_get_size(t->vertexSrc) < topaz_array_get_size(src))
+    int64_t diff = topaz_array_get_size(src) - (int64_t)topaz_array_get_size(t->vertexSrc);
+    if (diff > 0) {
+        uint32_t oldSize = topaz_array_get_size(t->vertexSrc);
+        topaz_array_set_size(t->vertexSrc, topaz_array_get_size(src));
 
+        topaz_renderer_2d_add_vertices(
+            t->renderer,         
+            ((uint32_t*)topaz_array_get_data(t->vertexSrc)) + oldSize,
+            diff
+        );
 
+    } else if (diff < 0) {
+        uint32_t newSize = topaz_array_get_size(src) + diff;
+        topaz_renderer_2d_remove_vertices(
+            t->renderer,         
+            ((uint32_t*)topaz_array_get_data(t->vertexSrc)) + newSize,
+            -diff
+        );
+        topaz_array_set_size(t->vertexSrc, newSize);
+    }
+
+    topaz_renderer_2d_set_vertices(
+        t->renderer,
+        topaz_array_get_data(t->vertexSrc),
+        topaz_array_get_data(src),
+        topaz_array_get_size(t->vertexSrc)
+    );
 
 }
