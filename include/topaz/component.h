@@ -47,36 +47,45 @@ typedef struct topazEntity_t topazEntity_t;
 typedef struct topazComponent_t topazComponent_t;
 
 
-typedef struct topazComponent_Attributes_t topazComponent_Attributes_t;
-
-
 /// Standard callback for all component attributes.
 ///
 typedef void (*topaz_component_attribute_callback)(topazComponent_t *, void *);
 
 
+
+
+typedef struct topazComponent_Attributes_t topazComponent_Attributes_t;
+
 /// Attributes of the component. Attributes define a baseline behavior 
 /// in response to common events. 
+///
 struct topazComponent_Attributes_t {
+
+
+
     /// Function called when stepping
     ///
-    void (*on_step)(topazComponent_t *, void *);
+    topaz_component_attribute_callback on_step;
 
     /// Function called when drawing
     ///
-    void (*on_draw)(topazComponent_t *, void *);
+    topaz_component_attribute_callback on_draw;
 
     /// Function called when attaching the component to the entity.
     ///
-    void (*on_attach)(topazComponent_t *, void *);
+    topaz_component_attribute_callback on_attach;
 
     /// Function called when attaching the component to the entity.
     ///
-    void (*on_detach)(topazComponent_t *, void *);
+    topaz_component_attribute_callback on_detach;
 
     /// Function called before destroying the component.
     ///
-    void (*on_destroy)(topazComponent_t *, void *);
+    topaz_component_attribute_callback on_destroy;
+
+
+
+
 
     /// User data passed as argument to all attribute functions.
     ///
