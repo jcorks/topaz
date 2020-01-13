@@ -191,7 +191,7 @@ uint64_t topaz_context_get_time(topaz_t *);
 ///     "version-micro"     - micro version
 ///     "version-minor"     - minor version 
 ///     "version-major"     - major version 
-const topazString_t * topaz_get_parameter(const topaz_t *, const topazString_t *);
+const topazString_t * topaz_context_get_parameter(const topaz_t *, const topazString_t *);
 
 /// Sets a parameter. Some parameters are read-only. In such a case, 
 /// 0 is returned.
@@ -208,8 +208,9 @@ topazArray_t * topaz_context_get_parameter_names(const topaz_t *);
 ///
 topazFilesys_t * topaz_context_filesys_create(const topaz_t *);
 
-
-
+/// Retrieves the standard input instance.
+///
+topazInput_t * topaz_context_get_input(const topaz_t *);
 
 
 

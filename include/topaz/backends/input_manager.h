@@ -264,7 +264,7 @@ enum {
 
     /// The count of default devices.
     ///
-    topazInputManager_NumDefaultDevices
+    topazInputManager_DefaultDevice_Count
 };
 
 

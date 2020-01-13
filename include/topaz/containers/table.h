@@ -125,6 +125,9 @@ int topaz_table_entry_exists(const topazTable_t *, const void * key);
 ///
 void topaz_table_remove(topazTable_t *, const void * key);
 
+/// Returns whether the table has entries.
+///
+int topaz_table_is_empty(const topazTable_t *);
 
 /// Removes all key-value pairs.
 ///

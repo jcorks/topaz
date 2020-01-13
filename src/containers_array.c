@@ -132,7 +132,7 @@ uint32_t topaz_array_get_type_size(const topazArray_t * t) {
     return t->sizeofType;
 }
 
-void topaz_array_push_n(topazArray_t * t, void * elements, uint32_t count) {
+void topaz_array_push_n(topazArray_t * t, const void * elements, uint32_t count) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazArray_t pointer cannot be NULL.");
     #endif

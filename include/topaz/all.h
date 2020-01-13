@@ -50,6 +50,9 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/containers/string.h>
 #include <topaz/containers/table.h>
 
+#include <topaz/modules/input.h>
+
+
 
 #include <topaz/component.h>
 #include <topaz/entity.h>

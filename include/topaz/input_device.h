@@ -80,7 +80,7 @@ typedef struct {
     /// An associated unicode input with the event. If none, will be 0.
     ///
     int utf8;
-} topazInputDeviceEvent_t;
+} topazInputDevice_Event_t;
 
 
 
@@ -100,12 +100,12 @@ void topaz_input_device_destroy(topazInputDevice_t *);
 
 /// Adds a state change event for the given input within
 /// this device
-void topaz_input_device_push_event(topazInputDevice_t *, const topazInputDeviceEvent_t *);
+void topaz_input_device_push_event(topazInputDevice_t *, const topazInputDevice_Event_t *);
 
 
 /// Gets the next state change for a device input
 ///
-int topaz_input_device_pop_event(topazInputDevice_t *, topazInputDeviceEvent_t *);
+int topaz_input_device_pop_event(topazInputDevice_t *, topazInputDevice_Event_t *);
 
 
 /// Returns the device type

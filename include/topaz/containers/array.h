@@ -88,7 +88,7 @@ uint32_t topaz_array_get_type_size(const topazArray_t *);
 
 /// Adds a contiguous set of elements to the array 
 ///
-void topaz_array_push_n(topazArray_t *, void * element, uint32_t count);
+void topaz_array_push_n(topazArray_t *, const void * element, uint32_t count);
 
 
 /// Removes a specific member of the array

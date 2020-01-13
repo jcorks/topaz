@@ -13,7 +13,7 @@
 
 struct topazInputDevice_t {
     topazTable_t * deadZone;
-    topazInputDeviceEvent_t * data;
+    topazInputDevice_Event_t * data;
     int allocated;
     int iterFront;
     int iterBack;
@@ -27,7 +27,7 @@ struct topazInputDevice_t {
 ///
 topazInputDevice_t * topaz_input_device_create(topazInputDevice_Class c) {
     topazInputDevice_t * out = calloc(1, sizeof(topazInputDevice_t));
-    out->data = calloc(sizeof(topazInputDeviceEvent_t), default_action_queue_size);
+    out->data = calloc(sizeof(topazInputDevice_Event_t), default_action_queue_size);
     out->allocated = default_action_queue_size;
     out->deadZone = topaz_table_create_hash_pointer();
     return out;
@@ -56,19 +56,19 @@ void topaz_input_device_destroy(topazInputDevice_t * t) {
 
 /// Adds a state change event for the given input within
 /// this device
-void topaz_input_device_push_event(topazInputDevice_t * t, const topazInputDeviceEvent_t * evt) {
+void topaz_input_device_push_event(topazInputDevice_t * t, const topazInputDevice_Event_t * evt) {
     
     if (t->iterBack >= t->allocated) {
         // move to the front
         if (t->iterFront > 0) {
-            memmove(t->data, t->data+t->iterFront, (t->iterBack-t->iterFront)*sizeof(topazInputDeviceEvent_t));
+            memmove(t->data, t->data+t->iterFront, (t->iterBack-t->iterFront)*sizeof(topazInputDevice_Event_t));
             t->iterBack -= t->iterFront;
             t->iterFront = 0;
         }
 
         if (t->iterBack >= t->allocated) {
             t->allocated *= 1.4;
-            t->data = realloc(t->data, t->allocated*sizeof(topazInputDeviceEvent_t));
+            t->data = realloc(t->data, t->allocated*sizeof(topazInputDevice_Event_t));
         }
     }
 
@@ -94,7 +94,7 @@ void topaz_input_device_push_event(topazInputDevice_t * t, const topazInputDevic
 }
 
 
-int topaz_input_device_pop_event(topazInputDevice_t * t, topazInputDeviceEvent_t * ev) {
+int topaz_input_device_pop_event(topazInputDevice_t * t, topazInputDevice_Event_t * ev) {
     if (t->iterFront >= t->iterBack) return FALSE;
     *ev = t->data[t->iterFront++];
     return TRUE;

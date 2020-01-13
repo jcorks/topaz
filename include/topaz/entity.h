@@ -75,31 +75,31 @@ struct topazEntity_Attributes_t {
 
     /// Function called when the entity is attached to a parent entity.
     ///
-    void (*on_attach)(topazEntity_t *, void *);
+    topaz_entity_attribute_callback   on_attach;
 
     /// Function called when the entity is detached from a parent entity.
     ///
-    void (*on_detach)(topazEntity_t *, void *);
+    topaz_entity_attribute_callback   on_detach;
 
     /// Function called just before the removal of the object.
     ///
-    void (*on_remove)(topazEntity_t *, void *);
+    topaz_entity_attribute_callback   on_remove;
 
     /// Function called before the all other sub entities are step()'d.
     ///
-    void (*on_pre_step)(topazEntity_t *, void *);
+    topaz_entity_attribute_callback   on_pre_step;
 
     /// Function called during the step() function call.
     ///
-    void (*on_step)(topazEntity_t *, void *);
+    topaz_entity_attribute_callback   on_step;
 
     /// Function called before all other sub entities are draw()n
     ///
-    void (*on_pre_draw)(topazEntity_t *, void *);
+    topaz_entity_attribute_callback   on_pre_draw;
 
     /// Function called during the draw() function call.
     ///
-    void (*on_draw)(topazEntity_t *, void *);
+    topaz_entity_attribute_callback   on_draw;
 
     /// Custom data
     ///

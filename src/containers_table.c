@@ -502,6 +502,9 @@ void topaz_table_remove(topazTable_t * t, const void * key) {
     }    
 }
 
+int topaz_table_is_empty(const topazTable_t * t) {
+    return t->size != 0;
+}
 
 void topaz_table_clear(topazTable_t * t) {
     #ifdef TOPAZDC_DEBUG
@@ -522,7 +525,6 @@ void topaz_table_clear(topazTable_t * t) {
 
         t->buckets[i] = NULL;
     }
-
 }
 
 
