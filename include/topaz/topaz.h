@@ -212,6 +212,9 @@ topazFilesys_t * topaz_context_filesys_create(const topaz_t *);
 ///
 topazInput_t * topaz_context_get_input(const topaz_t *);
 
+/// Retrieves the standard view manager instance.
+///
+topazViewManager_t * topaz_context_get_view_manager(const topaz_t *);
 
 
 

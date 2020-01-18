@@ -50,9 +50,15 @@ struct topaz_t {
     topazEntity_t * managersNP;
 
     topazArray_t * modules; // moduels are entities
+
+    // singleton-like backends
+    topazInputManager_t * inputManager;
     
-    
-    topazEntity_t * graphics;
+
+    // modules
+    topazInput_t * input;
+    topazViewManager_t * viewManager;
+
     topazTime_t * timeRef;
     uint64_t frameEnd;
     uint64_t frameStart;
@@ -60,6 +66,8 @@ struct topaz_t {
     int quit;
     int paused;
     int fps;
+
+
 };
 
 static intptr_t api_nothing(){return 0;}
@@ -87,11 +95,16 @@ topaz_t * topaz_context_create(const topaz_Attributes_t * a) {
     out->managersNP = topaz_entity_create(out);
     out->modules  = topaz_array_create(sizeof(topazEntity_t*));
     
-    out->graphics = TOPAZ_ENULL;
+
+    // backend init if any
+    out->inputManager = topaz_input_manager_create(a->inputManagerBackend, a->inputManagerAPI);
+
+
+
     /// create modules    
     //out->graphics = topaz_graphics_create(a->rendererBackend, &a->rendererAPI);
-    //topaz_array_push(out->modules, out->graphics);
-
+    out->input = topaz_input_create(out, out->inputManager);
+    out->viewManager = topaz_view_manager_create(out);
 
 
     // initialize all modules throught the attach signals
@@ -112,8 +125,6 @@ const topaz_Attributes_t * topaz_context_get_attributes(const topaz_t * t) {
 void topaz_context_destroy(topaz_t * t) {
     topaz_time_destroy(t->timeRef);
     
-    // other modules here.
-    topaz_entity_remove(t->graphics);
 
 
     topaz_entity_remove(t->universe);
@@ -425,4 +436,10 @@ topazFilesys_t * topaz_context_filesys_create(const topaz_t * t) {
 }
 
 
+topazInput_t * topaz_context_get_input(const topaz_t * t) {
+    return ((topaz_t*)t)->input;
+}
 
+topazViewManager_t * topaz_context_get_view_manager(const topaz_t * t) {
+    return ((topaz_t*)t)->viewManager;
+}

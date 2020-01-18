@@ -297,21 +297,22 @@ static void input_ent__step(topazEntity_t * e, void * data) {
 
     // Set the focus to the display that has input focus (which
     // isnt necessarily the main display);
-    /*
-    std::vector<ViewID> dpys = ViewManager::ListViews();
-    Display * focus = nullptr;
-    for(uint32_t i = 0; i < dpys.size(); ++i) {
-        focus = ViewManager::Get(dpys[i]);
-        if (focus && focus->HasInputFocus()) {
-            focusID = dpys[i];
-            break;
+    {
+        const topazArray_t * dpys = topaz_view_manager_get_all(topaz_context_get_view_manager(t->context));
+        topazDisplay_t * focus = NULL;
+        uint32_t i;
+        uint32_t len = topaz_array_get_size(dpys);
+        for(i = 0; i < len; ++i) {
+            focus = topaz_array_at(dpys, topazDisplay_t*, i);
+            if (focus && topaz_display_has_input_focus(focus)) {
+                break;
+            }
+            focus = NULL;
         }
-        focusID = ViewID();
-        focus = nullptr;
+        topaz_input_manager_set_focus(t->manager, focus);
     }
-    manager->SetFocus(focus);
-    */
-    
+
+
 
     // pool raw events
     topaz_input_manager_handle_events(t->manager);

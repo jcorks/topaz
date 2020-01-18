@@ -51,7 +51,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/containers/table.h>
 
 #include <topaz/modules/input.h>
-
+#include <topaz/modules/view_manager.h>
 
 
 #include <topaz/component.h>
