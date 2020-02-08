@@ -6,7 +6,7 @@
 
 #ifdef TOPAZDC_DEBUG
 #include <assert.h>
-#endif
+#endif 
 
 
 struct topazFilesys_t {
