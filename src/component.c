@@ -58,7 +58,8 @@ typedef struct {
 
 
 
-struct topazComponent_t {      
+struct topazComponent_t {
+    topaz_t * ctx;      
     topazString_t * tag;
     topazEntity_t * host;
     
@@ -76,7 +77,7 @@ struct topazComponent_t {
 
 
 
-topazComponent_t * topaz_component_create() {
+topazComponent_t * topaz_component_create(const topazString_t * tagName, topaz_t * t) {
     topazComponent_Attributes_t api;
     api.on_attach = NULL;
     api.on_detach = NULL;
@@ -84,10 +85,10 @@ topazComponent_t * topaz_component_create() {
     api.on_draw = NULL;
     api.on_destroy = NULL;
     api.userData = NULL;
-    return topaz_component_create_with_attributes(&api);
+    return topaz_component_create_with_attributes(tagName, t, &api);
 }
 
-topazComponent_t * topaz_component_create_with_attributes(const topazComponent_Attributes_t * api) {
+topazComponent_t * topaz_component_create_with_attributes(const topazString_t * tagName, topaz_t * ctx, const topazComponent_Attributes_t * api) {
     if (!dead) {
         dead = topaz_array_create(sizeof(topazComponent_t *));
     }
@@ -110,7 +111,9 @@ topazComponent_t * topaz_component_create_with_attributes(const topazComponent_A
     out->draw = TRUE;
     out->api = *api;
     out->valid = TRUE;
-
+    topaz_string_set(out->tag, tagName);
+    out->ctx = ctx;
+    
     topaz_component_install_event(out, TOPAZ_STR_CAST("on-attach"), NULL, NULL);
     topaz_component_install_event(out, TOPAZ_STR_CAST("on-detach"), NULL, NULL);
     return out;

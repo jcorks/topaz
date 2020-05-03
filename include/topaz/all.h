@@ -70,7 +70,8 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/version.h>
 #include <topaz/wbuffer.h>
 
-
+#include <topaz/components/state_control.h>
+#include <topaz/components/scheduler.h>
 
 
 

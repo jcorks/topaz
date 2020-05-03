@@ -83,7 +83,7 @@ struct topazStateControl_Loop_t {
 /// Creates a new state control component.
 /// Use component_destroy to release.
 ///
-topazComponent_t * topaz_state_control_create();
+topazComponent_t * topaz_state_control_create(topaz_t *);
 
 
 /// Sets up a new valid state.

@@ -34,6 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/containers/string.h>
 #include <topaz/containers/array.h>
+typedef struct topaz_t topaz_t;
 typedef struct topazEntity_t topazEntity_t;
 /*
 
@@ -60,8 +61,6 @@ typedef struct topazComponent_Attributes_t topazComponent_Attributes_t;
 /// in response to common events. 
 ///
 struct topazComponent_Attributes_t {
-
-
 
     /// Function called when stepping
     ///
@@ -96,11 +95,11 @@ struct topazComponent_Attributes_t {
 
 /// Creates a new component
 ///
-topazComponent_t * topaz_component_create();
+topazComponent_t * topaz_component_create(const topazString_t * tagName, topaz_t *);
 
 /// Creates a new component with the specified attributes
 ///
-topazComponent_t * topaz_component_create_with_attributes(const topazComponent_Attributes_t *);
+topazComponent_t * topaz_component_create_with_attributes(const topazString_t * tagName, topaz_t *, const topazComponent_Attributes_t *);
 
 
 /// Returns the attributes of the component.
@@ -174,6 +173,10 @@ void topaz_component_set_tag(topazComponent_t *, const topazString_t *);
 /// nullptr is returned.
 ///
 topazEntity_t * topaz_component_get_host(const topazComponent_t *);
+
+/// Returns the context that this component belongs in.
+///
+topaz_t * topaz_component_get_context(const topazComponent_t *);
 
 /// Returns the emtpy component. This value is consistent across all 
 /// invocations.
