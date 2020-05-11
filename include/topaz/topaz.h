@@ -219,5 +219,16 @@ topazViewManager_t * topaz_context_get_view_manager(const topaz_t *);
 
 
 
+/// Gets the backend rendering object for this topaz instance.
+///
+topazRenderer_t * topaz_context_get_backend_renderer(topaz_t *);
+
+
+/// Gets the backend 2d-specific rendering object for this topaz instance.
+///
+topazRenderer_2D_t * topaz_context_get_backend_renderer_2d(topaz_t *);
+
+
+
 
 #endif

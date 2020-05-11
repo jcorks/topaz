@@ -58,7 +58,15 @@ topazArray_t * topaz_array_create(uint32_t sizeofType);
 ///
 void topaz_array_destroy(topazArray_t *);
 
+/// Creates a temporary array whos data is managed for you.
+///
+const topazArray_t * topaz_array_temporary_from_static_array(void * array, uint32_t sizeofType, uint32_t length);
 
+/// Convenience call for topaz_array_temperator_from_static_array() 
+/// The first argument is the array pointer
+/// The second argument is the type of each member within the array 
+/// The third argument is the number of members in the array
+#define TOPAZ_ARRAY_CAST(__D__, __T__, __L__) (topaz_array_temporary_from_static_array(__D__, sizeof(__T__), __L__))
 
 
 

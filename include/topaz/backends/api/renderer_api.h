@@ -311,7 +311,7 @@ struct topazRenderer_FramebufferAPI_t {
 
 
     int      (*renderer_framebuffer_resize)(topazRenderer_FramebufferAPI_t *, int w, int h);
-    void *     (*renderer_framebuffer_get_handle)(topazRenderer_FramebufferAPI_t *);
+    void *   (*renderer_framebuffer_get_handle)(topazRenderer_FramebufferAPI_t *);
     int      (*renderer_framebuffer_get_raw_data)(topazRenderer_FramebufferAPI_t *, uint8_t *);
     void     (*renderer_framebuffer_set_filtered_hint)(topazRenderer_FramebufferAPI_t *, int);
     topazRenderer_Framebuffer_Handle (*renderer_framebuffer_get_handle_type)(topazRenderer_FramebufferAPI_t *);
@@ -351,7 +351,6 @@ struct topazRenderer_CoreAPI_t {
     void                    (*renderer_set_3d_projection_matrix)(topazRenderer_CoreAPI_t *, const topazMatrix_t *);
 
 
-    void                    (*renderer_clear_data)          (topazRenderer_CoreAPI_t *);
     void                    (*renderer_clear_layer)         (topazRenderer_CoreAPI_t *, topazRenderer_DataLayer);
 
     topazRenderer_Parameters_t(*renderer_get_parameters)      (topazRenderer_CoreAPI_t *);

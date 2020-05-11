@@ -44,7 +44,7 @@ DEALINGS IN THE SOFTWARE.
 // magic number thats checked to verify all components 
 // using state control functions are actually what they claim to be
 #ifdef TOPAZDC_DEBUG
-static char * MAGIC_ID__STATE_CONTROL = "t0p4zsch3dul3r";
+static char * MAGIC_ID__SCHEDULER = "t0p4zsch3dul3r";
 #endif
 
 
@@ -170,7 +170,7 @@ static Scheduler * scheduler__retrieve(topazComponent_t * c) {
     Scheduler * s = topaz_component_get_attributes(c)->userData;
     #ifdef TOPAZDC_DEBUG
         assert(s && "Scheduler instance is missing or instance invalid.");
-        assert(s->MAGIC_ID == MAGIC_ID__STATE_CONTROL);
+        assert(s->MAGIC_ID == MAGIC_ID__SCHEDULER);
     #endif
     return s;
 }
@@ -181,7 +181,7 @@ topazComponent_t * topaz_scheduler_create(topaz_t * t) {
     Scheduler * data = calloc(1, sizeof(Scheduler));
 
     #ifdef TOPAZDC_DEBUG
-    data->MAGIC_ID = MAGIC_ID__STATE_CONTROL;
+    data->MAGIC_ID = MAGIC_ID__SCHEDULER;
     #endif
 
     data->tasks = topaz_array_create(sizeof(Scheduler));

@@ -465,7 +465,6 @@ topazRenderer_t * topaz_renderer_create(
         assert(api.core.renderer_draw_3d);
         assert(api.core.renderer_set_3d_projection_matrix);
         assert(api.core.renderer_set_3d_viewing_matrix);
-        assert(api.core.renderer_clear_data);
         assert(api.core.renderer_clear_layer);
         assert(api.core.renderer_get_parameters);
         assert(api.core.renderer_sync);
@@ -529,10 +528,6 @@ void topaz_renderer_set_3d_projection_matrix(topazRenderer_t * t, const topazMat
     t->api.core.renderer_set_3d_projection_matrix(&t->api.core, m);
 }
 
-
-void topaz_renderer_clear_data(topazRenderer_t * t) {
-    t->api.core.renderer_clear_data(&t->api.core);
-}
 
 void topaz_renderer_clear_layer(topazRenderer_t * t, topazRenderer_DataLayer layer) {
     t->api.core.renderer_clear_layer(&t->api.core, layer);

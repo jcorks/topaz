@@ -67,6 +67,19 @@ void topaz_array_destroy(topazArray_t * t) {
     free(t);
 }
 
+#define topaz_array_temp_max_calls 128
+static topazArray_t * tempVals[topaz_array_temp_max_calls] = {0};
+static int tempIter = 0;
+
+const topazArray_t * topaz_array_temporary_from_static_array(void * arr, uint32_t sizeofType, uint32_t len) {
+    if (tempIter >= topaz_array_temp_max_calls) tempIter = 0;
+    if (tempVals[tempIter]) {
+        topaz_array_destroy(tempVals[tempIter]);
+    }
+    tempVals[tempIter] = topaz_array_create(sizeofType);
+    topaz_array_push_n(tempVals[tempIter], arr, len);
+    return tempVals[tempIter++];
+}
 
 
 topazArray_t * topaz_array_clone(const topazArray_t * src) {

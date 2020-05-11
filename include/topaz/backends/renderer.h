@@ -94,6 +94,7 @@ typedef enum {
 
 
 
+
 /// Defines the depth test, meaning the rule that determines which objects are to be 
 /// to be drawn in front or behind. "Less" is the standard for 3D, which allows polygons 
 /// with a lower depth to be drawn in front. "NoTest" is standard for 2D, which 
@@ -227,15 +228,19 @@ typedef enum {
 typedef enum {
     /// RGBA component.
     ///
-    topazRenderer_DataLayer_Color,
+    topazRenderer_DataLayer_Color = 1,
 
     /// Depth component.
     ///
-    topazRenderer_DataLayer_Depth,
+    topazRenderer_DataLayer_Depth = 2,
 
     /// Etch component.
     ///
-    topazRenderer_DataLayer_Etch
+    topazRenderer_DataLayer_Etch = 4,
+
+    /// All components.
+    ///
+    topazRenderer_DataLater_All = 7
 } topazRenderer_DataLayer;
 
 
@@ -928,13 +933,10 @@ void topaz_renderer_set_3d_projection_matrix(topazRenderer_t *, const topazMatri
 ///////////// Framebuffer
 
 
-/// Resets the renderer's render space to an initial state.
-///
-void topaz_renderer_clear_data(topazRenderer_t *);
-
     
 /// Resets a specific part of the renderer's render space. This is often useful for 
 /// complex scenes.
+/// The individual datalayers may be optionally ORd 
 ///
 void topaz_renderer_clear_layer(topazRenderer_t *, topazRenderer_DataLayer);
 

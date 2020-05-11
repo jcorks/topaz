@@ -200,6 +200,16 @@ uint32_t topaz_string_get_length(const topazString_t * t) {
     return t->len;
 }
 
+int topaz_string_get_char(const topazString_t * t, uint32_t p) {
+    if (p >= t->len) return 0;
+    return t->cstr[p];
+}
+
+void topaz_string_set_char(const topazString_t * t, uint32_t p, int value) {
+    if (p >= t->len) return;
+    t->cstr[p] = value;
+}
+
 uint32_t topaz_string_get_byte_length(const topazString_t * t) {
     // for now same as string length. will change when unicode is supported.
     return t->len;
@@ -327,7 +337,7 @@ const topazString_t * topaz_string_temporary_from_c_str(const char * s) {
         tempInit = 1;
     }    
 
-    if (tempIter >= topaz_string_temp_max_calls) tempIter = topaz_string_temp_max_calls;
+    if (tempIter >= topaz_string_temp_max_calls) tempIter = 0;
     topazString_t * t = tempVals[tempIter++];
     topaz_string_set_cstr(t, s, strlen(s));
     return t;

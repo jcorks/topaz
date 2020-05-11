@@ -118,6 +118,15 @@ const char * topaz_string_get_c_str(const topazString_t *);
 ///
 uint32_t topaz_string_get_length(const topazString_t *);
 
+/// Gets the character within the string that the given 
+/// 0-indexed position. If the position is invalid, 0 is returned.
+///
+int topaz_string_get_char(const topazString_t *, uint32_t position);
+
+/// Sets the character within the string at the given 
+/// 0-indexed position. If an invalid position, no action is taken
+///
+void topaz_string_set_char(const topazString_t *, uint32_t position, int value);
 
 /// Gets the byte length of the data representation 
 /// of this string. Depending on the context, this could 

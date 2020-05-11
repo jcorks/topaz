@@ -53,8 +53,8 @@ struct topaz_t {
 
     // singleton-like backends
     topazInputManager_t * inputManager;
-    
-
+    topazRenderer_t * renderer;
+    topazRenderer_2D_t * renderer2d;
     // modules
     topazInput_t * input;
     topazViewManager_t * viewManager;
@@ -98,8 +98,8 @@ topaz_t * topaz_context_create(const topaz_Attributes_t * a) {
 
     // backend init if any
     out->inputManager = topaz_input_manager_create(a->inputManagerBackend, a->inputManagerAPI);
-
-
+    out->renderer     = topaz_renderer_create(a->rendererBackend, a->rendererAPI);
+    out->renderer2d   = topaz_renderer_2d_create(out->renderer);
 
     /// create modules    
     //out->graphics = topaz_graphics_create(a->rendererBackend, &a->rendererAPI);
@@ -216,7 +216,73 @@ topaz_t * topaz_context_create_empty() {
     attr.timeAPI.time_destroy = (void (*)(topazTimeAPI_t *)) api_nothing;
     attr.timeAPI.time_sleep_ms = (void (*)(topazTimeAPI_t *, uint64_t)) api_nothing;
     attr.timeAPI.time_ms_since_startup = (uint64_t (*)(topazTimeAPI_t *)) api_nothing;
-    
+    attr.rendererAPI.core.renderer_create = (void (*)(topazRenderer_CoreAPI_t*))api_nothing;
+    attr.rendererAPI.core.renderer_destroy = (void (*)(topazRenderer_CoreAPI_t*))api_nothing;
+    attr.rendererAPI.core.renderer_draw_2d = (void (*)(topazRenderer_CoreAPI_t*, topazRenderer_2DAPI_t *, const topazRenderer_2D_Context_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;
+    attr.rendererAPI.core.renderer_draw_3d = (void (*)(topazRenderer_CoreAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;
+    attr.rendererAPI.core.renderer_set_3d_viewing_matrix = (void (*)(topazRenderer_CoreAPI_t *, const topazMatrix_t *))api_nothing;
+    attr.rendererAPI.core.renderer_set_3d_projection_matrix = (void (*)(topazRenderer_CoreAPI_t *, const topazMatrix_t *))api_nothing;
+    attr.rendererAPI.core.renderer_clear_layer = (void (*)(topazRenderer_CoreAPI_t*, topazRenderer_DataLayer))api_nothing;
+    attr.rendererAPI.core.renderer_get_parameters = (topazRenderer_Parameters_t (*)(topazRenderer_CoreAPI_t*)) api_nothing;
+    attr.rendererAPI.core.renderer_sync = (void (*)(topazRenderer_CoreAPI_t*)) api_nothing;
+    attr.rendererAPI.core.renderer_attach_target = (void (*)(topazRenderer_CoreAPI_t*, topazRenderer_Framebuffer_t *)) api_nothing;
+    attr.rendererAPI.core.renderer_get_supported_framebuffers = (const topazArray_t *  (*)(topazRenderer_CoreAPI_t*)) api_nothing;
+    attr.rendererAPI.buffer.renderer_buffer_create = (void (*)(topazRendererAPI_t *, topazRenderer_BufferAPI_t *, float * data, int numElements)) api_nothing;
+    attr.rendererAPI.buffer.renderer_buffer_destroy = (void (*)(topazRenderer_BufferAPI_t *)) api_nothing;
+    attr.rendererAPI.buffer.renderer_buffer_update = (void (*)(topazRenderer_BufferAPI_t *, float * newData, int offset, int numElements)) api_nothing;
+    attr.rendererAPI.buffer.renderer_buffer_read = (void (*)(topazRenderer_BufferAPI_t *, float * ouputData, int offset, int numELements)) api_nothing;
+    attr.rendererAPI.program.renderer_program_create = (topazRenderer_Program_t * (*)(topazRendererAPI_t *,
+                                                                        topazRenderer_ProgramAPI_t *,
+                                                                        const topazString_t *, 
+                                                                        const topazString_t *, 
+                                                                        topazString_t *)) api_nothing;
+    attr.rendererAPI.program.renderer_program_create_preset = (topazRenderer_Program_t * (*)(topazRendererAPI_t *,
+                                                                        topazRenderer_ProgramAPI_t *,
+                                                                        topazRenderer_PresetProgram)) api_nothing;
+    attr.rendererAPI.program.renderer_program_destroy = (void (*)(topazRenderer_ProgramAPI_t *)) api_nothing;
+    attr.rendererAPI.texture.renderer_texture_create = (void (*)(topazRendererAPI_t *, topazRenderer_TextureAPI_t *,  int w, int h, const uint8_t * rgbaTextureData)) api_nothing;
+    attr.rendererAPI.texture.renderer_texture_destroy = (void (*)(topazRenderer_TextureAPI_t *)) api_nothing;
+    attr.rendererAPI.texture.renderer_texture_update = (void (*)(topazRenderer_TextureAPI_t *, const uint8_t * newData)) api_nothing;
+    attr.rendererAPI.texture.renderer_texture_get = (void (*)(topazRenderer_TextureAPI_t *, uint8_t *)) api_nothing;
+    attr.rendererAPI.twod.renderer_2d_create = (void (*)(topazRendererAPI_t *, topazRenderer_2DAPI_t *)) api_nothing;
+    attr.rendererAPI.twod.renderer_2d_destroy = (void (*)(topazRenderer_2DAPI_t *)) api_nothing;
+    attr.rendererAPI.twod.renderer_2d_add_objects = (int (*)(topazRenderer_2DAPI_t *, uint32_t * output, uint32_t count)) api_nothing;
+    attr.rendererAPI.twod.renderer_2d_remove_objects = (void (*)(topazRenderer_2DAPI_t *, uint32_t * ids, uint32_t count)) api_nothing;
+    attr.rendererAPI.twod.renderer_2d_queue_vertices = (void (*)(topazRenderer_2DAPI_t *,
+        const uint32_t * objects,
+        uint32_t count
+    )) api_nothing;
+    attr.rendererAPI.twod.renderer_2d_clear_queue = (void (*)(topazRenderer_2DAPI_t *)) api_nothing;
+    attr.rendererAPI.twod.renderer_2d_add_vertices = (int (*)(topazRenderer_2DAPI_t *, uint32_t * output, uint32_t count)) api_nothing;
+    attr.rendererAPI.twod.renderer_2d_remove_vertices = (void (*)(topazRenderer_2DAPI_t *, uint32_t * objects, uint32_t count)) api_nothing;
+    attr.rendererAPI.twod.renderer_2d_set_vertices = (void (*)(
+        topazRenderer_2DAPI_t *, 
+        uint32_t * vertices, 
+        const topazRenderer_2D_Vertex_t *, 
+        uint32_t count
+    )) api_nothing;
+    attr.rendererAPI.twod.renderer_2d_get_vertices = (void (*)(
+        topazRenderer_2DAPI_t *, 
+        const uint32_t * vertexIDs, 
+        topazRenderer_2D_Vertex_t * output,
+        uint32_t count
+    )) api_nothing;
+    attr.rendererAPI.twod.renderer_2d_set_object_params = (void (*)(
+        topazRenderer_2DAPI_t *, 
+        uint32_t object, 
+        const topazRenderer_2D_ObjectParams_t *
+    )) api_nothing;
+    attr.rendererAPI.light.renderer_light_create = (void (*)(topazRendererAPI_t *, topazRenderer_LightAPI_t *, topazRenderer_LightType)) api_nothing;
+    attr.rendererAPI.light.renderer_light_destroy = (void (*)(topazRenderer_LightAPI_t *)) api_nothing;
+    attr.rendererAPI.light.renderer_light_update_attribs = (void (*)(topazRenderer_LightAPI_t *, float *)) api_nothing;
+    attr.rendererAPI.light.renderer_light_enable = (void (*)(topazRenderer_LightAPI_t *, int doIt)) api_nothing;
+    attr.rendererAPI.fb.renderer_framebuffer_create = (void (*)(topazRendererAPI_t *, topazRenderer_FramebufferAPI_t *)) api_nothing;
+    attr.rendererAPI.fb.renderer_framebuffer_destroy = (void (*)(topazRenderer_FramebufferAPI_t *)) api_nothing;
+    attr.rendererAPI.fb.renderer_framebuffer_resize = (int (*)(topazRenderer_FramebufferAPI_t *, int w, int h)) api_nothing;
+    attr.rendererAPI.fb.renderer_framebuffer_get_handle = (void * (*)(topazRenderer_FramebufferAPI_t *)) api_nothing;
+    attr.rendererAPI.fb.renderer_framebuffer_get_raw_data = (int (*)(topazRenderer_FramebufferAPI_t *, uint8_t *)) api_nothing;
+    attr.rendererAPI.fb.renderer_framebuffer_set_filtered_hint = (void (*)(topazRenderer_FramebufferAPI_t *, int)) api_nothing;
+    attr.rendererAPI.fb.renderer_framebuffer_get_handle_type = (topazRenderer_Framebuffer_Handle (*)(topazRenderer_FramebufferAPI_t *)) api_nothing;
 
 
 
@@ -442,4 +508,13 @@ topazInput_t * topaz_context_get_input(const topaz_t * t) {
 
 topazViewManager_t * topaz_context_get_view_manager(const topaz_t * t) {
     return ((topaz_t*)t)->viewManager;
+}
+
+
+topazRenderer_t * topaz_context_get_backend_renderer(topaz_t * t) {
+    return t->renderer;
+}
+
+topazRenderer_2D_t * topaz_context_get_backend_renderer_2d(topaz_t * t) {
+    return t->renderer2d;
 }
