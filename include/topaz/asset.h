@@ -60,6 +60,44 @@ typedef enum {
 
 
 
+///
+typedef void (*topaz_asset_data_callback)(topazAsset_t *, void * dataIn, uint64_t void *);
+
+
+typedef struct topazAsset_Attributes_t topazAsset_Attributes_t;
+
+struct topazAsset_Attributes_t {
+
+    /// Called when the asset has received all that bytes.
+    /// In most cases, this is when the asset will finalize
+    /// the data
+    topaz_asset_callback on_load;
+
+    topaz_asset_callback on_unload;
+
+    void * userData;
+};
+
+
+
+
+/// When done, triggers on_load.
+/// If the asset had already been loaded, on_unload is called.
+///
+void topaz_asset_load(topazAsset_t *, void *, uint64_t numBytes);
+
+void topaz_asset_stream_start(topazAsset_t *);
+
+void topaz_asset_stream(topazAsset_t *, void *,  uint64_t numBytes);
+
+void topaz_asset_stream_end(topazAsset_t *);
+
+const void * topaz_asset_get_data(const topazAsset_t *);
+
+uint64_t topaz_asset_get_length(const topazAsset_t *);
+
+
+
 topazString_t * topaz_asset_get_name(const topazAsset_t *);
 
 topazAsset_Type topaz_asset_get_type(const topazAsset_t *);
