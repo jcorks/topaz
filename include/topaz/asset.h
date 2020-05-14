@@ -33,6 +33,7 @@ DEALINGS IN THE SOFTWARE.
 #define H_TOPAZDC__COLOR__INCLUDED
 
 #include <topaz/containers/string.h>
+typedef struct topaz_t topaz_t;
 
 /*
 
@@ -60,41 +61,110 @@ typedef enum {
 
 
 
+/// Callback pertinent to data.
+/// Success is returned.
 ///
-typedef void (*topaz_asset_data_callback)(topazAsset_t *, void * dataIn, uint64_t void *);
+typedef int (*topaz_asset_data_callback)(
+    topazAsset_t * asset, 
+    void *         dataIn, 
+    uint64_t       dataSizeBytes,  
+    void *         userdata
+);
+
+
 
 
 typedef struct topazAsset_Attributes_t topazAsset_Attributes_t;
 
+/// Serves as the interface for asset objects
 struct topazAsset_Attributes_t {
 
     /// Called when the asset has received all that bytes.
     /// In most cases, this is when the asset will finalize
-    /// the data
-    topaz_asset_callback on_load;
+    /// the data. In the case of streaming, this is called
+    /// after stream_end has been called, signaling the end 
+    /// of input data.
+    /// dataIn will is a pointer representing the entire buffer 
+    /// of data loaded in. dataSizeBytes is the length of that 
+    /// buffer in bytes.
+    ///
+    topaz_asset_data_callback on_load;
 
+    /// Called when the asset has been passed streaming data
+    /// For more flexible performannce, asset streaming is 
+    /// buffered, meaning not every topaz_asset_stream() call
+    /// will invoke an on-stream callback. Instead, once a threshold
+    /// is reached, on_stream will be invoked.
+    /// See topaz_asset_stream_set_threashold()
+    ///
+    topaz_asset_data_callback on_stream;
+
+    /// Called when the strream is cancelled.
+    ///
+    topaz_asset_data_callback on_stream_cancel;
+
+    /// Called when the asset is requested to be destroyed
+    ///
     topaz_asset_callback on_unload;
 
+
+    /// User-provided data.
+    ///
     void * userData;
 };
 
 
 
 
-/// When done, triggers on_load.
-/// If the asset had already been loaded, on_unload is called.
-///
-void topaz_asset_load(topazAsset_t *, void *, uint64_t numBytes);
 
+
+/// Creates a new asset.
+///
+topazAsset_t * topaz_asset_create(topaz_t *, const topazAsset_Attributes_t *);
+
+
+/// Loads raw data from memory into an asset. 
+/// When done, triggers on_load. If successful, returns TRUE.
+/// If the asset had already been loaded, on_unload is called first.
+///
+int topaz_asset_load(topazAsset_t *, const void *, uint64_t numBytes);
+
+
+/// Begins streaming data.
+/// When streaming has started, all topaz_asset_stream_*
+/// functions will be enabled.
+///
 void topaz_asset_stream_start(topazAsset_t *);
 
-void topaz_asset_stream(topazAsset_t *, void *,  uint64_t numBytes);
+/// Streams new data into the asset. This may 
+/// trigger an on_stream callback
+///
+void topaz_asset_stream(topazAsset_t *, const void *, uint64_t numBytes);
 
+/// Sets the buffer size. As data is streamed to the asset,
+/// data is collected until this threshold is reached. WHen its reahed, 
+/// the data is passed to the on_stream callback for further processing.
+/// This can be used to control how often data is processed when 
+/// posting many individual stream requests. Setting a threshold of 
+/// 0 indicates that ever topaz_asset_stream() triggers an
+/// on_stream call.
+///
+void topaz_asset_stream_set_threshold(topazAsset_t *, uint64_t);
+
+/// Flushes the stream buffer. If theres any waiting data 
+/// whose size is below the stream threshold, then that 
+/// data is immediately sent to the asset via on_stream.
+///
+void topaz_asset_stream_flush(topazAsset_t *);
+
+/// Indicates that all the data thats been streamed 
+/// represents the entire asset. Once this is called,
+/// any remaining data is flushed and on_load is triggered.
+///
 void topaz_asset_stream_end(topazAsset_t *);
 
-const void * topaz_asset_get_data(const topazAsset_t *);
-
-uint64_t topaz_asset_get_length(const topazAsset_t *);
+/// Indicates that any streamed data should be thrown out.
+void topaz_asset_stream_cancel(topazAsset_t *);
 
 
 
