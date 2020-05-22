@@ -49,21 +49,78 @@ typedef struct topazTrunk_t topazTrunk_t;
 
 
 ///
-topazViewManager_t * topaz_trunk_create(topaz_t *);
+topazTrunk_t * topaz_trunk_create(topaz_t *);
 
 ///
-void topaz_trunk_destroy(topazViewManager_t *);
+void topaz_trunk_destroy(topazTrunk_t *);
 
 
 
 
-topazAsset_t * topaz_trunk_
+/// Sets the resource path.
+/// The resource path is the root from which 
+/// assets may be loaded by path.
+/// The default path is system dependent, but is usually 
+/// the directory of the binary.
+/// If successful, returns TRUE.
+///
+int topaz_trunk_set_resource_path(topazTrunk_t *, const topazString_t *);
+
+
+/// Convenience function that attempts to load a new asset 
+/// from disk directly. This is recommended for small assets that are 
+/// effectively instanteous. If a more robust solution is needed,
+/// consider topaz_trunk_fetch_asset().
+///
+/// Like with topaz_trunk_fetch_asset, if an asset of the given name 
+/// already exists, the preloaded asset is returned. If not, 
+/// then a new asset is created whos name will match the path given.
+/// Then, the data is attempted to be loaded from disk. The name given is 
+/// first checked to see if its a partial path relative to 
+/// the trunk's resource path (topaz_trunk_set_resource_path()). Then 
+/// its interpreted as a full path.
+/// If the data could not be inerpreted as the given type, or the source 
+/// data is unavailable, NULL is returned.
+///
+topazAsset_t * topaz_trunk_load_asset(
+    topazTrunk_t *,
+    const topazString_t * fileType,
+    const topazString_t * name
+);
+
+
+
+/// Either creates a new asset if the given name doesn't exist, or 
+/// returns an existing asset.
+/// In the case that a new asset needs to be created, 
+/// if the fileType is not able to be interpreted, then 
+/// NULL is returned. This is only checked if the name doesn't exist.
+/// In the case that a new asset is created, the returned asset 
+/// can then be used directly to load data. See asset.h
+/// 
+topazAsset_t * topaz_trunk_fetch_asset(
+    topazTrunk_t *,
+    const topazString_t * fileType,
+    const topazString_t * name
+);
 
 
 
 
+/// Returns the list of recognized loading extensions 
+///
+const topazAsset_t * topaz_trunk_supported_extensions(const topazTrunk_t *);
 
 
+/// Adds a new possible extension to be read 
+/// topazAsset_LoadingProfile_t defines the set of function s
+/// to interact with a 
+///
+void topaz_trunk_add_extension(
+    topazTrunk_t *, 
+    topazAsset_Type,
+    const topazAsset_LoadingProfile_t *
+);
 
 
 

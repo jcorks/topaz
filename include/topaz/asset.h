@@ -61,6 +61,34 @@ typedef enum {
 
 
 
+
+typedef int (*topaz_asset_callback)(
+    topazAsset_t *,
+    void * userData
+);
+
+
+
+typedef struct topazAsset_Attributes_t topazAsset_Attributes_t;
+
+/// Serves as the interface for asset objects
+struct topazAsset_Attributes_t {
+    
+    topaz_asset_callback on_create;
+
+
+    topaz_asset_callback on_destroy;
+
+
+    /// User-provided data.
+    ///
+    void * userData;
+};
+
+
+
+
+
 /// Callback pertinent to data.
 /// Success is returned.
 ///
@@ -71,14 +99,12 @@ typedef int (*topaz_asset_data_callback)(
     void *         userdata
 );
 
+typedef struct topazAsset_LoadingProfile_t topazAsset_LoadingProfile_t;
 
 
 
-typedef struct topazAsset_Attributes_t topazAsset_Attributes_t;
-
-/// Serves as the interface for asset objects
-struct topazAsset_Attributes_t {
-
+// 
+struct topazAsset_LoadingProfile_t {
     /// Called when the asset has received all that bytes.
     /// In most cases, this is when the asset will finalize
     /// the data. In the case of streaming, this is called
@@ -105,13 +131,15 @@ struct topazAsset_Attributes_t {
 
     /// Called when the asset is requested to be destroyed
     ///
-    topaz_asset_callback on_unload;
+    topaz_asset_data_callback on_unload;
+}
 
 
-    /// User-provided data.
-    ///
-    void * userData;
-};
+
+
+
+
+
 
 
 
@@ -120,7 +148,18 @@ struct topazAsset_Attributes_t {
 
 /// Creates a new asset.
 ///
-topazAsset_t * topaz_asset_create(topaz_t *, const topazAsset_Attributes_t *);
+topazAsset_t * topaz_asset_create(
+    topaz_t *, 
+    const topazString_t * fileType,
+    const topazAsset_Attributes_t *
+);
+
+const topazAsset_Attributes_t * topaz_asset_get_attributes(const topazAsset_t *);
+
+
+const topazAsset_LoadingProfile_t * topaz_asset_get_loading_profile(
+    const topazAsset_t *
+);
 
 
 /// Loads raw data from memory into an asset. 
@@ -164,13 +203,21 @@ void topaz_asset_stream_flush(topazAsset_t *);
 void topaz_asset_stream_end(topazAsset_t *);
 
 /// Indicates that any streamed data should be thrown out.
+///
 void topaz_asset_stream_cancel(topazAsset_t *);
 
+/// Returns whether the asset is in streaming mode
+///
+int topaz_asset_stream_active(const topazAsset_t *);
 
 
 topazString_t * topaz_asset_get_name(const topazAsset_t *);
 
 topazAsset_Type topaz_asset_get_type(const topazAsset_t *);
+
+
+
+
 
 #endif
 
