@@ -58,6 +58,7 @@ struct topaz_t {
     // modules
     topazInput_t * input;
     topazViewManager_t * viewManager;
+    topazResources_t * resources;
 
     topazTime_t * timeRef;
     uint64_t frameEnd;
@@ -105,6 +106,7 @@ topaz_t * topaz_context_create(const topaz_Attributes_t * a) {
     //out->graphics = topaz_graphics_create(a->rendererBackend, &a->rendererAPI);
     out->input = topaz_input_create(out, out->inputManager);
     out->viewManager = topaz_view_manager_create(out);
+    out->resources = topaz_resources_create(out);
 
 
     // initialize all modules throught the attach signals
@@ -509,6 +511,12 @@ topazInput_t * topaz_context_get_input(const topaz_t * t) {
 topazViewManager_t * topaz_context_get_view_manager(const topaz_t * t) {
     return ((topaz_t*)t)->viewManager;
 }
+
+topazResources_t * topaz_context_get_resources(const topaz_t * t) {
+    return ((topaz_t*)t)->resources;
+}
+
+
 
 
 topazRenderer_t * topaz_context_get_backend_renderer(topaz_t * t) {

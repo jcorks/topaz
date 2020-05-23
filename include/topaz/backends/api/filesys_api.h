@@ -66,6 +66,7 @@ struct topazFilesysAPI_t {
     const topazArray_t *    (*filesys_query)            (topazFilesysAPI_t *);
     int                     (*filesys_set_path)         (topazFilesysAPI_t *, const topazString_t *);
     const topazString_t *   (*filesys_get_path)         (topazFilesysAPI_t *);
+    const topazArray_t *    (*filesys_split_path)       (topazFilesysAPI_t *, const topazString_t *);
 
 
     int                     (*filesys_go_to_child)      (topazFilesysAPI_t *, const topazString_t *);
@@ -73,7 +74,6 @@ struct topazFilesysAPI_t {
     int                     (*filesys_create_node)      (topazFilesysAPI_t *, const topazString_t *);
     topazRbuffer_t *        (*filesys_read)             (topazFilesysAPI_t *, const topazString_t *);
     int                     (*filesys_write)            (topazFilesysAPI_t *, const topazString_t *, const topazWbuffer_t *);
-
 
     int                     (*filesys_is_node)          (topazFilesysAPI_t *, const topazString_t * t);
     int                     (*filesys_is_child)         (topazFilesysAPI_t *, const topazString_t * t);

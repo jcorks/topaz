@@ -29,30 +29,33 @@ DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef H_TOPAZDC__TRUNK__INCLUDED
-#define H_TOPAZDC__TRUNK__INCLUDED
+#ifndef H_TOPAZDC__RESOURCES__INCLUDED
+#define H_TOPAZDC__RESOURCES__INCLUDED
 
 
-#include <asset.h>
+#include <topaz/asset.h>
 typedef struct topaz_t topaz_t;
 
 
 
 /*
-    Trunk
+    Resources
     -----
     Manages assets
 */
-typedef struct topazTrunk_t topazTrunk_t;
+typedef struct topazResources_t topazResources_t;
 
 
 
-
+/// Creates a new resources instance. This is normally not necessary to call, as 
+/// topaz_t has a default resources instance that it generates for you. 
+/// See topaz_get_resources();
 ///
-topazTrunk_t * topaz_trunk_create(topaz_t *);
+topazResources_t * topaz_resources_create(topaz_t *);
 
+/// Destroys and frees a resources instance
 ///
-void topaz_trunk_destroy(topazTrunk_t *);
+void topaz_resources_destroy(topazResources_t *);
 
 
 
@@ -64,26 +67,26 @@ void topaz_trunk_destroy(topazTrunk_t *);
 /// the directory of the binary.
 /// If successful, returns TRUE.
 ///
-int topaz_trunk_set_resource_path(topazTrunk_t *, const topazString_t *);
+int topaz_resources_set_path(topazResources_t *, const topazString_t *);
 
 
 /// Convenience function that attempts to load a new asset 
 /// from disk directly. This is recommended for small assets that are 
 /// effectively instanteous. If a more robust solution is needed,
-/// consider topaz_trunk_fetch_asset().
+/// consider topaz_resources_fetch_asset().
 ///
-/// Like with topaz_trunk_fetch_asset, if an asset of the given name 
+/// Like with topaz_resources_fetch_asset, if an asset of the given name 
 /// already exists, the preloaded asset is returned. If not, 
 /// then a new asset is created whos name will match the path given.
 /// Then, the data is attempted to be loaded from disk. The name given is 
 /// first checked to see if its a partial path relative to 
-/// the trunk's resource path (topaz_trunk_set_resource_path()). Then 
+/// the resources's resource path (topaz_resources_set_resource_path()). Then 
 /// its interpreted as a full path.
 /// If the data could not be inerpreted as the given type, or the source 
 /// data is unavailable, NULL is returned.
 ///
-topazAsset_t * topaz_trunk_load_asset(
-    topazTrunk_t *,
+topazAsset_t * topaz_resources_load_asset(
+    topazResources_t *,
     const topazString_t * fileType,
     const topazString_t * name
 );
@@ -98,28 +101,39 @@ topazAsset_t * topaz_trunk_load_asset(
 /// In the case that a new asset is created, the returned asset 
 /// can then be used directly to load data. See asset.h
 /// 
-topazAsset_t * topaz_trunk_fetch_asset(
-    topazTrunk_t *,
+topazAsset_t * topaz_resources_fetch_asset(
+    topazResources_t *,
     const topazString_t * fileType,
     const topazString_t * name
 );
 
 
+void topaz_resources_remove_asset(
+    topazResources_t *,
+    const topazString_t * name
+);
 
-
-/// Returns the list of recognized loading extensions 
+/// Returns whether a particular extension is supported.
 ///
-const topazAsset_t * topaz_trunk_supported_extensions(const topazTrunk_t *);
+int topaz_resources_is_extension_supported(
+    const topazResources_t *, 
+    const topazString_t *
+);
 
 
 /// Adds a new possible extension to be read 
-/// topazAsset_LoadingProfile_t defines the set of function s
-/// to interact with a 
+/// topazAsset_LoadingProfile_t defines the set of functions
+/// to interact with a specific data format. This is used to 
+/// automatically pick the type of asset that should be 
+/// generated for a specific set of data. If the extensions is 
+/// already added, its attributes are replaced.
 ///
-void topaz_trunk_add_extension(
-    topazTrunk_t *, 
+void topaz_resources_add_extension(
+    topazResources_t *, 
+    const topazString_t * ext,
     topazAsset_Type,
-    const topazAsset_LoadingProfile_t *
+    const topazAsset_LoadingProfile_t *,
+    const topazAsset_Attributes_t *
 );
 
 

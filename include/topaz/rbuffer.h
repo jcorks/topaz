@@ -87,7 +87,7 @@ const topazArray_t * topaz_rbuffer_read_bytes(topazRbuffer_t *, uint64_t numByte
 const void * topaz_rbuffer_get_buffer(topazRbuffer_t *, uint64_t numBytes);
 
 
-/// Similar to ropaz_rbuffer_get_buffer, but 
+/// Similar to topaz_rbuffer_get_buffer, but 
 /// in the case that numBytes exceeds size, an 
 /// empty buffer is returned rather than NULL.
 ///

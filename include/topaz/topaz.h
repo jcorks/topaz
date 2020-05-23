@@ -204,6 +204,8 @@ topazArray_t * topaz_context_get_parameter_names(const topaz_t *);
 
 
 
+
+
 /// Creates a new, standard filesys instance.
 ///
 topazFilesys_t * topaz_context_filesys_create(const topaz_t *);
@@ -215,6 +217,10 @@ topazInput_t * topaz_context_get_input(const topaz_t *);
 /// Retrieves the standard view manager instance.
 ///
 topazViewManager_t * topaz_context_get_view_manager(const topaz_t *);
+
+/// Retrieves the standard resources instance.
+///
+topazResources_t * topaz_context_get_resources(const topaz_t *);
 
 
 

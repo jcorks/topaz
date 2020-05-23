@@ -33,6 +33,7 @@ topazFilesys_t * topaz_filesys_create(topazBackend_t * b, topazFilesysAPI_t api)
         assert(api.filesys_query);
         assert(api.filesys_is_node);
         assert(api.filesys_is_child);
+        assert(api.filesys_split_path);
     #endif
     topazFilesys_t * out = calloc(1, sizeof(topazFilesys_t));
     out->api = api;
@@ -109,6 +110,15 @@ const topazString_t * topaz_filesys_get_path(topazFilesys_t * t) {
     return t->api.filesys_get_path(&t->api);
 }
 
+const topazArray_t * topaz_filesys_split_path(topazFilesys_t * t, const topazString_t * str) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(str && "topazString_t pointer cannot be NULL.");
+    #endif
+
+    return t->api.filesys_split_path(&t->api, str);
+    
+}
 
 
 

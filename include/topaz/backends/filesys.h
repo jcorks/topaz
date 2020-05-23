@@ -120,11 +120,17 @@ int topaz_filesys_set_path(topazFilesys_t *, const topazString_t *);
 ///
 const topazString_t * topaz_filesys_get_path(topazFilesys_t *);
 
+/// Given a path, it returns the node and file components of the path separated
+/// This takes into account filesystems-specific path separators. 
+/// The array (and topazString_t *) references are valid until next calling 
+/// of topaz_filesys_split_path.
+///
+const topazArray_t * topaz_filesys_split_path(topazFilesys_t *, const topazString_t * path);
 
 
 /// Change to the specified child node.
 /// The nodeName must match the name of a child node. On some systems 
-/// partial paths are supported, but these are non-standard.
+/// partial paths may be supported, but these are non-standard.
 ///	
 int topaz_filesys_go_to_child(topazFilesys_t *, const topazString_t * nodeName);
 
@@ -139,7 +145,6 @@ int topaz_filesys_go_to_parent(topazFilesys_t *);
 /// Creates a node with the given name within the current path.
 ///
 int topaz_filesys_create_node(topazFilesys_t *, const topazString_t *);
-
 
 
 

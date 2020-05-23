@@ -29,8 +29,8 @@ DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef H_TOPAZDC__COLOR__INCLUDED
-#define H_TOPAZDC__COLOR__INCLUDED
+#ifndef H_TOPAZDC__ASSET__INCLUDED
+#define H_TOPAZDC__ASSET__INCLUDED
 
 #include <topaz/containers/string.h>
 typedef struct topaz_t topaz_t;
@@ -94,9 +94,8 @@ struct topazAsset_Attributes_t {
 ///
 typedef int (*topaz_asset_data_callback)(
     topazAsset_t * asset, 
-    void *         dataIn, 
-    uint64_t       dataSizeBytes,  
-    void *         userdata
+    const void *   dataIn, 
+    uint64_t       dataSizeBytes
 );
 
 typedef struct topazAsset_LoadingProfile_t topazAsset_LoadingProfile_t;
@@ -121,7 +120,7 @@ struct topazAsset_LoadingProfile_t {
     /// buffered, meaning not every topaz_asset_stream() call
     /// will invoke an on-stream callback. Instead, once a threshold
     /// is reached, on_stream will be invoked.
-    /// See topaz_asset_stream_set_threashold()
+    /// See topaz_asset_stream_set_threshold()
     ///
     topaz_asset_data_callback on_stream;
 
@@ -132,7 +131,7 @@ struct topazAsset_LoadingProfile_t {
     /// Called when the asset is requested to be destroyed
     ///
     topaz_asset_data_callback on_unload;
-}
+};
 
 
 
@@ -150,13 +149,23 @@ struct topazAsset_LoadingProfile_t {
 ///
 topazAsset_t * topaz_asset_create(
     topaz_t *, 
-    const topazString_t * fileType,
-    const topazAsset_Attributes_t *
+    topazAsset_Type type,
+    const topazString_t * name,
+    const topazAsset_Attributes_t *,
+    const topazAsset_LoadingProfile_t *
 );
 
+/// Destroys an asset.
+///
+void topaz_asset_destroy(topazAsset_t *);
+
+/// Returns the attributes that the asset was 
+/// created with.
+///
 const topazAsset_Attributes_t * topaz_asset_get_attributes(const topazAsset_t *);
 
-
+/// Returns the loading profile that the asset was created with.
+///
 const topazAsset_LoadingProfile_t * topaz_asset_get_loading_profile(
     const topazAsset_t *
 );
@@ -210,8 +219,16 @@ void topaz_asset_stream_cancel(topazAsset_t *);
 ///
 int topaz_asset_stream_active(const topazAsset_t *);
 
+/// Returns whether the data has been completely loaded 
+/// into the asset. Effectively, returns whether on_load has been called.
+/// If on_load fails, this is set to false.
+///
+int topaz_asset_is_loaded(const topazAsset_t *);
 
-topazString_t * topaz_asset_get_name(const topazAsset_t *);
+
+
+
+const topazString_t * topaz_asset_get_name(const topazAsset_t *);
 
 topazAsset_Type topaz_asset_get_type(const topazAsset_t *);
 

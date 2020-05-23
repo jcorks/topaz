@@ -52,6 +52,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/modules/input.h>
 #include <topaz/modules/view_manager.h>
+#include <topaz/modules/resources.h>
 
 
 #include <topaz/component.h>
