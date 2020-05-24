@@ -90,7 +90,9 @@ int topaz_render2d_get_absolute(const topazRender2D_t *);
 ///
 void topaz_render2d_set_absolute(topazRender2D_t *, int);
 
-
+/// Sets the texture to use with this 2D object.
+///
+void topaz_render2d_set_texture(topazRender2D_t *, topazRenderer_Texture_t *);
 
 /// Gets the primitive for this 2D object. The default is 
 /// topazRenderer_Primitive_Triangle

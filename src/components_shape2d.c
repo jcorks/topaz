@@ -58,6 +58,7 @@ typedef struct {
     topazColor_t color;
     topazColor_t realColor;
     float animSpeed;
+    int animFrame;
 } Shape2D;
 
 static void shape2d__on_draw(topazComponent_t * c, Shape2D * s) {
@@ -171,6 +172,18 @@ void topaz_shape2d_form_rectangle(topazComponent_t * c, float width, float heigh
     );
 
     
+}
+
+
+
+void topaz_shape2d_form_image(topazComponent_t * c, topazAsset_t * img) {
+    Shape2D * s = shape2d__retrieve(c);
+    s->id = img;
+    s->animFrame = 0;
+    topaz_render2d_set_texture(
+        c->render2d, 
+        topaz_image_get_frame()
+    );
 }
 
 

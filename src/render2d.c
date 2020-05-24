@@ -67,6 +67,17 @@ static void topaz_render2d_update_transform(topazSpatial_t * sp, topazRender2D_t
     } 
 }
 
+static void topaz_render2d_set_texture(topazRender2D_t * r, topazRenderer_Texture_t * t) {
+    r->params.texture = t;
+    topaz_renderer_2d_set_object_params(
+        r->renderer,
+        r->objectID,
+        &r->params
+    );
+}
+
+
+
 
 topazRender2D_t * topaz_render2d_create(topazRenderer_2D_t * r) {
     topazRender2D_t * out = calloc(1, sizeof(topazRender2D_t));
