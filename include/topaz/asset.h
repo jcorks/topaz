@@ -62,7 +62,7 @@ typedef enum {
 
 
 
-typedef int (*topaz_asset_callback)(
+typedef void (*topaz_asset_callback)(
     topazAsset_t *,
     void * userData
 );
@@ -74,9 +74,12 @@ typedef struct topazAsset_Attributes_t topazAsset_Attributes_t;
 /// Serves as the interface for asset objects
 struct topazAsset_Attributes_t {
     
+    /// Called when the asset is finalized.
+    ///
     topaz_asset_callback on_create;
 
-
+    /// Called when the asset is destroyed
+    ///
     topaz_asset_callback on_destroy;
 
 

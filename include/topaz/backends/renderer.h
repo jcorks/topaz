@@ -273,6 +273,52 @@ struct topazRenderer_Parameters_t {
 
 
 /*
+    RendererTexture
+    -----
+*/
+
+typedef struct topazRenderer_Texture_t topazRenderer_Texture_t;
+
+
+/// Stores texture data so that it may be accessed in the drawing structure.
+/// Returns the textureIndex. Passing a NULL as the rgbaTextureData
+/// will allocate space for the texture, keep its contents as undefined
+///
+topazRenderer_Texture_t * topaz_renderer_texture_create(topazRenderer_t *, int w, int h, const uint8_t * rgbaTextureData);
+
+/// Flags a texture for deletion. Deletion is not guaranteed to be immediate, nor does it guarantee
+/// freeing of GPU memory; however, it does guarantee the possibility of adding one or more
+/// textures of its size or less.
+///
+void topaz_renderer_texture_destroy(topazRenderer_Texture_t *);
+
+/// redefines the contents of an existing image without
+/// deleting it and re-adding it. The image is expected to be the
+/// same dimensions as the original.
+///
+void topaz_renderer_texture_update(topazRenderer_Texture_t *, const uint8_t * newData);
+
+
+
+/// Populates the given array with the texture data.
+/// THe input buffer should be allocated to GetTextureWidth()*GetTextureHeight()*4
+/// As with input buffered data, the format is RGBA with no padding.
+///
+void topaz_renderer_texture_get(topazRenderer_Texture_t *, uint8_t *);
+
+
+/// Retrieves the texture's width
+///
+int topaz_renderer_texture_get_width(topazRenderer_Texture_t *);
+
+/// Retrieves the texture's height
+///
+int topaz_renderer_texture_get_height(topazRenderer_Texture_t *);
+
+
+
+
+/*
     RendererBuffer
     -----
 
@@ -354,10 +400,6 @@ struct topazRenderer_2D_Vertex_t{
     ///
     float texX, texY;                     
     
-    /// if not used, set to -1, else float form of texture id
-    ///
-    float useTex;                         
-    
     /// the transform reference object
     ///
     float object;                         
@@ -395,8 +437,11 @@ typedef struct topazRenderer_2D_ObjectParams_t topazRenderer_2D_ObjectParams_t;
 
 struct topazRenderer_2D_ObjectParams_t {
     // transform
-    float data[16];
+    topazMatrix_t transform;
     
+    /// Texture to be used. If NULL, no texture is used
+    ///
+    topazRenderer_Texture_t * texture;
 };
 
 
@@ -485,50 +530,6 @@ void topaz_renderer_2d_set_object_params(
 
 
 
-
-
-/*
-    RendererTexture
-    -----
-*/
-
-typedef struct topazRenderer_Texture_t topazRenderer_Texture_t;
-
-
-/// Stores texture data so that it may be accessed in the drawing structure.
-/// Returns the textureIndex. Passing a NULL as the rgbaTextureData
-/// will allocate space for the texture, keep its contents as undefined
-///
-topazRenderer_Texture_t * topaz_renderer_texture_create(topazRenderer_t *, int w, int h, const uint8_t * rgbaTextureData);
-
-/// Flags a texture for deletion. Deletion is not guaranteed to be immediate, nor does it guarantee
-/// freeing of GPU memory; however, it does guarantee the possibility of adding one or more
-/// textures of its size or less.
-///
-void topaz_renderer_texture_destroy(topazRenderer_Texture_t *);
-
-/// redefines the contents of an existing image without
-/// deleting it and re-adding it. The image is expected to be the
-/// same dimensions as the original.
-///
-void topaz_renderer_texture_update(topazRenderer_Texture_t *, const uint8_t * newData);
-
-
-
-/// Populates the given array with the texture data.
-/// THe input buffer should be allocated to GetTextureWidth()*GetTextureHeight()*4
-/// As with input buffered data, the format is RGBA with no padding.
-///
-void topaz_renderer_texture_get(topazRenderer_Texture_t *, uint8_t *);
-
-
-/// Retrieves the texture's width
-///
-int topaz_renderer_texture_get_width(topazRenderer_Texture_t *);
-
-/// Retrieves the texture's height
-///
-int topaz_renderer_texture_get_height(topazRenderer_Texture_t *);
 
 
 

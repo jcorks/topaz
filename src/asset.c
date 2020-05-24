@@ -45,8 +45,6 @@ topazAsset_t * topaz_asset_create(
     out->streamThreshold = TOPAZ_ASSET__STREAM_THRESHOLD;
 
     #ifdef TOPAZDC_DEBUG
-        assert(attribs->on_create);
-        assert(attribs->on_destroy);
 
         assert(loading->on_load);
         assert(loading->on_unload);
@@ -54,12 +52,12 @@ topazAsset_t * topaz_asset_create(
     #endif
 
 
-    out->attribs.on_create(out, attribs->userData);
+    if (attribs->on_create) out->attribs.on_create(out, attribs->userData);
     return out;
 }
 
 void topaz_asset_destroy(topazAsset_t * a) {
-    a->attribs.on_destroy(a, a->attribs.userData);
+    if (a->attribs.on_destroy) a->attribs.on_destroy(a, a->attribs.userData);
 
     topaz_asset_stream_cancel(a);
     topaz_string_destroy(a->name);

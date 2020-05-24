@@ -154,10 +154,10 @@ void topaz_shape2d_form_rectangle(topazComponent_t * c, float width, float heigh
     };
 
     topazRenderer_2D_Vertex_t v[6] = {
-        {0, 0,  color[0], color[1], color[2], color[3],     0, 0,   -1, 0},
-        {0, 0,  color[0], color[1], color[2], color[3],     0, 0,   -1, 0},
-        {0, 0,  color[0], color[1], color[2], color[3],     0, 0,   -1, 0},
-        {0, 0,  color[0], color[1], color[2], color[3],     0, 0,   -1, 0}
+        {0, 0,  color[0], color[1], color[2], color[3],     0, 0,   0},
+        {0, 0,  color[0], color[1], color[2], color[3],     0, 0,   0},
+        {0, 0,  color[0], color[1], color[2], color[3],     0, 0,   0},
+        {0, 0,  color[0], color[1], color[2], color[3],     0, 0,   0}
     };
 
 
