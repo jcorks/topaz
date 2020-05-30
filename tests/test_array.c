@@ -132,26 +132,26 @@ int test__array_advanced() {
     topaz_array_destroy(copy);
     topaz_array_destroy(arr);
 
+    {
+        
+        int arrS[] = {
+            102,
+            314,
+            11,
+            42,
+            4422,
+            110000
+        };
+        const topazArray_t * arr = TOPAZ_ARRAY_CAST(arrS, int, 6);
+        if (topaz_array_get_size(arr) != 6) {
+            return 9;
+        }
 
-
-    int arr[] = {
-        102,
-        314,
-        11,
-        42,
-        4422,
-        110000
-    };
-    const topazArray_t * arr = TOPAZ_ARRAY_CAST(arr, int, 6);
-    if (topaz_array_get_size(arr) != 6) {
-        return 9;
+        if (topaz_array_at(arr, int, 2) != 11 ||
+            topaz_array_at(arr, int, 5) != 110000) {
+                
+            return 10;
+        }
     }
-
-    if (topaz_array_at(arr, int, 3) != 11) ||
-        topaz_array_at(arr, int, 5) != 110000) {
-            
-        return 10;
-    }
-
     return 0;
 }

@@ -202,7 +202,7 @@ static void component_destroy(topazComponent_t * c, ComponentType * data) {
 
 int test__entity_advanced() {
     topaz_t * ctx = topaz_context_create_empty();
-    topazComponent_t * c = topaz_component_create(ctx);
+    topazComponent_t * c = topaz_component_create(TOPAZ_STR_CAST("COMPONENT"), ctx);
     topazComponent_Attributes_t attrib;
     memset(&attrib, 0, sizeof(topazComponent_Attributes_t));
     

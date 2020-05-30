@@ -108,7 +108,7 @@ void topaz_shape2d_form_image_frame_scaled(topazComponent_t *, topazAsset_t *, u
 /// simple geometric objects of equal-length sides. For example, using numIterations 
 /// of 3 will yield an equalateral triangle.
 /// 
-void topaz_shape2d_form_radial(topazComponent_t *, float radius, float numIterations);
+void topaz_shape2d_form_radial(topazComponent_t *, float radius, uint32_t numIterations);
 
 
 /// Forms the object into a generic set of triangles. The given array 

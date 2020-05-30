@@ -55,7 +55,7 @@ DEALINGS IN THE SOFTWARE.
 #define FALSE 0
 #endif
 
-
+#define TOPAZ_PI (3.14159265358979323846)
 
 
 #endif

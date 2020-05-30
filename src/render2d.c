@@ -67,7 +67,7 @@ static void topaz_render2d_update_transform(topazSpatial_t * sp, topazRender2D_t
     } 
 }
 
-static void topaz_render2d_set_texture(topazRender2D_t * r, topazRenderer_Texture_t * t) {
+void topaz_render2d_set_texture(topazRender2D_t * r, topazRenderer_Texture_t * t) {
     r->params.texture = t;
     topaz_renderer_2d_set_object_params(
         r->renderer,

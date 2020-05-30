@@ -158,7 +158,7 @@ void topaz_array_push_n(topazArray_t * t, const void * elements, uint32_t count)
         elements, 
         count*t->sizeofType
     );
-    t->size++;
+    t->size+=count;
 }
 
 

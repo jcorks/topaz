@@ -79,6 +79,24 @@ void topaz_image_remove_frame(topazAsset_t *, uint32_t);
 ///
 uint32_t topaz_image_get_frame_count(const topazAsset_t *);
 
+/// Returns the width of the image
+///
+int topaz_image_get_width(const topazAsset_t *);
+
+/// Returns the height of the image
+///
+int topaz_image_get_height(const topazAsset_t *);
+
+/// Resets the width/height of the image.
+/// Afterwhich, the contents of al frames are undefined
+///
+void topaz_image_frame_resize(
+    topazAsset_t *,
+    int width,
+    int height
+);
+
+
 
 
 
@@ -94,28 +112,6 @@ void topaz_image_frame_set_from_texture(
 
 
 /// Sets the RGBA pixel data within the image according 
-/// to the given width and height. This assumes that 
-/// the given buffer is at least width*height*4 bytes large.
-///
-void topaz_image_frame_set(
-    topazImage_Frame_t *,
-    int width,
-    int height,
-    const uint8_t * rgbaData
-);
-
-
-/// Resets the width/height of the image.
-/// Afterwhich, the contents are undefined
-///
-void topaz_image_frame_resize(
-    topazImage_Frame_t *,
-    int width,
-    int height
-);
-
-
-/// Sets the RGBA pixel data within the image according 
 /// to the width and height of the frame. This assumes that 
 /// the given buffer is at least width*height*4 bytes large.
 ///
@@ -124,14 +120,7 @@ void topaz_image_frame_set_data(
     const uint8_t * rgbdaData
 );
 
-/// Returns the width of the frame
-///
-int topaz_image_frame_get_width(const topazImage_Frame_t *);
 
-
-/// Returns the height of the frame
-///
-int topaz_image_frame_get_height(const topazImage_Frame_t *);
 
 /// Gets the texture handle for the frame.
 ///

@@ -147,10 +147,6 @@ const uint8_t default_texture_data[] = {
 
 
 
-struct topazImage_Frame_t {
-    topazRenderer_Texture_t * object;
-    topaz_t * ctx;
-};
 
 
 typedef struct {
@@ -164,7 +160,16 @@ typedef struct {
     // frames within the image
     topazArray_t * frames;
 
+    int width;
+    int height;
+
 } TopazImage;
+
+struct topazImage_Frame_t {
+    topazRenderer_Texture_t * object;
+    TopazImage * img;
+};
+
 
 
 void image__destroy(topazAsset_t * a, void * userData) {
@@ -214,7 +219,7 @@ topazAsset_t * topaz_image_create(topaz_t * t, const topazString_t * name, topaz
 topazImage_Frame_t * topaz_image_add_frame(topazAsset_t * a) {
     TopazImage * img = image__retrieve(a);
     topazImage_Frame_t * frame = calloc(sizeof(topazImage_Frame_t), 1);
-    frame->ctx = img->ctx;
+    frame->img = img;
     frame->object = topaz_renderer_texture_create(topaz_context_get_backend_renderer(img->ctx), 4, 4, default_texture_data);
     topaz_array_push(img->frames, frame);
     return frame;
@@ -243,6 +248,40 @@ uint32_t topaz_image_get_frame_count(const topazAsset_t * a) {
     return topaz_array_get_size(img->frames);
 }
 
+int topaz_image_get_width(const topazAsset_t * a) {
+    TopazImage * img = image__retrieve(a);
+    return img->width;;
+}
+
+
+int topaz_image_get_height(const topazAsset_t * a) {
+    TopazImage * img = image__retrieve(a);
+    return img->height;
+}
+
+void topaz_image_resize(
+    topazAsset_t * a,
+    int width,
+    int height
+) {
+    TopazImage * img = image__retrieve(a);
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(img->frames);
+    topazImage_Frame_t * f;
+    img->width = width;
+    img->height = height;
+
+    for(i = 0; i < len; ++i) {
+        f = topaz_array_at(img->frames, topazImage_Frame_t *, i);
+
+        topaz_renderer_texture_destroy(f->object);
+        f->object = topaz_renderer_texture_create(
+            topaz_context_get_backend_renderer(f->img->ctx),
+            width, height, NULL
+        );
+
+    }
+}
 
 
 
@@ -254,43 +293,19 @@ void topaz_image_frame_set_from_texture(
 ) {
     topaz_renderer_texture_destroy(f->object);
 
-    int w = topaz_renderer_texture_get_width(t);
-    int h = topaz_renderer_texture_get_height(t);
+    int w = f->img->width;
+    int h = f->img->height;
     uint8_t * newData = malloc(w*h*4);
     topaz_renderer_texture_get(t, newData);
 
     f->object = topaz_renderer_texture_create(
-        topaz_context_get_backend_renderer(f->ctx),
+        topaz_context_get_backend_renderer(f->img->ctx),
         w, h, newData
     );
 }
 
 
-void topaz_image_frame_set(
-    topazImage_Frame_t * f,
-    int width,
-    int height,
-    const uint8_t * rgbaData
-) {
-    topaz_renderer_texture_destroy(f->object);
-    f->object = topaz_renderer_texture_create(
-        topaz_context_get_backend_renderer(f->ctx),
-        width, height, rgbaData
-    );
-}
 
-
-void topaz_image_frame_resize(
-    topazImage_Frame_t * f,
-    int width,
-    int height
-) {
-    topaz_renderer_texture_destroy(f->object);
-    f->object = topaz_renderer_texture_create(
-        topaz_context_get_backend_renderer(f->ctx),
-        width, height, NULL
-    );
-}
 
 
 void topaz_image_frame_set_data(
@@ -300,14 +315,7 @@ void topaz_image_frame_set_data(
     topaz_renderer_texture_update(f->object, rgbaData);
 }
 
-int topaz_image_frame_get_width(const topazImage_Frame_t * f) {
-    return topaz_renderer_texture_get_width(f->object);
-}
 
-
-int topaz_image_frame_get_height(const topazImage_Frame_t * f) {
-    return topaz_renderer_texture_get_width(f->object);
-}
 
 
 topazRenderer_Texture_t * topaz_image_frame_get_texture(const topazImage_Frame_t * f) {
@@ -316,10 +324,10 @@ topazRenderer_Texture_t * topaz_image_frame_get_texture(const topazImage_Frame_t
 
 
 topazArray_t * topaz_image_frame_get_rgba_data(const topazImage_Frame_t * f) {
-    topazArray_t * arr = topaz_array_create(sizeof(uint32_t));
-    int w = topaz_renderer_texture_get_width(f->object);
-    int h = topaz_renderer_texture_get_height(f->object);
-    topaz_array_set_size(arr, w*h);
+    topazArray_t * arr = topaz_array_create(sizeof(uint8_t));
+    int w = f->img->width;
+    int h = f->img->height;
+    topaz_array_set_size(arr, w*h*4);
 
     topaz_renderer_texture_get(
         f->object, 
