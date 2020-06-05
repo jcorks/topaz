@@ -47,7 +47,7 @@ void topaz_renderer_buffer_destroy(topazRenderer_Buffer_t * t) {
     free(t);
 }
 
-void topaz_renderer_buffer_update(topazRenderer_Buffer_t * t, float * newData, int offset, int numElements) {
+void topaz_renderer_buffer_update(topazRenderer_Buffer_t * t, const float * newData, int offset, int numElements) {
     t->api.renderer_buffer_update(&t->api, newData, offset, numElements);
 }
 

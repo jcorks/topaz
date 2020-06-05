@@ -274,7 +274,7 @@ struct topazRenderer_BufferAPI_t {
     void                    (*renderer_buffer_destroy)             (topazRenderer_BufferAPI_t *);
 
 
-    void                    (*renderer_buffer_update)               (topazRenderer_BufferAPI_t *, float * newData, int offset, int numElements);
+    void                    (*renderer_buffer_update)               (topazRenderer_BufferAPI_t *, const float * newData, int offset, int numElements);
     void                    (*renderer_buffer_read)                 (topazRenderer_BufferAPI_t *, float * ouputData, int offset, int numELements);
 
 

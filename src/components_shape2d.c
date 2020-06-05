@@ -90,11 +90,8 @@ static void shape2d__on_draw(topazComponent_t * c, Shape2D * s) {
 
 
     
+    // TODO: anim mode
 
-    // jump to next frame after drawing
-    if (s->img && s->animMode == AnimMode_Normal) {
-
-    }
 
 }
 
@@ -281,7 +278,7 @@ void topaz_shape2d_form_radial(topazComponent_t * c, float radius, uint32_t numI
     topazVector_t empty;
     s->id = NULL;
     curPt.z = 0;
-    empty.x = empty.y = empty.z;
+    empty.x = empty.y = empty.z = 0;
 
     uint32_t i;
     for(i = 0; i < numIterations; ++i) {

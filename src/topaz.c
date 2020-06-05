@@ -231,7 +231,7 @@ topaz_t * topaz_context_create_empty() {
     attr.rendererAPI.core.renderer_get_supported_framebuffers = (const topazArray_t *  (*)(topazRenderer_CoreAPI_t*)) api_nothing;
     attr.rendererAPI.buffer.renderer_buffer_create = (void (*)(topazRendererAPI_t *, topazRenderer_BufferAPI_t *, float * data, int numElements)) api_nothing;
     attr.rendererAPI.buffer.renderer_buffer_destroy = (void (*)(topazRenderer_BufferAPI_t *)) api_nothing;
-    attr.rendererAPI.buffer.renderer_buffer_update = (void (*)(topazRenderer_BufferAPI_t *, float * newData, int offset, int numElements)) api_nothing;
+    attr.rendererAPI.buffer.renderer_buffer_update = (void (*)(topazRenderer_BufferAPI_t *, const float * newData, int offset, int numElements)) api_nothing;
     attr.rendererAPI.buffer.renderer_buffer_read = (void (*)(topazRenderer_BufferAPI_t *, float * ouputData, int offset, int numELements)) api_nothing;
     attr.rendererAPI.program.renderer_program_create = (topazRenderer_Program_t * (*)(topazRendererAPI_t *,
                                                                         topazRenderer_ProgramAPI_t *,

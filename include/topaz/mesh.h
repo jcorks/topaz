@@ -29,14 +29,13 @@ DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef H_TOPAZDC__RBUFFER__INCLUDED
-#define H_TOPAZDC__RBUFFER__INCLUDED
+#ifndef H_TOPAZDC__MESH__INCLUDED
+#define H_TOPAZDC__MESH__INCLUDED
 
 
 #include <stdint.h>
-#include <topaz/containers/array.h>
-#include <topaz/containers/string.h>
-
+#include <topaz/backends/renderer.h>
+typedef struct topaz_t topaz_t;
 
 
 /// The type of vertex attribute.
@@ -55,7 +54,7 @@ typedef enum {
     ///
     topazMesh_VertexAttribute_UV,       
 
-    /// User-defined data. 3 components: xyz.
+    /// User-defined data. 4 components: xyz.
     ///
     topazMesh_VertexAttribute_UserData  
 
@@ -80,37 +79,111 @@ typedef enum {
 */
 typedef struct topazMesh_t topazMesh_t;
 
-/// Creates a new, empty input buffer 
+/// Creates a new, empty mesh.
 ///
-topazMesh_t * topaz_mesh_create();
+topazMesh_t * topaz_mesh_create(topaz_t *);
 
-
+/// Creates a new mesh instance of a mesh as an exact copy.
+/// This clones the vertex data as well.
+///
 topazMesh_t * topaz_mesh_clone(const topazMesh_t *);
 
+/// Creates a nice instance of a mesh, but shares the vertex data 
+/// with the source instance. Any edits to the vertex data will 
+/// be reflected in all meshes that share the same vertex data.
+///
+topazMesh_t * topaz_mesh_clone_shared(const topazMesh_t *);
 
-topazMesh_t * topaz_mesh_clone_shallow(const topazMesh_t *);
+/// Returns source mesh instance that the vertex data belongs to
+/// If the mesh was created in a non-shared way, the instance returned 
+/// will match the object itself.
+///
+topazMesh_t * topaz_mesh_get_shared_source(topazMesh_t *);
 
 
 
+/////////////// Vertex modification
 
 
+/// Returns the number of vertices that the mesh contains.
+///
 void topaz_mesh_set_vertex_count(topazMesh_t *, uint32_t);
 
-/// Also sets the vertex count.
-/// array type is topazRenderer_3D_Vertex_t
+/// Sets the raw vertices for the mesh. This also sets the vertex count.
+/// The array type is topazRenderer_3D_Vertex_t
+///
 void topaz_mesh_define_vertices(topazMesh_t *, const topazArray_t *);
 
 
-
-topazVector_t topaz_mesh_get_vertex(
-    topazMesh_t *, 
+/// Gets data from a specific vertex. If the 
+/// vertex doesnt exist, a placeholder value is returned.
+/// This value is valid until the next call of the function 
+/// with the same mesh.
+///
+const float * topaz_mesh_get_vertex(
+    const topazMesh_t *, 
     topazMesh_VertexAttribute, 
     uint32_t index
-) {
-    
-}
+);
+
+/// Gets data from a specific vertex. If the 
+/// vertex doesnt exist, nothing happens
+///
+void topaz_mesh_set_vertex(
+    topazMesh_t *,
+    topazMesh_VertexAttribute, 
+    uint32_t index,
+    const float *
+);
+
+/// Returns the number of vertex within this mesh.
+///
+uint32_t topaz_mesh_get_vertex_count(const topazMesh_t *);
+
+
+
+//////////// Object control
+
+/// An object is a collection of faces 
+/// specified with indices to vertices. For mesh objects, these will be 
+/// indices in groups of 3.
+
+
+
+/// Adds a new object.  This function creates a new instance
+/// and its index is returned. This index can be used with topaz_mesh_get_object 
+/// to modify and read from.
+///
+uint32_t topaz_mesh_add_object(topazMesh_t *);
+
+/// Gets the array of face indices for the corresponding index.
+///
+topazArray_t * topaz_mesh_get_object(topazMesh_t *, uint32_t index);
+
+/// Removes the object specified. No action is taken if the index 
+/// doesn't exist.
+///
+void topaz_mesh_remove_object(topazMesh_t *, uint32_t);
+
+/// Gets the number of objects that the mesh object holds.
+///
+uint32_t topaz_mesh_get_object_count(const topazMesh_t *);
+
+/// Returns the raw buffer for all vertices. See renderer.h
+///
+topazRenderer_Buffer_t * topaz_mesh_get_vertex_data(topazMesh_t *);
+
+
+
+/// Creates a new basic cube mesh.
+///
+topazMesh_t * topaz_mesh_create_cube(topaz_t *);
+
+/// Creates a new basic square mesh.
+///
+topazMesh_t * topaz_mesh_create_square(topaz_t *);
 
 
 
 
-
+#endif

@@ -343,7 +343,7 @@ void topaz_renderer_buffer_destroy(topazRenderer_Buffer_t *);
 /// No check is made to see if this oversteps the original buffer size. If
 /// overstepping occurs, the result is undefined.
 ///
-void topaz_renderer_buffer_update(topazRenderer_Buffer_t *, float * newData, int offset, int numElements);
+void topaz_renderer_buffer_update(topazRenderer_Buffer_t *, const float * newData, int offset, int numElements);
 
 
 /// Populates outputData with the relevant data contained in the buffer. On most implementations
