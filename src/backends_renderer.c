@@ -16,8 +16,8 @@ struct topazRenderer_t {
     topazBackend_t * backend;
 
 
-    topazMatrix_t mv;
-    topazMatrix_t proj;
+    topazRenderer_Buffer_t * mv;
+    topazRenderer_Buffer_t * proj;
 
     
     topazRenderer_Framebuffer_t * fb;
@@ -280,13 +280,13 @@ topazRenderer_Program_t * topaz_renderer_program_create(
 
 
 
-topazRenderer_Program_t * topaz_renderer_program_create_preset(
+topazRenderer_Program_t * topaz_renderer_program_get_preset(
     topazRenderer_t * t,
     topazRenderer_PresetProgram preset
 ) {
     topazRenderer_Program_t * out = calloc(1, sizeof(topazRenderer_ProgramAPI_t));
     out->api = t->api.program;
-    out->api.renderer_program_create_preset(&t->api, &out->api, preset);
+    out->api.renderer_program_get_preset(&t->api, &out->api, preset);
     return out;
 }
 
@@ -477,11 +477,6 @@ topazRenderer_t * topaz_renderer_create(
     out->api.core.renderer_create(&out->api.core);
 
 
-    topaz_matrix_set_identity(&out->mv);
-    topaz_matrix_set_identity(&out->proj);
-
-    topaz_renderer_set_3d_projection_matrix(out, &out->proj);
-    topaz_renderer_set_3d_projection_matrix(out, &out->mv);
 
     return out;
 }
@@ -511,20 +506,20 @@ void topaz_renderer_draw_2d(
     t->api.core.renderer_draw_2d(&t->api.core, &twod->api, ctx, attribs);
 }
 
-const topazMatrix_t * topaz_renderer_get_3d_viewing_matrix(topazRenderer_t * t) {
-    return &t->mv;    
+topazRenderer_Buffer_t * topaz_renderer_get_3d_viewing_matrix(topazRenderer_t * t) {
+    return t->mv;    
 }
-const topazMatrix_t * topaz_renderer_get_3d_projection_matrix(topazRenderer_t * t) {
-    return &t->proj;
+topazRenderer_Buffer_t * topaz_renderer_get_3d_projection_matrix(topazRenderer_t * t) {
+    return t->proj;
 }
 
 
-void topaz_renderer_set_3d_viewing_matrix(topazRenderer_t * t, const topazMatrix_t * m) {
-    t->mv = *m;
+void topaz_renderer_set_3d_viewing_matrix(topazRenderer_t * t, topazRenderer_Buffer_t * m) {
+    t->mv = m;
     t->api.core.renderer_set_3d_viewing_matrix(&t->api.core, m);
 }
-void topaz_renderer_set_3d_projection_matrix(topazRenderer_t * t, const topazMatrix_t * m) {
-    t->proj = *m;
+void topaz_renderer_set_3d_projection_matrix(topazRenderer_t * t, topazRenderer_Buffer_t * m) {
+    t->proj = m;
     t->api.core.renderer_set_3d_projection_matrix(&t->api.core, m);
 }
 

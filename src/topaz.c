@@ -222,8 +222,8 @@ topaz_t * topaz_context_create_empty() {
     attr.rendererAPI.core.renderer_destroy = (void (*)(topazRenderer_CoreAPI_t*))api_nothing;
     attr.rendererAPI.core.renderer_draw_2d = (void (*)(topazRenderer_CoreAPI_t*, topazRenderer_2DAPI_t *, const topazRenderer_2D_Context_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;
     attr.rendererAPI.core.renderer_draw_3d = (void (*)(topazRenderer_CoreAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;
-    attr.rendererAPI.core.renderer_set_3d_viewing_matrix = (void (*)(topazRenderer_CoreAPI_t *, const topazMatrix_t *))api_nothing;
-    attr.rendererAPI.core.renderer_set_3d_projection_matrix = (void (*)(topazRenderer_CoreAPI_t *, const topazMatrix_t *))api_nothing;
+    attr.rendererAPI.core.renderer_set_3d_viewing_matrix = (void (*)(topazRenderer_CoreAPI_t *, const topazRenderer_Buffer_t *))api_nothing;
+    attr.rendererAPI.core.renderer_set_3d_projection_matrix = (void (*)(topazRenderer_CoreAPI_t *, const topazRenderer_Buffer_t *))api_nothing;
     attr.rendererAPI.core.renderer_clear_layer = (void (*)(topazRenderer_CoreAPI_t*, topazRenderer_DataLayer))api_nothing;
     attr.rendererAPI.core.renderer_get_parameters = (topazRenderer_Parameters_t (*)(topazRenderer_CoreAPI_t*)) api_nothing;
     attr.rendererAPI.core.renderer_sync = (void (*)(topazRenderer_CoreAPI_t*)) api_nothing;
@@ -238,7 +238,7 @@ topaz_t * topaz_context_create_empty() {
                                                                         const topazString_t *, 
                                                                         const topazString_t *, 
                                                                         topazString_t *)) api_nothing;
-    attr.rendererAPI.program.renderer_program_create_preset = (topazRenderer_Program_t * (*)(topazRendererAPI_t *,
+    attr.rendererAPI.program.renderer_program_get_preset = (topazRenderer_Program_t * (*)(topazRendererAPI_t *,
                                                                         topazRenderer_ProgramAPI_t *,
                                                                         topazRenderer_PresetProgram)) api_nothing;
     attr.rendererAPI.program.renderer_program_destroy = (void (*)(topazRenderer_ProgramAPI_t *)) api_nothing;

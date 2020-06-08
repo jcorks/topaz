@@ -637,8 +637,8 @@ topazRenderer_Program_t * topaz_renderer_program_create(
 );
 
 
-// Returns a new renderer program from built-in params.
-topazRenderer_Program_t * topaz_renderer_program_create_preset(
+// Returns a standard renderer program from built-in params.
+topazRenderer_Program_t * topaz_renderer_program_get_preset(
     topazRenderer_t *,
     topazRenderer_PresetProgram
 );
@@ -822,7 +822,7 @@ struct topazRenderer_3D_t {
 
 
     /// specifies the textures to be used. Each pair is a slot referred to by 
-    /// each program and the ID of the texture.
+    /// each program and the texture objects 
     ///
     topazArray_t * textureSlots;
     topazArray_t * textureObjects;
@@ -915,14 +915,29 @@ void topaz_renderer_draw_2d(
 
 );
 
-/// Returns the transformation matrix buffer IDs for static rendering.
-/// All RenderStatic positional vertices are multiplied by the Viewing and
-/// projection matrices respectively. 
-const topazMatrix_t * topaz_renderer_get_3d_viewing_matrix(topazRenderer_t *);
-const topazMatrix_t * topaz_renderer_get_3d_projection_matrix(topazRenderer_t *);
 
-void topaz_renderer_set_3d_viewing_matrix(topazRenderer_t *, const topazMatrix_t *);
-void topaz_renderer_set_3d_projection_matrix(topazRenderer_t *, const topazMatrix_t *);
+/// Sets the 3D viewing matrix buffer. The buffer should be 
+/// a 4x4 matrix representing the translation, scale, etc of the view.
+/// Row-major matrices are expected.
+///
+void topaz_renderer_set_3d_viewing_matrix(topazRenderer_t *, topazRenderer_Buffer_t *);
+
+/// Sets the 3D projection matrix buffer. The buffer should be 
+/// a 4x4 matrix representing this matrix.
+/// Row-major matrices are expected.
+///
+void topaz_renderer_set_3d_projection_matrix(topazRenderer_t *, topazRenderer_Buffer_t *);
+
+
+/// Returns the 3D viewing matrix buffer currently set. 
+/// The default is "none".
+///
+topazRenderer_Buffer_t * topaz_renderer_get_3d_viewing_matrix(topazRenderer_t *);
+
+/// Returns the 3D projection matrix.
+/// The default is "none".
+topazRenderer_Buffer_t * topaz_renderer_get_3d_projection_matrix(topazRenderer_t *);
+
 
 
 

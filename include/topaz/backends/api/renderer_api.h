@@ -109,7 +109,7 @@ struct topazRenderer_ProgramAPI_t {
                                                                         const topazString_t *, 
                                                                         const topazString_t *, 
                                                                         topazString_t *);
-    topazRenderer_Program_t * (*renderer_program_create_preset)        (topazRendererAPI_t *,
+    topazRenderer_Program_t * (*renderer_program_get_preset)        (topazRendererAPI_t *,
                                                                         topazRenderer_ProgramAPI_t *,
                                                                         topazRenderer_PresetProgram);
 
@@ -347,8 +347,8 @@ struct topazRenderer_CoreAPI_t {
 
     void                    (*renderer_draw_2d)             (topazRenderer_CoreAPI_t *, topazRenderer_2DAPI_t *, const topazRenderer_2D_Context_t *, const topazRenderer_ProcessAttribs_t *);
     void                    (*renderer_draw_3d)             (topazRenderer_CoreAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *);
-    void                    (*renderer_set_3d_viewing_matrix)(topazRenderer_CoreAPI_t *, const topazMatrix_t *);
-    void                    (*renderer_set_3d_projection_matrix)(topazRenderer_CoreAPI_t *, const topazMatrix_t *);
+    void                    (*renderer_set_3d_viewing_matrix)(topazRenderer_CoreAPI_t *, const topazRenderer_Buffer_t *);
+    void                    (*renderer_set_3d_projection_matrix)(topazRenderer_CoreAPI_t *, const topazRenderer_Buffer_t *);
 
 
     void                    (*renderer_clear_layer)         (topazRenderer_CoreAPI_t *, topazRenderer_DataLayer);
