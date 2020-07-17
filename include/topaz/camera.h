@@ -34,9 +34,12 @@ DEALINGS IN THE SOFTWARE.
 
 
 #include <stdint.h>
+#include <topaz/vector.h>
 typedef struct topaz_t topaz_t;
-
-
+typedef struct topazEntity_t topazEntity_t;
+typedef struct topazRenderer_Framebuffer_t topazRenderer_Framebuffer_t;
+typedef struct topazRenderer_Buffer_t topazRenderer_Buffer_t;
+typedef struct topazAsset_t topazAsset_t;
 
 
 /*

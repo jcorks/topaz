@@ -240,7 +240,7 @@ typedef enum {
 
     /// All components.
     ///
-    topazRenderer_DataLater_All = 7
+    topazRenderer_DataLayer_All = 7
 } topazRenderer_DataLayer;
 
 
