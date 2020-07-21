@@ -93,7 +93,7 @@ topazVector_t * topaz_vector_normalize(topazVector_t * a);
 
 /// Returns the cross product
 ///
-topazVector_t topaz_vector_cross_product(const topazVector_t * a, const topazVector_t * b);
+topazVector_t topaz_vector_cross(const topazVector_t * a, const topazVector_t * b);
 
 /// Sets the X Y Z to integer values.
 ///

@@ -172,7 +172,7 @@ struct topazImage_Frame_t {
 
 
 
-void image__destroy(topazAsset_t * a, void * userData) {
+static void image__destroy(topazAsset_t * a, void * userData) {
     TopazImage * img = userData;
     while(topaz_image_get_frame_count(a)) {
         topaz_image_remove_frame(a, topaz_image_get_frame_count(a)-1);
@@ -181,7 +181,7 @@ void image__destroy(topazAsset_t * a, void * userData) {
     free(img);
 }
 
-TopazImage * image__retrieve(const topazAsset_t * a) {
+static TopazImage * image__retrieve(const topazAsset_t * a) {
     TopazImage * ret = topaz_asset_get_attributes(a)->userData;
     #ifdef TOPAZDC_DEBUG
         assert(ret->MAGIC_ID == MAGIC_ID__IMAGE);
@@ -189,6 +189,9 @@ TopazImage * image__retrieve(const topazAsset_t * a) {
     return ret;
 }
 
+static int image__asset_callback_empty(topazAsset_t * asset, const void * dataIn, uint64_t size) {
+    return TRUE;
+}
 
 
 topazAsset_t * topaz_image_create(topaz_t * t, const topazString_t * name, topazAsset_LoadingProfile_t * loading) {
@@ -211,6 +214,18 @@ topazAsset_t * topaz_image_create(topaz_t * t, const topazString_t * name, topaz
         name, 
         &attribs,
         loading
+    );
+}
+
+
+topazAsset_t * topaz_image_create_empty(topaz_t * t) {
+    topazAsset_LoadingProfile_t dummyProfile;
+    dummyProfile.on_load   = image__asset_callback_empty;
+    dummyProfile.on_unload = image__asset_callback_empty;
+    return topaz_image_create(
+        t,
+        TOPAZ_STR_CAST(""),
+        &dummyProfile
     );
 }
 

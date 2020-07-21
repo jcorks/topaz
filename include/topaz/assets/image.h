@@ -60,6 +60,11 @@ topazAsset_t * topaz_image_create(
     topazAsset_LoadingProfile_t *
 );
 
+/// Creates a new image object, but without 
+/// any loading behavior. This allows for creating custom 
+/// images 
+topazAsset_t * topaz_image_create_empty(topaz_t *);
+
 /// Creates a new frame after the existing frames.
 /// The new frame is returned for convenience.
 ///

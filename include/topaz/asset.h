@@ -127,7 +127,7 @@ struct topazAsset_LoadingProfile_t {
     ///
     topaz_asset_data_callback on_stream;
 
-    /// Called when the strream is cancelled.
+    /// Called when the stream is cancelled.
     ///
     topaz_asset_data_callback on_stream_cancel;
 

@@ -105,7 +105,7 @@ topazVector_t * topaz_vector_normalize(topazVector_t * t) {
 	return t;
 }
 
-topazVector_t topaz_vector_cross_product(const topazVector_t * a, const topazVector_t * b) {
+topazVector_t topaz_vector_cross(const topazVector_t * a, const topazVector_t * b) {
 	topazVector_t out;
 	out.x = a->y *  b->z - a->z * b->y;
 	out.y = a->z *  b->x - a->x * b->z;
