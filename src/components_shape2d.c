@@ -148,6 +148,10 @@ void topaz_shape2d_set_color(topazComponent_t * c, topazColor_t clr) {
     s->color = clr;
 }
 
+topazTransform_t * topaz_shape2d_get_node(topazComponent_t * c) {
+    Shape2D * s = shape2d__retrieve(c);
+    return topaz_spatial_get_node(topaz_render2d_get_spatial(s->render2d));
+}
 
 float topaz_shape2d_get_anim_speed(topazComponent_t * c) {
     Shape2D * s = shape2d__retrieve(c);

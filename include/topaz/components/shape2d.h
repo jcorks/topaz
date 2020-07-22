@@ -61,6 +61,10 @@ topazColor_t topaz_shape2d_get_color(topazComponent_t *);
 ///
 void topaz_shape2d_set_color(topazComponent_t *, topazColor_t);
 
+/// Gets the trasform for the object
+///
+topazTransform_t * topaz_shape2d_get_node(topazComponent_t *);
+
 /// Gets the animation speed of the image. This is how quickly 
 /// the object will flip through image frames. The time is returned in seconds.
 ///

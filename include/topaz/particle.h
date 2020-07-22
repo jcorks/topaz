@@ -31,6 +31,8 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__PARTICLE__INCLUDED
 #define H_TOPAZDC__PARTICLE__INCLUDED
 
+typedef struct topazEntity_t topazEntity_t;
+
 
 /// Represents a particle attribute's range. This defines 
 /// how the values start and change over time.
@@ -116,12 +118,20 @@ struct topazParticle_t {
     /// The alpha value to color the particle. From 0 to 1, clamped
     /// 
     topazParticle_Range_t alpha;
+
+    /// Optional image
+    topazAsset_t * image;
 };
 
 
 /// Creates a new particle emitter entity.
 ///
 topazEntity_t * topaz_particle_emitter_2d_create();
+
+
+/// Sets which particle that this emitter should emit.
+///
+void topaz_particle_emitter_2d_set_particle(topazEntity_t *, const topazParticle_t *);
 
 /// Sets whether to enable translucency when rendering the particles.
 /// 
@@ -135,12 +145,12 @@ void topaz_particle_emitter_2d_enable_filtering(topazEntity_t *, int enable);
 /// That is, when the emitter moves, the particles will move with it
 /// This method is more efficient for drawing large numbers of particles
 ///
-void topaz_particle_emitter_2d_emit(topazEntity_t *, const topazParticle_t *);
+void topaz_particle_emitter_2d_emit(topazEntity_t *);
 
 /// Same as topaz_particle_emitter_2d_emit, except will be emitted count 
 /// number of times
 ///
-void topaz_particle_emitter_2d_emit_n(topazEntity_t *, const topazParticle_t *, int count);
+void topaz_particle_emitter_2d_emit_n(topazEntity_t *, int count);
 
 
 /// Emits a particle with position tracking it global/root entity space.
@@ -148,7 +158,7 @@ void topaz_particle_emitter_2d_emit_n(topazEntity_t *, const topazParticle_t *, 
 /// Only the emitters position at the time of emission will be used
 /// for the particle.
 ///
-void topaz_particle_emitter_2d_emit_independent(topazEntity_t *, const topazParticle_t *);
+void topaz_particle_emitter_2d_emit_independent(topazEntity_t *);
 
 
 
