@@ -75,6 +75,14 @@ float topaz_shape2d_get_anim_speed(topazComponent_t *);
 ///
 void topaz_shape2d_set_anim_speed(topazComponent_t *, float);
 
+/// Returns the center point of the shape2d from which local 
+/// transforms are applied. The default is 0, 0
+///
+const topazVector_t * topaz_shape2d_get_center(topazComponent_t *);
+
+/// Sets the center point of the shape2d.
+///
+void topaz_shape2d_set_center(topazComponent_t *, const topazVector_t *);
 
 /// Forms the object into a triangle. The Shape2D origin is the top-left of the
 /// rectangle. Width and height are in pixels.

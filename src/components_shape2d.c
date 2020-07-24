@@ -64,6 +64,7 @@ typedef struct {
     topazRender2D_t * render2d;
     topazColor_t color;
     topazColor_t realColor;
+    topazVector_t center;
     float animSpeed;
     int animFrame;
     AnimMode animMode;
@@ -163,6 +164,31 @@ void topaz_shape2d_set_anim_speed(topazComponent_t * c, float a) {
     s->animSpeed = a;
 }
 
+const topazVector_t * topaz_shape2d_get_center(topazComponent_t * c) {
+    Shape2D * s = shape2d__retrieve(c);
+    return s->center;
+}
+
+void topaz_shape2d_set_center(topazComponent_t * c, const topazVector_t * center) {
+    Shape2D * s = shape2d__retrieve(c);
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(ptsSrc);
+
+    topazArray_t * copyV = topaz_array_clone(topaz_render2d_get_vertices(s->render2d));
+    topazRenderer_2D_Vertex_t * copyVp = topaz_array_get_data(copyV);
+    for(i = 0; i < len; ++i) {
+        copyVp[i].x = pts[i].x + s->center.x - center->x;
+        copyVp[i].y = pts[i].y + s->center.y - center->y;        
+    }
+
+    topaz_render2d_set_vertices(
+        s->render2d, 
+        copyV
+    );
+
+    topaz_array_destroy(copyVp);
+}
+    
 void topaz_shape2d_form_rectangle(topazComponent_t * c, float w, float h) {
     Shape2D * s = shape2d__retrieve(c);
     s->id = NULL;
@@ -174,13 +200,13 @@ void topaz_shape2d_form_rectangle(topazComponent_t * c, float w, float h) {
     };
 
     topazRenderer_2D_Vertex_t v[6] = {
-        {0, 0,  color[0], color[1], color[2], color[3],     0, 0,   0},
-        {0, h,  color[0], color[1], color[2], color[3],     0, 0,   0},
-        {w, h,  color[0], color[1], color[2], color[3],     0, 0,   0},
+        { -s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     0, 0,   0},
+        { -s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     0, 0,   0},
+        {w-s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     0, 0,   0},
 
-        {0, 0,  color[0], color[1], color[2], color[3],     0, 0,   0},
-        {w, h,  color[0], color[1], color[2], color[3],     0, 0,   0},
-        {w, 0,  color[0], color[1], color[2], color[3],     0, 0,   0}
+        { -s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     0, 0,   0},
+        {w-s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     0, 0,   0},
+        {w-s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     0, 0,   0}
     };
 
 
@@ -242,13 +268,13 @@ void topaz_shape2d_form_image_frame_scaled(topazComponent_t * c, topazAsset_t * 
 
 
     topazRenderer_2D_Vertex_t v[6] = {
-        {0, 0,  color[0], color[1], color[2], color[3],     0, 0,   0},
-        {0, h,  color[0], color[1], color[2], color[3],     0, 1,   0},
-        {w, h,  color[0], color[1], color[2], color[3],     1, 1,   0},
+        { -s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     0, 0,   0},
+        { -s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     0, 1,   0},
+        {w-s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     1, 1,   0},
 
-        {0, 0,  color[0], color[1], color[2], color[3],     0, 0,   0},
-        {w, h,  color[0], color[1], color[2], color[3],     1, 1,   0},
-        {w, 0,  color[0], color[1], color[2], color[3],     1, 0,   0}
+        { -s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     0, 0,   0},
+        {w-s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     1, 1,   0},
+        {w-s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     1, 0,   0}
     };
 
 
@@ -292,9 +318,17 @@ void topaz_shape2d_form_radial(topazComponent_t * c, float radius, uint32_t numI
 
         curPt.x = cos(2*TOPAZ_PI * (((i+1)%numIterations) / (float) numIterations)) * radius;
         curPt.y = sin(2*TOPAZ_PI * (((i+1)%numIterations) / (float) numIterations)) * radius;
+
+        curPt.x -= s->center.x;
+        curPt.y -= s->center.y;
+
         (*pts++) = curPt;
 
-        (*pts++) = empty;
+        curPt = s->center;
+        curPt.x *= -1.f;
+        curPt.y *= -1.f;
+
+        (*pts++) = curPt;
     }
 
     topaz_shape2d_form_triangles(
@@ -326,8 +360,8 @@ void topaz_shape2d_form_triangles(topazComponent_t * c, const topazArray_t * pts
 
 
     for(i = 0; i < len; ++i) {
-        vertices[i].x = pts[i].x;
-        vertices[i].y = pts[i].y;
+        vertices[i].x = pts[i].x - s->center.x;
+        vertices[i].y = pts[i].y - s->center.y;
         vertices[i].r = color[0];
         vertices[i].g = color[1];
         vertices[i].b = color[2];
