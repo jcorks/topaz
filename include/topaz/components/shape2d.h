@@ -34,7 +34,8 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/component.h>
 #include <topaz/color.h>
-
+#include <topaz/vector.h>
+typedef struct topazTransform_t topazTransform_t;
 typedef struct topazAsset_t topazAsset_t;
 /*
 

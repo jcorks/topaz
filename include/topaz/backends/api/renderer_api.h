@@ -73,18 +73,14 @@ typedef struct topazRenderer_TextureAPI_t    topazRenderer_TextureAPI_t;
 struct topazRenderer_TextureAPI_t {
 
 
-    void                    (*renderer_texture_create)              (topazRendererAPI_t *, topazRenderer_TextureAPI_t *,  int w, int h, const uint8_t * rgbaTextureData);
-    void                    (*renderer_texture_destroy)             (topazRenderer_TextureAPI_t *);
+    void *                  (*renderer_texture_create)              (topazRendererAPI_t *,  int w, int h, const uint8_t * rgbaTextureData);
+    void                    (*renderer_texture_destroy)             (void * textureObjectData);
 
 
-    void                    (*renderer_texture_update)(topazRenderer_TextureAPI_t *, const uint8_t * newData);
-    void                    (*renderer_texture_get)(topazRenderer_TextureAPI_t *, uint8_t *);
+    void                    (*renderer_texture_update)(void * textureObjectData, const uint8_t * newData);
+    void                    (*renderer_texture_get)(void * textureObjectData, uint8_t *);
 
 
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the liferenderer of the Renderer
-    ///
-    void * implementationData;
 
 
 };
@@ -104,23 +100,17 @@ typedef struct topazRenderer_ProgramAPI_t    topazRenderer_ProgramAPI_t;
 struct topazRenderer_ProgramAPI_t {
 
 
-    topazRenderer_Program_t * (*renderer_program_create)              (topazRendererAPI_t *,
-                                                                        topazRenderer_ProgramAPI_t *,
+    void *                    (*renderer_program_create)              (topazRendererAPI_t *,
                                                                         const topazString_t *, 
                                                                         const topazString_t *, 
                                                                         topazString_t *);
-    topazRenderer_Program_t * (*renderer_program_get_preset)        (topazRendererAPI_t *,
-                                                                        topazRenderer_ProgramAPI_t *,
+    void *                    (*renderer_program_get_preset)        (topazRendererAPI_t *,
                                                                         topazRenderer_PresetProgram);
 
-    void                    (*renderer_program_destroy)             (topazRenderer_ProgramAPI_t *);
+    void                    (*renderer_program_destroy)             (void * programData);
 
 
 
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the liferenderer of the Renderer
-    ///
-    void * implementationData;
 
 
 };
@@ -150,52 +140,38 @@ typedef struct topazRenderer_2DAPI_t    topazRenderer_2DAPI_t;
 struct topazRenderer_2DAPI_t {
 
 
-    void                    (*renderer_2d_create)              (topazRendererAPI_t *, topazRenderer_2DAPI_t *);
-    void                    (*renderer_2d_destroy)             (topazRenderer_2DAPI_t *);
+    void *   (*renderer_2d_create)   (topazRendererAPI_t *);
+    void     (*renderer_2d_destroy)  (void *);
 
 
 
-    int (*renderer_2d_add_objects)(topazRenderer_2DAPI_t *, uint32_t * output, uint32_t count);
-    void (*renderer_2d_remove_objects)(topazRenderer_2DAPI_t *, uint32_t * ids, uint32_t count);
+    int (*renderer_2d_add_objects)(void *, uint32_t * output, uint32_t count);
+    void (*renderer_2d_remove_objects)(void *, uint32_t * ids, uint32_t count);
 
 
-    void (*renderer_2d_queue_vertices)(
-        topazRenderer_2DAPI_t *,
+    void (*renderer_2d_queue_objects)(
+        void *,
         const uint32_t * objects,
-        uint32_t count
+        uint32_t count 
     );
 
-    void (*renderer_2d_clear_queue)(topazRenderer_2DAPI_t *);
-    int (*renderer_2d_add_vertices)(topazRenderer_2DAPI_t *, uint32_t * output, uint32_t count);
-    void (*renderer_2d_remove_vertices)(topazRenderer_2DAPI_t *, uint32_t * objects, uint32_t count);
-    void (*renderer_2d_set_vertices)(
-        topazRenderer_2DAPI_t *, 
-        uint32_t * vertices, 
-        const topazRenderer_2D_Vertex_t *, 
-        uint32_t count
-    );
+    void (*renderer_2d_clear_queue)(void *);
 
-    void (*renderer_2d_get_vertices)(
-        topazRenderer_2DAPI_t *, 
-        const uint32_t * vertexIDs, 
-        topazRenderer_2D_Vertex_t * output,
-        uint32_t count
+    void (*renderer_2d_set_object_vertices)(
+        void *, 
+        uint32_t object, 
+        void * // buffer object bound to buffer
     );
-
 
 
     void (*renderer_2d_set_object_params)(
-        topazRenderer_2DAPI_t *, 
+        void *, 
         uint32_t object, 
         const topazRenderer_2D_ObjectParams_t *
     );
 
 
 
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the liferenderer of the Renderer
-    ///
-    void * implementationData;
 
 
 };
@@ -228,17 +204,13 @@ typedef struct topazRenderer_LightAPI_t    topazRenderer_LightAPI_t;
 struct topazRenderer_LightAPI_t {
 
 
-    void                    (*renderer_light_create)              (topazRendererAPI_t *, topazRenderer_LightAPI_t *, topazRenderer_LightType);
-    void                    (*renderer_light_destroy)             (topazRenderer_LightAPI_t *);
+    void *  (*renderer_light_create)(topazRendererAPI_t *, topazRenderer_LightType);
+    void    (*renderer_light_destroy)(void *);
 
-    void (*renderer_light_update_attribs)(topazRenderer_LightAPI_t *, float *);
-    void (*renderer_light_enable)(topazRenderer_LightAPI_t *, int doIt);
+    void (*renderer_light_update_attribs)(void *, float *);
+    void (*renderer_light_enable)(void *, int doIt);
 
 
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the liferenderer of the Renderer
-    ///
-    void * implementationData;
 
 
 };
@@ -270,18 +242,13 @@ typedef struct topazRenderer_BufferAPI_t    topazRenderer_BufferAPI_t;
 struct topazRenderer_BufferAPI_t {
 
 
-    void                    (*renderer_buffer_create)              (topazRendererAPI_t *, topazRenderer_BufferAPI_t *, float * data, int numElements);
-    void                    (*renderer_buffer_destroy)             (topazRenderer_BufferAPI_t *);
+    void *                  (*renderer_buffer_create)              (topazRendererAPI_t *, float * data, uint32_t numElements);
+    void                    (*renderer_buffer_destroy)             (void * bufferObjectData);
 
 
-    void                    (*renderer_buffer_update)               (topazRenderer_BufferAPI_t *, const float * newData, int offset, int numElements);
-    void                    (*renderer_buffer_read)                 (topazRenderer_BufferAPI_t *, float * ouputData, int offset, int numELements);
+    void                    (*renderer_buffer_update)               (void * bufferObjectData, const float * newData, uint32_t offset, uint32_t numElements);
+    void                    (*renderer_buffer_read)                 (void * bufferObjectData, float * ouputData, uint32_t offset, uint32_t numELements);
 
-
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the liferenderer of the Renderer
-    ///
-    void * implementationData;
 
 
 };
@@ -306,20 +273,15 @@ typedef struct topazRenderer_FramebufferAPI_t    topazRenderer_FramebufferAPI_t;
 struct topazRenderer_FramebufferAPI_t {
 
 
-    void                    (*renderer_framebuffer_create)              (topazRendererAPI_t *, topazRenderer_FramebufferAPI_t *);
-    void                    (*renderer_framebuffer_destroy)             (topazRenderer_FramebufferAPI_t *);
+    void *                  (*renderer_framebuffer_create)              (topazRendererAPI_t *, topazRenderer_FramebufferAPI_t *);
+    void                    (*renderer_framebuffer_destroy)             (topazRenderer_FramebufferAPI_t *, void *);
 
 
-    int      (*renderer_framebuffer_resize)(topazRenderer_FramebufferAPI_t *, int w, int h);
-    void *   (*renderer_framebuffer_get_handle)(topazRenderer_FramebufferAPI_t *);
-    int      (*renderer_framebuffer_get_raw_data)(topazRenderer_FramebufferAPI_t *, uint8_t *);
-    void     (*renderer_framebuffer_set_filtered_hint)(topazRenderer_FramebufferAPI_t *, int);
-    topazRenderer_Framebuffer_Handle (*renderer_framebuffer_get_handle_type)(topazRenderer_FramebufferAPI_t *);
-
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the liferenderer of the Renderer
-    ///
-    void * implementationData;
+    int      (*renderer_framebuffer_resize)(topazRenderer_FramebufferAPI_t *, int w, int h, void *);
+    void *   (*renderer_framebuffer_get_handle)(topazRenderer_FramebufferAPI_t *, void *);
+    int      (*renderer_framebuffer_get_raw_data)(topazRenderer_FramebufferAPI_t *, uint8_t *, void *);
+    void     (*renderer_framebuffer_set_filtered_hint)(topazRenderer_FramebufferAPI_t *, int, void *);
+    topazRenderer_Framebuffer_Handle (*renderer_framebuffer_get_handle_type)(topazRenderer_FramebufferAPI_t *, void *);
 
 
 };
@@ -360,10 +322,7 @@ struct topazRenderer_CoreAPI_t {
     void                    (*renderer_attach_target)       (topazRenderer_CoreAPI_t *, topazRenderer_Framebuffer_t *);
     const topazArray_t *    (*renderer_get_supported_framebuffers)(topazRenderer_CoreAPI_t *);
 
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the liferenderer of the Renderer
-    ///
-    void * implementationData;
+
 
 
 };
@@ -408,6 +367,11 @@ struct topazRendererAPI_t {
     /// operations.
     ///
     topazRenderer_FramebufferAPI_t fb;
+
+    /// User-given data. This is expected to data needed to persist
+    /// throughout the liferenderer of the Renderer
+    ///
+    void * implementationData;
 };
 
 

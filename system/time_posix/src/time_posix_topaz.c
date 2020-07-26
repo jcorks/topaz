@@ -93,69 +93,61 @@ static uint64_t topaz_time_posix__ms_since_startup(topazTimeAPI_t * api) {
 
 
 
-topazTime_t * topaz_system_time_posix() {
-    topazTimeAPI_t api;
+topazBackend_t * topaz_system_time_posix__backend() {
+    return topaz_backend_create(
+        // name
+        TOPAZ_STR_CAST("Posix Time"),
 
+        // version 
+        TOPAZ_STR_CAST("0.1"),
 
-    // Map object API functions to real ones
-    api.time_create  = topaz_time_posix__create;
-    api.time_destroy = topaz_time_posix__destroy;
-    api.time_sleep_ms = topaz_time_posix__sleep_ms;    
-    api.time_ms_since_startup = topaz_time_posix__ms_since_startup;
+        // author
+        TOPAZ_STR_CAST("Johnathan Corkery, 2019"),
 
-
-
-    
-
-    return topaz_time_create(
-        topaz_backend_create(
-            // name
-            TOPAZ_STR_CAST("Posix Time"),
-
-            // version 
-            TOPAZ_STR_CAST("0.1"),
-
-            // author
-            TOPAZ_STR_CAST("Johnathan Corkery, 2019"),
-
-            // desc 
-            TOPAZ_STR_CAST("Basic time backend for POSIX-compliant systems."),
+        // desc 
+        TOPAZ_STR_CAST("Basic time backend for POSIX-compliant systems."),
 
 
 
 
-            // On init
-            NULL,
+        // On init
+        NULL,
 
-            // On init late
-            NULL,
+        // On init late
+        NULL,
 
-            // on step 
-            NULL,
-            
-            // on step late 
-            NULL,
-            
-            // on draw 
-            NULL,
+        // on step 
+        NULL,
+        
+        // on step late 
+        NULL,
+        
+        // on draw 
+        NULL,
 
-            // on draw late
-            NULL,
-
-
-
-            // backend callback user data
-            NULL,
+        // on draw late
+        NULL,
 
 
-            // API version 
-            TOPAZ__VERSION__MAJOR,
-            TOPAZ__VERSION__MINOR,
-            TOPAZ__VERSION__MICRO
-        ),
 
-        api
+        // backend callback user data
+        NULL,
+
+
+        // API version 
+        TOPAZ__VERSION__MAJOR,
+        TOPAZ__VERSION__MINOR,
+        TOPAZ__VERSION__MICRO
     );
+}
+
+
+void topaz_system_time_posix__api(topazTimeAPI_t * api);
+    // Map object API functions to real ones
+    api->time_create  = topaz_time_posix__create;
+    api->time_destroy = topaz_time_posix__destroy;
+    api->time_sleep_ms = topaz_time_posix__sleep_ms;    
+    api->time_ms_since_startup = topaz_time_posix__ms_since_startup;
 }
 
 

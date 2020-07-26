@@ -273,78 +273,76 @@ static int topaz_filesys_posix__is_child(topazFilesysAPI_t * api, const topazArr
 
 
 
+topazBackend_t * topaz_system_filesys_posix__backend() {
+    return topaz_backend_create(
+        // name
+        TOPAZ_STR_CAST("Posix Filesystem"),
 
-topazFilesys_t * topaz_system_filesys_posix() {
-    topazFilesysAPI_t api;
+        // version 
+        TOPAZ_STR_CAST("0.1"),
+
+        // author
+        TOPAZ_STR_CAST("Johnathan Corkery, 2019"),
+
+        // desc 
+        TOPAZ_STR_CAST("Basic filesystem backend for POSIX-compliant systems."),
+
+
+
+
+        // On init
+        NULL,
+
+        // On init late
+        NULL,
+
+        // TODO: could implement "partially" async reading using this
+        // on step 
+        NULL,
+        
+        // on step late 
+        NULL,
+        
+        // on draw 
+        NULL,
+
+        // on draw late
+        NULL,
+
+
+
+        // backend callback user data
+        NULL,
+
+
+        // API version 
+        TOPAZ__VERSION__MAJOR,
+        TOPAZ__VERSION__MINOR,
+        TOPAZ__VERSION__MICRO
+    );
+}
+
+
+void topaz_system_filesys_posix(topazFilesysAPI_t * api) {
 
 
     // Map object API functions to real ones
-    api.filesys_create  = topaz_filesys_posix__create;
-    api.filesys_destroy = topaz_filesys_posix__destroy;
+    api->filesys_create  = topaz_filesys_posix__create;
+    api->filesys_destroy = topaz_filesys_posix__destroy;
 
-    api.filesys_set_path = topaz_filesys_posix__set_path;
-    api.filesys_go_to_child = topaz_filesys_posix__go_to_child;
-    api.filesys_go_to_parent = topaz_filesys_posix__go_to_parent;
-    api.filesys_get_path = topaz_filesys_posix__get_path;
-    api.filesys_create_node = topaz_filesys_posix__create_node;
-    api_filesys_read = topaz_filesys_posix__read;
-    api.filesys_write = topaz_filesys_posix__write;
-    api.filesys_query = topaz_filesys_posix__query;
-    api.filesys_is_node = topaz_filesys_posix__is_node;
-    api.filesys_is_child = topaz_filesys_posix__is_child;
-
-
-
-    return topaz_Filesys_create(
-        topaz_backend_create(
-            // name
-            TOPAZ_STR_CAST("Posix Filesystem"),
-
-            // version 
-            TOPAZ_STR_CAST("0.1"),
-
-            // author
-            TOPAZ_STR_CAST("Johnathan Corkery, 2019"),
-
-            // desc 
-            TOPAZ_STR_CAST("Basic filesystem backend for POSIX-compliant systems."),
+    api->filesys_set_path = topaz_filesys_posix__set_path;
+    api->filesys_go_to_child = topaz_filesys_posix__go_to_child;
+    api->filesys_go_to_parent = topaz_filesys_posix__go_to_parent;
+    api->filesys_get_path = topaz_filesys_posix__get_path;
+    api->filesys_create_node = topaz_filesys_posix__create_node;
+    api->filesys_read = topaz_filesys_posix__read;
+    api->filesys_write = topaz_filesys_posix__write;
+    api->filesys_query = topaz_filesys_posix__query;
+    api->filesys_is_node = topaz_filesys_posix__is_node;
+    api->filesys_is_child = topaz_filesys_posix__is_child;
 
 
 
-
-            // On init
-            NULL,
-
-            // On init late
-            NULL,
-
-            // TODO: could implement "partially" async reading using this
-            // on step 
-            NULL,
-            
-            // on step late 
-            NULL,
-            
-            // on draw 
-            NULL,
-
-            // on draw late
-            NULL,
-
-
-
-            // backend callback user data
-            NULL,
-
-
-            // API version 
-            TOPAZ__VERSION__MAJOR,
-            TOPAZ__VERSION__MINOR,
-            TOPAZ__VERSION__MICRO
-        ),
-
-        api
-    );
 }
 
 

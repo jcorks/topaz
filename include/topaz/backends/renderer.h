@@ -330,7 +330,7 @@ typedef struct topazRenderer_Buffer_t topazRenderer_Buffer_t;
 /// but if you are using a backend with hardware support, it is likely in VRAM.
 /// If the allocation fails in some way, the id returned will be invalid
 ///
-topazRenderer_Buffer_t * topaz_renderer_buffer_create(topazRenderer_t *, float * data, int numElements);
+topazRenderer_Buffer_t * topaz_renderer_buffer_create(topazRenderer_t *, float * data, uint32_t numElements);
 
 /// Frees the buffer store.
 ///
@@ -343,13 +343,13 @@ void topaz_renderer_buffer_destroy(topazRenderer_Buffer_t *);
 /// No check is made to see if this oversteps the original buffer size. If
 /// overstepping occurs, the result is undefined.
 ///
-void topaz_renderer_buffer_update(topazRenderer_Buffer_t *, const float * newData, int offset, int numElements);
+void topaz_renderer_buffer_update(topazRenderer_Buffer_t *, const float * newData, uint32_t offset, uint32_t numElements);
 
 
 /// Populates outputData with the relevant data contained in the buffer. On most implementations
 /// this will require expensive communication, so use with caution.
 ///
-void topaz_renderer_buffer_read(topazRenderer_Buffer_t *, float * ouputData, int offset, int numELements);
+void topaz_renderer_buffer_read(topazRenderer_Buffer_t *, float * ouputData, uint32_t offset, uint32_t numELements);
 
 /// Returns the number of elements of the buffer.
 ///
@@ -390,19 +390,15 @@ typedef struct topazRenderer_2D_Vertex_t topazRenderer_2D_Vertex_t;
 struct topazRenderer_2D_Vertex_t{
     /// vertex position
     ///
-    float x, y;       
+    float x, y,       
     
     /// color, scale from 0.f to 1.f (red, green, blue, and alpha)             
     ///
-    float r, g, b, a; 
+          r, g, b, a,
     
     /// texture coordinates (0, 0 is topleft)
     ///
-    float texX, texY;                     
-    
-    /// the transform reference object
-    ///
-    float object;                         
+          texX, texY;       
 };
 
 
@@ -474,7 +470,7 @@ void topaz_renderer_2d_remove_objects(topazRenderer_2D_t *, uint32_t * ids, uint
 /// Requests that an additional set of objects 
 /// be drawn when using topaz_renderer_draw_2d
 ///
-void topaz_renderer_2d_queue_vertices(
+void topaz_renderer_2d_queue_objects(
     topazRenderer_2D_t *,
     const uint32_t * objects,
     uint32_t count
@@ -486,35 +482,14 @@ void topaz_renderer_2d_clear_queue(topazRenderer_2D_t *);
 
 
 
-
-/// Adds a collection of vertices
-/// count is the number of objects
-/// output is the produced ids and should be a buffer of size sizeof(uint32_t)*count
-/// Success is returned.
+/// Attaches a buffer to the object that provides vertex data.
+/// The buffer is assumed to be laid out in data as if it were 
+/// contiguous topazRenderer_Vertex_2D_t objects.
 ///
-int topaz_renderer_2d_add_vertices(topazRenderer_2D_t *, uint32_t * output, uint32_t count);
-
-
-/// Removes a set of 2d vertices.
-///
-void topaz_renderer_2d_remove_vertices(topazRenderer_2D_t *, uint32_t * objects, uint32_t count);
-
-/// Sets vertices 
-///
-void topaz_renderer_2d_set_vertices(
+void topaz_renderer_2d_set_object_vertices(
     topazRenderer_2D_t *, 
-    uint32_t * vertices, 
-    const topazRenderer_2D_Vertex_t *, 
-    uint32_t count
-);
-
-/// Gets the data for the specified vertices.
-///
-void topaz_renderer_2d_get_vertices(
-    topazRenderer_2D_t *, 
-    const uint32_t * vertexIDs, 
-    topazRenderer_2D_Vertex_t * output,
-    uint32_t count
+    uint32_t i, 
+    topazRenderer_Buffer_t * 
 );
 
 
@@ -526,7 +501,10 @@ void topaz_renderer_2d_set_object_params(
     const topazRenderer_2D_ObjectParams_t *
 );
 
-
+/// Gets the source renderer context that made 
+/// this renderer2D instance 
+///
+topazRenderer_t * topaz_renderer_2d_get_context(topazRenderer_2D_t *);
 
 
 
