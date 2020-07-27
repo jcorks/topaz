@@ -44,7 +44,6 @@ DEALINGS IN THE SOFTWARE.
 
 #include <stdlib.h>
 #include <unistd.h>
-#include <Filesys.h>
 #include <stdint.h>
 
 #include <topaz/compat.h>
