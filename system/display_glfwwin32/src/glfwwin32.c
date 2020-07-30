@@ -1,4 +1,6 @@
 #include "backend.h"
+#include <topaz/version.h>
+
 
 topazBackend_t * topaz_system_display_glfwwin32__backend() {
     return topaz_backend_create(

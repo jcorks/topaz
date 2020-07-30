@@ -32,6 +32,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 #include "backend.h"
+#include <topaz/version.h>
 
 
 
@@ -89,7 +90,7 @@ topazBackend_t * topaz_system_inputManager_noInputManager__backend() {
 
 
 static intptr_t api_nothing(){return 0;}
-void topaz_system_inputManager_noInputManager__api(topazDisplayAPI_t * api);
+void topaz_system_inputManager_noInputManager__api(topazInputManagerAPI_t * api) {
     api->input_manager_create = (void (*)(topazInputManagerAPI_t *)) api_nothing;
     api->input_manager_destroy = (void (*)(topazInputManagerAPI_t *)) api_nothing;
     api->input_manager_id_to_string = (const char * (*)(int)) api_nothing;

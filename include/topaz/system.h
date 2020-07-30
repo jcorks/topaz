@@ -33,7 +33,7 @@ DEALINGS IN THE SOFTWARE.
 #define H_TOPAZDC__SYSTEM__INCLUDED
 
 #include <topaz/containers/string.h>
-typedef struct topazBackent_t topazBackend_t;
+typedef struct topazBackend_t topazBackend_t;
 
 /*
 
@@ -79,7 +79,7 @@ int topaz_system_config_add_handler(
     /// The function to be called that populates the 
     /// API. The api is specific to the backend
     ///
-    void (*api_callback)(topazTimeAPI_t *)
+    void (*api_callback)(void *)
 );
 
 
@@ -95,7 +95,7 @@ topazSystem_t * topaz_system_create_default();
 /// Sucess is returned.
 ///
 int topaz_system_set_backend(
-    topazSystem *, 
+    topazSystem_t *, 
     const topazString_t * backendType,
     const topazString_t * backendName
 );
@@ -104,7 +104,7 @@ int topaz_system_set_backend(
 /// Returns whether the given backend is available for the given type.
 ///
 int topaz_system_is_backend_available(
-    topazSystem *, 
+    const topazSystem_t *, 
     const topazString_t * backendType,
     const topazString_t * backendName
 );
@@ -112,7 +112,7 @@ int topaz_system_is_backend_available(
 
 /// Creates a backend instance 
 topazBackend_t * topaz_system_create_backend(
-    topazSystem_t *, 
+    const topazSystem_t *, 
     const topazString_t * backendType, 
     void * APImapping
 );

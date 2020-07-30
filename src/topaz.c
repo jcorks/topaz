@@ -29,7 +29,7 @@ DEALINGS IN THE SOFTWARE.
 */
 
 #include <topaz/topaz.h>
-
+#include <topaz/system.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
@@ -42,7 +42,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 struct topaz_t {
-    topazSystem_t * system;
+    const topazSystem_t * system;
     
     topazTable_t * params;
     topazEntity_t * universe;
@@ -84,7 +84,7 @@ topaz_t * topaz_context_create(const topazSystem_t * a) {
     {
         topazTimeAPI_t api;
         topazBackend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("time"), &api);
-        out->timeRef = topaz_time_create(ref, &api);
+        out->timeRef = topaz_time_create(ref, api);
     }
 
 
@@ -105,13 +105,13 @@ topaz_t * topaz_context_create(const topazSystem_t * a) {
     {
         topazInputManagerAPI_t api;
         topazBackend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("inputManager"), &api);
-        out->inputManager = topaz_input_manager_create(ref, &api);
+        out->inputManager = topaz_input_manager_create(ref, api);
     }
 
     {
         topazRendererAPI_t api;
         topazBackend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("renderer"), &api);
-        out->renderer   = topaz_renderer_create(ref), &api);
+        out->renderer   = topaz_renderer_create(ref, api);
         out->renderer2d = topaz_renderer_2d_create(out->renderer);    
     }
 
@@ -133,8 +133,8 @@ topaz_t * topaz_context_create(const topazSystem_t * a) {
     return out;
 }
 
-const topaz_Attributes_t * topaz_context_get_attributes(const topaz_t * t) {
-    return &t->api;
+const topazSystem_t * topaz_context_get_system(const topaz_t * t) {
+    return t->system;
 }
 
 
@@ -382,7 +382,13 @@ uint64_t topaz_context_get_time(topaz_t * t) {
 }
 
 topazFilesys_t * topaz_context_filesys_create(const topaz_t * t) {
-    return topaz_filesys_create(t->api.filesysBackend, t->api.filesysAPI);
+    topazFilesysAPI_t api;
+    topazBackend_t * backend = topaz_system_create_backend(
+        t->system,
+        TOPAZ_STR_CAST("filesys"),
+        &api
+    );
+    return topaz_filesys_create(backend, api);
 }
 
 

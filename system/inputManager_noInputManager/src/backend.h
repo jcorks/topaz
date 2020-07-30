@@ -28,12 +28,12 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
-#include <topaz/backends/time.h>
+#include <topaz/backends/input_manager.h>
 
 #ifndef H_TOPAZDC__INPUTMANAGER_NOINPUTMANAGER__INCLUDED
-#ifndef H_TOPAZDC__INPUTMANAGER_NOINPUTMANAGER__INCLUDED
+#define H_TOPAZDC__INPUTMANAGER_NOINPUTMANAGER__INCLUDED
 
 topazBackend_t * topaz_system_inputManager_noInputManager__backend();
-void             topaz_system_inputManager_noInputManager__api(topazDisplayAPI_t *);
+void             topaz_system_inputManager_noInputManager__api(topazInputManagerAPI_t *);
 
 #endif

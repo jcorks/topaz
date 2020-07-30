@@ -32,7 +32,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 #include "backend.h"
-
+#include <topaz/version.h>
 
 
 
@@ -89,7 +89,7 @@ topazBackend_t * topaz_system_audioManager_noAudioManager__backend() {
 
 
 static intptr_t api_nothing(){return 0;}
-void topaz_system_audioManager_noAudioManager__api(topazTimeAPI_t * api);
+void topaz_system_audioManager_noAudioManager__api(topazAudioManagerAPI_t * api) {
 
     api->audio_manager_create          = (void (*)(topazAudioManagerAPI_t *)) api_nothing;
     api->audio_manager_destroy         = (void (*)(topazAudioManagerAPI_t *)) api_nothing;

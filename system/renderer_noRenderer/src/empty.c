@@ -32,6 +32,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 #include "backend.h"
+#include <topaz/version.h>
 
 
 
@@ -89,7 +90,7 @@ topazBackend_t * topaz_system_renderer_noRenderer__backend() {
 
 
 static intptr_t api_nothing(){return 0;}
-void topaz_system_renderer_noRenderer__api(topazDisplayAPI_t * api);
+void topaz_system_renderer_noRenderer__api(topazRendererAPI_t * api){
 
     api->core.renderer_create = (void (*)(topazRenderer_CoreAPI_t*))api_nothing;
     api->core.renderer_destroy = (void (*)(topazRenderer_CoreAPI_t*))api_nothing;

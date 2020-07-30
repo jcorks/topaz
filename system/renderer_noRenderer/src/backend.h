@@ -28,10 +28,10 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
-#include <topaz/backends/time.h>
+#include <topaz/backends/renderer.h>
 
 #ifndef H_TOPAZDC__RENDERER_NORENDERER__INCLUDED
-#ifndef H_TOPAZDC__RENDERER_NORENDERER__INCLUDED
+#define H_TOPAZDC__RENDERER_NORENDERER__INCLUDED
 
 topazBackend_t * topaz_system_renderer_noRenderer__backend();
 void             topaz_system_renderer_noRenderer__api(topazRendererAPI_t *);

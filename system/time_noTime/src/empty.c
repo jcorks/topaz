@@ -32,6 +32,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 #include "backend.h"
+#include <topaz/version.h>
 
 
 
@@ -89,7 +90,7 @@ topazBackend_t * topaz_system_time_noTime__backend() {
 
 
 static intptr_t api_nothing(){return 0;}
-void topaz_system_time_noTime__api(topazDisplayAPI_t * api);
+void topaz_system_time_noTime__api(topazTimeAPI_t * api) {
     api->time_create = (void (*)(topazTimeAPI_t *)) api_nothing;
     api->time_destroy = (void (*)(topazTimeAPI_t *)) api_nothing;
     api->time_sleep_ms = (void (*)(topazTimeAPI_t *, uint64_t)) api_nothing;

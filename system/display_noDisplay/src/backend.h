@@ -28,10 +28,10 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
-#include <topaz/backends/time.h>
+#include <topaz/backends/display.h>
 
 #ifndef H_TOPAZDC__DISPLAY_NODISPLAY__INCLUDED
-#ifndef H_TOPAZDC__DISPLAY_NODISPLAY__INCLUDED
+#define H_TOPAZDC__DISPLAY_NODISPLAY__INCLUDED
 
 topazBackend_t * topaz_system_display_noDisplay__backend();
 void             topaz_system_display_noDisplay__api(topazDisplayAPI_t *);

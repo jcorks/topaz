@@ -32,6 +32,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 #include "backend.h"
+#include <topaz/version.h>
 
 
 
@@ -89,7 +90,7 @@ topazBackend_t * topaz_system_display_noDisplay__backend() {
 
 
 static intptr_t api_nothing(){return 0;}
-void topaz_system_display_noDisplay__api(topazDisplayAPI_t * api);
+void topaz_system_display_noDisplay__api(topazDisplayAPI_t * api) {
     api->display_create = (void (*)(topazDisplayAPI_t *)) api_nothing;
     api->display_destroy = (void (*)(topazDisplayAPI_t *)) api_nothing;
     api->display_resize = (void (*)(topazDisplayAPI_t *, int, int)) api_nothing;

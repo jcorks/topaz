@@ -300,7 +300,6 @@ void srgs_texture_destroy(srgs_t * t, uint32_t id) {
 
 void srgs_texture_blank(srgs_t * t, uint32_t id, uint8_t white) {
     srgs_texture_t * tex = id_table_fetch(t->textures, srgs_texture_t, id);
-    uint32_t i;
     uint32_t count = tex->w * tex->h;
     memset(tex->data, white, count*4);
 }
@@ -706,6 +705,7 @@ srgs_id_table_t * id_table_create(srgs_t * s, uint32_t sizeofType) {
     out->sizeofTypeInt = sizeofType / sizeof(uint32_t);
     out->alloc = s->alloc(sizeof(uint32_t)*out->sizeAlloc*out->sizeofTypeInt);
     out->dead = NULL;
+    return out;
 }
 
 int id_table_verify(const srgs_id_table_t * t, uint32_t id) {
@@ -1027,7 +1027,7 @@ float srgs_utility_vec_dot(const srgs_vector3_t * a, const srgs_vector3_t * b) {
 float srgs_utility_vec_theta(const srgs_vector3_t * a, const srgs_vector3_t * b) {
     return   acos((a->x*b->x + a->y*b->y + a->z*b->z) /
                   (sqrt(a->x*a->x + a->y*a->y + a->z*a->z) *
-                   sqrt(b->x*b->x + b->y*b->y + b->z*b->z))) * (180 / M_PI);
+                   sqrt(b->x*b->x + b->y*b->y + b->z*b->z))) * (180 / 3.14159265359);
     
 }
 
@@ -1111,7 +1111,7 @@ static float baseLookAtMatrix[16] = {
 
 
 void srgs_utility_matrix_print(srgs_matrix_t * m) {
-	printf("Matrix %p:\n", m);
+	printf("Matrix %p:\n", (void*)m);
 
 	printf("[%7.2f %7.2f %7.2f %7.2f]\n", m->x0, m->y0, m->z0, m->w0);
 	printf("[%7.2f %7.2f %7.2f %7.2f]\n", m->x1, m->y1, m->z1, m->w1);
@@ -1241,8 +1241,8 @@ void srgs_utility_matrix_rotate(srgs_matrix_t * transform, float theta, float x,
 	y = y/len;
 	z = z/len;
 
-	float c = cos((M_PI/180.0) *theta);
-	float s = sin((M_PI/180.0) *theta);
+	float c = cos((3.14159265359/180.0) *theta);
+	float s = sin((3.14159265359/180.0) *theta);
 
 	baseRotationMatrix[0] = x*x*(1 - c) + c;
 	baseRotationMatrix[1] = x*y*(1 - c) - z*s;
@@ -1322,7 +1322,7 @@ void srgs_utility_matrix_projection_perspective(srgs_matrix_t * matrix, float fo
 void srgs_utility_matrix_projection_perspective(srgs_matrix_t * m, float fovyInDegrees, float aspectRatio, float znear, float zfar) {
     float ymax, xmax;
     float temp, temp2, temp3, temp4;
-    ymax = znear * tanf(fovyInDegrees * M_PI / 360.0);
+    ymax = znear * tanf(fovyInDegrees * 3.14159265359 / 360.0);
     //ymin = -ymax;
     //xmin = -ymax * aspectRatio;
     xmax = ymax * aspectRatio;
@@ -1641,6 +1641,7 @@ static void srgs_render__renderlist(
           case srgs__object_depth_mode__greaterequal: depthTest = depth_gte; break;
           case srgs__object_depth_mode__always:       depthTest = depth_always; break;
           case srgs__object_depth_mode__never:        depthTest = depth_never; break;
+          default: depthTest = depth_l;
         }
 
 

@@ -28,10 +28,10 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
-#include <topaz/backends/time.h>
+#include <topaz/backends/filesys.h>
 
 #ifndef H_TOPAZDC__FILESYS_NOFILESYS__INCLUDED
-#ifndef H_TOPAZDC__FILESYS_NOFILESYS__INCLUDED
+#define H_TOPAZDC__FILESYS_NOFILESYS__INCLUDED
 
 topazBackend_t * topaz_system_filesys_noFilesys__backend();
 void             topaz_system_filesys_noFilesys__api(topazFilesysAPI_t *);

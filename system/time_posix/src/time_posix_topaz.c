@@ -142,7 +142,7 @@ topazBackend_t * topaz_system_time_posix__backend() {
 }
 
 
-void topaz_system_time_posix__api(topazTimeAPI_t * api);
+void topaz_system_time_posix__api(topazTimeAPI_t * api) {
     // Map object API functions to real ones
     api->time_create  = topaz_time_posix__create;
     api->time_destroy = topaz_time_posix__destroy;

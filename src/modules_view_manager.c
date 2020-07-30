@@ -30,6 +30,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/compat.h>
 #include <topaz/modules/view_manager.h>
+#include <topaz/system.h>
 #include <topaz/topaz.h>
 #include <stdlib.h>
 #include <string.h>
@@ -65,9 +66,15 @@ void topaz_view_manager_destroy(topazViewManager_t * t) {
 
 
 topazDisplay_t * topaz_view_manager_create_display(topazViewManager_t * v, const topazString_t * name, int w, int h) {
+    topazDisplayAPI_t api;
+    topazBackend_t * backend = topaz_system_create_backend(
+        topaz_context_get_system(v->t),
+        TOPAZ_STR_CAST("display"),
+        &api
+    );
     topazDisplay_t * d = topaz_display_create(
-        topaz_context_get_attributes(v->t)->displayBackend,
-        topaz_context_get_attributes(v->t)->displayAPI
+        backend,
+        api
     );
     topaz_display_set_name(d, name);
     topaz_display_resize(d, w, h);

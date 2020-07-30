@@ -28,8 +28,7 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
-#include <topaz/backends/time.h>
-#include <topaz/backends/api/display_api.h>
+#include <topaz/backends/display.h>
 
 #ifndef H_TOPAZDC__DISPLAY_GLFWWIN32__INCLUDED
 #define H_TOPAZDC__DISPLAY_GLFWWIN32__INCLUDED

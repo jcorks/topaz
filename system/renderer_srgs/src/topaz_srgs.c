@@ -30,8 +30,10 @@ DEALINGS IN THE SOFTWARE.
 
 #include "backend.h"
 #include <topaz/containers/bin.h>
-
-typdef struct {
+#include "srgs.h"
+#include <stdlib.h>
+#include <topaz/version.h>
+typedef struct {
     srgs_t * ctx;
 
 } SRGSTOPAZCore;
@@ -50,17 +52,19 @@ typdef struct {
 typedef struct {
     srgs_t * ctx;
     uint32_t handle;
+    int w;
+    int h;
 } SRGSTOPAZTexture;
 
 static void * srgstopaz_texture_create(
     topazRendererAPI_t * r, 
-    topazRenderer_TextureAPI_t * tex,  
     int w, int h, const uint8_t * rgbaTextureData
 ) {
     SRGSTOPAZTexture * out = malloc(sizeof(SRGSTOPAZTexture));
-    out->ctx = r->implimentationData;
-    out->handle = srgs_texture_create(out->ctx);
-
+    out->ctx = r->implementationData;
+    out->handle = srgs_texture_create(out->ctx, w, h);
+    out->w = w;
+    out->h = h;
     if (rgbaTextureData) {
         srgs_texture_update(
             out->ctx, 
@@ -84,20 +88,21 @@ static void * srgstopaz_texture_create(
 
 static void srgstopaz_texture_destroy(void * textureObjectData) {
     SRGSTOPAZTexture * t = textureObjectData;
-    srgs_texture_destroy(t->ctx, out->handle);
+    srgs_texture_destroy(t->ctx, t->handle);
+    free(t);
 }
 
 
 static void srgstopaz_texture_update(void * textureObjectData, const uint8_t * newData) {
     SRGSTOPAZTexture * t = textureObjectData;
     srgs_texture_update(
-        out->ctx, 
-        out->handle,
+        t->ctx, 
+        t->handle,
 
         newData,
         0, 0,
         0, 0,
-        w, h  
+        t->w, t->h  
     );
 
 }
@@ -106,7 +111,7 @@ static void srgstopaz_texture_get(void * textureObjectData, uint8_t * target) {
     uint32_t count = srgs_texture_get_width(t->ctx, t->handle) * srgs_texture_get_height(t->ctx, t->handle) * 4;
     memcpy(
         target,
-        srgs_get_data(t->ctx, t->handle),
+        srgs_texture_get_data(t->ctx, t->handle),
         count
     );
 }
@@ -125,15 +130,15 @@ static void srgstopaz_texture_get(void * textureObjectData, uint8_t * target) {
 
 
 static void * srgstopaz_program_create(
-    topazRendererAPI_t *,
-    const topazString_t *, 
-    const topazString_t *, 
-    topazString_t *) {
+    topazRendererAPI_t * a ,
+    const topazString_t * b, 
+    const topazString_t * c , 
+    topazString_t * d) {
     return (void*)0xfffffff;
 }
 static void * srgstopaz_program_get_preset(
-    topazRendererAPI_t *,
-    topazRenderer_PresetProgram) {
+    topazRendererAPI_t * a,
+    topazRenderer_PresetProgram b) {
     return (void*)0xfffffff;
 }
 
@@ -159,13 +164,12 @@ typedef struct {
 
 /// in the case that a buffer is atttached to a 2d object, 
 /// the 2d object's vertices will need to be updated as well
-static void srgstopaz_buffer_update_2d_object(SRGSTOPAZBuffer * b);
+//static void srgstopaz_buffer_update_2d_object(SRGSTOPAZBuffer * b);
 
 
 
 static void * srgstopaz_buffer_create(
-    topazRendererAPI_t *, 
-    topazRenderer_BufferAPI_t *, 
+    topazRendererAPI_t * api, 
     float * data, uint32_t numElements
 ) {
     SRGSTOPAZBuffer * b = malloc(sizeof(SRGSTOPAZBuffer));
@@ -187,12 +191,13 @@ static void srgstopaz_buffer_update(
     uint32_t numElements
 ) {
     SRGSTOPAZBuffer * b = bufferObjectData;
-    memcpy(b->buffer + offset, newData, numElements * sizeof(float));
+    memcpy(((float*)b->buffer) + offset, newData, numElements * sizeof(float));
+    //srgstopaz_buffer_update_2d_object(b);
 }
 
-static void srgstopaz_buffer_read(void * bufferObjectData, float * ouputData, uint32_t offset, uint32_t numElements) {
+static void srgstopaz_buffer_read(void * bufferObjectData, float * newData, uint32_t offset, uint32_t numElements) {
     SRGSTOPAZBuffer * b = bufferObjectData;
-    memcpy(newData, b->buffer + offset, numElements * sizeof(float));
+    memcpy(newData, ((float*)b->buffer) + offset, numElements * sizeof(float));
 }
 
 
@@ -218,7 +223,7 @@ static void srgstopaz_light_enable(void * r, int doIt){}
 
 
 /// render 2d
-
+/*
 typedef struct {
     uint32_t objectID;
     uint32_t matrixID;
@@ -238,16 +243,16 @@ typedef struct {
 
 static SRGSTOPAZ2DObject * create_object(srgs_t * ctx) {
     SRGSTOPAZ2DObject * o = malloc(sizeof(SRGSTOPAZBuffer));
-    o->objectID = srgs_object_create(t->ctx);
-    o->matrixID = srgs_matrix_create(t->ctx);
-    o.ctx = ctx;
-    o.vertices = NULL;
+    o->objectID = srgs_object_create(ctx);
+    o->matrixID = srgs_matrix_create(ctx);
+    o->ctx = ctx;
+    o->vertices = NULL;
     return o;
 }
 
-static remove_object(SRGSTOPAZ2DObject * o) {
-    srgs_matrix_destroy(o->matrixID);
-    srgs_object_destroy(o->objectID);
+static void remove_object(SRGSTOPAZ2DObject * o) {
+    srgs_matrix_destroy(o->ctx, o->matrixID);
+    srgs_object_destroy(o->ctx, o->objectID);
     free(o);
 }
 
@@ -259,14 +264,14 @@ static void * srgstopaz_2d_create (topazRendererAPI_t * r) {
     SRGSTOPAZ2D * out = malloc(sizeof(SRGSTOPAZ2D));
     out->objects  = topaz_bin_create();
     out->queue    = topaz_array_create(sizeof(uint32_t));
-    out->ctx = r->implimentationData;
+    out->ctx = r->implementationData;
     out->renderlistID = srgs_renderlist_create(out->ctx);
     return out;
 }
 static void srgstopaz_2d_destroy(void * d) {
     SRGSTOPAZ2D * t = d;
-    topaz_array_destroy(out->vertices);
-    topaz_array_destroy(out->objects);
+    topaz_array_destroy(t->queue);
+    topaz_bin_destroy(t->objects);
     free(t);
 }
 
@@ -274,19 +279,23 @@ static void srgstopaz_2d_destroy(void * d) {
 
 static int srgstopaz_2d_add_objects(void * d, uint32_t * output, uint32_t count) {
     SRGSTOPAZ2D * t = d;
+
     uint32_t i;
-    topaz_array_set_size(t->objects, topaz_array_get_size(t->objects)+count);
+
     for(i = 0; i < count; ++i) {
-        topaz_array_at(t->objects, SRGSTOPAZ2DObject, i) = create_object(t->ctx);
+        output[i] = topaz_bin_add(t->objects, create_object(t->ctx));
     }
-    return TRUE;
+    return 1;
 }
 static void srgstopaz_2d_remove_objects(void * d, uint32_t * ids, uint32_t count) {
     SRGSTOPAZ2D * t = d;
     uint32_t i;
     for(i = 0; i < count; ++i) {
-        remove_object(&topaz_array_at(t->objects, SRGSTOPAZ2DObject, i));
-        topaz_array_remove(t->objects, ids[count]);
+        SRGSTOPAZ2DObject * obj = topaz_bin_fetch(t->objects, ids[i]);
+        if (!obj) continue;
+
+        remove_object(obj);
+        topaz_bin_remove(t->objects, ids[i]);
     }
 }
 
@@ -314,11 +323,8 @@ void srgstopaz_2d_set_object_vertices(
     uint32_t object, 
     void * b // buffer object bound to buffer
 ) {
-    SRGSTOPAZ2D * t = d;
-    SRGSTOPAZBuffer * buffer = b;
-    SRGSTOPAZ2DObject * obj = topaz_bin_fetch(t->objects, object);
-    
-    if (b == )
+    //    srgstopaz_buffer_update_2d_object(b);
+
 }
 
 
@@ -329,7 +335,7 @@ void (srgstopaz_2d_set_object_params)(
     const topazRenderer_2D_ObjectParams_t *
 );
 
-
+*/
 ///
 
 
@@ -382,7 +388,8 @@ topazBackend_t * topaz_system_renderer_srgs__backend() {
     );
 }
 
-void topaz_system_renderer_srgs__backend(topazRendererAPI_t * api) {
+void topaz_system_renderer_srgs__api(topazRendererAPI_t * api) {
+    
     api->texture.renderer_texture_create = srgstopaz_texture_create;
     api->texture.renderer_texture_destroy = srgstopaz_texture_destroy;
     api->texture.renderer_texture_update = srgstopaz_texture_update;
@@ -397,11 +404,11 @@ void topaz_system_renderer_srgs__backend(topazRendererAPI_t * api) {
     api->buffer.renderer_buffer_update = srgstopaz_buffer_update;
     api->buffer.renderer_buffer_read = srgstopaz_buffer_read;
 
-    api->buffer.renderer_light_create = srgstopaz_light_create;
-    api->buffer.renderer_light_destroy = srgstopaz_light_destroy;
-    api->buffer.renderer_light_update_attribs = srgstopaz_light_update_attribs;
-    api->buffer.renderer_light_enable = srgstopaz_light_enable;
-
+    api->light.renderer_light_create = srgstopaz_light_create;
+    api->light.renderer_light_destroy = srgstopaz_light_destroy;
+    api->light.renderer_light_update_attribs = srgstopaz_light_update_attribs;
+    api->light.renderer_light_enable = srgstopaz_light_enable;
+    
 }
 
 
@@ -410,12 +417,13 @@ void topaz_system_renderer_srgs__backend(topazRendererAPI_t * api) {
 
 
 // update function to re-cut topazRenderer_2D_Vertex_t into srgs vertex stuff
+/*
 static void srgstopaz_buffer_update_2d_object(SRGSTOPAZBuffer * b) {
     SRGSTOPAZ2DObject * obj = b->render2dObject;
-    uint32_t numVertices = (sizeof(topazRenderer_2D_Vertex_t) / sizeof(float);
+    uint32_t numVertices = sizeof(topazRenderer_2D_Vertex_t) / sizeof(float);
     uint32_t i;
     topazRenderer_2D_Vertex_t * src = b->buffer;
-    srgs_object_set_vertex_count(obj->ctx, obj->objectID, b->size / numVertices));
+    srgs_object_set_vertex_count(obj->ctx, obj->objectID, b->size / numVertices);
 
     topazVector_t pos;
     pos.z = 0;
@@ -425,26 +433,27 @@ static void srgstopaz_buffer_update_2d_object(SRGSTOPAZBuffer * b) {
         srgs_object_update_vertices(
             obj->ctx,
             obj->objectID,
-            srgs_object_vertex_channel__position
+            srgs__object_vertex_channel__position,
             i, i,
-            &pos
+            (float*)&pos
         );
 
         srgs_object_update_vertices(
             obj->ctx,
             obj->objectID,
-            srgs_object_vertex_channel__uvs
+            srgs__object_vertex_channel__uvs,
             i, i,
-            &(src->texX)
+            (float*)&(src->texX)
         );
 
         srgs_object_update_vertices(
             obj->ctx,
             obj->objectID,
-            srgs_object_vertex_channel__color
+            srgs__object_vertex_channel__color,
             i, i,
-            &(src->r)
+            (float*)&(src->r)
         );
     }
 }
 
+*/

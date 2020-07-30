@@ -32,6 +32,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 #include "backend.h"
+#include <topaz/version.h>
 
 
 
@@ -89,7 +90,7 @@ topazBackend_t * topaz_system_filesys_noFilesys__backend() {
 
 
 static intptr_t api_nothing(){return 0;}
-void topaz_system_filesys_noFilesys__api(topazFilesysAPI_t * api);
+void topaz_system_filesys_noFilesys__api(topazFilesysAPI_t * api) {
     api->filesys_create = (void (*)(topazFilesysAPI_t *))api_nothing;
     api->filesys_destroy = (void (*)(topazFilesysAPI_t *))api_nothing;
     api->filesys_query = (const topazArray_t * (*)(topazFilesysAPI_t *))api_nothing;

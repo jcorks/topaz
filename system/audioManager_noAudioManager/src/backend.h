@@ -28,7 +28,7 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
-#include <topaz/backends/time.h>
+#include <topaz/backends/audio_manager.h>
 
 #ifndef H_TOPAZDC__AUDIOMANAGER_NOAUDIOMANAGER__INCLUDED
 #define H_TOPAZDC__AUDIOMANAGER_NOAUDIOMANAGER__INCLUDED

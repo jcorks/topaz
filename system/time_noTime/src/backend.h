@@ -31,7 +31,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/backends/time.h>
 
 #ifndef H_TOPAZDC__TIME_NOTIME__INCLUDED
-#ifndef H_TOPAZDC__TIME_NOTIME__INCLUDED
+#define H_TOPAZDC__TIME_NOTIME__INCLUDED
 
 topazBackend_t * topaz_system_time_noTime__backend();
 void             topaz_system_time_noTime__api(topazTimeAPI_t *);
