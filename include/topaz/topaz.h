@@ -42,46 +42,7 @@ DEALINGS IN THE SOFTWARE.
 
 */
 typedef struct topaz_t topaz_t;
-
-typedef struct topaz_Attributes_t topaz_Attributes_t;
-struct topaz_Attributes_t {
-
-    /// Provides functionality on the system for 
-    /// time-related functions.
-    ///
-    topazBackend_t * timeBackend;
-    topazTimeAPI_t   timeAPI;
-
-    /// Provides functionality on the system for 
-    /// filesystem abstraction functions.
-    ///    
-    topazBackend_t *    filesysBackend;
-    topazFilesysAPI_t   filesysAPI;
-    
-    /// Provides functionality on the system for 
-    /// display/window functions
-    ///    
-    topazBackend_t *  displayBackend;
-    topazDisplayAPI_t displayAPI;
-
-    /// Provides functionality on the system for 
-    /// audio-related functions
-    ///
-    topazBackend_t *       audioManagerBackend;
-    topazAudioManagerAPI_t audioManagerAPI;
-
-    /// Provides functionality on the system for 
-    /// input-related functions.
-    ///
-    topazBackend_t *       inputManagerBackend;
-    topazInputManagerAPI_t inputManagerAPI;    
-    
-    /// Provides functionality on the system for 
-    /// renderer-related functions.
-    ///    
-    topazBackend_t *   rendererBackend;
-    topazRendererAPI_t rendererAPI;
-};
+typedef struct topazSystem_t topazSystem_t;
 
 
 
@@ -92,7 +53,7 @@ struct topaz_Attributes_t {
 /// No other functions should be used prior to calling this function.
 ///
 ///
-topaz_t * topaz_context_create(const topaz_Attributes_t *);
+topaz_t * topaz_context_create(const topazSystem_t *);
 
 
  
@@ -101,13 +62,11 @@ topaz_t * topaz_context_create(const topaz_Attributes_t *);
 ///
 topaz_t * topaz_context_create_empty();
 
-
+/// Destroys and frees the topaz context.
+///
 void topaz_context_destroy();
 
 
-/// Returns the attributes that this context was instantiated with 
-///
-const topaz_Attributes_t * topaz_context_get_attributes(const topaz_t *);
 
 
 
