@@ -28,11 +28,12 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
-#include <topaz/backend/time.h>
+#include <topaz/backends/filesys.h>
 
-#ifndef H_TOPAZDC__TIME_POSIX__INCLUDED
-#define H_TOPAZDC__TIME_POSIX__INCLUDED
+#ifndef H_TOPAZDC__FILESYS_POSIX__INCLUDED
+#define H_TOPAZDC__FILESYS_POSIX__INCLUDED
 
-topazTime_t * topaz_system_time_posix();
+topazBackend_t * topaz_system_filesys_posix__backend();
+void             topaz_system_filesys_posix__api(topazFilesysAPI_t *);
 
 #endif

@@ -31,7 +31,7 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__VERSION__INCLUDED
 #define H_TOPAZDC__VERSION__INCLUDED
 
-#include <topaz/version.h>
+#include <topaz/compat.h>
 /*
     Information about the version.
 */

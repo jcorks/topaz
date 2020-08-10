@@ -9,7 +9,7 @@ configsource=""
 configincludes=""
 
 compiler=""
-cc --help 2>/dev/nul 1>/dev/nul 
+cc --help 2>/dev/null 1>/dev/null 
 ccresult=$?
 
 if [ "$cc" != "" ]; then 
@@ -26,17 +26,17 @@ for D in *; do
     if [ -d "${D}" ]; then
         cd ${D}
 
-        localflags=$(cat C_FLAGS 2>/dev/nul)
-        localsources=$(cat C_SOURCES 2>/dev/nul)
-        locallibraries=$(cat C_LIBRARIES 2>/dev/nul)
-        localtestc=$(cat C_TESTC 2>/dev/nul)
+        localflags=$(cat C_FLAGS 2>/dev/null)
+        localsources=$(cat C_SOURCES 2>/dev/null)
+        locallibraries=$(cat C_LIBRARIES 2>/dev/null)
+        localtestc=$(cat C_TESTC 2>/dev/null)
         if [ "$localtestc" = "" ]; then 
             echo "int main(){}" > .test.c 
         else 
             cp ./C_TESTC ./.test.c
         fi
         #cat ./.test.c
-        $compiler $localflags .test.c $locallibraries -o .test.exe 2>/dev/nul
+        $compiler $localflags .test.c $locallibraries -o .test.exe 2>/dev/null
         result=$?
         # echo "gcc @ $result"
 

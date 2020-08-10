@@ -31,8 +31,6 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-#include "backend.h"
-
 
 // Indicates this is POSIX compliant source
 // It's required for some posix features/ symbols
@@ -42,6 +40,7 @@ DEALINGS IN THE SOFTWARE.
 //
 
 
+#include "backend.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>

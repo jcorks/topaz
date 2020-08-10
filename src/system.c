@@ -2,6 +2,7 @@
 #include <topaz/containers/table.h>
 #include <topaz/containers/string.h>
 #include <stdlib.h>
+#include <stdio.h>
 static topazTable_t * renderers = NULL;
 static topazTable_t * inputManagers = NULL;
 static topazTable_t * audioManagers = NULL;
@@ -79,14 +80,14 @@ int topaz_system_config_add_handler(
 
     if (!table) {
         #ifdef TOPAZDC_DEBUG
-            printf("Cannot add handler %s (backend %s doesnt exist?)", topaz_string_get_data(backendType), topaz_string_get_data(backendName));
+            printf("Cannot add handler %s (backend %s doesnt exist?)", topaz_string_get_c_str(backendType), topaz_string_get_c_str(backendName));
         #endif
         return 0;
     }
 
     if (handler) {
         #ifdef TOPAZDC_DEBUG
-            printf("Cannot add handler %s (already exists)", topaz_string_get_data(backendName));
+            printf("Cannot add handler %s (already exists)", topaz_string_get_c_str(backendName));
         #endif
         return 0;
     }

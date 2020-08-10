@@ -40,6 +40,9 @@ DEALINGS IN THE SOFTWARE.
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef TOPAZDC_DEBUG
+    #include <assert.h>
+#endif
 
 typedef struct {
 
@@ -59,6 +62,9 @@ typedef struct {
     float farClip;
 
     topazMatrix_t projectionMatrix;
+    #ifdef TOPAZDC_DEBUG
+        char * MAGIC_ID;
+    #endif
 } TopazCamera;
 
 
@@ -103,7 +109,9 @@ static topazAsset_t * camera__copy_fb(topaz_t *, topazRenderer_Framebuffer_t *);
 topazEntity_t * topaz_camera_create(topaz_t * t) {
     TopazCamera * c = calloc(1, sizeof(TopazCamera));
     topazRenderer_t * r = topaz_context_get_backend_renderer(t);
-
+    #ifdef TOPAZDC_DEBUG
+        c->MAGIC_ID = MAGIC_ID__CAMERA;
+    #endif
     c->mv    = topaz_renderer_buffer_create(r, NULL, 32);
     c->proj  = topaz_renderer_buffer_create(r, NULL, 16);
     c->fb    = topaz_renderer_framebuffer_create(r);

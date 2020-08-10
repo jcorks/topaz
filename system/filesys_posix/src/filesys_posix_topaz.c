@@ -31,7 +31,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-#include "backend.h"
+
 
 
 // Indicates this is POSIX compliant source
@@ -45,10 +45,18 @@ DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdint.h>
-
+#include <dirent.h>
 #include <topaz/compat.h>
-
-
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <limits.h>
+#ifdef __linux__
+    #include <linux/limits.h>
+#endif
+#include <stdio.h>
+#include "backend.h"
 
 typedef struct {
     topazArray_t * dirObjects;
@@ -73,7 +81,7 @@ static void topaz_filesys_posix__create(topazFilesysAPI_t * api) {
 
 
 static void topaz_filesys_posix__destroy(topazFilesysAPI_t * api) {
-    PosixFilesysData * fs = api.implementationData;
+    PosixFilesysData * fs = api->implementationData;
     topaz_array_destroy(fs->dirObjects);
     topaz_array_destroy(fs->dirIsFile);
     topaz_string_destroy(fs->currentPath);
@@ -85,52 +93,66 @@ static void topaz_filesys_posix__destroy(topazFilesysAPI_t * api) {
 static void topaz_filesys_posix_populate_objects(PosixFilesysData * fs) {
 	// clear out old directory objects
 
-	int numFiles;
     uint32_t i;
-    for(i = 0; i < topaz_array_get_length(fs->dirObjects); ++i) {
+    for(i = 0; i < topaz_array_get_size(fs->dirObjects); ++i) {
         topaz_string_destroy(topaz_array_at(fs->dirObjects, topazString_t *, i));
     }
     topaz_array_set_size(fs->dirObjects, 0);
     topaz_array_set_size(fs->dirIsFile, 0);
 
 	// gather new path objects
-	dirent **ls;
+    DIR * dObj;
+    struct dirent * ls;
 
-	numFiles = scandir(currentPath.c_str(),
-						   &ls, NULL,
-						   alphasort);
+    if (!(dObj = opendir(topaz_string_get_c_str(fs->currentPath)))) {
+        return;
+    }
+
+
+    
+    topazString_t * str;
+    topazString_t * pathFull = topaz_string_create();
+    int isFile;
+    struct stat pathStat;
+
+    while ((ls = readdir(dObj))) {
+        if (!strcmp(ls->d_name, ".") ||
+            !strcmp(ls->d_name, "..")) continue;
+
+
+        str = topaz_string_create_from_c_str(ls->d_name);
+        topaz_string_clear(pathFull);
+        topaz_string_concat(pathFull, fs->currentPath);
+        topaz_string_concat(pathFull, str);
+
+        if (stat(topaz_string_get_c_str(pathFull), &pathStat) != -1) {
+	        if (S_ISDIR(pathStat.st_mode))  // directory detected
+		        isFile = FALSE;    
+	        else
+		        isFile = TRUE;
+
+            topaz_array_push(fs->dirObjects, str);
+            topaz_array_push(fs->dirIsFile, isFile);
+        }
+    }
+    closedir(dObj);
+    topaz_string_destroy(pathFull);    
 
 	// dump file names in base vector;
     
-    topazString_t * str;
-    int isFile;
-	for(int i = 0; i < numFiles; ++i) {
-        if (!strcmp(ls[i]->d_name, ".") ||
-            !strcmp(ls[i]->d_name, "..")) continue;
-
-		if (ls[i]->d_type == DT_DIR)  // directory detected
-			isFile = FALSE;    
-		else
-			isFile = TRUE;
-
-
-        str = topaz_string_create_from_c_str(ls[i]->d_name);
-        topaz_array_push(ds->dirObjects, str);
-        topaz_array_push(fs->dirIsFile, isFile);
-	}
-
-	return out;
 }
 
 
 static int topaz_filesys_posix__set_path(topazFilesysAPI_t * t, const topazString_t * str) {
-    char pathTemp[PATH_MAX];
+    PosixFilesysData * fs = t->implementationData;
+
+    int pathMax = pathconf(topaz_string_get_c_str(fs->currentPath), _PC_PATH_MAX);
+    char pathTemp[pathMax+1];
   	if (!realpath(topaz_string_get_c_str(str), pathTemp)) 
         return FALSE;
 
 
 
-    PosixFilesysData * fs = api.implementationData;
     
     topaz_string_set(fs->currentPath, str);
     topaz_filesys_posix_populate_objects(fs);
@@ -139,45 +161,47 @@ static int topaz_filesys_posix__set_path(topazFilesysAPI_t * t, const topazStrin
 }
 
 static int topaz_filesys_posix__go_to_child(topazFilesysAPI_t * api, const topazString_t * str) {
-    PosixFilesysData * fs = api.implementationData;
+    PosixFilesysData * fs = api->implementationData;
     topazString_t * child = topaz_string_clone(fs->currentPath);
     topaz_string_concat_printf(child, "%c", '/');
     topaz_string_concat(child, str); 
-    int result = topaz_filesys_posix__set_path(t, child);
+    int result = topaz_filesys_posix__set_path(api, child);
     topaz_string_destroy(child);
     return result;
 }
 
 static int topaz_filesys_posix__go_to_parent(topazFilesysAPI_t * api) {
-    PosixFilesysData * fs = api.implementationData;
+    PosixFilesysData * fs = api->implementationData;
     const char * iter = topaz_string_get_c_str(fs->currentPath);
 	int index = topaz_string_get_length(fs->currentPath) - 1;
     
     // TODO: this is a bug carried over from the previous implementation. Should be fixed.
-	while (d[index] != '/') index--;
+	while (iter[index] != '/') index--;
     
-
-	return ChangeDir(topaz_string_get_substr(fs->currentPath, 0, index));
+    const topazString_t * part = topaz_string_get_substr(fs->currentPath, 0, index);
+	int ret = chdir(topaz_string_get_c_str(part));
+    return ret;
 }
 
 static const topazString_t * topaz_filesys_posix__get_path(topazFilesysAPI_t * api) {
-    PosixFilesysData * fs = api.implementationData;
+    PosixFilesysData * fs = api->implementationData;
     return fs->currentPath;    
 }
 
 static int topaz_filesys_posix__create_node(topazFilesysAPI_t * api, const topazString_t * dir) {
-    PosixFilesysData * fs = api.implementationData;
+    PosixFilesysData * fs = api->implementationData;
 
     topazString_t * newPath = topaz_string_clone(fs->currentPath);
     topaz_string_concat_printf(newPath, "%c", '/');
     topaz_string_concat(newPath, dir);
 	int result = mkdir(topaz_string_get_c_str(newPath), 0777);    
     topaz_string_destroy(newPath);
+    return result;
 }
 
 
 static topazRbuffer_t * topaz_filesys_posix__read(topazFilesysAPI_t * api, const topazString_t * dir) {
-    PosixFilesysData * fs = api.implementationData;
+    PosixFilesysData * fs = api->implementationData;
     topazString_t * fullPath = topaz_string_clone(fs->currentPath);
     topaz_string_concat_printf(fullPath, "%c", '/');
     topaz_string_concat(fullPath, dir);
@@ -188,11 +212,11 @@ static topazRbuffer_t * topaz_filesys_posix__read(topazFilesysAPI_t * api, const
         topazArray_t * fullData = topaz_array_create(sizeof(uint8_t));
 
         // read in chunks
-        #define chunk_size_read (2048*48);        
+        #define chunk_size_read (2048*48)    
         uint8_t chunk[chunk_size_read];
         uint32_t chunkRead;
 
-        while(chunkRead = fread(chunk, 1, chunk_size_read, f)) {
+        while((chunkRead = fread(chunk, 1, chunk_size_read, f))) {
             topaz_array_push_n(fullData, chunk, chunkRead);
         }
 
@@ -215,18 +239,18 @@ static int topaz_filesys_posix__write(
     const topazString_t * fname, 
     const topazWbuffer_t * data) 
 {
-    PosixFilesysData * fs = api.implementationData;
+    PosixFilesysData * fs = api->implementationData;
     topazString_t * fullPath = topaz_string_clone(fs->currentPath);
     topaz_string_concat_printf(fullPath, "%c", '/');
     topaz_string_concat(fullPath, fname);
     
-    topazArray_t * arr = topaz_wbuffer_get_data(data);
+    const topazArray_t * arr = topaz_wbuffer_get_data(data);
     FILE * f = fopen("wb", topaz_string_get_c_str(fullPath));
     if (f) {
         fwrite(
             topaz_array_get_data(arr),
             1,
-            topaz_array_get_length(arr),
+            topaz_array_get_size(arr),
             f
         );
         fclose(f);
@@ -238,28 +262,28 @@ static int topaz_filesys_posix__write(
 
 
 static const topazArray_t * topaz_filesys_posix__query(topazFilesysAPI_t * api) {
-    PosixFilesysData * fs = api.implementationData;
+    PosixFilesysData * fs = api->implementationData;
     return fs->dirObjects;
 }
 
-static int topaz_filesys_posix__is_node(topazFilesysAPI_t * api, const topazArray_t * t) {
-    PosixFilesysData * fs = api.implementationData;
+static int topaz_filesys_posix__is_node(topazFilesysAPI_t * api, const topazString_t * t) {
+    PosixFilesysData * fs = api->implementationData;
     uint32_t i;
-    for(i = 0; i < topaz_array_get_length(fs->dirObjects); ++i) {
+    for(i = 0; i < topaz_array_get_size(fs->dirObjects); ++i) {
         if (topaz_string_test_eq(
                 topaz_array_at(fs->dirObjects, topazString_t*, i),
                 t
             )) {
-            return !topaz_array_at(fs->dirIsFile);
+            return !topaz_array_at(fs->dirIsFile, int, i);
         }
     }
     return FALSE;
 }
 
-static int topaz_filesys_posix__is_child(topazFilesysAPI_t * api, const topazArray_t * t) {
-    PosixFilesysData * fs = api.implementationData;
+static int topaz_filesys_posix__is_child(topazFilesysAPI_t * api, const topazString_t * t) {
+    PosixFilesysData * fs = api->implementationData;
     uint32_t i;
-    for(i = 0; i < topaz_array_get_length(fs->dirObjects); ++i) {
+    for(i = 0; i < topaz_array_get_size(fs->dirObjects); ++i) {
         if (topaz_string_test_eq(
                 topaz_array_at(fs->dirObjects, topazString_t*, i),
                 t

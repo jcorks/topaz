@@ -1,24 +1,27 @@
 CC=gcc -std=c11 $(shell cat ./config/CONFIG_CFLAGS)
-RM=rm
+RM=rm -f
 OPTS_RELEASE = -Wall -Werror -pedantic -O2
 OPTS_DEBUG = -Wall -Werror -pedantic -g -DTOPAZDC_DEBUG
 LIBRARIES = $(shell cat ./config/CONFIG_LIBRARIES)
-SRCS = ./src/* ./config/config.c $(shell cat ./config/CONFIG_CSOURCES)
+SRCS = $(shell ls -1 ./src/*) ./config/config.c $(shell cat ./config/CONFIG_CSOURCES)
+OBJS = $(SRCS:.c=.o)
 
 
-release:
+release: $(OBJS)
 	$(CC) -I./include/ $(OPTS_RELEASE)  $(SRCS) -c
 	ar rcs libtopaz.a *.o	
 
 
-debug:
-	$(CC) -I./include/ $(OPTS_DEBUG)  $(SRCS) -c
+debug:$(OBJS)
 	ar rcs libtopaz.a *.o
 
+%.o : %.c
+	$(CC) -c $(OPTS_DEBUG) $<  -I./include/ -o $@
 
-test:
-	$(CC) -I./include/ $(OPTS_DEBUG)  $(SRCS) ./tests/* -o libtopaz_test -lm $(LIBRARIES)
+
+test : $(OBJS)
+	$(CC) -I./include/ $(OPTS_DEBUG) $(OBJS)  -o libtopaz_test -lm $(LIBRARIES)
 
 
 clean: 
-	$(RM) *.o *.a
+	$(RM) $(OBJS) *.a

@@ -3,6 +3,6 @@
 #include <stdint.h>
 
 int main(){
-    ChangeDir((char*)0x0);
+    chdir((char*)0x0);
 
 }

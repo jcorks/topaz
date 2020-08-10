@@ -407,7 +407,7 @@ topazRenderer_t * topaz_renderer_create(
 
 
         assert(api.program.renderer_program_create);
-        assert(api.program.renderer_program_create_preset);
+        assert(api.program.renderer_program_get_preset);
         assert(api.program.renderer_program_destroy);
 
 
@@ -415,11 +415,9 @@ topazRenderer_t * topaz_renderer_create(
         assert(api.twod.renderer_2d_destroy);
         assert(api.twod.renderer_2d_add_objects);
         assert(api.twod.renderer_2d_remove_objects);
-        assert(api.twod.renderer_2d_queue_vertices);
+        assert(api.twod.renderer_2d_queue_objects);
         assert(api.twod.renderer_2d_clear_queue);
-        assert(api.twod.renderer_2d_add_vertices);
-        assert(api.twod.renderer_2d_remove_vertices);
-        assert(api.twod.renderer_2d_get_vertices);
+        assert(api.twod.renderer_2d_set_object_vertices);
         assert(api.twod.renderer_2d_set_object_params);
 
 
