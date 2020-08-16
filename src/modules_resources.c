@@ -63,7 +63,7 @@ void topaz_resources_destroy(topazResources_t * r) {
 }
 
 int topaz_resources_set_path(topazResources_t * r, const topazString_t * path) {
-    return topaz_resources_set_path(r, path);
+    return topaz_filesys_set_path(r->fs, path);
 }
 
 

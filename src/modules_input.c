@@ -142,7 +142,7 @@ struct DeviceState {
                 topazInput_Listener_t * l = &topaz_array_at(d->deletedListeners, topazInput_Listener_t, i);
                 uint32_t totalLen = topaz_array_get_size(d->listeners);
                 for(n = 0; n < totalLen; ++n) {
-                    if (memcmp(l, &topaz_array_at(d->listeners, topazInput_Listener_t, n), sizeof(topazInput_Listener_t) == 0)) {
+                    if (memcmp(l, &topaz_array_at(d->listeners, topazInput_Listener_t, n), sizeof(topazInput_Listener_t)) == 0) {
                         topaz_array_remove(d->listeners, n);
                         break;
                     }

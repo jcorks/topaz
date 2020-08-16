@@ -4,8 +4,15 @@ project(
     version : '0.1.0'
 )
 
+
+# This is the root of all includes.
+# includes are namespaced properly
+
 mainIncdir = include_directories('include')
 
+
+# base source files. 
+# Add these as needed
 src = [
     'src/asset.c',
     'src/assets_image.c',
@@ -47,18 +54,80 @@ src = [
     'src/wbuffer.c',
 ]
 
-
+# Main compiler
 cc = meson.get_compiler('c')
+
+# TODO: fix up please!
 baselibs = cc.find_library('m', required : true)
 
 
+# The configuration is meant to wrangle.
+# The wrangled calls are wrapped in topaz_config__system_backends, 
+# a header included within 'system.c' within topaz.
 
-library(
+conf = configuration_data()
+
+# enumeration of handlers
+handlers = ''
+
+# include directories
+handlerIncludes = ''
+
+# library names
+handlerLibraries = []
+
+# enumeration of sources
+handlerSources = []
+
+# string of internal C code to be appended to the config header
+handlerInternalSource = ''
+
+# string of internal C #includes to be appended to the config header
+handlerInternalInclude = ''
+
+
+subdir('system')
+
+
+
+src += handlerSources
+
+conf.set('config_handler_calls',    handlerInternalSource)
+conf.set('config_handler_includes', handlerInternalInclude)
+
+configure_file(
+    input  : 'config/config-base.c',
+    output : 'topaz_config__system_backends',
+    configuration : conf
+)
+
+
+# build the base library
+lib = library(
     'topaz',
     src,
     include_directories : mainIncdir,
     dependencies : baselibs
 )
 
+
+
+test_sources = [
+    'tests/main.c',
+    'tests/test.c',
+    'tests/test_array.c',
+    'tests/test_entity.c',
+    'tests/test_string.c',
+    'tests/test_table.c'
+]
+executable(
+    'topaz_test',
+    test_sources,
+    include_directories : mainIncdir,
+    dependencies : baselibs,
+    link_with : lib
+
+
+)
 
 

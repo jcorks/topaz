@@ -162,7 +162,7 @@ topazRenderer_2D_t * topaz_renderer_2d_create(topazRenderer_t * t) {
     return out;
 }
 
-topazRenderer_t * topaz_renderer_get_context(topazRenderer_2D_t * t) {
+topazRenderer_t * topaz_renderer_2d_get_context(topazRenderer_2D_t * t) {
     return t->ctx;
 }
 

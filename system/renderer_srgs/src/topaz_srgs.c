@@ -192,7 +192,7 @@ static void srgstopaz_buffer_update(
 ) {
     SRGSTOPAZBuffer * b = bufferObjectData;
     memcpy(((float*)b->buffer) + offset, newData, numElements * sizeof(float));
-    //srgstopaz_buffer_update_2d_object(b);
+    srgstopaz_buffer_update_2d_object(b);
 }
 
 static void srgstopaz_buffer_read(void * bufferObjectData, float * newData, uint32_t offset, uint32_t numElements) {
@@ -223,7 +223,7 @@ static void srgstopaz_light_enable(void * r, int doIt){}
 
 
 /// render 2d
-/*
+
 typedef struct {
     uint32_t objectID;
     uint32_t matrixID;
@@ -323,7 +323,9 @@ void srgstopaz_2d_set_object_vertices(
     uint32_t object, 
     void * b // buffer object bound to buffer
 ) {
-    //    srgstopaz_buffer_update_2d_object(b);
+    SRGSTOPAZ2D * t = d;
+    SRGSTOPAZ2DObject * obj = topaz_bin_fetch(t->objects, object);    
+    srgstopaz_buffer_update_2d_object(b);
 
 }
 
@@ -335,7 +337,7 @@ void (srgstopaz_2d_set_object_params)(
     const topazRenderer_2D_ObjectParams_t *
 );
 
-*/
+
 ///
 
 
@@ -417,7 +419,7 @@ void topaz_system_renderer_srgs__api(topazRendererAPI_t * api) {
 
 
 // update function to re-cut topazRenderer_2D_Vertex_t into srgs vertex stuff
-/*
+
 static void srgstopaz_buffer_update_2d_object(SRGSTOPAZBuffer * b) {
     SRGSTOPAZ2DObject * obj = b->render2dObject;
     uint32_t numVertices = sizeof(topazRenderer_2D_Vertex_t) / sizeof(float);
@@ -456,4 +458,3 @@ static void srgstopaz_buffer_update_2d_object(SRGSTOPAZBuffer * b) {
     }
 }
 
-*/

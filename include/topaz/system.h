@@ -104,7 +104,6 @@ int topaz_system_set_backend(
 /// Returns whether the given backend is available for the given type.
 ///
 int topaz_system_is_backend_available(
-    const topazSystem_t *, 
     const topazString_t * backendType,
     const topazString_t * backendName
 );

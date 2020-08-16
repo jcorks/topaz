@@ -141,7 +141,7 @@ const float * topaz_mesh_get_vertex(
     topazMesh_VertexAttribute attrib, 
     uint32_t index
 ) {
-    topazMesh_t * m = (topazMesh_t *) m; // shhhh its fine
+    topazMesh_t * m = (topazMesh_t *) mSrc; // shhhh its fine
     m->reg[0] = m->reg[1] = m->reg[2] = m->reg[3] = 0.f;
 
     if (!m->v) return m->reg;

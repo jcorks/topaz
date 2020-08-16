@@ -7,23 +7,26 @@ that is required to build with this backend.
 Each directory is in the following format:
 
 [backend_name]_[environment_name]/
-    |-C_INCLUDES   
-    |-C_LIBRARIES
-    |-C_SOURCES
+    |-meson.build 
+    |-compat_test.c [optional]
     |-src/
         |-[files].c/h
         |-backend.h
 
 
-C_LIBRARIES is a text file that contains the linker
-libraries required to compile. C_INCLUDES is a text 
-file that contains the includes required for this
-to compile with the topaz project. [files] is a 
-placeholder for all the sources/headers that 
-make up this backend implementation. C_SOURCES
-shoudl be an enumeration of just the source file names.
+Meson is the build system of choice for Topaz. The meson.build 
+file is meant to handle the logic of adding auxiliary files, libraries,
+include directories, and possible system tests to allow the build 
+system to integrate the implementation into the library/binary.
+
+TODO: full documentation on how to interact with the build 
+      and organize data per directory (Meson interaction 
+      is still in flux)
 
 
+
+
+      
 backend.h will always exist within src and contains a single
 function. This is the public-facing api and it creates a 
 single instance of the backend in question. It is of the 
