@@ -1,0 +1,15 @@
+
+option(
+    'BuildMode', 
+    type : 'combo', 
+    choices : ['Debug', 'Release' ],
+
+    value : 'Debug'
+)
+option(
+    'IncludeTests', 
+    type : 'boolean',
+
+    value : true
+)
+

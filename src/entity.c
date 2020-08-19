@@ -416,7 +416,8 @@ void topaz_entity_detach(topazEntity_t * e) {
 
 
     // Try to find the index of the entity
-    e->api.on_detach(e, e->api.userData);
+    if (e->api.on_detach)
+        e->api.on_detach(e, e->api.userData);
 }
 
 topazEntity_t * topaz_entity_get_parent(const topazEntity_t * e) {

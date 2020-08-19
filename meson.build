@@ -3,7 +3,7 @@ project(
     'c',
     version : '0.1.0'
 )
-
+message('Host OS: ' + host_machine.system())
 
 # This is the root of all includes.
 # includes are namespaced properly
@@ -60,6 +60,20 @@ cc = meson.get_compiler('c')
 # TODO: fix up please!
 baselibs = cc.find_library('m', required : true)
 
+# compile args
+compile_args = []
+if get_option('BuildMode') == 'Debug'
+    if cc.get_argument_syntax() == 'gcc'
+        compile_args += ['-g',  '-Wall']
+    endif
+    if host_machine.system() != 'windows' and host_machine.system().contains('mingw') == false
+        compile_args += ['-fsanitize=address', '-fno-omit-frame-pointer']
+    endif
+endif 
+if get_option('BuildMode') == 'Release'
+    compile_args += ['-O2']
+endif
+
 
 # The configuration is meant to wrangle.
 # The wrangled calls are wrapped in topaz_config__system_backends, 
@@ -102,32 +116,48 @@ configure_file(
 )
 
 
+
+
+outputStr = 'COMPILE ARGS: '
+foreach s : compile_args
+    outputStr += s + ' '
+endforeach
+message(outputStr)
+
+
 # build the base library
 lib = library(
     'topaz',
     src,
     include_directories : mainIncdir,
+    c_args : compile_args,
     dependencies : baselibs
 )
 
 
 
-test_sources = [
-    'tests/main.c',
-    'tests/test.c',
-    'tests/test_array.c',
-    'tests/test_entity.c',
-    'tests/test_string.c',
-    'tests/test_table.c'
-]
-executable(
-    'topaz_test',
-    test_sources,
-    include_directories : mainIncdir,
-    dependencies : baselibs,
-    link_with : lib
+
+if get_option('IncludeTests') == true
+    message('Making output test executable..')
+    test_sources = [
+        'tests/main.c',
+        'tests/test.c',
+        'tests/test_array.c',
+        'tests/test_entity.c',
+        'tests/test_string.c',
+        'tests/test_table.c'
+    ]
 
 
-)
+    #todo replace with link_lib!
+    src += test_sources
+    executable(
+        'topaz_test',
+        src,
+        include_directories : mainIncdir,
+        dependencies : baselibs,
+        c_args : compile_args
+    )
+endif
 
 

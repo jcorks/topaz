@@ -94,17 +94,16 @@ void topaz_system_configure() {
         #ifdef TOPAZDC_DEBUG
             printf("WARNING: topaz_system_configure was already called!");
         #endif
-
-        renderers     = topaz_table_create_hash_topaz_string();
-        inputManagers = topaz_table_create_hash_topaz_string();
-        audioManagers = topaz_table_create_hash_topaz_string();
-        filesystems   = topaz_table_create_hash_topaz_string();
-        times         = topaz_table_create_hash_topaz_string();
-        displays      = topaz_table_create_hash_topaz_string();
-
-        topaz_system_configure_base();
-
+        return;
     }
+    renderers     = topaz_table_create_hash_topaz_string();
+    inputManagers = topaz_table_create_hash_topaz_string();
+    audioManagers = topaz_table_create_hash_topaz_string();
+    filesystems   = topaz_table_create_hash_topaz_string();
+    times         = topaz_table_create_hash_topaz_string();
+    displays      = topaz_table_create_hash_topaz_string();
+
+    topaz_system_configure_base();
 }
 
 

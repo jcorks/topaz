@@ -352,7 +352,7 @@ topazInput_t * topaz_input_create(topaz_t * context, topazInputManager_t * t) {
 
     uint32_t i;
 
-    topazEntity_Attributes_t attribs;
+    topazEntity_Attributes_t attribs = {};
     attribs.on_step = (topaz_entity_attribute_callback) input_ent__step;
     attribs.userData = t;
 

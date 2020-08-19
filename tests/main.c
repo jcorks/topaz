@@ -1,4 +1,5 @@
 #include "test.h"
+#include <topaz/system.h>
 #include <stdio.h>
 
 int test__array_simple();
@@ -14,6 +15,7 @@ int test__entity_simple();
 int test__entity_advanced();
 
 int main() {
+    topaz_system_configure();
     topazTest_t * driver = topaz_test_create();
     
     ////////////////////

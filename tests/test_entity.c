@@ -2,6 +2,7 @@
 #include <topaz/entity.h>
 #include <topaz/topaz.h>
 #include <topaz/component.h>
+#include <topaz/system.h>
 #include <string.h>
 
 typedef struct {
@@ -47,6 +48,7 @@ static void on_draw(topazEntity_t * src, TestEntity * e) {
 
 
 int test__entity_simple() {   
+
     topaz_t * ctx = topaz_context_create_empty();
     TestEntity data;
     memset(&data, 0, sizeof(TestEntity));
