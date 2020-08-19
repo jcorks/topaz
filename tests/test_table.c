@@ -10,13 +10,23 @@ int test__table_simple() {
     topaz_table_insert(table, "Tableeee", "Thing");
     topaz_table_insert(table, "Math", "Subject");
 
+    // Why: Apple was missing!
     if (!topaz_table_entry_exists(table, "Apple")) return 1;
+
+    // Why: Tableeee was missing!
     if (!topaz_table_entry_exists(table, "Tableeee")) return 2;
+
+    // Why: Math was missing!
     if (!topaz_table_entry_exists(table, "Math")) return 3;
 
     
+    // Why: Apple had the incorrect value
     if (strcmp(topaz_table_find(table, "Apple"), "Fruit"))  return 4;
+
+    // Why: Math had the incorrect value
     if (strcmp(topaz_table_find(table, "Math"), "Subject")) return 5;
+
+    // Why: Tableeee had the incorrect value
     if (strcmp(topaz_table_find(table, "Tableeee"), "Thing"))  return 6;
 
 
@@ -34,8 +44,11 @@ int test__table_advanced() {
     }
 
     for(i = 0; i < 100000; ++i) {
-        if (!topaz_table_entry_exists(table, (void*)i)) return 1;
-        if (topaz_table_find(table, (void*)i) != (void*)i) return 2;
+        // Why: Missing i value
+        if (!topaz_table_entry_exists(table, (void*)i)) return 11;
+
+        // Why: Incorrect table value
+        if (topaz_table_find(table, (void*)i) != (void*)i) return 12;
     }
 
 
@@ -48,7 +61,8 @@ int test__table_advanced() {
     for(i = 0; i < 100000; ++i) {
         uintptr_t value = (uintptr_t)topaz_table_find(table, (void*)i);
         if (value && value%3 == 0)    
-            return 3;
+            // Why: all integers that were divisible by 3 were removed
+            return 13;
     }
 
     
@@ -63,19 +77,35 @@ int test__table_advanced() {
     topaz_table_insert(table, TOPAZ_STR_CAST("Tableeee"), "Thing");
     topaz_table_insert(table, TOPAZ_STR_CAST("Math"), "Subject");
 
+    // Why: Apple was missing!
     if (!topaz_table_entry_exists(table, TOPAZ_STR_CAST("Apple"))) return 1;
+
+    // Why: Tableeee was missing!
     if (!topaz_table_entry_exists(table, TOPAZ_STR_CAST("Tableeee"))) return 2;
+
+    // Why: Math was missing!
     if (!topaz_table_entry_exists(table, TOPAZ_STR_CAST("Math"))) return 3;
 
     
+    // Why: Apple had the incorrect value
     if (strcmp(topaz_table_find(table, TOPAZ_STR_CAST("Apple")), "Fruit"))  return 4;
+
+    // Why: Math had the incorrect value
     if (strcmp(topaz_table_find(table, TOPAZ_STR_CAST("Math")), "Subject")) return 5;
+
+    // Why: Tableeee had the incorrect value
     if (strcmp(topaz_table_find(table, TOPAZ_STR_CAST("Tableeee")), "Thing"))  return 6;
 
     topaz_table_remove(table, TOPAZ_STR_CAST("Math"));
     
+
+    // Why: Math was removed
     if (topaz_table_find(table, TOPAZ_STR_CAST("Math"))) return 7;
+
+    // Why: Apple key/val should be unchanged
     if (strcmp(topaz_table_find(table, TOPAZ_STR_CAST("Apple")), "Fruit"))  return 8;
+
+    // Why: Apple key/val should be unchanged
     if (strcmp(topaz_table_find(table, TOPAZ_STR_CAST("Tableeee")), "Thing"))  return 9;
 
 

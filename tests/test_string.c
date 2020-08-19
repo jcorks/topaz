@@ -6,15 +6,18 @@ int test__string_simple() {
     topazString_t * str = topaz_string_create_from_c_str("Hello!");
     
     if (strcmp("Hello!", topaz_string_get_c_str(str))) 
+        // Why: The string is just "Hello!" and apparently its not. Back to the drawing board!
         return 1;
 
     topaz_string_concat_printf(str, "%s", " How are you?");
 
     if (strcmp("Hello! How are you?", topaz_string_get_c_str(str))) 
+        // Why: The concatenation failed.
         return 2;
 
 
     if (strcmp("Hello!", topaz_string_get_c_str(topaz_string_get_substr(str, 0, 6))))
+        // Why: the get_substr operation failed or produced unexpected results
         return 3;
 
     topaz_string_set(str, topaz_string_get_substr(str, 0, 6));
@@ -23,16 +26,19 @@ int test__string_simple() {
 
     if (topaz_string_get_length(str) != strlen("Hello!") ||
         strcmp("Hello!", topaz_string_get_c_str(str)))
+        // Why: the C string representation is not correct
         return 4;
 
     
     
     topaz_string_clear(str);
     if (topaz_string_get_length(str) != 0) 
+        // Why: clear should remove the strings contents entirely.
         return 5;
     topaz_string_concat_printf(str, "%d%d%d%d", 1, 2, 3, 4);
 
     if (strcmp(topaz_string_get_c_str(str), "1234"))
+        // Why: concat_printf should follow C printf rules.
         return 6;
     
     
@@ -196,21 +202,27 @@ int test__string_advanced() {
 
     topazString_t * strcopy = topaz_string_clone(str);
 
-    if (topaz_string_get_length(str) != topaz_string_get_length(strcopy)) return 1;
+    if (topaz_string_get_length(str) != topaz_string_get_length(strcopy) ||
+        !topaz_string_test_eq(str, strcopy)) 
+        // Why: The string should have been cloned entirely
+        return 1;
 
     topaz_string_clear(strcopy);
     topaz_string_concat_printf(strcopy, " \n\t\r");
     
     const topazString_t * iter;
-    for( iter = topaz_string_chain_start  (str, strcopy); 
-        !topaz_string_chain_is_end (str);
+    for( iter = topaz_string_chain_start(str, strcopy); 
+        !topaz_string_chain_is_end(str);
          iter = topaz_string_chain_proceed(str)) {
 
         if (strcmp(topaz_string_get_c_str(iter), words[tokenIter++])) {
-            return 1;
+            // Why: a token was out of order / missing / incorrect
+            return 2;
         }
     }     
-    if (tokenIter != 145) return 2; // premature ending.
+    // Why: the tokenized list ended prematurely!
+    if (tokenIter != 145) return 3; 
+
 
 
     topaz_string_destroy(str);

@@ -64,17 +64,31 @@ int test__entity_simple() {
     attr.userData = &data;
 
     topazEntity_t * e = topaz_entity_create_with_attributes(ctx, &attr);    
+    
+    // Why: the entity was just created and should be valid.
     if (!topaz_entity_is_valid(e)) return 1;
+
+    // Why: new entities do not have any children.
     if (topaz_array_get_size(topaz_entity_get_children(e)) != 0) return 2;
+
+    // Why: new entities always have a TOPAZ_ENULL parent.
     if (topaz_entity_get_parent(e) != TOPAZ_ENULL) return 3;
 
 
+
     topaz_entity_step(e);
+    // Why: on_pre_step() was not called.
     if (data.prestep != 1) return 4;
+
+    // Why: on_step() was not called.
     if (data.step != 1)    return 5;
 
     topaz_entity_draw(e);
+
+    // Why: on_pre_draw() was not called.
     if (data.predraw != 1) return 6;
+
+    // Why: on_draw() was not called.
     if (data.draw != 1)    return 7;
 
     topaz_entity_set_stepping(e, FALSE);
@@ -83,11 +97,19 @@ int test__entity_simple() {
 
 
     topaz_entity_step(e);
+
+    // Why: on_pre_step() should not have been called.
     if (data.prestep != 1) return 4;
+
+    // Why: on_step() should not have been called.
     if (data.step != 1)    return 5;
 
     topaz_entity_draw(e);
+
+    // Why: on_pre_draw() should not have been called.
     if (data.predraw != 1) return 6;
+
+    // Why: on_draw() should not have been called.
     if (data.draw != 1)    return 7;
 
 
@@ -96,15 +118,26 @@ int test__entity_simple() {
     topazEntity_t * child = topaz_entity_create_with_attributes(ctx, &attr);
     topaz_entity_attach(e, child);
 
+    // Why: child's parent should be e.
     if (topaz_entity_get_parent(child) != e) return 8;
+
+    // Why: e should have exactly 1 child (which should be child)
     if (topaz_array_get_size(topaz_entity_get_children(e)) != 1) return 9;
 
     topaz_entity_step(e);
+
+    // Why: set_stepping is still false, on_pre_step() should not have been called
     if (data.prestep != 1) return 8;
+
+    // Why: set_stepping is still false, step() should not have been called
     if (data.step != 1)    return 9;
 
     topaz_entity_draw(e);
+
+    // Why: set_draw is still false, on_pre_draw() should not have been called
     if (data.predraw != 1) return 10;
+
+    // Why: set_draw is still false, on_draw() should not have been called
     if (data.draw != 1)    return 11;
 
 
@@ -113,38 +146,57 @@ int test__entity_simple() {
 
 
     topaz_entity_step(e);
+    // Why: stepping a parent will on_pre_step() its children, meaning on_pre_step() should have been called for both parent and child.
     if (data.prestep != 3) return 12;
+
+    // Why: stepping a parent will step() its children, meaning step() should have been called for both parent and child.
     if (data.step != 3)    return 13;
 
     topaz_entity_draw(e);
+
+    // Why: stepping a parent will draw() its children, meaning on_pre_draw() should have been called for both parent and child.
     if (data.predraw != 3) return 14;
+
+    // Why: stepping a parent will draw() its children, meaning draw() should have been called for both parent and child.
     if (data.draw != 3)    return 15;
 
 
     topaz_entity_position(e)->x = 1;
 
     topaz_entity_step(e);
+    
+    // Why: on_pre_step() was not called for both
     if (data.prestep != 5) return 16;
+
+    // Why: on_step() was not called for both
     if (data.step != 5)    return 17;
 
     topaz_entity_draw(e);
+
+    // Why: on_pre_draw() was not called for both
     if (data.predraw != 5) return 18;
+
+    // Why: on_draw() was not called for both
     if (data.draw != 5)    return 19;
 
     if (topaz_entity_get_global_position(child).x < .9) {
+        // Why: the global position of the child uses the 
+        // parents transform as its local context
         return 20;
     }
 
 
 
     topaz_entity_remove(e);
+
+    // Why: the entity was removed, so the child should be unparented
     if (topaz_entity_get_parent(child) != TOPAZ_ENULL) return 21;
 
 
+
+    // Why: the entity was removed, so is should be invalid.
     if (topaz_entity_is_valid(e)) return 99;    
     topaz_context_destroy(ctx);
-    
-
     return 0;
 }
 
