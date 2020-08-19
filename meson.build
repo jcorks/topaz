@@ -67,7 +67,7 @@ if get_option('BuildMode') == 'Debug'
         compile_args += ['-g',  '-Wall']
     endif
     if host_machine.system() != 'windows' and host_machine.system().contains('mingw') == false
-        compile_args += ['-fsanitize=address', '-fno-omit-frame-pointer']
+        compile_args += ['-fno-omit-frame-pointer']
     endif
 endif 
 if get_option('BuildMode') == 'Release'
@@ -131,6 +131,7 @@ lib = library(
     src,
     include_directories : mainIncdir,
     c_args : compile_args,
+    link_args : compile_args,
     dependencies : baselibs
 )
 
@@ -145,7 +146,8 @@ if get_option('IncludeTests') == true
         'tests/test_array.c',
         'tests/test_entity.c',
         'tests/test_string.c',
-        'tests/test_table.c'
+        'tests/test_table.c',
+        'tests/test_bin.c'
     ]
 
 
@@ -156,7 +158,8 @@ if get_option('IncludeTests') == true
         src,
         include_directories : mainIncdir,
         dependencies : baselibs,
-        c_args : compile_args
+        c_args : compile_args,
+        link_args : compile_args
     )
 endif
 

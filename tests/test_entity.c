@@ -320,6 +320,6 @@ int test__entity_advanced() {
         cdata.detach != 1) 
         return 6;
 
-    return 0;
     topaz_context_destroy(ctx);
+    return 0;
 }

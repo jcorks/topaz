@@ -34,7 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 #include <stdint.h>
-
+typedef struct topazArray_t topazArray_t;
 /*
 
     Bin
@@ -63,7 +63,8 @@ uint32_t topaz_bin_add(topazBin_t *, void *);
 ///
 int topaz_bin_contains(const topazBin_t *, uint32_t);
 
-/// Returns the object matched with the ID tag
+/// Returns the object matched with the ID tag. If none exists
+/// NULL is returned.
 ///
 void * topaz_bin_fetch(const topazBin_t *, uint32_t);
 

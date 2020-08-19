@@ -157,6 +157,12 @@ void topaz_context_destroy(topaz_t * t) {
     }
     topaz_table_iter_destroy(iter);
     topaz_table_destroy(t->params);
+
+    topaz_input_destroy(t->input);
+    topaz_view_manager_destroy(t->viewManager);
+    topaz_resources_destroy(t->resources);
+    topaz_renderer_destroy(t->renderer);
+
     free(t);
         
 }

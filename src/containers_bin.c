@@ -38,7 +38,7 @@ uint32_t topaz_bin_add(topazBin_t * b, void * obj) {
         topaz_array_at(b->alive, void *, id) = obj;
     } else {
         id = topaz_array_get_size(b->alive);
-        topaz_array_push(b->alive, b);
+        topaz_array_push(b->alive, obj);
     }
     return id;
 }

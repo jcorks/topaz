@@ -1,5 +1,7 @@
 #include <topaz/compat.h>
 #include <topaz/backends/renderer.h>
+#include <topaz/containers/bin.h>
+#include <topaz/containers/array.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -21,6 +23,12 @@ struct topazRenderer_t {
 
     
     topazRenderer_Framebuffer_t * fb;
+    topazBin_t * renderer2dList;
+    topazBin_t * bufferList;
+    topazBin_t * framebufferList;
+    topazBin_t * lightList;
+    topazBin_t * programList;
+    topazBin_t * textureList;
 };
 
 
@@ -31,20 +39,25 @@ struct topazRenderer_t {
 struct topazRenderer_Buffer_t {
     topazRenderer_BufferAPI_t * api; 
     uint32_t numElt; // number of elements
+    uint32_t binID;
     void * bufferData;
+    topazRenderer_t * src;
 };
 
 
 topazRenderer_Buffer_t * topaz_renderer_buffer_create(topazRenderer_t * t, float * data, uint32_t numElements) {
     topazRenderer_Buffer_t * b = calloc(1, sizeof(topazRenderer_Buffer_t));
+    b->src = t;
     b->numElt = 0;
     b->api = &(t->api.buffer);
     b->bufferData = b->api->renderer_buffer_create(&t->api, data, numElements);   
+    b->binID = topaz_bin_add(t->bufferList, b);
     return b;
 }
 
 void topaz_renderer_buffer_destroy(topazRenderer_Buffer_t * t) {
     t->api->renderer_buffer_destroy(t->bufferData);
+    topaz_bin_remove(t->src->bufferList, t->binID);
     free(t);
 }
 
@@ -70,7 +83,9 @@ struct topazRenderer_Framebuffer_t {
     int w;
     int h;
     int filterHint;
+    uint32_t binID;
     void * framebufferData;
+    topazRenderer_t * src;
 };
 
 
@@ -80,17 +95,21 @@ struct topazRenderer_Framebuffer_t {
 
 topazRenderer_Framebuffer_t * topaz_renderer_framebuffer_create(topazRenderer_t * t) {
     topazRenderer_Framebuffer_t * out = calloc(1, sizeof(topazRenderer_FramebufferAPI_t));
+    out->src = t;
     out->api = t->api.fb;
     out->w = -1;
     out->h = -1;
     out->filterHint = TRUE;
     out->framebufferData = out->api.renderer_framebuffer_create(&t->api, &out->api);
+    out->binID = topaz_bin_add(t->framebufferList, out);
     return out;
 }
 
 
 void topaz_renderer_framebuffer_destroy(topazRenderer_Framebuffer_t * t) {
     t->api.renderer_framebuffer_destroy(&t->api, t->framebufferData);
+    topaz_bin_remove(t->src->framebufferList, t->binID);
+    free(t);
 }
 
 
@@ -152,6 +171,7 @@ struct topazRenderer_2D_t {
     topazRenderer_2DAPI_t * api;  
     topazRenderer_t * ctx;
     void * data;
+    uint32_t binID;
 };
 
 
@@ -159,6 +179,7 @@ topazRenderer_2D_t * topaz_renderer_2d_create(topazRenderer_t * t) {
     topazRenderer_2D_t * out = calloc(1, sizeof(topazRenderer_2D_t));
     out->api = &(t->api.twod);
     out->data = out->api->renderer_2d_create(&t->api);
+    out->binID = topaz_bin_add(t->renderer2dList, out);
     return out;
 }
 
@@ -168,6 +189,7 @@ topazRenderer_t * topaz_renderer_2d_get_context(topazRenderer_2D_t * t) {
 
 void topaz_renderer_2d_destroy(topazRenderer_2D_t * t) {
     t->api->renderer_2d_destroy(t->data);
+    topaz_bin_remove(t->ctx->renderer2dList, t->binID);
     free(t);
 }
 
@@ -220,6 +242,8 @@ void topaz_renderer_2d_set_object_params(
 struct topazRenderer_Light_t {
     topazRenderer_LightAPI_t * api;      
     void * data;
+    topazRenderer_t * src;
+    uint32_t binID;
 };
 
 
@@ -227,11 +251,14 @@ topazRenderer_Light_t * topaz_renderer_light_create(topazRenderer_t * t, topazRe
     topazRenderer_Light_t * out = calloc(1, sizeof(topazRenderer_Light_t));
     out->api = &(t->api.light);
     out->data = out->api->renderer_light_create(&t->api, type);
+    out->src = t;
+    out->binID = topaz_bin_add(t->lightList, out);
     return out;
 }
 
 void topaz_renderer_light_destroy(topazRenderer_Light_t * t) {
     t->api->renderer_light_destroy(t->data);
+    topaz_bin_remove(t->src->lightList, t->binID);
     free(t);
 }
 
@@ -253,6 +280,8 @@ void topaz_renderer_light_enable(topazRenderer_Light_t * t, int doIt) {
 struct topazRenderer_Program_t {
     topazRenderer_ProgramAPI_t * api;
     void * data;
+    topazRenderer_t * src;
+    uint32_t binID;
 };
 
 topazRenderer_Program_t * topaz_renderer_program_create(
@@ -264,6 +293,7 @@ topazRenderer_Program_t * topaz_renderer_program_create(
     topazRenderer_Program_t * out = calloc(1, sizeof(topazRenderer_ProgramAPI_t));
     out->api = &(t->api.program);
     out->data = out->api->renderer_program_create(&t->api, vertexSrc, fragSrc, log);
+    out->binID = topaz_bin_add(t->programList, out);
     return out;
 }
 
@@ -285,6 +315,7 @@ topazRenderer_Program_t * topaz_renderer_program_get_preset(
 
 void topaz_renderer_program_destroy(topazRenderer_Program_t * t) {
     t->api->renderer_program_destroy(t->data);
+    topaz_bin_remove(t->src->programList, t->binID);
     free(t);
 }
 
@@ -303,6 +334,8 @@ struct  topazRenderer_Texture_t {
     int w;
     int h;
     void * data;
+    topazRenderer_t * src;
+    uint32_t binID;
 };
 
 topazRenderer_Texture_t * topaz_renderer_texture_create(topazRenderer_t * t, int w, int h, const uint8_t * rgbaTextureData) {
@@ -311,11 +344,13 @@ topazRenderer_Texture_t * topaz_renderer_texture_create(topazRenderer_t * t, int
     out->h = h;
     out->api = &(t->api.texture);
     out->data = out->api->renderer_texture_create(&t->api, w, h, rgbaTextureData);
+    out->binID = topaz_bin_add(t->textureList, out);
     return out;
 }
 
 void topaz_renderer_texture_destroy(topazRenderer_Texture_t * t) {
     t->api->renderer_texture_destroy(t->data);
+    topaz_bin_remove(t->src->textureList, t->binID);
     free(t);
 }
 
@@ -354,7 +389,74 @@ void topaz_renderer_destroy(topazRenderer_t * t) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazBackend_t pointer cannot be NULL.");
     #endif
+
+    topazArray_t * w;
+    void ** iter;
+    uint32_t len;
+    uint32_t i;
+
+    w = topaz_bin_get_all(t->renderer2dList);
+    len = topaz_array_get_size(w);
+    iter = (void**)topaz_array_get_data(w);
+    for(i = 0; i < len; ++i) {
+        topaz_renderer_2d_destroy(iter[i]);
+    }
+    topaz_array_destroy(w);
+    topaz_bin_destroy(t->renderer2dList);
+
+
+    w = topaz_bin_get_all(t->bufferList);
+    len = topaz_array_get_size(w);
+    iter = (void**)topaz_array_get_data(w);
+    for(i = 0; i < len; ++i) {
+        topaz_renderer_buffer_destroy(iter[i]);
+    }
+    topaz_array_destroy(w);
+    topaz_bin_destroy(t->bufferList);
+
+
+    w = topaz_bin_get_all(t->framebufferList);
+    len = topaz_array_get_size(w);
+    iter = (void**)topaz_array_get_data(w);
+    for(i = 0; i < len; ++i) {
+        topaz_renderer_framebuffer_destroy(iter[i]);
+    }
+    topaz_array_destroy(w);
+    topaz_bin_destroy(t->framebufferList);
+
+
+
+    w = topaz_bin_get_all(t->lightList);
+    len = topaz_array_get_size(w);
+    iter = (void**)topaz_array_get_data(w);
+    for(i = 0; i < len; ++i) {
+        topaz_renderer_light_destroy(iter[i]);
+    }
+    topaz_array_destroy(w);
+    topaz_bin_destroy(t->lightList);
+
+
+
+    w = topaz_bin_get_all(t->programList);
+    len = topaz_array_get_size(w);
+    iter = (void**)topaz_array_get_data(w);
+    for(i = 0; i < len; ++i) {
+        topaz_renderer_program_destroy(iter[i]);
+    }
+    topaz_bin_destroy(t->programList);
+
+
+    w = topaz_bin_get_all(t->textureList);
+    len = topaz_array_get_size(w);
+    iter = (void**)topaz_array_get_data(w);
+    for(i = 0; i < len; ++i) {
+        topaz_renderer_texture_destroy(iter[i]);
+    }
+    topaz_array_destroy(w);
+    topaz_bin_destroy(t->textureList);
+
     t->api.core.renderer_destroy(&t->api.core);
+    free(t);
 }
 
 
@@ -463,9 +565,12 @@ topazRenderer_t * topaz_renderer_create(
     out->api = api;
     out->backend = b;
     out->api.core.renderer_create(&out->api.core);
-
-
-
+    out->renderer2dList = topaz_bin_create();
+    out->bufferList = topaz_bin_create();
+    out->textureList = topaz_bin_create();  
+    out->programList = topaz_bin_create();
+    out->lightList = topaz_bin_create();
+    out->framebufferList = topaz_bin_create();
     return out;
 }
 

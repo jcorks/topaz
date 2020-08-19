@@ -56,7 +56,7 @@ topazViewManager_t * topaz_view_manager_create(topaz_t * t) {
 }
 
 void topaz_view_manager_destroy(topazViewManager_t * t) {
-    if (!t->str) {
+    if (t->str) {
         topaz_string_destroy(t->str);
     }
     topaz_array_destroy(t->views);
