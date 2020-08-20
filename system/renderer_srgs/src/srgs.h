@@ -56,6 +56,7 @@
 */
 
 
+typedef uint32_t srgs_id_t;
 
 
 
@@ -79,7 +80,6 @@ typedef enum {
     // Depth information will still be processed in this case.
     srgs__object_render_mode__depth_only
 } srgs__object_render_mode;
-
 
 
 
@@ -173,7 +173,6 @@ typedef struct srgs_t srgs_t;
 // If you wish, custom allocator functions may 
 // be specified.
 srgs_t * srgs_create(
-    uint32_t startW, uint32_t startH,
 
     // can be NULL. In that case, malloc() is used.
     void * (*allocatorFunction)  (size_t),
@@ -191,17 +190,6 @@ srgs_t * srgs_create(
 void srgs_destroy(srgs_t *);
 
 
-// Returns the texture ID for the framebuffer.
-// Always defined and never changes across the context's lifetime.
-// Can be used as a normal texture.
-uint32_t srgs_get_framebuffer_texture(const srgs_t *);
-
-// Returns the texture ID for the depthbuffer.
-// Always defined and never changes across the context's lifetime.
-// Can be used as a normal texture.
-// For the depth buffer, only the red component is used.
-// This means that the depth buffer bitspace is only one byte.
-uint32_t srgs_get_depthbuffer_texture(const srgs_t *);
 
 
 // Resets the depth buffer. This is an alias for 
@@ -218,7 +206,17 @@ void srgs_clear_color(srgs_t *);
 // Renders all given renderlists. The results are stored within the 
 // framebuffer and the depthbuffer is used for depth processing in 
 // its current state.
-srgs__render_error srgs_render(srgs_t *, uint32_t count, uint32_t * renderListIDs);
+// For the depth buffer, only the red component is used.
+// This means that the depth buffer bitspace is only one byte.
+srgs__render_error srgs_render(
+    srgs_t *, 
+
+    srgs_id_t framebuffer,
+    srgs_id_t depthbuffer,
+
+    uint32_t count, 
+    srgs_id_t * renderListIDs
+);
 
 
 
@@ -240,7 +238,7 @@ srgs__render_error srgs_render(srgs_t *, uint32_t count, uint32_t * renderListID
 // w and h are the height and width in texels 
 // that the texture should start at in size.
 // The ID for the texture is use.
-uint32_t srgs_texture_create(srgs_t *, uint32_t w, uint32_t h);
+srgs_id_t srgs_texture_create(srgs_t *, uint32_t w, uint32_t h);
 
 // Returns whether the given ID actually points 
 // to a valid texture. If it is valid, 1 is returned.
@@ -249,15 +247,15 @@ uint32_t srgs_texture_create(srgs_t *, uint32_t w, uint32_t h);
 // be relied on too heavily elsewise since it incurs a noteable 
 // runtime cost for no programmatic benefit unless 
 // untrusted sources are at play.
-int srgs_texture_verify(srgs_t *, uint32_t id);
+int srgs_texture_verify(srgs_t *, srgs_id_t id);
 
 // Destroys and frees all resources associated with the texture
 // handle.
-void srgs_texture_destroy(srgs_t *, uint32_t id);
+void srgs_texture_destroy(srgs_t *, srgs_id_t id);
 
 // Resets the texture to a gray state. Each component of the
 // texture will match the given color value.
-void srgs_texture_blank(srgs_t *, uint32_t, uint8_t component);
+void srgs_texture_blank(srgs_t *, srgs_id_t, uint8_t component);
 
 
 // Updates the texture.
@@ -268,7 +266,7 @@ void srgs_texture_blank(srgs_t *, uint32_t, uint8_t component);
 // w/hSrc is the width and height of the incoming texture.
 void srgs_texture_update(
     srgs_t *, 
-    uint32_t ID,
+    srgs_id_t ID,
 
     const uint8_t * src, 
     uint32_t xDest, uint32_t yDest, 
@@ -278,17 +276,17 @@ void srgs_texture_update(
 
 // Resizes the texture to the given width and height. The 
 // contents of the texture are undefined after this operation.
-void srgs_texture_resize(srgs_t *, uint32_t id, uint32_t w, uint32_t h);
+void srgs_texture_resize(srgs_t *, srgs_id_t id, uint32_t w, uint32_t h);
 
 // Retrieves a pointer to the raw texture data. The texture data is 
 // always in RGBA format where each component is one byte of information.
-const uint8_t * srgs_texture_get_data(const srgs_t *, uint32_t);
+const uint8_t * srgs_texture_get_data(const srgs_t *, srgs_id_t);
 
 // Returns the width of the texture in texels.
-uint32_t srgs_texture_get_width(const srgs_t *, uint32_t);
+uint32_t srgs_texture_get_width(const srgs_t *, srgs_id_t);
 
 // Returns the height of the texture in texels.
-uint32_t srgs_texture_get_height(const srgs_t *, uint32_t);
+uint32_t srgs_texture_get_height(const srgs_t *, srgs_id_t);
 
 
 
@@ -319,7 +317,7 @@ typedef struct {
 
 // Creates a new matrix and returns its ID.
 // Every new matrix is set to the identity matrix.
-uint32_t srgs_matrix_create(srgs_t *);
+srgs_id_t srgs_matrix_create(srgs_t *);
 
 
 // Returns whether the given ID actually points 
@@ -329,17 +327,17 @@ uint32_t srgs_matrix_create(srgs_t *);
 // be relied on too heavily elsewise since it incurs a noteable 
 // runtime cost for no programmatic benefit unless 
 // untrusted sources are at play.
-int srgs_matrix_verify(srgs_t *, uint32_t id);
+int srgs_matrix_verify(srgs_t *, srgs_id_t id);
 
 // Frees all data associated with a matrix.
-void srgs_matrix_destroy(srgs_t *, uint32_t id);
+void srgs_matrix_destroy(srgs_t *, srgs_id_t id);
 
 
 // Sets the data for a matrix.
-void srgs_matrix_set(srgs_t *, uint32_t id, srgs_matrix_t *);
+void srgs_matrix_set(srgs_t *, srgs_id_t id, srgs_matrix_t *);
 
 // Gets the raw data for a matrix.
-const srgs_matrix_t * srgs_matrix_get(const srgs_t *, uint32_t id);
+const srgs_matrix_t * srgs_matrix_get(const srgs_t *, srgs_id_t id);
 
 
 
@@ -363,7 +361,7 @@ const srgs_matrix_t * srgs_matrix_get(const srgs_t *, uint32_t id);
     
 */
 
-uint32_t srgs_object_create(srgs_t *);
+srgs_id_t srgs_object_create(srgs_t *);
 
 // Returns whether the given ID actually points 
 // to a valid object. If it is valid, 1 is returned.
@@ -372,24 +370,24 @@ uint32_t srgs_object_create(srgs_t *);
 // be relied on too heavily elsewise since it incurs a noteable 
 // runtime cost for no programmatic benefit unless 
 // untrusted sources are at play.
-int srgs_object_verify(srgs_t *, uint32_t id);
+int srgs_object_verify(srgs_t *, srgs_id_t id);
 
 // Creates a new object as a clone of an existing one.
-uint32_t srgs_object_clone(srgs_t *, uint32_t id);
+srgs_id_t srgs_object_clone(srgs_t *, srgs_id_t id);
 
 // Frees an object instance.
-void srgs_object_destroy(srgs_t *, uint32_t id);
+void srgs_object_destroy(srgs_t *, srgs_id_t id);
 
 // Sets the vertex count for the object.
 // Once set, defining and updating verices will 
 // assume this is the maximum number of vertices for the object.
-void srgs_object_set_vertex_count(srgs_t *, uint32_t id, uint32_t vertexCount);
+void srgs_object_set_vertex_count(srgs_t *, srgs_id_t id, uint32_t vertexCount);
 
 // Redefines the vertex buffer in the given channel.
 // Assumes the incoming buffer matches in size to the actual buffer.
 void srgs_object_define_vertices(
     srgs_t *, 
-    uint32_t ID, 
+    srgs_id_t ID, 
     srgs__object_vertex_channel, 
     float *
 );
@@ -397,7 +395,7 @@ void srgs_object_define_vertices(
 // Updates the given object's vertex buffer channel
 void srgs_object_update_vertices(
     srgs_t *, 
-    uint32_t ID, 
+    srgs_id_t ID, 
     srgs__object_vertex_channel, 
     uint32_t fromVertexIndex, 
     uint32_t toVertexIndex, 
@@ -430,36 +428,36 @@ const float * srgs_object_get_vertices(
 // are the only primitive.
 void srgs_object_define_indices(
     srgs_t *, 
-    uint32_t ID, 
+    srgs_id_t ID, 
     uint32_t count, 
     uint32_t * indices
 );
 
 // Sets the render mode for the object.
 // See srgs__object_render_mode
-void srgs_object_set_render_mode(srgs_t *, uint32_t ID, srgs__object_render_mode);
+void srgs_object_set_render_mode(srgs_t *, srgs_id_t ID, srgs__object_render_mode);
 
 // Sets the depth mode/test for the object.
 // See srgs__object_depth_mode
-void srgs_object_set_depth_mode(srgs_t *, uint32_t ID, srgs__object_depth_mode);
+void srgs_object_set_depth_mode(srgs_t *, srgs_id_t ID, srgs__object_depth_mode);
 
 // Sets the texture to be used with the object.
-void srgs_object_set_texture(srgs_t *, uint32_t ID, uint32_t);
+void srgs_object_set_texture(srgs_t *, srgs_id_t ID, srgs_id_t);
 
 // Sets the transform matrix to be used with this object.
-void srgs_object_set_transform(srgs_t *, uint32_t ID, uint32_t);
+void srgs_object_set_transform(srgs_t *, srgs_id_t ID, srgs_id_t);
 
 
 // Retrieves parameters for the object.
 // any unneeded attribute can be set NULL and is ignored.
 void srgs_object_get_parameters(
     const srgs_t *,
-    uint32_t ID,
+    srgs_id_t ID,
     
     srgs__object_render_mode *,
     srgs__object_depth_mode *,
-    uint32_t * matrixID,
-    uint32_t * textureID,
+    srgs_id_t * matrixID,
+    srgs_id_t * textureID,
     uint32_t * vertexCount
 );
 
@@ -478,7 +476,7 @@ void srgs_object_get_parameters(
 */ 
 
 
-uint32_t srgs_renderlist_create(srgs_t *);
+srgs_id_t srgs_renderlist_create(srgs_t *);
 
 // Returns whether the given ID actually points 
 // to a valid renderlist. If it is valid, 1 is returned.
@@ -487,33 +485,33 @@ uint32_t srgs_renderlist_create(srgs_t *);
 // be relied on too heavily elsewise since it incurs a noteable 
 // runtime cost for no programmatic benefit unless 
 // untrusted sources are at play.
-int srgs_renderlist_verify(srgs_t *, uint32_t);
+int srgs_renderlist_verify(srgs_t *, srgs_id_t);
 
 
 // Destroys and frees a renderlist instance.
-void srgs_renderlist_destroy(srgs_t *, uint32_t);
+void srgs_renderlist_destroy(srgs_t *, srgs_id_t);
 
 // Sets the viewing transform for objects that it renders.
 // The transforms are applied in this order:
 //
 // projectionTransform * viewTransform * objectTransform;
 //
-void srgs_renderlist_set_view_transform(srgs_t *, uint32_t, uint32_t);
+void srgs_renderlist_set_view_transform(srgs_t *, srgs_id_t, srgs_id_t);
 
 // Sets the projection transform for objects that it renders.
 // The transforms are applied in this order:
 //
 // projectionTransform * viewTransform * objectTransform;
 //
-void srgs_renderlist_set_projection_transform(srgs_t *, uint32_t, uint32_t);
+void srgs_renderlist_set_projection_transform(srgs_t *, srgs_id_t, srgs_id_t);
 
 
 // Sets the objects that this renderlist contains.
 void srgs_renderlist_set_objects(
     srgs_t *, 
-    uint32_t list, 
+    srgs_id_t list, 
     uint32_t count, 
-    uint32_t * objectIDs
+    srgs_id_t * objectIDs
 );
 
 

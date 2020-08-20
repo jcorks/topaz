@@ -61,7 +61,7 @@ static void * srgstopaz_texture_create(
     int w, int h, const uint8_t * rgbaTextureData
 ) {
     SRGSTOPAZTexture * out = malloc(sizeof(SRGSTOPAZTexture));
-    out->ctx = r->implementationData;
+    out->ctx = ((SRGSTOPAZCore*)r->implementationData)->ctx;
     out->handle = srgs_texture_create(out->ctx, w, h);
     out->w = w;
     out->h = h;
@@ -164,7 +164,7 @@ typedef struct {
 
 /// in the case that a buffer is atttached to a 2d object, 
 /// the 2d object's vertices will need to be updated as well
-//static void srgstopaz_buffer_update_2d_object(SRGSTOPAZBuffer * b);
+static void srgstopaz_buffer_update_2d_object(SRGSTOPAZBuffer * b);
 
 
 
@@ -225,15 +225,16 @@ static void srgstopaz_light_enable(void * r, int doIt){}
 /// render 2d
 
 typedef struct {
-    uint32_t objectID;
-    uint32_t matrixID;
-    SRGSTOPAZBuffer * vertices; // 2-way relationship: the buffer is away of the object as well.
+    srgs_id_t objectID;
+    srgs_id_t matrixID;
+    SRGSTOPAZBuffer * vertices; // 2-way relationship: the buffer is aware of the object as well.
     srgs_t * ctx;
+    SRGSTOPAZTexture tex;
 } SRGSTOPAZ2DObject;
 
 typedef struct {
     srgs_t * ctx;
-    uint32_t renderlistID;
+    srgs_id_t renderlistID;
     topazBin_t * objects;
     topazArray_t * queue;
 } SRGSTOPAZ2D;
@@ -261,10 +262,10 @@ static void remove_object(SRGSTOPAZ2DObject * o) {
 
 
 static void * srgstopaz_2d_create (topazRendererAPI_t * r) {
-    SRGSTOPAZ2D * out = malloc(sizeof(SRGSTOPAZ2D));
+    SRGSTOPAZ2D * out = calloc(1, sizeof(SRGSTOPAZ2D));
     out->objects  = topaz_bin_create();
     out->queue    = topaz_array_create(sizeof(uint32_t));
-    out->ctx = r->implementationData;
+    out->ctx = ((SRGSTOPAZCore*)r->implementationData)->ctx;
     out->renderlistID = srgs_renderlist_create(out->ctx);
     return out;
 }
@@ -318,27 +319,214 @@ void srgstopaz_2d_clear_queue(void * d) {
 
 
 
-void srgstopaz_2d_set_object_vertices(
+static void srgstopaz_2d_set_object_vertices(
     void * d, 
     uint32_t object, 
     void * b // buffer object bound to buffer
 ) {
     SRGSTOPAZ2D * t = d;
     SRGSTOPAZ2DObject * obj = topaz_bin_fetch(t->objects, object);    
+    SRGSTOPAZBuffer * buf = b;
+    if (obj->vertices)
+        obj->vertices->render2dObject = NULL;
+    obj->vertices = buf;
+    buf->render2dObject = obj;
     srgstopaz_buffer_update_2d_object(b);
-
 }
 
 
 
-void (srgstopaz_2d_set_object_params)(
-    void *, 
+static void srgstopaz_2d_set_object_transform(
+    void * d, 
     uint32_t object, 
-    const topazRenderer_2D_ObjectParams_t *
-);
+    const topazMatrix_t * params
+) {
+    SRGSTOPAZ2D * t = d;
+    SRGSTOPAZ2DObject * obj = topaz_bin_fetch(t->objects, object);    
+    srgs_matrix_set(obj->ctx, obj->matrixID, (srgs_matrix_t*)params);
+}
+
+
+static void srgstopaz_2d_set_object_texture(
+    void * d,
+    uint32_t object,
+    void * tex
+) {
+    SRGSTOPAZ2D * t = d;
+    SRGSTOPAZ2DObject * obj = topaz_bin_fetch(t->objects, object);    
+    obj->tex = *(SRGSTOPAZTexture*)tex;
+}
 
 
 ///
+
+
+
+
+
+
+/// framebuffer
+///
+
+// to increase speed, the resolution is 1/3rd.
+// it isnt good!
+typedef struct {
+    uint32_t w;
+    uint32_t h;
+    srgs_id_t framebuffer;
+    srgs_id_t depthbuffer;
+    srgs_t * ctx;
+    uint8_t * outputRaw;
+} SRGSTOPAZFramebuffer;
+
+
+
+static void * srgstopaz_framebuffer_create(
+    topazRendererAPI_t * r, 
+    topazRenderer_FramebufferAPI_t * api
+) {
+    SRGSTOPAZFramebuffer * out = calloc(1, sizeof(SRGSTOPAZFramebuffer));
+    out->w = 640;
+    out->h = 480;
+    out->ctx = ((SRGSTOPAZCore*)r->implementationData)->ctx;;
+    out->framebuffer = srgs_texture_create(out->ctx, out->w/3, out->h/3);
+    out->depthbuffer = srgs_texture_create(out->ctx, out->w/3, out->h/3);
+    out->outputRaw = NULL;
+    return out;
+}
+static void   srgstopaz_framebuffer_destroy (void * fbSrc) {
+    SRGSTOPAZFramebuffer * fb = fbSrc;
+    srgs_texture_destroy(fb->ctx, fb->framebuffer);
+    srgs_texture_destroy(fb->ctx, fb->depthbuffer);
+}
+
+
+static int      srgstopaz_framebuffer_resize(void * fbSrc, int w, int h) {
+    SRGSTOPAZFramebuffer * fb = fbSrc;
+    fb->w = w;
+    fb->h = h;
+    srgs_texture_resize(fb->ctx, fb->framebuffer, fb->w/3, fb->h/3);
+    srgs_texture_resize(fb->ctx, fb->depthbuffer, fb->w/3, fb->h/3);
+    free(fb->outputRaw);
+    fb->outputRaw = malloc(fb->w*fb->h*4);
+    return TRUE;
+}
+
+static void srgstopaz_fb_update(void * fbSrc) {
+    SRGSTOPAZFramebuffer * fb = fbSrc;
+    uint32_t x, y;
+    const uint32_t * internalRaw = (uint32_t*)srgs_texture_get_data(fbSrc, fb->framebuffer);
+    uint32_t * outputRaw_r0;
+    uint32_t * outputRaw_r1;
+    uint32_t * outputRaw_r2;
+
+    for(y = 0; y < fb->h/3; ++y) {
+        outputRaw_r0 = ((uint32_t*)fb->outputRaw) + fb->w*(3*y);
+        outputRaw_r1 = ((uint32_t*)fb->outputRaw) + fb->w*(3*y+1);
+        outputRaw_r2 = ((uint32_t*)fb->outputRaw) + fb->w*(3*y+2);
+
+        for(x = 0; x < fb->w/3; ++x) {
+            *outputRaw_r0 = *internalRaw; outputRaw_r0++;
+            *outputRaw_r1 = *internalRaw; outputRaw_r1++;
+            *outputRaw_r2 = *internalRaw; outputRaw_r2++;
+
+            *outputRaw_r0 = *internalRaw; outputRaw_r0++;
+            *outputRaw_r1 = *internalRaw; outputRaw_r1++;
+            *outputRaw_r2 = *internalRaw; outputRaw_r2++;
+
+            *outputRaw_r0 = *internalRaw; outputRaw_r0++;
+            *outputRaw_r1 = *internalRaw; outputRaw_r1++;
+            *outputRaw_r2 = *internalRaw; outputRaw_r2++;
+
+            internalRaw++;
+        }
+
+    }
+}
+
+static void *   srgstopaz_framebuffer_get_handle(void * fbSrc) {
+    SRGSTOPAZFramebuffer * fb = fbSrc;
+    return fb->outputRaw;
+}
+static int      srgstopaz_framebuffer_get_raw_data(void * fbSrc, uint8_t * output) {
+    SRGSTOPAZFramebuffer * fb = fbSrc;
+    memcpy(output, fb->outputRaw, fb->w*fb->w*4);
+    return TRUE;
+}
+static void     srgstopaz_framebuffer_set_filtered_hint(void * fbSrc, int hint) {
+    return;
+}
+static topazRenderer_Framebuffer_Handle srgstopaz_framebuffer_get_handle_type(void * fbSrc) {
+    return topazRenderer_Framebuffer_Handle_RGBA_PixelArray;
+}
+
+
+////
+
+
+
+
+
+
+
+
+
+
+/// core 
+///
+
+
+
+static void srgstopaz_create (topazRenderer_CoreAPI_t * api) {
+    SRGSTOPAZCore * core = calloc(1, sizeof(SRGSTOPAZCore*));
+    core->ctx = srgs_create(NULL, NULL, NULL);
+    api->implementationData = calloc(1, sizeof(SRGSTOPAZCore));
+    
+}
+static void srgstopaz_destroy (topazRenderer_CoreAPI_t * api) {
+    SRGSTOPAZCore * core = api->implementationData;
+    srgs_destroy(core->api);
+    free(core);
+}
+
+
+
+
+void srgstopaz_draw_2d(
+    topazRenderer_CoreAPI_t * api, 
+    void * twod, 
+    const topazRenderer_2D_Context_t * ctx, 
+    const topazRenderer_ProcessAttribs_t * attribs) {
+
+
+    SRGSTOPAZCore * core = api->implementationData;
+    SRGSTOPAZ2D * twod = d;
+
+
+}
+
+
+void srgstopaz_draw_3d(topazRenderer_CoreAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *);
+void srgstopaz_set_3d_viewing_matrix(topazRenderer_CoreAPI_t *, const topazRenderer_Buffer_t *);
+void srgstopaz_set_3d_projection_matrix(topazRenderer_CoreAPI_t *, const topazRenderer_Buffer_t *);
+
+
+void srgstopaz_clear_layer(topazRenderer_CoreAPI_t *, topazRenderer_DataLayer);
+
+topazRenderer_Parameters_t srgstopaz_get_parameters(topazRenderer_CoreAPI_t *);
+
+
+void srgstopaz_sync(topazRenderer_CoreAPI_t *);
+void srgstopaz_attach_target(topazRenderer_CoreAPI_t *, topazRenderer_Framebuffer_t *);
+const topazArray_t *  srgstopaz_get_supported_framebuffers(topazRenderer_CoreAPI_t *);
+
+
+
+
+///
+
+
+
 
 
 
@@ -390,6 +578,10 @@ topazBackend_t * topaz_system_renderer_srgs__backend() {
     );
 }
 
+
+
+
+
 void topaz_system_renderer_srgs__api(topazRendererAPI_t * api) {
     
     api->texture.renderer_texture_create = srgstopaz_texture_create;
@@ -411,6 +603,27 @@ void topaz_system_renderer_srgs__api(topazRendererAPI_t * api) {
     api->light.renderer_light_update_attribs = srgstopaz_light_update_attribs;
     api->light.renderer_light_enable = srgstopaz_light_enable;
     
+    api->twod.renderer_2d_create = srgstopaz_2d_create;
+    api->twod.renderer_2d_destroy =srgstopaz_2d_destroy;
+    api->twod.renderer_2d_add_objects = srgstopaz_2d_add_objects;
+    api->twod.renderer_2d_remove_objects = srgstopaz_2d_remove_objects;
+    api->twod.renderer_2d_queue_objects = srgstopaz_2d_queue_objects;
+    api->twod.renderer_2d_clear_queue = srgstopaz_2d_clear_queue;
+    api->twod.renderer_2d_set_object_vertices = srgstopaz_2d_set_object_vertices;
+    api->twod.renderer_2d_set_object_transform = srgstopaz_2d_set_object_transform;
+    api->twod.renderer_2d_set_object_texture = srgstopaz_2d_set_object_texture;
+
+
+    api->fb.renderer_framebuffer_create = srgstopaz_framebuffer_create;
+    api->fb.renderer_framebuffer_destroy = srgstopaz_framebuffer_destroy;
+    api->fb.renderer_framebuffer_resize = srgstopaz_framebuffer_resize;
+    api->fb.renderer_framebuffer_get_handle = srgstopaz_framebuffer_get_handle;
+    api->fb.renderer_framebuffer_get_raw_data = srgstopaz_framebuffer_get_raw_data;
+    api->fb.renderer_framebuffer_set_filtered_hint = srgstopaz_framebuffer_set_filtered_hint;
+    api->fb.renderer_framebuffer_get_handle_type = srgstopaz_framebuffer_get_handle_type;
+
+
+
 }
 
 

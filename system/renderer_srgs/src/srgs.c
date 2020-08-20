@@ -134,8 +134,6 @@ struct srgs_t {
     srgs_id_table_t * renderLists;
     srgs_id_table_t * matrices;
 
-    uint32_t framebufferID;
-    uint32_t depthbufferID;
 
 };
 
@@ -152,8 +150,6 @@ struct srgs_t {
 
 
 srgs_t * srgs_create(
-    uint32_t startW, uint32_t startH,
-
     // can be NULL. In that case, malloc() is used.
     void * (*allocatorFunction)  (size_t),
 
@@ -203,11 +199,7 @@ srgs_t * srgs_create(
     );
 
 
-    // next should always be the framebuffer
-    out->framebufferID = srgs_texture_create(out, startW, startW);
 
-    // next should be the depthbuffer
-    out->depthbufferID = srgs_texture_create(out, startW, startW);
 
 
     // matrix id 0 is always identity.
@@ -217,13 +209,7 @@ srgs_t * srgs_create(
 }
 
 
-uint32_t srgs_get_framebuffer_texture(const srgs_t * t) {
-    return t->framebufferID;
-}
 
-uint32_t srgs_get_depthbuffer_texture(const srgs_t * t) {
-    return t->depthbufferID;
-}
 
 void srgs_destroy(srgs_t * s) {
     uint32_t i; 
@@ -262,14 +248,6 @@ void srgs_destroy(srgs_t * s) {
 
 
 
-
-void srgs_clear_depth(srgs_t * s) {
-    srgs_texture_blank(s, s->depthbufferID, 0xff);
-}
-
-void srgs_clear_color(srgs_t * s) {
-    srgs_texture_blank(s, s->framebufferID, 0x00);
-}
 
 
 
@@ -1821,10 +1799,10 @@ static void srgs_render__renderlist(
 
 
 
-srgs__render_error srgs_render(srgs_t * s, uint32_t count, uint32_t * renderListIDs) {
+srgs__render_error srgs_render(srgs_t * s, srgs_id_t fb, srgs_id_t db, uint32_t count, uint32_t * renderListIDs) {
     uint32_t i;
-    srgs_texture_t * framebuffer = id_table_fetch(s->textures, srgs_texture_t, s->framebufferID);
-    srgs_texture_t * depthbuffer = id_table_fetch(s->textures, srgs_texture_t, s->depthbufferID);
+    srgs_texture_t * framebuffer = id_table_fetch(s->textures, srgs_texture_t, fb);
+    srgs_texture_t * depthbuffer = id_table_fetch(s->textures, srgs_texture_t, db);
 
 
     if (framebuffer->w != depthbuffer->w ||

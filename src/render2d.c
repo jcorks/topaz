@@ -49,7 +49,7 @@ struct topazRender2D_t {
     topazRenderer_2D_t * renderer;
     topazArray_t * vertexCopy;
     
-    topazRenderer_2D_ObjectParams_t params;
+
 };
 
 
@@ -57,22 +57,19 @@ static void topaz_render2d_update_transform(topazSpatial_t * sp, topazRender2D_t
     if (!r->absolute) {
         topazMatrix_t m = *topaz_spatial_get_global_transform(sp);
         topaz_matrix_reverse_majority(&m);
-        r->params.transform = m;
-
-        topaz_renderer_2d_set_object_params(
+        topaz_renderer_2d_set_object_transform(
             r->renderer,
             r->objectID,
-            &r->params
+            &m
         );
     } 
 }
 
 void topaz_render2d_set_texture(topazRender2D_t * r, topazRenderer_Texture_t * t) {
-    r->params.texture = t;
-    topaz_renderer_2d_set_object_params(
+    topaz_renderer_2d_set_object_texture(
         r->renderer,
         r->objectID,
-        &r->params
+        t
     );
 }
 
@@ -139,11 +136,10 @@ void topaz_render2d_set_absolute(topazRender2D_t * t, int a) {
     // reset transform to be identity
     if (a) {
         topazMatrix_t m; topaz_matrix_set_identity(&m);
-        t->params.transform = m;
-        topaz_renderer_2d_set_object_params(
+        topaz_renderer_2d_set_object_transform(
             t->renderer,
             t->objectID,
-            &t->params
+            &m
         );
     }
 

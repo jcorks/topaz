@@ -94,7 +94,7 @@ void topaz_system_renderer_noRenderer__api(topazRendererAPI_t * api){
 
     api->core.renderer_create = (void (*)(topazRenderer_CoreAPI_t*))api_nothing;
     api->core.renderer_destroy = (void (*)(topazRenderer_CoreAPI_t*))api_nothing;
-    api->core.renderer_draw_2d = (void (*)(topazRenderer_CoreAPI_t*, topazRenderer_2DAPI_t *, const topazRenderer_2D_Context_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;
+    api->core.renderer_draw_2d = (void (*)(topazRenderer_CoreAPI_t*, void *, const topazRenderer_2D_Context_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;
     api->core.renderer_draw_3d = (void (*)(topazRenderer_CoreAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;
     api->core.renderer_set_3d_viewing_matrix = (void (*)(topazRenderer_CoreAPI_t *, const topazRenderer_Buffer_t *))api_nothing;
     api->core.renderer_set_3d_projection_matrix = (void (*)(topazRenderer_CoreAPI_t *, const topazRenderer_Buffer_t *))api_nothing;
@@ -132,22 +132,28 @@ void topaz_system_renderer_noRenderer__api(topazRendererAPI_t * api){
         uint32_t object, 
         void *
     )) api_nothing;
-    api->twod.renderer_2d_set_object_params = (void (*)(
+    api->twod.renderer_2d_set_object_transform = (void (*)(
          void *, 
         uint32_t object, 
-        const topazRenderer_2D_ObjectParams_t *
+        const topazMatrix_t *
     )) api_nothing;
+    api->twod.renderer_2d_set_object_texture = (void (*)(
+         void *, 
+        uint32_t object, 
+        void *
+    )) api_nothing;
+
     api->light.renderer_light_create = (void * (*)(topazRendererAPI_t *,  topazRenderer_LightType)) api_nothing;
     api->light.renderer_light_destroy = (void (*)( void *)) api_nothing;
     api->light.renderer_light_update_attribs = (void (*)(void *, float *)) api_nothing;
     api->light.renderer_light_enable = (void (*)(void *,  int doIt )) api_nothing;
     api->fb.renderer_framebuffer_create = (void * (*)(topazRendererAPI_t *, topazRenderer_FramebufferAPI_t *)) api_nothing;
-    api->fb.renderer_framebuffer_destroy = (void (*)(topazRenderer_FramebufferAPI_t *, void *)) api_nothing;
-    api->fb.renderer_framebuffer_resize = (int (*)(topazRenderer_FramebufferAPI_t *, int w, int h, void *)) api_nothing;
-    api->fb.renderer_framebuffer_get_handle = (void * (*)(topazRenderer_FramebufferAPI_t *, void *)) api_nothing;
-    api->fb.renderer_framebuffer_get_raw_data = (int (*)(topazRenderer_FramebufferAPI_t *, uint8_t *, void *)) api_nothing;
-    api->fb.renderer_framebuffer_set_filtered_hint = (void (*)(topazRenderer_FramebufferAPI_t *, int, void *)) api_nothing;
-    api->fb.renderer_framebuffer_get_handle_type = (topazRenderer_Framebuffer_Handle (*)(topazRenderer_FramebufferAPI_t *, void *)) api_nothing;
+    api->fb.renderer_framebuffer_destroy = (void (*)(void *)) api_nothing;
+    api->fb.renderer_framebuffer_resize = (int (*)(void *, int w, int h)) api_nothing;
+    api->fb.renderer_framebuffer_get_handle = (void * (*)(void *)) api_nothing;
+    api->fb.renderer_framebuffer_get_raw_data = (int (*)(void *, uint8_t *)) api_nothing;
+    api->fb.renderer_framebuffer_set_filtered_hint = (void (*)(void *, int)) api_nothing;
+    api->fb.renderer_framebuffer_get_handle_type = (topazRenderer_Framebuffer_Handle (*)(void *)) api_nothing;
 
 
 }

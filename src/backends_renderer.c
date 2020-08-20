@@ -79,7 +79,7 @@ int topaz_renderer_buffer_get_size(topazRenderer_Buffer_t * t) {
 
 ////////////////////// framebuffer 
 struct topazRenderer_Framebuffer_t {
-    topazRenderer_FramebufferAPI_t api;
+    topazRenderer_FramebufferAPI_t * api;
     int w;
     int h;
     int filterHint;
@@ -96,25 +96,25 @@ struct topazRenderer_Framebuffer_t {
 topazRenderer_Framebuffer_t * topaz_renderer_framebuffer_create(topazRenderer_t * t) {
     topazRenderer_Framebuffer_t * out = calloc(1, sizeof(topazRenderer_FramebufferAPI_t));
     out->src = t;
-    out->api = t->api.fb;
+    out->api = &t->api.fb;
     out->w = -1;
     out->h = -1;
     out->filterHint = TRUE;
-    out->framebufferData = out->api.renderer_framebuffer_create(&t->api, &out->api);
+    out->framebufferData = out->api->renderer_framebuffer_create(&t->api, out->api);
     out->binID = topaz_bin_add(t->framebufferList, out);
     return out;
 }
 
 
 void topaz_renderer_framebuffer_destroy(topazRenderer_Framebuffer_t * t) {
-    t->api.renderer_framebuffer_destroy(&t->api, t->framebufferData);
+    t->api->renderer_framebuffer_destroy(t->framebufferData);
     topaz_bin_remove(t->src->framebufferList, t->binID);
     free(t);
 }
 
 
 int topaz_renderer_framebuffer_resize(topazRenderer_Framebuffer_t * t, int newW, int newH) {
-    if (t->api.renderer_framebuffer_resize(&t->api, newW, newH, t->framebufferData)) {
+    if (t->api->renderer_framebuffer_resize(t->framebufferData, newW, newH)) {
         t->w = newW;
         t->h = newH;
         return TRUE;    
@@ -133,19 +133,19 @@ int topaz_renderer_framebuffer_get_height(topazRenderer_Framebuffer_t * t) {
 
 
 topazRenderer_Framebuffer_Handle topaz_renderer_framebuffer_get_handle_type(topazRenderer_Framebuffer_t * t) {
-    return t->api.renderer_framebuffer_get_handle_type(&t->api, t->framebufferData);
+    return t->api->renderer_framebuffer_get_handle_type(t->framebufferData);
 }
 
 void * topaz_renderer_framebuffer_get_handle(topazRenderer_Framebuffer_t * t) {
-    return t->api.renderer_framebuffer_get_handle(&t->api, t->framebufferData);
+    return t->api->renderer_framebuffer_get_handle(t->framebufferData);
 }
 
 int topaz_renderer_framebuffer_get_raw_data(topazRenderer_Framebuffer_t * t, uint8_t * d) {
-    return t->api.renderer_framebuffer_get_raw_data(&t->api, d, t->framebufferData);
+    return t->api->renderer_framebuffer_get_raw_data(t->framebufferData, d);
 }
 
 void topaz_renderer_framebuffer_set_filtered_hint(topazRenderer_Framebuffer_t * t, int filter) {
-    t->api.renderer_framebuffer_set_filtered_hint(&t->api, filter, t->framebufferData);
+    t->api->renderer_framebuffer_set_filtered_hint(t->framebufferData, filter);
     t->filterHint = filter;
 }
 
@@ -162,73 +162,6 @@ int topaz_renderer_framebuffer_get_filtered_hint(topazRenderer_Framebuffer_t * t
 
 
 
-
-
-
-
-//////////////// 2d
-struct topazRenderer_2D_t {
-    topazRenderer_2DAPI_t * api;  
-    topazRenderer_t * ctx;
-    void * data;
-    uint32_t binID;
-};
-
-
-topazRenderer_2D_t * topaz_renderer_2d_create(topazRenderer_t * t) {
-    topazRenderer_2D_t * out = calloc(1, sizeof(topazRenderer_2D_t));
-    out->api = &(t->api.twod);
-    out->data = out->api->renderer_2d_create(&t->api);
-    out->binID = topaz_bin_add(t->renderer2dList, out);
-    return out;
-}
-
-topazRenderer_t * topaz_renderer_2d_get_context(topazRenderer_2D_t * t) {
-    return t->ctx;
-}
-
-void topaz_renderer_2d_destroy(topazRenderer_2D_t * t) {
-    t->api->renderer_2d_destroy(t->data);
-    topaz_bin_remove(t->ctx->renderer2dList, t->binID);
-    free(t);
-}
-
-int topaz_renderer_2d_add_objects(topazRenderer_2D_t * t, uint32_t * output, uint32_t count) {
-    return t->api->renderer_2d_add_objects(t->data, output, count);
-}
-
-void topaz_renderer_2d_remove_objects(topazRenderer_2D_t * t, uint32_t * ids, uint32_t count) {
-    t->api->renderer_2d_remove_objects(t->data, ids, count);
-}
-
-void topaz_renderer_2d_queue_objects(
-    topazRenderer_2D_t * t,
-    const uint32_t * objects,
-    uint32_t count
-) {
-    t->api->renderer_2d_queue_objects(t->data, objects, count);
-}
-
-void topaz_renderer_2d_clear_queue(topazRenderer_2D_t * t) {
-    t->api->renderer_2d_clear_queue(t->data);
-}
-
-void topaz_renderer_2d_set_object_vertices(
-    topazRenderer_2D_t * t, 
-    uint32_t object, 
-    topazRenderer_Buffer_t * params
-) {
-    t->api->renderer_2d_set_object_vertices(t->data, object, params->bufferData);
-}
-
-
-void topaz_renderer_2d_set_object_params(
-    topazRenderer_2D_t * t, 
-    uint32_t object, 
-    const topazRenderer_2D_ObjectParams_t * params
-) {
-    t->api->renderer_2d_set_object_params(t->data, object, params);
-}
 
 
 
@@ -376,6 +309,81 @@ int topaz_renderer_texture_get_height(topazRenderer_Texture_t * t) {
 
 
 
+//////////////// 2d
+struct topazRenderer_2D_t {
+    topazRenderer_2DAPI_t * api;  
+    topazRenderer_t * ctx;
+    void * data;
+    uint32_t binID;
+};
+
+
+topazRenderer_2D_t * topaz_renderer_2d_create(topazRenderer_t * t) {
+    topazRenderer_2D_t * out = calloc(1, sizeof(topazRenderer_2D_t));
+    out->api = &(t->api.twod);
+    out->data = out->api->renderer_2d_create(&t->api);
+    out->binID = topaz_bin_add(t->renderer2dList, out);
+    return out;
+}
+
+topazRenderer_t * topaz_renderer_2d_get_context(topazRenderer_2D_t * t) {
+    return t->ctx;
+}
+
+void topaz_renderer_2d_destroy(topazRenderer_2D_t * t) {
+    t->api->renderer_2d_destroy(t->data);
+    topaz_bin_remove(t->ctx->renderer2dList, t->binID);
+    free(t);
+}
+
+int topaz_renderer_2d_add_objects(topazRenderer_2D_t * t, uint32_t * output, uint32_t count) {
+    return t->api->renderer_2d_add_objects(t->data, output, count);
+}
+
+void topaz_renderer_2d_remove_objects(topazRenderer_2D_t * t, uint32_t * ids, uint32_t count) {
+    t->api->renderer_2d_remove_objects(t->data, ids, count);
+}
+
+void topaz_renderer_2d_queue_objects(
+    topazRenderer_2D_t * t,
+    const uint32_t * objects,
+    uint32_t count
+) {
+    t->api->renderer_2d_queue_objects(t->data, objects, count);
+}
+
+void topaz_renderer_2d_clear_queue(topazRenderer_2D_t * t) {
+    t->api->renderer_2d_clear_queue(t->data);
+}
+
+void topaz_renderer_2d_set_object_vertices(
+    topazRenderer_2D_t * t, 
+    uint32_t object, 
+    topazRenderer_Buffer_t * params
+) {
+    t->api->renderer_2d_set_object_vertices(t->data, object, params->bufferData);
+}
+
+
+void topaz_renderer_2d_set_object_texture(
+    topazRenderer_2D_t * t, 
+    uint32_t object, 
+    topazRenderer_Texture_t * params
+) {
+    t->api->renderer_2d_set_object_texture(t->data, object, params->data);
+}
+
+
+void topaz_renderer_2d_set_object_transform(
+    topazRenderer_2D_t * t, 
+    uint32_t object, 
+    const topazMatrix_t * params
+) {
+    t->api->renderer_2d_set_object_transform(t->data, object, params);
+}
+
+
+
 
 
 
@@ -520,8 +528,8 @@ topazRenderer_t * topaz_renderer_create(
         assert(api.twod.renderer_2d_queue_objects);
         assert(api.twod.renderer_2d_clear_queue);
         assert(api.twod.renderer_2d_set_object_vertices);
-        assert(api.twod.renderer_2d_set_object_params);
-
+        assert(api.twod.renderer_2d_set_object_transform);
+        assert(api.twod.renderer_2d_set_object_texture);
 
 
 
@@ -596,7 +604,7 @@ void topaz_renderer_draw_2d(
     const topazRenderer_ProcessAttribs_t * attribs
 
 ) {
-    t->api.core.renderer_draw_2d(&t->api.core, twod->api, ctx, attribs);
+    t->api.core.renderer_draw_2d(&t->api.core, twod->data, ctx, attribs);
 }
 
 topazRenderer_Buffer_t * topaz_renderer_get_3d_viewing_matrix(topazRenderer_t * t) {

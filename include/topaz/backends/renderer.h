@@ -425,20 +425,9 @@ struct topazRenderer_2D_Context_t {
     /// is possible to get a3D produced visual if the transform calls 
     /// for the transformation.
     ///
-    float * transform;
+    topazMatrix_t * transform;
 };
 
-
-typedef struct topazRenderer_2D_ObjectParams_t topazRenderer_2D_ObjectParams_t;
-
-struct topazRenderer_2D_ObjectParams_t {
-    // transform
-    topazMatrix_t transform;
-    
-    /// Texture to be used. If NULL, no texture is used
-    ///
-    topazRenderer_Texture_t * texture;
-};
 
 
 
@@ -495,10 +484,22 @@ void topaz_renderer_2d_set_object_vertices(
 
 /// Sets parameters for a specific object
 ///
-void topaz_renderer_2d_set_object_params(
+void topaz_renderer_2d_set_object_transform(
     topazRenderer_2D_t *, 
     uint32_t object, 
-    const topazRenderer_2D_ObjectParams_t *
+    /// transform
+    ///
+    const topazMatrix_t * transform
+);
+
+void topaz_renderer_2d_set_object_texture(
+    topazRenderer_2D_t *, 
+    uint32_t object, 
+    /// Texture to be used. If NULL, no texture is used
+    ///
+    topazRenderer_Texture_t * texture;
+
+
 );
 
 /// Gets the source renderer context that made 
