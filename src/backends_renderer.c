@@ -463,7 +463,7 @@ void topaz_renderer_destroy(topazRenderer_t * t) {
     topaz_array_destroy(w);
     topaz_bin_destroy(t->textureList);
 
-    t->api.core.renderer_destroy(&t->api.core);
+    t->api.core.renderer_destroy(&t->api);
     free(t);
 }
 
@@ -572,7 +572,7 @@ topazRenderer_t * topaz_renderer_create(
     topazRenderer_t * out = calloc(1, sizeof(topazRenderer_t));
     out->api = api;
     out->backend = b;
-    out->api.core.renderer_create(&out->api.core);
+    out->api.core.renderer_create(&api, &api.core);
     out->renderer2dList = topaz_bin_create();
     out->bufferList = topaz_bin_create();
     out->textureList = topaz_bin_create();  
@@ -592,7 +592,7 @@ void topaz_renderer_draw_3d(
     topazRenderer_3D_t * threed,
     const topazRenderer_ProcessAttribs_t * attribs
 ) {
-    t->api.core.renderer_draw_3d(&t->api.core, threed, attribs);    
+    t->api.core.renderer_draw_3d(&t->api, threed, attribs);    
 }
 
 
@@ -604,7 +604,7 @@ void topaz_renderer_draw_2d(
     const topazRenderer_ProcessAttribs_t * attribs
 
 ) {
-    t->api.core.renderer_draw_2d(&t->api.core, twod->data, ctx, attribs);
+    t->api.core.renderer_draw_2d(&t->api, twod->data, ctx, attribs);
 }
 
 topazRenderer_Buffer_t * topaz_renderer_get_3d_viewing_matrix(topazRenderer_t * t) {
@@ -617,29 +617,29 @@ topazRenderer_Buffer_t * topaz_renderer_get_3d_projection_matrix(topazRenderer_t
 
 void topaz_renderer_set_3d_viewing_matrix(topazRenderer_t * t, topazRenderer_Buffer_t * m) {
     t->mv = m;
-    t->api.core.renderer_set_3d_viewing_matrix(&t->api.core, m);
+    t->api.core.renderer_set_3d_viewing_matrix(&t->api, m);
 }
 void topaz_renderer_set_3d_projection_matrix(topazRenderer_t * t, topazRenderer_Buffer_t * m) {
     t->proj = m;
-    t->api.core.renderer_set_3d_projection_matrix(&t->api.core, m);
+    t->api.core.renderer_set_3d_projection_matrix(&t->api, m);
 }
 
 
 void topaz_renderer_clear_layer(topazRenderer_t * t, topazRenderer_DataLayer layer) {
-    t->api.core.renderer_clear_layer(&t->api.core, layer);
+    t->api.core.renderer_clear_layer(&t->api, layer);
 }
 
 topazRenderer_Parameters_t topaz_renderer_get_parameters(topazRenderer_t * t) {
-    return t->api.core.renderer_get_parameters(&t->api.core);
+    return t->api.core.renderer_get_parameters(&t->api);
 }
 
 void topaz_renderer_sync(topazRenderer_t * t) {
-    t->api.core.renderer_sync(&t->api.core);
+    t->api.core.renderer_sync(&t->api);
 } 
 
 void topaz_renderer_attach_target(topazRenderer_t * t, topazRenderer_Framebuffer_t * f) {
     t->fb = f;
-    t->api.core.renderer_attach_target(&t->api.core, f);
+    t->api.core.renderer_attach_target(&t->api, f);
 }
 
 
@@ -649,7 +649,7 @@ topazRenderer_Framebuffer_t * topaz_renderer_get_target(topazRenderer_t * t) {
 
 
 const topazArray_t * topaz_renderer_get_supported_framebuffers(topazRenderer_t * t) {
-    return t->api.core.renderer_get_supported_framebuffers(&t->api.core);
+    return t->api.core.renderer_get_supported_framebuffers(&t->api);
 }
 
 

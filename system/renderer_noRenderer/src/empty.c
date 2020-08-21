@@ -92,17 +92,17 @@ topazBackend_t * topaz_system_renderer_noRenderer__backend() {
 static intptr_t api_nothing(){return 0;}
 void topaz_system_renderer_noRenderer__api(topazRendererAPI_t * api){
 
-    api->core.renderer_create = (void (*)(topazRenderer_CoreAPI_t*))api_nothing;
-    api->core.renderer_destroy = (void (*)(topazRenderer_CoreAPI_t*))api_nothing;
-    api->core.renderer_draw_2d = (void (*)(topazRenderer_CoreAPI_t*, void *, const topazRenderer_2D_Context_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;
-    api->core.renderer_draw_3d = (void (*)(topazRenderer_CoreAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;
-    api->core.renderer_set_3d_viewing_matrix = (void (*)(topazRenderer_CoreAPI_t *, const topazRenderer_Buffer_t *))api_nothing;
-    api->core.renderer_set_3d_projection_matrix = (void (*)(topazRenderer_CoreAPI_t *, const topazRenderer_Buffer_t *))api_nothing;
-    api->core.renderer_clear_layer = (void (*)(topazRenderer_CoreAPI_t*, topazRenderer_DataLayer))api_nothing;
-    api->core.renderer_get_parameters = (topazRenderer_Parameters_t (*)(topazRenderer_CoreAPI_t*)) api_nothing;
-    api->core.renderer_sync = (void (*)(topazRenderer_CoreAPI_t*)) api_nothing;
-    api->core.renderer_attach_target = (void (*)(topazRenderer_CoreAPI_t*, topazRenderer_Framebuffer_t *)) api_nothing;
-    api->core.renderer_get_supported_framebuffers = (const topazArray_t *  (*)(topazRenderer_CoreAPI_t*)) api_nothing;
+    api->core.renderer_create = (void (*)(topazRendererAPI_t *, topazRenderer_CoreAPI_t *))api_nothing;
+    api->core.renderer_destroy = (void (*)(topazRendererAPI_t*))api_nothing;
+    api->core.renderer_draw_2d = (void (*)(topazRendererAPI_t*, void *, const topazRenderer_2D_Context_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;
+    api->core.renderer_draw_3d = (void (*)(topazRendererAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;
+    api->core.renderer_set_3d_viewing_matrix = (void (*)(topazRendererAPI_t *, const topazRenderer_Buffer_t *))api_nothing;
+    api->core.renderer_set_3d_projection_matrix = (void (*)(topazRendererAPI_t *, const topazRenderer_Buffer_t *))api_nothing;
+    api->core.renderer_clear_layer = (void (*)(topazRendererAPI_t*, topazRenderer_DataLayer))api_nothing;
+    api->core.renderer_get_parameters = (topazRenderer_Parameters_t (*)(topazRendererAPI_t*)) api_nothing;
+    api->core.renderer_sync = (void (*)(topazRendererAPI_t*)) api_nothing;
+    api->core.renderer_attach_target = (void (*)(topazRendererAPI_t*, topazRenderer_Framebuffer_t *)) api_nothing;
+    api->core.renderer_get_supported_framebuffers = (const topazArray_t *  (*)(topazRendererAPI_t*)) api_nothing;
     api->buffer.renderer_buffer_create = (void * (*)(topazRendererAPI_t *, float * data, uint32_t numElements)) api_nothing;
     api->buffer.renderer_buffer_destroy = (void (*)(void *)) api_nothing;
     api->buffer.renderer_buffer_update = (void (*)(void *, const float * newData, uint32_t offset, uint32_t numElements)) api_nothing;

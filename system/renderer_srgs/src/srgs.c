@@ -101,6 +101,7 @@ typedef struct {
     uint32_t indexCount;
     srgs__object_render_mode renderMode;
     srgs__object_depth_mode depthMode;
+    srgs__object_mask_mode maskMode;
     
     // xyz
     // uv
@@ -396,8 +397,9 @@ uint32_t srgs_object_create(srgs_t * t) {
     
     out->texture = 0;
     out->vertexCount = 0;
-    out->renderMode = srgs__object_render_mode__color;
+    out->renderMode = srgs__object_render_mode__color | srgs__object_render_mode__depth;
     out->depthMode = srgs__object_depth_mode__less;
+    out->maskMode = srgs__object_mask_mode__none;
     out->verticesInterleaved = NULL;
     out->matrixID = 0;
     out->indices = NULL;
@@ -553,7 +555,7 @@ void srgs_object_define_indices(
 
 
 
-void srgs_object_set_render_mode(srgs_t * t, uint32_t id, srgs__object_render_mode mode) {
+void srgs_object_set_render_mode(srgs_t * t, uint32_t id, int mode) {
     srgs_object_t * o = id_table_fetch(t->objects, srgs_object_t, id);   
     o->renderMode = mode;
 }
@@ -562,6 +564,12 @@ void srgs_object_set_depth_mode(srgs_t * t, uint32_t id, srgs__object_depth_mode
     srgs_object_t * o = id_table_fetch(t->objects, srgs_object_t, id);   
     o->depthMode = mode;
 }
+
+void srgs_object_set_mask_mode(srgs_t * t, uint32_t id, srgs__object_mask_mode mode) {
+    srgs_object_t * o = id_table_fetch(t->objects, srgs_object_t, id);   
+    o->maskMode = mode;
+}
+
 
 void srgs_object_set_texture(srgs_t * t, uint32_t id, uint32_t tex) {
     srgs_object_t * o = id_table_fetch(t->objects, srgs_object_t, id);
@@ -578,8 +586,9 @@ void srgs_object_get_parameters(
     const srgs_t * t,
     uint32_t id,
     
-    srgs__object_render_mode * render,
+    int * render, // bitwise mask
     srgs__object_depth_mode * depth,
+    srgs__object_mask_mode * mask,
     uint32_t * matrixID,
     uint32_t * textureID,
     uint32_t * vertexCount 
@@ -588,6 +597,7 @@ void srgs_object_get_parameters(
     
     if (render)     *render      = o->renderMode;
     if (depth)      *depth       = o->depthMode;
+    if (mask)       *mask       = o->maskMode;
     if (matrixID)   *matrixID    = o->matrixID;        
     if (textureID)  *textureID   = o->texture;        
     if (vertexCount)*vertexCount = o->vertexCount;
@@ -1523,7 +1533,8 @@ static void srgs_render__renderlist(
     srgs_t * s, 
     srgs_renderlist_t * list, 
     srgs_texture_t * framebuffer, 
-    srgs_texture_t * depthbuffer
+    srgs_texture_t * depthbuffer,
+    srgs_texture_t * maskbuffer
 )  {
     
 
@@ -1561,6 +1572,10 @@ static void srgs_render__renderlist(
 
           xdiff,
           ydiff,
+
+          colorBaseR,
+          colorBaseG,
+          colorBaseB,
 
           convz,
           * color0,
@@ -1610,18 +1625,20 @@ static void srgs_render__renderlist(
     for(i = 0; i < list->size; ++i) {
         obj = id_table_fetch(s->objects, srgs_object_t, list->objects[i]);
         // choose depth test
-
-        switch(obj->depthMode) {
-          case srgs__object_depth_mode__less:         depthTest = depth_l; break;
-          case srgs__object_depth_mode__lessequal:    depthTest = depth_lte; break;
-          case srgs__object_depth_mode__equal:        depthTest = depth_eq; break;
-          case srgs__object_depth_mode__greater:      depthTest = depth_gt; break;
-          case srgs__object_depth_mode__greaterequal: depthTest = depth_gte; break;
-          case srgs__object_depth_mode__always:       depthTest = depth_always; break;
-          case srgs__object_depth_mode__never:        depthTest = depth_never; break;
-          default: depthTest = depth_l;
+        if (obj->renderMode & srgs__object_render_mode__depth) {
+            switch(obj->depthMode) {
+                case srgs__object_depth_mode__less:         depthTest = depth_l; break;
+                case srgs__object_depth_mode__lessequal:    depthTest = depth_lte; break;
+                case srgs__object_depth_mode__equal:        depthTest = depth_eq; break;
+                case srgs__object_depth_mode__greater:      depthTest = depth_gt; break;
+                case srgs__object_depth_mode__greaterequal: depthTest = depth_gte; break;
+                case srgs__object_depth_mode__always:       depthTest = depth_always; break;
+                case srgs__object_depth_mode__never:        depthTest = depth_never; break;
+                default: depthTest = depth_l;
+            }
+        } else {
+            depthTest = depth_always;
         }
-
 
 
         // skip object entirely.
@@ -1746,25 +1763,36 @@ static void srgs_render__renderlist(
                         // update depth buffer (1st byte only)
                         *fragP = fragDepth;
 
+                        if (obj->renderMode & srgs__object_render_mode__mask) {
+                            
+                            if (obj->maskMode == srgs__object_mask_mode__read_on && !maskbuffer->data[fragment]) {
+                                // failed the mask
+                                continue;
+                            } else if (obj->maskMode == srgs__object_mask_mode__read_off && !maskbuffer->data[fragment]) {
+                                continue;
+                            } else if (obj->maskMode == srgs__object_mask_mode__write_on) {
+                                maskbuffer->data[fragment] = 1;
+                            } else if (obj->maskMode == srgs__object_mask_mode__write_off) {
+                                maskbuffer->data[fragment] = 0;
+                            }
+                        }
 
 
-                        // TODO: ALPHA BLENDING mode
-                        switch(obj->renderMode) {
-
-                          // replace with incoming color
-                          case srgs__object_render_mode__color:
+                        if (obj->renderMode & srgs__object_render_mode__color) {
                             color0 = ((float*)obj->verticesInterleaved+SRGS__FLOATS_PER_VERTEX*obj->indices[n*3+0])+5;
                             color1 = ((float*)obj->verticesInterleaved+SRGS__FLOATS_PER_VERTEX*obj->indices[n*3+1])+5;
                             color2 = ((float*)obj->verticesInterleaved+SRGS__FLOATS_PER_VERTEX*obj->indices[n*3+2])+5;
                             
-                            framebuffer->data[fragment  ] = (bias0*color0[0] + bias1*color1[0] + bias2*color2[0])*0xff;
-                            framebuffer->data[fragment+1] = (bias0*color0[1] + bias1*color1[1] + bias2*color2[1])*0xff;
-                            framebuffer->data[fragment+2] = (bias0*color0[2] + bias1*color1[2] + bias2*color2[2])*0xff;
-                            framebuffer->data[fragment+3] = (bias0*color0[3] + bias1*color1[3] + bias2*color2[3])*0xff;
-                            break;
+                            colorBaseR = (bias0*color0[0] + bias1*color1[0] + bias2*color2[0]);
+                            colorBaseG = (bias0*color0[1] + bias1*color1[1] + bias2*color2[1]);
+                            colorBaseB = (bias0*color0[2] + bias1*color1[2] + bias2*color2[2]);
+                        } else {
+                            colorBaseR = 1.f;
+                            colorBaseG = 1.f;
+                            colorBaseB = 1.f;
+                        }
 
-                          // replace with incoming texel fetch
-                          case srgs__object_render_mode__texture: 
+                        if (obj->renderMode & srgs__object_render_mode__texture) {
                             uv0 = ((float*)obj->verticesInterleaved+SRGS__FLOATS_PER_VERTEX*obj->indices[n*3+0])+3;
                             uv1 = ((float*)obj->verticesInterleaved+SRGS__FLOATS_PER_VERTEX*obj->indices[n*3+1])+3;
                             uv2 = ((float*)obj->verticesInterleaved+SRGS__FLOATS_PER_VERTEX*obj->indices[n*3+2])+3;
@@ -1781,15 +1809,12 @@ static void srgs_render__renderlist(
                             fetchy = round((texture->h-1)*uvy);
                             fetch = (fetchx + fetchy*texture->w)*4;                        
 
-                            *((int*)(framebuffer->data+fragment)) = *((int*)(texture->data+fetch));  
-                            break;
-
-
-                          // no color, just depth buffer
-                          case srgs__object_render_mode__depth_only:
-                            break;
+                            colorBaseR *= (texture->data[fetch+0] / (float)0xff);
+                            colorBaseG *= (texture->data[fetch+1] / (float)0xff);
+                            colorBaseB *= (texture->data[fetch+2] / (float)0xff);
 
                         }
+
                     }
                 }
             }
@@ -1799,14 +1824,17 @@ static void srgs_render__renderlist(
 
 
 
-srgs__render_error srgs_render(srgs_t * s, srgs_id_t fb, srgs_id_t db, uint32_t count, uint32_t * renderListIDs) {
+srgs__render_error srgs_render(srgs_t * s, srgs_id_t fb, srgs_id_t db, srgs_id_t mb, uint32_t count, uint32_t * renderListIDs) {
     uint32_t i;
     srgs_texture_t * framebuffer = id_table_fetch(s->textures, srgs_texture_t, fb);
     srgs_texture_t * depthbuffer = id_table_fetch(s->textures, srgs_texture_t, db);
+    srgs_texture_t * maskbuffer = id_table_fetch(s->textures, srgs_texture_t, mb);
 
 
     if (framebuffer->w != depthbuffer->w ||
-        framebuffer->h != depthbuffer->h) {
+        framebuffer->h != depthbuffer->h ||
+        framebuffer->w != maskbuffer->w ||
+        framebuffer->h != maskbuffer->h) {
         return srgs__render_error__framebuffer_mismatch;
     }
 
@@ -1819,7 +1847,8 @@ srgs__render_error srgs_render(srgs_t * s, srgs_id_t fb, srgs_id_t db, uint32_t 
                 renderListIDs[i]
             ),
             framebuffer,
-            depthbuffer
+            depthbuffer,
+            maskbuffer
         );
     }
     return srgs__render_error__none;

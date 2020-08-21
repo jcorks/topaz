@@ -46,7 +46,7 @@
        component is 1 byte.
     - The depth buffer is 4 bytes.
     - Only one primitive is available: triangle.
-
+    - Masking has been implemented for the topaz library
     - No face culling is implemented. Yet.
 
     - Linear algebra utilities are available if needed.
@@ -68,17 +68,27 @@ typedef enum {
     // each vertex color. The vertex color is specified using the 
     // 4-component color component
     // This is the default.
-    srgs__object_render_mode__color,
+    srgs__object_render_mode__color = 1,
 
     // Specifies that each triangle should be colored based on 
     // the associated texture. See srgs_object_set_texture()
     // When active, the object's UVs are used to determine which 
     // fragments receive which texels.
-    srgs__object_render_mode__texture,
+    srgs__object_render_mode__texture = 2,
 
-    // Specifies that no coloring will be done of the tringle.
-    // Depth information will still be processed in this case.
-    srgs__object_render_mode__depth_only
+    // Specifies that the depth buffer will be used to determine 
+    // when fragments should be accepted. The depth buffer is 
+    // also written back into with the incoming depth value.
+    srgs__object_render_mode__depth = 4,
+
+    // Specifies that the mask buffer will be used to determine 
+    // when fragments should be accepted. In the case that 
+    // the depth buffer is used, masking is ignored if 
+    // a fragment fails the depth test.
+    srgs__object_render_mode__mask = 8
+
+
+
 } srgs__object_render_mode;
 
 
@@ -116,6 +126,39 @@ typedef enum {
     // The fragment never succeeds. Effectively disables the object.
     srgs__object_depth_mode__never
 } srgs__object_depth_mode;
+
+
+
+
+// Enumerator for controlling mask tests.
+// The mask can be used in conjunction with the depth test 
+// to determine which fragments reach the resultant 
+// framebuffer. If the depth buffer is active, it 
+// takes higher priority for failures, so if a fragment 
+// fails the depth test, a mask write could not happen.
+typedef enum {
+    // The mask is not read from or written to.
+    srgs__object_mask_mode__none,
+
+    // Writes to the mask an "on" value at the fragment value
+    srgs__object_mask_mode__write_on,   
+
+
+    // Writes to the mask an "off" value at the fragment value
+    srgs__object_mask_mode__write_off,   
+
+
+    // Only allows usage of the fragment if, at the location, the mask 
+    // value is set to "on"
+    srgs__object_mask_mode__read_on,
+
+    // Only allows usage of the fragment if, at the location, the mask 
+    // value is set to "off"
+    srgs__object_mask_mode__read_off
+
+} srgs__object_mask_mode;
+
+
 
 
 
@@ -192,16 +235,6 @@ void srgs_destroy(srgs_t *);
 
 
 
-// Resets the depth buffer. This is an alias for 
-// doing a texture blank with the value 0xff.
-// For the default (and standard) "Less" test that objects use, 
-// this is recommended.
-void srgs_clear_depth(srgs_t *);
-
-// Resets the color buffer. This is an alias for 
-// doing a texture blank with all black and 0 for the alpha channel
-void srgs_clear_color(srgs_t *);
-
 
 // Renders all given renderlists. The results are stored within the 
 // framebuffer and the depthbuffer is used for depth processing in 
@@ -213,6 +246,7 @@ srgs__render_error srgs_render(
 
     srgs_id_t framebuffer,
     srgs_id_t depthbuffer,
+    srgs_id_t maskbuffer,
 
     uint32_t count, 
     srgs_id_t * renderListIDs
@@ -435,11 +469,16 @@ void srgs_object_define_indices(
 
 // Sets the render mode for the object.
 // See srgs__object_render_mode
-void srgs_object_set_render_mode(srgs_t *, srgs_id_t ID, srgs__object_render_mode);
+void srgs_object_set_render_mode(srgs_t *, srgs_id_t ID, int);
 
 // Sets the depth mode/test for the object.
 // See srgs__object_depth_mode
 void srgs_object_set_depth_mode(srgs_t *, srgs_id_t ID, srgs__object_depth_mode);
+
+// Sets the mask mode for the object.
+// See srgs__object_mask_mode
+void srgs_object_set_mask_mode(srgs_t *, srgs_id_t ID, srgs__object_mask_mode);
+
 
 // Sets the texture to be used with the object.
 void srgs_object_set_texture(srgs_t *, srgs_id_t ID, srgs_id_t);
@@ -454,8 +493,9 @@ void srgs_object_get_parameters(
     const srgs_t *,
     srgs_id_t ID,
     
-    srgs__object_render_mode *,
+    int * renderModeBitmask,
     srgs__object_depth_mode *,
+    srgs__object_mask_mode *,
     srgs_id_t * matrixID,
     srgs_id_t * textureID,
     uint32_t * vertexCount

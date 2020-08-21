@@ -305,26 +305,26 @@ typedef struct topazRenderer_CoreAPI topazRenderer_CoreAPI;
 struct topazRenderer_CoreAPI_t {
 
 
-    void                    (*renderer_create)              (topazRenderer_CoreAPI_t *);
-    void                    (*renderer_destroy)             (topazRenderer_CoreAPI_t *);
+    void                    (*renderer_create)              (topazRendererAPI_t *, topazRenderer_CoreAPI_t *);
+    void                    (*renderer_destroy)             (topazRendererAPI_t *);
 
 
 
 
-    void                    (*renderer_draw_2d)             (topazRenderer_CoreAPI_t *, void *, const topazRenderer_2D_Context_t *, const topazRenderer_ProcessAttribs_t *);
-    void                    (*renderer_draw_3d)             (topazRenderer_CoreAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *);
-    void                    (*renderer_set_3d_viewing_matrix)(topazRenderer_CoreAPI_t *, const topazRenderer_Buffer_t *);
-    void                    (*renderer_set_3d_projection_matrix)(topazRenderer_CoreAPI_t *, const topazRenderer_Buffer_t *);
+    void                    (*renderer_draw_2d)             (topazRendererAPI_t *, void *, const topazRenderer_2D_Context_t *, const topazRenderer_ProcessAttribs_t *);
+    void                    (*renderer_draw_3d)             (topazRendererAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *);
+    void                    (*renderer_set_3d_viewing_matrix)(topazRendererAPI_t *, const topazRenderer_Buffer_t *);
+    void                    (*renderer_set_3d_projection_matrix)(topazRendererAPI_t *, const topazRenderer_Buffer_t *);
 
 
-    void                    (*renderer_clear_layer)         (topazRenderer_CoreAPI_t *, topazRenderer_DataLayer);
+    void                    (*renderer_clear_layer)         (topazRendererAPI_t *, topazRenderer_DataLayer);
 
-    topazRenderer_Parameters_t(*renderer_get_parameters)      (topazRenderer_CoreAPI_t *);
+    topazRenderer_Parameters_t(*renderer_get_parameters)      (topazRendererAPI_t *);
 
 
-    void                    (*renderer_sync)                (topazRenderer_CoreAPI_t *);
-    void                    (*renderer_attach_target)       (topazRenderer_CoreAPI_t *, topazRenderer_Framebuffer_t *);
-    const topazArray_t *    (*renderer_get_supported_framebuffers)(topazRenderer_CoreAPI_t *);
+    void                    (*renderer_sync)                (topazRendererAPI_t *);
+    void                    (*renderer_attach_target)       (topazRendererAPI_t *, topazRenderer_Framebuffer_t *);
+    const topazArray_t *    (*renderer_get_supported_framebuffers)(topazRendererAPI_t *);
 
 
 
