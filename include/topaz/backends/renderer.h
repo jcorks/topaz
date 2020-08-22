@@ -122,6 +122,11 @@ typedef enum {
     ///
     topazRenderer_DepthTest_GEQ,
 
+    /// Generated framebuffer elements whole calculated depth is equal to 
+    /// whats in the depth buffer
+    topazRenderer_DepthTest_Equal,
+
+
     /// No depth test is calculated. All elements pass.
     ///
     topazRenderer_DepthTest_None
@@ -951,9 +956,8 @@ topazRenderer_Parameters_t topaz_renderer_get_parameters(topazRenderer_t *);
 void topaz_renderer_sync(topazRenderer_t *);
 
 /// The passed framebuffer becomes the destination for all future renderings
-/// until a different valid framebuffer is given. If the Type of the given
-/// Framebuffer is not one of the types from SupportedFramebuffers, no
-/// action is taken. If NULL is passed, rendering will have no effect.
+/// until a different valid framebuffer is given. If NULL is passed, rendering 
+//// will have no effect.
 ///
 void topaz_renderer_attach_target(topazRenderer_t *, topazRenderer_Framebuffer_t *);
 
@@ -964,10 +968,6 @@ void topaz_renderer_attach_target(topazRenderer_t *, topazRenderer_Framebuffer_t
 topazRenderer_Framebuffer_t * topaz_renderer_get_target(topazRenderer_t *);
 
 
-/// Returns the framebuffer types that this renderer supports.
-/// Should the framebuffer not match one of the given types, the framebuffer
-/// attachment will fail.
-const topazArray_t * topaz_renderer_get_supported_framebuffers(topazRenderer_t *);
 
 
 

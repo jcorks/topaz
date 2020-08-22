@@ -567,7 +567,6 @@ topazRenderer_t * topaz_renderer_create(
         assert(api.core.renderer_get_parameters);
         assert(api.core.renderer_sync);
         assert(api.core.renderer_attach_target);
-        assert(api.core.renderer_get_supported_framebuffers);
     #endif
     topazRenderer_t * out = calloc(1, sizeof(topazRenderer_t));
     out->api = api;
@@ -639,17 +638,12 @@ void topaz_renderer_sync(topazRenderer_t * t) {
 
 void topaz_renderer_attach_target(topazRenderer_t * t, topazRenderer_Framebuffer_t * f) {
     t->fb = f;
-    t->api.core.renderer_attach_target(&t->api, f);
+    t->api.core.renderer_attach_target(&t->api, f->framebufferData);
 }
 
 
 topazRenderer_Framebuffer_t * topaz_renderer_get_target(topazRenderer_t * t) {
     return t->fb;
-}
-
-
-const topazArray_t * topaz_renderer_get_supported_framebuffers(topazRenderer_t * t) {
-    return t->api.core.renderer_get_supported_framebuffers(&t->api);
 }
 
 

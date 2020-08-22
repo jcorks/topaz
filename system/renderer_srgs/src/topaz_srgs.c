@@ -33,9 +33,11 @@ DEALINGS IN THE SOFTWARE.
 #include "srgs.h"
 #include <stdlib.h>
 #include <topaz/version.h>
+typedef struct SRGSTOPAZFramebuffer SRGSTOPAZFramebuffer;
 typedef struct {
-    srgs_t * ctx;
 
+    srgs_t * ctx;
+    SRGSTOPAZFramebuffer * fb;
 } SRGSTOPAZCore;
 
 
@@ -375,15 +377,15 @@ static void srgstopaz_2d_set_object_texture(
 
 // to increase speed, the resolution is 1/3rd.
 // it isnt good!
-typedef struct {
+struct SRGSTOPAZFramebuffer {
     uint32_t w;
     uint32_t h;
-    srgs_id_t framebuffer;
+    srgs_id_t colorbuffer;
     srgs_id_t depthbuffer;
     srgs_id_t maskbuffer;
     srgs_t * ctx;
     uint8_t * outputRaw;
-} SRGSTOPAZFramebuffer;
+};
 
 
 
@@ -395,7 +397,7 @@ static void * srgstopaz_framebuffer_create(
     out->w = 640;
     out->h = 480;
     out->ctx = ((SRGSTOPAZCore*)r->implementationData)->ctx;;
-    out->framebuffer = srgs_texture_create(out->ctx, out->w/3, out->h/3);
+    out->colorbuffer = srgs_texture_create(out->ctx, out->w/3, out->h/3);
     out->depthbuffer = srgs_texture_create(out->ctx, out->w/3, out->h/3);
     out->maskbuffer = srgs_texture_create(out->ctx, out->w/3, out->h/3);
     out->outputRaw = NULL;
@@ -403,8 +405,9 @@ static void * srgstopaz_framebuffer_create(
 }
 static void   srgstopaz_framebuffer_destroy (void * fbSrc) {
     SRGSTOPAZFramebuffer * fb = fbSrc;
-    srgs_texture_destroy(fb->ctx, fb->framebuffer);
+    srgs_texture_destroy(fb->ctx, fb->colorbuffer);
     srgs_texture_destroy(fb->ctx, fb->depthbuffer);
+    srgs_texture_destroy(fb->ctx, fb->maskbuffer);
 }
 
 
@@ -412,7 +415,7 @@ static int      srgstopaz_framebuffer_resize(void * fbSrc, int w, int h) {
     SRGSTOPAZFramebuffer * fb = fbSrc;
     fb->w = w;
     fb->h = h;
-    srgs_texture_resize(fb->ctx, fb->framebuffer, fb->w/3, fb->h/3);
+    srgs_texture_resize(fb->ctx, fb->colorbuffer, fb->w/3, fb->h/3);
     srgs_texture_resize(fb->ctx, fb->depthbuffer, fb->w/3, fb->h/3);
     srgs_texture_resize(fb->ctx, fb->maskbuffer, fb->w/3, fb->h/3);
     free(fb->outputRaw);
@@ -423,7 +426,7 @@ static int      srgstopaz_framebuffer_resize(void * fbSrc, int w, int h) {
 static void srgstopaz_fb_update(void * fbSrc) {
     SRGSTOPAZFramebuffer * fb = fbSrc;
     uint32_t x, y;
-    const uint32_t * internalRaw = (uint32_t*)srgs_texture_get_data(fbSrc, fb->framebuffer);
+    const uint32_t * internalRaw = (uint32_t*)srgs_texture_get_data(fbSrc, fb->colorbuffer);
     uint32_t * outputRaw_r0;
     uint32_t * outputRaw_r1;
     uint32_t * outputRaw_r2;
@@ -521,6 +524,9 @@ void srgstopaz_draw_2d(
     // reset queue
     topaz_array_set_size(twod->queue, 0);
 
+    // if no attached framebuffer, dont render
+    if (!core->fb) return;
+
     // projection needs to come from the context object
     if (twod->width  != ctx->width ||
         twod->height != ctx->height) {
@@ -549,43 +555,169 @@ void srgstopaz_draw_2d(
     srgs_matrix_set(twod->ctx, twod->contextTransform, &m);
 
 
+    int renderMode = 0;
+
+
     // set the proper mask for all objects
     uint32_t i;
     uint32_t len = topaz_array_get_size(twod->queue);
     uint32_t * iter = topaz_array_get_data(twod->queue);
     switch(ctx->etchRule) {
-      case topazRenderer_EtchRule_NoEtching: break; // fastpath: just turn off etching
+      case topazRenderer_EtchRule_NoEtching: 
+        break; // fastpath: just turn off etching
       case topazRenderer_EtchRule_Define:
+        renderMode |= srgs__object_render_mode__mask;
         for(i = 0; i < len; ++i) {
             SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
             srgs_object_set_mask_mode(obj->ctx, obj->objectID, srgs__object_mask_mode__write_on);
         }
         break;
+      case topazRenderer_EtchRule_Undefine:
+        renderMode |= srgs__object_render_mode__mask;
+        for(i = 0; i < len; ++i) {
+            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
+            srgs_object_set_mask_mode(obj->ctx, obj->objectID, srgs__object_mask_mode__write_off);
+        }
+        break;
 
+      case topazRenderer_EtchRule_In:
+        renderMode |= srgs__object_render_mode__mask;
+        for(i = 0; i < len; ++i) {
+            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
+            srgs_object_set_mask_mode(obj->ctx, obj->objectID, srgs__object_mask_mode__read_on);
+        }
+        break;
 
-
-
-
+      case topazRenderer_EtchRule_Out:
+        renderMode |= srgs__object_render_mode__mask;
+        for(i = 0; i < len; ++i) {
+            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
+            srgs_object_set_mask_mode(obj->ctx, obj->objectID, srgs__object_mask_mode__read_off);
+        }
+        break;
     }
 
 
 
+    // set depth test
+    switch(attribs->depthTest) {
+      case topazRenderer_DepthTest_Less:
+        renderMode |= srgs__object_render_mode__mask;
+        for(i = 0; i < len; ++i) {
+            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
+            srgs_object_set_depth_mode(obj->ctx, obj->objectID, srgs__object_depth_mode__less);
+        }
+        break;
+
+      case topazRenderer_DepthTest_LEQ:
+        renderMode |= srgs__object_render_mode__mask;
+        for(i = 0; i < len; ++i) {
+            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
+            srgs_object_set_depth_mode(obj->ctx, obj->objectID, srgs__object_depth_mode__lessequal);
+        }
+        break;
+
+      case topazRenderer_DepthTest_Greater:
+        renderMode |= srgs__object_render_mode__mask;
+        for(i = 0; i < len; ++i) {
+            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
+            srgs_object_set_depth_mode(obj->ctx, obj->objectID, srgs__object_depth_mode__greater);
+        }
+        break;
+
+      case topazRenderer_DepthTest_GEQ:
+        renderMode |= srgs__object_render_mode__mask;
+        for(i = 0; i < len; ++i) {
+            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
+            srgs_object_set_depth_mode(obj->ctx, obj->objectID, srgs__object_depth_mode__greaterequal);
+        }
+        break;
+
+      case topazRenderer_DepthTest_Equal:
+        renderMode |= srgs__object_render_mode__mask;
+        for(i = 0; i < len; ++i) {
+            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
+            srgs_object_set_depth_mode(obj->ctx, obj->objectID, srgs__object_depth_mode__equal);
+        }
+        break;
+
+      case topazRenderer_DepthTest_None:
+        // fast path: no depth testing
+        break;
+
+
+    }
+
+    // alpha is ignored for now
+    // texture filter hint is ignored for now.
+    srgs_render(
+        core->ctx,
+
+        core->fb->colorbuffer,
+        core->fb->depthbuffer,
+        core->fb->maskbuffer,
+
+        1,
+        &twod->renderlistID
+    );
+
+    // push to extra arrays
+    srgstopaz_fb_update(core->fb);
 }
 
 
-void srgstopaz_draw_3d(topazRendererAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *);
-void srgstopaz_set_3d_viewing_matrix(topazRendererAPI_t *, const topazRenderer_Buffer_t *);
-void srgstopaz_set_3d_projection_matrix(topazRendererAPI_t *, const topazRenderer_Buffer_t *);
+void srgstopaz_draw_3d(
+    topazRendererAPI_t * api, 
+    topazRenderer_3D_t * threed, 
+    const topazRenderer_ProcessAttribs_t * processs) {
+
+}
+void srgstopaz_set_3d_viewing_matrix(
+    topazRendererAPI_t * api, 
+    void * bufferSrc) {
+    
+}
+void srgstopaz_set_3d_projection_matrix(
+    topazRendererAPI_t * api, 
+    void * bufferSrc) {
+
+}
 
 
-void srgstopaz_clear_layer(topazRendererAPI_t *, topazRenderer_DataLayer);
+void srgstopaz_clear_layer(topazRendererAPI_t * api, topazRenderer_DataLayer layer) {
+    SRGSTOPAZCore * core = api->implementationData;
+    if (layer & topazRenderer_DataLayer_Color) {
+        srgs_texture_blank(core->ctx, core->fb->colorbuffer, 0);
+    }
 
-topazRenderer_Parameters_t srgstopaz_get_parameters(topazRendererAPI_t *);
+    if (layer & topazRenderer_DataLayer_Depth) {
+        srgs_texture_blank(core->ctx, core->fb->depthbuffer, 0xff);
+    }
+
+    if (layer & topazRenderer_DataLayer_Etch) {
+        srgs_texture_blank(core->ctx, core->fb->maskbuffer, 0);
+    }
+}
+
+topazRenderer_Parameters_t srgstopaz_get_parameters(topazRendererAPI_t * api) {
+    topazRenderer_Parameters_t params;
+    params.maxSimultaneousTextures = 0; // no limit 
+    params.maxEnabledLights = 0; // no lights 
+    params.numLights = 0; // no lights!!!!
+    return params;
+
+}
 
 
-void srgstopaz_sync(topazRendererAPI_t *);
-void srgstopaz_attach_target(topazRendererAPI_t *, topazRenderer_Framebuffer_t *);
-const topazArray_t *  srgstopaz_get_supported_framebuffers(topazRendererAPI_t *);
+
+void srgstopaz_sync(topazRendererAPI_t * api) {
+}
+
+void srgstopaz_attach_target(topazRendererAPI_t * api, void * fbSrc) {
+    SRGSTOPAZCore * core = api->implementationData;
+    core->fb = fbSrc;
+
+}
 
 
 
@@ -689,7 +821,17 @@ void topaz_system_renderer_srgs__api(topazRendererAPI_t * api) {
     api->fb.renderer_framebuffer_set_filtered_hint = srgstopaz_framebuffer_set_filtered_hint;
     api->fb.renderer_framebuffer_get_handle_type = srgstopaz_framebuffer_get_handle_type;
 
-
+    api->core.renderer_create = srgstopaz_create;
+    api->core.renderer_destroy = srgstopaz_destroy;
+    api->core.renderer_draw_2d = srgstopaz_draw_2d;
+    api->core.renderer_draw_3d = srgstopaz_draw_3d;
+    api->core.renderer_set_3d_viewing_matrix = srgstopaz_set_3d_viewing_matrix;
+    api->core.renderer_set_3d_projection_matrix = srgstopaz_set_3d_projection_matrix;
+    api->core.renderer_clear_layer = srgstopaz_clear_layer;
+    api->core.renderer_get_parameters = srgstopaz_get_parameters;
+    api->core.renderer_sync = srgstopaz_sync;
+    api->core.renderer_attach_target = srgstopaz_attach_target;
+  
 
 }
 
