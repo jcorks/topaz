@@ -58,7 +58,8 @@ src = [
 cc = meson.get_compiler('c')
 
 # TODO: fix up please!
-baselibs = cc.find_library('m', required : true)
+baselibs = []
+baselibs += cc.find_library('m', required : true)
 
 # compile args
 compile_args = []
@@ -87,8 +88,8 @@ handlers = ''
 # include directories
 handlerIncludes = ''
 
-# library names
-handlerLibraries = []
+# dependency objects
+handlerDependencies = []
 
 # enumeration of sources
 handlerSources = []
@@ -98,6 +99,14 @@ handlerInternalSource = ''
 
 # string of internal C #includes to be appended to the config header
 handlerInternalInclude = ''
+
+# the preferred backends. Must exist within the system/ directory
+handlerPreferredAudioManager = 'audioManager_' + get_option('AudioManagerBackend')
+handlerPreferredInputManager = 'inputManager_' + get_option('InputManagerBackend')
+handlerPreferredRenderer     = 'renderer_'     + get_option('RendererBackend')
+handlerPreferredDisplay      = 'display_'      + get_option('DisplayBackend')
+handlerPreferredTime         = 'time_'         + get_option('TimeBackend')
+handlerPreferredFilesys      = 'filesys_'      + get_option('FilesystemBackend')
 
 
 subdir('system')
@@ -115,6 +124,7 @@ configure_file(
     configuration : conf
 )
 
+baselibs += handlerDependencies
 
 
 

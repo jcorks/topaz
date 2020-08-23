@@ -13,3 +13,75 @@ option(
     value : true
 )
 
+
+option(
+    'RendererBackend',
+    type : 'combo',
+
+
+    value   : 'srgs',
+    choices : [
+        'noRenderer',
+        'srgs'
+    ]
+)
+
+
+option(
+    'DisplayBackend',
+    type : 'combo',
+
+
+    value : 'ncurses',
+    choices : [
+        'noDisplay',
+        'ncurses'
+    ]
+)
+
+
+option(
+    'AudioManagerBackend',
+    type : 'combo',
+
+    value : 'noAudioManager',
+    choices : [
+        'noAudioManager'
+    ]
+)
+
+
+option(
+    'InputManagerBackend',
+    type : 'combo',
+
+    value : 'noInputManager',
+    choices : [
+        'noInputManager'
+    ]
+)
+
+
+option(
+    'FilesystemBackend',
+    type : 'combo',
+
+    value : 'noFilesys',
+    choices : [
+        'noFilesys',
+        'posix'
+    ]
+)
+
+
+option(
+    'TimeBackend',
+    type : 'combo',
+
+    value : 'posix',
+    choices : [
+        'noTime',
+        'posix'
+    ]
+)
+
