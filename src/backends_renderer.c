@@ -323,6 +323,7 @@ topazRenderer_2D_t * topaz_renderer_2d_create(topazRenderer_t * t) {
     out->api = &(t->api.twod);
     out->data = out->api->renderer_2d_create(&t->api);
     out->binID = topaz_bin_add(t->renderer2dList, out);
+    out->ctx = t;
     return out;
 }
 
@@ -571,7 +572,7 @@ topazRenderer_t * topaz_renderer_create(
     topazRenderer_t * out = calloc(1, sizeof(topazRenderer_t));
     out->api = api;
     out->backend = b;
-    out->api.core.renderer_create(&api, &api.core);
+    out->api.core.renderer_create(&out->api, &out->api.core);
     out->renderer2dList = topaz_bin_create();
     out->bufferList = topaz_bin_create();
     out->textureList = topaz_bin_create();  

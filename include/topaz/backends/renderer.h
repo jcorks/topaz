@@ -502,7 +502,7 @@ void topaz_renderer_2d_set_object_texture(
     uint32_t object, 
     /// Texture to be used. If NULL, no texture is used
     ///
-    topazRenderer_Texture_t * texture;
+    topazRenderer_Texture_t * texture
 
 
 );

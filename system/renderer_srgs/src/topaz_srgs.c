@@ -489,14 +489,14 @@ static topazRenderer_Framebuffer_Handle srgstopaz_framebuffer_get_handle_type(vo
 
 
 static void srgstopaz_create (topazRendererAPI_t * api, topazRenderer_CoreAPI_t * api2) {
-    SRGSTOPAZCore * core = calloc(1, sizeof(SRGSTOPAZCore*));
+    SRGSTOPAZCore * core = calloc(1, sizeof(SRGSTOPAZCore));
     core->ctx = srgs_create(NULL, NULL, NULL);
     api->implementationData = core;
     
 }
 static void srgstopaz_destroy (topazRendererAPI_t * api) {
     SRGSTOPAZCore * core = api->implementationData;
-    srgs_destroy(api->implementationData);
+    srgs_destroy(core->ctx);
     free(core);
 }
 
