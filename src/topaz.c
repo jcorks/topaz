@@ -70,10 +70,18 @@ struct topaz_t {
 
 
 };
+static int configured = 0;
 
+topaz_t * topaz_context_create() {
+    if (!configured)
+        topaz_system_configure();
 
+    return topaz_context_create_from_system( topaz_system_create_default());
+}
+topaz_t * topaz_context_create_from_system(const topazSystem_t * a) {
+    if (!configured)
+        topaz_system_configure();
 
-topaz_t * topaz_context_create(const topazSystem_t * a) {
     topaz_t * out = calloc(1, sizeof(topaz_t));
     out->fps = 60;
     out->paused = FALSE;
@@ -169,6 +177,9 @@ void topaz_context_destroy(topaz_t * t) {
 
 
 topaz_t * topaz_context_create_empty() {
+    if (!configured)
+        topaz_system_configure();
+
     topazSystem_t * sys = topaz_system_create_default();
     topaz_system_set_backend(sys, TOPAZ_STR_CAST("renderer"),     TOPAZ_STR_CAST("noRenderer"));
     topaz_system_set_backend(sys, TOPAZ_STR_CAST("audioManager"), TOPAZ_STR_CAST("noAudioManager"));

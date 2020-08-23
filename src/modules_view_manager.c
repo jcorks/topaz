@@ -73,6 +73,7 @@ topazDisplay_t * topaz_view_manager_create_display(topazViewManager_t * v, const
         &api
     );
     topazDisplay_t * d = topaz_display_create(
+        v->t,
         backend,
         api
     );

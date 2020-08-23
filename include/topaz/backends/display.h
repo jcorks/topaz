@@ -34,8 +34,8 @@ DEALINGS IN THE SOFTWARE.
 
 
 #include <topaz/backends/backend.h>
-
-
+typedef struct topazEntity_t topazEntity_t;
+typedef struct topaz_t topaz_t;
 
 /*
 
@@ -133,9 +133,10 @@ typedef enum {
 
 
 
-/// Creates a new display object
+/// Creates a new display object. Usually you can use topaz_view_manager_create_display() 
+/// instead of calling this function directly.
 ///
-topazDisplay_t * topaz_display_create(topazBackend_t *, topazDisplayAPI_t);
+topazDisplay_t * topaz_display_create(topaz_t *, topazBackend_t *, topazDisplayAPI_t);
 
 
 /// Destroys and cleans up a display API
@@ -143,6 +144,17 @@ topazDisplay_t * topaz_display_create(topazBackend_t *, topazDisplayAPI_t);
 void topaz_display_destroy(topazDisplay_t *);
 
 
+/// Retrieves the camera associated with the display thats 
+/// used for 2d operations. This camera is used when the display is set as 
+/// the main display. see topazViewManager_t
+///
+topazEntity_t * topaz_display_get_camera_2d(topazDisplay_t *);
+
+/// Retrieves the camera associated with the display thats 
+/// used for 3d operations. This camera is used when the display is set as 
+/// the main display. see topazViewManager_t
+///
+topazEntity_t * topaz_display_get_camera_3d(topazDisplay_t *);
 
 
 

@@ -18,7 +18,6 @@ int test__bin_simple();
 int test__bin_advanced();
 
 int main() {
-    topaz_system_configure();
     topazTest_t * driver = topaz_test_create();
     
     ////////////////////

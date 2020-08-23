@@ -46,14 +46,14 @@ typedef struct topazSystem_t topazSystem_t;
 
 
 
-/// Initializes all topaz assets.
+/// Creates a new topaz context. Default system backends are used.
 ///
-/// Upon encountering an irrecoverable error, the statup
-/// function will return 0. Otherwise, it will return 1.
-/// No other functions should be used prior to calling this function.
+topaz_t * topaz_context_create();
+
+
+/// Creates a new topaz context with the given topazSystem_t configuration.
 ///
-///
-topaz_t * topaz_context_create(const topazSystem_t *);
+topaz_t * topaz_context_create_from_system(const topazSystem_t *);
 
 
  

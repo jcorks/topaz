@@ -146,8 +146,6 @@ lib = library(
 )
 
 
-
-
 if get_option('IncludeTests') == true
     message('Making output test executable..')
     test_sources = [
@@ -162,10 +160,10 @@ if get_option('IncludeTests') == true
 
 
     #todo replace with link_lib!
-    src += test_sources
+
     executable(
         'topaz_test',
-        src,
+        src + test_sources,
         include_directories : mainIncdir,
         dependencies : baselibs,
         c_args : compile_args,
@@ -174,3 +172,15 @@ if get_option('IncludeTests') == true
 endif
 
 
+# todo: replace with link_lib!
+executable(
+    'rectangles',
+    src + [
+        'examples/1-Rectangles/main.c', 
+        'examples/1-Rectangles/rectangle.c'
+    ],
+    include_directories : mainIncdir,
+    dependencies : baselibs,
+    c_args : compile_args,
+    link_args : compile_args
+)

@@ -354,7 +354,7 @@ topazInput_t * topaz_input_create(topaz_t * context, topazInputManager_t * t) {
 
     topazEntity_Attributes_t attribs = {};
     attribs.on_step = (topaz_entity_attribute_callback) input_ent__step;
-    attribs.userData = t;
+    attribs.userData = out;
 
     out->contextEnt = topaz_entity_create_with_attributes(context, &attribs);
     for(i = 0; i < topazInputManager_DefaultDevice_Count; ++i) {

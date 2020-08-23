@@ -177,6 +177,7 @@ static void * srgstopaz_buffer_create(
     SRGSTOPAZBuffer * b = malloc(sizeof(SRGSTOPAZBuffer));
     b->buffer = calloc(sizeof(float), numElements);
     b->size = numElements;
+    b->render2dObject = NULL;
     return b;
 }
 static void srgstopaz_buffer_destroy(void * bufferObjectData) {
@@ -844,6 +845,7 @@ void topaz_system_renderer_srgs__api(topazRendererAPI_t * api) {
 
 static void srgstopaz_buffer_update_2d_object(SRGSTOPAZBuffer * b) {
     SRGSTOPAZ2DObject * obj = b->render2dObject;
+    if (!obj) return;
     uint32_t numVertices = sizeof(topazRenderer_2D_Vertex_t) / sizeof(float);
     uint32_t i;
     topazRenderer_2D_Vertex_t * src = b->buffer;

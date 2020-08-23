@@ -110,7 +110,7 @@ static Shape2D * shape2d__retrieve(topazComponent_t * c) {
 
 
 
-topazComponent_t * topaz_state_shape2d(topaz_t * t) {
+topazComponent_t * topaz_shape2d_create(topaz_t * t) {
     Shape2D * data = calloc(1, sizeof(Shape2D));
 
     #ifdef TOPAZDC_DEBUG

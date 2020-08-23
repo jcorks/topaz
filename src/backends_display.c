@@ -1,5 +1,6 @@
 #include <topaz/compat.h>
 #include <topaz/backends/display.h>
+#include <topaz/camera.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -12,13 +13,15 @@
 struct topazDisplay_t {
     topazDisplayAPI_t api;
     topazBackend_t * backend;
+    topazEntity_t * camera2d;
+    topazEntity_t * camera3d;
 };
 
 
 
 
 
-topazDisplay_t * topaz_display_create(topazBackend_t * b, topazDisplayAPI_t api) {
+topazDisplay_t * topaz_display_create(topaz_t * ctx, topazBackend_t * b, topazDisplayAPI_t api) {
     #ifdef TOPAZDC_DEBUG
         assert(b && "topazBackend_t pointer cannot be NULL.");
         assert(api.display_create);
@@ -54,6 +57,8 @@ topazDisplay_t * topaz_display_create(topazBackend_t * b, topazDisplayAPI_t api)
     out->api = api;
     out->backend = b;
     out->api.display_create(&out->api);
+    out->camera2d = topaz_camera_create(ctx);
+    out->camera3d = topaz_camera_create(ctx);
     return out;
 }
 
@@ -85,6 +90,14 @@ topazDisplayAPI_t topaz_display_get_api(topazDisplay_t * t) {
     return t->api;
 }
 
+
+topazEntity_t * topaz_display_get_camera_2d(topazDisplay_t * t) {
+    return t->camera2d;
+}
+
+topazEntity_t * topaz_display_get_camera_3d(topazDisplay_t * t) {
+    return t->camera3d;
+}
 
 
 
