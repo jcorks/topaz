@@ -4,5 +4,10 @@ handlers += {
     'type' : 'display',
     'sources' : ['system/display_ncurses/src/ncurses.c'],
     'shouldTest' : true,
-    'dependencies' : ['ncursesw']
+    'dependencies' : [
+        {
+            'name'          : 'ncursesw',
+            'alternateName' : 'ncurses'
+        }
+    ]
 }

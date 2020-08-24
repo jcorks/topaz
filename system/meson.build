@@ -36,12 +36,15 @@ foreach handler : handlers
 
     # make sure all dependencies are valid
     foreach dep : local__dependencies
-        depCompiled = dependency(dep)
+        depCompiled = dependency(dep.get('name'), required:false)
 
         if depCompiled.found() == false
-            message(''+local__name+':'+local__type+' supported? NO (missing dependency: ' + dep + ')')
-            error('Requested backend cannot be used.')
-            break
+            depCompiled = dependency(dep.get('alternateName'), required:false)
+            if depCompiled.found() == false
+                message(''+local__name+':'+local__type+' supported? NO (missing dependency: ' + dep + ')')
+                error('Requested backend cannot be used.')
+                break
+            endif
         endif
         message('Requested dependency: ' + depCompiled.type_name() + ' : ' + depCompiled.version())
         local__dependenciesCompiled += depCompiled

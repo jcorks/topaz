@@ -1,5 +1,4 @@
-#include <ncurses/ncurses.h>
-
+#include <ncurses.h>
 int main(){
     initscr();
     printw("Test");

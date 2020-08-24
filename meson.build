@@ -68,7 +68,7 @@ if get_option('BuildMode') == 'Debug'
         compile_args += ['-g',  '-Wall']
     endif
     if host_machine.system() != 'windows' and host_machine.system().contains('mingw') == false
-        compile_args += ['-fno-omit-frame-pointer']
+        compile_args += ['-fno-omit-frame-pointer', '-fsanitize=address']
     endif
 endif 
 if get_option('BuildMode') == 'Release'
