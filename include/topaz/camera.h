@@ -93,10 +93,7 @@ void topaz_camera_set_type(topazEntity_t *, topazCamera_Type);
 ///
 void topaz_camera_refresh(topazEntity_t *);
 
-/// Sets whether refreshing of the camera should be handled by the 
-/// engine itself. The default is "true".
-///
-void topaz_camera_set_auto_refresh(topazEntity_t *, int);
+
 
 /// When called, the camera will orient itself so that it "looks"
 /// at the given point in 3D space

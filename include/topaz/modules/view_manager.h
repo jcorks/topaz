@@ -93,6 +93,11 @@ topazDisplay_t * topaz_view_manager_get_main(topazViewManager_t *);
 
 
 
+/// Forces the main display to reflect the last rendered visual.
+/// Normally called for you by the engine.
+///
+void topaz_view_manager_update_view(topazViewManager_t *);
+
 
 /// Gets the current main display's clipboard contents
 /// as a string.

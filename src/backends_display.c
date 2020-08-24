@@ -1,6 +1,8 @@
 #include <topaz/compat.h>
 #include <topaz/backends/display.h>
 #include <topaz/camera.h>
+#include <topaz/topaz.h>
+#include <topaz/entity.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -11,10 +13,13 @@
 
 
 struct topazDisplay_t {
+    topaz_t * ctx;
     topazDisplayAPI_t api;
     topazBackend_t * backend;
     topazEntity_t * camera2d;
     topazEntity_t * camera3d;
+    topazEntity_t * cameraRender;
+    int autoRefresh;
 };
 
 
@@ -59,6 +64,12 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazBackend_t * b, topazDi
     out->api.display_create(&out->api);
     out->camera2d = topaz_camera_create(ctx);
     out->camera3d = topaz_camera_create(ctx);
+    out->cameraRender = topaz_camera_create(ctx);
+    out->ctx = ctx;
+    out->autoRefresh = TRUE;
+    topaz_context_attach_manager(ctx, out->camera2d);
+    topaz_context_attach_manager(ctx, out->camera3d);
+    topaz_context_attach_manager(ctx, out->cameraRender);
     return out;
 }
 
@@ -67,6 +78,9 @@ void topaz_display_destroy(topazDisplay_t * t) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazBackend_t pointer cannot be NULL.");
     #endif
+    topaz_entity_remove(t->camera2d);
+    topaz_entity_remove(t->camera3d);
+    topaz_entity_remove(t->cameraRender);
     t->api.display_destroy(&t->api);
 }
 
@@ -189,8 +203,27 @@ int topaz_display_is_capable(topazDisplay_t * t, topazDisplay_Capability c) {
 
 
 
-void topaz_display_update(topazDisplay_t * t, topazRenderer_Framebuffer_t * f) {
-    t->api.display_update(&t->api, f);
+void topaz_display_update(topazDisplay_t * t) {
+    topazRenderer_Framebuffer_t * fb = topaz_camera_get_framebuffer(t->cameraRender);
+    t->api.display_update(&t->api, fb);
+
+    topaz_camera_swap_buffers(t->cameraRender);
+
+    if (t->autoRefresh) {
+        topaz_camera_refresh(t->cameraRender);
+    }
+
+
+    // need to re-attach to renderer if previous fb was attach to it 
+    // since now it has been swapped.
+    if (topaz_renderer_get_target(topaz_context_get_backend_renderer(t->ctx)) == fb) {
+        topaz_renderer_attach_target(
+            topaz_context_get_backend_renderer(t->ctx),
+            topaz_camera_get_framebuffer(t->cameraRender)
+        );
+    }
+
+
 }
 
 const topazArray_t * topaz_display_supported_framebuffers(topazDisplay_t * t) {
@@ -220,6 +253,10 @@ topazArray_t * topaz_display_get_current_clipboard(topazDisplay_t * t) {
 
 void topaz_display_set_current_clipboard(topazDisplay_t * t, const topazArray_t * s) {
     t->api.display_set_current_clipboard(&t->api, s);
+}
+
+void topaz_display_auto_refresh_camera(topazDisplay_t * d, int doIt) {
+    d->autoRefresh = doIt;
 }
 
 

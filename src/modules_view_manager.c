@@ -35,6 +35,7 @@ DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+
 #ifdef TOPAZDC_DEBUG
 #include <assert.h>
 #endif
@@ -129,6 +130,14 @@ topazDisplay_t * topaz_view_manager_get_main(topazViewManager_t * v) {
     return v->currentDisplay;
 }
 
+void topaz_view_manager_update_view(topazViewManager_t * v) {
+    topazDisplay_t * d = v->currentDisplay;
+    if (d)
+        topaz_display_update(d);
+
+
+
+}
 
 
 

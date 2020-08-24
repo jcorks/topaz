@@ -89,6 +89,34 @@ static void shape2d__on_draw(topazComponent_t * c, Shape2D * s) {
     }
 
 
+    aspect.CheckUpdate();
+
+
+    Camera * cam2d = &GetCamera2D();
+    if (!cam2d) return;
+
+
+    setDisplayMode(aspect.GetPolygon(),
+                   Renderer::DepthTest::NoTest,
+                   (Renderer::AlphaRule)(int)aspect.mode);
+
+    if (round(params2D.contextWidth) != cam2d->Width() ||
+        round(params2D.contextHeight) != cam2d->Height()) {
+
+        UpdateCameraTransforms();
+    }
+
+    if ((int)params2D.etchRule != (int)aspect.etch) {
+        drawBuffer->Render2DVertices(params2D);
+        params2D.etchRule = (Renderer::EtchRule)(int)aspect.etch;
+    }
+
+
+
+    drawBuffer->Queue2DVertices(
+        &aspect.GetVertexIDs()[0],
+        aspect.GetVertexIDs().size()
+    );
 
     
     // TODO: anim mode

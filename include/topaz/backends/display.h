@@ -168,6 +168,10 @@ topazBackend_t * topaz_display_get_backend(topazDisplay_t *);
 topazDisplayAPI_t topaz_display_get_api(topazDisplay_t *);
 
 
+/// Sets whether refreshing of the main-display's camera should be handled by the 
+/// display itself. The default is "true".
+///
+void topaz_display_auto_refresh_camera(topazDisplay_t *, int);
 
 
 
@@ -276,10 +280,9 @@ int topaz_display_is_capable(topazDisplay_t *, topazDisplay_Capability);
 
 
 /// Updates display with input visual data that is 
-/// populated in the internal framebuffer. THe framebuffer's
-/// data canbe populated by modifying the framebuffer in GetSource()
+/// populated in the internal framebuffer.
 ///
-void topaz_display_update(topazDisplay_t *, topazRenderer_Framebuffer_t *);    
+void topaz_display_update(topazDisplay_t *);    
 
 /// Returns the framebuffer types that this renderer supports.
 /// Should the framebuffer not match one of the given types, the framebuffer 

@@ -103,9 +103,20 @@ void topaz_context_resume(topaz_t *);
     
 /// Updates the main engine.
 ///
-///  Not equivalent to a frame, since frame throttling can occur.
+/// Does not include frame throttling
 void topaz_context_iterate(topaz_t *); 
 
+
+/// Performs a stepping operation for the entire engine. This is normally
+/// called through topaz_context_iterate(), which is called by topaz_context_run().
+///
+void topaz_context_step(topaz_t *);
+
+
+/// Performs a drawing operation for the entire engine. This is normally
+/// called through topaz_context_iterate(), which is called by topaz_context_run().
+///
+void topaz_context_draw(topaz_t *);
 
 ///  returns whether the engine is in a paused or broken state.
 ///

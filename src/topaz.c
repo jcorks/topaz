@@ -199,6 +199,11 @@ int topaz_context_run(topaz_t * t) {
 
     while(!t->quit) {
         topaz_context_iterate(t);
+        /// throttle 
+        if (t->fps >= 0) {
+            topaz_context_wait(t, t->fps);
+            
+        }
     }
 
     return 0;
@@ -222,7 +227,7 @@ void topaz_context_resume(topaz_t * t) {
     t->paused = TRUE;
 }
     
-void topaz_context_iterate(topaz_t * t) {
+void topaz_context_step(topaz_t * t) {
     /////// step 
     // Order:
     /*
@@ -263,6 +268,18 @@ void topaz_context_iterate(topaz_t * t) {
     topaz_entity_step(t->managersNP);
     
     
+
+
+
+
+
+
+
+
+}
+
+
+void topaz_context_draw(topaz_t * t) {
     
     
     /////// render 
@@ -278,6 +295,10 @@ void topaz_context_iterate(topaz_t * t) {
     
     
     */
+    topazEntity_t * e;
+    uint32_t i;
+    uint32_t len;
+
     
     len = topaz_array_get_size(t->modules);
     for(i = 0; i < len; ++i) {
@@ -305,14 +326,21 @@ void topaz_context_iterate(topaz_t * t) {
     
     
     
-    /// throttle 
-    if (t->fps >= 0) {
-        topaz_context_wait(t, t->fps);
-        
-    }
+    // commit graphics
+    /*drawBuffer->Render2DVertices(params2D);
+    setDisplayMode(Renderer::Polygon::Triangle,
+                   Renderer::DepthTest::NoTest,
+                   Renderer::AlphaRule::Allow);
+    */
+    topaz_renderer_sync(t->renderer);
+
 }
 
-
+void topaz_context_iterate(topaz_t * t) {
+    topaz_context_step(t);
+    topaz_context_draw(t);
+    topaz_view_manager_update_view(t->viewManager);
+}
 
 int topaz_context_is_paused(const topaz_t * t) {
     return t->paused;
