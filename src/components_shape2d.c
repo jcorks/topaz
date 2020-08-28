@@ -35,6 +35,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/render2d.h>
 #include <topaz/assets/image.h>
 #include <topaz/topaz.h>
+#include <topaz/modules/graphics.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -60,6 +61,7 @@ typedef struct {
     #ifdef TOPAZDC_DEBUG
     char * MAGIC_ID;
     #endif
+    topaz_t * ctx;
     topazAsset_t * id;
     topazRender2D_t * render2d;
     topazColor_t color;
@@ -88,42 +90,40 @@ static void shape2d__on_draw(topazComponent_t * c, Shape2D * s) {
         topaz_render2d_set_vertices(s->render2d, arr);
     }
 
-
-    aspect.CheckUpdate();
-
-
-    Camera * cam2d = &GetCamera2D();
-    if (!cam2d) return;
-
-
-    setDisplayMode(aspect.GetPolygon(),
-                   Renderer::DepthTest::NoTest,
-                   (Renderer::AlphaRule)(int)aspect.mode);
-
-    if (round(params2D.contextWidth) != cam2d->Width() ||
-        round(params2D.contextHeight) != cam2d->Height()) {
-
-        UpdateCameraTransforms();
-    }
-
-    if ((int)params2D.etchRule != (int)aspect.etch) {
-        drawBuffer->Render2DVertices(params2D);
-        params2D.etchRule = (Renderer::EtchRule)(int)aspect.etch;
-    }
-
-
-
-    drawBuffer->Queue2DVertices(
-        &aspect.GetVertexIDs()[0],
-        aspect.GetVertexIDs().size()
+    // now that its finalized, send the shape2d as-is to the graphics 
+    // module for it to be renderered.
+    topaz_graphics_request_draw_2d(
+        topaz_context_get_graphics(s->ctx),
+        s->render2d
     );
-
-    
     // TODO: anim mode
 
 
 }
 
+
+// on attach, the render2d transform instance is attached to the 
+// entity directly rather than through the component. 
+static void shape2d__on_attach(topazComponent_t * c, Shape2D * s) {
+    topazEntity_t * e = topaz_component_get_host(c);
+    #ifdef TOPAZDC_DEBUG 
+        assert(topaz_entity_is_valid(e) && "Shape2D attached to a non-valid entity.");
+    #endif
+    topaz_spatial_set_as_parent(
+        topaz_render2d_get_spatial(s->render2d),
+        topaz_entity_get_spatial(e)
+    );
+}
+
+// unparenting should happen when detaching to not affect 
+// the operation of the render2d instance if used independently of an
+// entity somehow
+static void shape2d__on_detach(topazComponent_t * c, Shape2D * s) {
+    topaz_spatial_set_as_parent(
+        topaz_render2d_get_spatial(s->render2d),
+        NULL        
+    );
+}
 
 
 // retrieves the component and asserts accuracy in debug
@@ -145,18 +145,19 @@ topazComponent_t * topaz_shape2d_create(topaz_t * t) {
     data->MAGIC_ID = MAGIC_ID__SHAPE_2D;
     #endif
 
-    data->render2d = topaz_render2d_create(topaz_context_get_backend_renderer_2d(t));
+    data->render2d = topaz_render2d_create(topaz_graphics_get_renderer_2d(topaz_context_get_graphics(t)));
 
     // create base component and assign attribs
     topazComponent_Attributes_t attribs;
     memset(&attribs, 0, sizeof(topazComponent_Attributes_t));
 
-    //attribs.on_step    = (topaz_component_attribute_callback) shape2d__on_step;
+    attribs.on_attach  = (topaz_component_attribute_callback) shape2d__on_attach;
     attribs.on_draw    = (topaz_component_attribute_callback) shape2d__on_draw;
-    //attribs.on_destroy = (topaz_component_attribute_callback) shape2d__on_destroy;
+    attribs.on_detach  = (topaz_component_attribute_callback) shape2d__on_detach;
 
     attribs.userData = data;
-    return topaz_component_create_with_attributes(TOPAZ_STR_CAST("Shape2D"), t, &attribs);
+    topazComponent_t * out = topaz_component_create_with_attributes(TOPAZ_STR_CAST("Shape2D"), t, &attribs);
+    return out;
 }
 
 

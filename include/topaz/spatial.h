@@ -89,7 +89,7 @@ void topaz_spatial_replace_transform(topazSpatial_t *, topazTransform_t *);
     
 /// Sets the given spatial object as a child of this one
 ///
-void topaz_spatial_set_as_parent(topazSpatial_t *, topazSpatial_t *);
+void topaz_spatial_set_as_parent(topazSpatial_t * child, topazSpatial_t * newParent);
     
 /// invalidates this transfrom manually, causing itself and children to update 
 /// upon next request for its transform.

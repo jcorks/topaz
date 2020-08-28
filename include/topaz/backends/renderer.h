@@ -162,41 +162,8 @@ typedef enum {
 
 
 
-/// Attributes that govern how to process vertices and visuals 
-/// in a general sense. This is usually independent of the processing 
-/// program in the case of 3D rendering.
-///
-typedef struct topazRenderer_ProcessAttribs_t topazRenderer_ProcessAttribs_t;
-
-struct topazRenderer_ProcessAttribs_t {
-    /// The primitive. See topazRenderer_Primitive
-    ///
-    topazRenderer_Primitive primitive;
-
-    /// The depth test. See topazRenderer_DepthTest
-    ///
-    topazRenderer_DepthTest depthTest;
-
-    /// The alpha rule. See topazRenderer_AlphaRule
-    ///
-    topazRenderer_AlphaRule alphaRule;
-
-    /// The texture filtering hint. See topazRenderer_TextureFilterHint
-    ///
-    topazRenderer_TextureFilterHint textureFilter;
-
-};
-
-
-
-
-
-
-
-
-
 /// Allows for etching, which will ignore rendered results if they arent in the etch.
-/// Etch regions last until next frame.
+/// Etch regions last until next frame by default.
 ///
 typedef enum {
     /// Default, no etching is done
@@ -225,6 +192,43 @@ typedef enum {
     topazRenderer_EtchRule_Out       
 
 } topazRenderer_EtchRule;
+
+
+/// Attributes that govern how to process vertices and visuals 
+/// in a general sense. This is usually independent of the processing 
+/// program in the case of 3D rendering.
+///
+typedef struct topazRenderer_ProcessAttribs_t topazRenderer_ProcessAttribs_t;
+
+struct topazRenderer_ProcessAttribs_t {
+    /// The primitive. See topazRenderer_Primitive
+    ///
+    topazRenderer_Primitive primitive;
+
+    /// The depth test. See topazRenderer_DepthTest
+    ///
+    topazRenderer_DepthTest depthTest;
+
+    /// The alpha rule. See topazRenderer_AlphaRule
+    ///
+    topazRenderer_AlphaRule alphaRule;
+
+    /// Etch rule when drawing. 
+    ///
+    topazRenderer_EtchRule  etchRule;        
+
+    /// The texture filtering hint. See topazRenderer_TextureFilterHint
+    ///
+    topazRenderer_TextureFilterHint textureFilter;
+
+};
+
+
+
+
+
+
+
 
 
 
@@ -421,10 +425,6 @@ struct topazRenderer_2D_Context_t {
     /// Output display height.
     ///
     float height;
-
-    /// Etch rule when drawing. 
-    ///
-    topazRenderer_EtchRule etchRule;        
 
     /// Matrix transform. Even though the input vertices are 2D, it 
     /// is possible to get a3D produced visual if the transform calls 

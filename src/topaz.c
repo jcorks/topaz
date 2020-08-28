@@ -30,6 +30,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/topaz.h>
 #include <topaz/system.h>
+#include <topaz/modules/graphics.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
@@ -53,12 +54,12 @@ struct topaz_t {
 
     // singleton-like backends
     topazInputManager_t * inputManager;
-    topazRenderer_t * renderer;
-    topazRenderer_2D_t * renderer2d;
+
     // modules
     topazInput_t * input;
     topazViewManager_t * viewManager;
     topazResources_t * resources;
+    topazGraphics_t * graphics;
 
     topazTime_t * timeRef;
     uint64_t frameEnd;
@@ -116,16 +117,9 @@ topaz_t * topaz_context_create_from_system(const topazSystem_t * a) {
         out->inputManager = topaz_input_manager_create(ref, api);
     }
 
-    {
-        topazRendererAPI_t api;
-        topazBackend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("renderer"), &api);
-        out->renderer   = topaz_renderer_create(ref, api);
-        out->renderer2d = topaz_renderer_2d_create(out->renderer);    
-    }
 
 
     /// create modules    
-    //out->graphics = topaz_graphics_create(a->rendererBackend, &a->rendererAPI);
     out->input = topaz_input_create(out, out->inputManager);
     out->viewManager = topaz_view_manager_create(out);
     out->resources = topaz_resources_create(out);
@@ -138,6 +132,8 @@ topaz_t * topaz_context_create_from_system(const topazSystem_t * a) {
         const topazEntity_Attributes_t * api = topaz_entity_get_attributes(e);
         if (api->on_attach) api->on_attach(e, api->userData);
     }
+
+    out->graphics = topaz_graphics_create(out, out->system);
     return out;
 }
 
@@ -169,7 +165,7 @@ void topaz_context_destroy(topaz_t * t) {
     topaz_input_destroy(t->input);
     topaz_view_manager_destroy(t->viewManager);
     topaz_resources_destroy(t->resources);
-    topaz_renderer_destroy(t->renderer);
+    topaz_graphics_destroy(t->graphics);
 
     free(t);
         
@@ -299,7 +295,7 @@ void topaz_context_draw(topaz_t * t) {
     uint32_t i;
     uint32_t len;
 
-    
+
     len = topaz_array_get_size(t->modules);
     for(i = 0; i < len; ++i) {
         e = topaz_array_at(t->modules, topazEntity_t *, i);
@@ -322,17 +318,8 @@ void topaz_context_draw(topaz_t * t) {
         topaz_entity_draw(t->managers);
     }    
     topaz_entity_draw(t->managersNP);
-    
-    
-    
-    
-    // commit graphics
-    /*drawBuffer->Render2DVertices(params2D);
-    setDisplayMode(Renderer::Polygon::Triangle,
-                   Renderer::DepthTest::NoTest,
-                   Renderer::AlphaRule::Allow);
-    */
-    topaz_renderer_sync(t->renderer);
+    topaz_graphics_sync(t->graphics);
+
 
 }
 
@@ -449,13 +436,8 @@ topazResources_t * topaz_context_get_resources(const topaz_t * t) {
     return ((topaz_t*)t)->resources;
 }
 
-
-
-
-topazRenderer_t * topaz_context_get_backend_renderer(topaz_t * t) {
-    return t->renderer;
+topazGraphics_t * topaz_context_get_graphics(topaz_t * t) {
+    return t->graphics;
 }
 
-topazRenderer_2D_t * topaz_context_get_backend_renderer_2d(topaz_t * t) {
-    return t->renderer2d;
-}
+

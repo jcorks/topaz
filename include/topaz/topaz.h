@@ -43,6 +43,7 @@ DEALINGS IN THE SOFTWARE.
 */
 typedef struct topaz_t topaz_t;
 typedef struct topazSystem_t topazSystem_t;
+typedef struct topazGraphics_t topazGraphics_t;
 
 
 

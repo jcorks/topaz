@@ -33,6 +33,7 @@ DEALINGS IN THE SOFTWARE.
 #define H_TOPAZDC__GRAPHICS__INCLUDED
 
 typedef struct topaz_t topaz_t;
+typedef struct topazSystem_t topazSystem_t;
 typedef struct topazRender2D_t topazRender2D_t;
 typedef struct topazRenderer_2D_t topazRenderer_2D_t;
 typedef struct topazRenderer_t topazRenderer_t;
@@ -56,7 +57,7 @@ typedef struct topazGraphics_t topazGraphics_t;
 /// topaz_t has a default instance that it generates for you. 
 /// See topaz_context_get_graphics();
 ///
-topazGraphics_t * topaz_graphics_create(topaz_t *, topazSystem_t *);
+topazGraphics_t * topaz_graphics_create(topaz_t *, const topazSystem_t *);
 
 /// Destroys and frees a topaz input instance.
 ///
@@ -78,6 +79,11 @@ topazRenderer_2D_t * topaz_graphics_get_renderer_2d(topazGraphics_t *);
 /// attempt to be grouped together to accelerate the rendering process
 ///
 void topaz_graphics_request_draw_2d(topazGraphics_t *, topazRender2D_t *);
+
+/// Ensures that all graphics operations have finished and are pushed 
+/// to attached displays.
+////
+void topaz_graphics_sync(topazGraphics_t *);
 
 //void topaz_graphics_draw_3d(topazRenderMesh_t *);
 

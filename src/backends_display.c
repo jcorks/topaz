@@ -3,6 +3,7 @@
 #include <topaz/camera.h>
 #include <topaz/topaz.h>
 #include <topaz/entity.h>
+#include <topaz/modules/graphics.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -216,9 +217,9 @@ void topaz_display_update(topazDisplay_t * t) {
 
     // need to re-attach to renderer if previous fb was attach to it 
     // since now it has been swapped.
-    if (topaz_renderer_get_target(topaz_context_get_backend_renderer(t->ctx)) == fb) {
+    if (topaz_renderer_get_target(topaz_graphics_get_renderer(topaz_context_get_graphics(t->ctx))) == fb) {
         topaz_renderer_attach_target(
-            topaz_context_get_backend_renderer(t->ctx),
+            topaz_graphics_get_renderer(topaz_context_get_graphics(t->ctx)),
             topaz_camera_get_framebuffer(t->cameraRender)
         );
     }

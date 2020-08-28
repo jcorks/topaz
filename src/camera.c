@@ -37,6 +37,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/topaz.h>
 #include <topaz/entity.h>
 #include <topaz/assets/image.h>
+#include <topaz/modules/graphics.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -108,7 +109,7 @@ static topazAsset_t * camera__copy_fb(topaz_t *, topazRenderer_Framebuffer_t *);
 
 topazEntity_t * topaz_camera_create(topaz_t * t) {
     TopazCamera * c = calloc(1, sizeof(TopazCamera));
-    topazRenderer_t * r = topaz_context_get_backend_renderer(t);
+    topazRenderer_t * r = topaz_graphics_get_renderer(topaz_context_get_graphics(t));
     #ifdef TOPAZDC_DEBUG
         c->MAGIC_ID = MAGIC_ID__CAMERA;
     #endif

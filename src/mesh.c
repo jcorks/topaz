@@ -3,6 +3,7 @@
 #include <topaz/math.h>
 #include <topaz/topaz.h>
 #include <topaz/mesh.h>
+#include <topaz/modules/graphics.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -71,7 +72,7 @@ topazMesh_t * topaz_mesh_clone(const topazMesh_t * src) {
         float * buffer = malloc(numFlt*sizeof(float));
         topaz_renderer_buffer_read(src->v, buffer, 0, numFlt);
         out->v = topaz_renderer_buffer_create(
-            topaz_context_get_backend_renderer(src->ctx),
+            topaz_graphics_get_renderer(topaz_context_get_graphics(src->ctx)),
             buffer,
             numFlt
         );
@@ -115,7 +116,7 @@ void topaz_mesh_set_vertex_count(topazMesh_t * m, uint32_t i) {
         topaz_renderer_buffer_destroy(m->v);
 
     m->v = topaz_renderer_buffer_create(
-        topaz_context_get_backend_renderer(m->ctx),
+        topaz_graphics_get_renderer(topaz_context_get_graphics(m->ctx)),
         NULL,
         TOPAZ_V_TO_FLOATS(i)
     );
@@ -126,7 +127,7 @@ void topaz_mesh_define_vertices(topazMesh_t * m, const topazArray_t * s) {
         topaz_renderer_buffer_destroy(m->v);
     
     m->v = topaz_renderer_buffer_create(
-        topaz_context_get_backend_renderer(m->ctx),
+        topaz_graphics_get_renderer(topaz_context_get_graphics(m->ctx)),
         topaz_array_get_data(s),
         TOPAZ_V_TO_FLOATS(topaz_array_get_size(s))
     );

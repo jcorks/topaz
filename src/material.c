@@ -32,6 +32,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/containers/array.h>
 #include <topaz/material.h>
 #include <topaz/backends/renderer.h>
+#include <topaz/modules/graphics.h>
 #include <topaz/topaz.h>
 #include <topaz/assets/image.h>
 #include <stdlib.h>
@@ -72,7 +73,7 @@ struct topazMaterial_t {
 
 topazMaterial_t * topaz_material_create(topaz_t * t) {
     topazMaterial_t * out = calloc(1, sizeof(topazMaterial_t));
-    topazRenderer_t * r = topaz_context_get_backend_renderer(t);
+    topazRenderer_t * r = topaz_graphics_get_renderer(topaz_context_get_graphics(t));
     out->dataSrc = default_program_data;
     out->program = topaz_renderer_program_get_preset(
         r, 
@@ -94,7 +95,9 @@ topazMaterial_t * topaz_material_clone(const topazMaterial_t * m) {
     out->textureSlots = topaz_array_clone(m->textureSlots);
     out->textureObjects = topaz_array_clone(m->textureObjects);
     out->materialData = topaz_renderer_buffer_create(
-        topaz_context_get_backend_renderer(m->ctx),
+        topaz_graphics_get_renderer(
+            topaz_context_get_graphics(m->ctx)
+        ),
         (float*)&out->dataSrc,
         44
     );

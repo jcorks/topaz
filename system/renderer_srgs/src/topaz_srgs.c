@@ -563,7 +563,7 @@ void srgstopaz_draw_2d(
     uint32_t i;
     uint32_t len = topaz_array_get_size(twod->queue);
     uint32_t * iter = topaz_array_get_data(twod->queue);
-    switch(ctx->etchRule) {
+    switch(attribs->etchRule) {
       case topazRenderer_EtchRule_NoEtching: 
         break; // fastpath: just turn off etching
       case topazRenderer_EtchRule_Define:

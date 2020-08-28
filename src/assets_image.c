@@ -34,6 +34,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/containers/array.h>
 #include <topaz/topaz.h>
 #include <topaz/backends/renderer.h>
+#include <topaz/modules/graphics.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -235,7 +236,7 @@ topazImage_Frame_t * topaz_image_add_frame(topazAsset_t * a) {
     TopazImage * img = image__retrieve(a);
     topazImage_Frame_t * frame = calloc(sizeof(topazImage_Frame_t), 1);
     frame->img = img;
-    frame->object = topaz_renderer_texture_create(topaz_context_get_backend_renderer(img->ctx), 4, 4, default_texture_data);
+    frame->object = topaz_renderer_texture_create(topaz_graphics_get_renderer(topaz_context_get_graphics(img->ctx)), 4, 4, default_texture_data);
     topaz_array_push(img->frames, frame);
     return frame;
 }
@@ -291,7 +292,9 @@ void topaz_image_resize(
 
         topaz_renderer_texture_destroy(f->object);
         f->object = topaz_renderer_texture_create(
-            topaz_context_get_backend_renderer(f->img->ctx),
+            topaz_graphics_get_renderer(
+                topaz_context_get_graphics(f->img->ctx)
+            ),
             width, height, NULL
         );
 
@@ -314,7 +317,9 @@ void topaz_image_frame_set_from_texture(
     topaz_renderer_texture_get(t, newData);
 
     f->object = topaz_renderer_texture_create(
-        topaz_context_get_backend_renderer(f->img->ctx),
+        topaz_graphics_get_renderer(
+            topaz_context_get_graphics(f->img->ctx)
+        ),
         w, h, newData
     );
 }

@@ -117,5 +117,9 @@ const topazArray_t * topaz_render2d_get_vertices(const topazRender2D_t *);
 void topaz_render2d_set_vertices(topazRender2D_t *, const topazArray_t *);
 
 
+/// Retrieves information needed to render this object with the low-level
+/// renderer
+///
+uint32_t topaz_render2d_get_render_data(topazRender2D_t *, topazRenderer_ProcessAttribs_t *);
 
 #endif

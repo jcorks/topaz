@@ -41,9 +41,7 @@ struct topazRender2D_t {
     topazRenderer_Buffer_t * vertexSrc;
     uint32_t objectID;
     int absolute;
-    topazRenderer_EtchRule etch;
-    topazRenderer_AlphaRule alphaRule;
-    topazRenderer_Primitive polygon;
+    topazRenderer_ProcessAttribs_t attribs;
 
     topazSpatial_t * spatial;    
     topazRenderer_2D_t * renderer;
@@ -83,9 +81,11 @@ topazRender2D_t * topaz_render2d_create(topazRenderer_2D_t * r) {
     out->spatial = topaz_spatial_create();
 
     topaz_renderer_2d_add_objects(out->renderer, &out->objectID, 1);
-    out->etch = topazRenderer_EtchRule_Out;
-    out->polygon = topazRenderer_Primitive_Triangle;
-    out->alphaRule = topazRenderer_AlphaRule_Allow;
+    out->attribs.primitive = topazRenderer_Primitive_Triangle;
+    out->attribs.depthTest = topazRenderer_DepthTest_None;
+    out->attribs.alphaRule = topazRenderer_AlphaRule_Allow;
+    out->attribs.etchRule  = topazRenderer_EtchRule_NoEtching;
+    out->attribs.textureFilter = topazRenderer_TextureFilterHint_Linear;
     topaz_spatial_add_update_callback(
         out->spatial,
         (void(*)(topazSpatial_t *, void *))topaz_render2d_update_transform,
@@ -108,20 +108,20 @@ void topaz_render2d_destroy(topazRender2D_t * t) {
 
 
 topazRenderer_EtchRule topaz_render2d_get_etch_rule(const topazRender2D_t * t) {
-    return t->etch;
+    return t->attribs.etchRule;
 }
 
 void topaz_render2d_set_etch_rule(topazRender2D_t * t, topazRenderer_EtchRule e) {
-    t->etch = e;
+    t->attribs.etchRule = e;
 }
 
 
 topazRenderer_AlphaRule topaz_render2d_get_alpha_rule(const topazRender2D_t * t) {
-    return t->alphaRule;
+    return t->attribs.alphaRule;
 }
 
 void topaz_render2d_set_alpha_rule(topazRender2D_t * t, topazRenderer_AlphaRule a) {
-    t->alphaRule = a;
+    t->attribs.alphaRule = a;
 }
 
 
@@ -150,11 +150,11 @@ void topaz_render2d_set_absolute(topazRender2D_t * t, int a) {
 
 
 topazRenderer_Primitive topaz_render2d_get_primitive(const topazRender2D_t * t) {
-    return t->polygon;
+    return t->attribs.primitive;
 }
 
 void topaz_render2d_set_primitive(topazRender2D_t * t, topazRenderer_Primitive p) {
-    t->polygon = p;
+    t->attribs.primitive = p;
 }
 
 
@@ -212,4 +212,11 @@ void topaz_render2d_set_vertices(topazRender2D_t * t, const topazArray_t * src) 
 
 
 
+}
+
+uint32_t topaz_render2d_get_render_data(
+    topazRender2D_t * r,
+    topazRenderer_ProcessAttribs_t * p) {
+    *p = r->attribs;
+    return r->objectID;
 }
