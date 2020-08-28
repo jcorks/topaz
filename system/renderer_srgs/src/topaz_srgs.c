@@ -239,9 +239,9 @@ typedef struct {
     srgs_t * ctx;
     srgs_id_t renderlistID;
     srgs_id_t projectionID; // always orthographic, but needs to use the width/height in context object
+    srgs_id_t viewID;
     topazBin_t * objects;
     topazArray_t * queue;
-    srgs_id_t contextTransform; // given by the context object.
     // for the projection transform
     float width;
     float height;
@@ -275,6 +275,10 @@ static void * srgstopaz_2d_create (topazRendererAPI_t * r) {
     out->queue    = topaz_array_create(sizeof(uint32_t));
     out->ctx = ((SRGSTOPAZCore*)r->implementationData)->ctx;
     out->renderlistID = srgs_renderlist_create(out->ctx);
+    out->projectionID = srgs_matrix_create(out->ctx);
+    out->viewID = srgs_matrix_create(out->ctx);
+    srgs_renderlist_set_projection_transform(out->ctx, out->renderlistID, out->projectionID);
+    srgs_renderlist_set_view_transform(out->ctx, out->renderlistID, out->viewID);
     return out;
 }
 static void srgstopaz_2d_destroy(void * d) {
@@ -390,20 +394,6 @@ struct SRGSTOPAZFramebuffer {
 
 
 
-static void * srgstopaz_framebuffer_create(
-    topazRendererAPI_t * r, 
-    topazRenderer_FramebufferAPI_t * api
-) {
-    SRGSTOPAZFramebuffer * out = calloc(1, sizeof(SRGSTOPAZFramebuffer));
-    out->w = 640;
-    out->h = 480;
-    out->ctx = ((SRGSTOPAZCore*)r->implementationData)->ctx;;
-    out->colorbuffer = srgs_texture_create(out->ctx, out->w/3, out->h/3);
-    out->depthbuffer = srgs_texture_create(out->ctx, out->w/3, out->h/3);
-    out->maskbuffer = srgs_texture_create(out->ctx, out->w/3, out->h/3);
-    out->outputRaw = NULL;
-    return out;
-}
 static void   srgstopaz_framebuffer_destroy (void * fbSrc) {
     SRGSTOPAZFramebuffer * fb = fbSrc;
     srgs_texture_destroy(fb->ctx, fb->colorbuffer);
@@ -424,10 +414,23 @@ static int      srgstopaz_framebuffer_resize(void * fbSrc, int w, int h) {
     return TRUE;
 }
 
+static void * srgstopaz_framebuffer_create(
+    topazRendererAPI_t * r, 
+    topazRenderer_FramebufferAPI_t * api
+) {
+    SRGSTOPAZFramebuffer * out = calloc(1, sizeof(SRGSTOPAZFramebuffer));
+    out->ctx = ((SRGSTOPAZCore*)r->implementationData)->ctx;;
+    out->colorbuffer = srgs_texture_create(out->ctx, out->w/3, out->h/3);
+    out->depthbuffer = srgs_texture_create(out->ctx, out->w/3, out->h/3);
+    out->maskbuffer = srgs_texture_create(out->ctx, out->w/3, out->h/3);
+    srgstopaz_framebuffer_resize(out, 640, 480);
+    return out;
+}
+
 static void srgstopaz_fb_update(void * fbSrc) {
     SRGSTOPAZFramebuffer * fb = fbSrc;
     uint32_t x, y;
-    const uint32_t * internalRaw = (uint32_t*)srgs_texture_get_data(fbSrc, fb->colorbuffer);
+    const uint32_t * internalRaw = (uint32_t*)srgs_texture_get_data(fb->ctx, fb->colorbuffer);
     uint32_t * outputRaw_r0;
     uint32_t * outputRaw_r1;
     uint32_t * outputRaw_r2;
@@ -449,9 +452,11 @@ static void srgstopaz_fb_update(void * fbSrc) {
             *outputRaw_r0 = *internalRaw; outputRaw_r0++;
             *outputRaw_r1 = *internalRaw; outputRaw_r1++;
             *outputRaw_r2 = *internalRaw; outputRaw_r2++;
+//            printf("%d", *internalRaw);
 
             internalRaw++;
         }
+//        printf("\n");
 
     }
 }
@@ -522,12 +527,14 @@ void srgstopaz_draw_2d(
         topaz_array_get_data(twod->queue)
     );
 
-    // reset queue
-    topaz_array_set_size(twod->queue, 0);
+
 
     // if no attached framebuffer, dont render
-    if (!core->fb) return;
-
+    if (!core->fb) {
+        // reset queue
+        topaz_array_set_size(twod->queue, 0);
+        return;
+    }
     // projection needs to come from the context object
     if (twod->width  != ctx->width ||
         twod->height != ctx->height) {
@@ -539,7 +546,7 @@ void srgstopaz_draw_2d(
         srgs_utility_matrix_projection_orthographic(
             &m,
             0, twod->width,
-            twod->height, 0,
+            0, twod->height,
             -256,
             256
         );
@@ -553,48 +560,40 @@ void srgstopaz_draw_2d(
     if (ctx->transform) {
         m = *(srgs_matrix_t*)ctx->transform;
     }
-    srgs_matrix_set(twod->ctx, twod->contextTransform, &m);
+    srgs_matrix_set(twod->ctx, twod->viewID, &m);
 
 
-    int renderMode = 0;
 
 
     // set the proper mask for all objects
     uint32_t i;
     uint32_t len = topaz_array_get_size(twod->queue);
     uint32_t * iter = topaz_array_get_data(twod->queue);
+
+    srgs__object_render_mode renderMode = srgs__object_render_mode__color;
+    srgs__object_depth_mode  dmode = srgs__object_depth_mode__less;
+    srgs__object_mask_mode   mmode = srgs__object_mask_mode__none;
+
     switch(attribs->etchRule) {
       case topazRenderer_EtchRule_NoEtching: 
         break; // fastpath: just turn off etching
       case topazRenderer_EtchRule_Define:
         renderMode |= srgs__object_render_mode__mask;
-        for(i = 0; i < len; ++i) {
-            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
-            srgs_object_set_mask_mode(obj->ctx, obj->objectID, srgs__object_mask_mode__write_on);
-        }
+        mmode = srgs__object_mask_mode__write_on;
         break;
       case topazRenderer_EtchRule_Undefine:
         renderMode |= srgs__object_render_mode__mask;
-        for(i = 0; i < len; ++i) {
-            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
-            srgs_object_set_mask_mode(obj->ctx, obj->objectID, srgs__object_mask_mode__write_off);
-        }
+        mmode = srgs__object_mask_mode__write_off;
         break;
 
       case topazRenderer_EtchRule_In:
         renderMode |= srgs__object_render_mode__mask;
-        for(i = 0; i < len; ++i) {
-            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
-            srgs_object_set_mask_mode(obj->ctx, obj->objectID, srgs__object_mask_mode__read_on);
-        }
+        mmode = srgs__object_mask_mode__read_on;
         break;
 
       case topazRenderer_EtchRule_Out:
         renderMode |= srgs__object_render_mode__mask;
-        for(i = 0; i < len; ++i) {
-            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
-            srgs_object_set_mask_mode(obj->ctx, obj->objectID, srgs__object_mask_mode__read_off);
-        }
+        mmode = srgs__object_mask_mode__read_off;
         break;
     }
 
@@ -603,43 +602,27 @@ void srgstopaz_draw_2d(
     // set depth test
     switch(attribs->depthTest) {
       case topazRenderer_DepthTest_Less:
-        renderMode |= srgs__object_render_mode__mask;
-        for(i = 0; i < len; ++i) {
-            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
-            srgs_object_set_depth_mode(obj->ctx, obj->objectID, srgs__object_depth_mode__less);
-        }
+        renderMode |= srgs__object_render_mode__depth;
+        dmode = srgs__object_depth_mode__less;
         break;
 
       case topazRenderer_DepthTest_LEQ:
-        renderMode |= srgs__object_render_mode__mask;
-        for(i = 0; i < len; ++i) {
-            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
-            srgs_object_set_depth_mode(obj->ctx, obj->objectID, srgs__object_depth_mode__lessequal);
-        }
+        renderMode |= srgs__object_render_mode__depth;
+        dmode = srgs__object_depth_mode__lessequal;
         break;
 
       case topazRenderer_DepthTest_Greater:
-        renderMode |= srgs__object_render_mode__mask;
-        for(i = 0; i < len; ++i) {
-            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
-            srgs_object_set_depth_mode(obj->ctx, obj->objectID, srgs__object_depth_mode__greater);
-        }
+        renderMode |= srgs__object_render_mode__depth;
+        dmode = srgs__object_depth_mode__greater;
         break;
 
       case topazRenderer_DepthTest_GEQ:
-        renderMode |= srgs__object_render_mode__mask;
-        for(i = 0; i < len; ++i) {
-            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
-            srgs_object_set_depth_mode(obj->ctx, obj->objectID, srgs__object_depth_mode__greaterequal);
-        }
+        renderMode |= srgs__object_render_mode__depth;
+        dmode = srgs__object_depth_mode__greaterequal;
         break;
 
       case topazRenderer_DepthTest_Equal:
-        renderMode |= srgs__object_render_mode__mask;
-        for(i = 0; i < len; ++i) {
-            SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
-            srgs_object_set_depth_mode(obj->ctx, obj->objectID, srgs__object_depth_mode__equal);
-        }
+        renderMode |= srgs__object_render_mode__depth;
         break;
 
       case topazRenderer_DepthTest_None:
@@ -648,6 +631,15 @@ void srgstopaz_draw_2d(
 
 
     }
+    
+    // need to go through each object to apply the info
+    for(i = 0; i < len; ++i) {
+        SRGSTOPAZ2DObject * obj = topaz_bin_fetch(twod->objects, iter[i]);
+        srgs_object_set_render_mode(obj->ctx, obj->objectID, renderMode);
+        srgs_object_set_depth_mode(obj->ctx, obj->objectID, dmode);
+        srgs_object_set_mask_mode(obj->ctx, obj->objectID, mmode);
+    }
+
 
     // alpha is ignored for now
     // texture filter hint is ignored for now.
@@ -664,6 +656,9 @@ void srgstopaz_draw_2d(
 
     // push to extra arrays
     srgstopaz_fb_update(core->fb);
+
+    // reset queue
+    topaz_array_set_size(twod->queue, 0);
 }
 
 
@@ -716,7 +711,7 @@ void srgstopaz_sync(topazRendererAPI_t * api) {
 
 void srgstopaz_attach_target(topazRendererAPI_t * api, void * fbSrc) {
     SRGSTOPAZCore * core = api->implementationData;
-    core->fb = fbSrc;
+    core->fb = fbSrc; // NULL ok?
 
 }
 
@@ -846,14 +841,16 @@ void topaz_system_renderer_srgs__api(topazRendererAPI_t * api) {
 static void srgstopaz_buffer_update_2d_object(SRGSTOPAZBuffer * b) {
     SRGSTOPAZ2DObject * obj = b->render2dObject;
     if (!obj) return;
-    uint32_t numVertices = sizeof(topazRenderer_2D_Vertex_t) / sizeof(float);
+    uint32_t numFloats = sizeof(topazRenderer_2D_Vertex_t) / sizeof(float);
+    uint32_t numVertices = b->size / numFloats;
     uint32_t i;
     topazRenderer_2D_Vertex_t * src = b->buffer;
-    srgs_object_set_vertex_count(obj->ctx, obj->objectID, b->size / numVertices);
-
+    srgs_object_set_vertex_count(obj->ctx, obj->objectID, numVertices);
     topazVector_t pos;
     pos.z = 0;
+    uint32_t * indices = malloc(sizeof(uint32_t)*numVertices);
     for(i = 0; i < numVertices; ++i, src++) {
+        indices[i] = i;
         pos.x = src->x;
         pos.y = src->y;
         srgs_object_update_vertices(
@@ -880,5 +877,13 @@ static void srgstopaz_buffer_update_2d_object(SRGSTOPAZBuffer * b) {
             (float*)&(src->r)
         );
     }
+
+    srgs_object_define_indices(
+        obj->ctx,
+        obj->objectID,
+        numVertices,
+        indices
+    );
+    free(indices);
 }
 

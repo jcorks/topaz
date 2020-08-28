@@ -71,8 +71,8 @@ struct topazEntity_t {
     int valid;
 };
 
-int priority_comp(const topazEntity_t * a, const topazEntity_t * b) {
-    return a->priority < b->priority;
+int priority_comp(const topazEntity_t ** a, const topazEntity_t ** b) {
+    return (*a)->priority < (*b)->priority;
 }
 
 topazEntity_t * topaz_entity_null() {
@@ -376,7 +376,7 @@ void topaz_entity_attach(topazEntity_t * e, topazEntity_t * child) {
     } else {
         uint32_t iter = topaz_array_lower_bound(
             e->children, 
-            child, 
+            &child, 
             (int(*)(const void *, const void *))priority_comp
         );
         topaz_array_insert(e->children, iter, child);

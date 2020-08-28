@@ -125,7 +125,7 @@ topazEntity_t * topaz_camera_create(topaz_t * t) {
     c->nearClip = 0.01;
     c->farClip = 100;
     
-    topazEntity_Attributes_t attr;
+    topazEntity_Attributes_t attr = {};
 
     attr.userData = c;
     attr.on_step = camera__on_step;
@@ -299,6 +299,15 @@ void topaz_camera_swap_buffers(topazEntity_t * e) {
     topazRenderer_Framebuffer_t * fb = c->fb;
     c->fb = c->fbAux;
     c->fbAux = fb;
+    
+    topazRenderer_t * ctx = topaz_graphics_get_renderer(
+        topaz_context_get_graphics(c->ctx)
+    );
+
+    // need to also swap targets
+    if (topaz_renderer_get_target(ctx) == fb) {
+        topaz_renderer_attach_target(ctx, c->fb);
+    }
 }
 
 topazRenderer_Buffer_t * topaz_camera_get_view_transform(

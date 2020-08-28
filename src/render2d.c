@@ -206,6 +206,11 @@ void topaz_render2d_set_vertices(topazRender2D_t * t, const topazArray_t * src) 
             srcData,
             (sizeof(topazRenderer_2D_Vertex_t) / sizeof(float)) * srcLen
         );
+        topaz_renderer_2d_set_object_vertices(
+            t->renderer,
+            t->objectID,
+            t->vertexSrc
+        );
     }
 
 

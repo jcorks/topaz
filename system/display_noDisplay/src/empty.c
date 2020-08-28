@@ -99,7 +99,6 @@ void topaz_system_display_noDisplay__api(topazDisplayAPI_t * api) {
     api->display_has_input_focus = (int (*)(topazDisplayAPI_t *)) api_nothing;
     api->display_lock_client_resize = (void (*)(topazDisplayAPI_t *, int)) api_nothing;
     api->display_lock_client_position = (void (*)(topazDisplayAPI_t *, int)) api_nothing;
-    api->display_set_view_policy = (void (*)(topazDisplayAPI_t *, topazDisplay_ViewPolicy)) api_nothing;
     api->display_get_height = (int (*)(topazDisplayAPI_t *)) api_nothing;
     api->display_get_width = (int (*)(topazDisplayAPI_t *)) api_nothing;
     api->display_get_x = (int (*)(topazDisplayAPI_t *)) api_nothing;

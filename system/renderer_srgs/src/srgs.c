@@ -487,7 +487,7 @@ void srgs_object_update_vertices(
 ) {
     srgs_object_t * o = id_table_fetch(t->objects, srgs_object_t, id);   
     uint32_t i;
-    float * iter = o->verticesInterleaved;
+    float * iter = o->verticesInterleaved+SRGS__FLOATS_PER_VERTEX*fromVertexIndex;
     switch(c) {
       case srgs__object_vertex_channel__position:
         for(i = fromVertexIndex; i <= toVertexIndex; ++i) {
@@ -1667,7 +1667,7 @@ static void srgs_render__renderlist(
             srgs_utility_matrix_transform_inplace(&tf2, pos+1, &pos1w);
             srgs_utility_matrix_transform_inplace(&tf2, pos+2, &pos2w);
 
-
+            /*
             pos[0].x /= pos[0].z;
             pos[0].y /= pos[0].z;
             pos[1].x /= pos[1].z;
@@ -1678,7 +1678,7 @@ static void srgs_render__renderlist(
             pos0w = 1 / pos[0].z;
             pos1w = 1 / pos[1].z;
             pos2w = 1 / pos[2].z;
-
+            */
 
             // prepare barycentric transform.
             // this determines which fragments are within the object.
@@ -1812,6 +1812,15 @@ static void srgs_render__renderlist(
                             colorBaseR *= (texture->data[fetch+0] / (float)0xff);
                             colorBaseG *= (texture->data[fetch+1] / (float)0xff);
                             colorBaseB *= (texture->data[fetch+2] / (float)0xff);
+
+                        }
+
+                        if (obj->renderMode & srgs__object_render_mode__texture ||
+                            obj->renderMode & srgs__object_render_mode__color) {
+                            framebuffer->data[fragment  ] = (colorBaseR)*0xff;
+                            framebuffer->data[fragment+1] = (colorBaseG)*0xff;
+                            framebuffer->data[fragment+2] = (colorBaseB)*0xff;
+                            framebuffer->data[fragment+3] = 0xff;
 
                         }
 

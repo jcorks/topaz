@@ -21,6 +21,7 @@ struct topazDisplay_t {
     topazEntity_t * camera3d;
     topazEntity_t * cameraRender;
     int autoRefresh;
+    topazDisplay_ViewPolicy vp;
 };
 
 
@@ -68,6 +69,7 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazBackend_t * b, topazDi
     out->cameraRender = topaz_camera_create(ctx);
     out->ctx = ctx;
     out->autoRefresh = TRUE;
+    out->vp = topazDisplay_ViewPolicy_MatchSize;
     topaz_context_attach_manager(ctx, out->camera2d);
     topaz_context_attach_manager(ctx, out->camera3d);
     topaz_context_attach_manager(ctx, out->cameraRender);
@@ -114,6 +116,9 @@ topazEntity_t * topaz_display_get_camera_3d(topazDisplay_t * t) {
     return t->camera3d;
 }
 
+topazEntity_t * topaz_display_get_camera_render(topazDisplay_t * t) {
+    return t->cameraRender;
+}
 
 
 
@@ -121,6 +126,8 @@ topazEntity_t * topaz_display_get_camera_3d(topazDisplay_t * t) {
 
 void topaz_display_resize(topazDisplay_t * t, int w, int h) {
     t->api.display_resize(&t->api, w, h);
+    if (t->vp == topazDisplay_ViewPolicy_MatchSize)
+        topaz_camera_set_render_resolution(t->cameraRender, w, h);
 }
 
 void topaz_display_set_position(topazDisplay_t * t, int x, int y) {
@@ -148,7 +155,7 @@ void topaz_display_lock_client_position(topazDisplay_t * t, int h) {
 }
 
 void topaz_display_set_view_policy(topazDisplay_t * t, topazDisplay_ViewPolicy p) {
-    t->api.display_set_view_policy(&t->api, p);
+    t->vp = p;
 }
 
 

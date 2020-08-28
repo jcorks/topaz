@@ -3,6 +3,7 @@
 #include <topaz/render2d.h>
 #include <topaz/backends/display.h>
 #include <topaz/modules/view_manager.h>
+#include <topaz/matrix.h>
 #include <topaz/system.h>
 #include <topaz/topaz.h>
 #include <topaz/camera.h>
@@ -28,6 +29,7 @@ topazGraphics_t * topaz_graphics_create(topaz_t * ctx, const topazSystem_t * sys
     out->renderer   = topaz_renderer_create(ref, api);
     out->renderer2d = topaz_renderer_2d_create(out->renderer);    
     out->ctx2d.transform = &out->ctxMatrix;
+    topaz_matrix_set_identity(&out->ctxMatrix);
     return out;
 }
 
@@ -83,27 +85,28 @@ void topaz_graphics_request_draw_2d(topazGraphics_t * g, topazRender2D_t * objec
     set_display_mode_2d(g, &attribs);
 
     topazDisplay_t * d = topaz_view_manager_get_main(topaz_context_get_view_manager(g->ctx));
+    if (!d) return;
+
+    
 
     // TODO: update on some sort of signal from the camera
     if ((int)g->ctx2d.width  != (int)topaz_display_get_width(d) ||
         (int)g->ctx2d.height != (int)topaz_display_get_height(d)) {
 
-        // flush before continue;
-        topaz_renderer_draw_2d(
-            g->renderer,
-            g->renderer2d,
-            &g->ctx2d,
-            &g->lastAttr
-        );
 
-        // recommit 
-        topazRenderer_Buffer_t * buffer = topaz_camera_get_projection_transform(topaz_display_get_camera_2d(d));
-        topaz_renderer_buffer_read(
-            buffer,
-            (float*)&g->ctxMatrix,
-            0, 16
-        );
-    } 
+
+        g->ctx2d.width = topaz_display_get_width(d);
+        g->ctx2d.height = topaz_display_get_height(d);
+    }
+
+
+    // recommit 
+    topazRenderer_Buffer_t * buffer = topaz_camera_get_view_transform(topaz_display_get_camera_2d(d));
+    topaz_renderer_buffer_read(
+        buffer,
+        (float*)&g->ctxMatrix,
+        0, 16
+    );
 
     topaz_renderer_2d_queue_objects(
         g->renderer2d,

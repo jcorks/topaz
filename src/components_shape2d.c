@@ -140,7 +140,7 @@ static Shape2D * shape2d__retrieve(topazComponent_t * c) {
 
 topazComponent_t * topaz_shape2d_create(topaz_t * t) {
     Shape2D * data = calloc(1, sizeof(Shape2D));
-
+    data->ctx = t;
     #ifdef TOPAZDC_DEBUG
     data->MAGIC_ID = MAGIC_ID__SHAPE_2D;
     #endif

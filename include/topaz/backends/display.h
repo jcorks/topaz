@@ -87,11 +87,13 @@ typedef enum {
 typedef enum {
     /// The Display will show the attached Framebuffer's contents with no transformation
     ///
-    NoPolicy,       
+    topazDisplay_ViewPolicy_None,       
 
-    /// The Display will stretch the attached Framebuffer's contents to match the windows dimensions
+    /// The Display will stretch the attached Framebuffer's contents to match the windows dimensions.
+    /// If this is the case, resize events will also set the render resolution of its attached cameras.
+    /// This is the default.
     ///
-    MatchSize,      
+    topazDisplay_ViewPolicy_MatchSize,      
 } topazDisplay_ViewPolicy;
 
 
@@ -155,6 +157,12 @@ topazEntity_t * topaz_display_get_camera_2d(topazDisplay_t *);
 /// the main display. see topazViewManager_t
 ///
 topazEntity_t * topaz_display_get_camera_3d(topazDisplay_t *);
+
+
+/// Gets the camera used for output rendering results. This camera's 
+/// framebuffers are used for storing the visual of whats shown in the display 
+///
+topazEntity_t * topaz_display_get_camera_render(topazDisplay_t *);
 
 
 

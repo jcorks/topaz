@@ -79,7 +79,6 @@ struct topazDisplayAPI_t {
     int  (*display_has_input_focus)     (topazDisplayAPI_t *); 
     void (*display_lock_client_resize)  (topazDisplayAPI_t *, int);
     void (*display_lock_client_position)(topazDisplayAPI_t *, int);
-    void (*display_set_view_policy)     (topazDisplayAPI_t *, topazDisplay_ViewPolicy);
     int  (*display_get_width)           (topazDisplayAPI_t *);
     int  (*display_get_height)          (topazDisplayAPI_t *);
     int  (*display_get_x)               (topazDisplayAPI_t *);

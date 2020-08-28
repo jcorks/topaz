@@ -639,7 +639,7 @@ void topaz_renderer_sync(topazRenderer_t * t) {
 
 void topaz_renderer_attach_target(topazRenderer_t * t, topazRenderer_Framebuffer_t * f) {
     t->fb = f;
-    t->api.core.renderer_attach_target(&t->api, f->framebufferData);
+    t->api.core.renderer_attach_target(&t->api, f ? f->framebufferData : NULL);
 }
 
 
