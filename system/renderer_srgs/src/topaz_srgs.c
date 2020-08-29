@@ -254,6 +254,7 @@ static SRGSTOPAZ2DObject * create_object(srgs_t * ctx) {
     SRGSTOPAZ2DObject * o = malloc(sizeof(SRGSTOPAZBuffer));
     o->objectID = srgs_object_create(ctx);
     o->matrixID = srgs_matrix_create(ctx);
+    srgs_object_set_transform(ctx, o->objectID, o->matrixID);
     o->ctx = ctx;
     o->vertices = NULL;
     return o;

@@ -333,11 +333,11 @@ void ncurses_display_resize(topazDisplayAPI_t * api, int w, int h) {
 
 void ncurses_display_create(topazDisplayAPI_t * api) {
     NCURSESTOPAZ * out = calloc(1, sizeof(NCURSESTOPAZ));
-    //initscr();
+    initscr();
     //raw();
     //keypad(stdscr, TRUE); // TODO: input manager??????
 
-    //ncurses_display_resize(api, 640, 480);
+    ncurses_display_resize(api, 640, 480);
     api->implementationData = out;
 }
 void ncurses_display_destroy(topazDisplayAPI_t * api) {
@@ -424,7 +424,7 @@ void ncurses_display_update(topazDisplayAPI_t * api, topazRenderer_Framebuffer_t
 
     int x;
     int y;
-    printf("FRAME: ____________________\n");
+    //printf("FRAME: ____________________\n");
 
     for(y = 0; y < minh; ++y) {
         move(y, 0);
@@ -432,14 +432,14 @@ void ncurses_display_update(topazDisplayAPI_t * api, topazRenderer_Framebuffer_t
         printf("|");
 
         for(x = 0; x < minw; ++x) {
-            //addch(printChars[(uint8_t)((iter[0] + iter[1] + iter[2]) / 3.f)]); // red only?
-            printf("%c", printChars[(uint8_t)((iter[0] + iter[1] + iter[2]) / 3.f)]);
+            addch(printChars[(uint8_t)((iter[0] + iter[1] + iter[2]) / 3.f)]); // red only?
+            //printf("%c", printChars[(uint8_t)((iter[0] + iter[1] + iter[2]) / 3.f)]);
             
             iter += GUESS_PIXELS_PER_CHAR__WIDTH*4;
         }
-        printf("|\n");
+        //printf("|\n");
     }
-    printf("       ____________________\n");
+    //printf("       ____________________\n");
 
 
 } 

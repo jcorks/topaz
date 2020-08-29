@@ -41,7 +41,7 @@ foreach handler : handlers
         if depCompiled.found() == false
             depCompiled = dependency(dep.get('alternateName'), required:false)
             if depCompiled.found() == false
-                message(''+local__name+':'+local__type+' supported? NO (missing dependency: ' + dep + ')')
+                message(''+local__name+':'+local__type+' supported? NO (missing dependency: ' + dep.get('name') + ')')
                 error('Requested backend cannot be used.')
                 break
             endif

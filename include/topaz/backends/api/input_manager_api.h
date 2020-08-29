@@ -61,14 +61,13 @@ struct topazInputManagerAPI_t {
     void                    (*input_manager_create)           (topazInputManagerAPI_t *);
     void                    (*input_manager_destroy)          (topazInputManagerAPI_t *);
 
-    const char *        (*input_manager_id_to_string)           (int);
-    int                 (*input_manager_handle_events)          (topazInputManagerAPI_t *);
-    topazInputDevice_t *(*input_manager_query_device)           (topazInputManagerAPI_t *, int ID);
-    int                 (*input_manager_query_auxiliary_devices)(topazInputManagerAPI_t *, int * IDs);
-    int                 (*input_manager_max_devices)            (topazInputManagerAPI_t *);
-    void                (*input_manager_set_focus)              (topazInputManagerAPI_t *, topazDisplay_t *);
-    topazDisplay_t *    (*input_manager_get_focus)              (topazInputManagerAPI_t *);
-    void                (*input_manager_show_virtual_keyboard)  (topazInputManagerAPI_t *, int);
+    int                  (*input_manager_handle_events)          (topazInputManagerAPI_t *);
+    topazInputDevice_t * (*input_manager_query_device)           (topazInputManagerAPI_t *, int ID);
+    int                  (*input_manager_query_auxiliary_devices)(topazInputManagerAPI_t *, int * IDs);
+    int                  (*input_manager_max_devices)            (topazInputManagerAPI_t *);
+    void                 (*input_manager_set_focus)              (topazInputManagerAPI_t *, topazDisplay_t *);
+    topazDisplay_t *     (*input_manager_get_focus)              (topazInputManagerAPI_t *);
+    void                 (*input_manager_show_virtual_keyboard)  (topazInputManagerAPI_t *, int);
 
 
     /// User-given data. This is expected to data needed to persist

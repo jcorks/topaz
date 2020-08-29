@@ -54,7 +54,6 @@ struct topazRender2D_t {
 static void topaz_render2d_update_transform(topazSpatial_t * sp, topazRender2D_t * r) {
     if (!r->absolute) {
         topazMatrix_t m = *topaz_spatial_get_global_transform(sp);
-        topaz_matrix_reverse_majority(&m);
         topaz_renderer_2d_set_object_transform(
             r->renderer,
             r->objectID,

@@ -295,10 +295,10 @@ topazInputManagerAPI_t topaz_input_manager_get_api(topazInputManager_t *);
 
 
 
-/// Returns a read-only C-string representation of 
+/// Returns a read-only string representation of 
 /// the given input id.
 ///
-const char * topaz_input_manager_id_to_string(int);
+const topazString_t * topaz_input_manager_id_to_string(int);
 
 
 /// Updates the state of registered devices.

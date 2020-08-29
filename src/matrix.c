@@ -275,8 +275,8 @@ void topaz_matrix_rotate_by_angles(topazMatrix_t * m, float x, float y, float z)
     //                 rotateYMatrix.data *
     //                 rotateZMatrix.data);
     topazMatrix_t o = topaz_matrix_multiply(m, &rotateXMatrix);
-    topaz_matrix_multiply(&o, &rotateYMatrix);
-    topaz_matrix_multiply(&o, &rotateZMatrix);
+    o = topaz_matrix_multiply(&o, &rotateYMatrix);
+    o = topaz_matrix_multiply(&o, &rotateZMatrix);
     *m = o;
 }
 

@@ -23,7 +23,6 @@ topazInputManager_t * topaz_input_manager_create(topazBackend_t * b, topazInputM
         assert(b && "topazBackend_t pointer cannot be NULL.");
         assert(api.input_manager_create);
         assert(api.input_manager_destroy);
-        assert(api.input_manager_id_to_string);;
         assert(api.input_manager_handle_events);
         assert(api.input_manager_query_device);
         assert(api.input_manager_query_auxiliary_devices);
@@ -238,9 +237,9 @@ static char * builtIn[] = {
 };
     
 
-const char * topaz_input_manager_id_to_string(int id) {
+const topazString_t * topaz_input_manager_id_to_string(int id) {
     if (id < topazInput_Count) {
-        return builtIn[id];
+        return TOPAZ_STR_CAST(builtIn[id]);
     }
     static topazTable_t * table = NULL;
     if (!table) {
@@ -253,7 +252,7 @@ const char * topaz_input_manager_id_to_string(int id) {
         topaz_string_concat_printf(c, "Input%d", id);
         topaz_table_insert_by_int(table, id, c);
     }
-    return topaz_string_get_c_str(c);
+    return c;
 }
 
 

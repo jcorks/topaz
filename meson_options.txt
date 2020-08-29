@@ -55,9 +55,10 @@ option(
     'InputManagerBackend',
     type : 'combo',
 
-    value : 'noInputManager',
+    value : 'ncurses',
     choices : [
-        'noInputManager'
+        'noInputManager',
+        'ncurses'
     ]
 )
 

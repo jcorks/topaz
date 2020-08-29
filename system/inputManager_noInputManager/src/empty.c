@@ -93,7 +93,6 @@ static intptr_t api_nothing(){return 0;}
 void topaz_system_inputManager_noInputManager__api(topazInputManagerAPI_t * api) {
     api->input_manager_create = (void (*)(topazInputManagerAPI_t *)) api_nothing;
     api->input_manager_destroy = (void (*)(topazInputManagerAPI_t *)) api_nothing;
-    api->input_manager_id_to_string = (const char * (*)(int)) api_nothing;
     api->input_manager_handle_events = (int (*)(topazInputManagerAPI_t *)) api_nothing;
     api->input_manager_query_device = (topazInputDevice_t * (*)(topazInputManagerAPI_t *, int)) api_nothing;
     api->input_manager_query_auxiliary_devices = (int (*)(topazInputManagerAPI_t *, int *)) api_nothing;
