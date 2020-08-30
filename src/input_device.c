@@ -30,6 +30,7 @@ topazInputDevice_t * topaz_input_device_create(topazInputDevice_Class c) {
     out->data = calloc(sizeof(topazInputDevice_Event_t), default_action_queue_size);
     out->allocated = default_action_queue_size;
     out->deadZone = topaz_table_create_hash_pointer();
+    out->type = c;
     return out;
 }
 

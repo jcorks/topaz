@@ -551,7 +551,7 @@ void topaz_table_iter_start(topazTableIter_t * t, topazTable_t * src) {
     t->src = src;
     t->currentBucketID = 0;
     t->current = src->buckets[0];
-
+    t->isEnd = 0;
     
     if (!t->current)
         topaz_table_iter_proceed(t);  

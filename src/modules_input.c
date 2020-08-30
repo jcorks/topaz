@@ -161,6 +161,7 @@ struct DeviceState {
             topaz_input_device_pop_event(d->device, &ev);
             int index = (int)ev.id;
 
+
             InputState * input = device_state_get_input(d, index);
             input->prev = input->current;
             input->current = ev.state;
@@ -169,7 +170,6 @@ struct DeviceState {
                 uint32_t i;
                 uint32_t len = topaz_array_get_size(d->listeners);
                 topazInput_Listener_t * inst = topaz_array_get_data(d->listeners);
-
                 for(i = 0; i < len; ++i) {
                     if (inst->on_change) inst->on_change(d->parent, index, inst->userData);
                     if (inst->on_press && !input->prev && input->current)  
@@ -310,6 +310,7 @@ static void input_ent__step(topazEntity_t * e, void * data) {
             focus = NULL;
         }
         topaz_input_manager_set_focus(t->manager, focus);
+        t->focus = focus;
     }
 
 

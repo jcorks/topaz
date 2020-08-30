@@ -74,8 +74,19 @@ int test__table_advanced() {
 
 
     topaz_table_insert(table, TOPAZ_STR_CAST("Apple"), "Fruit");
+    topazTableIter_t * iter = topaz_table_iter_create();
+    int size = 0;
+    for(topaz_table_iter_start(iter, table);
+        !topaz_table_iter_is_end(iter);
+        topaz_table_iter_proceed(iter)) {
+        
+        size++;
+    }
+    if (size != 1) return 10;
+
     topaz_table_insert(table, TOPAZ_STR_CAST("Tableeee"), "Thing");
     topaz_table_insert(table, TOPAZ_STR_CAST("Math"), "Subject");
+
 
     // Why: Apple was missing!
     if (!topaz_table_entry_exists(table, TOPAZ_STR_CAST("Apple"))) return 1;
