@@ -67,21 +67,34 @@ typedef struct topazScript_ObjectAPI_t topazScript_ObjectAPI_t;
 /// Note: all functions are allowed to be NULL, in that case a default handler 
 /// will be used.
 ///
-struct topazScript_Object_ExternalAPI_t {
+struct topazScript_Object_ReferenceAPI_t {
     /// Called when the object is first starting up. 
     ///
-    void (*object_external_create)(void *);
+    void (*object_reference_create)(topazScript_Object_t *, void *);
 
     /// Called when the object reference is no longer needed by the native context.
     ///
-    void (*object_external_destroy)(void *);
+    void (*object_reference_destroy)(topazScript_Object_t *, void *);
+
+    /// Returns the feature set of the object.
+    ///
+    int (*object_reference_get_features)(topazScript_Object_t *, void *);
+
+    /// Retrieve the native data thats associated with the scripting object 
+    ///
+    void * (*object_reference_get_native_data)(topazScript_Object_t *, void *);
+
+    /// Sets native data that will be associated with the object across the 
+    /// script instance. 
+    ///
+    void (*object_reference_set_native_data)(topazScript_Object_t *, void * native, void *);
 
     /// This function is called if a user runs the "topaz_script_object_call" function 
     /// The intent is to have the in-script object function run, if any. If this is
     /// impossible, an undefined object should be returned.
     /// The default handler will always return undefined.
     ///
-    topazScript_Object_t * (*object_external_call)(topazScript_Object_t *, topazArray_t *, void *);
+    topazScript_Object_t * (*object_reference_call)(topazScript_Object_t *, topazArray_t *, void *);
 
 
     /// This implements the array accessor for the object, if any.
@@ -89,22 +102,22 @@ struct topazScript_Object_ExternalAPI_t {
     /// If the access is out of bounds, undefined should be returned.
     /// The default handler will always return undefined.
     ///
-    topazScript_Object_t * (*object_external_array_get_nth)(topazScript_Object_t * , int,  void *);
+    topazScript_Object_t * (*object_reference_array_get_nth)(topazScript_Object_t * , int,  void *);
 
     /// Returns the array count fetch. If not supported, -1 should be returned.
     /// The default handler will always return -1.
     ///
-    int (*object_external_array_get_count)(topazScript_Object_t *, void *);
+    int (*object_reference_array_get_count)(topazScript_Object_t *, void *);
 
     /// Implements the map property fetch. If not implemented, the undefined object can be returned.
     /// The default handler will always return undefined.
     ///
-    topazObject_t * (*object_external_map_get_property)(topazScript_Object_t *, const topazString_t * prop, void *);
+    topazObject_t * (*object_reference_map_get_property)(topazScript_Object_t *, const topazString_t * prop, void *);
 
     /// Returns a stringification of this object.
     /// The default handler will return "[Object]"
     ///
-    const topazString_t * (*object_external_as_string)(topazScript_Object_t *, void *);
+    const topazString_t * (*object_reference_as_string)(topazScript_Object_t *, void *);
 
 };
 
@@ -118,7 +131,7 @@ struct topazScriptAPI_t {
     /// uses topazScript_Object_t's as wrappers for an externally stored 
     /// scripting object. This API facilitates this wrapping behavior.
     ///
-    topazScript_Object_ExternalAPI_t objectAPI;
+    topazScript_Object_ReferenceAPI_t objectAPI;
 
 
 

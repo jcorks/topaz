@@ -63,7 +63,27 @@ typedef enum {
 
 
 
+typedef enum {
+    /// The object has no features.
+    ///
+    topazScript_Object_Feature_None,
 
+    /// The object can be called like a function using the 
+    /// topaz_script_object_call() method.
+    ///
+    topazScript_Object_Feature_Callable = 1,
+
+    /// The object can be used like an array via the 
+    /// topaz_script_object_array* functions.
+    ///
+    topazScript_Object_Feature_Array = 2,
+
+    /// The object can be used like a hashtable with 
+    /// named sub-objects via the topaz_script_object_map* functions.
+    /// 
+    topazScript_Object_Feature_Map = 4
+
+} topazScript_Object_Feature_t;
 
 
 /// Function that is called from 
@@ -79,32 +99,28 @@ typedef topazScript_Object_t * (*topaz_script_native_function)(topazScript_t *, 
 typedef enum {
     /// The object type used for unset data, errors, and similar data.
     ///
-    topaz_Script_Object_Type_Undefined,
+    topazScript_Object_Type_Undefined,
 
     /// The object contains an integer value. 
     ///
-    topaz_Script_Object_Type_Integer,
+    topazScript_Object_Type_Integer,
 
     /// The object contains a decimal value.
     ///
-    topaz_Script_Object_Type_Number,
+    topazScript_Object_Type_Number,
 
     /// The object contains a string value.
     ///
-    topaz_Script_Object_Type_String,
+    topazScript_Object_Type_String,
 
-    /// The object is an array of items. 
-    /// The item count may be accessed with topaz_script_object_array_get_count()
-    /// The items may be accessed with topaz_script_object_array_get_nth()
-    ///
-    topaz_Script_Object_Type_Array,
-
-
-    /// The object contains sub-object properties t
-    topaz_Script_Object_Type_Map,
-
-    /// The object is callable
-    topaz_Script_Object_Type_Callable
+    /// The object is a script-specific reference.
+    /// Script object references are wrappers for real objects within 
+    /// the script context and vary based on the script. To facilitate this 
+    /// References can have certain "feature sets" which can allow use of 
+    /// additional functions for more in-depth interaction.
+    /// See topaz_script_object_get_reference_features().
+    /// 
+    topazScript_Object_Type_Reference
 } topazScript_Object_Type_t;
 
 
@@ -185,34 +201,31 @@ typedef struct topazScript_Object_t topazScript_Object_t;
 
 /// Creates a new object with no type.
 ///
-topazScript_Object_t * topaz_script_object_undefined();
+topazScript_Object_t * topaz_script_object_undefined(topazScript_t *);
 
 /// Creates a new integer object with the value given.
 ///
-topazScript_Object_t * topaz_script_object_from_int(int);
+topazScript_Object_t * topaz_script_object_from_int(topazScript_t *, int);
 
 /// Creates a new object from a double.
 ///
-topazScript_Object_t * topaz_script_object_from_number(double);
+topazScript_Object_t * topaz_script_object_from_number(topazScript_t *, double);
 
 /// Creates a new object from a string
 ///
-topazScript_Object_t * topaz_script_object_from_string(const topazString_t *);
+topazScript_Object_t * topaz_script_object_from_string(topazScript_t *, const topazString_t *);
 
 /// Creates a new object as a shallow clone of the given object
 ///
-topazScript_Object_t * topaz_script_object_from_object(const topazScript_Object_t *);
+topazScript_Object_t * topaz_script_object_from_object(topazScript_t *, const topazScript_Object_t *);
 
 
 /// Creates a new object that acts as a "wrapper" to an object managed by the 
 /// script implementation. This is recommended for objects that are more than simple
 /// values, such as arrays or maps, which may vary a lot between scripting languages.
 ///
-topazScript_Object_t * topaz_script_object_from_external(
+topazScript_Object_t * topaz_script_object_from_reference(
     topazScript_t * context,    
-    topazScript_Object_ExternalAPI_t * api,
-    topazScript_Object_Type_t type,
-    int isCallable,
     void * userdata
 );
 
@@ -223,52 +236,25 @@ topazScript_Object_t * topaz_script_object_from_external(
 void topaz_script_object_destroy(topazScript_Object_t *);
 
 
-
-/// Returns the named property of the 
-/// If the property doesn't exist or the object doesnt have properties,
-/// an undefined object is returned.
+/// Gets the object's source context. Objects can only be used with 
+/// the context it was created from.
 ///
-topazScript_Object_t * topaz_script_object_map_get_property(
-    const topazScript_Object_t *,
-    const topazString_t *
-);
+topazScript_t * topaz_script_object_get_source(topazScript_Object_t *);
 
 
-/// Gets the number of elements that this array object has. If the object is
-/// not an array, this value will always be -1.
-///
-int topaz_script_object_array_get_count(
-    const topazScript_Object_t *
-);
-
-/// Gets the nth (starting from 0) object within the array. If the object isn't 
-/// an array or accesses the array out-of-bounds, undefined is returned.
-///
-topazScript_Object_t * topaz_script_object_array_get_nth(
-    const topazScript_Object_t *,
-    int n
-);
 
 
-/// Associates this data object with a pointer. This is only modifiable
-/// within the native context.
-///
-void topaz_script_object_set_native_data(topazScript_Object_t *, void *);
-
-/// Retrieves the native data associated with the object. If none, then 
-/// NULL is returned.
-///
-void * topaz_script_object_get_native_data(topazScript_Object_t *);
 
 
 
 /// Returns the integer representation of this object.
 /// If there is none, 0 is returned.
 ///
-int topaz_script_object_as_int(const topazScipt_Object_t *);
+int topaz_script_object_as_int(const topazScript_Object_t *);
 
 /// Returns the decimal representation of this object.
 /// If there is none, 0.0 is returned.
+///
 double topaz_script_object_as_number(const topazScript_Object_t *);
 
 /// Returns the string representation of this object.
@@ -280,27 +266,61 @@ const topazString_t * topaz_script_object_as_string(const topazScript_Object_t *
 ///
 void topaz_script_object_set(topazScript_Object_t * , const topazScript_Object_t * other);
 
-/// Sets the type of the object. This will also attempt to re-express its current value 
-/// into one that make sense for this object.
-///
-void topaz_script_object_set_type(topazScript_Object_t *, topazScript_Object_Type_t);
-
 /// Returns the type for the object.
 ///
 topazScript_Object_Type_t topaz_script_object_get_type(const topazScript_t *);
 
 
+
+
+/// Returns a bitwise mask of all the features that this object
+/// contains. If the object isnt a reference, topazScript_Object_Feature_None
+/// is returned.
+///
+topazScript_Object_Feature_t topaz_script_object_reference_get_features(topazScript_Object_t *);
+
+
 /// Attempts to run the object as a function with the arguments defined within the 
 /// given array. If the object is not callable, undefined is returned.
 ///
-topazScript_Object_t * topaz_script_object_call(topazScript_Object_t *, const topazArray_t *);
+topazScript_Object_t * topaz_script_object_reference_call(topazScript_Object_t *, const topazArray_t *);
 
-
-/// Returns whether the object in question is external. External objects 
-/// have their data stored specific to the script context implementation. 
-/// See topaz_script_object_from_external().
+/// Associates this data object with a pointer. This is only modifiable
+/// within the native context. This is only applicable to 
 ///
-int topaz_script_object_is_external(topazScript_Object_t *);
+void topaz_script_object_reference_set_native_data(topazScript_Object_t *, void *);
+
+/// Retrieves the native data associated with the object. If none, then 
+/// NULL is returned.
+///
+void * topaz_script_object_reference_get_native_data(topazScript_Object_t *);
+
+/// Returns the named property of the 
+/// If the property doesn't exist or the object doesnt have properties,
+/// an undefined object is returned.
+///
+topazScript_Object_t * topaz_script_object_reference_map_get_property(
+    const topazScript_Object_t *,
+    const topazString_t *
+);
+
+
+/// Gets the number of elements that this array object has. If the object is
+/// not an array, this value will always be -1.
+///
+int topaz_script_object_reference_array_get_count(
+    const topazScript_Object_t *
+);
+
+/// Gets the nth (starting from 0) object within the array. If the object isn't 
+/// an array or accesses the array out-of-bounds, undefined is returned.
+///
+topazScript_Object_t * topaz_script_object_reference_array_get_nth(
+    const topazScript_Object_t *,
+    int n
+);
+
+
 
 
 
