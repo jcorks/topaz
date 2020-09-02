@@ -80,9 +80,14 @@ typedef enum {
     topazScript_Object_Feature_Array = 2,
 
     /// The object can be used like a hashtable with 
-    /// named sub-objects via the topaz_script_object_map* functions.
+    /// named sub-objects via the topaz_script_object_reference_map* functions.
     /// 
-    topazScript_Object_Feature_Map = 4
+    topazScript_Object_Feature_Map = 4,
+
+    /// The object can have manageable setters / getters for properties
+    /// and can have member functions added to it using the 
+    /// topaz_script_object_reference_extendable_* family of functions.
+    topazScript_Object_Feature_Extendable = 8,
 
 } topazScript_Object_Feature_t;
 
@@ -321,6 +326,30 @@ topazScript_Object_t * topaz_script_object_reference_array_get_nth(
     int n
 );
 
+/// Adds a named value property to this object. defaultValue is 
+/// the value that the property should have at first.
+/// onSet will be called any time the property is edited within the 
+/// script, it will have one argument which is the new value to set to.
+/// onGet will be called to retrieve the value in question. It will have no arguments,
+/// but its return value will be used as its value in the script context.
+///
+void topaz_script_object_reference_extendable_add_property(
+    topazScript_Object_t *,
+    const topazString_t * propName,
+    topazScript_Object_t * defaultValue,
+    topaz_script_native_function onSet,
+    topaz_script_native_function onGet
+);
+
+/// Adds a method of the given name. When this method is called in-script, 
+/// its arguments will be populated within the argument array,
+/// and the functions return value will be used in the script context.
+///
+void topaz_script_object_reference_extendable_add_method(
+    topazScript_Object_t *,
+    const topazString_t * methodName,
+    topaz_script_native_function function
+);
 
 
 

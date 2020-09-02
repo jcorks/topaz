@@ -118,7 +118,30 @@ struct topazScript_Object_ReferenceAPI_t {
     /// Returns a stringification of this object.
     /// The default handler will return "[Object]"
     ///
-    const topazString_t * (*object_reference_as_string)(topazScript_Object_t *, void *);
+    const topazString_t * (*object_reference_to_string)(topazScript_Object_t *, void *);
+
+    /// Adds a controlled value property to the object reference.
+    /// If its just a single static value, its probably better to just do it within the 
+    /// script context itself.
+    ///
+    void (*object_reference_extendable_add_property)(
+        topazScript_Object_t *
+        const topazString_t * propName,
+        topazScript_Object_t * defaultValue,
+        topaz_script_native_function onSet,
+        topaz_script_native_function onGet,
+        void *
+        );
+
+    /// Adds a managed function to the object. If this isnt necessary, just have 
+    /// the bootstrap script add a function in-script.
+    ///
+    void (*object_reference_extendable_add_method)(
+        topazScript_Object_t *,
+        const topazString_t * methodName,
+        topaz_script_native_function function,
+        void *
+        );
 
 };
 
@@ -141,7 +164,7 @@ struct topazScriptAPI_t {
     int  (*script_map_native_function)(topazScriptAPI_t *, const topazString_t *, topaz_script_native_function, void * userData);
     void (*script_run)                (topazScriptAPI_t *, const topazString_t * sourceName, const topazString_t * scriptData);
     topazScript_Object_t * (*script_expression) (topazScriptAPI_t *, const topazString_t *);
-
+    void (*script_bootstrap)          (topazScriptAPI_t *);
 
 
     /// User-given data. This is expected to data needed to persist

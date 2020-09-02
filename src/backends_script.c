@@ -360,9 +360,15 @@ const topazString_t * topaz_script_object_as_string(const topazScript_Object_t *
       case topazScript_Object_Type_String:
         return o->dataString;
 
-      default:
-        return 0;
+      case topazScript_Object_Type_Reference:
+        if (o->api->object_reference_to_string)
+            return o->api->object_reference_to_string(o, o->apiData);
+        break;
+        
     }
+
+
+    return TOPAZ_STR_CAST("");
 }
 
 
@@ -463,6 +469,30 @@ topazScript_Object_t * topaz_script_object_array_get_nth(topazScript_Object_t * 
     return topaz_script_object_undefined(o->context);
 }
 
+
+void topaz_script_object_reference_extendable_add_property(
+    topazScript_Object_t * o,
+    const topazString_t * propName,
+    topazScript_Object_t * defaultValue,
+    topaz_script_native_function onSet,
+    topaz_script_native_function onGet
+) {
+    if (o->type == topazScript_Object_Type_Reference) {
+        if (o->api->object_reference_extendable_add_property)
+            return o->api->object_reference_extendable_add_property(o, propName, defaultValue, onSet, onGet, o->apiData);
+            
+}
+
+void topaz_script_object_reference_extendable_add_method(
+    topazScript_Object_t *,
+    const topazString_t * methodName,
+    topaz_script_native_function function
+) {
+    if (o->type == topazScript_Object_Type_Reference) {
+        if (o->api->object_reference_extendable_add_method)
+            return o->api->object_reference_extendable_add_method(o, methodName, function, o->apiData);
+
+}
 
 
 
