@@ -11,6 +11,8 @@ static topazTable_t * audioManagers = NULL;
 static topazTable_t * filesystems = NULL;
 static topazTable_t * times = NULL;
 static topazTable_t * displays = NULL;
+static topazTable_t * scripts = NULL;
+
 // external
 void topaz_system_configure_base();
 
@@ -26,6 +28,7 @@ struct topazSystem_t {
     BackendHandler filesystem;
     BackendHandler time;
     BackendHandler display;
+    BackendHandler script;
 };
 
 
@@ -36,6 +39,7 @@ static BackendHandler default_audioManager;
 static BackendHandler default_filesystem;
 static BackendHandler default_time;
 static BackendHandler default_display;
+static BackendHandler default_script;
 
 BackendHandler * system_get_backend(topazSystem_t * s, const topazString_t * name) {
     if (topaz_string_test_eq(name, TOPAZ_STR_CAST("renderer"))) return &s->renderer;
@@ -44,6 +48,7 @@ BackendHandler * system_get_backend(topazSystem_t * s, const topazString_t * nam
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("filesys")))return &s->filesystem;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("time"))) return &s->time;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return &s->display;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return &s->script;
     return NULL;
 }
 
@@ -54,6 +59,7 @@ static topazTable_t * backend_type_to_table(const topazString_t * name) {
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("filesys"))) return filesystems;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("time"))) return times;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return displays;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return scripts;
     return NULL;
 }
 
@@ -85,6 +91,7 @@ static BackendHandler * get_backend_default(const topazString_t * name) {
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("filesys"))) return &default_filesystem;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("time"))) return &default_time;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return &default_display;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return &default_script;
     return NULL;
 }
 
@@ -102,6 +109,7 @@ void topaz_system_configure() {
     filesystems   = topaz_table_create_hash_topaz_string();
     times         = topaz_table_create_hash_topaz_string();
     displays      = topaz_table_create_hash_topaz_string();
+    scripts       = topaz_table_create_hash_topaz_string();
 
     topaz_system_configure_base();
 }
@@ -155,6 +163,7 @@ topazSystem_t * topaz_system_create_default() {
     s->filesystem   = default_filesystem;
     s->time         = default_time;
     s->display      = default_display;
+    s->script       = default_script;
     return s; 
 }
 

@@ -67,7 +67,7 @@ baselibs += cc.find_library('m', required : true)
 compile_args = []
 if get_option('BuildMode') == 'Debug'
     if cc.get_argument_syntax() == 'gcc'
-        compile_args += ['-g',  '-Wall']
+        compile_args += ['-g',  '-Wall', '-DTOPAZDC']
     endif
     if host_machine.system() != 'windows' and host_machine.system().contains('mingw') == false
         compile_args += ['-fno-omit-frame-pointer', '-fsanitize=address']
@@ -109,6 +109,7 @@ handlerPreferredRenderer     = 'renderer_'     + get_option('RendererBackend')
 handlerPreferredDisplay      = 'display_'      + get_option('DisplayBackend')
 handlerPreferredTime         = 'time_'         + get_option('TimeBackend')
 handlerPreferredFilesys      = 'filesys_'      + get_option('FilesystemBackend')
+handlerPreferredFilesys      = 'script_'       + get_option('ScriptBackend')
 
 
 subdir('system')

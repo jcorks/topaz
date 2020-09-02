@@ -86,3 +86,13 @@ option(
     ]
 )
 
+option(
+    'ScriptBackend',
+    type : 'combo',
+
+    value : 'noScript',
+    choices : [
+        'noScript'
+    ]
+)
+
