@@ -35,6 +35,7 @@ DEALINGS IN THE SOFTWARE.
 #include <stdint.h>
 
 
+
 /*
 
     ScriptAPI
@@ -57,7 +58,7 @@ typedef struct topazScriptAPI_t topazScriptAPI_t;
 
 
 
-typedef struct topazScript_ObjectAPI_t topazScript_ObjectAPI_t;
+typedef struct topazScript_Object_ReferenceAPI_t topazScript_Object_ReferenceAPI_t;
 
 /// For objects that exist and are managed independently of the native context,
 /// the implementation can create "wrapper" objects with externally-defined 
@@ -94,7 +95,7 @@ struct topazScript_Object_ReferenceAPI_t {
     /// impossible, an undefined object should be returned.
     /// The default handler will always return undefined.
     ///
-    topazScript_Object_t * (*object_reference_call)(topazScript_Object_t *, topazArray_t *, void *);
+    topazScript_Object_t * (*object_reference_call)(topazScript_Object_t *, const topazArray_t *, void *);
 
 
     /// This implements the array accessor for the object, if any.
@@ -112,7 +113,7 @@ struct topazScript_Object_ReferenceAPI_t {
     /// Implements the map property fetch. If not implemented, the undefined object can be returned.
     /// The default handler will always return undefined.
     ///
-    topazObject_t * (*object_reference_map_get_property)(topazScript_Object_t *, const topazString_t * prop, void *);
+    topazScript_Object_t * (*object_reference_map_get_property)(topazScript_Object_t *, const topazString_t * prop, void *);
 
     /// Returns a stringification of this object.
     /// The default handler will return "[Object]"
@@ -139,7 +140,7 @@ struct topazScriptAPI_t {
     void (*script_destroy)            (topazScriptAPI_t *);
     int  (*script_map_native_function)(topazScriptAPI_t *, const topazString_t *, topaz_script_native_function, void * userData);
     void (*script_run)                (topazScriptAPI_t *, const topazString_t * sourceName, const topazString_t * scriptData);
-    topazObject_t * (*script_expression) (topazScriptAPI_t *, const topazString_t *);
+    topazScript_Object_t * (*script_expression) (topazScriptAPI_t *, const topazString_t *);
 
 
 

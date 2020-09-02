@@ -33,8 +33,9 @@ DEALINGS IN THE SOFTWARE.
 #define H_TOPAZDC__SCRIPT__INCLUDED
 
 typedef struct topazScript_Object_t topazScript_Object_t;
-
-
+typedef struct topazArray_t topazArray_t;
+typedef struct topazString_t topazString_t;
+typedef struct topazBackend_t topazBackend_t;
 
 
 
@@ -87,7 +88,7 @@ typedef enum {
 
 
 /// Function that is called from 
-typedef topazScript_Object_t * (*topaz_script_native_function)(topazScript_t *, topazArray_t * args, void * userData);
+typedef topazScript_Object_t * (*topaz_script_native_function)(topazScript_t *, const topazArray_t * args, void * userData);
 
 
 
@@ -165,17 +166,17 @@ void topaz_script_run(
 /// object reference) an external object may be returned. See 
 /// topaz_script_object_from_external().
 ///
-topazObject_t * topaz_script_expression(topazScript_t * t, const topazString_t *);
+topazScript_Object_t * topaz_script_expression(topazScript_t * t, const topazString_t *);
 
 
 /// Sets the function that should be called in response to an event.
 ///
-void topaz_script_set_handler(topazScript_t *, topazScript_Event_t, topaz_script_native_function);
+void topaz_script_set_handler(topazScript_t *, topazScript_Event_t, topaz_script_native_function, void * data);
 
 /// Triggers the event within the script instance.
 /// The array and its contents, which must be topazScript_Object_t *, are owned by the caller.
 ///
-void topaz_script_emit_event(topazScript_t *, topazScript_Event_t, const topazArray_t *, void * data);
+void topaz_script_emit_event(topazScript_t *, topazScript_Event_t, const topazArray_t *);
 
 
 
@@ -268,7 +269,7 @@ void topaz_script_object_set(topazScript_Object_t * , const topazScript_Object_t
 
 /// Returns the type for the object.
 ///
-topazScript_Object_Type_t topaz_script_object_get_type(const topazScript_t *);
+topazScript_Object_Type_t topaz_script_object_get_type(const topazScript_Object_t *);
 
 
 
@@ -300,7 +301,7 @@ void * topaz_script_object_reference_get_native_data(topazScript_Object_t *);
 /// an undefined object is returned.
 ///
 topazScript_Object_t * topaz_script_object_reference_map_get_property(
-    const topazScript_Object_t *,
+    topazScript_Object_t *,
     const topazString_t *
 );
 
@@ -309,14 +310,14 @@ topazScript_Object_t * topaz_script_object_reference_map_get_property(
 /// not an array, this value will always be -1.
 ///
 int topaz_script_object_reference_array_get_count(
-    const topazScript_Object_t *
+    topazScript_Object_t *
 );
 
 /// Gets the nth (starting from 0) object within the array. If the object isn't 
 /// an array or accesses the array out-of-bounds, undefined is returned.
 ///
 topazScript_Object_t * topaz_script_object_reference_array_get_nth(
-    const topazScript_Object_t *,
+    topazScript_Object_t *,
     int n
 );
 

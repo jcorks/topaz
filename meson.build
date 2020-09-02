@@ -23,6 +23,7 @@ src = [
     'src/backends_input_manager.c',
     'src/backends_renderer.c',
     'src/backends_time.c',
+    'src/backends_script.c',
     'src/camera.c',
     'src/color.c',
     'src/component.c',
