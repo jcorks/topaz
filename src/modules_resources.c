@@ -1,6 +1,8 @@
 #include <topaz/compat.h>
+#include <topaz/backends/filesys.h>
 #include <topaz/modules/resources.h>
 #include <topaz/containers/array.h>
+#include <topaz/containers/table.h>
 #include <topaz/topaz.h>
 #include <math.h>
 #include <stdlib.h>

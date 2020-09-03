@@ -28,9 +28,19 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
+#include <topaz/compat.h>
 #include <topaz/topaz.h>
-#include <topaz/system.h>
+#include <topaz/backends/input_manager.h>
+#include <topaz/backends/time.h>
+#include <topaz/backends/filesys.h>
 #include <topaz/modules/graphics.h>
+#include <topaz/modules/script_manager.h>
+#include <topaz/modules/input.h>
+#include <topaz/modules/view_manager.h>
+#include <topaz/modules/resources.h>
+#include <topaz/containers/table.h>
+#include <topaz/system.h>
+#include <topaz/entity.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
@@ -60,6 +70,7 @@ struct topaz_t {
     topazViewManager_t * viewManager;
     topazResources_t * resources;
     topazGraphics_t * graphics;
+    topazScriptManager_t * script;
 
     topazTime_t * timeRef;
     uint64_t frameEnd;
@@ -123,7 +134,7 @@ topaz_t * topaz_context_create_from_system(const topazSystem_t * a) {
     out->input = topaz_input_create(out, out->inputManager);
     out->viewManager = topaz_view_manager_create(out);
     out->resources = topaz_resources_create(out);
-
+    out->script = topaz_script_manager_create(out);
 
     // initialize all modules throught the attach signals
     uint32_t i;

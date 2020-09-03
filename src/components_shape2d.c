@@ -36,6 +36,8 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/assets/image.h>
 #include <topaz/topaz.h>
 #include <topaz/modules/graphics.h>
+#include <topaz/spatial.h>
+#include <topaz/entity.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -341,12 +343,12 @@ void topaz_shape2d_form_radial(topazComponent_t * c, float radius, uint32_t numI
 
     uint32_t i;
     for(i = 0; i < numIterations; ++i) {
-        curPt.x = cos(2*TOPAZ_PI * (i / (float) numIterations)) * radius;
-        curPt.y = sin(2*TOPAZ_PI * (i / (float) numIterations)) * radius;        
+        curPt.x = cos(2*topaz_math_pi * (i / (float) numIterations)) * radius;
+        curPt.y = sin(2*topaz_math_pi * (i / (float) numIterations)) * radius;        
         (*pts++) = curPt;
 
-        curPt.x = cos(2*TOPAZ_PI * (((i+1)%numIterations) / (float) numIterations)) * radius;
-        curPt.y = sin(2*TOPAZ_PI * (((i+1)%numIterations) / (float) numIterations)) * radius;
+        curPt.x = cos(2*topaz_math_pi * (((i+1)%numIterations) / (float) numIterations)) * radius;
+        curPt.y = sin(2*topaz_math_pi * (((i+1)%numIterations) / (float) numIterations)) * radius;
 
         curPt.x -= s->center.x;
         curPt.y -= s->center.y;

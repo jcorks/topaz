@@ -38,42 +38,55 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/compat.h>
 
 
+#include <topaz/assets/image.h>
+
 #include <topaz/backends/audio_manager.h>
 #include <topaz/backends/backend.h>
 #include <topaz/backends/display.h>
 #include <topaz/backends/filesys.h>
 #include <topaz/backends/input_manager.h>
 #include <topaz/backends/renderer.h>
+#include <topaz/backends/script.h>
 #include <topaz/backends/time.h>
 
 #include <topaz/containers/array.h>
+#include <topaz/containers/bin.h>
 #include <topaz/containers/string.h>
 #include <topaz/containers/table.h>
 
+#include <topaz/components/clock.h>
+#include <topaz/components/scheduler.h>
+#include <topaz/components/shape2d.h>
+#include <topaz/components/state_control.h>
+
+#include <topaz/modules/graphics.h>
 #include <topaz/modules/input.h>
 #include <topaz/modules/view_manager.h>
+#include <topaz/modules/graphics.h>
 #include <topaz/modules/resources.h>
 
-
+#include <topaz/asset.h>
+#include <topaz/color.h>
 #include <topaz/component.h>
 #include <topaz/entity.h>
 #include <topaz/input_device.h>
+#include <topaz/material.h>
 #include <topaz/math.h>
 #include <topaz/matrix.h>
+#include <topaz/mesh.h>
+#include <topaz/particle.h>
 #include <topaz/rbuffer.h>
 #include <topaz/refbank.h>
 #include <topaz/render2d.h>
 #include <topaz/rng.h>
 #include <topaz/spatial.h>
+#include <topaz/system.h>
 #include <topaz/topaz.h>
 #include <topaz/transform.h>
 #include <topaz/vector.h>
 #include <topaz/version.h>
 #include <topaz/wbuffer.h>
-#include <topaz/mesh.h>
 
-#include <topaz/components/state_control.h>
-#include <topaz/components/scheduler.h>
 
 
 

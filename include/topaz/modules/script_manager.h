@@ -34,7 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 typedef struct topaz_t topaz_t;
 typedef struct topazSystem_t topazSystem_t;
-
+typedef struct topazScript_t topazScript_t;
 
 
 /*
@@ -66,7 +66,7 @@ typedef enum {
 /// topaz_t has a default instance that it generates for you. 
 /// See topaz_context_get_script_manager();
 ///
-topazScriptManager_t * topaz_script_manager_create(topaz_t *, const topazSystem_t *);
+topazScriptManager_t * topaz_script_manager_create(topaz_t *);
 
 /// Destroys and frees a topaz script manager instance.
 ///

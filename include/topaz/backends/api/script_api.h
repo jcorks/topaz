@@ -125,7 +125,7 @@ struct topazScript_Object_ReferenceAPI_t {
     /// script context itself.
     ///
     void (*object_reference_extendable_add_property)(
-        topazScript_Object_t *
+        topazScript_Object_t *, 
         const topazString_t * propName,
         topazScript_Object_t * defaultValue,
         topaz_script_native_function onSet,
@@ -164,6 +164,18 @@ struct topazScriptAPI_t {
     int  (*script_map_native_function)(topazScriptAPI_t *, const topazString_t *, topaz_script_native_function, void * userData);
     void (*script_run)                (topazScriptAPI_t *, const topazString_t * sourceName, const topazString_t * scriptData);
     topazScript_Object_t * (*script_expression) (topazScriptAPI_t *, const topazString_t *);
+    topazScript_Object_t * (*script_create_empty_object) (topazScriptAPI_t *);
+
+    /// This function is completely optional to implement, but is 
+    /// mostly likely needed if the scripting language API is more than 
+    /// just a few functions. I.E. if your scripting API requires namespacing, 
+    /// which isnt inherently supported by the interface, this would be a 
+    /// good time to organize that, as when bootstrap() is called, topaz 
+    /// would have added all the "base" function symbols as plain functions 
+    /// (this of course depends on the implementation of script_map_native_function, 
+    /// but using this function as part of the API preparation stage may make 
+    /// this simpler design-wise.)
+    /// 
     void (*script_bootstrap)          (topazScriptAPI_t *);
 
 

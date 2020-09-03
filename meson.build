@@ -44,6 +44,7 @@ src = [
     'src/modules_resources.c',
     'src/modules_view_manager.c',
     'src/modules_graphics.c',
+    'src/modules_script_manager.c',
     'src/rbuffer.c',
     'src/refbank.c',
     'src/render2d.c',

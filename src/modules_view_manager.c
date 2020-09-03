@@ -30,9 +30,12 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/compat.h>
 #include <topaz/modules/view_manager.h>
+#include <topaz/modules/graphics.h>
+#include <topaz/backends/display.h>
+#include <topaz/backends/renderer.h>
+#include <topaz/containers/array.h>
 #include <topaz/camera.h>
 #include <topaz/system.h>
-#include <topaz/modules/graphics.h>
 #include <topaz/topaz.h>
 #include <stdlib.h>
 #include <string.h>

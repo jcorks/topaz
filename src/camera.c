@@ -38,6 +38,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/entity.h>
 #include <topaz/assets/image.h>
 #include <topaz/modules/graphics.h>
+#include <topaz/spatial.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>

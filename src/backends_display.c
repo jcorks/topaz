@@ -1,4 +1,5 @@
 #include <topaz/compat.h>
+#include <topaz/backends/renderer.h>
 #include <topaz/backends/display.h>
 #include <topaz/camera.h>
 #include <topaz/topaz.h>

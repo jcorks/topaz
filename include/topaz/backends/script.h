@@ -184,8 +184,18 @@ void topaz_script_set_handler(topazScript_t *, topazScript_Event_t, topaz_script
 void topaz_script_emit_event(topazScript_t *, topazScript_Event_t, const topazArray_t *);
 
 
+/// Creates an empty object. If it contains the proper features, this 
+/// object can be modified with the `extendable` family of functions.
+///
+topazScript_Object_t * topaz_script_create_empty_object(topazScript_t *);
 
 
+/// This allows for implementations of script to "bundle" together any
+/// externally defined functions or references in a way that is meaningful 
+/// to a useable interface. This is called for you after the script manager 
+/// adds topaz' references.
+///
+void topaz_script_bootstrap(topazScript_t *);
 
 
 
@@ -226,9 +236,14 @@ topazScript_Object_t * topaz_script_object_from_string(topazScript_t *, const to
 topazScript_Object_t * topaz_script_object_from_object(topazScript_t *, const topazScript_Object_t *);
 
 
+
+
 /// Creates a new object that acts as a "wrapper" to an object managed by the 
 /// script implementation. This is recommended for objects that are more than simple
 /// values, such as arrays or maps, which may vary a lot between scripting languages.
+/// This is called / used by the script implementation to create wrappers for you.
+/// If you are looking to create a new empty object, see 
+/// topaz_script_create_empty_object().
 ///
 topazScript_Object_t * topaz_script_object_from_reference(
     topazScript_t * context,    

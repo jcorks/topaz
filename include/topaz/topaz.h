@@ -31,8 +31,21 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__TOPAZ__INCLUDED
 #define H_TOPAZDC__TOPAZ__INCLUDED
 
+#include <stdint.h>
 
-#include <topaz/all.h>      
+typedef struct topazSystem_t topazSystem_t;
+typedef struct topazGraphics_t topazGraphics_t;
+typedef struct topazScriptManager_t topazScriptManager_t;
+typedef struct topazEntity_t topazEntity_t;
+typedef struct topazFilesys_t topazFilesys_t;
+typedef struct topazInput_t topazInput_t;
+typedef struct topazViewManager_t topazViewManager_t;
+typedef struct topazResources_t topazResources_t;
+typedef struct topazArray_t topazArray_t;
+typedef struct topazString_t topazString_t;
+
+
+
 
 /*
     Topaz   
@@ -42,9 +55,6 @@ DEALINGS IN THE SOFTWARE.
 
 */
 typedef struct topaz_t topaz_t;
-typedef struct topazSystem_t topazSystem_t;
-typedef struct topazGraphics_t topazGraphics_t;
-
 
 
 /// Creates a new topaz context. Default system backends are used.
@@ -192,6 +202,10 @@ topazInput_t * topaz_context_get_input(const topaz_t *);
 /// Retrieves the standard view manager instance.
 ///
 topazViewManager_t * topaz_context_get_view_manager(const topaz_t *);
+
+/// Retrieves the standard script manager
+///
+topazScriptManager_t * topaz_context_get_script_manager(const topaz_t *);
 
 /// Retrieves the standard resources instance.
 ///

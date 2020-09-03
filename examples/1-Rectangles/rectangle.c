@@ -1,12 +1,6 @@
 #include "rectangle.h"
-#include <topaz/components/shape2d.h>
-#include <topaz/camera.h>
-#include <topaz/modules/view_manager.h>
-#include <topaz/vector.h>
-#include <topaz/topaz.h>
-#include <topaz/modules/input.h>
-
-
+#include <topaz/all.h>
+#include <stdio.h>
 static void on_active(topazInput_t * input, int key, float v, void * e) {
     if (key == topazKey_up && v > 0)
         topaz_entity_position(e)->y -= 10;

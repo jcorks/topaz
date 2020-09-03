@@ -30,6 +30,12 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/compat.h>
 #include <topaz/modules/input.h>
+#include <topaz/modules/view_manager.h>
+#include <topaz/input_device.h>
+#include <topaz/containers/table.h>
+#include <topaz/backends/display.h>
+#include <topaz/backends/input_manager.h>
+#include <topaz/entity.h>
 #include <topaz/topaz.h>
 #include <math.h>
 #include <stdlib.h>
