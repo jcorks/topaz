@@ -316,6 +316,21 @@ void topaz_script_object_reference_set_native_data(topazScript_Object_t *, void 
 ///
 void * topaz_script_object_reference_get_native_data(topazScript_Object_t *);
 
+
+/// Increments the reference count. Any time an object reference is created 
+/// the object's "reference count" is incremented, and any time an object 
+/// reference is destroyed, the reference count is decremented. If the reference 
+/// count of an object is 0, the script context is free to reap the object 
+/// (i.e. through garbage collection). Increasing the ref count can keep the 
+/// object alive until it is decremented again with topaz_script_object_reference_ref();
+///
+void topaz_script_object_reference_ref(topazScript_Object_t *);
+
+/// Decrements the reference count.
+///
+void topaz_script_object_reference_unref(topazScript_Object_t *);
+
+
 /// Returns the named property of the 
 /// If the property doesn't exist or the object doesnt have properties,
 /// an undefined object is returned.
@@ -347,11 +362,12 @@ topazScript_Object_t * topaz_script_object_reference_array_get_nth(
 /// script, it will have one argument which is the new value to set to.
 /// onGet will be called to retrieve the value in question. It will have no arguments,
 /// but its return value will be used as its value in the script context.
+/// onSet can be NULL. In this case, a default handler is used which does nothing.
+/// This can be used to represent a read-only value.
 ///
 void topaz_script_object_reference_extendable_add_property(
     topazScript_Object_t *,
     const topazString_t * propName,
-    topazScript_Object_t * defaultValue,
     topaz_script_native_function onSet,
     topaz_script_native_function onGet
 );

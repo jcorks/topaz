@@ -127,7 +127,6 @@ struct topazScript_Object_ReferenceAPI_t {
     void (*object_reference_extendable_add_property)(
         topazScript_Object_t *, 
         const topazString_t * propName,
-        topazScript_Object_t * defaultValue,
         topaz_script_native_function onSet,
         topaz_script_native_function onGet,
         void *
