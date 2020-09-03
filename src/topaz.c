@@ -30,7 +30,6 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/compat.h>
 #include <topaz/topaz.h>
-#include <topaz/backends/input_manager.h>
 #include <topaz/backends/time.h>
 #include <topaz/backends/filesys.h>
 #include <topaz/modules/graphics.h>
@@ -62,8 +61,6 @@ struct topaz_t {
 
     topazArray_t * modules; // moduels are entities
 
-    // singleton-like backends
-    topazInputManager_t * inputManager;
 
     // modules
     topazInput_t * input;
@@ -121,20 +118,15 @@ topaz_t * topaz_context_create_from_system(const topazSystem_t * a) {
     out->modules  = topaz_array_create(sizeof(topazEntity_t*));
     
 
-    // backend init if any
-    {
-        topazInputManagerAPI_t api;
-        topazBackend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("inputManager"), &api);
-        out->inputManager = topaz_input_manager_create(ref, api);
-    }
 
 
 
     /// create modules    
-    out->input = topaz_input_create(out, out->inputManager);
+    out->input = topaz_input_create(out);
     out->viewManager = topaz_view_manager_create(out);
     out->resources = topaz_resources_create(out);
     out->script = topaz_script_manager_create(out);
+    out->graphics = topaz_graphics_create(out);
 
     // initialize all modules throught the attach signals
     uint32_t i;
@@ -144,7 +136,6 @@ topaz_t * topaz_context_create_from_system(const topazSystem_t * a) {
         if (api->on_attach) api->on_attach(e, api->userData);
     }
 
-    out->graphics = topaz_graphics_create(out, out->system);
     return out;
 }
 
@@ -435,20 +426,25 @@ topazFilesys_t * topaz_context_filesys_create(const topaz_t * t) {
 }
 
 
-topazInput_t * topaz_context_get_input(const topaz_t * t) {
-    return ((topaz_t*)t)->input;
+topazInput_t * topaz_context_get_input(topaz_t * t) {
+    return t->input;
 }
 
-topazViewManager_t * topaz_context_get_view_manager(const topaz_t * t) {
-    return ((topaz_t*)t)->viewManager;
+topazViewManager_t * topaz_context_get_view_manager(topaz_t * t) {
+    return t->viewManager;
 }
 
-topazResources_t * topaz_context_get_resources(const topaz_t * t) {
-    return ((topaz_t*)t)->resources;
+topazResources_t * topaz_context_get_resources(topaz_t * t) {
+    return t->resources;
 }
 
 topazGraphics_t * topaz_context_get_graphics(topaz_t * t) {
     return t->graphics;
+}
+
+topazScriptManager_t  * topaz_context_get_script_manager(topaz_t * t) {
+    return t->script;
+
 }
 
 

@@ -129,7 +129,7 @@ struct topazInput_UnicodeListener_t {
 /// topaz_t has a default input instance that it generates for you. 
 /// See topaz_get_input();
 ///
-topazInput_t * topaz_input_create(topaz_t *, topazInputManager_t *);
+topazInput_t * topaz_input_create(topaz_t *);
 
 /// Destroys and frees a topaz input instance.
 ///

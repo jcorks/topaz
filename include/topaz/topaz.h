@@ -195,23 +195,27 @@ topazArray_t * topaz_context_get_parameter_names(const topaz_t *);
 ///
 topazFilesys_t * topaz_context_filesys_create(const topaz_t *);
 
+
+
+
+
 /// Retrieves the standard input instance.
 ///
-topazInput_t * topaz_context_get_input(const topaz_t *);
+topazInput_t * topaz_context_get_input(topaz_t *);
 
 /// Retrieves the standard view manager instance.
 ///
-topazViewManager_t * topaz_context_get_view_manager(const topaz_t *);
+topazViewManager_t * topaz_context_get_view_manager(topaz_t *);
 
 /// Retrieves the standard script manager
 ///
-topazScriptManager_t * topaz_context_get_script_manager(const topaz_t *);
+topazScriptManager_t * topaz_context_get_script_manager(topaz_t *);
 
 /// Retrieves the standard resources instance.
 ///
-topazResources_t * topaz_context_get_resources(const topaz_t *);
+topazResources_t * topaz_context_get_resources(topaz_t *);
 
-
+/// 
 topazGraphics_t * topaz_context_get_graphics(topaz_t *);
 
 

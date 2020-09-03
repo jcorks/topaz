@@ -33,6 +33,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/modules/view_manager.h>
 #include <topaz/input_device.h>
 #include <topaz/containers/table.h>
+#include <topaz/system.h>
 #include <topaz/backends/display.h>
 #include <topaz/backends/input_manager.h>
 #include <topaz/entity.h>
@@ -345,9 +346,18 @@ static void input_ent__step(topazEntity_t * e, void * data) {
 }
 
 
-topazInput_t * topaz_input_create(topaz_t * context, topazInputManager_t * t) {
+topazInput_t * topaz_input_create(topaz_t * context) {
     topazInput_t * out = calloc(1, sizeof(topazInput_t));
-    out->manager = t;
+    {
+        topazInputManagerAPI_t api;
+        topazBackend_t * ref = topaz_system_create_backend(
+            topaz_context_get_system(context), 
+            TOPAZ_STR_CAST("inputManager"), 
+            &api
+        );
+        out->manager = topaz_input_manager_create(ref, api);
+    }
+ 
     out->stringMapInput = topaz_table_create_hash_topaz_string();
     out->inputMapString = topaz_table_create_hash_buffer(sizeof(MappedInputData));
     out->stringListeners = topaz_table_create_hash_topaz_string();

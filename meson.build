@@ -110,7 +110,7 @@ handlerPreferredRenderer     = 'renderer_'     + get_option('RendererBackend')
 handlerPreferredDisplay      = 'display_'      + get_option('DisplayBackend')
 handlerPreferredTime         = 'time_'         + get_option('TimeBackend')
 handlerPreferredFilesys      = 'filesys_'      + get_option('FilesystemBackend')
-handlerPreferredFilesys      = 'script_'       + get_option('ScriptBackend')
+handlerPreferredScript       = 'script_'       + get_option('ScriptBackend')
 
 
 subdir('system')

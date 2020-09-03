@@ -22,6 +22,7 @@ subdir(handlerPreferredFilesys)
 subdir(handlerPreferredInputManager)
 subdir(handlerPreferredRenderer)
 subdir(handlerPreferredTime)
+subdir(handlerPreferredScript)
 
 # actually process results
 foreach handler : handlers 

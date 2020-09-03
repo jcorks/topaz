@@ -57,7 +57,7 @@ typedef struct topazGraphics_t topazGraphics_t;
 /// topaz_t has a default instance that it generates for you. 
 /// See topaz_context_get_graphics();
 ///
-topazGraphics_t * topaz_graphics_create(topaz_t *, const topazSystem_t *);
+topazGraphics_t * topaz_graphics_create(topaz_t *);
 
 /// Destroys and frees a topaz input instance.
 ///

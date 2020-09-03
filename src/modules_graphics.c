@@ -20,12 +20,16 @@ struct topazGraphics_t {
 };
 
 
-topazGraphics_t * topaz_graphics_create(topaz_t * ctx, const topazSystem_t * system) {
+topazGraphics_t * topaz_graphics_create(topaz_t * ctx) {
     topazGraphics_t * out = calloc(1, sizeof(topazGraphics_t));
     out->ctx = ctx;
 
     topazRendererAPI_t api;
-    topazBackend_t * ref = topaz_system_create_backend(system, TOPAZ_STR_CAST("renderer"), &api);
+    topazBackend_t * ref = topaz_system_create_backend(
+        topaz_context_get_system(ctx), 
+        TOPAZ_STR_CAST("renderer"), 
+        &api
+    );
     out->renderer   = topaz_renderer_create(ref, api);
     out->renderer2d = topaz_renderer_2d_create(out->renderer);    
     out->ctx2d.transform = &out->ctxMatrix;
