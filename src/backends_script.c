@@ -138,10 +138,14 @@ void topaz_script_bootstrap(
 }
 
 topazScript_Object_t * topaz_script_create_empty_object(
-    topazScript_t * s) {
+    topazScript_t * s,
+    topaz_script_native_function fn,
+    void * data) {
 
     return s->api.script_create_empty_object(
-        &s->api
+        &s->api,
+        fn,
+        data
     );
 }
 
@@ -293,6 +297,9 @@ topazScript_Object_t * topaz_script_object_from_reference(
     o->apiData = userData;
     if (o->api->object_reference_create)
         o->api->object_reference_create(o, o->apiData);
+
+    if (o->api->object_reference_ref)
+        o->api->object_reference_ref(o, o->apiData);
     return o;
 }
 
@@ -304,6 +311,10 @@ topazScript_t * topaz_script_object_get_source(topazScript_Object_t * o) {
 
 void topaz_script_object_destroy(topazScript_Object_t * o) {
     if (o->type == topazScript_Object_Type_Reference) {
+
+        if (o->api->object_reference_unref)
+            o->api->object_reference_unref(o, o->apiData);
+
         if (o->api->object_reference_destroy)
             o->api->object_reference_destroy(o, o->apiData);
     }
@@ -443,20 +454,35 @@ topazScript_Object_t * topaz_script_object_reference_call(topazScript_Object_t *
     return topaz_script_object_undefined(o->context);
 }
 
-void topaz_script_object_reference_set_native_data(topazScript_Object_t * o, void * data) {
+void topaz_script_object_reference_set_native_data(topazScript_Object_t * o, void * data, int tag) {
     if (o->type == topazScript_Object_Type_Reference) {
         if (o->api->object_reference_set_native_data)
-            o->api->object_reference_set_native_data(o, data, o->apiData);
+            o->api->object_reference_set_native_data(o, data, tag, o->apiData);
     }
 }
 
-void * topaz_script_object_reference_get_native_data(topazScript_Object_t * o) {
+void * topaz_script_object_reference_get_native_data(topazScript_Object_t * o, int * tag) {
     if (o->type == topazScript_Object_Type_Reference) {
         if (o->api->object_reference_get_native_data)
-            return o->api->object_reference_get_native_data(o, o->apiData);
+            return o->api->object_reference_get_native_data(o, tag, o->apiData);
     }
     return NULL;
 }
+
+void topaz_script_object_reference_ref(topazScript_Object_t * o) {
+    if (o->type == topazScript_Object_Type_Reference) {
+        if (o->api->object_reference_ref)
+            o->api->object_reference_ref(o, o->apiData);
+    }
+}
+
+void topaz_script_object_reference_unref(topazScript_Object_t * o) {
+    if (o->type == topazScript_Object_Type_Reference) {
+        if (o->api->object_reference_unref)
+            o->api->object_reference_unref(o, o->apiData);
+    }
+}
+
 
 topazScript_Object_t * topaz_script_object_map_get_property(
     topazScript_Object_t * o,
@@ -499,21 +525,6 @@ void topaz_script_object_reference_extendable_add_property(
             o->api->object_reference_extendable_add_property(o, propName, onSet, onGet, o->apiData);
     }       
 }
-
-void topaz_script_object_reference_extendable_add_method(
-    topazScript_Object_t * o,
-    const topazString_t * methodName,
-    topaz_script_native_function function
-) {
-    if (o->type == topazScript_Object_Type_Reference) {
-        if (o->api->object_reference_extendable_add_method)
-            o->api->object_reference_extendable_add_method(o, methodName, function, o->apiData);
-
-    }
-}
-
-
-
 
 
 

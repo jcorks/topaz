@@ -83,12 +83,23 @@ struct topazScript_Object_ReferenceAPI_t {
 
     /// Retrieve the native data thats associated with the scripting object 
     ///
-    void * (*object_reference_get_native_data)(topazScript_Object_t *, void *);
+    void * (*object_reference_get_native_data)(topazScript_Object_t *, int * tag, void *);
 
     /// Sets native data that will be associated with the object across the 
     /// script instance. 
     ///
-    void (*object_reference_set_native_data)(topazScript_Object_t *, void * native, void *);
+    void (*object_reference_set_native_data)(topazScript_Object_t *, void * native, int nativeTag, void *);
+
+    /// Increments the reference count. The script context should use the reference 
+    /// count to control any garbage collection done, as a nonzero ref count means 
+    /// that the object CANNOT be destroyed.
+    ///
+    void (*object_reference_ref)(topazScript_Object_t *, void *);
+
+
+    /// Decrements the reference count. See the notes on the function above.
+    ///
+    void (*object_reference_unref)(topazScript_Object_t *, void *);
 
     /// This function is called if a user runs the "topaz_script_object_call" function 
     /// The intent is to have the in-script object function run, if any. If this is
@@ -132,15 +143,6 @@ struct topazScript_Object_ReferenceAPI_t {
         void *
         );
 
-    /// Adds a managed function to the object. If this isnt necessary, just have 
-    /// the bootstrap script add a function in-script.
-    ///
-    void (*object_reference_extendable_add_method)(
-        topazScript_Object_t *,
-        const topazString_t * methodName,
-        topaz_script_native_function function,
-        void *
-        );
 
 };
 
@@ -163,7 +165,7 @@ struct topazScriptAPI_t {
     int  (*script_map_native_function)(topazScriptAPI_t *, const topazString_t *, topaz_script_native_function, void * userData);
     void (*script_run)                (topazScriptAPI_t *, const topazString_t * sourceName, const topazString_t * scriptData);
     topazScript_Object_t * (*script_expression) (topazScriptAPI_t *, const topazString_t *);
-    topazScript_Object_t * (*script_create_empty_object) (topazScriptAPI_t *);
+    topazScript_Object_t * (*script_create_empty_object) (topazScriptAPI_t *, topaz_script_native_function, void *);
 
     /// This function is completely optional to implement, but is 
     /// mostly likely needed if the scripting language API is more than 

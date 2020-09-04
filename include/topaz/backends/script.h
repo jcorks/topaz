@@ -186,8 +186,15 @@ void topaz_script_emit_event(topazScript_t *, topazScript_Event_t, const topazAr
 
 /// Creates an empty object. If it contains the proper features, this 
 /// object can be modified with the `extendable` family of functions.
+/// If the object's reference count is 0, the script context may choose to 
+/// remove the object from memory. In this case, the given cleanup function 
+/// will be called
 ///
-topazScript_Object_t * topaz_script_create_empty_object(topazScript_t *);
+topazScript_Object_t * topaz_script_create_empty_object(
+    topazScript_t *, 
+    topaz_script_native_function cleanupFn, 
+    void * cleanupData
+);
 
 
 /// This allows for implementations of script to "bundle" together any
@@ -309,12 +316,12 @@ topazScript_Object_t * topaz_script_object_reference_call(topazScript_Object_t *
 /// Associates this data object with a pointer. This is only modifiable
 /// within the native context. This is only applicable to 
 ///
-void topaz_script_object_reference_set_native_data(topazScript_Object_t *, void *);
+void topaz_script_object_reference_set_native_data(topazScript_Object_t *, void *, int tag);
 
 /// Retrieves the native data associated with the object. If none, then 
 /// NULL is returned.
 ///
-void * topaz_script_object_reference_get_native_data(topazScript_Object_t *);
+void * topaz_script_object_reference_get_native_data(topazScript_Object_t *, int * tag);
 
 
 /// Increments the reference count. Any time an object reference is created 
@@ -358,8 +365,9 @@ topazScript_Object_t * topaz_script_object_reference_array_get_nth(
 
 /// Adds a named value property to this object. defaultValue is 
 /// the value that the property should have at first.
+/// Both function's first argument will be the source object
 /// onSet will be called any time the property is edited within the 
-/// script, it will have one argument which is the new value to set to.
+/// script, it will have one addt argument which is the new value to set to.
 /// onGet will be called to retrieve the value in question. It will have no arguments,
 /// but its return value will be used as its value in the script context.
 /// onSet can be NULL. In this case, a default handler is used which does nothing.
@@ -371,17 +379,6 @@ void topaz_script_object_reference_extendable_add_property(
     topaz_script_native_function onSet,
     topaz_script_native_function onGet
 );
-
-/// Adds a method of the given name. When this method is called in-script, 
-/// its arguments will be populated within the argument array,
-/// and the functions return value will be used in the script context.
-///
-void topaz_script_object_reference_extendable_add_method(
-    topazScript_Object_t *,
-    const topazString_t * methodName,
-    topaz_script_native_function function
-);
-
 
 
 
