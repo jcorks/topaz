@@ -56,7 +56,7 @@ typedef enum {
     topazScriptManager_Permission_FullFilesystem = 1,
     topazScriptManager_Permission_Resources = 2,
     topazScriptManager_Permission_Input = 4,
-
+    topazScriptManager_Permission_All = 0xffffffff
 } topazScriptManager_Permission_t;
 
 

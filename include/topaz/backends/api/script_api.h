@@ -160,12 +160,12 @@ struct topazScriptAPI_t {
 
 
 
-    void (*script_create)             (topazScriptAPI_t *);
-    void (*script_destroy)            (topazScriptAPI_t *);
-    int  (*script_map_native_function)(topazScriptAPI_t *, const topazString_t *, topaz_script_native_function, void * userData);
-    void (*script_run)                (topazScriptAPI_t *, const topazString_t * sourceName, const topazString_t * scriptData);
-    topazScript_Object_t * (*script_expression) (topazScriptAPI_t *, const topazString_t *);
-    topazScript_Object_t * (*script_create_empty_object) (topazScriptAPI_t *, topaz_script_native_function, void *);
+    void *(*script_create)             (topazScript_t *);
+    void  (*script_destroy)            (topazScript_t *, void *);
+    int   (*script_map_native_function)(topazScript_t *, void *, const topazString_t *, topaz_script_native_function, void * userData);
+    void  (*script_run)                (topazScript_t *, void *, const topazString_t * sourceName, const topazString_t * scriptData);
+    topazScript_Object_t * (*script_expression) (topazScript_t *, void *, const topazString_t *);
+    topazScript_Object_t * (*script_create_empty_object) (topazScript_t *, void *, topaz_script_native_function, void *);
 
     /// This function is completely optional to implement, but is 
     /// mostly likely needed if the scripting language API is more than 
@@ -177,13 +177,8 @@ struct topazScriptAPI_t {
     /// but using this function as part of the API preparation stage may make 
     /// this simpler design-wise.)
     /// 
-    void (*script_bootstrap)          (topazScriptAPI_t *);
+    void (*script_bootstrap)          (topazScript_t *, void *);
 
-
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the lifetime of the Time
-    ///
-    void * implementationData;
 
 
 };

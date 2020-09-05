@@ -68,7 +68,7 @@ baselibs += cc.find_library('m', required : true)
 compile_args = []
 if get_option('BuildMode') == 'Debug'
     if cc.get_argument_syntax() == 'gcc'
-        compile_args += ['-g',  '-Wall', '-DTOPAZDC']
+        compile_args += ['-g',  '-Wall', '-DTOPAZDC_DEBUG']
     endif
     if host_machine.system() != 'windows' and host_machine.system().contains('mingw') == false
         compile_args += ['-fno-omit-frame-pointer', '-fsanitize=address']

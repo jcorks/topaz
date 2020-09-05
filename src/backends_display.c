@@ -41,7 +41,6 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazBackend_t * b, topazDi
         assert(api.display_has_input_focus);
         assert(api.display_lock_client_position);
         assert(api.display_lock_client_position);
-        assert(api.display_set_view_policy);
         assert(api.display_get_width);
         assert(api.display_get_height);
         assert(api.display_get_x);

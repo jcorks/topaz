@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef TOPAZDC_DEBUG 
+    #include <assert.h>
+#endif
+
 typedef struct {
     topaz_script_native_function fn;
     void * fndata;
@@ -13,6 +17,9 @@ typedef struct {
 /// script context
 struct topazScript_t {
     topazScriptAPI_t api;
+
+    void * implementationData;
+
     topazBackend_t * backend;
 
     // contains all inactive objects ready to be reused.
@@ -72,16 +79,17 @@ topazScript_t * topaz_script_create(topazBackend_t * b, const topazScriptAPI_t *
         assert(api->script_map_native_function);
         assert(api->script_run);
         assert(api->script_expression);
+        assert(api->script_bootstrap);
     #endif
 
-    out->api.script_create(&out->api);
+    out->implementationData = out->api.script_create(out);
     return out;
 }
 
 /// Destroys and frees a topaz input instance.
 ///
 void topaz_script_destroy(topazScript_t * s) {
-    s->api.script_destroy(&s->api);
+    s->api.script_destroy(s, s->implementationData);
     uint32_t i;
     for(i = 0; i < topaz_array_get_size(s->objectAllocRefs); ++i) {
         free(topaz_array_at(s->objectAllocRefs, void*, i));
@@ -100,7 +108,7 @@ int topaz_script_map_native_function(
 ) {
 
     return s->api.script_map_native_function(
-        &s->api,
+        s, s->implementationData,
         localSymbolName,
         fn,
         userData
@@ -113,7 +121,7 @@ void topaz_script_run(
     const topazString_t * scriptData
 ) {
     s->api.script_run(
-        &s->api,
+        s, s->implementationData,
         sourceName,
         scriptData
     );
@@ -124,7 +132,7 @@ topazScript_Object_t * topaz_script_expression(
     const topazString_t * expr) {
 
     return s->api.script_expression(
-        &s->api,
+        s, s->implementationData,
         expr
     );
 }
@@ -133,7 +141,7 @@ void topaz_script_bootstrap(
     topazScript_t * s) {
 
     s->api.script_bootstrap(
-        &s->api
+        s, s->implementationData
     );
 }
 
@@ -143,7 +151,7 @@ topazScript_Object_t * topaz_script_create_empty_object(
     void * data) {
 
     return s->api.script_create_empty_object(
-        &s->api,
+        s, s->implementationData,
         fn,
         data
     );
