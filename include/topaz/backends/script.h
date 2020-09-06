@@ -298,7 +298,7 @@ void topaz_script_object_set(topazScript_Object_t * , const topazScript_Object_t
 ///
 topazScript_Object_Type_t topaz_script_object_get_type(const topazScript_Object_t *);
 
-
+void * topaz_script_object_get_api_data
 
 
 /// Returns a bitwise mask of all the features that this object

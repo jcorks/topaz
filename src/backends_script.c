@@ -286,7 +286,7 @@ topazScript_Object_t * topaz_script_object_from_object(topazScript_t * s, const 
         o->api = other->api;
         o->apiData = other->apiData;
         if (o->api->object_reference_create)
-            o->api->object_reference_create(o, o->apiData);
+            o->apiData = o->api->object_reference_create(o, other->apiData);
 
         break;      
     }
@@ -304,7 +304,7 @@ topazScript_Object_t * topaz_script_object_from_reference(
     o->api = &s->api.objectAPI;
     o->apiData = userData;
     if (o->api->object_reference_create)
-        o->api->object_reference_create(o, o->apiData);
+        o->apiData = o->api->object_reference_create(o, o->apiData);
 
     if (o->api->object_reference_ref)
         o->api->object_reference_ref(o, o->apiData);

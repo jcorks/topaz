@@ -78,7 +78,7 @@ topazEntity_t * rectangle_create(topaz_t * ctx) {
     const topazString_t * str = topaz_script_object_as_string(
         topaz_script_expression(
             script,
-            TOPAZ_STR_CAST("{'this':'other'}")
+            TOPAZ_STR_CAST("2+20")
         )
     );
 
@@ -87,7 +87,7 @@ topazEntity_t * rectangle_create(topaz_t * ctx) {
     /////////
 
 
-    
+
     return e;
 }
 

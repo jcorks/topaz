@@ -70,8 +70,13 @@ typedef struct topazScript_Object_ReferenceAPI_t topazScript_Object_ReferenceAPI
 ///
 struct topazScript_Object_ReferenceAPI_t {
     /// Called when the object is first starting up. 
+    /// The return value is used as the data argument for all object_reference calls.
+    /// scriptAPIData is the void * argument used in script_ API calls
+    /// fromRefData is the data argument given from script_object_from_reference which is populated if this creation is 
+    /// derived from a topaz_script_object_from_reference constructor.
     ///
-    void (*object_reference_create)(topazScript_Object_t *, void *);
+    ///
+    void * (*object_reference_create)(topazScript_Object_t *, void * scriptAPIData, void * fromRefData);
 
     /// Called when the object reference is no longer needed by the native context.
     ///

@@ -67,6 +67,11 @@ void topaz_array_destroy(topazArray_t * t) {
     free(t);
 }
 
+topazArray_t * topaz_array_empty() {
+    static topazArray_t empty = {};
+    return &empty;
+}
+
 #define topaz_array_temp_max_calls 128
 static topazArray_t * tempVals[topaz_array_temp_max_calls] = {0};
 static int tempIter = 0;

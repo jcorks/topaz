@@ -68,7 +68,9 @@ const topazArray_t * topaz_array_temporary_from_static_array(void * array, uint3
 /// The third argument is the number of members in the array
 #define TOPAZ_ARRAY_CAST(__D__, __T__, __L__) (topaz_array_temporary_from_static_array(__D__, sizeof(__T__), __L__))
 
-
+/// Returns an empty, read-only array. 
+///
+const topazArray_t * topaz_array_empty();
 
 /// Clones an entire array, returning a new array instance.
 ///
