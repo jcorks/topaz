@@ -151,6 +151,12 @@ struct topazScript_Object_ReferenceAPI_t {
 
 };
 
+/// Gets the data pointer given from object_reference_create to be 
+/// used for internal implementations.
+///
+void * topaz_script_object_get_api_data(topazScript_Object_t *);
+
+
 
 /// Each function is an implementation-facing copy of 
 /// the user-side API for topazTime_t. See <topaz/backends/Time.h>

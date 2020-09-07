@@ -238,11 +238,6 @@ topazScript_Object_t * topaz_script_object_from_number(topazScript_t *, double);
 ///
 topazScript_Object_t * topaz_script_object_from_string(topazScript_t *, const topazString_t *);
 
-/// Creates a new object as a shallow clone of the given object
-///
-topazScript_Object_t * topaz_script_object_from_object(topazScript_t *, const topazScript_Object_t *);
-
-
 
 
 /// Creates a new object that acts as a "wrapper" to an object managed by the 
@@ -298,7 +293,6 @@ void topaz_script_object_set(topazScript_Object_t * , const topazScript_Object_t
 ///
 topazScript_Object_Type_t topaz_script_object_get_type(const topazScript_Object_t *);
 
-void * topaz_script_object_get_api_data
 
 
 /// Returns a bitwise mask of all the features that this object

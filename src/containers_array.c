@@ -67,7 +67,7 @@ void topaz_array_destroy(topazArray_t * t) {
     free(t);
 }
 
-topazArray_t * topaz_array_empty() {
+const topazArray_t * topaz_array_empty() {
     static topazArray_t empty = {};
     return &empty;
 }

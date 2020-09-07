@@ -263,37 +263,6 @@ topazScript_Object_t * topaz_script_object_from_string(topazScript_t * s, const 
     return o;
 }
 
-topazScript_Object_t * topaz_script_object_from_object(topazScript_t * s, const topazScript_Object_t * other) {
-    topazScript_Object_t * o = object_pool_fetch(s);
-    o->type = other->type;
-    switch(o->type) {
-      case topazScript_Object_Type_Undefined:
-        break;
-
-      case topazScript_Object_Type_Integer: 
-        o->dataInt = other->dataInt;
-        break;
-
-      case topazScript_Object_Type_Number: 
-        o->dataNumber = other->dataNumber;
-        break;
-
-      case topazScript_Object_Type_String:
-        topaz_string_set(o->dataString, other->dataString);
-        break;
-
-      case topazScript_Object_Type_Reference: // all others are external
-        o->api = other->api;
-        o->apiData = other->apiData;
-        if (o->api->object_reference_create)
-            o->apiData = o->api->object_reference_create(o, other->apiData);
-
-        break;      
-    }
-
-    return o;
-}
-
 
 topazScript_Object_t * topaz_script_object_from_reference(
     topazScript_t * s,
@@ -302,9 +271,9 @@ topazScript_Object_t * topaz_script_object_from_reference(
     topazScript_Object_t * o = object_pool_fetch(s);
     o->type = topazScript_Object_Type_Reference;
     o->api = &s->api.objectAPI;
-    o->apiData = userData;
+
     if (o->api->object_reference_create)
-        o->apiData = o->api->object_reference_create(o, o->apiData);
+        o->apiData = o->api->object_reference_create(o, o->apiData, userData);
 
     if (o->api->object_reference_ref)
         o->api->object_reference_ref(o, o->apiData);
@@ -534,10 +503,9 @@ void topaz_script_object_reference_extendable_add_property(
     }       
 }
 
-
-
-
-
+void * topaz_script_object_get_api_data(topazScript_Object_t * o) {
+    return o->apiData;
+}
 
 
 
