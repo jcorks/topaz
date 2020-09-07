@@ -127,18 +127,40 @@ typedef struct {
 } TOPAZDUKObjectTag;
 
 
+
+// assumes object to receive prop is already at the top of the stack
+// ideally sets the property as a read-only value
+static void topaz_duk_set_private_prop(duk_context * js, const char * pName, void * val) {
+    duk_push_string(js, pName);
+    duk_push_sprintf(js, "%p", val);
+    duk_def_prop(
+        js,
+        -3,
+        DUK_DEFPROP_FORCE | DUK_DEFPROP_HAVE_VALUE | DUK_DEFPROP_HAVE_ENUMERABLE | DUK_DEFPROP_HAVE_WRITABLE | DUK_DEFPROP_HAVE_CONFIGURABLE
+    );
+}
+
+// Retrieves the data placed within the js obejct as a pointer.
+// Null if none. Assumes the source object is the top.
+static void * topaz_duk_get_private_prop(duk_context * js, const char * pName) {
+    duk_push_string(js, pName);
+    duk_get_prop(js, -2);
+    void * out = NULL;
+    sscanf(duk_get_string(js, -1), "%p", &out);
+    duk_pop(js);
+    return out;
+}
+
+
 // Gets the object tag from the top object
 static TOPAZDUKObjectTag * topaz_duk_object_get_tag_from_top(duk_context * js) {
     #ifdef TOPAZDC_DEBUG
         int stackSize = duk_get_top(js);
     #endif
 
-    // uhh?? unsafe if someone puts a __tz prop by hand in a js context.
+    // uhh?? unsafe if someone puts a ___tz prop by hand in a js context.
     // think of a different way before release, thanks
-    duk_push_string(js, "__tz");
-    duk_get_prop(js, -2);
-    TOPAZDUKObjectTag * tag = NULL;
-    sscanf(duk_get_string(js, -1), "%p", &tag);
+    TOPAZDUKObjectTag * tag = topaz_duk_get_private_prop(js, "___tz");
     duk_pop(js);
 
     #ifdef TOPAZDC_DEBUG 
@@ -155,14 +177,7 @@ static TOPAZDUKObjectTag * topaz_duk_object_set_tag(TOPAZDUK * ctx) {
     #endif
 
     TOPAZDUKObjectTag * out = calloc(1, sizeof(TOPAZDUKObjectTag));
-    duk_push_string(ctx->js, "___tz");
-    duk_push_sprintf(ctx->js, "%p", out);
-    duk_def_prop(
-        ctx->js,
-        -3,
-        DUK_DEFPROP_FORCE | DUK_DEFPROP_HAVE_VALUE | DUK_DEFPROP_HAVE_ENUMERABLE | DUK_DEFPROP_HAVE_WRITABLE | DUK_DEFPROP_HAVE_CONFIGURABLE
-    );
-
+    topaz_duk_set_private_prop(ctx->js, "___tz", out);
     duk_pop(ctx->js);
 
 
@@ -325,6 +340,132 @@ static void topaz_duk_object_push_tso(TOPAZDUK * ctx, topazScript_Object_t * o) 
     }
 }
 
+static duk_ret_t topaz_duk_get_internal(duk_context * js) {
+    #ifdef TOPAZDC_DEBUG
+        int stackSize = duk_get_top(js);
+    #endif
+
+    // retrieve tag and actual getter
+    duk_push_current_function(js);
+    TOPAZDUKObjectTag * tag = topaz_duk_get_private_prop(js, "___tz");
+    topaz_script_native_function getReal = (topaz_script_native_function)topaz_duk_get_private_prop(js, "___tzfn");
+    duk_pop(js);
+
+    // We need a representative object for the 'this' to which the 
+    // getter belongs
+    topaz_duk_object_push_to_top_from_tag(tag);
+    topazScript_Object_t * self = topaz_duk_stack_object_to_tso(tag->ctx, -1);
+    duk_pop(js);
+
+    // actually call the native getter
+    topazScript_Object_t * res = getReal(
+        tag->ctx->script,
+        TOPAZ_ARRAY_CAST(&self, topazScript_Object_t *, 1),
+        NULL //????
+    );
+
+    #ifdef TOPAZDC_DEBUG 
+        assert(duk_get_top(js) == stackSize);
+    #endif
+
+    // finally, push the tso result as a duk object
+    if (res) {
+        topaz_duk_object_push_tso(tag->ctx, res);
+    } else {
+        duk_push_undefined(tag->ctx->js);
+    }
+
+    topaz_script_object_destroy(self);
+    topaz_script_object_destroy(res);
+    return 1;
+}
+
+static duk_ret_t topaz_duk_set_internal(duk_context * js) {
+    // we assume that get_top == 2 since its a setter
+    duk_push_current_function(js);
+    TOPAZDUKObjectTag * tag = topaz_duk_get_private_prop(js, "___tz");
+    topaz_script_native_function setReal = (topaz_script_native_function)topaz_duk_get_private_prop(js, "___tzfn");
+    duk_pop(js);
+
+    topazScript_Object_t * args[2];
+
+
+    // We need a representative object for the 'this' to which the 
+    // getter belongs
+    topaz_duk_object_push_to_top_from_tag(tag);
+    args[0] = topaz_duk_stack_object_to_tso(tag->ctx, -1);
+    duk_pop(js);
+
+    // arg 0 is always the value in question
+    args[1] = topaz_duk_stack_object_to_tso(tag->ctx, 0);
+
+
+    topazScript_Object_t * result = setReal(
+        tag->ctx->script,
+        TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 2),
+        NULL //???????????
+    );
+
+    #ifdef TOPAZDC_DEBUG
+        assert(!result);
+    #endif
+
+    
+    topaz_script_object_destroy(args[0]);
+    topaz_script_object_destroy(args[1]);
+
+    return 0;
+}
+
+
+
+
+
+static duk_ret_t topaz_duk_native_function_internal(duk_context * js) {
+    #ifdef TOPAZDC_DEBUG
+        int stackSize = duk_get_top(js);
+    #endif
+
+    // retrieve tag and actual getter
+    duk_push_current_function(js);
+    TOPAZDUK * ctx = topaz_duk_get_private_prop(js, "___tzcx");
+    topaz_script_native_function fnReal = topaz_duk_get_private_prop(js, "___tzfn");
+    void * fnData = topaz_duk_get_private_prop(js, "___tzdt");
+    duk_pop(js);
+
+
+    // convert all args to tso
+    uint32_t i;
+    uint32_t nargs = duk_get_top(js);
+    topazScript_Object_t * args[nargs];
+    for(i = 0; i < nargs; ++i) {
+        args[i] = topaz_duk_stack_object_to_tso(ctx, i);
+    }
+
+    // actually call the native fn
+    topazScript_Object_t * res = fnReal(
+        ctx->script,
+        TOPAZ_ARRAY_CAST(&args, topazScript_Object_t *, nargs),
+        fnData
+    );
+
+    #ifdef TOPAZDC_DEBUG 
+        assert(duk_get_top(js) == stackSize);
+    #endif
+
+    // finally, push the tso result as a duk object
+    if (res) {
+        topaz_duk_object_push_tso(ctx, res);
+    } else {
+        duk_push_undefined(ctx->js);
+    }
+
+    for(i = 0; i < nargs; ++i) {
+        topaz_script_object_destroy(args[i]);
+    }
+    topaz_script_object_destroy(res);
+    return 1;
+}
 
 
 
@@ -337,16 +478,63 @@ static void topaz_duk_object_push_tso(TOPAZDUK * ctx, topazScript_Object_t * o) 
 
 
 
-
+static void topaz_duk_fatal(void * udata, const char *msg) {
+    printf("TOPAZ-DUKTAPE FATAL ERROR: %s\n", msg);
+}
 
 
 
 static void * topaz_duk_create(topazScript_t * scr) {
     TOPAZDUK * out = calloc(1, sizeof(TOPAZDUK));
-    out->js = duk_create_heap_default();
+    out->js = duk_create_heap(
+        NULL,
+        NULL,
+        NULL,
+        out,
+        topaz_duk_fatal
+    );
     out->script = scr;
     return out;
 }
+
+static void topaz_duk_destroy(topazScript_t * scr, void * data) {
+    TOPAZDUK * ctx = data;
+    // TODO: destroy ALL objects??
+    duk_destroy_heap(ctx->js);
+    free(ctx);
+}
+
+static int topaz_duk_map_native_function(
+    topazScript_t * script, 
+    void * data, 
+    
+    const topazString_t * pname, 
+    topaz_script_native_function fn, 
+    void * userData
+
+) {
+    TOPAZDUK * ctx = data;
+    #ifdef TOPAZDC_DEBUG
+        int stackSize = duk_get_top(ctx->js);
+    #endif
+
+    duk_push_global_object(ctx->js);
+    duk_push_c_function(ctx->js, topaz_duk_native_function_internal, DUK_VARARGS);
+
+    topaz_duk_set_private_prop(ctx->js, "___tzcx", ctx);
+    topaz_duk_set_private_prop(ctx->js, "___tzfn", (void*) fn);
+    topaz_duk_set_private_prop(ctx->js, "___tzdt", userData);
+
+    duk_put_prop_string(ctx->js, -2, topaz_string_get_c_str(pname));
+    duk_pop(ctx->js);
+
+    #ifdef TOPAZDC_DEBUG 
+        assert(duk_get_top(ctx->js) == stackSize);
+    #endif
+
+    return 1;
+}
+
 
 static topazScript_Object_t * topaz_duk_expression(
     topazScript_t * script, 
@@ -363,20 +551,53 @@ static topazScript_Object_t * topaz_duk_expression(
     return out;
 }
 
-static duk_ret_t topaz_duk_get_internal(duk_context * js) {
-    duk_push_current_function(js);
-    duk_push_string(js, "__tz");
-    duk_get_prop(js, -2);
-    TOPAZDUKObjectTag * tag = NULL;
-    sscanf(duk_get_string(js, -1), "%p", &tag);
-
-    topazScript_Object_t * src = topaz_duk_stack_object_to_tso(
+void topaz_duk_run(
+    topazScript_t * script, 
+    void * data, 
     
+    const topazString_t * sourceName, 
+    const topazString_t * sourceData) {
+
+    TOPAZDUK * ctx = data;
+    #ifdef TOPAZDC_DEBUG
+        int stackSize = duk_get_top(ctx->js);
+    #endif
+
+    duk_push_string(ctx->js, topaz_string_get_c_str(sourceData));
+    duk_push_string(ctx->js, topaz_string_get_c_str(sourceName));
+    duk_compile(ctx->js, 0);
+    duk_call(ctx->js, 0);
+    duk_pop(ctx->js); // throw away result of last statement.
+
+    #ifdef TOPAZDC_DEBUG 
+        assert(duk_get_top(ctx->js) == stackSize);
+    #endif
 }
 
-static duk_ret_t topaz_duk_set_internal(duk_context * js) {
-    
+
+void topaz_duk_bootstrap(topazScript_t * script, void * n) {
+    #include "bootstrap.js"
+    topaz_duk_run(
+        script, n,
+        TOPAZ_STR_CAST("__bootstrap__.js"),
+        TOPAZ_STR_CAST(bootstrapSource)
+    );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -463,7 +684,7 @@ static void * topaz_duk_object_reference_get_native_data(topazScript_Object_t * 
     return t->nativeData;
 }
 
-static void topaz_duk_object_reference_set_native_data(topazScript_Object_t * o, int tagID, void * nativeData, void * tagSrc) {
+static void topaz_duk_object_reference_set_native_data(topazScript_Object_t * o, void * nativeData, int tagID, void * tagSrc) {
     TOPAZDUKObjectTag * t = tagSrc;
     t->tagID = tagID;
     t->nativeData = t->nativeData;
@@ -623,12 +844,12 @@ const topazString_t * topaz_duk_object_reference_to_string(
     return TOPAZ_STR_CAST(str);
 }
 
-void (*object_reference_extendable_add_property)(
+void topaz_duk_object_reference_extendable_add_property(
     topazScript_Object_t * object, 
     const topazString_t * propName,
     topaz_script_native_function onSet,
     topaz_script_native_function onGet,
-    void * data
+    void * tagSrc
 ) {
     TOPAZDUKObjectTag * tag = tagSrc;
     int hasWhich = 0;
@@ -650,18 +871,11 @@ void (*object_reference_extendable_add_property)(
             int stackSize2 = duk_get_top(tag->ctx->js);
         #endif
 
-        duk_push_c_function(tag->ctx->js, topaz_duk_get_internal);
-        // we need to set a prop to this tag 
-        duk_push_string(tag->ctx->js, "___tz");
-        duk_push_sprintf(tag->ctx->js, "%p", tag);
-        duk_def_prop(
-            tag->ctx->js,
-            -3,
-            DUK_DEFPROP_FORCE | DUK_DEFPROP_HAVE_VALUE | DUK_DEFPROP_HAVE_ENUMERABLE | DUK_DEFPROP_HAVE_WRITABLE | DUK_DEFPROP_HAVE_CONFIGURABLE
-        );
-
+        duk_push_c_function(tag->ctx->js, topaz_duk_get_internal, 0);
+        topaz_duk_set_private_prop(tag->ctx->js, "___tz",   tag);
+        topaz_duk_set_private_prop(tag->ctx->js, "___tzfn", (void*) onGet);
         duk_pop(tag->ctx->js);
-        hasWhech |= DUK_DEFPROP_HAVE_GETTER;
+        hasWhich |= DUK_DEFPROP_HAVE_GETTER;
         
         #ifdef TOPAZDC_DEBUG 
             assert(duk_get_top(tag->ctx->js) == stackSize2);
@@ -675,18 +889,12 @@ void (*object_reference_extendable_add_property)(
             int stackSize2 = duk_get_top(tag->ctx->js);
         #endif
 
-        duk_push_c_function(tag->ctx->js, topaz_duk_set_internal);
+        duk_push_c_function(tag->ctx->js, topaz_duk_set_internal, 1);
         // we need to set a prop to this tag 
-        duk_push_string(tag->ctx->js, "___tz");
-        duk_push_sprintf(tag->ctx->js, "%p", tag);
-        duk_def_prop(
-            tag->ctx->js,
-            -3,
-            DUK_DEFPROP_FORCE | DUK_DEFPROP_HAVE_VALUE | DUK_DEFPROP_HAVE_ENUMERABLE | DUK_DEFPROP_HAVE_WRITABLE | DUK_DEFPROP_HAVE_CONFIGURABLE
-        );
-
+        topaz_duk_set_private_prop(tag->ctx->js, "___tz",   tag);
+        topaz_duk_set_private_prop(tag->ctx->js, "___tzfn", (void*) onSet);
         duk_pop(tag->ctx->js);
-        hasWhech |= DUK_DEFPROP_HAVE_SETTER;
+        hasWhich |= DUK_DEFPROP_HAVE_SETTER;
         
         #ifdef TOPAZDC_DEBUG 
             assert(duk_get_top(tag->ctx->js) == stackSize2);
@@ -698,14 +906,16 @@ void (*object_reference_extendable_add_property)(
     duk_def_prop(
         tag->ctx->js, 
         -4,
-        hasWHich
+        hasWhich
     );
     
     duk_pop(tag->ctx->js);
+    #ifdef TOPAZDC_DEBUG 
+        assert(duk_get_top(tag->ctx->js) == stackSize);
+    #endif
 }
 
 
-void
 
 
 
@@ -717,16 +927,27 @@ void
 
 
 
-static intptr_t api_nothing(){return 0;}
 void topaz_system_script_duktapeJS__api(topazScriptAPI_t * api) {
     api->objectAPI.object_reference_create = topaz_duk_object_reference_create;
+    api->objectAPI.object_reference_destroy = topaz_duk_object_reference_destroy;
+    api->objectAPI.object_reference_get_features = topaz_duk_object_reference_get_features;
+    api->objectAPI.object_reference_get_native_data = topaz_duk_object_reference_get_native_data;
+    api->objectAPI.object_reference_set_native_data = topaz_duk_object_reference_set_native_data;
+    api->objectAPI.object_reference_ref = topaz_duk_object_reference_ref;
+    api->objectAPI.object_reference_unref = topaz_duk_object_reference_unref;
+    api->objectAPI.object_reference_call = topaz_duk_object_reference_call;
+    api->objectAPI.object_reference_array_get_nth = topaz_duk_object_reference_array_get_nth;
+    api->objectAPI.object_reference_array_get_count = topaz_duk_object_reference_array_get_count;
+    api->objectAPI.object_reference_map_get_property = topaz_duk_object_reference_map_get_property;
+    api->objectAPI.object_reference_to_string = topaz_duk_object_reference_to_string;
+    api->objectAPI.object_reference_extendable_add_property = topaz_duk_object_reference_extendable_add_property;
 
     api->script_create = topaz_duk_create;
-    api->script_destroy = (void (*)(topazScript_t *, void *)) api_nothing;
-    api->script_map_native_function = (int (*)(topazScript_t *, void *, const topazString_t *, topaz_script_native_function, void*)) api_nothing;
-    api->script_run = (void (*)(topazScript_t *, void *, const topazString_t * sourceName, const topazString_t * scriptData)) api_nothing;
+    api->script_destroy = topaz_duk_destroy;
+    api->script_map_native_function = topaz_duk_map_native_function;
+    api->script_run = topaz_duk_run;
     api->script_expression = topaz_duk_expression;
-    api->script_bootstrap = (void (*)(topazScript_t *, void *)) api_nothing;
+    api->script_bootstrap = topaz_duk_bootstrap;
 
 }
 
