@@ -78,11 +78,18 @@ topazEntity_t * rectangle_create(topaz_t * ctx) {
     const topazString_t * str = topaz_script_object_as_string(
         topaz_script_expression(
             script,
-            TOPAZ_STR_CAST("_topaz_vector__rotation_x")
+            TOPAZ_STR_CAST(
+                "(function(){\n"
+                "   c.r = 0.5;\n"
+                "   c.b = 1.0;\n"
+                "   return c.r"
+                "})()"
+            
+            )
         )
     );
 
-    printf("RESULT IS: %s", topaz_string_get_c_str(str));
+    printf("\n\nRESULT IS: %s", topaz_string_get_c_str(str));
     fflush(stdout);
     /////////
 

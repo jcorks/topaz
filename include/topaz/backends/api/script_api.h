@@ -134,7 +134,7 @@ struct topazScript_Object_ReferenceAPI_t {
     /// Returns a stringification of this object.
     /// The default handler will return "[Object]"
     ///
-    const topazString_t * (*object_reference_to_string)(topazScript_Object_t *, void *);
+    void (*object_reference_to_string)(topazScript_Object_t *, topazString_t * s, void *);
 
     /// Adds a controlled value property to the object reference.
     /// If its just a single static value, its probably better to just do it within the 

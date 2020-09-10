@@ -361,7 +361,8 @@ topazScript_Object_t * topaz_script_object_reference_array_get_nth(
 /// the value that the property should have at first.
 /// Both function's first argument will be the source object
 /// onSet will be called any time the property is edited within the 
-/// script, it will have one addt argument which is the new value to set to.
+/// script, it will have one addt argument which is the new value to set
+/// to but the function's return value will be ignored.
 /// onGet will be called to retrieve the value in question. It will have no arguments,
 /// but its return value will be used as its value in the script context.
 /// onSet can be NULL. In this case, a default handler is used which does nothing.

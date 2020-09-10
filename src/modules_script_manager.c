@@ -135,7 +135,7 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 #define TSO_OBJECT_KEEP topaz_script_object_reference_ref(object);
 
 // Tells the scripting engine that it can garbage collect arg0 if desired.
-#define TSO_OBJECT_UNKEEP() topaz_script_object_reference_unref(arg0);
+#define TSO_OBJECT_UNKEEP topaz_script_object_reference_unref(arg0);
 
 
 // Ensures that, past this point, AT LEAST the given number of args is 
@@ -156,7 +156,7 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 #define TSO_NATIVIZE_3(__type__, __assertTag__) int tag3__;__type__ native3 = topaz_script_object_reference_get_native_data(arg3, &tag3__); if (tag3__ != __assertTag__) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
 
 // Default return value.
-#define TSO_NO_RETURN return topaz_script_object_undefined(script);
+#define TSO_NO_RETURN return NULL;
 
 // macro for assigning a native function
 #define TS_MAP_NATIVE_FN(__name__, __fn__) topaz_script_map_native_function(script, TOPAZ_STR_CAST(__name__), __fn__, NULL)
@@ -223,13 +223,7 @@ TSO_SCRIPT_API_FN(vector_api__z_get) {
 }
 
 
-TSO_SCRIPT_API_FN(vector_api__destroy) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
 
-    free(native);
-    TSO_NO_RETURN;
-}
 
 
 TSO_SCRIPT_API_FN(vector_api__create) {
@@ -248,14 +242,26 @@ TSO_SCRIPT_API_FN(vector_api__create) {
     }
 
     // creates new object and sets native pointer
-    TSO_OBJECT_NEW(ptr, TSO_OBJECT_ID__VECTOR, vector_api__destroy);
+    TSO_OBJECT_NEW(ptr, TSO_OBJECT_ID__VECTOR, NULL);
 
     // uses implicit names to add ref
     TSO_PROP_ADD("x", vector_api__x_set, vector_api__x_get);
     TSO_PROP_ADD("y", vector_api__y_set, vector_api__y_get);
     TSO_PROP_ADD("z", vector_api__z_set, vector_api__z_get);
 
+    TSO_OBJECT_KEEP;
     return object;
+}
+
+TSO_SCRIPT_API_FN(vector_api__destroy) {
+    TSO_ASSERT_ARG_COUNT(1);
+    TSO_ARG_0;
+    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
+
+    free(native);
+
+    TSO_OBJECT_UNKEEP;
+    TSO_NO_RETURN;
 }
 
 
@@ -519,28 +525,29 @@ TSO_SCRIPT_API_FN(vector_api__rotate_z) {
 
 
 static void add_refs__vector_api(topazScript_t * script) {
-    TS_MAP_NATIVE_FN("_topaz_vector__create", vector_api__create);
+    TS_MAP_NATIVE_FN("topaz_vector__create", vector_api__create);
+    TS_MAP_NATIVE_FN("topaz_vector__destroy", vector_api__destroy);
 
     // member functions
-    TS_MAP_NATIVE_FN("_topaz_vector__get_length", vector_api__get_length);
-    TS_MAP_NATIVE_FN("_topaz_vector__get_distance", vector_api__get_distance);
-    TS_MAP_NATIVE_FN("_topaz_vector__normalize", vector_api__normalize);
-    TS_MAP_NATIVE_FN("_topaz_vector__cross", vector_api__cross);
-    TS_MAP_NATIVE_FN("_topaz_vector__floor", vector_api__floor);
-    TS_MAP_NATIVE_FN("_topaz_vector__rotation_x_diff", vector_api__rotation_x_diff);
-    TS_MAP_NATIVE_FN("_topaz_vector__rotation_x_diff_relative", vector_api__rotation_x_diff_relative);
-    TS_MAP_NATIVE_FN("_topaz_vector__rotation_x", vector_api__rotation_x);
-    TS_MAP_NATIVE_FN("_topaz_vector__rotation_y_diff", vector_api__rotation_y_diff);
-    TS_MAP_NATIVE_FN("_topaz_vector__rotation_y_diff_relative", vector_api__rotation_y_diff_relative);
-    TS_MAP_NATIVE_FN("_topaz_vector__rotation_y", vector_api__rotation_y);
-    TS_MAP_NATIVE_FN("_topaz_vector__rotation_z_diff", vector_api__rotation_z_diff);
-    TS_MAP_NATIVE_FN("_topaz_vector__rotation_z_diff_relative", vector_api__rotation_z_diff_relative);
-    TS_MAP_NATIVE_FN("_topaz_vector__rotation_z", vector_api__rotation_z);
+    TS_MAP_NATIVE_FN("topaz_vector__get_length", vector_api__get_length);
+    TS_MAP_NATIVE_FN("topaz_vector__get_distance", vector_api__get_distance);
+    TS_MAP_NATIVE_FN("topaz_vector__normalize", vector_api__normalize);
+    TS_MAP_NATIVE_FN("topaz_vector__cross", vector_api__cross);
+    TS_MAP_NATIVE_FN("topaz_vector__floor", vector_api__floor);
+    TS_MAP_NATIVE_FN("topaz_vector__rotation_x_diff", vector_api__rotation_x_diff);
+    TS_MAP_NATIVE_FN("topaz_vector__rotation_x_diff_relative", vector_api__rotation_x_diff_relative);
+    TS_MAP_NATIVE_FN("topaz_vector__rotation_x", vector_api__rotation_x);
+    TS_MAP_NATIVE_FN("topaz_vector__rotation_y_diff", vector_api__rotation_y_diff);
+    TS_MAP_NATIVE_FN("topaz_vector__rotation_y_diff_relative", vector_api__rotation_y_diff_relative);
+    TS_MAP_NATIVE_FN("topaz_vector__rotation_y", vector_api__rotation_y);
+    TS_MAP_NATIVE_FN("topaz_vector__rotation_z_diff", vector_api__rotation_z_diff);
+    TS_MAP_NATIVE_FN("topaz_vector__rotation_z_diff_relative", vector_api__rotation_z_diff_relative);
+    TS_MAP_NATIVE_FN("topaz_vector__rotation_z", vector_api__rotation_z);
     
     // these modify the existing vector
-    TS_MAP_NATIVE_FN("_topaz_vector__rotate_x", vector_api__rotate_x);
-    TS_MAP_NATIVE_FN("_topaz_vector__rotate_y", vector_api__rotate_y);
-    TS_MAP_NATIVE_FN("_topaz_vector__rotate_z", vector_api__rotate_z);
+    TS_MAP_NATIVE_FN("topaz_vector__rotate_x", vector_api__rotate_x);
+    TS_MAP_NATIVE_FN("topaz_vector__rotate_y", vector_api__rotate_y);
+    TS_MAP_NATIVE_FN("topaz_vector__rotate_z", vector_api__rotate_z);
 
 }
 ////////////////////
@@ -574,7 +581,7 @@ TSO_SCRIPT_API_FN(color_api__g_set) {
     TSO_ARG_1;
     TSO_NATIVIZE(topazColor_t *, TSO_OBJECT_ID__COLOR);
 
-    native->r = (uint8_t)(int)(topaz_script_object_as_number(arg1) * 255);
+    native->g = (uint8_t)(int)(topaz_script_object_as_number(arg1) * 255);
     TSO_NO_RETURN;
 }
 
@@ -583,7 +590,7 @@ TSO_SCRIPT_API_FN(color_api__b_set) {
     TSO_ARG_1;
     TSO_NATIVIZE(topazColor_t *, TSO_OBJECT_ID__COLOR);
 
-    native->r = (uint8_t)(int)(topaz_script_object_as_number(arg1) * 255);
+    native->b = (uint8_t)(int)(topaz_script_object_as_number(arg1) * 255);
     TSO_NO_RETURN;
 }
 
@@ -592,7 +599,7 @@ TSO_SCRIPT_API_FN(color_api__a_set) {
     TSO_ARG_1;
     TSO_NATIVIZE(topazColor_t *, TSO_OBJECT_ID__COLOR);
 
-    native->r = (uint8_t)(int)(topaz_script_object_as_number(arg1) * 255);
+    native->a = (uint8_t)(int)(topaz_script_object_as_number(arg1) * 255);
     TSO_NO_RETURN;
 }
 
@@ -728,20 +735,14 @@ TSO_SCRIPT_API_FN(color_api__set_from_string) {
 
 
 
-TSO_SCRIPT_API_FN(color_api__destroy) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazColor_t *, TSO_OBJECT_ID__COLOR);
 
-    free(native);
-    TSO_NO_RETURN;
-}
 
 
 TSO_SCRIPT_API_FN(color_api__create) {
     topazColor_t * colorPtr = calloc(1, sizeof(topazColor_t));
 
     // creates new object and sets native pointer
-    TSO_OBJECT_NEW(colorPtr, TSO_OBJECT_ID__COLOR, color_api__destroy);
+    TSO_OBJECT_NEW(colorPtr, TSO_OBJECT_ID__COLOR, NULL);
 
     // uses implicit names to add ref
     TSO_PROP_ADD("r", color_api__r_set, color_api__r_get);
@@ -754,18 +755,26 @@ TSO_SCRIPT_API_FN(color_api__create) {
     TSO_PROP_ADD("bInt", color_api__b_int_set, color_api__b_int_get);
     TSO_PROP_ADD("aInt", color_api__a_int_set, color_api__a_int_get);
 
+    TSO_OBJECT_KEEP;
     return object;
 }
 
-
-
+TSO_SCRIPT_API_FN(color_api__destroy) {
+    TSO_ASSERT_ARG_COUNT(1);
+    TSO_ARG_0;
+    TSO_NATIVIZE(topazColor_t *, TSO_OBJECT_ID__COLOR);
+    free(native);
+    TSO_OBJECT_UNKEEP;
+    TSO_NO_RETURN;
+}   
 
 static void add_refs__color_api(topazScript_t * script) {
-    TS_MAP_NATIVE_FN("_topaz_color__create", color_api__create);
+    TS_MAP_NATIVE_FN("topaz_color__create", color_api__create);
+    TS_MAP_NATIVE_FN("topaz_color__", color_api__destroy);
 
     // member functions
-    TS_MAP_NATIVE_FN("_topaz_color__to_hex_string", color_api__to_hex_string);
-    TS_MAP_NATIVE_FN("_topaz_color__set_from_string", color_api__set_from_string);
+    TS_MAP_NATIVE_FN("topaz_color__to_hex_string", color_api__to_hex_string);
+    TS_MAP_NATIVE_FN("topaz_color__set_from_string", color_api__set_from_string);
 }
 
 ////////////////////
