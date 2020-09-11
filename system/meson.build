@@ -53,11 +53,11 @@ foreach handler : handlers
 
 
     if local__shouldTest == true 
-        resultObject = cc.run(files('../system/'+local__type+'_'+local__name+'/compat_test.c'), dependencies : local__dependenciesCompiled)
+        resultObject = cc.run(files('../system/'+local__type+'/'+local__name+'/compat_test.c'), dependencies : local__dependenciesCompiled)
 
         if resultObject.compiled() == true
             handlerInternalSource   += 'topaz_system_config_add_handler(TOPAZ_STR_CAST("'+local__type+'"), TOPAZ_STR_CAST("'+local__name+'"), topaz_system_'+local__type+'_'+local__name+'__backend, (void (*)(void *)) topaz_system_'+local__type+'_'+local__name+'__api);\n'
-            handlerInternalInclude  += '#include "../system/'+local__type+'_'+local__name+'/src/backend.h"\n'
+            handlerInternalInclude  += '#include "../system/'+local__type+'/'+local__name+'/src/backend.h"\n'
             handlerSources += local__sources
             handlerDependencies += local__dependenciesCompiled
             message(''+local__name+':'+local__type+' supported? YES')
@@ -68,7 +68,7 @@ foreach handler : handlers
 
     else 
         handlerInternalSource   += 'topaz_system_config_add_handler(TOPAZ_STR_CAST("'+local__type+'"), TOPAZ_STR_CAST("'+local__name+'"), topaz_system_'+local__type+'_'+local__name+'__backend, (void (*)(void *)) topaz_system_'+local__type+'_'+local__name+'__api);\n'
-        handlerInternalInclude  += '#include "../system/'+local__type+'_'+local__name+'/src/backend.h"\n'
+        handlerInternalInclude  += '#include "../system/'+local__type+'/'+local__name+'/src/backend.h"\n'
         handlerSources += local__sources
         handlerDependencies += local__dependenciesCompiled
         

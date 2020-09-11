@@ -3,8 +3,8 @@ handlers += {
     'name' : 'srgs',
     'type' : 'renderer',
     'sources' : [
-        'system/renderer_srgs/src/srgs.c',
-        'system/renderer_srgs/src/topaz_srgs.c'
+        'system/renderer/srgs/src/srgs.c',
+        'system/renderer/srgs/src/topaz_srgs.c'
     ],
     'shouldTest' : false
 }

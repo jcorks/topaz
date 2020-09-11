@@ -2,6 +2,6 @@
 handlers += {
     'name' : 'noScript',
     'type' : 'script',
-    'sources' : ['system/script_noScript/src/empty.c'],
+    'sources' : ['system/script/noScript/src/empty.c'],
     'shouldTest' : false
 }

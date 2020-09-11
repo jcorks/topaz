@@ -2,7 +2,7 @@
 handlers += {
     'name' : 'noAudioManager',
     'type' : 'audioManager',
-    'sources' : ['system/audioManager_noAudioManager/src/empty.c'],
+    'sources' : ['system/audioManager/noAudioManager/src/empty.c'],
     'shouldTest' : false
 }
 

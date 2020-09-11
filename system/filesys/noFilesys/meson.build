@@ -2,6 +2,6 @@
 handlers += {
     'name' : 'noFilesys',
     'type' : 'filesys',
-    'sources' : ['system/filesys_noFilesys/src/empty.c'],
+    'sources' : ['system/filesys/noFilesys/src/empty.c'],
     'shouldTest' : false
 }

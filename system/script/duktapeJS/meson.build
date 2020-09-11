@@ -3,8 +3,8 @@ handlers += {
     'name' : 'duktapeJS',
     'type' : 'script',
     'sources' : [
-        'system/script_duktapeJS/src/main.c',
-        'system/script_duktapeJS/src/duktape.c'
+        'system/script/duktapeJS/src/main.c',
+        'system/script/duktapeJS/src/duktape.c'
     ],
     'shouldTest' : false
 }

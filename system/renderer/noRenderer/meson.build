@@ -3,6 +3,6 @@
 handlers += {
     'name' : 'noRenderer',
     'type' : 'renderer',
-    'sources' : ['system/renderer_noRenderer/src/empty.c'],
+    'sources' : ['system/renderer/noRenderer/src/empty.c'],
     'shouldTest' : false
 }

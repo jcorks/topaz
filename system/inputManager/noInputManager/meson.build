@@ -3,6 +3,6 @@
 handlers += {
     'name' : 'noInputManager',
     'type' : 'inputManager',
-    'sources' : ['system/inputManager_noInputManager/src/empty.c'],
+    'sources' : ['system/inputManager/noInputManager/src/empty.c'],
     'shouldTest' : false
 }

@@ -104,13 +104,13 @@ handlerInternalSource = ''
 handlerInternalInclude = ''
 
 # the preferred backends. Must exist within the system/ directory
-handlerPreferredAudioManager = 'audioManager_' + get_option('AudioManagerBackend')
-handlerPreferredInputManager = 'inputManager_' + get_option('InputManagerBackend')
-handlerPreferredRenderer     = 'renderer_'     + get_option('RendererBackend')
-handlerPreferredDisplay      = 'display_'      + get_option('DisplayBackend')
-handlerPreferredTime         = 'time_'         + get_option('TimeBackend')
-handlerPreferredFilesys      = 'filesys_'      + get_option('FilesystemBackend')
-handlerPreferredScript       = 'script_'       + get_option('ScriptBackend')
+handlerPreferredAudioManager = 'audioManager/' + get_option('AudioManagerBackend')
+handlerPreferredInputManager = 'inputManager/' + get_option('InputManagerBackend')
+handlerPreferredRenderer     = 'renderer/'     + get_option('RendererBackend')
+handlerPreferredDisplay      = 'display/'      + get_option('DisplayBackend')
+handlerPreferredTime         = 'time/'         + get_option('TimeBackend')
+handlerPreferredFilesys      = 'filesys/'      + get_option('FilesystemBackend')
+handlerPreferredScript       = 'script/'       + get_option('ScriptBackend')
 
 
 subdir('system')

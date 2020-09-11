@@ -6,7 +6,7 @@ that is required to build with this backend.
 
 Each directory is in the following format:
 
-[backend_name]_[environment_name]/
+[backend_name]/[environment_name]/
     |-meson.build 
     |-compat_test.c [optional]
     |-src/

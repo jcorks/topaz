@@ -2,6 +2,6 @@
 handlers += {
     'name' : 'noDisplay',
     'type' : 'display',
-    'sources' : ['system/display_noDisplay/src/empty.c'],
+    'sources' : ['system/display/noDisplay/src/empty.c'],
     'shouldTest' : false
 }
