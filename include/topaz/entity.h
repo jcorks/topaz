@@ -302,7 +302,7 @@ const topazArray_t * topaz_entity_get_components(topazEntity_t *);
 
 /// Returns the first component with the given tag.
 ///
-topazComponent_t * topaz_component_query(topazEntity_t *, const topazString_t *);
+topazComponent_t * topaz_entity_query_component(topazEntity_t *, const topazString_t *);
 
 /// Removes the given component from the entity.
 ///

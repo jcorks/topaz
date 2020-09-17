@@ -554,7 +554,7 @@ const topazArray_t * topaz_entity_get_components(topazEntity_t * t) {
     return t->components;
 }
 
-topazComponent_t * topaz_component_query(topazEntity_t * e, const topazString_t * str) {
+topazComponent_t * topaz_entity_query_component(topazEntity_t * e, const topazString_t * str) {
     uint32_t i;
     uint32_t len = topaz_array_get_size(e->components);
     for(i = 0; i < len; ++i) {
