@@ -80,9 +80,7 @@ topazEntity_t * rectangle_create(topaz_t * ctx) {
             script,
             TOPAZ_STR_CAST(
                 "(function(){\n"
-                "   c.r = 0.5;\n"
-                "   c.b = 1.0;\n"
-                "   return c.r"
+                "   return c.isValid;"
                 "})()"
             
             )

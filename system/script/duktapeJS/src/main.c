@@ -467,6 +467,7 @@ static duk_ret_t topaz_duk_native_function_internal(duk_context * js) {
     // finally, push the tso result as a duk object 
     if (res) {
         topaz_duk_object_push_tso(ctx, res);
+        topaz_script_object_destroy(res);
     } else {
         duk_push_undefined(ctx->js);
     }
@@ -474,7 +475,6 @@ static duk_ret_t topaz_duk_native_function_internal(duk_context * js) {
     for(i = 0; i < nargs; ++i) {
         topaz_script_object_destroy(args[i]);
     }
-    topaz_script_object_destroy(res);
     return 1;
 }
 
@@ -763,7 +763,7 @@ static void topaz_duk_object_reference_destroy(topazScript_Object_t * o, void * 
 
 
 
-static int topaz_duk_object_reference_get_features(topazScript_Object_t * o, void * tagSrc) {
+static int topaz_duk_object_reference_get_feature_mask(topazScript_Object_t * o, void * tagSrc) {
     TOPAZDUKObjectTag * t = tagSrc;
     duk_context * ctx = t->ctx->js;
     #ifdef TOPAZDC_DEBUG
@@ -784,6 +784,8 @@ static int topaz_duk_object_reference_get_features(topazScript_Object_t * o, voi
     if (duk_is_object(ctx, -1)) {
         out |= topazScript_Object_Feature_Map;
     }
+
+    duk_pop(ctx);
 
     #ifdef TOPAZDC_DEBUG 
         assert(duk_get_top(ctx) == stackSize);
@@ -1024,7 +1026,7 @@ void topaz_duk_object_reference_extendable_add_property(
 void topaz_system_script_duktapeJS__api(topazScriptAPI_t * api) {
     api->objectAPI.object_reference_create = topaz_duk_object_reference_create;
     api->objectAPI.object_reference_destroy = topaz_duk_object_reference_destroy;
-    api->objectAPI.object_reference_get_features = topaz_duk_object_reference_get_features;
+    api->objectAPI.object_reference_get_feature_mask = topaz_duk_object_reference_get_feature_mask;
     api->objectAPI.object_reference_get_native_data = topaz_duk_object_reference_get_native_data;
     api->objectAPI.object_reference_set_native_data = topaz_duk_object_reference_set_native_data;
     api->objectAPI.object_reference_ref = topaz_duk_object_reference_ref;

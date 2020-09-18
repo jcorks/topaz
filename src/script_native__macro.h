@@ -21,7 +21,7 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 
 
 // main macro for defining functions
-#define TSO_SCRIPT_API_FN(__name__) static topazScript_Object_t * __name__(topazScript_t * script, const topazArray_t * args, void * userData)
+#define TSO_SCRIPT_API_FN(__name__) static topazScript_Object_t * __name__(topazScript_t * script, const topazArray_t * args, void * context)
 
 
 // macro for adding a property.
@@ -66,5 +66,13 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 #define TSO_NO_RETURN return NULL;
 
 // macro for assigning a native function
-#define TS_MAP_NATIVE_FN(__name__, __fn__) topaz_script_map_native_function(script, TOPAZ_STR_CAST(__name__), __fn__, NULL)
+#define TS_MAP_NATIVE_FN(__name__, __fn__) topaz_script_map_native_function(script, TOPAZ_STR_CAST(__name__), __fn__, context)
+
+
+
+typedef enum {
+    TSO_OBJECT_ID__COLOR  = 1000,
+    TSO_OBJECT_ID__VECTOR,
+    TSO_OBJECT_ID__ENTITY,
+} TSO_OBJECT_ID;
 

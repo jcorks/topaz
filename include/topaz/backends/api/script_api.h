@@ -84,7 +84,7 @@ struct topazScript_Object_ReferenceAPI_t {
 
     /// Returns the feature set of the object.
     ///
-    int (*object_reference_get_features)(topazScript_Object_t *, void *);
+    int (*object_reference_get_feature_mask)(topazScript_Object_t *, void *);
 
     /// Retrieve the native data thats associated with the scripting object 
     ///

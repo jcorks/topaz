@@ -6,6 +6,7 @@
 #include <topaz/topaz.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 struct topazScriptManager_t {
     topaz_t * ctx;
     topazArray_t * scripts;
@@ -82,6 +83,7 @@ topazScript_t * topaz_script_manager_create_context(
 #include "script_native__macro.h"
 #include "script_native__vector.h"
 #include "script_native__color.h"
+#include "script_native__entity.h"
 
 ////////////////////////
 //////////////////////// script_native__
@@ -89,6 +91,8 @@ topazScript_t * topaz_script_manager_create_context(
 
 
 static void add_all_refs(topazScriptManager_t * s, topazScript_t * script, int permissions) {
-    add_refs__vector_api(script);
-    add_refs__color_api(script);
+    add_refs__vector_api(script, s);
+    add_refs__color_api(script, s);
+    add_refs__entity_api(script, s);
+
 }

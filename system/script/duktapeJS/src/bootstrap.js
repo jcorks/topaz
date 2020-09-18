@@ -1,4 +1,135 @@
 topaz = {
+    entity : function(implPre) {
+        var impl;
+
+        if (implPre)
+            impl = implPre;
+        else 
+            impl = topaz_entity__create();
+
+
+        Object.defineProperty(this, 'isValid', {get : function(){return topaz_entity__is_valid(impl);}}); 
+        
+        this.remove = function() {
+            topaz_entity__remove(impl);
+        }
+
+
+        Object.defineProperty(this, 'childCount', {get : function(){return topaz_entity__get_child_count(impl);}});
+
+        this.nthChild = function(n) {
+            return topaz_entity__get_nth_child(impl, n);
+        }
+
+        this.step = function() {topaz_entity__step(n);}
+        this.draw = function() {topaz_entity__draw(n);}
+        
+        this.attach = function(other) {
+            topaz_entity__attach(impl, other.impl);
+        }
+
+        this.detach = function() {
+            topaz_entity__detach(impl);
+        }
+
+        this.getParent = function() {
+            return new topaz.entity(topaz_entity__get_parent(impl));
+        }
+
+        Object.defineProperty(this, 'priority', {
+            get : function() {return topaz_entity__get_priority(impl);}, 
+            set : function(v){topaz_entity__set_priority(impl, v);}
+        });
+
+
+        this.setPriorityLast = function() {
+            topaz_entity__set_priority_last(impl);
+        }
+
+        this.setPriorityFirst = function() {
+            topaz_entity__set_priority_first(impl);
+        }
+
+
+        Object.defineProperty(
+            this,
+            'rotation', {
+                get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_rotation(impl));},
+                set : function(v) {topaz_entity__set_rotation(impl, v.impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'position', {
+                get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_position(impl));},
+                set : function(v) {topaz_entity__set_position(impl, v.impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'scale', {
+                get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_scale(impl));},
+                set : function(v) {topaz_entity__set_scale(impl, v.impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'globalPosition', {
+                get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_global_position(impl));}
+            }
+        );
+
+
+        Object.defineProperty(
+            this,
+            'isStepping', {
+                get : function() {return topaz_entity__is_stepping(impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'isDrawing', {
+                get : function() {return topaz_entity__is_drawing(impl);}
+            }
+        );
+
+
+        Object.defineProperty(
+            this,
+            'stepping', {
+                get : function()  {return topaz_entity__get_stepping(impl);},
+                set : function(v) {return topaz_entity__set_stepping(impl, v);}
+            }
+        );
+
+
+
+        Object.defineProperty(
+            this,
+            'drawing', {
+                get : function()  {return topaz_entity__get_drawing(impl);},
+                set : function(v) {return topaz_entity__set_drawing(impl, v);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'name', {
+                get : function()  {return topaz_entity__get_name(impl);},
+                set : function(v) {return topaz_entity__set_name(impl, v);}
+            }
+        );
+
+
+
+
+        this.impl = impl;
+    },
+
     color : function(name, implPre) {
         var impl;
 
@@ -27,6 +158,8 @@ topaz = {
 
         if (name)
             this.setFromString(name);
+
+        this.impl = impl;
     },
 
 
@@ -119,5 +252,6 @@ topaz = {
 }
 
 
-c = new topaz.color();
-v = new topaz.vector();
+c = new topaz.entity();
+c.name = 'test';
+

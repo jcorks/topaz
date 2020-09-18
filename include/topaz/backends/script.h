@@ -299,7 +299,7 @@ topazScript_Object_Type_t topaz_script_object_get_type(const topazScript_Object_
 /// contains. If the object isnt a reference, topazScript_Object_Feature_None
 /// is returned.
 ///
-topazScript_Object_Feature_t topaz_script_object_reference_get_features(topazScript_Object_t *);
+topazScript_Object_Feature_t topaz_script_object_reference_get_feature_mask(topazScript_Object_t *);
 
 
 /// Attempts to run the object as a function with the arguments defined within the 

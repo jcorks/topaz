@@ -425,10 +425,10 @@ topazScript_Object_Type_t topaz_script_object_get_type(const topazScript_Object_
 
 
 
-topazScript_Object_Feature_t topaz_script_object_reference_get_features(topazScript_Object_t * o) {
+topazScript_Object_Feature_t topaz_script_object_reference_get_feature_mask(topazScript_Object_t * o) {
     if (o->type == topazScript_Object_Type_Reference) {
-        if (o->api->object_reference_get_features)
-            return o->api->object_reference_get_features(o, o->apiData);        
+        if (o->api->object_reference_get_feature_mask)
+            return o->api->object_reference_get_feature_mask(o, o->apiData);        
     }
     return topazScript_Object_Feature_None;
 }
@@ -471,7 +471,7 @@ void topaz_script_object_reference_unref(topazScript_Object_t * o) {
 }
 
 
-topazScript_Object_t * topaz_script_object_map_get_property(
+topazScript_Object_t * topaz_script_object_reference_map_get_property(
     topazScript_Object_t * o,
     const topazString_t * prop
 ) {

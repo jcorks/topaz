@@ -1,6 +1,5 @@
 /// Since vectors dont have a "managed life" on their own, we wont set 
 #include <topaz/vector.h>
-#define TSO_OBJECT_ID__VECTOR 101
 
 
 TSO_SCRIPT_API_FN(vector_api__x_set) {
@@ -352,7 +351,7 @@ TSO_SCRIPT_API_FN(vector_api__rotate_z) {
 
 
 
-static void add_refs__vector_api(topazScript_t * script) {
+static void add_refs__vector_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz_vector__create", vector_api__create);
     TS_MAP_NATIVE_FN("topaz_vector__destroy", vector_api__destroy);
 

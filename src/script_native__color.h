@@ -201,7 +201,7 @@ TSO_SCRIPT_API_FN(color_api__destroy) {
     TSO_NO_RETURN;
 }   
 
-static void add_refs__color_api(topazScript_t * script) {
+static void add_refs__color_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz_color__create", color_api__create);
     TS_MAP_NATIVE_FN("topaz_color__", color_api__destroy);
 
