@@ -421,9 +421,38 @@ void topaz_entity_detach(topazEntity_t * e) {
 }
 
 topazEntity_t * topaz_entity_get_parent(const topazEntity_t * e) {
+    if (!e->valid) return topaz_entity_null();
     return e->parent;
 }
 
+topazEntity_t * topaz_entity_query(const topazEntity_t * e, const topazString_t * name) {
+    if (!e->valid) return topaz_entity_null();
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(e->children);
+    topazEntity_t ** iter = topaz_array_get_data(e->children);
+    for(i = 0; i < len; ++i) {
+        if (topaz_string_test_eq(iter[i]->name, name)) return iter[i];
+    }
+    return topaz_entity_null();
+}
+
+
+
+topazEntity_t * topaz_entity_search(const topazEntity_t * e, const topazString_t * name) {
+    if (!e->valid) return topaz_entity_null();
+
+    topazEntity_t * c = topaz_entity_query(e, name);
+    if (c == topaz_entity_null());
+
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(e->children);
+    topazEntity_t ** iter = topaz_array_get_data(e->children);
+    for(i = 0; i < len; ++i) {
+        c = topaz_entity_search(iter[i], name);
+        if (c != topaz_entity_null()) return c;        
+    }
+    return topaz_entity_null();
+}
 
 
 

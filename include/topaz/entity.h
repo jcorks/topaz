@@ -174,7 +174,16 @@ void topaz_entity_detach(topazEntity_t *);
 ///
 topazEntity_t * topaz_entity_get_parent(const topazEntity_t *);
 
+/// Returns the first child entity with the given name.
+/// Only the immediate children are checked.
+///
+topazEntity_t * topaz_entity_query(const topazEntity_t *, const topazString_t *);
 
+
+/// Returns the first child entity with the given name, but 
+/// searches recursively.
+///
+topazEntity_t * topaz_entity_search(const topazEntity_t *, const topazString_t *);
 
 
 /// Alters the priority of this entity.
@@ -315,6 +324,8 @@ void topaz_entity_set_name(topazEntity_t *, const topazString_t *);
 /// Gets the name of the entity.
 ///
 const topazString_t * topaz_entity_get_name(const topazEntity_t *);
+
+
 
 
 

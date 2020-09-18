@@ -1,4 +1,17 @@
 topaz = {
+    run : topaz__run,
+    pause : topaz__pause,
+    'break' : topaz__break,
+    resume : topaz__resume,
+    iterate : topaz__iterate,
+    step : topaz__step,
+    draw : topaz__draw,
+    attachManager : topaz__attach_manager,        
+    attachManagerUnpausable : topaz__attach_manager_unpausable,        
+    quit : topaz__quit,
+    wait : topaz__wait,
+
+
     entity : function(implPre) {
         var impl;
 
@@ -35,6 +48,18 @@ topaz = {
         this.getParent = function() {
             return new topaz.entity(topaz_entity__get_parent(impl));
         }
+
+
+        this.query = function(name) {
+            return new topaz.entity(topaz_entity__query(impl, name));
+        }
+
+
+        this.search = function(name) {
+            return new topaz.entity(topaz_entity__search(impl, name));
+        }
+
+
 
         Object.defineProperty(this, 'priority', {
             get : function() {return topaz_entity__get_priority(impl);}, 
@@ -125,6 +150,7 @@ topaz = {
         );
 
 
+    
 
 
         this.impl = impl;
@@ -250,6 +276,18 @@ topaz = {
         this.impl = impl;
     }
 }
+
+
+Object.defineProperty(topaz, 'isPaused', {get : function(){return topaz__is_paused();}});
+Object.defineProperty(topaz, 'root', {
+    get : function(){return topaz__get_root();},
+    set : function(v){return topaz__set_root(v.impl);}
+});
+Object.defineProperty(topaz, 'time', {get : function(){return topaz__get_time();}});
+Object.defineProperty(topaz, 'versionMicro', {get : function(){return topaz__get_version_micro();}});
+Object.defineProperty(topaz, 'versionMajor', {get : function(){return topaz__get_version_major();}});
+Object.defineProperty(topaz, 'versionMinor', {get : function(){return topaz__get_version_minor();}});
+
 
 
 c = new topaz.entity();

@@ -80,7 +80,7 @@ topazEntity_t * rectangle_create(topaz_t * ctx) {
             script,
             TOPAZ_STR_CAST(
                 "(function(){\n"
-                "   return c.isValid;"
+                "   return 'Version: ' + topaz.versionMajor + '.' + topaz.versionMicro;"
                 "})()"
             
             )

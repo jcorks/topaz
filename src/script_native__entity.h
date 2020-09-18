@@ -160,6 +160,29 @@ TSO_SCRIPT_API_FN(entity_api__get_parent) {
     return object;
 }
 
+TSO_SCRIPT_API_FN(entity_api__query) {
+    TSO_ASSERT_ARG_COUNT(2);
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    topazEntity_t * out = topaz_entity_query(native, topaz_script_object_as_string(arg1));
+    if (!out) out = topaz_entity_null();
+    TSO_OBJECT_NEW(out, TSO_OBJECT_ID__ENTITY, NULL);
+    return object;
+}
+
+TSO_SCRIPT_API_FN(entity_api__search) {
+    TSO_ASSERT_ARG_COUNT(2);
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    topazEntity_t * out = topaz_entity_search(native, topaz_script_object_as_string(arg1));
+    if (!out) out = topaz_entity_null();
+    TSO_OBJECT_NEW(out, TSO_OBJECT_ID__ENTITY, NULL);
+    return object;
+}
+
+
 
 TSO_SCRIPT_API_FN(entity_api__set_priority) {
     TSO_ASSERT_ARG_COUNT(2);
@@ -341,6 +364,8 @@ static void add_refs__entity_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_entity__attach", entity_api__attach);
     TS_MAP_NATIVE_FN("topaz_entity__detach", entity_api__detach);
     TS_MAP_NATIVE_FN("topaz_entity__get_parent", entity_api__get_parent);
+    TS_MAP_NATIVE_FN("topaz_entity__query", entity_api__query);
+    TS_MAP_NATIVE_FN("topaz_entity__search", entity_api__search);
 
     TS_MAP_NATIVE_FN("topaz_entity__set_priority", entity_api__set_priority);
     TS_MAP_NATIVE_FN("topaz_entity__set_priority_last", entity_api__set_priority_last);

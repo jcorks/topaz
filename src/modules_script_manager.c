@@ -84,6 +84,7 @@ topazScript_t * topaz_script_manager_create_context(
 #include "script_native__vector.h"
 #include "script_native__color.h"
 #include "script_native__entity.h"
+#include "script_native__topaz.h"
 
 ////////////////////////
 //////////////////////// script_native__
@@ -94,5 +95,5 @@ static void add_all_refs(topazScriptManager_t * s, topazScript_t * script, int p
     add_refs__vector_api(script, s);
     add_refs__color_api(script, s);
     add_refs__entity_api(script, s);
-
+    add_refs__topaz_api(script, s);
 }
