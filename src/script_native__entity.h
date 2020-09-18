@@ -390,12 +390,6 @@ static void add_refs__entity_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_entity__get_drawing", entity_api__get_drawing);
 
 
-    //TS_MAP_NATIVE_FN("topaz_entity__add_component", entity_api__add_component);
-    //TS_MAP_NATIVE_FN("topaz_entity__add_component_after", entity_api__add_component_after);
-    //TS_MAP_NATIVE_FN("topaz_entity__get_component_count", entity_api__get_component_count);
-    //TS_MAP_NATIVE_FN("topaz_entity__get_nth_component", entity_api__get_nth_component);
-    //TS_MAP_NATIVE_FN("topaz_entity__query_component", entity_api__query_component);
-    //TS_MAP_NATIVE_FN("topaz_entity__remove_component", entity_api__remove_component);
     TS_MAP_NATIVE_FN("topaz_entity__set_name", entity_api__set_name);
     TS_MAP_NATIVE_FN("topaz_entity__get_name", entity_api__get_name);
 
