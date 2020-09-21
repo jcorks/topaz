@@ -115,6 +115,14 @@ TSO_SCRIPT_API_FN(topaz_api__get_version_minor) {
     return topaz_script_object_from_int(script, TOPAZ__VERSION__MINOR);
 }
 
+TSO_SCRIPT_API_FN(topaz_api__log) {
+    TSO_ASSERT_ARG_COUNT(1);
+    TSO_ARG_0;
+    printf("%s", topaz_string_get_c_str(topaz_script_object_as_string(arg0)));
+    fflush(stdout);
+    TSO_NO_RETURN;
+}
+
 
 static void add_refs__topaz_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz__run", topaz_api__run);
@@ -135,4 +143,5 @@ static void add_refs__topaz_api(topazScript_t * script, topazScriptManager_t * c
     TS_MAP_NATIVE_FN("topaz__get_version_micro", topaz_api__get_version_micro);
     TS_MAP_NATIVE_FN("topaz__get_version_minor", topaz_api__get_version_minor);
     TS_MAP_NATIVE_FN("topaz__get_version_major", topaz_api__get_version_major);
+    TS_MAP_NATIVE_FN("topaz__log", topaz_api__log);
 }

@@ -238,6 +238,10 @@ topazScript_Object_t * topaz_script_object_from_number(topazScript_t *, double);
 ///
 topazScript_Object_t * topaz_script_object_from_string(topazScript_t *, const topazString_t *);
 
+/// Creates a new object from an existing object.
+/// If the object is an integer, number, or string, the object is copied. In the case that its a 
+/// reference, the topazScript_Object_t 
+topazScript_Object_t * topaz_script_object_from_object(topazScript_t *, topazScript_Object_t *);
 
 
 /// Creates a new object that acts as a "wrapper" to an object managed by the 

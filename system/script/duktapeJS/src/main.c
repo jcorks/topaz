@@ -719,9 +719,7 @@ void topaz_duk_bootstrap(topazScript_t * script, void * n) {
 
 
 // assumes the object is at the top
-static void * topaz_duk_object_reference_create(topazScript_Object_t * o, void * ctxSrc, void * notused) {
-    if (!ctxSrc) ctxSrc = notused;
-
+static void * topaz_duk_object_reference_create(topazScript_Object_t * o, void * ctxSrc) {
     TOPAZDUK * ctx = ctxSrc;
     #ifdef TOPAZDC_DEBUG
         int stackSize = duk_get_top(ctx->js);
@@ -752,7 +750,24 @@ static void * topaz_duk_object_reference_create(topazScript_Object_t * o, void *
     #endif
 
     return tag;
+} 
+ 
+ 
+static void * topaz_duk_object_reference_create_from_reference(topazScript_Object_t * o, void * ctxSrc, topazScript_Object_t * from, void * fromData) {
+    TOPAZDUK * ctx = ctxSrc;
+    #ifdef TOPAZDC_DEBUG
+        int stackSize = duk_get_top(ctx->js);
+    #endif
+    topaz_duk_object_push_to_top_from_tag(fromData);
+    void * outTag = topaz_duk_object_reference_create(o, ctxSrc);
+    duk_pop(ctx->js);
+    #ifdef TOPAZDC_DEBUG 
+        assert(duk_get_top(ctx->js) == stackSize);
+    #endif
+    return outTag;
 }
+
+
 
 
 static void topaz_duk_object_reference_destroy(topazScript_Object_t * o, void * tagSrc) {
@@ -1025,6 +1040,7 @@ void topaz_duk_object_reference_extendable_add_property(
 
 void topaz_system_script_duktapeJS__api(topazScriptAPI_t * api) {
     api->objectAPI.object_reference_create = topaz_duk_object_reference_create;
+    api->objectAPI.object_reference_create_from_reference = topaz_duk_object_reference_create_from_reference;
     api->objectAPI.object_reference_destroy = topaz_duk_object_reference_destroy;
     api->objectAPI.object_reference_get_feature_mask = topaz_duk_object_reference_get_feature_mask;
     api->objectAPI.object_reference_get_native_data = topaz_duk_object_reference_get_native_data;

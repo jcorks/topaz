@@ -232,22 +232,22 @@ int topaz_component_can_handle_event(topazComponent_t *, const topazString_t * e
 /// A hook happens at the end of a given event after all the
 /// handlers have been run. Hooks occur regardless of event handler propogation.
 /// (the return value is ignored for all hooks)
-void topaz_component_install_hook(topazComponent_t *, const topazString_t * eventName, topaz_event_handler, void * eventData);
+uint32_t topaz_component_install_hook(topazComponent_t *, const topazString_t * eventName, topaz_event_handler, void * eventData);
     
 /// Removes a hook added with InstallHook()
 ///
-void topaz_component_uninstall_hook(topazComponent_t *, const topazString_t * eventName, topaz_event_handler, void *);
+void topaz_component_uninstall_hook(topazComponent_t *, const topazString_t * eventName, uint32_t);
 
 /// Adds a handler to an event. 
 ///
 /// Handlers that are added are run in LIFO order
 /// and their return values dictate whether the event should propogate.
 /// the last handler run for an event is always the main handler of the event.
-void topaz_component_install_handler(topazComponent_t *, const topazString_t * eventName, topaz_event_handler, void *);
+uint32_t topaz_component_install_handler(topazComponent_t *, const topazString_t * eventName, topaz_event_handler, void *);
 
 /// Removes a handler added with InstallHandler()
 ///
-void topaz_component_uninstall_handler(topazComponent_t *, const topazString_t * eventName, topaz_event_handler, void *);
+void topaz_component_uninstall_handler(topazComponent_t *, const topazString_t * eventName, uint32_t);
 
 
 /// Returns a list of event names that this eventsystem is able to process

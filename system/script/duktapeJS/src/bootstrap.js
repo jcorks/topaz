@@ -10,8 +10,9 @@ topaz = {
     attachManagerUnpausable : topaz__attach_manager_unpausable,        
     quit : topaz__quit,
     wait : topaz__wait,
+    log : topaz__log,
 
-
+    entityNull : function() {return topaz_entity__null();},
     entity : function(implPre) {
         var impl;
 
@@ -149,11 +150,119 @@ topaz = {
             }
         );
 
+        this.addComponent = function(c) {
+            topaz_entity__add_component(impl, c.impl);
+        }
 
+        this.addComponentAfter = function(c) {
+            topaz_entity__add_component_after(impl, c.impl);
+        }
+
+        this.getComponentCount = function() {
+            return topaz_entity__get_component_count(impl);
+        }
+
+        this.getComponent = function(index) {
+            topaz_entity__get_nth_component(impl, index);
+        }
+
+        this.queryComponent = function(tag) {
+            return topaz_entity__query_component(impl, tag);
+        }
+
+        this.removeComponent = function(tag) {
+            return topaz_entity__remove_component(impl, tag);
+        }
     
 
 
         this.impl = impl;
+    },
+    componentNull : function() {return topaz_component__null();},
+    component : function(tag, implPre) {
+        var impl;
+
+        if (implPre) 
+            impl = implPre;
+        else 
+            impl = topaz_component__create(tag);
+
+        
+        this.destroy = function() {
+            topaz_component__destroy(impl);
+        }
+
+        this.step = function() {
+            topaz_component__run(impl);
+        }
+
+        this.draw = function() {
+            topaz_component__draw(impl);
+        }
+
+
+        Object.defineProperty(
+            this,
+            'stepping', {
+                get : function() {return topaz_component__get_stepping(impl);},
+                set : function(v){topaz_component__set_stepping(impl, v);}
+            }
+        );
+
+
+        Object.defineProperty(
+            this,
+            'tag', {
+                get : function() { return topaz_component__get_get(impl);},
+                set : function(v){ topaz_component__set_get(impl, v);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'host', {
+                get : function() {return topaz_component__get_host(v.impl);}
+            }
+        );
+
+        this.emitEvent = function(eventName, entity) {
+            topaz_component__emit_event(impl, eventName, entity.impl);
+        }
+
+        this.emitEventAnonymous = function(eventName) {
+            topaz_component__emit_event_anonymous(impl, eventName);
+        }
+
+        this.canHandleEvent = function(name) {
+            return topaz_component__can_handle_event(impl, name);
+        }
+
+        this.installEvent = function(event, callback) {
+            topaz_component__install_event(impl, event, callback);
+        }
+
+        this.uninstallEvent = function(event) {
+            topaz_component__uninstall_event(impl, event);
+        }
+
+        this.installHook = function(event, callback) {
+            return topaz_component__install_hook(impl, event, callback);
+        }
+        this.uninstallHook = function(event, id) {
+            topaz_component__uninstall_hook(impl, event, id);
+        }
+
+        this.installHandler = function(event, callback) {
+            return topaz_component__install_handler(impl, event, callback);
+        }
+        this.uninstallHandler = function(event, id) {
+            topaz_component__uninstall_handler(impl, event, id);
+        }
+
+
+
+        this.impl = impl;
+
     },
 
     color : function(name, implPre) {
@@ -290,6 +399,14 @@ Object.defineProperty(topaz, 'versionMinor', {get : function(){return topaz__get
 
 
 
+
 c = new topaz.entity();
 c.name = 'test';
+
+var comp = new topaz.component('test');
+comp.onStep = function() {
+    topaz.log('test!!!');
+}
+
+topaz.root.attach(c);
 
