@@ -19,10 +19,11 @@ option(
     type : 'combo',
 
 
-    value   : 'srgs',
+    value   : 'ogles2',
     choices : [
+        'ogles2',
         'noRenderer',
-        'srgs'
+        'srgs',
     ]
 )
 
