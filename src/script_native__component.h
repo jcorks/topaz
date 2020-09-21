@@ -65,7 +65,7 @@ TSO_SCRIPT_API_FN(component_api__create) {
     attribs.userData = calloc(1, sizeof(TopazComponentTSO));
     TopazComponentTSO * tsoData = attribs.userData;
     tsoData->refsToRemove = topaz_array_create(sizeof(topazScript_Object_t *));
-    tsoData->self = object;
+    tsoData->self = topaz_script_object_from_object(script, object);
 
     if (topaz_script_object_reference_get_feature_mask(object) & topazScript_Object_Feature_Map) {
         topaz_component_set_attributes(component, &attribs);
@@ -75,7 +75,6 @@ TSO_SCRIPT_API_FN(component_api__create) {
         #endif
     }
 
-    TSO_OBJECT_KEEP;
 
     return object;
 }

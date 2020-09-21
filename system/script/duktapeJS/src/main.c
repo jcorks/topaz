@@ -571,7 +571,7 @@ static void * topaz_duk_create(topazScript_t * scr) {
     );
     out->script = scr;
     return out;
-}
+} 
 
 static void topaz_duk_destroy(topazScript_t * scr, void * data) {
     TOPAZDUK * ctx = data;
@@ -733,14 +733,20 @@ static void * topaz_duk_object_reference_create(topazScript_Object_t * o, void *
 
         tag->ctx = ctx;
 
-
-        // make sure that a reference to this object exists outside of the pure 
-        // js context. This allows the C context to keep the object around.
-        topaz_duk_object_keep_reference(ctxSrc, tag);
+ 
 
         // Sets the standard finalizer function.
         duk_push_c_function(ctx->js, topaz_duk_object_finalizer, 0);
         duk_set_finalizer(ctx->js, -2);
+    }
+
+    if (tag->refCount == 0) { 
+        // make sure that a reference to this object exists outside of the pure 
+        // js context. This allows the C context to keep the object around.
+        // in the case that the C tag has persisted when vulnerable to garbage collection,
+        // the ref count might be 0 despite the tag existing before. THats why this check 
+        // is for tag->ref == 0 rather than just creation
+        topaz_duk_object_keep_reference(ctxSrc, tag);
     }
 
 
@@ -862,6 +868,7 @@ static topazScript_Object_t * topaz_duk_object_reference_call(topazScript_Object
     // assumes callable
     topaz_duk_object_push_to_top_from_tag(tag);
 
+
     // duk calling
     uint32_t i = 0;
     uint32_t len = topaz_array_get_size(args);
@@ -878,11 +885,12 @@ static topazScript_Object_t * topaz_duk_object_reference_call(topazScript_Object
         tag->ctx,
         -1
     );
+    duk_pop(tag->ctx->js);
 
     #ifdef TOPAZDC_DEBUG 
         assert(duk_get_top(tag->ctx->js) == stackSize);
     #endif
-
+ 
     return out;
 }
 
@@ -1027,7 +1035,7 @@ void topaz_duk_object_reference_extendable_add_property(
 }
 
 
-
+ 
 
 
 

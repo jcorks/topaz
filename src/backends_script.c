@@ -291,8 +291,8 @@ topazScript_Object_t * topaz_script_object_from_object(topazScript_t * s, topazS
         out->apiData = out->api->object_reference_create_from_reference(out, o->sourceAPIData, o, o->apiData);
 
     if (out->api->object_reference_ref)
-        out->api->object_reference_ref(o, o->apiData);
-    return o;
+        out->api->object_reference_ref(out, out->apiData);
+    return out;
 
 }
 

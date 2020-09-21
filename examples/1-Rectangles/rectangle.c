@@ -69,27 +69,7 @@ topazEntity_t * rectangle_create(topaz_t * ctx) {
     topaz_entity_add_component(e, shape);
 
 
-    ///// test js
-    topazScript_t * script = topaz_script_manager_create_context(
-        topaz_context_get_script_manager(ctx),
-        topazScriptManager_Permission_All
-    );
 
-    const topazString_t * str = topaz_script_object_as_string(
-        topaz_script_expression(
-            script,
-            TOPAZ_STR_CAST(
-                "(function(){\n"
-                "   return 'Version: ' + topaz.versionMajor + '.' + topaz.versionMicro;"
-                "})()"
-            
-            )
-        )
-    );
-
-    printf("\n\nRESULT IS: %s", topaz_string_get_c_str(str));
-    fflush(stdout);
-    /////////
 
 
 

@@ -76,6 +76,19 @@ topaz = {
             topaz_entity__set_priority_first(impl);
         }
 
+        this.define = function(props) {
+            this.props = props.props;
+            impl.name = props.name;
+            impl.onStep = props.onStep;
+            impl.onDraw = props.onDraw;
+            impl.onAttach = props.onAttach;
+            impl.onDetach = props.onDetach;
+            impl.onRemove = props.onRemove;
+            impl.onPreStep = props.onPreStep;
+            impl.onPreDraw = props.onPreDraw;
+        }
+
+
 
         Object.defineProperty(
             this,
@@ -198,6 +211,17 @@ topaz = {
 
         this.draw = function() {
             topaz_component__draw(impl);
+        }
+
+        // sets onStep, onDraw, etc.
+        this.define = function(props) {
+            this.props = props.props;
+            impl.tag = props.tag;
+            impl.onStep = props.onStep;
+            impl.onDraw = props.onDraw;
+            impl.onAttach = props.onAttach;
+            impl.onDetach = props.onDetach;
+            impl.onDestroy = props.onDestroy;
         }
 
 
@@ -389,7 +413,7 @@ topaz = {
 
 Object.defineProperty(topaz, 'isPaused', {get : function(){return topaz__is_paused();}});
 Object.defineProperty(topaz, 'root', {
-    get : function(){return topaz__get_root();},
+    get : function(){return new topaz.entity(topaz__get_root());},
     set : function(v){return topaz__set_root(v.impl);}
 });
 Object.defineProperty(topaz, 'time', {get : function(){return topaz__get_time();}});
@@ -401,12 +425,28 @@ Object.defineProperty(topaz, 'versionMinor', {get : function(){return topaz__get
 
 
 c = new topaz.entity();
-c.name = 'test';
+c.define({
+    name  : 'Test',
+
+    props : {
+        length : 10
+    },
+
+    onStep : function() {
+        topaz.log('imm entity' + c.props.length);
+        c.props.length += 1;
+    }   
+});
+
+
 
 var comp = new topaz.component('test');
-comp.onStep = function() {
-    topaz.log('test!!!');
-}
+comp.define({
+    onStep : function() {
+        topaz.log('   im component!!!\n');
+    }
+});
 
-topaz.root.attach(c);
+c.addComponent(comp);
+topaz.root = c;
 

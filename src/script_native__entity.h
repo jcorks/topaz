@@ -63,7 +63,7 @@ TSO_SCRIPT_API_FN(entity_api__create) {
     attribs.on_draw     = (topaz_entity_attribute_callback)topaz_script_entity__on_draw;
     attribs.userData = calloc(1, sizeof(TopazScriptEntity));
     TopazScriptEntity * tsoData = attribs.userData;
-    tsoData->self = object;
+    tsoData->self = topaz_script_object_from_object(script, object);
 
     if (topaz_script_object_reference_get_feature_mask(object) & topazScript_Object_Feature_Map) {
         topaz_entity_set_attributes(entity, &attribs);
@@ -73,7 +73,6 @@ TSO_SCRIPT_API_FN(entity_api__create) {
         #endif
     }
 
-    TSO_OBJECT_KEEP;
 
     return object;
 }
