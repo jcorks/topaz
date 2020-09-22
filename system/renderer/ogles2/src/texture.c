@@ -31,14 +31,10 @@ typedef struct {
     // maximum allowed length of the atlas
     int maxLength;
 
-
-
     // we're doing the dumb way:
     // maintain an iterator marking where we are based on maximum tex dimensions per "row".
-    // if the row is filled, move to the next row.
     int iterX;
     int iterY;
-    int iterHeight;
    
     topazArray_t * textures;
     int needsReshuffle;
@@ -190,6 +186,12 @@ topazES2_Texture_t * topaz_es2_texture_create(
             tm->atlases[i] = atlas_create(tm, i);
             a = tm->atlases[i];
             tm->ids[i] = a->object;
+            int n;
+            // ids need to point to SOMETHING, so just fill it with 
+            // the same id till the end 
+            for(n = i; n < 16; ++n) {
+                tm->ids[n] = a->object;
+            }
         }
     
         // if cant fit, move on to next atlas and try again
@@ -423,7 +425,7 @@ static int atlas_request_region(GLTexAtlas * a, topazES2_Texture_t * t) {
         t->x = a->iterX + ATLAS_SPACE_BORDER;
         t->y = a->iterY + ATLAS_SPACE_BORDER;
 
-        a->iterX += t->w + ATLAS_SPACE_BORDER;
+        a->iterX += t->w + ATLAS_SPACE_BORDER*2;
 
         return 1;
 
@@ -515,7 +517,6 @@ void atlas_reset(GLTexAtlas * a) {
 
     a->iterX = 0;
     a->iterY = 0;
-    a->iterHeight = 0;
     for(i = 0; i < len; ++i) {
         topazES2_Texture_t * texture = topaz_array_at(cl, topazES2_Texture_t *, i);
         atlas_request_region(a, texture);

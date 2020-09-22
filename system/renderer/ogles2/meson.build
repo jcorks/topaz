@@ -6,6 +6,7 @@ handlers += {
     'sources' : [
          'system/renderer/ogles2/src/main.c',
          'system/renderer/ogles2/src/texture.c',
+         'system/renderer/ogles2/src/buffer.c',
          'system/renderer/ogles2/src/charpixel.c'
     ],
     'shouldTest' : true,
