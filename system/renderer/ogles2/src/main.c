@@ -217,7 +217,7 @@ void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
 
         uint8_t * iter = 0;
         int i;
-        topazES2_Atlas_t * a = topaz_es2_atlas_create();
+        topazES2_TexMan_t * a = topaz_es2_texman_create();
 
 
         uint8_t * raw0 = calloc(8*8 * 4, 1);
@@ -235,20 +235,20 @@ void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
 
 
         topazES2_Texture_t * t0 = topaz_es2_texture_create(a, 8, 8, raw0);
-        topaz_es2_atlas_print_section(
-            a, 0, 0, 64, 64
+        topaz_es2_texman_print_section(
+            a, 0, 0, 64, 64, 0
         );
 
 
         topazES2_Texture_t * t1 = topaz_es2_texture_create(a, 16, 16, raw1);
-        topaz_es2_atlas_print_section(
-            a, 0, 0, 64, 64
+        topaz_es2_texman_print_section(
+            a, 0, 0, 64, 64, 0
         );
 
 
         topazES2_Texture_t * t2 = topaz_es2_texture_create(a, 4, 4, raw2);
-        topaz_es2_atlas_print_section(
-            a, 0, 0, 64, 64
+        topaz_es2_texman_print_section(
+            a, 0, 0, 64, 64, 0
         );
 
 
