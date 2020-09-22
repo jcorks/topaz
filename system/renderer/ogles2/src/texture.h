@@ -26,19 +26,21 @@ void topaz_es2_atlas_print_section(
 );
 
 
+// Sets a callback to be fired when a texture 
+// has its atlas coordinates changed due to a reset event.
+// good idea for object2d stuff
+
+typedef void (*topaz_es2_atlas_reset_fn)(topazES2_Texture_t * texture, void * data);
 
 
-
-
-// Takes local coordinates meant for the texture passed and returns the corresponding
-// UVs for querying the atlas itself.
-void topaz_es2_texture_convert_coords(
-    topazES2_Texture_t *,
-    float localTexX,
-    float localTexY,
-    float * atlasX,
-    float * atlasY
+void topaz_es2_atlas_add_reset_callback(
+    topazES2_Atlas_t *,
+    topaz_es2_atlas_reset_fn,
+    void * cbData
 );
+
+
+
 
 
 // Creates a texture according to the topaz rendering api. Needs a wrapper to 
@@ -59,7 +61,19 @@ void topaz_es2_texture_destroy(topazES2_Texture_t *);
 void topaz_es2_texture_update(topazES2_Texture_t *, const uint8_t * data);
 
 // Fetches a texture's texels RGBA according to the topaz rendering API. no wrapper needed.
-void topaz_es2_texture_texture_get(topazES2_Texture_t *, uint8_t * data);
+void topaz_es2_texture_get(topazES2_Texture_t *, uint8_t * data);
+
+
+
+// Takes local coordinates meant for the texture passed and returns the corresponding
+// UVs for querying the atlas itself.
+void topaz_es2_texture_local_coords_to_atlas(
+    topazES2_Texture_t *,
+    float localTexX,
+    float localTexY,
+    float * atlasX,
+    float * atlasY
+);
 
 
 

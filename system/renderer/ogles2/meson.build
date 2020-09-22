@@ -5,7 +5,8 @@ handlers += {
     'type' : 'renderer',
     'sources' : [
          'system/renderer/ogles2/src/main.c',
-         'system/renderer/ogles2/src/texture.c'
+         'system/renderer/ogles2/src/texture.c',
+         'system/renderer/ogles2/src/charpixel.c'
     ],
     'shouldTest' : true,
     'dependencies' : [

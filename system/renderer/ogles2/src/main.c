@@ -33,8 +33,8 @@ DEALINGS IN THE SOFTWARE.
 
 #include "backend.h"
 #include <topaz/version.h>
-
-
+#include "texture.h"
+#include <stdlib.h>
 
 
 
@@ -199,8 +199,64 @@ static int smain(void) {
 
 static intptr_t api_nothing(){return 0;}
 void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
+    {
+        GLFWwindow* window;
+
+        glfwInit();
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+        window = glfwCreateWindow(640, 480, __FILE__, NULL, NULL);
+        glfwMakeContextCurrent(window);
+
+        printf("GL_VERSION  : %s\n", glGetString(GL_VERSION) );
+        printf("GL_RENDERER : %s\n", glGetString(GL_RENDERER) );
 
 
+
+
+        uint8_t * iter = 0;
+        int i;
+        topazES2_Atlas_t * a = topaz_es2_atlas_create();
+
+
+        uint8_t * raw0 = calloc(8*8 * 4, 1);
+        i = 0;
+        for(i = 0, iter = raw0; i < 8*8; ++i) {iter[0] = 128; iter[3] = 255; iter+=4;}
+
+
+        uint8_t * raw1 = calloc(16*16 * 4, 1);
+        i = 0;
+        for(i = 0, iter = raw1; i < 16*16; ++i) { iter[0] = 255; iter[3] = 255; iter+=4;}
+
+        uint8_t * raw2 = calloc(4*4 * 4, 1);
+        i = 0;
+        for(i = 0, iter = raw2; i < 4*4; ++i) {iter[0] = 64; iter[3] = 255; iter+=4;}
+
+
+        topazES2_Texture_t * t0 = topaz_es2_texture_create(a, 8, 8, raw0);
+        topaz_es2_atlas_print_section(
+            a, 0, 0, 64, 64
+        );
+
+
+        topazES2_Texture_t * t1 = topaz_es2_texture_create(a, 16, 16, raw1);
+        topaz_es2_atlas_print_section(
+            a, 0, 0, 64, 64
+        );
+
+
+        topazES2_Texture_t * t2 = topaz_es2_texture_create(a, 4, 4, raw2);
+        topaz_es2_atlas_print_section(
+            a, 0, 0, 64, 64
+        );
+
+
+        topaz_es2_texture_destroy(t0);
+        topaz_es2_texture_destroy(t1);
+        topaz_es2_texture_destroy(t2);
+           
+    }
 
 
     api->core.renderer_create = (void (*)(topazRendererAPI_t *, topazRenderer_CoreAPI_t *))api_nothing;
