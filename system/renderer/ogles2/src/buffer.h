@@ -49,7 +49,18 @@ void topaz_es2_buffer_commit(topazES2_Buffer_t *);
 
 // sets a function to be called every time this 
 // buffer is updated
-typedef void (*topaz_es2_buffer_commit_fn)(topazES2_Buffer_t *, void *)
-void topaz_es2_buffer_set_commit_callback(topazES2_Buffer_t *, void *);
+typedef void (*topaz_es2_buffer_commit_fn)(topazES2_Buffer_t *, void *);
+void topaz_es2_buffer_set_commit_callback(
+    topazES2_Buffer_t *, 
+    topaz_es2_buffer_commit_fn,
+    void *
+);
 
+
+
+// Returns a pointer to the offline buffer in memory.
+const float * topaz_es2_buffer_get_offline_ptr(const topazES2_Buffer_t *);
+
+// Returns the number of floats that the buffer contains
+uint32_t topaz_es2_buffer_get_float_count(const topazES2_Buffer_t *);
 #endif

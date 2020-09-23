@@ -62,7 +62,7 @@ struct topazES2_TexMan_t {
 
 
 // Creates an independent atlas
-static GLTexAtlas * atlas_create(topazES2_TexMan_t *, int index);
+static GLTexAtlas * atlas_create(topazES2_TexMan_t *, int index, GLuint);
 
 // destroys an atlas
 static void atlas_destroy(GLTexAtlas *);
@@ -91,17 +91,21 @@ static void atlas_resize(GLTexAtlas *, int w, int h);
 
 
 topazES2_TexMan_t * topaz_es2_texman_create() {
+    TOPAZ_GLES_FN_IN;
     topazES2_TexMan_t * out = calloc(1, sizeof(topazES2_TexMan_t));
     out->cbs = topaz_array_create(sizeof(ResetCB));
+    glGenTextures(16, out->ids); TOPAZ_GLES_CALL_CHECK;
+
     return out;
 }
 
 void topaz_es2_texman_destroy(topazES2_TexMan_t * tm) {
+    TOPAZ_GLES_FN_IN;
     int i;
     for(i = 0; i < 16; ++i) {
-        if (!tm->atlases[i]) break;
         atlas_destroy(tm->atlases[i]);
     }   
+    glDeleteTextures(16, &tm->ids); TOPAZ_GLES_CALL_CHECK;
     topaz_array_destroy(tm->cbs);
     free(tm);
 }
@@ -183,15 +187,8 @@ topazES2_Texture_t * topaz_es2_texture_create(
         // create if new
         GLTexAtlas * a = tm->atlases[i];
         if (!a) {
-            tm->atlases[i] = atlas_create(tm, i);
+            tm->atlases[i] = atlas_create(tm, i, tm->ids[i]);
             a = tm->atlases[i];
-            tm->ids[i] = a->object;
-            int n;
-            // ids need to point to SOMETHING, so just fill it with 
-            // the same id till the end 
-            for(n = i; n < 16; ++n) {
-                tm->ids[n] = a->object;
-            }
         }
     
         // if cant fit, move on to next atlas and try again
@@ -288,12 +285,12 @@ void topaz_es2_texture_local_coords_to_atlas(
 ////// static
 
 
-static GLTexAtlas * atlas_create(topazES2_TexMan_t * tm, int index) {
+static GLTexAtlas * atlas_create(topazES2_TexMan_t * tm, int index, GLuint texture) {
     TOPAZ_GLES_FN_IN;
     GLTexAtlas * out = calloc(1, sizeof(GLTexAtlas));
     out->index = index;
     out->parent = tm;
-    glGenTextures(1, &out->object); TOPAZ_GLES_CALL_CHECK;
+    out->object = texture;
     glBindTexture(GL_TEXTURE_2D, out->object); TOPAZ_GLES_CALL_CHECK;
 
     glTexParameteri(
@@ -351,8 +348,6 @@ static GLTexAtlas * atlas_create(topazES2_TexMan_t * tm, int index) {
 }
 
 void atlas_destroy(GLTexAtlas * a) {
-    TOPAZ_GLES_FN_IN;
-    glDeleteTextures(1, &a->object); TOPAZ_GLES_CALL_CHECK;
     free(a);
 }
 

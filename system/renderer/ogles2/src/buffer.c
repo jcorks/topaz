@@ -103,3 +103,12 @@ void topaz_es2_buffer_set_commit_callback(
     b->fnData = fnData;
 }
 
+const float * topaz_es2_buffer_get_offline_ptr(const topazES2_Buffer_t * b) {
+    return b->data;
+}
+
+uint32_t topaz_es2_buffer_get_float_count(const topazES2_Buffer_t * b) {
+    return b->numFloats;
+}
+
+

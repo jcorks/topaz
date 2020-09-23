@@ -4,6 +4,8 @@
 #include "context.h"
 #include "buffer.h"
 #include "texture.h"
+#include <topaz/backends/renderer.h>
+
 
 // allows for controlled 2d operations with 
 // a built-in shader that doesnt do any fancy stuff for 
@@ -12,7 +14,7 @@ typedef struct topazES2_2D_t topazES2_2D_t;
 
 
 // creates a 2d context. will use the texture manager and stuff from the context
-topazES2_2D_t * topaz_es2_2d_create(topazES2_t *);
+topazES2_2D_t * topaz_es2_2d_create(topazES2_TexMan_t *);
 
 // destroys a 2d context
 void topaz_es2_2d_destroy(topazES2_2D_t *);
@@ -49,7 +51,9 @@ void topaz_es2_2d_set_object_texture(
 
 // renders all queued objects
 void topaz_es2_2d_render(
-    topazES2_2D_t *
+    topazES2_2D_t *,
+    const topazRenderer_2D_Context_t *,
+    const topazRenderer_ProcessAttribs_t *
 );
 
 

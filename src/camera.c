@@ -396,12 +396,13 @@ topazMatrix_t matrix_view_look_at(
     return out;
 }
 
-topazMatrix_t matrix_projection_orthographic(
+static topazMatrix_t matrix_projection_orthographic(
     float left,    float right,
     float bottom,  float top,
     float zNear,   float zFar
 ) {
     topazMatrix_t out;
+    topaz_matrix_set_identity(&out);
     float * projection = out.data+0;
     projection[0] = (2)  / (right - left);
     projection[5] = (2)  / (top - bottom);
