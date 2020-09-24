@@ -34,6 +34,7 @@ DEALINGS IN THE SOFTWARE.
 #include "backend.h"
 #include <topaz/version.h>
 #include "texture.h"
+#include "2d.h"
 #include <stdlib.h>
 
 
@@ -196,6 +197,23 @@ static int smain(void) {
 }
 */
 
+static uint32_t create_test_object(topazES2_2D_t * t, float x, float y, float r) {
+    uint32_t object;
+    topaz_es2_2d_add_objects(t, &object, 1);
+    topazRenderer_2D_Vertex_t v[] = {
+        {x+0, y+0,   r, 0, 1, 1,   0, 0},
+        {x+100, y+0,   r, 0, 1, 1,   0, 0},
+        {x+100, y+100,   r, 0, 1, 1,   0, 0},
+
+        {x+100, y+100,   r, 0, 1, 1,   0, 0},
+        {x+0, y+100,   r, 0, 1, 1,   0, 0},
+        {x+0, y+0,   r, 0, 1, 1,   0, 0}
+    };
+
+    topazES2_Buffer_t * b = topaz_es2_buffer_create((float*)v, 6*8);
+    topaz_es2_2d_set_object_vertices(t, object, b);
+    return object;
+}
 
 static intptr_t api_nothing(){return 0;}
 void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
@@ -250,6 +268,57 @@ void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
         topaz_es2_texman_print_section(
             a, 0, 0, 64, 64, 0
         );
+
+        topazES2_2D_t * t = topaz_es2_2d_create(a);
+
+        {
+            uint32_t objects[32];
+            uint32_t i;
+            for(i = 0; i < 32; ++i) {
+                objects[i] = create_test_object(t, i*14, i*6, i*4 / (255.0));
+            }
+
+
+            topaz_es2_2d_queue_objects(t, objects, 32);
+
+
+            topazRenderer_2D_Context_t ctx;
+            topazMatrix_t mtransform;
+            ctx.width = 640;
+            ctx.height = 480;
+            ctx.transform = &mtransform;
+            topaz_matrix_set_identity(ctx.transform);
+
+            
+
+            topazRenderer_ProcessAttribs_t attribs = {
+                topazRenderer_Primitive_Triangle,
+                topazRenderer_DepthTest_None,
+                topazRenderer_AlphaRule_Allow,
+                topazRenderer_EtchRule_NoEtching,
+
+                topazRenderer_TextureFilterHint_None
+            };
+
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glViewport(0, 0, 640, 480);
+
+            while (!glfwWindowShouldClose(window)) {
+                glfwPollEvents();
+                glClear(GL_COLOR_BUFFER_BIT);
+
+                topaz_es2_2d_render(
+                    t,
+                    &ctx,
+                    &attribs
+                );
+
+
+
+
+                glfwSwapBuffers(window);
+            }
+        }
 
 
         topaz_es2_texture_destroy(t0);
