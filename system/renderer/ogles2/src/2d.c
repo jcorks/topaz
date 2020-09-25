@@ -124,7 +124,10 @@ void topaz_es2_2d_set_object_vertices(
     ES2Object * obj = topaz_bin_fetch(t->objects, object);
     if (obj->linkedBuffer == buf) return;
     topaz_es2_buffer_set_type(buf, 0); // ensures its offline.
-    topaz_es2_buffer_set_commit_callback(obj->linkedBuffer, 0, 0);
+
+    if (obj->linkedBuffer)
+        topaz_es2_buffer_set_commit_callback(obj->linkedBuffer, 0, 0);
+
     topaz_es2_buffer_set_commit_callback(buf, object_on_linked_buffer_commit, obj);
     obj->linkedBuffer = buf;
     object_prepare_renderable(obj);

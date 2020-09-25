@@ -26,6 +26,7 @@ topazES2_Buffer_t * topaz_es2_buffer_create(float * data, uint32_t numElements) 
     }
 
     glGenBuffers(1, &out->object); TOPAZ_GLES_CALL_CHECK;    
+    out->numFloats = numElements;
     return out;
 }
 

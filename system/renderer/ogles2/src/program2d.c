@@ -31,13 +31,14 @@ topazES2_Program2D_t * topaz_es2_p2d_create() {
     out->program = glCreateProgram();TOPAZ_GLES_CALL_CHECK;
     GLint result;
 
-
-    
+    const char * source[2];
+    source[0] = (char*)   vertex_shader_2d_bytes;
+    source[1] = (char*) fragment_shader_2d_bytes;    
     // vertex shader
     glShaderSource(
         out->vertexShader,
         1,
-        (const GLchar **)&vertex_shader_2d_bytes,
+        source,
         NULL
     ); TOPAZ_GLES_CALL_CHECK;
     glCompileShader(out->vertexShader);TOPAZ_GLES_CALL_CHECK;
@@ -57,11 +58,11 @@ topazES2_Program2D_t * topaz_es2_p2d_create() {
     } 
     glAttachShader(out->program, out->vertexShader);TOPAZ_GLES_CALL_CHECK;
 
-    // fragment shader
+    // fragment shader 
     glShaderSource(
         out->fragmentShader,
         1,
-        (const GLchar **)&fragment_shader_2d_bytes,
+        source+1,
         NULL
     );TOPAZ_GLES_CALL_CHECK;
     glCompileShader(out->fragmentShader);TOPAZ_GLES_CALL_CHECK;
@@ -115,7 +116,7 @@ topazES2_Program2D_t * topaz_es2_p2d_create() {
     assert(out->locationUniformMatrixGlobalProj != -1);
     out->locationUniformMatrixGlobalTF   = glGetUniformLocation(out->program, "mv");TOPAZ_GLES_CALL_CHECK;
     assert(out->locationUniformMatrixGlobalTF != -1);
-    out->locationUniformMatrixLocal      = glGetUniformLocation(out->program, "matLocal");TOPAZ_GLES_CALL_CHECK;
+    out->locationUniformMatrixLocal      = glGetUniformLocation(out->program, "localMat");TOPAZ_GLES_CALL_CHECK;
     assert(out->locationUniformMatrixLocal != -1);
 
     out->locationUniformSampler      = glGetUniformLocation(out->program, "sampler");TOPAZ_GLES_CALL_CHECK;
@@ -211,9 +212,9 @@ void topaz_es2_p2d_render(
         glBindBuffer(GL_ARRAY_BUFFER, current->vbo);TOPAZ_GLES_CALL_CHECK;
 
         // TODO: prep this for all objects ahead of time.
-        glVertexAttribPointer(p->locationVBOposition, 3, GL_FLOAT, GL_FALSE, sizeof(topazRenderer_2D_Vertex_t), 0);TOPAZ_GLES_CALL_CHECK;
-        glVertexAttribPointer(p->locationVBOrgba,     4, GL_FLOAT, GL_FALSE, sizeof(topazRenderer_2D_Vertex_t), (void*)(sizeof(float)*3));TOPAZ_GLES_CALL_CHECK;
-        glVertexAttribPointer(p->locationVBOuv,       2, GL_FLOAT, GL_FALSE, sizeof(topazRenderer_2D_Vertex_t), (void*)(sizeof(float)*7));TOPAZ_GLES_CALL_CHECK;
+        glVertexAttribPointer(p->locationVBOposition, 2, GL_FLOAT, GL_FALSE, sizeof(topazRenderer_2D_Vertex_t), 0);TOPAZ_GLES_CALL_CHECK;
+        glVertexAttribPointer(p->locationVBOrgba,     4, GL_FLOAT, GL_FALSE, sizeof(topazRenderer_2D_Vertex_t), (void*)(sizeof(float)*2));TOPAZ_GLES_CALL_CHECK;
+        glVertexAttribPointer(p->locationVBOuv,       2, GL_FLOAT, GL_FALSE, sizeof(topazRenderer_2D_Vertex_t), (void*)(sizeof(float)*6));TOPAZ_GLES_CALL_CHECK;
 
 
         if (lastTexture != current->texture) {       
