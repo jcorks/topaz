@@ -176,13 +176,16 @@ struct topazScriptAPI_t {
     topazScript_Object_ReferenceAPI_t objectAPI;
 
 
-
     void *(*script_create)             (topazScript_t *);
     void  (*script_destroy)            (topazScript_t *, void *);
     int   (*script_map_native_function)(topazScript_t *, void *, const topazString_t *, topaz_script_native_function, void * userData);
     void  (*script_run)                (topazScript_t *, void *, const topazString_t * sourceName, const topazString_t * scriptData);
     topazScript_Object_t * (*script_expression) (topazScript_t *, void *, const topazString_t *);
     topazScript_Object_t * (*script_create_empty_object) (topazScript_t *, void *, topaz_script_native_function, void *);
+
+    // called when the on error event is signaled from user code, which ideally will trigger 
+    // an error condition in the language's own mechanisms.
+    void  (*script_throw_error)(topazScript_t *, void *, const topazArray_t * args);
 
     /// This function is completely optional to implement, but is 
     /// mostly likely needed if the scripting language API is more than 

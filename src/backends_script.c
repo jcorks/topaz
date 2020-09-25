@@ -30,7 +30,7 @@ struct topazScript_t {
     topazArray_t * objectAllocRefs;
 
     // functiosn called for object events.
-    EventHandler handlers[topaz_Script_Event_OnError];
+    EventHandler handlers[topaz_Script_Event_OnError+1];
     
 };
 
@@ -180,6 +180,17 @@ void topaz_script_emit_event(
 
     if (s->handlers[ev].fn)
         s->handlers[ev].fn(s, args, s->handlers[ev].fndata);
+
+    if (s->api.script_throw_error)
+        s->api.script_throw_error(s, s->implementationData, args);
+    else {
+        printf("TOPAZ_SCRIPT_EMITTED_ERROR (no handler): %s\n",
+            topaz_array_get_size(args) ?
+                topaz_string_get_c_str(topaz_script_object_as_string(topaz_array_at(args, topazScript_Object_t *, 0)))
+            :
+                "(no data)"
+        );
+    }
 }
 
 
@@ -286,9 +297,10 @@ topazScript_Object_t * topaz_script_object_from_object(topazScript_t * s, topazS
     topazScript_Object_t * out = object_pool_fetch(s);
     out->type = topazScript_Object_Type_Reference;
     out->api = &s->api.objectAPI;
+    out->sourceAPIData = o->sourceAPIData;
 
     if (out->api->object_reference_create)
-        out->apiData = out->api->object_reference_create_from_reference(out, o->sourceAPIData, o, o->apiData);
+        out->apiData = out->api->object_reference_create_from_reference(out, out->sourceAPIData, o, o->apiData);
 
     if (out->api->object_reference_ref)
         out->api->object_reference_ref(out, out->apiData);

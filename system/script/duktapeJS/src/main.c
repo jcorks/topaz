@@ -630,6 +630,27 @@ static topazScript_Object_t * topaz_duk_expression(
     return out;
 }
 
+static void topaz_duk_throw_error(
+    topazScript_t * script, 
+    void * data,
+    const topazArray_t * args
+) {
+    TOPAZDUK * ctx = data;
+    
+    topazString_t * str = topaz_string_create();
+    topaz_string_concat_printf(
+        str,
+        "throw new Error('%s');",
+        topaz_array_get_size(args) ?
+            topaz_string_get_c_str(topaz_script_object_as_string(topaz_array_at(args, topazScript_Object_t *, 0)))
+        :
+            "Internal native error."
+    );
+    duk_eval_string(ctx->js, topaz_string_get_c_str(str));
+    duk_pop(ctx->js);
+    topaz_string_destroy(str);
+}
+
 void topaz_duk_run(
     topazScript_t * script, 
     void * data, 
@@ -769,6 +790,7 @@ static void * topaz_duk_object_reference_create_from_reference(topazScript_Objec
     #endif
     topaz_duk_object_push_to_top_from_tag(fromData);
     void * outTag = topaz_duk_object_reference_create(o, ctxSrc);
+
     duk_pop(ctx->js);
     #ifdef TOPAZDC_DEBUG 
         assert(duk_get_top(ctx->js) == stackSize);
@@ -883,7 +905,7 @@ static topazScript_Object_t * topaz_duk_object_reference_call(topazScript_Object
         );
     }
 
-    duk_pcall(tag->ctx->js, len);
+    duk_call(tag->ctx->js, len);
     topazScript_Object_t * out = topaz_duk_stack_object_to_tso(
         tag->ctx,
         -1
@@ -1071,6 +1093,7 @@ void topaz_system_script_duktapeJS__api(topazScriptAPI_t * api) {
     api->script_run = topaz_duk_run;
     api->script_expression = topaz_duk_expression;
     api->script_create_empty_object = topaz_duk_create_empty_object;
+    api->script_throw_error = topaz_duk_throw_error;
     api->script_bootstrap = topaz_duk_bootstrap;
 
 }

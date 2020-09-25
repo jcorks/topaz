@@ -83,7 +83,7 @@ TSO_SCRIPT_API_FN(entity_api__create) {
 TSO_SCRIPT_API_FN(entity_api__null) {
     topazEntity_t * out = topaz_entity_null();
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
-    if (a) return a;
+    if (a) return topaz_script_object_from_object(script, a);
 
     TSO_OBJECT_NEW(out, TSO_OBJECT_ID__ENTITY, NULL);
     return object;
@@ -122,7 +122,7 @@ TSO_SCRIPT_API_FN(entity_api__get_nth_child) {
     topazEntity_t * child = topaz_array_at(children, topazEntity_t *, n);
 
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(child);
-    if (a) return a;
+    if (a) return topaz_script_object_from_object(script, a);
 
     TSO_OBJECT_NEW(child, TSO_OBJECT_ID__ENTITY, NULL);
     return object;
@@ -167,7 +167,7 @@ TSO_SCRIPT_API_FN(entity_api__get_parent) {
     topazEntity_t * out = topaz_entity_get_parent(native);
     if (!out) out = topaz_entity_null();
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
-    if (a) return a;
+    if (a) return topaz_script_object_from_object(script, a);
 
     TSO_OBJECT_NEW(out, TSO_OBJECT_ID__ENTITY, NULL);
     return object;
@@ -182,7 +182,7 @@ TSO_SCRIPT_API_FN(entity_api__query) {
     topazEntity_t * out = topaz_entity_query(native, topaz_script_object_as_string(arg1));
     if (!out) out = topaz_entity_null();
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
-    if (a) return a;
+    if (a) return topaz_script_object_from_object(script, a);
 
     TSO_OBJECT_NEW(out, TSO_OBJECT_ID__ENTITY, NULL);
     return object;
@@ -197,7 +197,7 @@ TSO_SCRIPT_API_FN(entity_api__search) {
     topazEntity_t * out = topaz_entity_search(native, topaz_script_object_as_string(arg1));
     if (!out) out = topaz_entity_null();
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
-    if (a) return a;
+    if (a) return topaz_script_object_from_object(script, a);
 
     TSO_OBJECT_NEW(out, TSO_OBJECT_ID__ENTITY, NULL);
     return object;

@@ -197,6 +197,7 @@ static int smain(void) {
 }
 */
 
+/*
 static uint32_t create_test_object(topazES2_2D_t * t, float x, float y, float r) {
     uint32_t object;
     topaz_es2_2d_add_objects(t, &object, 1);
@@ -215,8 +216,6 @@ static uint32_t create_test_object(topazES2_2D_t * t, float x, float y, float r)
     return object;
 }
 
-static intptr_t api_nothing(){return 0;}
-void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
     {
         GLFWwindow* window;
 
@@ -317,6 +316,7 @@ void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
 
 
                 glfwSwapBuffers(window);
+
             }
         }
 
@@ -326,9 +326,18 @@ void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
         topaz_es2_texture_destroy(t2);
            
     }
+*/
 
+static intptr_t api_nothing(){return 0;}
 
-    api->core.renderer_create = (void (*)(topazRendererAPI_t *, topazRenderer_CoreAPI_t *))api_nothing;
+static void topaz_api_es2__create(topazRendererAPI_t * api, topazRenderer_CoreAPI_t * core) {
+    aoi->implementationData = topaz_es2_create();
+}
+
+void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
+    
+
+    api->core.renderer_create = topaz_api_es2__create;
     api->core.renderer_destroy = (void (*)(topazRendererAPI_t*))api_nothing;
     api->core.renderer_draw_2d = (void (*)(topazRendererAPI_t*, void *, const topazRenderer_2D_Context_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;
     api->core.renderer_draw_3d = (void (*)(topazRendererAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;

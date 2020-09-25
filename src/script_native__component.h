@@ -154,7 +154,7 @@ TSO_SCRIPT_API_FN(component_api__get_host) {
     topazEntity_t * out = topaz_component_get_host(native);
     if (!out) out = topaz_entity_null();
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
-    if (a) return a;
+    if (a) return topaz_script_object_from_object(script, a);
 
     TSO_OBJECT_NEW(out, TSO_OBJECT_ID__ENTITY, NULL);
     return object;
@@ -402,7 +402,7 @@ TSO_SCRIPT_API_FN(entity_api__get_nth_component) {
         component = topaz_array_at(topaz_entity_get_components(native), topazComponent_t *, index);
     }
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(component);
-    if (a) return a;
+    if (a) return topaz_script_object_from_object(script, a);
 
     TSO_OBJECT_NEW(component, TSO_OBJECT_ID__COMPONENT, NULL);
     return object;
@@ -421,7 +421,7 @@ TSO_SCRIPT_API_FN(entity_api__query_component) {
     if (!component) component = topaz_component_null();
 
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(component);
-    if (a) return a;
+    if (a) return topaz_script_object_from_object(script, a);
 
     TSO_OBJECT_NEW(component, TSO_OBJECT_ID__COMPONENT, NULL);
     return object;

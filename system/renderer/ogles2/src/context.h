@@ -17,5 +17,14 @@
 #endif
 
 
+typedef struct topazES2_t topazES2_t;
+
+
+topazES2_t * topaz_es2_create();
+
+topazES2_TexMan_t * topaz_es2_get_texture_manager(topazES2_t *);
+
+topazES2_2D_t * topaz_es2_create_2d(topazES_t *);
+
 
 #endif

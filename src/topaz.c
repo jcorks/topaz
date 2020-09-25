@@ -245,16 +245,20 @@ void topaz_context_step(topaz_t * t) {
     len = topaz_array_get_size(t->modules);
     for(i = 0; i < len; ++i) {
         e = topaz_array_at(t->modules, topazEntity_t *, i);
+        if (!topaz_entity_is_valid(e)) continue;
+
         const topazEntity_Attributes_t * api = topaz_entity_get_attributes(e);
         if (api->on_pre_step) api->on_pre_step(e, api->userData);
     }
 
     if (!t->paused) {
-        topaz_entity_step(t->universe);
+        if (topaz_entity_is_valid(t->universe))
+            topaz_entity_step(t->universe);
     }
     
     for(i = 0; i < len; ++i) {
         e = topaz_array_at(t->modules, topazEntity_t *, i);
+        if (!topaz_entity_is_valid(e)) continue;
         const topazEntity_Attributes_t * api = topaz_entity_get_attributes(e);
         if (api->on_step) api->on_step(e, api->userData);
     }
@@ -301,16 +305,21 @@ void topaz_context_draw(topaz_t * t) {
     len = topaz_array_get_size(t->modules);
     for(i = 0; i < len; ++i) {
         e = topaz_array_at(t->modules, topazEntity_t *, i);
+        if (!topaz_entity_is_valid(e)) continue;
+
         const topazEntity_Attributes_t * api = topaz_entity_get_attributes(e);
         if (api->on_pre_draw) api->on_pre_draw(e, api->userData);
     }
 
     if (!t->paused) {
-        topaz_entity_draw(t->universe);
+        if (topaz_entity_is_valid(t->universe))
+            topaz_entity_draw(t->universe);
     }
     
     for(i = 0; i < len; ++i) {
         e = topaz_array_at(t->modules, topazEntity_t *, i);
+        if (!topaz_entity_is_valid(e)) continue;
+
         const topazEntity_Attributes_t * api = topaz_entity_get_attributes(e);
         if (api->on_draw) api->on_draw(e, api->userData);
     }

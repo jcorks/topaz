@@ -19,7 +19,7 @@ option(
     type : 'combo',
 
 
-    value   : 'ogles2',
+    value   : 'srgs',
     choices : [
         'ogles2',
         'noRenderer',
