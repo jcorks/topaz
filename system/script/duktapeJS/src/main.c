@@ -493,6 +493,8 @@ static topazString_t * topaz_duk_stack_where(TOPAZDUK * ctx) {
 
     }
 
+
+
     int level = -1;    
 
     for(;;) {
@@ -546,6 +548,7 @@ static void topaz_duk_fatal(void * udata, const char *msg) {
     topazString_t * str = topaz_duk_stack_where(ctx);
     printf("%s\n", topaz_string_get_c_str(str));
     topaz_string_destroy(str);
+    fflush(stdout);
 }
 
 

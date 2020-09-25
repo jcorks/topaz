@@ -13,7 +13,7 @@ topaz = {
     log : topaz__log,
 
     entityNull : function() {return topaz_entity__null();},
-    entity : function(implPre) {
+    entity : function(defineProps, implPre) {
         var impl;
 
         if (implPre)
@@ -32,7 +32,9 @@ topaz = {
         Object.defineProperty(this, 'childCount', {get : function(){return topaz_entity__get_child_count(impl);}});
 
         this.nthChild = function(n) {
-            return topaz_entity__get_nth_child(impl, n);
+            var f = topaz_entity__get_nth_child(impl, n);
+            if (f.__ctx) return f.ctx;
+            return new topaz.entity(undefined, f);
         }
 
         this.step = function() {topaz_entity__step(n);}
@@ -47,17 +49,23 @@ topaz = {
         }
 
         this.getParent = function() {
-            return new topaz.entity(topaz_entity__get_parent(impl));
+            var f = topaz_entity__get_parent(impl);
+            if (f.__ctx) return f.ctx;
+            return new topaz.entity(undefined, f);
         }
 
 
         this.query = function(name) {
-            return new topaz.entity(topaz_entity__query(impl, name));
+            var f = topaz_entity__query(impl, name);
+            if (f.__ctx) return f.ctx;
+            return new topaz.entity(undefined, f);
         }
 
 
         this.search = function(name) {
-            return new topaz.entity(topaz_entity__search(impl, name));
+            var f = topaz_entity__search(impl, name);
+            if (f.__ctx) return f.ctx;
+            return new topaz.entity(undefined, f);
         }
 
 
@@ -78,14 +86,18 @@ topaz = {
 
         this.define = function(props) {
             this.props = props.props;
+            this.props.entity = this;
             impl.name = props.name;
-            impl.onStep = props.onStep;
-            impl.onDraw = props.onDraw;
-            impl.onAttach = props.onAttach;
-            impl.onDetach = props.onDetach;
-            impl.onRemove = props.onRemove;
-            impl.onPreStep = props.onPreStep;
-            impl.onPreDraw = props.onPreDraw;
+            impl.onStep = props.onStep ? function(){props.onStep(this.props);} : undefined;
+            impl.onDraw = props.onDraw ? function(){props.onDraw(this.props);} : undefined;
+            impl.onPreStep = props.onPreStep ? function(){props.onPreStep(this.props);} : undefined;
+            impl.onPreDraw = props.onPreDraw ? function(){props.onPreDraw(this.props);} : undefined;
+            impl.onAttach = props.onAttach ? function(){props.onAttach(this.props);} : undefined;
+            impl.onDetach = props.onDetach ? function(){props.onDetach(this.props);} : undefined;
+            impl.onRemove = props.onRemove ? function(){props.onRemove(this.props);} : undefined;
+            if (props.ready) {
+                props.ready(this.props);
+            }
         }
 
 
@@ -176,11 +188,15 @@ topaz = {
         }
 
         this.getComponent = function(index) {
-            topaz_entity__get_nth_component(impl, index);
+            var f = topaz_entity__get_nth_component(impl, index);
+            if (f.__ctx) return f.__ctx;
+            return new topaz.component(undefined, f);
         }
 
         this.queryComponent = function(tag) {
-            return topaz_entity__query_component(impl, tag);
+            var f = topaz_entity__query_component(impl, tag);
+            if (f.__ctx) return f.__ctx;
+            return new topaz.component(undefined, f);
         }
 
         this.removeComponent = function(tag) {
@@ -190,15 +206,20 @@ topaz = {
 
 
         this.impl = impl;
+        if (defineProps) {
+            this.define(defineProps);
+        }
     },
     componentNull : function() {return topaz_component__null();},
-    component : function(tag, implPre) {
+    component : function(defineProps, implPre) {
         var impl;
 
         if (implPre) 
             impl = implPre;
-        else 
-            impl = topaz_component__create(tag);
+        else {
+            impl = topaz_component__create('');
+        }
+        impl.__ctx = this;
 
         
         this.destroy = function() {
@@ -216,12 +237,23 @@ topaz = {
         // sets onStep, onDraw, etc.
         this.define = function(props) {
             this.props = props.props;
-            impl.tag = props.tag;
-            impl.onStep = props.onStep;
-            impl.onDraw = props.onDraw;
-            impl.onAttach = props.onAttach;
-            impl.onDetach = props.onDetach;
-            impl.onDestroy = props.onDestroy;
+            this.props.component = this;
+            this.tag = props.tag;
+            impl.onStep = props.onStep ? function(){props.onStep(this.props);} : undefined;
+            impl.onDraw = props.onDraw ? function(){props.onDraw(this.props);} : undefined;
+            impl.onAttach = props.onAttach ? function(){props.onAttach(this.props);} : undefined;
+            impl.onDetach = props.onDetach ? function(){props.onDetach(this.props);} : undefined;
+            impl.onDestroy = props.onDestroy ? function(){props.onDestroy(this.props);} : undefined;
+            if (props.events) {
+                for(var i = 0; i < props.events.length; ++i) {
+                    topaz.log('install event:' + props.events[i][0] + '\n');
+                    topaz_component__install_event(impl, props.events[i][0], function(){props.events[i][1](this.props);});
+                }
+            }
+
+            if (props.ready) {
+                props.ready(this.props);
+            }
         }
 
 
@@ -237,20 +269,24 @@ topaz = {
         Object.defineProperty(
             this,
             'tag', {
-                get : function() { return topaz_component__get_get(impl);},
-                set : function(v){ topaz_component__set_get(impl, v);}
+                get : function() { return topaz_component__get_tag(impl);},
+                set : function(v){ topaz_component__set_tag(impl, v);}
             }
         );
 
         Object.defineProperty(
             this,
             'host', {
-                get : function() {return topaz_component__get_host(v.impl);}
+                get : function() {
+                    var f = topaz_component__get_host(impl);
+                    if (f.__ctx) return f.__ctx;
+                    return new topaz.entity(undefined, f);
+                }
             }
         );
 
         this.emitEvent = function(eventName, entity) {
-            topaz_component__emit_event(impl, eventName, entity.impl);
+            topaz_component__emit_event(impl, eventName, entity ? entity.impl : undefined);
         }
 
         this.emitEventAnonymous = function(eventName) {
@@ -286,7 +322,9 @@ topaz = {
 
 
         this.impl = impl;
-
+        if (defineProps) {
+            this.define(defineProps);
+        }
     },
 
     color : function(name, implPre) {
@@ -413,7 +451,7 @@ topaz = {
 
 Object.defineProperty(topaz, 'isPaused', {get : function(){return topaz__is_paused();}});
 Object.defineProperty(topaz, 'root', {
-    get : function(){return new topaz.entity(topaz__get_root());},
+    get : function(){return new topaz.entity(undefined, topaz__get_root());},
     set : function(v){return topaz__set_root(v.impl);}
 });
 Object.defineProperty(topaz, 'time', {get : function(){return topaz__get_time();}});
@@ -424,29 +462,78 @@ Object.defineProperty(topaz, 'versionMinor', {get : function(){return topaz__get
 
 
 
-c = new topaz.entity();
-c.define({
+
+
+var healthComponent = {
+    tag : 'health',
+
+    props : {
+        health : 1000
+    },
+
+    events : [
+        [
+            'onDamage', 
+            function(props) {
+                topaz.log('Ow! '+props.amt+'\n');
+
+            }
+        ],
+        [
+            'onDeath', 
+            function(props) {
+                topaz.log('Am dead!\n');
+
+            }
+        ],
+    ],
+
+    ready : function(props) {
+        // add methods
+        props.component.damage = function(amt) {
+            props.amt = amt;
+            props.component.emitEvent('onDamage');   
+            props.health-=props.amt;
+            if (props.health <= 0) {
+                props.component.emitEvent('onDeath');
+            }
+        }
+    }
+}
+
+
+var enemyPrefab = {
     name  : 'Test',
 
     props : {
-        length : 10
+        size : 100
     },
 
-    onStep : function() {
-        topaz.log('imm entity' + c.props.length);
-        c.props.length += 1;
-    }   
-});
 
+    ready : function(props) {
+        var damager = new topaz.component(healthComponent);
+        props.entity.addComponent(damager);
 
-
-var comp = new topaz.component('test');
-comp.define({
-    onStep : function() {
-        topaz.log('   im component!!!\n');
+        damager.installHook('onDeath', function(){
+            topaz.log('Am dead!');
+            props.entity.remove();
+        });
     }
-});
+}
 
-c.addComponent(comp);
-topaz.root = c;
+c0 = new topaz.entity(enemyPrefab);
+c1 = new topaz.entity(enemyPrefab);
+
+
+c1.queryComponent('health').damage(23);
+c0.queryComponent('health').damage(16);
+c0.queryComponent('health').damage(143);
+c0.queryComponent('health').damage(1111);
+
+
+
+
+
+
+topaz.root = c0;
 

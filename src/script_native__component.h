@@ -4,8 +4,7 @@ typedef struct {
     void * childClass; // any derivative type (i.e. shape2d) will populate this with the private data instance
     int childClassID;  // int id tag of child type if applicacble
     topazScript_Object_t * self;
-
-    topazArray_t * refsToRemove;
+    topazScriptManager_t * manager;
 } TopazComponentTSO;
 
 
@@ -23,15 +22,8 @@ static void topaz_script_component__on_detach(topazComponent_t * e, TopazCompone
 static void topaz_script_component__on_destroy(topazComponent_t * e, TopazComponentTSO * scr) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onRemove"));
     topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
-
-    topaz_script_object_destroy(scr->self);
-    uint32_t i;
-    for(i = 0; i < topaz_array_get_size(scr->refsToRemove); ++i) {
-        topaz_script_object_destroy(
-            topaz_array_at(scr->refsToRemove, topazScript_Object_t *, i)
-        );
-    }
-    topaz_array_destroy(scr->refsToRemove);
+    void * context = scr->manager;
+    TSO_OBJECT_DESTROY(scr);
     free(scr);
 }
 
@@ -64,7 +56,7 @@ TSO_SCRIPT_API_FN(component_api__create) {
     attribs.on_draw     = (topaz_component_attribute_callback)topaz_script_component__on_draw;
     attribs.userData = calloc(1, sizeof(TopazComponentTSO));
     TopazComponentTSO * tsoData = attribs.userData;
-    tsoData->refsToRemove = topaz_array_create(sizeof(topazScript_Object_t *));
+    tsoData->manager = context;
     tsoData->self = topaz_script_object_from_object(script, object);
 
     if (topaz_script_object_reference_get_feature_mask(object) & topazScript_Object_Feature_Map) {
@@ -161,6 +153,9 @@ TSO_SCRIPT_API_FN(component_api__get_host) {
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
     topazEntity_t * out = topaz_component_get_host(native);
     if (!out) out = topaz_entity_null();
+    topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
+    if (a) return a;
+
     TSO_OBJECT_NEW(out, TSO_OBJECT_ID__ENTITY, NULL);
     return object;
 }
@@ -406,6 +401,9 @@ TSO_SCRIPT_API_FN(entity_api__get_nth_component) {
     } else {
         component = topaz_array_at(topaz_entity_get_components(native), topazComponent_t *, index);
     }
+    topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(component);
+    if (a) return a;
+
     TSO_OBJECT_NEW(component, TSO_OBJECT_ID__COMPONENT, NULL);
     return object;
 }
@@ -421,8 +419,11 @@ TSO_SCRIPT_API_FN(entity_api__query_component) {
 
     topazComponent_t * component = topaz_entity_query_component(native, str);
     if (!component) component = topaz_component_null();
-    TSO_OBJECT_NEW(component, TSO_OBJECT_ID__COMPONENT, NULL);
 
+    topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(component);
+    if (a) return a;
+
+    TSO_OBJECT_NEW(component, TSO_OBJECT_ID__COMPONENT, NULL);
     return object;
 }
 

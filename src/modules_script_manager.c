@@ -2,6 +2,7 @@
 #include <topaz/backends/script.h>
 #include <topaz/containers/array.h>
 #include <topaz/containers/string.h>
+#include <topaz/containers/table.h>
 #include <topaz/system.h>
 #include <topaz/topaz.h>
 #include <stdlib.h>
@@ -10,6 +11,7 @@
 struct topazScriptManager_t {
     topaz_t * ctx;
     topazArray_t * scripts;
+    topazTable_t * lookupRefs;
 };
 
 
@@ -22,6 +24,7 @@ topazScriptManager_t * topaz_script_manager_create(
     topazScriptManager_t * out = calloc(1, sizeof(topazScriptManager_t));
     out->ctx = t;
     out->scripts = topaz_array_create(sizeof(topazScript_t*));
+    out->lookupRefs = topaz_table_create_hash_pointer();
     return out;
 }
 
@@ -98,3 +101,4 @@ static void add_all_refs(topazScriptManager_t * s, topazScript_t * script, int p
     add_refs__topaz_api(script, s);
     add_refs__component_api(script, s);
 }
+ 
