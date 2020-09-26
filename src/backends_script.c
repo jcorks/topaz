@@ -526,7 +526,7 @@ topazScript_Object_t * topaz_script_object_reference_map_get_property(
 
 
 
-int topaz_script_object_array_get_count(topazScript_Object_t * o) {
+int topaz_script_object_reference_array_get_count(topazScript_Object_t * o) {
     if (o->type == topazScript_Object_Type_Reference) {
         if (o->api->object_reference_array_get_count)
             return o->api->object_reference_array_get_count(o, o->apiData);
@@ -534,7 +534,7 @@ int topaz_script_object_array_get_count(topazScript_Object_t * o) {
     return -1;
 }
 
-topazScript_Object_t * topaz_script_object_array_get_nth(topazScript_Object_t * o, int i) {
+topazScript_Object_t * topaz_script_object_reference_array_get_nth(topazScript_Object_t * o, int i) {
     if (o->type == topazScript_Object_Type_Reference) {
         if (o->api->object_reference_array_get_nth)
             return o->api->object_reference_array_get_nth(o, i, o->apiData);
