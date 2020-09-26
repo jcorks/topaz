@@ -8,17 +8,17 @@ typedef struct {
 
 static void topaz_script_entity__on_attach(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onAttach"));
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 static void topaz_script_entity__on_detach(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onDetach"));
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 static void topaz_script_entity__on_remove(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onRemove"));
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
     topaz_script_object_reference_unref(scr->self);
     void * context = scr->manager;
     TSO_OBJECT_DESTROY(scr);
@@ -27,22 +27,22 @@ static void topaz_script_entity__on_remove(topazEntity_t * e, TopazScriptEntity 
 
 static void topaz_script_entity__on_pre_step(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onPreStep"));
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 static void topaz_script_entity__on_step(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onStep"));
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 static void topaz_script_entity__on_pre_draw(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onPreDraw"));
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 static void topaz_script_entity__on_draw(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onDraw"));
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 

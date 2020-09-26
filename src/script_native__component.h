@@ -1,4 +1,8 @@
 #include <topaz/component.h>
+#ifdef TOPAZDC_DEBUG
+#include <assert.h>
+#endif
+
 
 typedef struct {
     void * childClass; // any derivative type (i.e. shape2d) will populate this with the private data instance
@@ -11,17 +15,17 @@ typedef struct {
 
 static void topaz_script_component__on_attach(topazComponent_t * e, TopazComponentTSO * scr) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onAttach"));
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 static void topaz_script_component__on_detach(topazComponent_t * e, TopazComponentTSO * scr) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onDetach"));
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 static void topaz_script_component__on_destroy(topazComponent_t * e, TopazComponentTSO * scr) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onRemove"));
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
     void * context = scr->manager;
     TSO_OBJECT_DESTROY(scr);
     free(scr);
@@ -29,15 +33,20 @@ static void topaz_script_component__on_destroy(topazComponent_t * e, TopazCompon
 
 static void topaz_script_component__on_step(topazComponent_t * e, TopazComponentTSO * scr) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onStep"));
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 static void topaz_script_component__on_draw(topazComponent_t * e, TopazComponentTSO * scr) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onDraw"));
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
-
+// TODO: need a better way than this.. please...
+typedef struct {
+    topazComponent_t * source;
+    topazScriptManager_t * manager;
+    topazScript_Object_t * fn;
+} TSOCHandlerData;
 
 TSO_SCRIPT_API_FN(component_api__create) {
     TSO_ASSERT_ARG_COUNT(1);
@@ -213,24 +222,53 @@ TSO_SCRIPT_API_FN(component_api__can_handle_event) {
     );
 }
 
-static int component_api_callback(topazComponent_t * c, void * object, topazEntity_t * source, void * sourceEvent) {
-    topaz_script_object_reference_call(object, topaz_array_empty());
+static int component_api_callback_cleanup(topazComponent_t * c, void * data, topazEntity_t * source, void * sourceEvent) {
+    TSOCHandlerData * handler = data;
+    topaz_script_object_destroy(handler->fn);
+    free(handler);
     return 1;
 }
+
+static int component_api_callback(topazComponent_t * c, void * data, topazEntity_t * source, void * sourceEvent) {
+    TSOCHandlerData * handler = data;
+    void * context = handler->manager;
+    topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(c);
+    #ifdef TOPAZDC_DEBUG
+        assert(a && "Base component responding to emission of event should always have a corresponding cached script object. This is indicative of engine error");
+    #endif
+    topaz_script_object_reference_call(
+        handler->fn, 
+        TOPAZ_ARRAY_CAST(&a, topazScript_Object_t *, 1)
+    );
+    return 1;
+}
+
 
 TSO_SCRIPT_API_FN(component_api__install_event) {
     TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT); 
+
+    TSOCHandlerData * data = calloc(1, sizeof(TSOCHandlerData));
+    data->source = native;
+    data->manager = context;
+    data->fn = topaz_script_object_from_object(script, arg2);
+
+    topaz_component_install_hook(
+        native, 
+        TOPAZ_STR_CAST("on-detach"), 
+        component_api_callback_cleanup, 
+        data
+    );
 
     //TODO: check callable??????
     topaz_component_install_event(
         native,
         topaz_script_object_as_string(arg1),
         component_api_callback,
-        topaz_script_object_from_object(script, arg2)
+        data
     );
 
     TSO_NO_RETURN;
@@ -260,6 +298,19 @@ TSO_SCRIPT_API_FN(component_api__install_hook) {
     TSO_ARG_2;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
 
+    TSOCHandlerData * data = calloc(1, sizeof(TSOCHandlerData));
+    data->source = native;
+    data->manager = context;
+    data->fn = topaz_script_object_from_object(script, arg2);
+
+    topaz_component_install_hook(
+        native, 
+        TOPAZ_STR_CAST("on-detach"), 
+        component_api_callback_cleanup, 
+        data
+    );
+
+
     //TODO: check callable??????
     return topaz_script_object_from_int(
         script,
@@ -267,7 +318,7 @@ TSO_SCRIPT_API_FN(component_api__install_hook) {
             native,
             topaz_script_object_as_string(arg1),
             component_api_callback,
-            topaz_script_object_from_object(script, arg2)
+            data
         )
     );
 
@@ -300,6 +351,19 @@ TSO_SCRIPT_API_FN(component_api__install_handler) {
     TSO_ARG_2;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
 
+    TSOCHandlerData * data = calloc(1, sizeof(TSOCHandlerData));
+    data->source = native;
+    data->manager = context;
+    data->fn = topaz_script_object_from_object(script, arg2);
+
+    topaz_component_install_hook(
+        native, 
+        TOPAZ_STR_CAST("on-detach"), 
+        component_api_callback_cleanup, 
+        data
+    );
+
+
     //TODO: check callable??????
     return topaz_script_object_from_int(
         script,
@@ -307,7 +371,7 @@ TSO_SCRIPT_API_FN(component_api__install_handler) {
             native,
             topaz_script_object_as_string(arg1),
             component_api_callback,
-            topaz_script_object_from_object(script, arg2)
+            data
         )
     );
 

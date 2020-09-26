@@ -45,6 +45,8 @@ topaz = {
             impl = implPre;
         else 
             impl = topaz_entity__create();
+        impl.__ctx = this;
+
 
 
         Object.defineProperty(this, 'isValid', {get : function(){return topaz_entity__is_valid(impl);}}); 
@@ -118,14 +120,14 @@ topaz = {
             }
 
             ctx.props.entity = this;
-            impl.name = props.name;
-            impl.onStep = props.onStep ? function(){props.onStep(ctx.props);} : undefined;
-            impl.onDraw = props.onDraw ? function(){props.onDraw(ctx.props);} : undefined;
-            impl.onPreStep = props.onPreStep ? function(){props.onPreStep(ctx.props);} : undefined;
-            impl.onPreDraw = props.onPreDraw ? function(){props.onPreDraw(ctx.props);} : undefined;
-            impl.onAttach = props.onAttach ? function(){props.onAttach(ctx.props);} : undefined;
-            impl.onDetach = props.onDetach ? function(){props.onDetach(ctx.props);} : undefined;
-            impl.onRemove = props.onRemove ? function(){props.onRemove(ctx.props);} : undefined;
+            this.name = props.name;
+            impl.onStep = props.onStep ? function(e){props.onStep(e.__ctx.props);} : undefined;
+            impl.onDraw = props.onDraw ? function(e){props.onDraw(e.__ctx.props);} : undefined;
+            impl.onPreStep = props.onPreStep ? function(e){props.onPreStep(e.__ctx.props);} : undefined;
+            impl.onPreDraw = props.onPreDraw ? function(e){props.onPreDraw(e.__ctx.props);} : undefined;
+            impl.onAttach = props.onAttach ? function(e){props.onAttach(e.__ctx.props);} : undefined;
+            impl.onDetach = props.onDetach ? function(e){props.onDetach(e.__ctx.props);} : undefined;
+            impl.onRemove = props.onRemove ? function(e){props.onRemove(e.__ctx.props);} : undefined;
             if (props.onReady) {
                 props.onReady(ctx.props);
             }
@@ -276,27 +278,30 @@ topaz = {
             for(var i = 0; i < keys.length; ++i) {
                 ctx.props[keys[i]] = props.props[keys[i]];
             }
+            ctx.events = props.events;
 
+            
 
 
             ctx.props.component = this;
             ctx.tag = props.tag;
-            impl.onStep = props.onStep ? function(){props.onStep(ctx.props);} : undefined;
-            impl.onDraw = props.onDraw ? function(){props.onDraw(ctx.props);} : undefined;
-            impl.onAttach = props.onAttach ? function(){props.onAttach(ctx.props);} : undefined;
-            impl.onDetach = props.onDetach ? function(){props.onDetach(ctx.props);} : undefined;
-            impl.onDestroy = props.onDestroy ? function(){props.onDestroy(ctx.props);} : undefined;
+            impl.onStep = props.onStep ? function(e){props.onStep(e.__ctx.props);} : undefined;
+            impl.onDraw = props.onDraw ? function(e){props.onDraw(e.__ctx.props);} : undefined;
+            impl.onAttach = props.onAttach ? function(e){props.onAttach(e.__ctx.props);} : undefined;
+            impl.onDetach = props.onDetach ? function(e){props.onDetach(e.__ctx.props);} : undefined;
+            impl.onDestroy = props.onDestroy ? function(e){props.onDestroy(e.__ctx.props);} : undefined;
 
-            for(var i = 0; i < props.events.length; ++i) {
-                var cb = props.events[i];
+            
+            var keys = Object.keys(props.events);
+            for(var i = 0; i < keys.length; ++i) {
                 topaz_component__install_event(
                     impl, 
-                    cb.name, 
-                    function() {
-                        topaz.log(topaz.objectToString(cb));
-                        cb.fn(ctx.props);
-
-                    }
+                    keys[i],
+                    (function(fn){ // proper reference capture
+                        return function(c) {
+                            fn(ctx.props);
+                        }
+                    })(props.events[keys[i]])
                 );
             }
 
@@ -516,29 +521,22 @@ Object.defineProperty(topaz, 'versionMinor', {get : function(){return topaz__get
 
 
 var healthComponent = {
-    tag : 'health',
-
+    tag   : 'health',
     props : {
-        health : 1000
+        health : 1000,
+        amt : 0
     },
+    events : {
+        'onDeath' : function(props) {
+            topaz.log('Am dead!\n');
 
-
-    events : [
-        {name : 'onDeath', 
-            fn : function(props) {
-                topaz.log('Am dead!\n');
-
-            }
         },
-        {name : 'onDamage', 
-            fn   : function(props) {
-                topaz.log('Ow! '+props.amt+'\n');
-            }
+
+
+        'onDamage' : function(props) {
+            topaz.log('Ow! ' + props.amt + '\n');
         }
-
-
-    ],
-
+    },
     onReady : function(props) {
         // add methods
         props.component.damage = function(amt) {
@@ -555,17 +553,35 @@ var healthComponent = {
 
 var enemyPrefab = {
     name  : 'Test',
-
     props : {
         size : 100
     },
 
-
     onReady : function(props) {
         var damager = new topaz.component(healthComponent);
+
+        
         props.entity.addComponent(damager);
+
+        damager.installHook('onDamage', function() {
+            topaz.log(props.entity.name + ' says: Ow!\n');
+        });
+
+        damager.installHook('onDeath', function() {
+            topaz.log(props.entity.name + ' says: xwx\n');
+        });
+
+
+    },
+
+
+    onStep : function(props) {
+        topaz.log('i am stepping once per frame\n');
     }
 }
+
+
+
 
 c0 = new topaz.entity(enemyPrefab);
 c0.queryComponent('health').damage(23);
@@ -576,6 +592,7 @@ c0.queryComponent('health').damage(23);
 c0.queryComponent('health').damage(16);
 c0.queryComponent('health').damage(143);
 c0.queryComponent('health').damage(1111);
+
 
 
 
