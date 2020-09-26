@@ -682,8 +682,7 @@ typedef struct topazRenderer_Framebuffer_t topazRenderer_Framebuffer_t;
 ///
 typedef enum {
     topazRenderer_Framebuffer_Handle_RGBA_PixelArray, ///< (uint8_t *) RGBA-ordered pixel array with no padding, matched to the dimensions given
-    topazRenderer_Framebuffer_Handle_GLFBPacket,      ///< (GLRenderTarget **)  A pointer to a pointer to
-                     /// a GLRenderTarget instance.
+    topazRenderer_Framebuffer_Handle_GLFBPacket,      ///< (GLuint[2])  A pointer to a pointer to an array of to GLuints, the first representing the framebuffer object, the next representing the texture attached to that target.
     topazRenderer_Framebuffer_Handle_Unknown,         ///< The framebuffer's data contents are unknown and should not be relied on.
 } topazRenderer_Framebuffer_Handle;
 

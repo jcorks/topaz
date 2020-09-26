@@ -48,6 +48,12 @@ void topaz_es2_2d_set_object_texture(
     topazES2_Texture_t *
 );
 
+void topaz_es2_2d_set_object_transform(
+    topazES2_2D_t *,
+    uint32_t object,
+    const topazMatrix_t *
+);
+
 
 // renders all queued objects
 void topaz_es2_2d_render(

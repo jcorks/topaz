@@ -17,14 +17,35 @@
 #endif
 
 
+#include "texture.h"
+#include "fb.h"
+
+
 typedef struct topazES2_t topazES2_t;
 
-
+// creates a new es2 context
 topazES2_t * topaz_es2_create();
 
+// gets the es2 instance's texture manager
 topazES2_TexMan_t * topaz_es2_get_texture_manager(topazES2_t *);
 
-topazES2_2D_t * topaz_es2_create_2d(topazES_t *);
+// creates a 2d instance from this one
+topazES2_2D_t * topaz_es2_create_2d(topazES2_t *);
 
+// Gets the current fb for this instances
+topazES2_FB_t * topaz_es2_get_target(topazES2_t *);
+
+// sets the current fb. CANNOT be called between 
+// topaz_es2_start and topaz_es2_end else undefined behavior.
+void topaz_es2_set_target(topazES2_t *, topazES2_FB_t *);
+
+// attaches framebuffer for drawing operations
+void topaz_es2_start(topazES2_t *);
+
+// releases the framebuffer (unbind)
+void topaz_es2_end(topazES2_t *);
+
+// glFinish()?
+void topaz_es2_sync(topazES2_t *);
 
 #endif

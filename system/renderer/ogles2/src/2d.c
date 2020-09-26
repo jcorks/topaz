@@ -146,6 +146,15 @@ void topaz_es2_2d_set_object_texture(
     object_prepare_renderable(obj);
 }
 
+void topaz_es2_2d_set_object_transform(
+    topazES2_2D_t * t,
+    uint32_t object,
+    topazES2_Texture_t * tex
+) {
+    ES2Object * obj = topaz_bin_fetch(t->objects, object);
+    obj->pdata.transform = *tex;
+}
+
 
 // renders all queued objects
 void topaz_es2_2d_render(
