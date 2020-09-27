@@ -1,16 +1,18 @@
 #ifndef H_TOPAZES22D_INCLUDED
 #define H_TOPAZES22D_INCLUDED
 
-#include "context.h"
-#include "buffer.h"
-#include "texture.h"
-#include <topaz/backends/renderer.h>
 
 
 // allows for controlled 2d operations with 
 // a built-in shader that doesnt do any fancy stuff for 
 // custom shaders
 typedef struct topazES2_2D_t topazES2_2D_t;
+
+#include "context.h"
+#include "buffer.h"
+#include "texture.h"
+#include <topaz/backends/renderer.h>
+
 
 
 // creates a 2d context. will use the texture manager and stuff from the context

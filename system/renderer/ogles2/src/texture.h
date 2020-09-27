@@ -1,10 +1,10 @@
 #ifndef H_OGLES2TOPAZ_TEXTURE_INCLUDED
 #define H_OGLES2TOPAZ_TEXTURE_INCLUDED
 
-#include "context.h"
 
 typedef struct topazES2_Texture_t topazES2_Texture_t;
 typedef struct topazES2_TexMan_t topazES2_TexMan_t;
+#include "context.h"
 
 
 // Creates a new texture atlast. This atlas has a single GLTexture 

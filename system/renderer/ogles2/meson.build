@@ -11,7 +11,8 @@ handlers += {
          'system/renderer/ogles2/src/program2d.c',
          'system/renderer/ogles2/src/2d.c',
          'system/renderer/ogles2/src/texture.c',
-         'system/renderer/ogles2/src/framebuffer.c'
+         'system/renderer/ogles2/src/framebuffer.c',
+         'system/renderer/ogles2/src/context.c'
     ],
     'shouldTest' : true,
     'dependencies' : [

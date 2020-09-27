@@ -33,9 +33,11 @@ DEALINGS IN THE SOFTWARE.
 
 #include "backend.h"
 #include <topaz/version.h>
+#include "context.h"
 #include "texture.h"
 #include "2d.h"
-#include ""
+#include "buffer.h"
+#include "framebuffer.h"
 #include <stdlib.h>
 
 
@@ -334,7 +336,7 @@ static intptr_t api_nothing(){return 0;}
 
 
 static void topaz_api_es2__create(topazRendererAPI_t * api, topazRenderer_CoreAPI_t * core) {
-    aoi->implementationData = topaz_es2_create();
+    api->implementationData = topaz_es2_create();
 }
 
 static void topaz_api_es2__destroy(topazRendererAPI_t * api, topazRenderer_CoreAPI_t * core) {
@@ -343,13 +345,13 @@ static void topaz_api_es2__destroy(topazRendererAPI_t * api, topazRenderer_CoreA
 
 static void topaz_api_es2__draw_2d(topazRendererAPI_t * api, void *d2, const topazRenderer_2D_Context_t * ctx, const topazRenderer_ProcessAttribs_t * attribs) {
     topaz_es2_2d_render(
-        d2m
+        d2,
         ctx,
         attribs
     );
 }
 
-static void topaz_api_es2__clear_layer(topazRendererAPI_t*, topazRenderer_DataLayer) {
+static void topaz_api_es2__clear_layer(topazRendererAPI_t* api, topazRenderer_DataLayer layer) {
     topaz_es2_fb_clear_layer(
         topaz_es2_get_target(api->implementationData),
         layer
@@ -384,9 +386,9 @@ void * topaz_api_es2__buffer_create(topazRendererAPI_t * api, float * data, uint
 
 void * topaz_api_es2__texture_create(topazRendererAPI_t * api, int w, int h, const uint8_t * rgbaTextureData) {
     return topaz_es2_texture_create(
-        topaz_es2_get_texture_manager(api->implementationData)
+        topaz_es2_get_texture_manager(api->implementationData),
         w,
-        hm
+        h,
         rgbaTextureData
     ); 
 }
@@ -397,7 +399,7 @@ void * topaz_api_es2__2d_create(topazRendererAPI_t * api) {
     );
 }
 
-void * topaz_api_es2__framebuffer_create(topazRendererAPI_t * api, topazRenderer_FramebufferAPI_t * fb)) {
+void * topaz_api_es2__framebuffer_create(topazRendererAPI_t * api, topazRenderer_FramebufferAPI_t * fb) {
     return topaz_es2_fb_create();
 }
 
@@ -416,7 +418,7 @@ void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
 
 
     // buffer
-    api->buffer.renderer_buffer_create = topaz_api_es2__buffer_create
+    api->buffer.renderer_buffer_create = topaz_api_es2__buffer_create;
     api->buffer.renderer_buffer_destroy = (void (*)(void *)) topaz_es2_buffer_destroy;
     api->buffer.renderer_buffer_update = (void (*)(void *, const float * newData, uint32_t offset, uint32_t numElements)) topaz_es2_buffer_update;
     api->buffer.renderer_buffer_read = (void (*)(void *, float * ouputData, uint32_t offset, uint32_t numELements)) topaz_es2_buffer_read;
@@ -424,7 +426,7 @@ void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
 
     // textur
     api->texture.renderer_texture_create = topaz_api_es2__texture_create;
-    api->texture.renderer_texture_destroy = (void (*)(void *)) topaz_api_es2__texture_destroy;
+    api->texture.renderer_texture_destroy = (void (*)(void *)) topaz_es2_texture_destroy;
     api->texture.renderer_texture_update = (void (*)(void *, const uint8_t * newData)) topaz_es2_texture_update;
     api->texture.renderer_texture_get = (void (*)(void *, uint8_t *)) topaz_es2_texture_get;
 
@@ -456,7 +458,7 @@ void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
 
 
     api->fb.renderer_framebuffer_create = topaz_api_es2__framebuffer_create;
-    api->fb.renderer_framebuffer_destroy = (void (*)(void *)) topaz_api_es2_fb_destroy;
+    api->fb.renderer_framebuffer_destroy = (void (*)(void *)) topaz_es2_fb_destroy;
     api->fb.renderer_framebuffer_resize = (int (*)(void *, int w, int h)) topaz_es2_fb_resize;
     api->fb.renderer_framebuffer_get_handle = (void * (*)(void *)) topaz_es2_fb_get_handle;
     api->fb.renderer_framebuffer_get_raw_data = (int (*)(void *, uint8_t *)) topaz_es2_get_raw_data;

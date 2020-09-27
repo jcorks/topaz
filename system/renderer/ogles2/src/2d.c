@@ -149,10 +149,10 @@ void topaz_es2_2d_set_object_texture(
 void topaz_es2_2d_set_object_transform(
     topazES2_2D_t * t,
     uint32_t object,
-    topazES2_Texture_t * tex
+    const topazMatrix_t * tex
 ) {
     ES2Object * obj = topaz_bin_fetch(t->objects, object);
-    obj->pdata.transform = *tex;
+    obj->pdata.localMatrix = *tex;
 }
 
 

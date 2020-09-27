@@ -1,10 +1,10 @@
 #ifndef H_TOPAZES2FB_INCLUDED
 #define H_TOPAZES2FB_INCLUDED
 
-#include <
-
 typedef struct topazES2_FB_t topazES2_FB_t;
 
+#include <topaz/backends/renderer.h>
+#include "context.h"
 
 // Creates a new framebuffer.
 topazES2_FB_t * topaz_es2_fb_create();
@@ -31,7 +31,7 @@ void topaz_es2_set_filtered_hint(topazES2_FB_t *, int);
 topazRenderer_Framebuffer_Handle topaz_es2_fb_get_handle_type(topazES2_FB_t *);
 
 // clears the channels within the framebuffer
-void topaz_es2_clear_layer(topazES2_FB_t *, int);
+void topaz_es2_fb_clear_layer(topazES2_FB_t *, int);
 
 
 

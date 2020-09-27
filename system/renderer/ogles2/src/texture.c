@@ -105,7 +105,7 @@ void topaz_es2_texman_destroy(topazES2_TexMan_t * tm) {
     for(i = 0; i < 16; ++i) {
         atlas_destroy(tm->atlases[i]);
     }   
-    glDeleteTextures(16, &tm->ids); TOPAZ_GLES_CALL_CHECK;
+    glDeleteTextures(16, tm->ids); TOPAZ_GLES_CALL_CHECK;
     topaz_array_destroy(tm->cbs);
     free(tm);
 }

@@ -2,10 +2,10 @@
 #define H_TOPAZES2BUFFER_INCLUDED
 
 
+typedef struct topazES2_Buffer_t topazES2_Buffer_t;
+
 #include "context.h"
 
-
-typedef struct topazES2_Buffer_t topazES2_Buffer_t;
 
 // Creates a new buffer.
 topazES2_Buffer_t * topaz_es2_buffer_create(float * data, uint32_t numElements);

@@ -18,13 +18,17 @@
 
 
 #include "texture.h"
-#include "fb.h"
+#include "framebuffer.h"
+#include "2d.h"
 
 
 typedef struct topazES2_t topazES2_t;
 
 // creates a new es2 context
 topazES2_t * topaz_es2_create();
+
+// Destroys the instance
+void topaz_es2_destroy(topazES2_t *);
 
 // gets the es2 instance's texture manager
 topazES2_TexMan_t * topaz_es2_get_texture_manager(topazES2_t *);
