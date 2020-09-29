@@ -108,7 +108,8 @@ int topaz_es2_fb_resize(topazES2_FB_t * out, int w, int h) {
         GL_UNSIGNED_BYTE,
         0
     ); TOPAZ_GLES_CALL_CHECK;
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);TOPAZ_GLES_CALL_CHECK;
+    glBindFramebuffer(GL_FRAMEBUFFER, out->fbo);
     glBindRenderbuffer(GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;    
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h); TOPAZ_GLES_CALL_CHECK;
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;
@@ -116,6 +117,7 @@ int topaz_es2_fb_resize(topazES2_FB_t * out, int w, int h) {
     glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, w, h); TOPAZ_GLES_CALL_CHECK;
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, out->rbo_stencil); TOPAZ_GLES_CALL_CHECK;
     glBindRenderbuffer(GL_RENDERBUFFER, 0);TOPAZ_GLES_CALL_CHECK;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     return 1;
 }
 

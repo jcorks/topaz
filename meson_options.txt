@@ -33,10 +33,11 @@ option(
     type : 'combo',
 
 
-    value : 'noDisplay',
+    value : 'glfw',
     choices : [
         'noDisplay',
-        'ncurses'
+        'ncurses',
+        'glfw'
     ]
 )
 

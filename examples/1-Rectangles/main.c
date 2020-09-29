@@ -10,6 +10,7 @@ int main() {
     topaz_view_manager_create_main_default(topaz_context_get_view_manager(ctx), TOPAZ_STR_CAST("Example"));
 
     ///// test js
+    /*
     topazScript_t * script = topaz_script_manager_create_context(
         topaz_context_get_script_manager(ctx),
         topazScriptManager_Permission_All
@@ -29,11 +30,12 @@ int main() {
 
     printf("\n\nRESULT IS: %s", topaz_string_get_c_str(str));
     fflush(stdout);
+    */
     /////////
 
 
 
-    //topazEntity_t * e = rectangle_create(ctx);
-    //topaz_context_set_root(ctx, e);
+    topazEntity_t * e = rectangle_create(ctx);
+    topaz_context_set_root(ctx, e);
     topaz_context_run(ctx);
 }

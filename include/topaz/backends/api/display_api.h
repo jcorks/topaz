@@ -63,40 +63,40 @@ typedef struct topazRenderer_Framebuffer_t topazRenderer_Framebuffer_t;
 /// the user-side API for topazDisplay_t. See <topaz/backends/Display.h>
 ///
 struct topazDisplayAPI_t {
-    void                    (*display_create)           (topazDisplayAPI_t *);
-    void                    (*display_destroy)          (topazDisplayAPI_t *);
+    void *                  (*display_create)           (topazDisplayAPI_t *);
+    void                    (*display_destroy)          (void *);
 
 
 
 
 
-    void    (*display_resize)(topazDisplayAPI_t *, int w, int h);
+    void    (*display_resize)(void *, int w, int h);
 
 
-    void (*display_set_position)        (topazDisplayAPI_t *, int x, int y);
-    void (*display_fullscreen)          (topazDisplayAPI_t *, int);
-    void (*display_hide)                (topazDisplayAPI_t *, int);    
-    int  (*display_has_input_focus)     (topazDisplayAPI_t *); 
-    void (*display_lock_client_resize)  (topazDisplayAPI_t *, int);
-    void (*display_lock_client_position)(topazDisplayAPI_t *, int);
-    int  (*display_get_width)           (topazDisplayAPI_t *);
-    int  (*display_get_height)          (topazDisplayAPI_t *);
-    int  (*display_get_x)               (topazDisplayAPI_t *);
-    int  (*display_get_y)               (topazDisplayAPI_t *);
-    void (*display_set_name)            (topazDisplayAPI_t *, const topazString_t *);
-    void (*display_add_resize_callback)     (topazDisplayAPI_t *, void(*)(int w, int h, void *), void *);
-    void (*display_remove_resize_callback)  (topazDisplayAPI_t *, void(*)(int w, int h, void *));
-    void (*display_add_close_callback)      (topazDisplayAPI_t *, void(*)(void *), void *);
-    void (*display_remove_close_callback)   (topazDisplayAPI_t *, void(*)(void *));
-    int  (*display_is_capable)              (topazDisplayAPI_t *, topazDisplay_Capability); 
-    void (*display_update)                  (topazDisplayAPI_t *, topazRenderer_Framebuffer_t *);    
-    const topazArray_t * (*display_supported_framebuffers)  (topazDisplayAPI_t *);
-    topazDisplay_Handle (*display_get_system_handle_type)   (topazDisplayAPI_t *);
-    void * (*display_get_system_handle)                     (topazDisplayAPI_t *);
-    topazDisplay_Event (*display_get_system_event_type)     (topazDisplayAPI_t *);
-    void * (*display_get_last_system_event)                 (topazDisplayAPI_t *);
-    topazArray_t * (*display_get_current_clipboard)         (topazDisplayAPI_t *);
-    void (*display_set_current_clipboard)                   (topazDisplayAPI_t *, const topazArray_t *);
+    void (*display_set_position)        (void *, int x, int y);
+    void (*display_fullscreen)          (void *, int);
+    void (*display_hide)                (void *, int);    
+    int  (*display_has_input_focus)     (void *); 
+    void (*display_lock_client_resize)  (void *, int);
+    void (*display_lock_client_position)(void *, int);
+    int  (*display_get_width)           (void *);
+    int  (*display_get_height)          (void *);
+    int  (*display_get_x)               (void *);
+    int  (*display_get_y)               (void *);
+    void (*display_set_name)            (void *, const topazString_t *);
+    void (*display_add_resize_callback)     (void *, void(*)(int w, int h, void *), void *);
+    void (*display_remove_resize_callback)  (void *, void(*)(int w, int h, void *));
+    void (*display_add_close_callback)      (void *, void(*)(void *), void *);
+    void (*display_remove_close_callback)   (void *, void(*)(void *));
+    int  (*display_is_capable)              (void *, topazDisplay_Capability); 
+    void (*display_update)                  (void *, topazRenderer_Framebuffer_t *);    
+    const topazArray_t * (*display_supported_framebuffers)  (void *);
+    topazDisplay_Handle (*display_get_system_handle_type)   (void *);
+    void * (*display_get_system_handle)                     (void *);
+    topazDisplay_Event (*display_get_system_event_type)     (void *);
+    void * (*display_get_last_system_event)                 (void *);
+    topazArray_t * (*display_get_current_clipboard)         (void *);
+    void (*display_set_current_clipboard)                   (void *, const topazArray_t *);
 
 
 

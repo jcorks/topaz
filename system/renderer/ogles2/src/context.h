@@ -9,8 +9,11 @@
 #ifdef TOPAZDC_DEBUG
 #include <stdio.h>
 #include <assert.h>
-#define TOPAZ_GLES_FN_IN       int __er = glGetError(); if (__er != GL_NO_ERROR) {printf("Encountered OpenGLES2 error on function enter (%d). Please check the program.\n", __er); assert(!"OpenGL Error. Please check STDOUT for details.");}
-#define TOPAZ_GLES_CALL_CHECK      __er = glGetError(); if (__er != GL_NO_ERROR) {printf("Encountered OpenGLES2 error on function enter (%d). Please check the program.\n", __er); assert(!"OpenGL Error. Please check STDOUT for details.");}
+
+
+const char * topaz_gles_error_to_string(int);
+#define TOPAZ_GLES_FN_IN       int __er = glGetError(); if (__er != GL_NO_ERROR) {printf("Encountered OpenGLES2 error on function enter (%s). Please check the program.\n", topaz_gles_error_to_string(__er)); exit(999);}
+#define TOPAZ_GLES_CALL_CHECK      __er = glGetError(); if (__er != GL_NO_ERROR) {printf("Encountered OpenGLES2 error after previous call (%s). Please check the program.\n", topaz_gles_error_to_string(__er)); exit(999);}
 #else
 #define TOPAZ_GLES_FN_IN;
 #define TOPAZ_GLES_CALL_CHECK;

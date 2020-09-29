@@ -51,3 +51,15 @@ void topaz_es2_end(topazES2_t * e) {
 void topaz_es2_sync(topazES2_t * e) {
     glFinish();
 }
+
+const char * topaz_gles_error_to_string(int e) {
+    switch(e) {
+      case 0x0500: return "GL_INVALID_ENUM";
+      case 0x0501: return "GL_INVALID_VALUE";
+      case 0x0502: return "GL_INVALID_OPERATION";
+      case 0x0503: return "GL_STACK_OVERFLOW";
+      case 0x0504: return "GL_STACK_UNDERFLOW";
+      case 0x0505: return "GL_INVALID_ENUM";
+    }
+    return "UNKNOWN ERROR";
+}

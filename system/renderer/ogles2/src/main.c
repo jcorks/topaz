@@ -375,7 +375,7 @@ void topaz_api_es2__sync(topazRendererAPI_t * api) {
 }
 
 void topaz_api_es2__attach_target(topazRendererAPI_t*api, void * fb) {
-    topaz_api_es2__attach_target(api->implementationData, fb);
+    topaz_es2_set_target(api->implementationData, fb);
 }
 
 
