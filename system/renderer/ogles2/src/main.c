@@ -344,11 +344,13 @@ static void topaz_api_es2__destroy(topazRendererAPI_t * api, topazRenderer_CoreA
 }
 
 static void topaz_api_es2__draw_2d(topazRendererAPI_t * api, void *d2, const topazRenderer_2D_Context_t * ctx, const topazRenderer_ProcessAttribs_t * attribs) {
+    topaz_es2_start(api->implementationData);
     topaz_es2_2d_render(
         d2,
         ctx,
         attribs
     );
+    topaz_es2_end(api->implementationData);    
 }
 
 static void topaz_api_es2__clear_layer(topazRendererAPI_t* api, topazRenderer_DataLayer layer) {
@@ -405,6 +407,27 @@ void * topaz_api_es2__framebuffer_create(topazRendererAPI_t * api, topazRenderer
 
 
 void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
+    static int isInit = 0;
+    static GLFWwindow * context = NULL;
+    if (!isInit) {
+        glfwInit();
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+        glfwWindowHint(GLFW_VISIBLE, 0);
+
+        glfwWindowHint(GLFW_RED_BITS, 8);
+        glfwWindowHint(GLFW_GREEN_BITS, 8);
+        glfwWindowHint(GLFW_BLUE_BITS, 8);
+
+        glfwWindowHint(GLFW_DEPTH_BITS, 16);
+        glfwWindowHint(GLFW_STENCIL_BITS, 8);
+
+        context = glfwCreateWindow(640, 480, __FILE__, NULL, NULL);
+        assert(context);
+        glfwMakeContextCurrent(context);
+        isInit = 1;
+    }
     
 
     // ctx
@@ -438,7 +461,7 @@ void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
     api->twod.renderer_2d_queue_objects = (void (*)( void *,
         const uint32_t * objects,
         uint32_t count
-    )) api_nothing;
+    )) topaz_es2_2d_queue_objects;;
     api->twod.renderer_2d_clear_queue = (void (*)( void *)) topaz_es2_2d_clear_queue;
     api->twod.renderer_2d_set_object_vertices = (void (*)(
          void *, 

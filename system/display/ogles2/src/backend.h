@@ -30,10 +30,10 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/backends/display.h>
 
-#ifndef H_TOPAZDC__DISPLAY_GLFW__INCLUDED
-#define H_TOPAZDC__DISPLAY_GLFW__INCLUDED
+#ifndef H_TOPAZDC__DISPLAY_OGLES2__INCLUDED
+#define H_TOPAZDC__DISPLAY_OGLES2__INCLUDED
 
-topazBackend_t * topaz_system_display_glfw__backend();
-void             topaz_system_display_glfw__api(topazDisplayAPI_t *);
+topazBackend_t * topaz_system_display_ogles2__backend();
+void             topaz_system_display_ogles2__api(topazDisplayAPI_t *);
 
 #endif

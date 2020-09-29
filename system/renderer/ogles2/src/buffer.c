@@ -86,10 +86,11 @@ void topaz_es2_buffer_commit(topazES2_Buffer_t * b) {
     if (!b->dirty) return;
 
     TOPAZ_GLES_FN_IN;
-
-    glBindBuffer(b->type, b->object); TOPAZ_GLES_CALL_CHECK;    
-    glBufferData(b->type, b->numFloats*sizeof(float), b->data, GL_STATIC_DRAW);
-    glBindBuffer(b->type, 0); TOPAZ_GLES_CALL_CHECK;        
+    if (b->type != 0) {
+        glBindBuffer(b->type, b->object); TOPAZ_GLES_CALL_CHECK;    
+        glBufferData(b->type, b->numFloats*sizeof(float), b->data, GL_STATIC_DRAW);
+        glBindBuffer(b->type, 0); TOPAZ_GLES_CALL_CHECK;        
+    }
     b->dirty = 0;    
     if (b->onCommit)
         b->onCommit(b, b->fnData);

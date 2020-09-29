@@ -330,14 +330,13 @@ void topaz_context_draw(topaz_t * t) {
     }    
     topaz_entity_draw(t->managersNP);
     topaz_graphics_sync(t->graphics);
-
-
 }
 
 void topaz_context_iterate(topaz_t * t) {
     topaz_context_step(t);
     topaz_context_draw(t);
     topaz_view_manager_update_view(t->viewManager);
+    topaz_graphics_reset_scene(t->graphics);
 }
 
 int topaz_context_is_paused(const topaz_t * t) {

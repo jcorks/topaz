@@ -129,3 +129,10 @@ void topaz_graphics_sync(topazGraphics_t * g) {
     );
     topaz_renderer_sync(g->renderer);
 }
+
+
+void topaz_graphics_reset_scene(topazGraphics_t * g) {
+    topaz_renderer_2d_clear_queue(g->renderer2d);
+    topaz_renderer_clear_layer(g->renderer, topazRenderer_DataLayer_All);
+
+}

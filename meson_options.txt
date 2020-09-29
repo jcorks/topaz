@@ -33,11 +33,11 @@ option(
     type : 'combo',
 
 
-    value : 'glfw',
+    value : 'ogles2',
     choices : [
         'noDisplay',
         'ncurses',
-        'glfw'
+        'ogles2'
     ]
 )
 

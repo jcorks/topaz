@@ -60,17 +60,32 @@ topazES2_FB_t * topaz_es2_fb_create() {
         GL_FRAMEBUFFER,
         GL_COLOR_ATTACHMENT0,
         GL_TEXTURE_2D,
-        out->fbo,
+        out->tex,
         0
     ); TOPAZ_GLES_CALL_CHECK;
 
     glBindRenderbuffer(GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;    
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, 640, 480); TOPAZ_GLES_CALL_CHECK;
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;
-    glBindRenderbuffer(GL_RENDERBUFFER, out->rbo_stencil); TOPAZ_GLES_CALL_CHECK;    
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, 640, 480); TOPAZ_GLES_CALL_CHECK;
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, out->rbo_stencil); TOPAZ_GLES_CALL_CHECK;
+    //glBindRenderbuffer(GL_RENDERBUFFER, out->rbo_stencil); TOPAZ_GLES_CALL_CHECK;    
+    //glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, 640, 480); TOPAZ_GLES_CALL_CHECK;
+    //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, out->rbo_stencil); TOPAZ_GLES_CALL_CHECK;
 
+
+    #ifdef TOPAZDC_DEBUG
+    int a = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (a != GL_FRAMEBUFFER_COMPLETE) {
+        printf("GL FATAL ERROR: incomplete framebuffer attachment:");
+        switch(a) {
+          case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: printf("GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT"); break;
+          case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS: printf("GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS"); break;
+          case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: printf("GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT"); break;
+          case GL_FRAMEBUFFER_UNSUPPORTED: printf("GL_FRAMEBUFFER_UNSUPPORTED"); break;
+        }
+        printf("\n");
+        exit(991);
+    }
+    #endif
 
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0); TOPAZ_GLES_CALL_CHECK;
@@ -113,9 +128,9 @@ int topaz_es2_fb_resize(topazES2_FB_t * out, int w, int h) {
     glBindRenderbuffer(GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;    
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h); TOPAZ_GLES_CALL_CHECK;
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;
-    glBindRenderbuffer(GL_RENDERBUFFER, out->rbo_stencil); TOPAZ_GLES_CALL_CHECK;    
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, w, h); TOPAZ_GLES_CALL_CHECK;
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, out->rbo_stencil); TOPAZ_GLES_CALL_CHECK;
+    //glBindRenderbuffer(GL_RENDERBUFFER, out->rbo_stencil); TOPAZ_GLES_CALL_CHECK;    
+    //glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, w, h); TOPAZ_GLES_CALL_CHECK;
+    //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, out->rbo_stencil); TOPAZ_GLES_CALL_CHECK;
     glBindRenderbuffer(GL_RENDERBUFFER, 0);TOPAZ_GLES_CALL_CHECK;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     return 1;

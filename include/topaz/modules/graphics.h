@@ -82,8 +82,12 @@ void topaz_graphics_request_draw_2d(topazGraphics_t *, topazRender2D_t *);
 
 /// Ensures that all graphics operations have finished and are pushed 
 /// to attached displays.
-////
+///
 void topaz_graphics_sync(topazGraphics_t *);
+
+/// Clears the current display and resets any requested 2d drawn objects.
+/// 
+void topaz_graphics_reset_scene(topazGraphics_t *);
 
 //void topaz_graphics_draw_3d(topazRenderMesh_t *);
 
