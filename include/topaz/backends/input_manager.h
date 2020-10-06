@@ -153,6 +153,15 @@ enum {
     topazKey_insert, ///< Insert key
     topazKey_comma, ///< ,
     topazKey_period, ///< .
+    topazKey_world1, /// I8n key0
+    topazKey_world2, /// I8n key1
+    topazKey_world3, /// I8n key2
+    topazKey_world4, /// I8n key3
+    topazKey_world5, /// I8n key4
+    topazKey_world6, /// I8n key5
+    topazKey_world7, /// I8n key6
+    topazKey_world8, /// I8n key7
+    topazKey_world9, /// I8n key8
 
     topazPointer_0, ///< Left click
     topazPointer_1, ///< Right click
