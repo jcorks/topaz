@@ -89,24 +89,6 @@ typedef enum {
 typedef struct topazObject2D_Collider_t topazObject2D_Collider_t;
 
 
-/// Creates a collider from a collection of topazVector_t 2D point coordinates
-/// It is assumed that the polygon is formed by making lines between these points 
-/// in the order presented within the array. It is assumed that the center of the object 
-/// is at 0, 0.
-///
-topazObject2D_Collider_t * topaz_object2d_collider_create(
-    const topazArray_t * points
-);
-
-
-/// Creates a radial collider about 0, 0 with the given radius and 
-/// number of sides.
-///
-topazObject2D_Collider_t * topaz_object2d_collider_create_radial(
-    float radius,
-    uint32_t numSub
-);
-
 
 
 
@@ -204,17 +186,39 @@ topazVector_t topaz_object2d_get_next_position(topazComponent_t *);
 ///
 const topazVector_t * topaz_object2d_get_last_position(topazComponent_t *);
 
+
+/// Sets the object's collision group. The default is topazObject2D_Group_A.
+///
+void topaz_object2d_set_group(topazComponent_t *, topazObject2D_Group);
+
+/// Sets whether groups should interact. By default, only Group_A interacts with Group_A
+///
+void topaz_object2d_set_group_interaction(topaz_t *, topazObject2D_Group, topazObject2D_Group, int shouldInteract);
+
 /// Gets the object's collider
 ///
 topazObject2D_Collider_t * topaz_object2d_get_collider(topazComponent_t *);
 
-/// Sets the object's collision group. The default is topazObject2D_Group_A.
+/// Creates a collider from a collection of topazVector_t 2D point coordinates
+/// It is assumed that the polygon is formed by making lines between these points 
+/// in the order presented within the array. It is assumed that the center of the object 
+/// is at 0, 0.
 ///
-void topaz_object2d_set_group(topazComponent_t *, topazObject2d_Group);
+void topaz_object2d_set_collider(
+    topazComponent_t *,
+    const topazArray_t * points
+);
 
-/// Sets whether groups should interact. By default, only Group_A interacts with Group_A
+
+/// Creates a radial collider about 0, 0 with the given radius and 
+/// number of sides.
 ///
-void topaz_object2d_set_group_interation(topaz_t *, topazObject2D_Group, topazObject2D_Group, int shouldInteract);
+void topaz_object2d_set_collider_radial(
+    topazComponent_t *,
+    float radius,
+    uint32_t numSub
+);
+
 
 
 #endif

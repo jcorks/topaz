@@ -30,6 +30,7 @@ src = [
     'src/components_scheduler.c',
     'src/components_shape2d.c',
     'src/components_state_control.c',
+    'src/components_object2d.c',
     'src/containers_array.c',
     'src/containers_bin.c',
     'src/containers_string.c',
