@@ -84,9 +84,6 @@ typedef enum {
 
 
 
-/// A 2D shape polygon that can collide with other objects.
-///
-typedef struct topazObject2D_Collider_t topazObject2D_Collider_t;
 
 
 
@@ -119,7 +116,7 @@ void topaz_object2d_add_velocity_towards(topazComponent_t *, float factor, const
 /// factor is the velocity amount to add. Can be negative.
 /// direction is that degree direction to apply the velocity in degrees.
 ///
-void topaz_object_set_velocity(topazComponent_t *, float vector, float direction);
+void topaz_object2d_set_velocity(topazComponent_t *, float vector, float direction);
 
 /// Same as topaz_object2d_set_velocity, but the direction is toward a 
 /// global position.
@@ -195,10 +192,6 @@ void topaz_object2d_set_group(topazComponent_t *, topazObject2D_Group);
 ///
 void topaz_object2d_set_group_interaction(topaz_t *, topazObject2D_Group, topazObject2D_Group, int shouldInteract);
 
-/// Gets the object's collider
-///
-topazObject2D_Collider_t * topaz_object2d_get_collider(topazComponent_t *);
-
 /// Creates a collider from a collection of topazVector_t 2D point coordinates
 /// It is assumed that the polygon is formed by making lines between these points 
 /// in the order presented within the array. It is assumed that the center of the object 
@@ -217,6 +210,19 @@ void topaz_object2d_set_collider_radial(
     topazComponent_t *,
     float radius,
     uint32_t numSub
+);
+
+/// Returns the points that consitute the collider.
+///
+const topazArray_t * topaz_object2d_get_collider(
+    const topazComponent_t *
+);
+
+
+/// Returns the last entity that collided with this one.
+/// If none, return topaz_entity_null();
+topazEntity_t * topaz_object2d_get_last_collided(
+    topazComponent_t *
 );
 
 

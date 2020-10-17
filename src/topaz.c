@@ -56,8 +56,10 @@ struct topaz_t {
     
     topazTable_t * params;
     topazEntity_t * universe;
-    topazEntity_t * managers;
-    topazEntity_t * managersNP;
+    topazEntity_t * managersPre;
+    topazEntity_t * managersPreNP;
+    topazEntity_t * managersPost;
+    topazEntity_t * managersPostNP;
 
     topazArray_t * modules; // moduels are entities
 
@@ -113,8 +115,10 @@ topaz_t * topaz_context_create_from_system(const topazSystem_t * a) {
     
 
     out->universe = topaz_entity_null();
-    out->managers = topaz_entity_create(out);
-    out->managersNP = topaz_entity_create(out);
+    out->managersPre = topaz_entity_create(out);
+    out->managersPreNP = topaz_entity_create(out);
+    out->managersPost = topaz_entity_create(out);
+    out->managersPostNP = topaz_entity_create(out);
     out->modules  = topaz_array_create(sizeof(topazEntity_t*));
     
 
@@ -150,8 +154,10 @@ void topaz_context_destroy(topaz_t * t) {
 
 
     topaz_entity_remove(t->universe);
-    topaz_entity_remove(t->managers);
-    topaz_entity_remove(t->managersNP);
+    topaz_entity_remove(t->managersPre);
+    topaz_entity_remove(t->managersPreNP);
+    topaz_entity_remove(t->managersPost);
+    topaz_entity_remove(t->managersPostNP);
     topaz_array_destroy(t->modules);
 
     topazTableIter_t * iter = topaz_table_iter_create();
@@ -229,11 +235,13 @@ void topaz_context_step(topaz_t * t) {
     /////// step 
     // Order:
     /*
+        - pre managers step() 
+        - non-pausable pre managers step
         - modules prestep fn
         - user entity step() 
         - modules step fn
-        - managers step() 
-        - non-pausable managers step
+        - post managers step() 
+        - non-pausable post managers step
     
     */
     topazEntity_t * e;
@@ -241,6 +249,10 @@ void topaz_context_step(topaz_t * t) {
     uint32_t len;
     
     
+    if (!t->paused) {
+        topaz_entity_step(t->managersPre);
+    }    
+    topaz_entity_step(t->managersPreNP);
     
     len = topaz_array_get_size(t->modules);
     for(i = 0; i < len; ++i) {
@@ -265,9 +277,9 @@ void topaz_context_step(topaz_t * t) {
     
     
     if (!t->paused) {
-        topaz_entity_step(t->managers);
+        topaz_entity_step(t->managersPost);
     }    
-    topaz_entity_step(t->managersNP);
+    topaz_entity_step(t->managersPostNP);
     
     
 
@@ -301,6 +313,10 @@ void topaz_context_draw(topaz_t * t) {
     uint32_t i;
     uint32_t len;
 
+    if (!t->paused) {
+        topaz_entity_draw(t->managersPre);
+    }    
+    topaz_entity_draw(t->managersPreNP);
 
     len = topaz_array_get_size(t->modules);
     for(i = 0; i < len; ++i) {
@@ -326,9 +342,9 @@ void topaz_context_draw(topaz_t * t) {
     
     
     if (!t->paused) {
-        topaz_entity_draw(t->managers);
+        topaz_entity_draw(t->managersPost);
     }    
-    topaz_entity_draw(t->managersNP);
+    topaz_entity_draw(t->managersPostNP);
     topaz_graphics_sync(t->graphics);
 }
 
@@ -353,12 +369,21 @@ void topaz_context_set_root(topaz_t * t, topazEntity_t * u) {
 }
 
 
-void topaz_context_attach_manager(topaz_t * t, topazEntity_t * id) {
-    topaz_entity_attach(t->managers, id);
+void topaz_context_attach_pre_manager(topaz_t * t, topazEntity_t * id) {
+    topaz_entity_attach(t->managersPre, id);
 }
 
-void topaz_context_attach_manager_unpausable(topaz_t * t, topazEntity_t * id) {
-    topaz_entity_attach(t->managersNP, id);
+void topaz_context_attach_pre_manager_unpausable(topaz_t * t, topazEntity_t * id) {
+    topaz_entity_attach(t->managersPreNP, id);
+
+}
+
+void topaz_context_attach_post_manager(topaz_t * t, topazEntity_t * id) {
+    topaz_entity_attach(t->managersPost, id);
+}
+
+void topaz_context_attach_post_manager_unpausable(topaz_t * t, topazEntity_t * id) {
+    topaz_entity_attach(t->managersPostNP, id);
 
 }
 

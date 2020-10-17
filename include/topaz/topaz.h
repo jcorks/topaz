@@ -147,8 +147,27 @@ void topaz_context_set_root(topaz_t *, topazEntity_t *);
 ///
 /// If pausable is false, the manager will continue to update even when 
 /// the engine is in a paused state.
-void topaz_context_attach_manager(topaz_t *, topazEntity_t * id);
-void topaz_context_attach_manager_unpausable(topaz_t *, topazEntity_t * id);
+/// Managers are kept separate from the root entity tree and are unaffected
+/// switching of the root entity.
+/// the pre_manager* calls ensure that these managers are stepped/drawn BEFORE 
+/// the normal entity tree. 
+///
+void topaz_context_attach_pre_manager(topaz_t *, topazEntity_t * id);
+
+/// Same as topaz_context_attach_pre_manager, but the when the pause 
+/// state is entered, these managers are unaffected.
+///
+void topaz_context_attach_pre_manager_unpausable(topaz_t *, topazEntity_t * id);
+
+/// Same as topaz_context_attach_pre_manager, but the manager is updated 
+/// AFTER the main entity tree.
+///
+void topaz_context_attach_post_manager(topaz_t *, topazEntity_t * id);
+
+/// Same as topaz_context_attach_post_manager, but the manager is updated 
+/// even when the paused state is entered
+///
+void topaz_context_attach_post_manager_unpausable(topaz_t *, topazEntity_t * id);
 
 
 /// Ends the Engine execution loop.

@@ -160,7 +160,8 @@ if get_option('IncludeTests') == true
         'tests/test_entity.c',
         'tests/test_string.c',
         'tests/test_table.c',
-        'tests/test_bin.c'
+        'tests/test_bin.c',
+        'tests/test_object2d.c'
     ]
 
 

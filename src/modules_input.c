@@ -378,7 +378,7 @@ topazInput_t * topaz_input_create(topaz_t * context) {
         out->devices[i] = device_state_create(out);
     }
 
-    topaz_context_attach_manager_unpausable(
+    topaz_context_attach_pre_manager_unpausable(
         context,
         out->contextEnt
     );

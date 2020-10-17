@@ -36,10 +36,10 @@ typedef struct {
 } bbox_t;
 
 // Returns whether the given point is within the bounding box
-static int bb_contains_point(const bbox_t *, const topazVector_t *);
+//static int bb_contains_point(const bbox_t *, const topazVector_t *);
 
 // Returns whether box b is contained within box a
-static int bb_contains_box(const bbox_t * a, const bbox_t * b);
+//static int bb_contains_box(const bbox_t * a, const bbox_t * b);
 
 // Returns whether 2 boxes overlap
 static int bb_overlaps(const bbox_t * a, const bbox_t * b);        
@@ -49,41 +49,44 @@ static int bb_overlaps(const bbox_t * a, const bbox_t * b);
 
 
 
-/////// topazObject2D_Collider_t 
+/////// tcollider_t 
 /*
     Individualized collider for each component.
 
 */
 
+typedef struct tcollider_t tcollider_t;
+
 // creates a new collider
-topazObject2D_Collider_t * collider_create();
+tcollider_t * collider_create();
 
 // Destroys a collider
-static void collider_destroy(topazObject2D_Collider_t *);
+static void collider_destroy(tcollider_t *);
 
 // Sets the collider geometry
-static void collider_set_from_points(topazObject2D_Collider_t *, const topazArray_t *);
+static void collider_set_from_points(tcollider_t *, const topazArray_t *);
 
 // Returns whether the given point will be contained within 
 // the collider            
-static int collider_will_contain_point(const topazObject2D_Collider_t *, const topazVector_t * other);
+static int collider_will_contain_point(const tcollider_t *, const topazVector_t * other);
 
 // Updates the transition of a collider
-static void collider_update_transition(topazObject2D_Collider_t *, const topazVector_t * after);
+static void collider_update_transition(tcollider_t *, const topazVector_t * after);
 
 // Returns whether the colliders in the current state will collide
-static int collides_with(const topazObject2D_Collider_t *, const topazObject2D_Collider_t * otherd);
+static int collides_with(const tcollider_t *, const tcollider_t * otherd);
 
 // Gets the last entity that was collided with
-static topazEntity_t * collider_get_last_collided(const topazObject2D_Collider_t *);
+static topazEntity_t * collider_get_last_collided(const tcollider_t *);
 
 // Sets the entity last collided with
-static void collider_set_last_collided(topazObject2D_Collider_t *, topazEntity_t *);
+static void collider_set_last_collided(tcollider_t *, topazEntity_t *);
 
 // Gets the bounding box that represents the area the collider covers
-const bbox_t * collider_get_moment_bounds(const topazObject2D_Collider_t *);
+const bbox_t * collider_get_moment_bounds(const tcollider_t *);
 
-
+// returns the points used to first generate the collider in question.
+const topazArray_t * collider_get_source_points(const tcollider_t *);
 
 ///// SpatialMap
 /*
@@ -165,9 +168,11 @@ struct TopazObject2D_t {
     topazVector_t last;
     topaz_t * ctx;
     topazEntity_t * manager;
-    topazObject2D_Collider_t * collider;
+    tcollider_t * collider;
     topazObject2D_Group group;
 };
+
+
 
 
 static TopazObject2D_t * object2d__retrieve(topazComponent_t * c) {
@@ -179,6 +184,33 @@ static TopazObject2D_t * object2d__retrieve(topazComponent_t * c) {
     return s;
 }
 
+static void object2d__on_step(topazComponent_t * o, TopazObject2D_t * object) {
+    topazEntity_t * host = topaz_component_get_host(o);
+    topazVector_t gpos = topaz_entity_get_global_position(host);
+    topazVector_t delta;
+    topazVector_t next = topaz_object2d_get_next_position(o);
+    delta.x = next.x - gpos.x;
+    delta.y = next.y - gpos.y;
+    delta.z = 0;
+
+    // using the "last" model, we include manual translations as part of 
+    // normal collisions.
+    if (topaz_vector_get_length(&delta) > .000001 && topaz_component_emit_event_anonymous(o, TOPAZ_STR_CAST("on-move"))) {
+        topazVector_t * pos = topaz_entity_position(host);
+        pos->x += delta.x;
+        pos->y += delta.y;
+
+        // push it through        
+        topaz_spatial_check_update(topaz_entity_get_spatial(host));
+    }
+
+    object->last = *topaz_entity_get_position(host);
+
+    object->speedX *= (1.0 - object->frictionX);
+    object->speedY *= (1.0 - object->frictionY);
+    
+}
+
 static void object2d__on_attach(topazComponent_t * c, TopazObject2D_t * s) {
     // prevents weird collisions on frame one of stepping
     s->last = *topaz_entity_get_position(topaz_component_get_host(c));
@@ -186,9 +218,15 @@ static void object2d__on_attach(topazComponent_t * c, TopazObject2D_t * s) {
 
 
 
-static void object2d__on_destroy(topazComponent_t * c, TopazObject2D_t * s) {
+static void object2d__on_detach(topazComponent_t * c, TopazObject2D_t * s) {
     t2dm_unregister_object(s->manager, c);
 }
+
+static void object2d__on_destroy(topazComponent_t * c, TopazObject2D_t * s) {
+    collider_destroy(s->collider);
+    free(s);
+}
+
 
 
 topazComponent_t * topaz_object2d_create(topaz_t * t) {
@@ -198,18 +236,22 @@ topazComponent_t * topaz_object2d_create(topaz_t * t) {
     data->MAGIC_ID = MAGIC_ID__OBJECT_2D;
     #endif
     data->manager = t2dm_fetch(t);
-
+    data->collider = collider_create();
     // create base component and assign attribs
     topazComponent_Attributes_t attribs;
     memset(&attribs, 0, sizeof(topazComponent_Attributes_t));
-
     attribs.on_destroy  = (topaz_component_attribute_callback) object2d__on_destroy;    
+    attribs.on_detach   = (topaz_component_attribute_callback) object2d__on_detach;    
     attribs.on_attach   = (topaz_component_attribute_callback) object2d__on_attach;
+    attribs.on_step     = (topaz_component_attribute_callback) object2d__on_step;
     attribs.userData = data;
     topazComponent_t * out = topaz_component_create_with_attributes(TOPAZ_STR_CAST("Object2D"), t, &attribs);
     t2dm_register_object(data->manager, out);
-
-    return out;
+    topaz_component_install_event(out, TOPAZ_STR_CAST("on-move"), NULL, NULL);
+    topaz_component_install_event(out, TOPAZ_STR_CAST("on-collide"), NULL, NULL);
+    topaz_component_install_event(out, TOPAZ_STR_CAST("on-moved"), NULL, NULL);
+ 
+   return out;
 }
 
 
@@ -257,7 +299,7 @@ void topaz_object2d_add_velocity_towards(
 
 
 
-void topaz_object_set_velocity(
+void topaz_object2d_set_velocity(
     topazComponent_t * c, 
     float factor, 
     float direction
@@ -369,11 +411,6 @@ const topazVector_t * topaz_object2d_get_last_position(topazComponent_t * c) {
     return &s->last;
 }
 
-topazObject2D_Collider_t * topaz_object2d_get_collider(topazComponent_t * c) {
-    TopazObject2D_t * s = object2d__retrieve(c);    
-    return s->collider;    
-}
-
 void topaz_object2d_set_group(topazComponent_t * c, topazObject2D_Group g) {
     TopazObject2D_t * s = object2d__retrieve(c);    
     s->group = g;    
@@ -384,33 +421,51 @@ void topaz_object2d_set_group_interaction(topaz_t * t, topazObject2D_Group a, to
     t2dm_set_interaction(m, a, b, doIt); 
 }
 
-static void object_update(topazComponent_t * o) {
-    topazEntity_t * host = topaz_component_get_host(o);
-    topazVector_t gpos = topaz_entity_get_global_position(host);
-    topazVector_t delta;
-    topazVector_t next = topaz_object2d_get_next_position(o);
-    delta.x = next.x - gpos.x;
-    delta.y = next.y - gpos.y;
-    delta.z = 0;
-
-    // using the "last" model, we include manual translations as part of 
-    // normal collisions.
-    if (topaz_vector_get_length(&delta) > .000001 && topaz_component_emit_event_anonymous(o, TOPAZ_STR_CAST("on-move"))) {
-        topazVector_t * pos = topaz_entity_position(host);
-        pos->x += delta.x;
-        pos->y += delta.y;
-
-        // push it through        
-        topaz_spatial_check_update(topaz_entity_get_spatial(host));
-    }
-
-    TopazObject2D_t * object = topaz_component_get_attributes(o)->userData;
-    object->last = *topaz_entity_get_position(host);
-
-    object->speedX *= (1.0 - object->frictionX);
-    object->speedY *= (1.0 - object->frictionY);
-    
+void topaz_object2d_set_collider(
+    topazComponent_t * c,
+    const topazArray_t * points
+) {
+    TopazObject2D_t * s = object2d__retrieve(c);    
+    collider_set_from_points(s->collider, points);    
 }
+
+
+void topaz_object2d_set_collider_radial(
+    topazComponent_t * c,
+    float radius,
+    uint32_t numPts
+) {
+    TopazObject2D_t * s = object2d__retrieve(c);    
+    topazVector_t * inpts = malloc(numPts*sizeof(topazVector_t));
+     
+    float RADIAN_MAX = 3.14159265359*2;
+    for(uint32_t i = 0; i < numPts; ++i) {
+        inpts[i].x = cos(i / RADIAN_MAX) * radius;
+        inpts[i].y = sin(i / RADIAN_MAX) * radius;
+    }
+    collider_set_from_points(s->collider, TOPAZ_ARRAY_CAST(inpts, topazVector_t, numPts));
+    free(inpts);
+}
+
+const topazArray_t * topaz_object2d_get_collider(
+    const topazComponent_t * c
+) {
+    TopazObject2D_t * s = object2d__retrieve((topazComponent_t*)c);    
+    return collider_get_source_points(s->collider);
+}
+
+
+
+topazEntity_t * topaz_object2d_get_last_collided(
+    topazComponent_t * c
+) {
+    TopazObject2D_t * s = object2d__retrieve(c);    
+    return collider_get_last_collided(s->collider);
+}
+
+
+
+
 
 
 
@@ -444,9 +499,10 @@ static int line_intersect(const cline_t * l0, const cline_t * l1) {
 }
 
 
-struct topazObject2D_Collider_t {
+struct tcollider_t {
     topazArray_t * staticPoints;
     topazArray_t * smear;
+    topazArray_t * srcPoints;
 
     bbox_t smearBounds;
     topazVector_t oldPosition;
@@ -455,30 +511,35 @@ struct topazObject2D_Collider_t {
     topazEntity_t * lastCollided;
 };
 
-topazObject2D_Collider_t * collider_create() {
-    topazObject2D_Collider_t * o = calloc(1, sizeof(topazObject2D_Collider_t));
+tcollider_t * collider_create() {
+    tcollider_t * o = calloc(1, sizeof(tcollider_t));
     o->staticPoints = topaz_array_create(sizeof(cline_t));
     o->smear        = topaz_array_create(sizeof(cline_t));
     o->lastCollided = topaz_entity_null();
+    o->srcPoints    = topaz_array_create(sizeof(topazVector_t));
     return o;
 }
 
 // Destroys a collider
-void collider_destroy(topazObject2D_Collider_t * c) {
+void collider_destroy(tcollider_t * c) {
     topaz_array_destroy(c->staticPoints);
     topaz_array_destroy(c->smear);
+    topaz_array_destroy(c->srcPoints);
     free(c);
 }
 
 void collider_set_from_points(
-    topazObject2D_Collider_t * c, 
+    tcollider_t * c, 
     const topazArray_t * pts
 ) { 
+    c->srcPoints = topaz_array_clone(pts);
+    // transfer raw points into lines
+    topaz_array_set_size(c->staticPoints, 0);
     uint32_t len = topaz_array_get_size(pts);
     if (!len || len == 1) return;
 
-    // transfer raw points into lines
-    topaz_array_set_size(c->staticPoints, 0);
+    topaz_array_destroy(c->srcPoints);
+
     topazVector_t * ptsData = topaz_array_get_data(pts);
     cline_t line;
     for(uint32_t i = 0; i < len-1; ++i) {
@@ -497,7 +558,7 @@ void collider_set_from_points(
 
 
 int collider_will_contain_point(
-    const topazObject2D_Collider_t * c, 
+    const tcollider_t * c, 
     const topazVector_t * other
 ) {
     uint32_t realStart = c->stationary ? 0 : topaz_array_get_size(c->smear)/3;
@@ -539,7 +600,7 @@ int collider_will_contain_point(
 
 
 void collider_update_transition(
-    topazObject2D_Collider_t * c, 
+    tcollider_t * c, 
     const topazVector_t * after
 ) {
     if (!topaz_array_get_size(c->staticPoints)) return;
@@ -666,8 +727,8 @@ void collider_update_transition(
 
 
 int collides_with(
-    const topazObject2D_Collider_t * c, 
-    const topazObject2D_Collider_t * other
+    const tcollider_t * c, 
+    const tcollider_t * other
 ) {
     
     uint32_t smearSize_self  = topaz_array_get_size(c->smear);
@@ -710,16 +771,20 @@ int collides_with(
 }
 
 
-topazEntity_t * collider_get_last_collided(const topazObject2D_Collider_t * c) {
+topazEntity_t * collider_get_last_collided(const tcollider_t * c) {
     return c->lastCollided;
 }
 
-void collider_set_last_collided(topazObject2D_Collider_t * c, topazEntity_t * e) {
+void collider_set_last_collided(tcollider_t * c, topazEntity_t * e) {
     c->lastCollided = e;
 }
 
-const bbox_t * collider_get_moment_bounds(const topazObject2D_Collider_t * c) {
+const bbox_t * collider_get_moment_bounds(const tcollider_t * c) {
     return &c->smearBounds;
+}
+
+const topazArray_t * collider_get_source_points(const tcollider_t * c) {
+    return c->srcPoints;
 }
 
 
@@ -728,7 +793,7 @@ const bbox_t * collider_get_moment_bounds(const topazObject2D_Collider_t * c) {
 ////////////////////////////////
 ///// bbox 
 
-        
+/*        
 int bb_contains_point(const bbox_t * b, const topazVector_t * p) {
     return (p->x >= b->x &&
             p->x <= b->x+b->width &&
@@ -742,7 +807,7 @@ int bb_contains_box(const bbox_t * a, const bbox_t * b) {
             b->y >= a->y &&
             b->y+b->height <= a->y+a->height);        
 }
-
+*/
 int bb_overlaps(const bbox_t * a, const bbox_t * b) {
     return 
         a->x < b->x+b->width  && a->x+a->width > b->x &&
@@ -1013,7 +1078,6 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
 
     // no viable collision detection can occur, so just update the objects and drop out.
     if (spaceW == 0.f || spaceH == 0.f) {
-        object_update(objects[i]);
         return;
     }
 
@@ -1078,9 +1142,9 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
 
             // no repeats! If we're already collided, skip very overlap check
             if (i < setObjs[n]) {
-                collidedKey = (void*)(0x0 + i + (setObjs[n]*numObj));
+                collidedKey = ((void*)0x0 + i + (setObjs[n]*numObj));
             } else {
-                collidedKey = (void*)(0x0 + i*numObj + (setObjs[n]));
+                collidedKey = ((void*)0x0 + i*numObj + (setObjs[n]));
             }
 
             if (topaz_table_find(m->collided, collidedKey)) continue;
@@ -1112,12 +1176,6 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
             hadCol = 1;
         }
     }
-
-    
-    // apply new positions
-    for(i = 0; i < numObj; ++i) {
-        object_update(objects[i]);
-    }
 }
 
 
@@ -1141,7 +1199,7 @@ topazEntity_t * t2dm_fetch(topaz_t * t) {
 
     mE = topaz_entity_create_with_attributes(t, &attribs);
     topaz_table_insert(allManagers, t, mE);
-    topaz_context_attach_manager(t, mE);
+    topaz_context_attach_post_manager(t, mE);
     return mE;
 }
 

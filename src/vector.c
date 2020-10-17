@@ -205,9 +205,9 @@ float topaz_vector_rotation_z_diff_relative(const topazVector_t * a, const topaz
 }
 
 float topaz_vector_rotation_z(const topazVector_t * a) {
-	float dProduct = (a->y); // reduced dot product based around 0-degree vector {0, 1, 0}
+	float dProduct = (a->x); // reduced dot product based around 0-degree vector {1, 0, 0}
     float lengthPlane_this = 1.f;
-    float lengthPlane_in   = sqrt(a->z*a->z + a->y* a->y);
+    float lengthPlane_in   = sqrt(a->x*a->x + a->y* a->y);
     if (lengthPlane_in == 0.f)
         return 0.f;
 

@@ -71,9 +71,9 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazBackend_t * b, topazDi
     out->ctx = ctx;
     out->autoRefresh = TRUE;
     out->vp = topazDisplay_ViewPolicy_MatchSize;
-    topaz_context_attach_manager(ctx, out->camera2d);
-    topaz_context_attach_manager(ctx, out->camera3d);
-    topaz_context_attach_manager(ctx, out->cameraRender);
+    topaz_context_attach_post_manager(ctx, out->camera2d);
+    topaz_context_attach_post_manager(ctx, out->camera3d);
+    topaz_context_attach_post_manager(ctx, out->cameraRender);
     return out;
 }
 
