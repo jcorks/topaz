@@ -37,6 +37,7 @@ int main() {
         topaz_test_add(driver, "Entity   - Simple  ",   test__entity_simple);
         topaz_test_add(driver, "Entity   - Advanced",   test__entity_advanced);
         topaz_test_add(driver, "Object2D - Simple  ",   test__object2d_simple);
+        topaz_test_add(driver, "Object2D - Advanced",   test__object2d_advanced);
 
     //// ^^^^^^^^^^^^^^^
     //////////////////// 

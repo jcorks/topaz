@@ -195,7 +195,7 @@ static void object2d__on_step(topazComponent_t * o, TopazObject2D_t * object) {
 
     // using the "last" model, we include manual translations as part of 
     // normal collisions.
-    if (topaz_vector_get_length(&delta) > .000001 && topaz_component_emit_event_anonymous(o, TOPAZ_STR_CAST("on-move"))) {
+    if (topaz_vector_get_length(&delta) > .000001) {
         topazVector_t * pos = topaz_entity_position(host);
         pos->x += delta.x;
         pos->y += delta.y;
@@ -247,11 +247,9 @@ topazComponent_t * topaz_object2d_create(topaz_t * t) {
     attribs.userData = data;
     topazComponent_t * out = topaz_component_create_with_attributes(TOPAZ_STR_CAST("Object2D"), t, &attribs);
     t2dm_register_object(data->manager, out);
-    topaz_component_install_event(out, TOPAZ_STR_CAST("on-move"), NULL, NULL);
     topaz_component_install_event(out, TOPAZ_STR_CAST("on-collide"), NULL, NULL);
-    topaz_component_install_event(out, TOPAZ_STR_CAST("on-moved"), NULL, NULL);
  
-   return out;
+    return out;
 }
 
 
@@ -928,7 +926,7 @@ static void spatial_map_reset(
     // first prep
     topazArray_t ** fieldAIter = topaz_array_get_data(m->fieldAlloc);
     uint32_t i;
-    uint32_t len = numObjects*numObjects;
+    uint32_t len = m->span*m->span;
     for(i = 0; i < len; ++i) {
         fieldAIter[i] = NULL;
     }
@@ -964,7 +962,7 @@ static void spatial_map_insert(
                 m->heapSize--;
             }
                
-            topaz_array_push(m->field[x][y], index);
+            topaz_array_push(m->field[x][y], id);
         }
     }
 }
