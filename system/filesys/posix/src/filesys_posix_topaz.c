@@ -70,8 +70,10 @@ static void topaz_filesys_posix__create(topazFilesysAPI_t * api) {
     PosixFilesysData * tData = calloc(1, sizeof(PosixFilesysData));
     tData->dirObjects = topaz_array_create(sizeof(topazString_t*));
     tData->dirIsFile = topaz_array_create(sizeof(int));
-    tData->currentPath = topaz_string_create();
-
+    char * path = malloc(PATH_MAX+1);
+    getcwd(path, PATH_MAX);
+    tData->currentPath = topaz_string_create_from_c_str(path);
+    free(path);
     api->implementationData = tData;
 }
 
@@ -206,7 +208,7 @@ static topazRbuffer_t * topaz_filesys_posix__read(topazFilesysAPI_t * api, const
     topaz_string_concat_printf(fullPath, "%c", '/');
     topaz_string_concat(fullPath, dir);
     
-    FILE * f = fopen("rb", topaz_string_get_c_str(fullPath));
+    FILE * f = fopen(topaz_string_get_c_str(fullPath), "rb");
     topazRbuffer_t * buffer = topaz_rbuffer_create();
     if (f) {
         topazArray_t * fullData = topaz_array_create(sizeof(uint8_t));
@@ -293,6 +295,46 @@ static int topaz_filesys_posix__is_child(topazFilesysAPI_t * api, const topazStr
     }
     return FALSE;
 }
+const topazArray_t * topaz_filesys_posix__split_path(topazFilesysAPI_t * api, const topazString_t * path) {
+    char separator;
+    #if __WIN32__ || _WINDOWS_
+        separator = '\\';
+    #else 
+        separator = '/';
+    #endif
+
+    static topazArray_t * arr = 0;
+    if (!arr) arr = topaz_array_create(sizeof(topazString_t *));    
+    uint32_t len = topaz_array_get_size(arr);
+    uint32_t i;
+    for(i = 0; i < len; ++i) {
+        topaz_string_destroy(topaz_array_at(arr, topazString_t *, i));
+    }
+    topaz_array_set_size(arr, 0);
+
+
+    topazString_t * str = topaz_string_create();
+    len = topaz_string_get_length(path);
+    for(i = 0; i < len; ++i) {
+        int c = topaz_string_get_char(path, i);
+        if (c == separator) {
+            if (topaz_string_get_length(str)) {
+                topaz_array_push(arr, str);
+                str = topaz_string_create();
+            }
+        } else {
+            topaz_string_concat_printf(str, "%c", c);
+        }
+    }
+
+    if (topaz_string_get_length(str)) {
+        topaz_array_push(arr, str);
+        str = topaz_string_create();
+    }
+
+
+    return arr;
+}
 
 
 
@@ -346,7 +388,8 @@ topazBackend_t * topaz_system_filesys_posix__backend() {
 }
 
 
-void topaz_system_filesys_posix(topazFilesysAPI_t * api) {
+
+void topaz_system_filesys_posix__api(topazFilesysAPI_t * api) {
 
 
     // Map object API functions to real ones
@@ -363,6 +406,7 @@ void topaz_system_filesys_posix(topazFilesysAPI_t * api) {
     api->filesys_query = topaz_filesys_posix__query;
     api->filesys_is_node = topaz_filesys_posix__is_node;
     api->filesys_is_child = topaz_filesys_posix__is_child;
+    api->filesys_split_path = topaz_filesys_posix__split_path;
 
 
 

@@ -69,7 +69,7 @@ option(
     'FilesystemBackend',
     type : 'combo',
 
-    value : 'noFilesys',
+    value : 'posix',
     choices : [
         'noFilesys',
         'posix'

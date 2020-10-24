@@ -190,3 +190,16 @@ executable(
     c_args : compile_args,
     link_args : compile_args
 )
+
+executable(
+    'scripts',
+    src + [
+        'examples/10-Scripts/main.c'
+    ],
+    include_directories : mainIncdir,
+    dependencies : baselibs,
+    c_args : compile_args,
+    link_args : compile_args
+)
+
+

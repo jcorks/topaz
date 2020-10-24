@@ -339,6 +339,17 @@ void topaz_object2d_set_friction_y(topazComponent_t * c, float amt) {
     s->frictionY = amt;
 }
 
+float topaz_object2d_get_friction_x(const topazComponent_t * c) {
+    TopazObject2D_t * s = object2d__retrieve((topazComponent_t *)c);    
+    return s->frictionX;
+}
+
+float topaz_object2d_get_friction_y(const topazComponent_t * c) {
+    TopazObject2D_t * s = object2d__retrieve((topazComponent_t *)c);    
+    return s->frictionY;
+}
+
+
 float topaz_object2d_get_direction(topazComponent_t * c) {
     TopazObject2D_t * s = object2d__retrieve(c);    
     topazVector_t speed = {s->speedX, s->speedY, 0};
@@ -413,6 +424,12 @@ void topaz_object2d_set_group(topazComponent_t * c, topazObject2D_Group g) {
     TopazObject2D_t * s = object2d__retrieve(c);    
     s->group = g;    
 }
+
+topazObject2D_Group topaz_object2d_get_group(topazComponent_t * c) {
+    TopazObject2D_t * s = object2d__retrieve(c);    
+    return s->group; 
+}
+
 
 void topaz_object2d_set_group_interaction(topaz_t * t, topazObject2D_Group a, topazObject2D_Group b, int doIt) {
     topazEntity_t * m = t2dm_fetch(t);

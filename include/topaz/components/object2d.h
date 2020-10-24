@@ -136,6 +136,15 @@ void topaz_object2d_set_friction_x(topazComponent_t *, float amt);
 ///
 void topaz_object2d_set_friction_y(topazComponent_t *, float amt);
 
+/// Gets the x direction friction. Starts at 0.
+///
+float topaz_object2d_get_friction_x(const topazComponent_t *);
+
+/// Gets the y direction friction. Starts at 0.
+///
+float topaz_object2d_get_friction_y(const topazComponent_t *);
+
+
 /// Returns the current direction that the entity is traveling in degrees.
 ///
 float topaz_object2d_get_direction(topazComponent_t *);
@@ -187,6 +196,11 @@ const topazVector_t * topaz_object2d_get_last_position(topazComponent_t *);
 /// Sets the object's collision group. The default is topazObject2D_Group_A.
 ///
 void topaz_object2d_set_group(topazComponent_t *, topazObject2D_Group);
+
+/// Gets the object's collision group. The default is topazObject2D_Group_A.
+///
+topazObject2D_Group topaz_object2d_get_group(topazComponent_t *);
+
 
 /// Sets whether groups should interact. By default, only Group_A interacts with Group_A
 ///

@@ -16,7 +16,7 @@ int test__string_simple() {
         return 2;
 
 
-    if (strcmp("Hello!", topaz_string_get_c_str(topaz_string_get_substr(str, 0, 6))))
+    if (strcmp("Hello!", topaz_string_get_c_str(topaz_string_get_substr(str, 0, 5))))
         // Why: the get_substr operation failed or produced unexpected results
         return 3;
 

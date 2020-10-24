@@ -12,9 +12,10 @@ TSO_SCRIPT_API_FN(shape2d_api__get_color) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);
-    topazColor_t * c = malloc(sizeof(topazColor_t));
+    topazColor_t * c;
+    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(color_api__create, c);
     *c = topaz_shape2d_get_color(native);
-    return TSO_OBJECT_INSTANTIATE(color_api__create, c);
+    return out;
 }
 
 TSO_SCRIPT_API_FN(shape2d_api__set_color) {
@@ -53,9 +54,10 @@ TSO_SCRIPT_API_FN(shape2d_api__get_center) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);
-    topazVector_t * c = malloc(sizeof(topazVector_t));
+    topazVector_t * c;
+    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, c);
     *c = *topaz_shape2d_get_center(native);
-    return TSO_OBJECT_INSTANTIATE(vector_api__create, c);
+    return out;
 }
 
 TSO_SCRIPT_API_FN(shape2d_api__set_center) {
@@ -74,25 +76,28 @@ TSO_SCRIPT_API_FN(shape2d_api__set_center) {
 TSO_SCRIPT_API_FN(shape2d_api__get_rotation) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
-    topazVector_t * v = malloc(sizeof(topazVector_t));
+    topazVector_t * v;
+    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
     *v = *topaz_transform_get_rotation(topaz_shape2d_get_node(native));
-    return TSO_OBJECT_INSTANTIATE(vector_api__create, v);
+    return out;
 }
 
 TSO_SCRIPT_API_FN(shape2d_api__get_position) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
-    topazVector_t * v = malloc(sizeof(topazVector_t));
+    topazVector_t * v;
+    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
     *v = *topaz_transform_get_position(topaz_shape2d_get_node(native));
-    return TSO_OBJECT_INSTANTIATE(vector_api__create, v);
+    return out;
 }
 
 TSO_SCRIPT_API_FN(shape2d_api__get_scale) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
-    topazVector_t * v = malloc(sizeof(topazVector_t));
+    topazVector_t * v;
+    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
     *v = *topaz_transform_get_scale(topaz_shape2d_get_node(native));
-    return TSO_OBJECT_INSTANTIATE(vector_api__create, v);
+    return out;
 }
 
 
@@ -209,31 +214,31 @@ TSO_SCRIPT_API_FN(shape2d_api__form_lines) {
 
 
 static void add_refs__shape2d_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("shape2d__create", shape2d_api__create);
-    TS_MAP_NATIVE_FN("shape2d__get_color", shape2d_api__get_color);
-    TS_MAP_NATIVE_FN("shape2d__set_color", shape2d_api__set_color);
+    TS_MAP_NATIVE_FN("topaz_shape2d__create", shape2d_api__create);
+    TS_MAP_NATIVE_FN("topaz_shape2d__get_color", shape2d_api__get_color);
+    TS_MAP_NATIVE_FN("topaz_shape2d__set_color", shape2d_api__set_color);
 
 
 
-    TS_MAP_NATIVE_FN("shape2d__get_anim_speed", shape2d_api__get_anim_speed);
-    TS_MAP_NATIVE_FN("shape2d__set_anim_speed", shape2d_api__set_anim_speed);
-    TS_MAP_NATIVE_FN("shape2d__get_center", shape2d_api__get_center);
-    TS_MAP_NATIVE_FN("shape2d__set_center", shape2d_api__set_center);
+    TS_MAP_NATIVE_FN("topaz_shape2d__get_anim_speed", shape2d_api__get_anim_speed);
+    TS_MAP_NATIVE_FN("topaz_shape2d__set_anim_speed", shape2d_api__set_anim_speed);
+    TS_MAP_NATIVE_FN("topaz_shape2d__get_center", shape2d_api__get_center);
+    TS_MAP_NATIVE_FN("topaz_shape2d__set_center", shape2d_api__set_center);
 
 
     // replacement of transform with rotation / position / scale
-    TS_MAP_NATIVE_FN("shape2d__get_position", shape2d_api__get_position);
-    TS_MAP_NATIVE_FN("shape2d__get_rotation", shape2d_api__get_rotation);
-    TS_MAP_NATIVE_FN("shape2d__get_scale",    shape2d_api__get_scale);
-    TS_MAP_NATIVE_FN("shape2d__set_position", shape2d_api__set_position);
-    TS_MAP_NATIVE_FN("shape2d__set_rotation", shape2d_api__set_rotation);
-    TS_MAP_NATIVE_FN("shape2d__set_scale",    shape2d_api__set_scale);
+    TS_MAP_NATIVE_FN("topaz_shape2d__get_position", shape2d_api__get_position);
+    TS_MAP_NATIVE_FN("topaz_shape2d__get_rotation", shape2d_api__get_rotation);
+    TS_MAP_NATIVE_FN("topaz_shape2d__get_scale",    shape2d_api__get_scale);
+    TS_MAP_NATIVE_FN("topaz_shape2d__set_position", shape2d_api__set_position);
+    TS_MAP_NATIVE_FN("topaz_shape2d__set_rotation", shape2d_api__set_rotation);
+    TS_MAP_NATIVE_FN("topaz_shape2d__set_scale",    shape2d_api__set_scale);
 
-    TS_MAP_NATIVE_FN("shape2d__form_rectangle", shape2d_api__form_rectangle);
-    //TS_MAP_NATIVE_FN("shape2d__form_image", shape2d_api__form_image);
-    //TS_MAP_NATIVE_FN("shape2d__form_image_scaled", shape2d_api__form_image_scaled);
-    TS_MAP_NATIVE_FN("shape2d__form_radial", shape2d_api__form_radial);
-    TS_MAP_NATIVE_FN("shape2d__form_triangles", shape2d_api__form_triangles);
-    TS_MAP_NATIVE_FN("shape2d__form_lines", shape2d_api__form_lines);
+    TS_MAP_NATIVE_FN("topaz_shape2d__form_rectangle", shape2d_api__form_rectangle);
+    //TS_MAP_NATIVE_FN("topaz_shape2d__form_image", shape2d_api__form_image);
+    //TS_MAP_NATIVE_FN("topaz_shape2d__form_image_scaled", shape2d_api__form_image_scaled);
+    TS_MAP_NATIVE_FN("topaz_shape2d__form_radial", shape2d_api__form_radial);
+    TS_MAP_NATIVE_FN("topaz_shape2d__form_triangles", shape2d_api__form_triangles);
+    TS_MAP_NATIVE_FN("topaz_shape2d__form_lines", shape2d_api__form_lines);
 
 }

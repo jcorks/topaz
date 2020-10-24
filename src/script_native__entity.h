@@ -241,25 +241,28 @@ TSO_SCRIPT_API_FN(entity_api__get_priority) {
 TSO_SCRIPT_API_FN(entity_api__get_rotation) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
-    topazVector_t * v = malloc(sizeof(topazVector_t));
+    topazVector_t * v;
+    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
     *v = *topaz_entity_get_rotation(native);
-    return TSO_OBJECT_INSTANTIATE(vector_api__create, v);
+    return out;
 }
 
 TSO_SCRIPT_API_FN(entity_api__get_position) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
-    topazVector_t * v = malloc(sizeof(topazVector_t));
+    topazVector_t * v;
+    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
     *v = *topaz_entity_get_position(native);
-    return TSO_OBJECT_INSTANTIATE(vector_api__create, v);
+    return out;
 }
 
 TSO_SCRIPT_API_FN(entity_api__get_scale) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
-    topazVector_t * v = malloc(sizeof(topazVector_t));
+    topazVector_t * v;
+    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
     *v = *topaz_entity_get_scale(native);
-    return TSO_OBJECT_INSTANTIATE(vector_api__create, v);
+    return out;
 }
 
 
@@ -303,9 +306,10 @@ TSO_SCRIPT_API_FN(entity_api__set_scale) {
 TSO_SCRIPT_API_FN(entity_api__get_global_position) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
-    topazVector_t * v = malloc(sizeof(topazVector_t));
+    topazVector_t * v;
+    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
     *v = topaz_entity_get_global_position(native);
-    return TSO_OBJECT_INSTANTIATE(vector_api__create, v);
+    return out;
 }
 
 

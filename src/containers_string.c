@@ -178,14 +178,12 @@ const topazString_t * topaz_string_get_substr(
         ((topazString_t *)s)->lastSubstr = topaz_string_create();
     }
 
-    char realAtTo = s->cstr[to];
-    s->cstr[to] = 0;
+    s->cstr[to+1] = 0;
     topaz_string_set_cstr(
         s->lastSubstr, 
         s->cstr+from, 
-        to - from
+        (to - from)+1
     );
-    s->cstr[to] = realAtTo;    
 
     return s->lastSubstr;    
 }

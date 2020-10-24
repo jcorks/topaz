@@ -40,13 +40,13 @@ TSO_SCRIPT_API_FN(vector_api__y_get) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
 
-    return topaz_script_object_from_number(script, native->x);    
+    return topaz_script_object_from_number(script, native->y);    
 }
 TSO_SCRIPT_API_FN(vector_api__z_get) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
 
-    return topaz_script_object_from_number(script, native->x);    
+    return topaz_script_object_from_number(script, native->z);    
 }
 
 

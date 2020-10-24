@@ -47,19 +47,24 @@ DEALINGS IN THE SOFTWARE.
 static topazTable_t * dictionary = NULL;
 
 
-static void define(const char * name, const char * clr) {
+static void define(const char * nameSrc, const char * clr) {
     topazColor_t * c = calloc(1, sizeof(topazColor_t));
     *c = topaz_color_from_string(TOPAZ_STR_CAST(clr));
 
     // maintain case-insensitivity 
-
-
+    char * name = strdup(nameSrc);
+    uint32_t i;
+    uint32_t len = strlen(name);
+    for(i = 0; i < len; ++i) {
+        name[i] = tolower(name[i]);
+    }
 
     topaz_table_insert(
         dictionary,
         TOPAZ_STR_CAST(name),
         c
     );
+    free(name);
 }
 
 static void load_default_colors() {
@@ -256,7 +261,7 @@ topazColor_t topaz_color_from_string(const topazString_t * name) {
         topaz_string_set_char(
             str,
             i,
-            toupper(
+            tolower(
                 topaz_string_get_char(str, i)
             )
         );
@@ -275,19 +280,19 @@ topazColor_t topaz_color_from_string(const topazString_t * name) {
         uint8_t cl = 0;
         uint8_t val = 0;
         int i;
+        len = topaz_string_get_length(hex);
         for(i = 0; i < len; ++i) {
-            val = topaz_string_get_char(hex, i);
-            val = (val >= '0' && val <= '9' ? val - '0' : (val - 'A' + 10));
+            val = tolower(topaz_string_get_char(hex, i));
+            val = (val >= '0' && val <= '9' ? val - '0' : (val - 'a' + 10));
             cl += val*pow(16, i%2==0?1:0);
 
             switch(i) {
-              case 1: out.r = cl; break;
-              case 3: out.g = cl; break;
-              case 5: out.b = cl; break;
-              case 7: out.a = cl; break;
+              case 1: out.r = cl; cl = 0; break;
+              case 3: out.g = cl; cl = 0; break;
+              case 5: out.b = cl; cl = 0; break;
+              case 7: out.a = cl; cl = 0; break;
               default:;
             }
-            cl = 0;
         }
     } else {
         topazColor_t * c = topaz_table_find(dictionary, name);

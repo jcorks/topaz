@@ -90,6 +90,7 @@ topazScript_t * topaz_script_manager_create_context(
 #include "script_native__topaz.h"
 #include "script_native__component.h"
 #include "script_native__shape2d.h"
+#include "script_native__object2d.h"
 ////////////////////////
 //////////////////////// script_native__
 ////////////////////////
@@ -102,5 +103,6 @@ static void add_all_refs(topazScriptManager_t * s, topazScript_t * script, int p
     add_refs__topaz_api(script, s);
     add_refs__component_api(script, s);
     add_refs__shape2d_api(script, s);
+    add_refs__object2d_api(script, s);
 }
  

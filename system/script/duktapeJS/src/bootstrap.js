@@ -7,8 +7,10 @@ topaz = {
     iterate : topaz__iterate,
     step : topaz__step,
     draw : topaz__draw,
-    attachManager : topaz__attach_manager,        
-    attachManagerUnpausable : topaz__attach_manager_unpausable,        
+    attachPreManager : function(v){topaz__attach_pre_manager(v.impl);},        
+    attachPreManagerUnpausable : function(v){topaz__attach_pre_manager_unpausable(v.impl);},        
+    attachPostManager : function(v){topaz__attach_post_manager(v.impl);},        
+    attachPostManagerUnpausable : function(v){topaz__attach_post_manager_unpausable(v.impl);},        
     quit : topaz__quit,
     wait : topaz__wait,
     log : topaz__log,
@@ -247,6 +249,9 @@ topaz = {
     },
     componentNull : function() {return topaz_component__null();},
     component : function(defineProps, implPre) {
+        if (implPre)
+            topaz.log('REFERENCE CREATED:\n' + topaz.objectToString(this));
+
         this.uniqueID = topaz.uniqueObjectPool++;
         var ctx = this;
         var impl;
@@ -379,9 +384,249 @@ topaz = {
         if (defineProps) {
             ctx.define(defineProps);
         }
-        topaz.log('REFERENCE CREATED:\n' + topaz.objectToString(this));
 
     },
+    object2d : function(implPre) {
+        var ctx = this;
+        var impl;
+
+        if (implPre) 
+            impl = implPre;
+        else {
+            impl = topaz_object2d__create();
+        }
+        impl.__ctx = this;
+
+        
+        // initialize with component properties
+        const componentInit = topaz.component.bind(this);;
+        componentInit(undefined, impl);
+
+        this.addVelocity = function(a, b) {
+            topaz_object2d__add_velocity(impl, a, b);
+        }
+
+        this.addVelocityTowards = function(a, b, c) {
+            topaz_object2d__add_velocity_towards(impl, a, b, c);
+        }
+
+        this.setVelocity = function(a, b) {
+            topaz_object2d__set_velocity(impl, a, b);
+        }
+
+        this.setVelocityTowards = function(a, b, c) {
+            topaz_object2d__set_velocity_towards(impl, a, b, c);
+        }
+
+        
+        Object.defineProperty(
+            this,
+            'frictionX', {
+                get : function() { return topaz_object2d__get_friction_x(impl);},
+                set : function(v){ topaz_object2d__set_friction_x(impl, v);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'frictionY', {
+                get : function() { return topaz_object2d__get_friction_y(impl);},
+                set : function(v){ topaz_object2d__set_friction_y(impl, v);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'direction', {
+                get : function() { return topaz_object2d__get_direction(impl);},
+                set : function(v){
+                    topaz_object2d__set_velocity(
+                        impl,
+                        topaz_object2d__get_speed(impl),
+                        topaz_object2d__get_direction(impl)
+                    );
+                }
+            }
+        );
+
+
+        this.halt = function() {topaz_object2d__halt(impl);}
+        this.resetMotion = function() {topaz_object2d__reset_motion(imple);}
+
+        Object.defineProperty(
+            this,
+            'velocityX', {
+                get : function() { return topaz_object2d__get_velocity_x(impl);},
+                set : function(v){ topaz_object2d__set_velocity_x(impl, v);}
+            }
+        );
+
+        
+        Object.defineProperty(
+            this,
+            'velocityY', {
+                get : function() { return topaz_object2d__get_velocity_y(impl);},
+                set : function(v){ topaz_object2d__set_velocity_y(impl, v);}
+            }
+        );
+
+
+        Object.defineProperty(
+            this,
+            'speed', {
+                get : function() { return topaz_object2d__get_speed(impl);},
+                set : function(v){ topaz_object2d__set_speed(impl, v);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'nextPosition', {
+                get : function() { return topaz_object2d__get_next_position(impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'group', {
+                get : function() { return topaz_object2d__get_group(impl);},
+                set : function(v){ topaz_object2d__set_group(impl, v);}
+            }
+        );
+
+
+        this.setGroupInteraction = function(a, b, c) {
+            topaz_object2d__set_group_interaction(a, b, c);
+        }
+
+        var collider = [];
+        Object.defineProperty(
+            this,
+            'collider', {
+                get : function() { return collider; },
+                set : function(v){ collider=v; topaz_object2d__set_collider(impl, v);}
+            }
+        );
+        
+
+        this.setColliderRadial = function(a, b) {
+            topaz_object2d__set_collider_radial(impl, a, b);
+            collider = [];
+            const len = topaz_object2d__get_collider_len(impl);
+            for(var i = 0; i < len; ++i) {
+                const pt = topaz_object2d__get_collider_point(impl, i);
+                collider.push(pt.x);
+                collider.push(pt.y);
+            }
+        }
+
+        Object.defineProperty(
+            this,
+            'lastCollided', {
+                get : function() { return new topaz.entity(undefined, topaz_object2d__get_last_collided(impl));}
+            }
+        );
+
+        
+
+    },
+    shape2d : function(implPre) {
+        var ctx = this;
+        var impl;
+
+        if (implPre) 
+            impl = implPre;
+        else {
+            impl = topaz_shape2d__create();
+        }
+        impl.__ctx = this;
+
+        
+        // initialize with component properties
+        const componentInit = topaz.component.bind(this);;
+        componentInit(undefined, impl);
+        Object.defineProperty(
+            this,
+            'color', {
+                get : function() {return new topaz.color('', topaz_shape2d__get_color(impl));},
+                set : function(v){topaz_shape2d__set_color(impl, v.impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'animSpeed', {
+                get : function() {return topaz_shape2d__get_anim_speed(impl);},
+                set : function(v){topaz_shape2d__set_anim_speed(impl, v);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'center', {
+                get : function() {return new topaz.vector(0, 0, 0, topaz_shape2d__get_center(impl));},
+                set : function(v){topaz_shape2d__set_center(impl, v.impl);}
+            }
+        );
+
+
+        Object.defineProperty(
+            this,
+            'position', {
+                get : function() {return new topaz.vector(0, 0, 0, topaz_shape2d__get_position(impl));},
+                set : function(v){topaz_shape2d__set_position(impl, v.impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'rotation', {
+                get : function() {return new topaz.vector(0, 0, 0, topaz_shape2d__get_rotation(impl));},
+                set : function(v){topaz_shape2d__set_rotation(impl, v.impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'scale', {
+                get : function() {return new topaz.vector(0, 0, 0, topaz_shape2d__get_scale(impl));},
+                set : function(v){topaz_shape2d__set_scale(impl, v.impl);}
+            }
+        );
+
+
+        this.formRectangle = function(a, b) {
+            topaz_shape2d__form_rectangle(impl, a, b);
+        }
+
+        this.formRadial = function(a, b) {
+            topaz_shape2d__form_radial(impl, a, b);
+        }
+
+
+        var lines;
+        Object.defineProperty(
+            this,
+            'lines', {
+                get : function() {return lines;},
+                set : function(v){topaz_shape2d__form_lines(impl, v); lines = v;}
+            }
+        );
+
+
+        var tris;
+        Object.defineProperty(
+            this,
+            'triangles', {
+                get : function() {return tris;},
+                set : function(v){topaz_shape2d__form_triangles(impl, v); tris = v;}
+            }
+        );
+
+        
+
+    },
+
 
     color : function(name, implPre) {
         var impl;
@@ -516,88 +761,4 @@ Object.defineProperty(topaz, 'versionMajor', {get : function(){return topaz__get
 Object.defineProperty(topaz, 'versionMinor', {get : function(){return topaz__get_version_minor();}});
 
 
-
-
-
-
-var healthComponent = {
-    tag   : 'health',
-    props : {
-        health : 1000,
-        amt : 0
-    },
-    events : {
-        'onDeath' : function(props) {
-            topaz.log('Am dead!\n');
-
-        },
-
-
-        'onDamage' : function(props) {
-            topaz.log('Ow! ' + props.amt + '\n');
-        }
-    },
-    onReady : function(props) {
-        // add methods
-        props.component.damage = function(amt) {
-            props.amt = amt;
-            props.component.emitEvent('onDamage');   
-            props.health-=props.amt;
-            if (props.health <= 0) {
-                props.component.emitEvent('onDeath');
-            }
-        }
-    }
-}
-
-
-var enemyPrefab = {
-    name  : 'Test',
-    props : {
-        size : 100
-    },
-
-    onReady : function(props) {
-        var damager = new topaz.component(healthComponent);
-
-        
-        props.entity.addComponent(damager);
-
-        damager.installHook('onDamage', function() {
-            topaz.log(props.entity.name + ' says: Ow!\n');
-        });
-
-        damager.installHook('onDeath', function() {
-            topaz.log(props.entity.name + ' says: xwx\n');
-        });
-
-
-    },
-
-
-    onStep : function(props) {
-        topaz.log('i am stepping once per frame\n');
-    }
-}
-
-
-
-
-c0 = new topaz.entity(enemyPrefab);
-c0.queryComponent('health').damage(23);
-c0.queryComponent('health').damage(23);
-
-
-c0.queryComponent('health').damage(23);
-c0.queryComponent('health').damage(16);
-c0.queryComponent('health').damage(143);
-c0.queryComponent('health').damage(1111);
-
-
-
-
-
-
-
-topaz.root = c0;
 
