@@ -59,7 +59,7 @@ topazConsoleDisplay_t * topaz_console_display_create(topaz_t *, topazConsoleDisp
 
 /// Destroys and cleans up a console display instance.
 ///
-void topaz_console_display_destroy(topazTime_t *);
+void topaz_console_display_destroy(topazConsoleDisplay_t *);
 
 
 
@@ -70,7 +70,7 @@ topazBackend_t * topaz_console_display_get_backend(topazConsoleDisplay_t *);
 
 /// Returns the API for this console display.
 ///
-topazConsoleDisplayAPI_t topaz_time_get_api(topazConsoleDisplay_t *);
+const topazConsoleDisplayAPI_t * topaz_time_get_api(topazConsoleDisplay_t *);
 
 
 
@@ -99,9 +99,16 @@ uint32_t topaz_console_display_get_line_count(const topazConsoleDisplay_t *);
 const topazString_t * topaz_console_display_get_line(const topazConsoleDisplay_t *, uint32_t);
 
 
-/// Sets inp
+/// Sends input as if it came from the console. This is indistinguishable from 
+/// externally generated input.
+///
 void topaz_console_display_send_input(topazConsoleDisplay_t *, const topazString_t *);
 
+
+/// Updates the console. This can include behavior such as 
+/// polling for input from the user, redrawing visuals
+///
+void topaz_console_display_update(topazConsoleDisplay_t *);
 
 /// Callback called by the console display if the user sends 
 /// input to the console display. A full line of input is 
@@ -128,6 +135,9 @@ uint32_t topaz_console_display_add_input_callback(
 void topaz_console_display_remove_input_callback(
     topazConsoleDisplay_t *,
     uint32_t id;
-)
+);
+
+
+
 
 #endif
