@@ -29,45 +29,55 @@ DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef H_TOPAZDC__TIME_API__INCLUDED
-#define H_TOPAZDC__TIME_API__INCLUDED
+#ifndef H_TOPAZDC__CONSOLE_DISPLAY_API__INCLUDED
+#define H_TOPAZDC__CONSOLE_DISPLAY_API__INCLUDED
 
 #include <stdint.h>
 
 
-typedef struct topazTime_t topazTime_t;
+typedef struct topazConsoleDisplay_t topazConsoleDisplay_t;
 
 /*
 
-    TimeAPI
+    ConsoleDisplayAPI
     -----
     
-    The set of functions that define how the time abstraction should 
+    The set of functions that define how the console display abstraction should 
     behave.
 
     These API functions are called as underlying implementations for the symbols 
-    within <topaz/backends/time.h> and provide a way for custom, possibly 
+    within <topaz/backends/console_display.h> and provide a way for custom, possibly 
     system-dependent behavior to account for an environment in a robust way.
 
 */
-typedef struct topazTimeAPI_t topazTimeAPI_t;
+typedef struct topazConsoleDisplayAPI_t topazConsoleDisplayAPI_t;
+
+
 
 
 /// Each function is an implementation-facing copy of 
-/// the user-side API for topazTime_t. See <topaz/backends/Time.h>
+/// the user-side API for topazConsoleDisplay_t. See <topaz/backends/ConsoleDisplay.h>
 ///
-struct topazTimeAPI_t {
-    void                    (*time_create)           (topazTimeAPI_t *);
-    void                    (*time_destroy)          (topazTimeAPI_t *);
-
-    void                    (*time_sleep_ms)         (topazTimeAPI_t *, uint64_t);
-    uint64_t                (*time_ms_since_startup) (topazTimeAPI_t *);
-
-
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the lifetime of the Time
+struct topazConsoleDisplayAPI_t {
+    /// Creates a console display
     ///
-    void * implementationData;
+    void *                  (*console_display_create)           (topazConsoleDisplay_t *);
+
+    /// Destroys the console display
+    /// 
+    void                    (*console_display_destroy)          (topazConsoleDisplay_t *, void *);
+
+    /// Adds a new line to the console display.
+    ///
+    void                    (*console_display_add_line)         (topazConsoleDisplay_t *, void *, const topazString_t *);
+
+    /// Requests that the console display gets clear
+    ///
+    void                    (*console_display_clear)            (topazConsoleDisplay_t *, void *);
+
+    /// Checks to see if there is input waiting to be delivered 
+    ///
+    void                    (*console_display_update)           (topazConsoleDisplay_t *, void *);
 
 
 };
