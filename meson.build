@@ -18,6 +18,7 @@ src = [
     'src/assets_image.c',
     'src/backends_audio_manager.c',
     'src/backends_backend.c',
+    'src/backends_console_display.c',
     'src/backends_display.c',
     'src/backends_filesys.c',
     'src/backends_input_manager.c',
@@ -105,13 +106,14 @@ handlerInternalSource = ''
 handlerInternalInclude = ''
 
 # the preferred backends. Must exist within the system/ directory
-handlerPreferredAudioManager = 'audioManager/' + get_option('AudioManagerBackend')
-handlerPreferredInputManager = 'inputManager/' + get_option('InputManagerBackend')
-handlerPreferredRenderer     = 'renderer/'     + get_option('RendererBackend')
-handlerPreferredDisplay      = 'display/'      + get_option('DisplayBackend')
-handlerPreferredTime         = 'time/'         + get_option('TimeBackend')
-handlerPreferredFilesys      = 'filesys/'      + get_option('FilesystemBackend')
-handlerPreferredScript       = 'script/'       + get_option('ScriptBackend')
+handlerPreferredAudioManager   = 'audioManager/'   + get_option('AudioManagerBackend')
+handlerPreferredInputManager   = 'inputManager/'   + get_option('InputManagerBackend')
+handlerPreferredRenderer       = 'renderer/'       + get_option('RendererBackend')
+handlerPreferredDisplay        = 'display/'        + get_option('DisplayBackend')
+handlerPreferredTime           = 'time/'           + get_option('TimeBackend')
+handlerPreferredFilesys        = 'filesys/'        + get_option('FilesystemBackend')
+handlerPreferredScript         = 'script/'         + get_option('ScriptBackend')
+handlerPreferredConsoleDisplay = 'consoleDisplay/' + get_option('ConsoleDisplay')
 
 
 subdir('system')

@@ -12,6 +12,7 @@ static topazTable_t * filesystems = NULL;
 static topazTable_t * times = NULL;
 static topazTable_t * displays = NULL;
 static topazTable_t * scripts = NULL;
+static topazTable_t * consoleDisplays = NULL;
 
 // external
 void topaz_system_configure_base();
@@ -29,6 +30,7 @@ struct topazSystem_t {
     BackendHandler time;
     BackendHandler display;
     BackendHandler script;
+    BackendHandler consoleDisplay;
 };
 
 
@@ -40,6 +42,7 @@ static BackendHandler default_filesystem;
 static BackendHandler default_time;
 static BackendHandler default_display;
 static BackendHandler default_script;
+static BackendHandler default_consoleDisplay;
 
 BackendHandler * system_get_backend(topazSystem_t * s, const topazString_t * name) {
     if (topaz_string_test_eq(name, TOPAZ_STR_CAST("renderer"))) return &s->renderer;
@@ -49,6 +52,7 @@ BackendHandler * system_get_backend(topazSystem_t * s, const topazString_t * nam
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("time"))) return &s->time;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return &s->display;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return &s->script;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("consoleDisplay"))) return &s->consoleDisplay;
     return NULL;
 }
 
@@ -60,6 +64,7 @@ static topazTable_t * backend_type_to_table(const topazString_t * name) {
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("time"))) return times;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return displays;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return scripts;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("consoleDisplay"))) return consoleDisplays;
     return NULL;
 }
 
@@ -92,6 +97,7 @@ static BackendHandler * get_backend_default(const topazString_t * name) {
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("time"))) return &default_time;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return &default_display;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return &default_script;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("consoleDisplay"))) return &default_consoleDisplay;
     return NULL;
 }
 
@@ -103,13 +109,14 @@ void topaz_system_configure() {
         #endif
         return;
     }
-    renderers     = topaz_table_create_hash_topaz_string();
-    inputManagers = topaz_table_create_hash_topaz_string();
-    audioManagers = topaz_table_create_hash_topaz_string();
-    filesystems   = topaz_table_create_hash_topaz_string();
-    times         = topaz_table_create_hash_topaz_string();
-    displays      = topaz_table_create_hash_topaz_string();
-    scripts       = topaz_table_create_hash_topaz_string();
+    renderers       = topaz_table_create_hash_topaz_string();
+    inputManagers   = topaz_table_create_hash_topaz_string();
+    audioManagers   = topaz_table_create_hash_topaz_string();
+    filesystems     = topaz_table_create_hash_topaz_string();
+    times           = topaz_table_create_hash_topaz_string();
+    displays        = topaz_table_create_hash_topaz_string();
+    scripts         = topaz_table_create_hash_topaz_string();
+    consoleDisplays = topaz_table_create_hash_topaz_string();
 
     topaz_system_configure_base();
 }
@@ -157,13 +164,14 @@ int topaz_system_config_add_handler(
 
 topazSystem_t * topaz_system_create_default() {
     topazSystem_t * s = calloc(1, sizeof(topazSystem_t));
-    s->renderer     = default_renderer;
-    s->inputManager = default_inputManager;
-    s->audioManager = default_audioManager;
-    s->filesystem   = default_filesystem;
-    s->time         = default_time;
-    s->display      = default_display;
-    s->script       = default_script;
+    s->renderer       = default_renderer;
+    s->inputManager   = default_inputManager;
+    s->audioManager   = default_audioManager;
+    s->filesystem     = default_filesystem;
+    s->time           = default_time;
+    s->display        = default_display;
+    s->script         = default_script;
+    s->consoleDisplay = default_consoleDisplay;
     return s; 
 }
 

@@ -34,6 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/backends/api/console_display_api.h>
 #include <topaz/backends/backend.h>
+typedef struct topaz_t topaz_t;
 
 
 
@@ -54,7 +55,7 @@ typedef struct topazConsoleDisplay_t topazConsoleDisplay_t;
 
 /// Creates a new console display instance.
 ///
-topazConsoleDisplay_t * topaz_console_display_create(topaz_t *, topazConsoleDisplayAPI_t);
+topazConsoleDisplay_t * topaz_console_display_create(topaz_t *, topazBackend_t *, topazConsoleDisplayAPI_t);
 
 
 /// Destroys and cleans up a console display instance.
@@ -70,7 +71,7 @@ topazBackend_t * topaz_console_display_get_backend(topazConsoleDisplay_t *);
 
 /// Returns the API for this console display.
 ///
-const topazConsoleDisplayAPI_t * topaz_time_get_api(topazConsoleDisplay_t *);
+const topazConsoleDisplayAPI_t * topaz_console_display_get_api(topazConsoleDisplay_t *);
 
 
 
@@ -88,7 +89,7 @@ void topaz_console_display_clear(topazConsoleDisplay_t * t);
 /// to this call becomes this new line's index. This index can be used with 
 /// topaz_console_display_get_line().
 ///
-void topaz_console_display_add_line(topazConsoleDisplay_t * t, const topazString_t *);
+void topaz_console_display_add_line(topazConsoleDisplay_t * t, const topazString_t *, const topazColor_t *);
 
 /// Gets the count of lines that were added to the console display.
 ///

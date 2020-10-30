@@ -1,6 +1,8 @@
 #include <topaz/compat.h>
 #include <topaz/backends/console_display.h>
-
+#include <topaz/containers/array.h>
+#include <topaz/containers/string.h>
+#include <topaz/containers/bin.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -12,6 +14,7 @@
 struct topazConsoleDisplay_t {
     topazConsoleDisplayAPI_t api;
     topazBackend_t * backend;
+    topazBin_t * cbs;
     topazArray_t * lines;
     void * userData;
 };
@@ -25,7 +28,7 @@ typedef struct {
 
 
 
-topazConsoleDisplay_t * topaz_console_display_create(topazBackend_t * b, topazConsoleDisplayAPI_t api) {
+topazConsoleDisplay_t * topaz_console_display_create(topaz_t * topaz, topazBackend_t * b, topazConsoleDisplayAPI_t api) {
     #ifdef TOPAZDC_DEBUG
         assert(b && "topazBackend_t pointer cannot be NULL.");
         assert(api.console_display_create);
@@ -39,7 +42,7 @@ topazConsoleDisplay_t * topaz_console_display_create(topazBackend_t * b, topazCo
     out->backend = b;
     out->lines = topaz_array_create(sizeof(topazString_t*));
     out->cbs = topaz_bin_create();
-    out->userData = out->api.console_display_create(&out->api);
+    out->userData = out->api.console_display_create(out, topaz);
     return out;
 }
 
@@ -49,7 +52,7 @@ void topaz_console_display_destroy(topazConsoleDisplay_t * d) {
     #ifdef TOPAZDC_DEBUG
         assert(d && "topazConsoleDisplay_t pointer cannot be NULL.");
     #endif
-    d->api.console_display_destroy(d, out->userData);
+    d->api.console_display_destroy(d, d->userData);
     topaz_console_display_clear(d);
     topazArray_t * allCBs = topaz_bin_get_all(d->cbs);
     uint32_t i;
@@ -73,7 +76,7 @@ topazBackend_t * topaz_console_display_get_backend(topazConsoleDisplay_t * d) {
 }
 
 
-const topazConsoleDisplayAPI_t * topaz_time_get_api(topazConsoleDisplay_t * d) {
+const topazConsoleDisplayAPI_t * topaz_console_display_get_api(topazConsoleDisplay_t * d) {
     #ifdef TOPAZDC_DEBUG
         assert(d && "topazConsoleDisplay_t pointer cannot be NULL.");
     #endif
@@ -91,19 +94,19 @@ void topaz_console_display_clear(topazConsoleDisplay_t * d) {
         assert(d && "topazConsoleDisplay_t pointer cannot be NULL.");
     #endif
     uint32_t i;
-    uint32_t len = topaz_array_get_size(t->lines);
+    uint32_t len = topaz_array_get_size(d->lines);
     for(i = 0; i < len; ++i) {
-        topaz_string_destroy(topaz_array_at(t->lines, topazString_t *, i));
+        topaz_string_destroy(topaz_array_at(d->lines, topazString_t *, i));
     }
-    topaz_array_set_size(t->lines, 0);
+    topaz_array_set_size(d->lines, 0);
     d->api.console_display_clear(d, d->userData);
 }
 
-void topaz_console_display_add_line(topazConsoleDisplay_t * d, const topazString_t * line) {
+void topaz_console_display_add_line(topazConsoleDisplay_t * d, const topazString_t * line, const topazColor_t * c) {
     #ifdef TOPAZDC_DEBUG
         assert(d && "topazConsoleDisplay_t pointer cannot be NULL.");
     #endif
-    d->api.console_display_add_line(d, d->userData);
+    d->api.console_display_add_line(d, d->userData, line, c);
     topazString_t * str = topaz_string_clone(line);
     topaz_array_push(d->lines, str);
 }
@@ -128,13 +131,13 @@ void topaz_console_display_send_input(topazConsoleDisplay_t * d, const topazStri
     #ifdef TOPAZDC_DEBUG
         assert(d && "topazConsoleDisplay_t pointer cannot be NULL.");
     #endif
-    topazArray_t allCBs = topaz_bin_get_all(d->cbs);
+    topazArray_t * allCBs = topaz_bin_get_all(d->cbs);
     uint32_t i;
     uint32_t len = topaz_array_get_size(allCBs);
     ConsoleDisplayInputCallback cb;
     for(i = 0; i < len; ++i) {
         cb = *topaz_array_at(allCBs, ConsoleDisplayInputCallback *, i);
-        cb.cb(d, str, cb.userData);
+        cb.cb(d, str, cb.data);
     }
     topaz_array_destroy(allCBs);
 }
@@ -159,10 +162,10 @@ uint32_t topaz_console_display_add_input_callback(
         assert(cb && "Callback must not be NULL.");
     #endif
 
-    ConsoleDisplayInputCallback * cb = calloc(1, sizeof(ConsoleDisplayInputCallback));
-    cb->cb = cb;
-    cb->data = data;
-    return topaz_bin_insert(d->cbs, cb);
+    ConsoleDisplayInputCallback * cbp = calloc(1, sizeof(ConsoleDisplayInputCallback));
+    cbp->cb = cb;
+    cbp->data = data;
+    return topaz_bin_add(d->cbs, cbp);
 }
 
 

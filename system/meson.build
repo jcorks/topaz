@@ -23,6 +23,7 @@ subdir(handlerPreferredInputManager)
 subdir(handlerPreferredRenderer)
 subdir(handlerPreferredTime)
 subdir(handlerPreferredScript)
+subdir(handlerPreferredConsoleDisplay)
 
 # actually process results
 foreach handler : handlers 

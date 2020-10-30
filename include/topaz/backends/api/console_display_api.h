@@ -32,8 +32,9 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__CONSOLE_DISPLAY_API__INCLUDED
 #define H_TOPAZDC__CONSOLE_DISPLAY_API__INCLUDED
 
-#include <stdint.h>
-
+typedef struct topazColor_t topazColor_t;
+typedef struct topazString_t topazString_t;
+typedef struct topaz_t topaz_t;
 
 typedef struct topazConsoleDisplay_t topazConsoleDisplay_t;
 
@@ -61,15 +62,15 @@ typedef struct topazConsoleDisplayAPI_t topazConsoleDisplayAPI_t;
 struct topazConsoleDisplayAPI_t {
     /// Creates a console display
     ///
-    void *                  (*console_display_create)           (topazConsoleDisplay_t *);
+    void *                  (*console_display_create)           (topazConsoleDisplay_t *, topaz_t *);
 
     /// Destroys the console display
     /// 
     void                    (*console_display_destroy)          (topazConsoleDisplay_t *, void *);
 
-    /// Adds a new line to the console display.
+    /// Adds a new line to the console display in the requested color.
     ///
-    void                    (*console_display_add_line)         (topazConsoleDisplay_t *, void *, const topazString_t *);
+    void                    (*console_display_add_line)         (topazConsoleDisplay_t *, void *, const topazString_t *, const topazColor_t * reqColor);
 
     /// Requests that the console display gets clear
     ///

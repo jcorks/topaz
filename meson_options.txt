@@ -19,7 +19,7 @@ option(
     type : 'combo',
 
 
-    value   : 'ogles2',
+    value   : 'srgs',
     choices : [
         'ogles2',
         'noRenderer',
@@ -33,7 +33,7 @@ option(
     type : 'combo',
 
 
-    value : 'ogles2',
+    value : 'ncurses',
     choices : [
         'noDisplay',
         'ncurses',
@@ -69,7 +69,7 @@ option(
     'FilesystemBackend',
     type : 'combo',
 
-    value : 'posix',
+    value : 'noFilesys',
     choices : [
         'noFilesys',
         'posix'
@@ -98,4 +98,15 @@ option(
         'duktapeJS'
     ]
 )
+
+option(
+    'ConsoleDisplay',
+    type : 'combo',
+
+    value : 'noConsoleDisplay',
+    choices : [
+        'noConsoleDisplay',
+    ]
+)
+
 
