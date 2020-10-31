@@ -83,7 +83,7 @@ typedef enum {
 /// See topaz_context_get_console()
 /// Note that all the topazConsole_t instances use the same console display.
 ///
-topazConsole_t * topaz_console_create(topaz_t *, topazConsoleDisplay_t *);
+topazConsole_t * topaz_console_create(topaz_t *);
 
 /// Destroys and frees a topaz console instance.
 ///

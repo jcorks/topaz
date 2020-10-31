@@ -41,6 +41,7 @@ typedef struct topazFilesys_t topazFilesys_t;
 typedef struct topazInput_t topazInput_t;
 typedef struct topazViewManager_t topazViewManager_t;
 typedef struct topazResources_t topazResources_t;
+typedef struct topazConsole_t topazConsole_t;
 typedef struct topazArray_t topazArray_t;
 typedef struct topazString_t topazString_t;
 
@@ -233,6 +234,10 @@ topazScriptManager_t * topaz_context_get_script_manager(topaz_t *);
 /// Retrieves the standard resources instance.
 ///
 topazResources_t * topaz_context_get_resources(topaz_t *);
+
+/// Gets the console for the topaz instance
+///
+topazConsole_t * topaz_context_get_console(topaz_t *);
 
 /// 
 topazGraphics_t * topaz_context_get_graphics(topaz_t *);

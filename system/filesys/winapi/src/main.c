@@ -41,7 +41,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/compat.h>
 #include <string.h>
 #include <windows.h>
-
+#include <direct.h> // _getcwd
 #include <stdio.h>
 #include "backend.h"
 
@@ -103,9 +103,8 @@ static void topaz_filesys_winapi_populate_objects(WINAPIFilesysData * fs) {
     topazString_t * str;
     topazString_t * pathFull = topaz_string_create();
     int isFile;
-    struct stat pathStat;
 
-    do {}
+    do {
         if (!strcmp(ls.cFileName, ".") ||
             !strcmp(ls.cFileName, "..")) continue;
 
@@ -115,16 +114,15 @@ static void topaz_filesys_winapi_populate_objects(WINAPIFilesysData * fs) {
         topaz_string_concat(pathFull, fs->currentPath);
         topaz_string_concat(pathFull, str);
 
-        if (stat(topaz_string_get_c_str(pathFull), &pathStat) != -1) {
-	        if (ls.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  // directory detected
-		        isFile = FALSE;    
-	        else
-		        isFile = TRUE;
+        if (ls.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  // directory detected
+            isFile = FALSE;    
+        else
+            isFile = TRUE;
 
-            topaz_array_push(fs->dirObjects, str);
-            topaz_array_push(fs->dirIsFile, isFile);
-        }
-    } while (FindNextFile(dObj, &ls)) {
+        topaz_array_push(fs->dirObjects, str);
+        topaz_array_push(fs->dirIsFile, isFile);
+
+    } while (FindNextFile(dObj, &ls));
 
     FindClose(dObj);
     topaz_string_destroy(pathFull);    
@@ -136,10 +134,10 @@ static void topaz_filesys_winapi_populate_objects(WINAPIFilesysData * fs) {
 
 static int topaz_filesys_winapi__set_path(topazFilesysAPI_t * t, const topazString_t * str) {
     WINAPIFilesysData * fs = t->implementationData;
-
-    int pathMax = pathconf(topaz_string_get_c_str(fs->currentPath), _PC_PATH_MAX);
+    
+    int pathMax = MAX_PATH;
     char pathTemp[pathMax+1];
-  	if (!realpath(topaz_string_get_c_str(str), pathTemp)) 
+  	if (!GetFullPathNameA(topaz_string_get_c_str(str), MAX_PATH, pathTemp, NULL)) 
         return FALSE;
 
 
@@ -167,7 +165,7 @@ static int topaz_filesys_winapi__go_to_parent(topazFilesysAPI_t * api) {
 	int index = topaz_string_get_length(fs->currentPath) - 1;
     
     // TODO: this is a bug carried over from the previous implementation. Should be fixed.
-	while (iter[index] != '/') index--;
+	while (iter[index] != '\\') index--;
     
     const topazString_t * part = topaz_string_get_substr(fs->currentPath, 0, index);
 	int ret = chdir(topaz_string_get_c_str(part));
@@ -185,7 +183,7 @@ static int topaz_filesys_winapi__create_node(topazFilesysAPI_t * api, const topa
     topazString_t * newPath = topaz_string_clone(fs->currentPath);
     topaz_string_concat_printf(newPath, "%c", '/');
     topaz_string_concat(newPath, dir);
-	int result = mkdir(topaz_string_get_c_str(newPath), 0777);    
+	int result = CreateDirectoryA(topaz_string_get_c_str(newPath), NULL);    
     topaz_string_destroy(newPath);
     return result;
 }
@@ -286,11 +284,7 @@ static int topaz_filesys_winapi__is_child(topazFilesysAPI_t * api, const topazSt
 }
 const topazArray_t * topaz_filesys_winapi__split_path(topazFilesysAPI_t * api, const topazString_t * path) {
     char separator;
-    #if __WIN32__ || _WINDOWS_
-        separator = '\\';
-    #else 
-        separator = '/';
-    #endif
+    separator = '\\';
 
     static topazArray_t * arr = 0;
     if (!arr) arr = topaz_array_create(sizeof(topazString_t *));    
@@ -344,7 +338,7 @@ void topaz_system_filesys_winapi__backend(
         TOPAZ_STR_CAST("Johnathan Corkery, 2019"),
 
         // desc 
-        TOPAZ_STR_CAST("Basic filesystem backend for POSIX-compliant systems."),
+        TOPAZ_STR_CAST("Basic filesystem backend for windows systems."),
 
 
 

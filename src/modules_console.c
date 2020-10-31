@@ -94,9 +94,22 @@ TOPAZCCOMMAND(command__quit) {
 
 
 
-topazConsole_t * topaz_console_create(topaz_t * t, topazConsoleDisplay_t * display) {
+topazConsole_t * topaz_console_create(topaz_t * t) {
     topazConsole_t * out = calloc(1, sizeof(topazConsole_t));
-    out->display = display;
+    {
+        topazConsoleDisplayAPI_t api;
+        topazSystem_Backend_t * b = topaz_system_create_backend(
+            topaz_context_get_system(t),
+            TOPAZ_STR_CAST("consoleDisplay"),
+            &api
+        );
+
+        out->display = topaz_console_display_create(
+            t,
+            b,
+            api
+        );
+    }
     out->dbg = topaz_console_command_context_create(out);
     out->cmd = topaz_console_command_context_create(out);
     out->contextStack = topaz_array_create(sizeof(topazConsole_CommandContext_t*));

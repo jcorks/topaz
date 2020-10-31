@@ -37,6 +37,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/modules/input.h>
 #include <topaz/modules/view_manager.h>
 #include <topaz/modules/resources.h>
+#include <topaz/modules/console.h>
 #include <topaz/containers/table.h>
 #include <topaz/system.h>
 #include <topaz/entity.h>
@@ -70,6 +71,7 @@ struct topaz_t {
     topazResources_t * resources;
     topazGraphics_t * graphics;
     topazScriptManager_t * script;
+    topazConsole_t * console;
 
     topazTime_t * timeRef;
     uint64_t frameEnd;
@@ -131,6 +133,11 @@ topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
     out->resources = topaz_resources_create(out);
     out->script = topaz_script_manager_create(out);
     out->graphics = topaz_graphics_create(out);
+    out->console = topaz_console_create(out);
+
+    // creating
+
+
 
     // initialize all modules throught the attach signals
     uint32_t i;
@@ -482,4 +489,6 @@ topazScriptManager_t  * topaz_context_get_script_manager(topaz_t * t) {
 
 }
 
-
+topazConsole_t * topaz_context_get_console(topaz_t * t) {
+    return t->console;
+}

@@ -69,10 +69,11 @@ option(
     'FilesystemBackend',
     type : 'combo',
 
-    value : 'noFilesys',
+    value : 'winapi',
     choices : [
         'noFilesys',
-        'posix'
+        'posix',
+        'winapi'
     ]
 )
 

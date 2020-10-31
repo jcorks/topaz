@@ -1,7 +1,7 @@
 # Required changes to build to incorporate into file executable
 handlers += {
-    'name' : 'posix',
+    'name' : 'winapi',
     'type' : 'filesys',
-    'sources' : ['system/filesys/posix/src/filesys_posix_topaz.c'],
+    'sources' : ['system/filesys/winapi/src/main.c'],
     'shouldTest' : true
 }
