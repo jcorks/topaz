@@ -726,8 +726,13 @@ void srgstopaz_attach_target(topazRendererAPI_t * api, void * fbSrc) {
 
 
 
-topazBackend_t * topaz_system_renderer_srgs__backend() {
-    return topaz_backend_create(
+void topaz_system_renderer_srgs__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazRendererAPI_t * api
+) {
+    topaz_system_backend_bind(
+        backend,
         // name
         TOPAZ_STR_CAST("SRGS Software Renderer"),
 
@@ -742,12 +747,6 @@ topazBackend_t * topaz_system_renderer_srgs__backend() {
 
 
 
-
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
 
         // on step 
         NULL,
@@ -772,14 +771,7 @@ topazBackend_t * topaz_system_renderer_srgs__backend() {
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-}
 
-
-
-
-
-void topaz_system_renderer_srgs__api(topazRendererAPI_t * api) {
-    
     api->texture.renderer_texture_create = srgstopaz_texture_create;
     api->texture.renderer_texture_destroy = srgstopaz_texture_destroy;
     api->texture.renderer_texture_update = srgstopaz_texture_update;
@@ -831,6 +823,7 @@ void topaz_system_renderer_srgs__api(topazRendererAPI_t * api) {
   
 
 }
+
 
 
 

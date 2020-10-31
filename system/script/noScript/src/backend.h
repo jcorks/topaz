@@ -33,7 +33,12 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__SCRIPT_NOSCRIPT__INCLUDED
 #define H_TOPAZDC__SCRIPT_NOSCRIPT__INCLUDED
 
-topazBackend_t * topaz_system_script_noScript__backend();
-void             topaz_system_script_noScript__api(topazScriptAPI_t *);
+void topaz_system_script_noScript__backend(
+    topazSystem_t *         system, 
+    topazSystem_Backend_t * backend, 
+    topazScriptAPI_t *      api
+);
+
+
 
 #endif

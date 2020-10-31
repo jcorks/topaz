@@ -34,7 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-#include <topaz/backends/backend.h>
+#include <topaz/system.h>
 #include <topaz/matrix.h>
 #include <topaz/containers/array.h>
 
@@ -842,7 +842,7 @@ struct topazRenderer_3D_t {
 /// a whole even though they are separate objects.
 ///
 topazRenderer_t * topaz_renderer_create(
-    topazBackend_t *, 
+    topazSystem_Backend_t *, 
     topazRendererAPI_t 
 );
 
@@ -857,7 +857,7 @@ void topaz_renderer_destroy(topazRenderer_t *);
 
 /// Retrieves the backend for this time object.
 ///
-topazBackend_t * topaz_renderer_get_backend(topazRenderer_t *);
+topazSystem_Backend_t * topaz_renderer_get_backend(topazRenderer_t *);
 
 
 /// Returns the API for this time.

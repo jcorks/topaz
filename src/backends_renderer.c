@@ -15,7 +15,7 @@
 
 struct topazRenderer_t {
     topazRendererAPI_t api;
-    topazBackend_t * backend;
+    topazSystem_Backend_t * backend;
 
 
     topazRenderer_Buffer_t * mv;
@@ -396,7 +396,7 @@ void topaz_renderer_2d_set_object_transform(
 
 void topaz_renderer_destroy(topazRenderer_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     topazArray_t * w;
@@ -472,9 +472,9 @@ void topaz_renderer_destroy(topazRenderer_t * t) {
 
 
 
-topazBackend_t * topaz_renderer_get_backend(topazRenderer_t * t) {
+topazSystem_Backend_t * topaz_renderer_get_backend(topazRenderer_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     return t->backend;
@@ -482,7 +482,7 @@ topazBackend_t * topaz_renderer_get_backend(topazRenderer_t * t) {
 
 topazRendererAPI_t topaz_renderer_get_api(topazRenderer_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     return t->api;
@@ -504,11 +504,11 @@ topazRendererAPI_t topaz_renderer_get_api(topazRenderer_t * t) {
 
 
 topazRenderer_t * topaz_renderer_create(
-    topazBackend_t * b, 
+    topazSystem_Backend_t * b, 
     topazRendererAPI_t api
 ) {
     #ifdef TOPAZDC_DEBUG
-        assert(b && "topazBackend_t pointer cannot be NULL.");
+        assert(b && "topazSystem_Backend_t pointer cannot be NULL.");
 
         assert(api.texture.renderer_texture_create);
         assert(api.texture.renderer_texture_destroy);

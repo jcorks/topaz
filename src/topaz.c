@@ -52,7 +52,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 struct topaz_t {
-    const topazSystem_t * system;
+    topazSystem_t * system;
     
     topazTable_t * params;
     topazEntity_t * universe;
@@ -89,7 +89,7 @@ topaz_t * topaz_context_create() {
 
     return topaz_context_create_from_system( topaz_system_create_default());
 }
-topaz_t * topaz_context_create_from_system(const topazSystem_t * a) {
+topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
     if (!configured)
         topaz_system_configure();
 
@@ -102,7 +102,7 @@ topaz_t * topaz_context_create_from_system(const topazSystem_t * a) {
 
     {
         topazTimeAPI_t api;
-        topazBackend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("time"), &api);
+        topazSystem_Backend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("time"), &api);
         out->timeRef = topaz_time_create(ref, api);
     }
 
@@ -235,6 +235,7 @@ void topaz_context_step(topaz_t * t) {
     /////// step 
     // Order:
     /*
+        - pre backends
         - pre managers step() 
         - non-pausable pre managers step
         - modules prestep fn
@@ -242,12 +243,14 @@ void topaz_context_step(topaz_t * t) {
         - modules step fn
         - post managers step() 
         - non-pausable post managers step
+        - post backends step
     
     */
     topazEntity_t * e;
     uint32_t i;
     uint32_t len;
     
+    topaz_system_pre_step(t->system);
     
     if (!t->paused) {
         topaz_entity_step(t->managersPre);
@@ -280,15 +283,8 @@ void topaz_context_step(topaz_t * t) {
         topaz_entity_step(t->managersPost);
     }    
     topaz_entity_step(t->managersPostNP);
-    
-    
 
-
-
-
-
-
-
+    topaz_system_post_step(t->system);
 
 }
 
@@ -299,19 +295,23 @@ void topaz_context_draw(topaz_t * t) {
     /////// render 
     // Order:
     /*
+        - backends pre draw
         - modules predraw fn
         - entity draw()
         - modules draw fn
         - managers draw()
         - np Managers draw()
+        - backends post draw        
         - commit if applicable (needed?)
-        
     
     
     */
     topazEntity_t * e;
     uint32_t i;
     uint32_t len;
+
+    topaz_system_pre_draw(t->system);
+
 
     if (!t->paused) {
         topaz_entity_draw(t->managersPre);
@@ -345,6 +345,8 @@ void topaz_context_draw(topaz_t * t) {
         topaz_entity_draw(t->managersPost);
     }    
     topaz_entity_draw(t->managersPostNP);
+    topaz_system_post_draw(t->system);
+
     topaz_graphics_sync(t->graphics);
 }
 
@@ -450,7 +452,7 @@ uint64_t topaz_context_get_time(topaz_t * t) {
 
 topazFilesys_t * topaz_context_filesys_create(const topaz_t * t) {
     topazFilesysAPI_t api;
-    topazBackend_t * backend = topaz_system_create_backend(
+    topazSystem_Backend_t * backend = topaz_system_create_backend(
         t->system,
         TOPAZ_STR_CAST("filesys"),
         &api

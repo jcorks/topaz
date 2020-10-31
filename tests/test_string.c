@@ -20,7 +20,7 @@ int test__string_simple() {
         // Why: the get_substr operation failed or produced unexpected results
         return 3;
 
-    topaz_string_set(str, topaz_string_get_substr(str, 0, 6));
+    topaz_string_set(str, topaz_string_get_substr(str, 0, 5));
 
 
 

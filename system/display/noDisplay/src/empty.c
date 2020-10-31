@@ -33,15 +33,22 @@ DEALINGS IN THE SOFTWARE.
 
 #include "backend.h"
 #include <topaz/version.h>
+#include <topaz/system.h>
 
 
 
 
 
 
+static intptr_t api_nothing(){return 0;}
 
-topazBackend_t * topaz_system_display_noDisplay__backend() {
-    return topaz_backend_create(
+void topaz_system_display_noDisplay__backend(
+    topazSystem_t *         system, 
+    topazSystem_Backend_t * backend, 
+    topazDisplayAPI_t *     api
+) {
+    topaz_system_backend_bind(
+        backend,
         // name
         TOPAZ_STR_CAST("NoDisplay"),
 
@@ -56,12 +63,6 @@ topazBackend_t * topaz_system_display_noDisplay__backend() {
 
 
 
-
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
 
         // on step 
         NULL,
@@ -86,11 +87,7 @@ topazBackend_t * topaz_system_display_noDisplay__backend() {
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-}
 
-
-static intptr_t api_nothing(){return 0;}
-void topaz_system_display_noDisplay__api(topazDisplayAPI_t * api) {
     api->display_create = (void (*)(topazDisplayAPI_t *)) api_nothing;
     api->display_destroy = (void (*)(void *)) api_nothing;
     api->display_resize = (void (*)(void *, int, int)) api_nothing;
@@ -119,6 +116,8 @@ void topaz_system_display_noDisplay__api(topazDisplayAPI_t * api) {
     api->display_set_current_clipboard = (void (*)(void *, const topazArray_t *)) api_nothing;
 
 }
+
+
 
 
 

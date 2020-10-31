@@ -34,8 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/input_device.h>
 #include <topaz/backends/api/input_manager_api.h>
-#include <topaz/backends/backend.h>
-
+#include <topaz/system.h>
 
 /// Forward declare.
 ///
@@ -282,7 +281,7 @@ enum {
 
 /// Creates a new audio manager object. 
 ///
-topazInputManager_t * topaz_input_manager_create(topazBackend_t *, topazInputManagerAPI_t);
+topazInputManager_t * topaz_input_manager_create(topazSystem_Backend_t *, topazInputManagerAPI_t);
 
 
 /// Destroys and cleans up an audio manager object
@@ -295,7 +294,7 @@ void topaz_input_manager_destroy(topazInputManager_t *);
 
 /// Retrieves the backend for this audio manager object.
 ///
-topazBackend_t * topaz_input_manager_get_backend(topazInputManager_t *);
+topazSystem_Backend_t * topaz_input_manager_get_backend(topazInputManager_t *);
 
 
 /// Returns the API for this audio manager.

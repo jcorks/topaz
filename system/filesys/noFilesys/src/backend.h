@@ -33,7 +33,10 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__FILESYS_NOFILESYS__INCLUDED
 #define H_TOPAZDC__FILESYS_NOFILESYS__INCLUDED
 
-topazBackend_t * topaz_system_filesys_noFilesys__backend();
-void             topaz_system_filesys_noFilesys__api(topazFilesysAPI_t *);
+void topaz_system_filesys_noFilesys__backend(
+    topazSystem_t *         system, 
+    topazSystem_Backend_t * backend, 
+    topazFilesysAPI_t *     api
+);
 
 #endif

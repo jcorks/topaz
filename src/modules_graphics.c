@@ -25,7 +25,7 @@ topazGraphics_t * topaz_graphics_create(topaz_t * ctx) {
     out->ctx = ctx;
 
     topazRendererAPI_t api;
-    topazBackend_t * ref = topaz_system_create_backend(
+    topazSystem_Backend_t * ref = topaz_system_create_backend(
         topaz_context_get_system(ctx), 
         TOPAZ_STR_CAST("renderer"), 
         &api

@@ -53,7 +53,7 @@ topazScript_t * topaz_script_manager_create_context(
     topazScriptManager_Permission_t permissions
 ) {
     topazScriptAPI_t api = {};
-    topazBackend_t * backend = topaz_system_create_backend(
+    topazSystem_Backend_t * backend = topaz_system_create_backend(
         topaz_context_get_system(s->ctx), 
         TOPAZ_STR_CAST("script"), 
         &api

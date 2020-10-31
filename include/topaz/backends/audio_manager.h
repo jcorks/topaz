@@ -33,7 +33,7 @@ DEALINGS IN THE SOFTWARE.
 #define H_TOPAZDC__AUDIO_MANAGER__INCLUDED
 
 #include <topaz/backends/api/audio_manager_api.h>
-#include <topaz/backends/backend.h>
+#include <topaz/system.h>
 
 
 
@@ -53,7 +53,7 @@ typedef struct topazAudioManager_t topazAudioManager_t;
 
 /// Creates a new audio manager object. 
 ///
-topazAudioManager_t * topaz_audio_manager_create(topazBackend_t *, topazAudioManagerAPI_t);
+topazAudioManager_t * topaz_audio_manager_create(topazSystem_Backend_t *, topazAudioManagerAPI_t);
 
 
 /// Destroys and cleans up an audio manager object
@@ -66,7 +66,7 @@ void topaz_audio_manager_destroy(topazAudioManager_t *);
 
 /// Retrieves the backend for this audio manager object.
 ///
-topazBackend_t * topaz_audio_manager_get_backend(topazAudioManager_t *);
+topazSystem_Backend_t * topaz_audio_manager_get_backend(topazAudioManager_t *);
 
 
 /// Returns the API for this audio manager.

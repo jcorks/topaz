@@ -32,7 +32,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 #include "backend.h"
-#include <topaz/backends/backend.h>
+#include <topaz/system.h>
 #include <topaz/version.h>
 #include <topaz/containers/array.h>
 #include <stdio.h>
@@ -45,54 +45,6 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-
-topazBackend_t * topaz_system_script_duktapeJS__backend() {
-    return topaz_backend_create(
-        // name
-        TOPAZ_STR_CAST("DuktapeJS"),
-
-        // version 
-        TOPAZ_STR_CAST("1.0"),
-
-        // author
-        TOPAZ_STR_CAST("https://duktape.org/"),
-
-        // desc 
-        TOPAZ_STR_CAST("Bindings to use duktape!"),
-
-
-
-
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
-
-        // on step 
-        NULL,
-        
-        // on step late 
-        NULL,
-        
-        // on draw 
-        NULL,
-
-        // on draw late
-        NULL,
-
-
-
-        // backend callback user data
-        NULL,
-
-
-        // API version 
-        TOPAZ__VERSION__MAJOR,
-        TOPAZ__VERSION__MINOR,
-        TOPAZ__VERSION__MICRO
-    );
-}
 
 typedef struct {
     duk_context * js;
@@ -1069,9 +1021,52 @@ void topaz_duk_object_reference_extendable_add_property(
 
 
 
+void topaz_system_script_duktapeJS__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazScriptAPI_t      *  api
+) {
+    topaz_system_backend_bind(
+        backend,
+        // name
+        TOPAZ_STR_CAST("DuktapeJS"),
+
+        // version 
+        TOPAZ_STR_CAST("1.0"),
+
+        // author
+        TOPAZ_STR_CAST("https://duktape.org/"),
+
+        // desc 
+        TOPAZ_STR_CAST("Bindings to use duktape!"),
 
 
-void topaz_system_script_duktapeJS__api(topazScriptAPI_t * api) {
+
+        // on step 
+        NULL,
+        
+        // on step late 
+        NULL,
+        
+        // on draw 
+        NULL,
+
+        // on draw late
+        NULL,
+
+
+
+        // backend callback user data
+        NULL,
+
+
+        // API version 
+        TOPAZ__VERSION__MAJOR,
+        TOPAZ__VERSION__MINOR,
+        TOPAZ__VERSION__MICRO
+    );
+
+
     api->objectAPI.object_reference_create = topaz_duk_object_reference_create;
     api->objectAPI.object_reference_create_from_reference = topaz_duk_object_reference_create_from_reference;
     api->objectAPI.object_reference_destroy = topaz_duk_object_reference_destroy;
@@ -1095,7 +1090,6 @@ void topaz_system_script_duktapeJS__api(topazScriptAPI_t * api) {
     api->script_create_empty_object = topaz_duk_create_empty_object;
     api->script_throw_error = topaz_duk_throw_error;
     api->script_bootstrap = topaz_duk_bootstrap;
-
 }
 
 

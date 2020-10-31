@@ -43,55 +43,6 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-topazBackend_t * topaz_system_inputManager_ncurses__backend() {
-    return topaz_backend_create(
-        // name
-        TOPAZ_STR_CAST("ncurses"),
-
-        // version 
-        TOPAZ_STR_CAST("1.0"),
-
-        // author
-        TOPAZ_STR_CAST("Johnathan Corkery, 2020"),
-
-        // desc 
-        TOPAZ_STR_CAST("Input manager for NCURSES displays"),
-
-
-
-
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
-
-        // on step 
-        NULL,
-        
-        // on step late 
-        NULL,
-        
-        // on draw 
-        NULL,
-
-        // on draw late
-        NULL,
-
-
-
-        // backend callback user data
-        NULL,
-
-
-        // API version 
-        TOPAZ__VERSION__MAJOR,
-        TOPAZ__VERSION__MINOR,
-        TOPAZ__VERSION__MICRO
-    );
-}
-
-
 
 typedef struct {
     topazInputDevice_t * keyboard;
@@ -255,8 +206,54 @@ static void ncurses_input_manager_show_virtual_keyboard(topazInputManagerAPI_t *
 
 
 
+void topaz_system_inputManager_ncurses__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazInputManagerAPI_t * api
+) {
+    topaz_system_backend_bind(
+        backend,
+        // name
+        TOPAZ_STR_CAST("ncurses"),
 
-void topaz_system_inputManager_ncurses__api(topazInputManagerAPI_t * api) {
+        // version 
+        TOPAZ_STR_CAST("1.0"),
+
+        // author
+        TOPAZ_STR_CAST("Johnathan Corkery, 2020"),
+
+        // desc 
+        TOPAZ_STR_CAST("Input manager for NCURSES displays"),
+
+
+
+
+
+        // on step 
+        NULL,
+        
+        // on step late 
+        NULL,
+        
+        // on draw 
+        NULL,
+
+        // on draw late
+        NULL,
+
+
+
+        // backend callback user data
+        NULL,
+
+
+        // API version 
+        TOPAZ__VERSION__MAJOR,
+        TOPAZ__VERSION__MINOR,
+        TOPAZ__VERSION__MICRO
+    );
+
+
     api->input_manager_create = ncurses_input_manager_create;
     api->input_manager_destroy = ncurses_input_manager_destroy;
     api->input_manager_handle_events = ncurses_input_manager_handle_events;

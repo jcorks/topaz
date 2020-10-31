@@ -33,7 +33,11 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__TIME_NOTIME__INCLUDED
 #define H_TOPAZDC__TIME_NOTIME__INCLUDED
 
-topazBackend_t * topaz_system_time_noTime__backend();
-void             topaz_system_time_noTime__api(topazTimeAPI_t *);
+void topaz_system_time_noTime__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazTimeAPI_t * api
+);
+
 
 #endif

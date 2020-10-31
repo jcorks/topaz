@@ -64,7 +64,7 @@ topaz_t * topaz_context_create();
 
 /// Creates a new topaz context with the given topazSystem_t configuration.
 ///
-topaz_t * topaz_context_create_from_system(const topazSystem_t *);
+topaz_t * topaz_context_create_from_system(topazSystem_t *);
 
 
  

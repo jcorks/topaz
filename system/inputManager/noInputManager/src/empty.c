@@ -38,10 +38,16 @@ DEALINGS IN THE SOFTWARE.
 
 
 
+static intptr_t api_nothing(){return 0;}
 
 
-topazBackend_t * topaz_system_inputManager_noInputManager__backend() {
-    return topaz_backend_create(
+void topaz_system_inputManager_noInputManager__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazInputManagerAPI_t * api
+) {
+    topaz_system_backend_bind(
+        backend,
         // name
         TOPAZ_STR_CAST("NoInputManager"),
 
@@ -57,11 +63,6 @@ topazBackend_t * topaz_system_inputManager_noInputManager__backend() {
 
 
 
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
 
         // on step 
         NULL,
@@ -86,11 +87,7 @@ topazBackend_t * topaz_system_inputManager_noInputManager__backend() {
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-}
 
-
-static intptr_t api_nothing(){return 0;}
-void topaz_system_inputManager_noInputManager__api(topazInputManagerAPI_t * api) {
     api->input_manager_create = (void (*)(topazInputManagerAPI_t *)) api_nothing;
     api->input_manager_destroy = (void (*)(topazInputManagerAPI_t *)) api_nothing;
     api->input_manager_handle_events = (int (*)(topazInputManagerAPI_t *)) api_nothing;
@@ -102,6 +99,7 @@ void topaz_system_inputManager_noInputManager__api(topazInputManagerAPI_t * api)
     api->input_manager_show_virtual_keyboard = (void (*)(topazInputManagerAPI_t *, int)) api_nothing;
 
 }
+
 
 
 

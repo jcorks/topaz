@@ -33,7 +33,11 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__INPUTMANAGER_NCURSES__INCLUDED
 #define H_TOPAZDC__INPUTMANAGER_NCURSES__INCLUDED
 
-topazBackend_t * topaz_system_inputManager_ncurses__backend();
-void             topaz_system_inputManager_ncurses__api(topazInputManagerAPI_t *);
+void topaz_system_inputManager_ncurses__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazInputManagerAPI_t * api
+);
+
 
 #endif

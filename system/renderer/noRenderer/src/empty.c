@@ -38,10 +38,17 @@ DEALINGS IN THE SOFTWARE.
 
 
 
+static intptr_t api_nothing(){return 0;}
 
 
-topazBackend_t * topaz_system_renderer_noRenderer__backend() {
-    return topaz_backend_create(
+void topaz_system_renderer_noRenderer__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazRendererAPI_t * api
+) {
+
+    topaz_system_backend_bind(
+        backend,
         // name
         TOPAZ_STR_CAST("NoRenderer"),
 
@@ -57,11 +64,6 @@ topazBackend_t * topaz_system_renderer_noRenderer__backend() {
 
 
 
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
 
         // on step 
         NULL,
@@ -86,11 +88,6 @@ topazBackend_t * topaz_system_renderer_noRenderer__backend() {
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-}
-
-
-static intptr_t api_nothing(){return 0;}
-void topaz_system_renderer_noRenderer__api(topazRendererAPI_t * api){
 
     api->core.renderer_create = (void (*)(topazRendererAPI_t *, topazRenderer_CoreAPI_t *))api_nothing;
     api->core.renderer_destroy = (void (*)(topazRendererAPI_t*))api_nothing;
@@ -154,8 +151,8 @@ void topaz_system_renderer_noRenderer__api(topazRendererAPI_t * api){
     api->fb.renderer_framebuffer_set_filtered_hint = (void (*)(void *, int)) api_nothing;
     api->fb.renderer_framebuffer_get_handle_type = (topazRenderer_Framebuffer_Handle (*)(void *)) api_nothing;
 
-
 }
+
 
 
 

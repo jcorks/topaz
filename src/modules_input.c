@@ -350,7 +350,7 @@ topazInput_t * topaz_input_create(topaz_t * context) {
     topazInput_t * out = calloc(1, sizeof(topazInput_t));
     {
         topazInputManagerAPI_t api;
-        topazBackend_t * ref = topaz_system_create_backend(
+        topazSystem_Backend_t * ref = topaz_system_create_backend(
             topaz_context_get_system(context), 
             TOPAZ_STR_CAST("inputManager"), 
             &api

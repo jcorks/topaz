@@ -33,7 +33,11 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__DISPLAY_NCURSES__INCLUDED
 #define H_TOPAZDC__DISPLAY_NCURSES__INCLUDED
 
-topazBackend_t * topaz_system_display_ncurses__backend();
-void             topaz_system_display_ncurses__api(topazDisplayAPI_t *);
+void topaz_system_display_ncurses__backend(
+    topazSystem_t *         system, 
+    topazSystem_Backend_t * backend, 
+    topazDisplayAPI_t *     api
+);
+
 
 #endif

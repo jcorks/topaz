@@ -1,6 +1,7 @@
 #include <topaz/system.h>
 #include <topaz/containers/table.h>
 #include <topaz/containers/string.h>
+#include <topaz/containers/array.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <topaz/compat.h>
@@ -18,8 +19,7 @@ static topazTable_t * consoleDisplays = NULL;
 void topaz_system_configure_base();
 
 typedef struct {
-    topazBackend_t * (*backend_callback)();
-    void (*api_callback)(void *);
+    void (*backend_callback)(topazSystem_t *, topazSystem_Backend_t *, void * api);
 } BackendHandler;
 
 struct topazSystem_t {
@@ -31,7 +31,29 @@ struct topazSystem_t {
     BackendHandler display;
     BackendHandler script;
     BackendHandler consoleDisplay;
+
+    topazArray_t * backends;
 };
+
+
+struct topazSystem_Backend_t {
+    topazString_t * name;
+    topazString_t * version;
+    topazString_t * author;
+    topazString_t * description;
+
+    void (*on_pre_step) (topazSystem_Backend_t *, void *);
+    void (*on_post_step)(topazSystem_Backend_t *, void *);
+    void (*on_pre_draw) (topazSystem_Backend_t *, void *);
+    void (*on_post_draw)(topazSystem_Backend_t *, void *);
+
+    void * userData;
+
+    int topazMajorVersion;
+    int topazMinorVersion;
+    int topazMicroVersion;
+};
+
 
 
 
@@ -126,8 +148,7 @@ void topaz_system_configure() {
 int topaz_system_config_add_handler(
     const topazString_t * backendType,
     const topazString_t * backendName,
-    topazBackend_t * (*backend_callback)(),
-    void (*api_callback)(void *)
+    void (*backend_callback)(topazSystem_t *, topazSystem_Backend_t *, void * api)
 ) {
     topazTable_t * table = NULL;
     BackendHandler * handler = backend_retrieve(
@@ -152,8 +173,6 @@ int topaz_system_config_add_handler(
 
     handler = malloc(sizeof(BackendHandler));
     handler->backend_callback = backend_callback;
-    handler->api_callback = api_callback;
-
     *get_backend_default(backendType) = *handler;
 
     topaz_table_insert(table, backendName, handler);
@@ -172,6 +191,7 @@ topazSystem_t * topaz_system_create_default() {
     s->display        = default_display;
     s->script         = default_script;
     s->consoleDisplay = default_consoleDisplay;
+    s->backends = topaz_array_create(sizeof(topazSystem_Backend_t *));
     return s; 
 }
 
@@ -220,8 +240,11 @@ int topaz_system_is_backend_available(
 }
 
 
+
+
+
 /// Creates a backend instance 
-topazBackend_t * topaz_system_create_backend(
+topazSystem_Backend_t * topaz_system_create_backend(
     const topazSystem_t * s, 
     const topazString_t * backendType, 
     void * APImapping
@@ -237,12 +260,168 @@ topazBackend_t * topaz_system_create_backend(
         return NULL;
     }
 
+    topazSystem_Backend_t * out = calloc(1, sizeof(topazSystem_Backend_t));
+    topaz_array_push(s->backends, out);
+
     // populates the api object. up to the user-side programmer and 
     // the backend developers to be correct on their ends.
-    t->api_callback(APImapping);
-
-    return t->backend_callback();
+    t->backend_callback((topazSystem_t *)s, out, APImapping);
+    return out;
 }
+
+
+
+
+
+
+#include <topaz/compat.h>
+
+#include <stdlib.h>
+#include <string.h>
+
+#ifdef TOPAZDC_DEBUG
+#include <assert.h>
+#endif
+
+
+
+
+
+void topaz_system_backend_bind(
+    topazSystem_Backend_t * out,
+    const topazString_t * name,
+    const topazString_t * version,
+    const topazString_t * author,
+    const topazString_t * description,
+
+
+
+    void (*on_pre_step) (topazSystem_Backend_t *, void *),
+    void (*on_post_step)(topazSystem_Backend_t *, void *),
+    void (*on_pre_draw) (topazSystem_Backend_t *, void *),
+    void (*on_post_draw)(topazSystem_Backend_t *, void *),
+    void * userData,
+
+    int topazMajorVersion,
+    int topazMinorVersion,
+    int topazMicroVersion
+
+) {
+    out->name        = topaz_string_clone(name);
+    out->version     = topaz_string_clone(version);
+    out->author      = topaz_string_clone(author);
+    out->description = topaz_string_clone(description);
+
+    out->on_pre_step = on_pre_step;
+    out->on_pre_draw = on_pre_draw;
+    out->on_post_step = on_post_step;
+    out->on_post_draw = on_post_draw;
+
+    out->userData = userData;
+
+    out->topazMajorVersion = topazMajorVersion;
+    out->topazMinorVersion = topazMinorVersion;
+    out->topazMicroVersion = topazMicroVersion;
+
+}
+
+
+
+
+
+
+int topaz_system_backend_get_topaz_major_version(const topazSystem_Backend_t * t) {
+    return t->topazMajorVersion;
+}
+
+int topaz_system_backend_get_topaz_minor_version(const topazSystem_Backend_t * t) {
+    return t->topazMinorVersion;
+}
+
+int topaz_system_backend_get_topaz_micro_version(const topazSystem_Backend_t * t) {
+    return t->topazMicroVersion;
+}
+
+
+
+
+
+const topazString_t * topaz_system_backend_get_name   (const topazSystem_Backend_t * t) {
+    return t->name;
+}
+
+const topazString_t * topaz_system_backend_get_version(const topazSystem_Backend_t * t) {
+    return t->version;
+}
+
+const topazString_t * topaz_system_backend_get_author (const topazSystem_Backend_t * t) {
+    return t->author;
+}
+
+const topazString_t * topaz_system_backend_get_description(const topazSystem_Backend_t * t) {
+    return t->description;
+}
+
+
+
+
+
+
+void topaz_system_backend_pre_step(topazSystem_Backend_t * t) {
+    if (t->on_pre_step)
+        t->on_pre_step(t, t->userData);
+}
+
+void topaz_system_backend_post_step(topazSystem_Backend_t * t) {
+    if (t->on_post_step)
+        t->on_post_step(t, t->userData);
+}
+
+
+void topaz_system_backend_pre_draw(topazSystem_Backend_t * t) {
+    if (t->on_pre_step)
+        t->on_pre_step(t, t->userData);
+}
+
+void topaz_system_backend_post_draw(topazSystem_Backend_t * t) {
+    if (t->on_post_draw)
+        t->on_post_draw(t, t->userData);
+}
+
+
+void topaz_system_pre_step(topazSystem_t * s) {
+    uint32_t i;
+    for(i = 0; i < topaz_array_get_size(s->backends); ++i) {
+        topaz_system_backend_pre_step(topaz_array_at(s->backends, topazSystem_Backend_t *, i));
+    }
+}
+
+void topaz_system_post_step(topazSystem_t * s) {
+    uint32_t i;
+    for(i = 0; i < topaz_array_get_size(s->backends); ++i) {
+        topaz_system_backend_post_step(topaz_array_at(s->backends, topazSystem_Backend_t *, i));
+    }
+}
+
+
+void topaz_system_pre_draw(topazSystem_t * s) {
+    uint32_t i;
+    for(i = 0; i < topaz_array_get_size(s->backends); ++i) {
+        topaz_system_backend_pre_draw(topaz_array_at(s->backends, topazSystem_Backend_t *, i));
+    }
+}
+
+void topaz_system_post_draw(topazSystem_t * s) {
+    uint32_t i;
+    for(i = 0; i < topaz_array_get_size(s->backends); ++i) {
+        topaz_system_backend_post_draw(topaz_array_at(s->backends, topazSystem_Backend_t *, i));
+    }
+}
+
+
+
+
+
 
 
 // Brings in external implementations using the build system,

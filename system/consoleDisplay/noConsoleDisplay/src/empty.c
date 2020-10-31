@@ -33,6 +33,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include "backend.h"
 #include <topaz/version.h>
+#include <topaz/system.h>
 
 
 
@@ -40,8 +41,15 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-topazBackend_t * topaz_system_consoleDisplay_noConsoleDisplay__backend() {
-    return topaz_backend_create(
+static intptr_t api_nothing(){return 0;}
+
+void topaz_system_consoleDisplay_noConsoleDisplay__backend(
+    topazSystem_t *            system, 
+    topazSystem_Backend_t *    backend, 
+    topazConsoleDisplayAPI_t * api
+) {
+    topaz_system_backend_bind(
+        backend,
         // name
         TOPAZ_STR_CAST("NoConsoleDisplay"),
 
@@ -54,14 +62,6 @@ topazBackend_t * topaz_system_consoleDisplay_noConsoleDisplay__backend() {
         // desc 
         TOPAZ_STR_CAST("Placeholder for a console display. Not ideal for debugging!"),
 
-
-
-
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
 
         // on step 
         NULL,
@@ -86,17 +86,16 @@ topazBackend_t * topaz_system_consoleDisplay_noConsoleDisplay__backend() {
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-}
 
-
-static intptr_t api_nothing(){return 0;}
-void topaz_system_consoleDisplay_noConsoleDisplay__api(topazConsoleDisplayAPI_t * api) {
     api->console_display_create    = (void *                  (*)           (topazConsoleDisplay_t *, topaz_t *)) api_nothing;
     api->console_display_destroy   = (void                    (*)          (topazConsoleDisplay_t *, void *)) api_nothing;
     api->console_display_add_line  = (void                    (*)         (topazConsoleDisplay_t *, void *, const topazString_t *, const topazColor_t * reqColor)) api_nothing;
     api->console_display_clear     = (void                    (*)            (topazConsoleDisplay_t *, void *)) api_nothing;
     api->console_display_update    = (void                    (*)           (topazConsoleDisplay_t *, void *)) api_nothing;
+
 }
+
+
 
 
 

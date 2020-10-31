@@ -39,10 +39,17 @@ DEALINGS IN THE SOFTWARE.
 
 
 
+static intptr_t api_nothing(){return 0;}
 
 
-topazBackend_t * topaz_system_script_noScript__backend() {
-    return topaz_backend_create(
+void topaz_system_script_noScript__backend(
+    topazSystem_t *         system, 
+    topazSystem_Backend_t * backend, 
+    topazScriptAPI_t *      api
+) {
+    topaz_system_backend_bind(
+        backend,
+
         // name
         TOPAZ_STR_CAST("NoScript"),
 
@@ -87,11 +94,8 @@ topazBackend_t * topaz_system_script_noScript__backend() {
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-}
 
 
-static intptr_t api_nothing(){return 0;}
-void topaz_system_script_noScript__api(topazScriptAPI_t * api) {
 
     api->script_create = (void * (*)(topazScript_t *)) api_nothing;
     api->script_destroy = (void (*)(topazScript_t *, void *)) api_nothing;
@@ -99,7 +103,11 @@ void topaz_system_script_noScript__api(topazScriptAPI_t * api) {
     api->script_run = (void (*)(topazScript_t *, void *, const topazString_t * sourceName, const topazString_t * scriptData)) api_nothing;
     api->script_expression = (topazScript_Object_t * (*)(topazScript_t *, void *, const topazString_t *)) api_nothing;
     api->script_bootstrap = void (*)(topazScript_t *, void *);
+
 }
+
+
+
 
 
 

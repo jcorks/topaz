@@ -11,16 +11,16 @@
 
 struct topazInputManager_t {
     topazInputManagerAPI_t api;
-    topazBackend_t * backend;
+    topazSystem_Backend_t * backend;
 };
 
 
 
 
 
-topazInputManager_t * topaz_input_manager_create(topazBackend_t * b, topazInputManagerAPI_t api) {
+topazInputManager_t * topaz_input_manager_create(topazSystem_Backend_t * b, topazInputManagerAPI_t api) {
     #ifdef TOPAZDC_DEBUG
-        assert(b && "topazBackend_t pointer cannot be NULL.");
+        assert(b && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(api.input_manager_create);
         assert(api.input_manager_destroy);
         assert(api.input_manager_handle_events);
@@ -41,7 +41,7 @@ topazInputManager_t * topaz_input_manager_create(topazBackend_t * b, topazInputM
 
 void topaz_input_manager_destroy(topazInputManager_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
     t->api.input_manager_destroy(&t->api);
 }
@@ -50,9 +50,9 @@ void topaz_input_manager_destroy(topazInputManager_t * t) {
 
 
 
-topazBackend_t * topaz_input_manager_get_backend(topazInputManager_t * t) {
+topazSystem_Backend_t * topaz_input_manager_get_backend(topazInputManager_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     return t->backend;
@@ -60,7 +60,7 @@ topazBackend_t * topaz_input_manager_get_backend(topazInputManager_t * t) {
 
 topazInputManagerAPI_t topaz_input_manager_get_api(topazInputManager_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     return t->api;

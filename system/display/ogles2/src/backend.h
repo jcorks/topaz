@@ -33,7 +33,10 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__DISPLAY_OGLES2__INCLUDED
 #define H_TOPAZDC__DISPLAY_OGLES2__INCLUDED
 
-topazBackend_t * topaz_system_display_ogles2__backend();
-void             topaz_system_display_ogles2__api(topazDisplayAPI_t *);
+void topaz_system_display_ogles2__backend(
+    topazSystem_t *         system, 
+    topazSystem_Backend_t * backend, 
+    topazDisplayAPI_t *     api
+);
 
 #endif

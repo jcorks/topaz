@@ -92,8 +92,14 @@ static uint64_t topaz_time_posix__ms_since_startup(topazTimeAPI_t * api) {
 
 
 
-topazBackend_t * topaz_system_time_posix__backend() {
-    return topaz_backend_create(
+
+void topaz_system_time_posix__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazTimeAPI_t * api
+) {
+    topaz_system_backend_bind(
+        backend,
         // name
         TOPAZ_STR_CAST("Posix Time"),
 
@@ -109,11 +115,6 @@ topazBackend_t * topaz_system_time_posix__backend() {
 
 
 
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
 
         // on step 
         NULL,
@@ -138,16 +139,15 @@ topazBackend_t * topaz_system_time_posix__backend() {
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-}
 
-
-void topaz_system_time_posix__api(topazTimeAPI_t * api) {
     // Map object API functions to real ones
     api->time_create  = topaz_time_posix__create;
     api->time_destroy = topaz_time_posix__destroy;
     api->time_sleep_ms = topaz_time_posix__sleep_ms;    
     api->time_ms_since_startup = topaz_time_posix__ms_since_startup;
 }
+
+
 
 
 

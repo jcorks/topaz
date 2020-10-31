@@ -33,7 +33,7 @@ DEALINGS IN THE SOFTWARE.
 #define H_TOPAZDC__FILESYS__INCLUDED
 
 #include <topaz/backends/api/filesys_api.h>
-#include <topaz/backends/backend.h>
+#include <topaz/system.h>
 
 
 
@@ -72,7 +72,7 @@ typedef struct topazFilesys_t topazFilesys_t;
 /// Creates a new filesys object. The starting path is 
 /// the same upon first creating the filsys instance.
 ///
-topazFilesys_t * topaz_filesys_create(topazBackend_t *, topazFilesysAPI_t);
+topazFilesys_t * topaz_filesys_create(topazSystem_Backend_t *, topazFilesysAPI_t);
 
 
 /// Destroys and cleans up a filesys API
@@ -85,7 +85,7 @@ void topaz_filesys_destroy(topazFilesys_t *);
 
 /// Retrieves the backend for this filesys object.
 ///
-topazBackend_t * topaz_filesys_get_backend(topazFilesys_t *);
+topazSystem_Backend_t * topaz_filesys_get_backend(topazFilesys_t *);
 
 
 /// Returns the API for this filesys.

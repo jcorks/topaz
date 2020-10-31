@@ -33,7 +33,7 @@ DEALINGS IN THE SOFTWARE.
 #define H_TOPAZDC__DISPLAY__INCLUDED
 
 
-#include <topaz/backends/backend.h>
+#include <topaz/system.h>
 typedef struct topazEntity_t topazEntity_t;
 typedef struct topaz_t topaz_t;
 
@@ -138,7 +138,7 @@ typedef enum {
 /// Creates a new display object. Usually you can use topaz_view_manager_create_display() 
 /// instead of calling this function directly.
 ///
-topazDisplay_t * topaz_display_create(topaz_t *, topazBackend_t *, topazDisplayAPI_t);
+topazDisplay_t * topaz_display_create(topaz_t *, topazSystem_Backend_t *, topazDisplayAPI_t);
 
 
 /// Destroys and cleans up a display API
@@ -168,7 +168,7 @@ topazEntity_t * topaz_display_get_camera_render(topazDisplay_t *);
 
 /// Retrieves the backend for this display object.
 ///
-topazBackend_t * topaz_display_get_backend(topazDisplay_t *);
+topazSystem_Backend_t * topaz_display_get_backend(topazDisplay_t *);
 
 
 /// Returns the API for this display.

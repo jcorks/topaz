@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h>
+#include <topaz/system.h>
 #include <topaz/backends/renderer.h>
 #include <topaz/backends/display.h>
 #include <topaz/compat.h>
@@ -331,7 +332,7 @@ void ncurses_display_resize(void * a, int w, int h) {
 
 
 
-void ncurses_display_create(topazDisplayAPI_t * api) {
+void * ncurses_display_create(topazDisplayAPI_t * api) {
     NCURSESTOPAZ * out = calloc(1, sizeof(NCURSESTOPAZ));
     initscr();
     raw();
@@ -482,8 +483,14 @@ void ncurses_display_set_current_clipboard(void * api, const topazArray_t * arr)
 }
 
 
-topazBackend_t * topaz_system_display_ncurses__backend() {
-    return topaz_backend_create(
+void topaz_system_display_ncurses__backend(
+    topazSystem_t *         system, 
+    topazSystem_Backend_t * backend, 
+    topazDisplayAPI_t *     api
+) {
+
+    topaz_system_backend_bind(
+        backend,
         // name
         TOPAZ_STR_CAST("ncurses"),
 
@@ -499,11 +506,6 @@ topazBackend_t * topaz_system_display_ncurses__backend() {
 
 
 
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
 
         // on step 
         NULL,
@@ -528,10 +530,7 @@ topazBackend_t * topaz_system_display_ncurses__backend() {
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-}
 
-
-void topaz_system_display_ncurses__api(topazDisplayAPI_t * api){
     api->display_create = ncurses_display_create;
     api->display_destroy = ncurses_display_destroy;
     api->display_resize = ncurses_display_resize;
@@ -560,3 +559,4 @@ void topaz_system_display_ncurses__api(topazDisplayAPI_t * api){
     api->display_set_current_clipboard = ncurses_display_set_current_clipboard;
 
 }
+

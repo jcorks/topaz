@@ -33,7 +33,11 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__AUDIOMANAGER_NOAUDIOMANAGER__INCLUDED
 #define H_TOPAZDC__AUDIOMANAGER_NOAUDIOMANAGER__INCLUDED
 
-topazBackend_t * topaz_system_audioManager_noAudioManager__backend();
-void             topaz_system_audioManager_noAudioManager__api(topazAudioManagerAPI_t *);
+void topaz_system_audioManager_noAudioManager__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazAudioManagerAPI_t * api
+);
+
 
 #endif

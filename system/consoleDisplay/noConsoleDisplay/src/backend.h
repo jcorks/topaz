@@ -33,7 +33,10 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__CONSOLEDISPLAY_NOCONSOLEDISPLAY__INCLUDED
 #define H_TOPAZDC__CONSOLEDISPLAY_NOCONSOLEDISPLAY__INCLUDED
 
-topazBackend_t * topaz_system_consoleDisplay_noConsoleDisplay__backend();
-void             topaz_system_consoleDisplay_noConsoleDisplay__api(topazConsoleDisplayAPI_t *);
+void topaz_system_consoleDisplay_noConsoleDisplay__backend(
+    topazSystem_t *            system, 
+    topazSystem_Backend_t *    backend, 
+    topazConsoleDisplayAPI_t * api
+);
 
 #endif

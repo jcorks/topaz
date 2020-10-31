@@ -38,10 +38,16 @@ DEALINGS IN THE SOFTWARE.
 
 
 
+static intptr_t api_nothing(){return 0;}
 
 
-topazBackend_t * topaz_system_time_noTime__backend() {
-    return topaz_backend_create(
+void topaz_system_time_noTime__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazTimeAPI_t * api
+) {
+    topaz_system_backend_bind(
+        backend,
         // name
         TOPAZ_STR_CAST("NoTime"),
 
@@ -55,13 +61,6 @@ topazBackend_t * topaz_system_time_noTime__backend() {
         TOPAZ_STR_CAST("Placeholder for a time manager. Does nothing! (no time for time!)"),
 
 
-
-
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
 
         // on step 
         NULL,
@@ -86,17 +85,13 @@ topazBackend_t * topaz_system_time_noTime__backend() {
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-}
 
-
-static intptr_t api_nothing(){return 0;}
-void topaz_system_time_noTime__api(topazTimeAPI_t * api) {
     api->time_create = (void (*)(topazTimeAPI_t *)) api_nothing;
     api->time_destroy = (void (*)(topazTimeAPI_t *)) api_nothing;
     api->time_sleep_ms = (void (*)(topazTimeAPI_t *, uint64_t)) api_nothing;
     api->time_ms_since_startup = (uint64_t (*)(topazTimeAPI_t *)) api_nothing;
-}
 
+}
 
 
 

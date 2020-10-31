@@ -338,8 +338,13 @@ const topazArray_t * topaz_filesys_posix__split_path(topazFilesysAPI_t * api, co
 
 
 
-topazBackend_t * topaz_system_filesys_posix__backend() {
-    return topaz_backend_create(
+void topaz_system_filesys_posix__backend(
+    topazSystem_t *         system, 
+    topazSystem_Backend_t * backend, 
+    topazFilesysAPI_t *     api
+) {
+    topaz_system_backend_bind(
+        backend,
         // name
         TOPAZ_STR_CAST("Posix Filesystem"),
 
@@ -354,12 +359,6 @@ topazBackend_t * topaz_system_filesys_posix__backend() {
 
 
 
-
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
 
         // TODO: could implement "partially" async reading using this
         // on step 
@@ -385,11 +384,6 @@ topazBackend_t * topaz_system_filesys_posix__backend() {
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-}
-
-
-
-void topaz_system_filesys_posix__api(topazFilesysAPI_t * api) {
 
 
     // Map object API functions to real ones
@@ -409,8 +403,8 @@ void topaz_system_filesys_posix__api(topazFilesysAPI_t * api) {
     api->filesys_split_path = topaz_filesys_posix__split_path;
 
 
-
 }
+
 
 
 

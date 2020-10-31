@@ -11,16 +11,16 @@
 
 struct topazAudioManager_t {
     topazAudioManagerAPI_t api;
-    topazBackend_t * backend;
+    topazSystem_Backend_t * backend;
 };
 
 
 
 
 
-topazAudioManager_t * topaz_audio_manager_create(topazBackend_t * b, topazAudioManagerAPI_t api) {
+topazAudioManager_t * topaz_audio_manager_create(topazSystem_Backend_t * b, topazAudioManagerAPI_t api) {
     #ifdef TOPAZDC_DEBUG
-        assert(b && "topazBackend_t pointer cannot be NULL.");
+        assert(b && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(api.audio_manager_create);
         assert(api.audio_manager_destroy);
         assert(api.audio_manager_connect);
@@ -42,7 +42,7 @@ topazAudioManager_t * topaz_audio_manager_create(topazBackend_t * b, topazAudioM
 
 void topaz_audio_manager_destroy(topazAudioManager_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
     t->api.audio_manager_destroy(&t->api);
 }
@@ -51,9 +51,9 @@ void topaz_audio_manager_destroy(topazAudioManager_t * t) {
 
 
 
-topazBackend_t * topaz_audio_manager_get_backend(topazAudioManager_t * t) {
+topazSystem_Backend_t * topaz_audio_manager_get_backend(topazAudioManager_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     return t->backend;
@@ -61,7 +61,7 @@ topazBackend_t * topaz_audio_manager_get_backend(topazAudioManager_t * t) {
 
 topazAudioManagerAPI_t topaz_audio_manager_get_api(topazAudioManager_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     return t->api;

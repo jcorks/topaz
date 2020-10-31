@@ -36,6 +36,7 @@ DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 #include <stdio.h>
 #include <topaz/backends/renderer.h>
+#include <topaz/system.h>
 #define GLFW_INCLUDE_ES2
 #include <GLFW/glfw3.h>
 
@@ -52,55 +53,6 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-
-
-topazBackend_t * topaz_system_display_ogles2__backend() {
-    return topaz_backend_create(
-        // name
-        TOPAZ_STR_CAST("OGLES2"),
-
-        // version 
-        TOPAZ_STR_CAST("1.0"),
-
-        // author
-        TOPAZ_STR_CAST("Johnathan Corkery, 2020"),
-
-        // desc 
-        TOPAZ_STR_CAST("OpenGLES2 windowing bridge using GLFW"),
-
-
-
-
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
-
-        // on step 
-        NULL,
-        
-        // on step late 
-        NULL,
-        
-        // on draw 
-        NULL,
-
-        // on draw late
-        NULL,
-
-
-
-        // backend callback user data
-        NULL,
-
-
-        // API version 
-        TOPAZ__VERSION__MAJOR,
-        TOPAZ__VERSION__MINOR,
-        TOPAZ__VERSION__MICRO
-    );
-}
 
 
 typedef struct {
@@ -375,8 +327,57 @@ static void * topaz_glfw_get_last_system_event(void * api) {
 }
 
 
+
 static intptr_t api_nothing(){return 0;}
-void topaz_system_display_ogles2__api(topazDisplayAPI_t * api) {
+
+void topaz_system_display_ogles2__backend(
+    topazSystem_t *         system, 
+    topazSystem_Backend_t * backend, 
+    topazDisplayAPI_t *     api
+) {
+    topaz_system_backend_bind(
+        backend,
+        
+        // name
+        TOPAZ_STR_CAST("OGLES2"),
+
+        // version 
+        TOPAZ_STR_CAST("1.0"),
+
+        // author
+        TOPAZ_STR_CAST("Johnathan Corkery, 2020"),
+
+        // desc 
+        TOPAZ_STR_CAST("OpenGLES2 windowing bridge using GLFW"),
+
+
+
+
+
+        // on step 
+        NULL,
+        
+        // on step late 
+        NULL,
+        
+        // on draw 
+        NULL,
+
+        // on draw late
+        NULL,
+
+
+
+        // backend callback user data
+        NULL,
+
+
+        // API version 
+        TOPAZ__VERSION__MAJOR,
+        TOPAZ__VERSION__MINOR,
+        TOPAZ__VERSION__MICRO
+    );
+
     api->display_create = topaz_glfw_create;
     api->display_destroy = topaz_glfw_destroy;
     api->display_resize = topaz_glfw_resize;
@@ -407,7 +408,6 @@ void topaz_system_display_ogles2__api(topazDisplayAPI_t * api) {
     api->display_set_current_clipboard = (void (*)(void *, const topazArray_t *)) api_nothing;
 
 }
-
 
 
 

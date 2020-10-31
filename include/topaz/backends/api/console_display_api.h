@@ -76,10 +76,6 @@ struct topazConsoleDisplayAPI_t {
     ///
     void                    (*console_display_clear)            (topazConsoleDisplay_t *, void *);
 
-    /// Checks to see if there is input waiting to be delivered 
-    ///
-    void                    (*console_display_update)           (topazConsoleDisplay_t *, void *);
-
 
 };
 

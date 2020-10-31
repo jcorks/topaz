@@ -4,8 +4,11 @@
 
 #include <topaz/backends/renderer.h>
 
-topazBackend_t * topaz_system_renderer_srgs__backend();
-void topaz_system_renderer_srgs__api(topazRendererAPI_t *);
+void topaz_system_renderer_srgs__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazRendererAPI_t * api
+);
 
 
 

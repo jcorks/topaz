@@ -17,7 +17,6 @@ src = [
     'src/asset.c',
     'src/assets_image.c',
     'src/backends_audio_manager.c',
-    'src/backends_backend.c',
     'src/backends_console_display.c',
     'src/backends_display.c',
     'src/backends_filesys.c',

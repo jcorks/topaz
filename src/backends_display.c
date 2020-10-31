@@ -17,7 +17,7 @@
 struct topazDisplay_t {
     topaz_t * ctx;
     topazDisplayAPI_t api;
-    topazBackend_t * backend;
+    topazSystem_Backend_t * backend;
     topazEntity_t * camera2d;
     topazEntity_t * camera3d;
     topazEntity_t * cameraRender;
@@ -30,9 +30,9 @@ struct topazDisplay_t {
 
 
 
-topazDisplay_t * topaz_display_create(topaz_t * ctx, topazBackend_t * b, topazDisplayAPI_t api) {
+topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, topazDisplayAPI_t api) {
     #ifdef TOPAZDC_DEBUG
-        assert(b && "topazBackend_t pointer cannot be NULL.");
+        assert(b && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(api.display_create);
         assert(api.display_destroy);
 
@@ -80,7 +80,7 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazBackend_t * b, topazDi
 
 void topaz_display_destroy(topazDisplay_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
     topaz_entity_remove(t->camera2d);
     topaz_entity_remove(t->camera3d);
@@ -92,9 +92,9 @@ void topaz_display_destroy(topazDisplay_t * t) {
 
 
 
-topazBackend_t * topaz_display_get_backend(topazDisplay_t * t) {
+topazSystem_Backend_t * topaz_display_get_backend(topazDisplay_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     return t->backend;
@@ -102,7 +102,7 @@ topazBackend_t * topaz_display_get_backend(topazDisplay_t * t) {
 
 topazDisplayAPI_t topaz_display_get_api(topazDisplay_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     return t->api;

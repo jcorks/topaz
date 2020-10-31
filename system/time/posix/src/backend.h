@@ -33,7 +33,10 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__TIME_POSIX__INCLUDED
 #define H_TOPAZDC__TIME_POSIX__INCLUDED
 
-topazBackend_t * topaz_system_time_posix__backend();
-void             topaz_system_time_posix__api(topazTimeAPI_t *);
+void topaz_system_time_posix__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazTimeAPI_t * api
+);
 
 #endif

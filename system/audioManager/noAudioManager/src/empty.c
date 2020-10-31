@@ -33,14 +33,22 @@ DEALINGS IN THE SOFTWARE.
 
 #include "backend.h"
 #include <topaz/version.h>
+#include <topaz/system.h>
 
 
 
 
 
 
-topazBackend_t * topaz_system_audioManager_noAudioManager__backend() {
-    return topaz_backend_create(
+static intptr_t api_nothing(){return 0;}
+
+void topaz_system_audioManager_noAudioManager__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazAudioManagerAPI_t * api
+) {
+    topaz_system_backend_bind(
+        backend, 
         // name
         TOPAZ_STR_CAST("NoAudioManager"),
 
@@ -55,12 +63,6 @@ topazBackend_t * topaz_system_audioManager_noAudioManager__backend() {
 
 
 
-
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
 
         // on step 
         NULL,
@@ -85,11 +87,7 @@ topazBackend_t * topaz_system_audioManager_noAudioManager__backend() {
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-}
 
-
-static intptr_t api_nothing(){return 0;}
-void topaz_system_audioManager_noAudioManager__api(topazAudioManagerAPI_t * api) {
 
     api->audio_manager_create          = (void (*)(topazAudioManagerAPI_t *)) api_nothing;
     api->audio_manager_destroy         = (void (*)(topazAudioManagerAPI_t *)) api_nothing;
@@ -101,7 +99,10 @@ void topaz_system_audioManager_noAudioManager__api(topazAudioManagerAPI_t * api)
     api->audio_manager_set_volume_multiplier = (void (*)(topazAudioManagerAPI_t *, float)) api_nothing;
     api->audio_manager_get_volume_multiplier = (float (*)(topazAudioManagerAPI_t *)) api_nothing;
     api->audio_manager_get_current_output_sample = (float (*)(topazAudioManagerAPI_t *)) api_nothing;
+
 }
+
+
 
 
 

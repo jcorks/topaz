@@ -40,54 +40,6 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-topazBackend_t * topaz_system_inputManager_noInputManager__backend() {
-    return topaz_backend_create(
-        // name
-        TOPAZ_STR_CAST("GLFW"),
-
-        // version 
-        TOPAZ_STR_CAST("1.0"),
-
-        // author
-        TOPAZ_STR_CAST("Johnathan Corkery, 2020"),
-
-        // desc 
-        TOPAZ_STR_CAST("Input manager for GLFW displays."),
-
-
-
-
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
-
-        // on step 
-        NULL,
-        
-        // on step late 
-        NULL,
-        
-        // on draw 
-        NULL,
-
-        // on draw late
-        NULL,
-
-
-
-        // backend callback user data
-        NULL,
-
-
-        // API version 
-        TOPAZ__VERSION__MAJOR,
-        TOPAZ__VERSION__MINOR,
-        TOPAZ__VERSION__MICRO
-    );
-}
-
 
 
 typedef struct {
@@ -254,8 +206,56 @@ static assign_glfw_lookups() {
 
 }
 
+
 static intptr_t api_nothing(){return 0;}
-void topaz_system_inputManager_noInputManager__api(topazInputManagerAPI_t * api) {
+
+void topaz_system_inputManager_glfw__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazInputManagerAPI_t * api
+) {
+
+    topaz_system_backend_bind(
+        backend,
+        // name
+        TOPAZ_STR_CAST("GLFW"),
+
+        // version 
+        TOPAZ_STR_CAST("1.0"),
+
+        // author
+        TOPAZ_STR_CAST("Johnathan Corkery, 2020"),
+
+        // desc 
+        TOPAZ_STR_CAST("Input manager for GLFW displays."),
+
+
+
+
+        // on step 
+        NULL,
+        
+        // on step late 
+        NULL,
+        
+        // on draw 
+        NULL,
+
+        // on draw late
+        NULL,
+
+
+
+        // backend callback user data
+        NULL,
+
+
+        // API version 
+        TOPAZ__VERSION__MAJOR,
+        TOPAZ__VERSION__MINOR,
+        TOPAZ__VERSION__MICRO
+    );
+
     if (!glfww2im) {
         glfww2im = topaz_table_create_hash_pointer();
         assign_glfw_lookups();
@@ -271,6 +271,7 @@ void topaz_system_inputManager_noInputManager__api(topazInputManagerAPI_t * api)
     api->input_manager_show_virtual_keyboard = (void (*)(topazInputManagerAPI_t *, int)) api_nothing;
 
 }
+
 
 
 

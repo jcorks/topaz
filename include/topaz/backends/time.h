@@ -33,7 +33,7 @@ DEALINGS IN THE SOFTWARE.
 #define H_TOPAZDC__TIME__INCLUDED
 
 #include <topaz/backends/api/time_api.h>
-#include <topaz/backends/backend.h>
+#include <topaz/system.h>
 
 
 
@@ -55,7 +55,7 @@ typedef struct topazTime_t topazTime_t;
 
 /// Creates a new time object
 ///
-topazTime_t * topaz_time_create(topazBackend_t *, topazTimeAPI_t);
+topazTime_t * topaz_time_create(topazSystem_Backend_t *, topazTimeAPI_t);
 
 
 /// Destroys and cleans up a time API
@@ -68,7 +68,7 @@ void topaz_time_destroy(topazTime_t *);
 
 /// Retrieves the backend for this time object.
 ///
-topazBackend_t * topaz_time_get_backend(topazTime_t *);
+topazSystem_Backend_t * topaz_time_get_backend(topazTime_t *);
 
 
 /// Returns the API for this time.

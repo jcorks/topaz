@@ -33,7 +33,7 @@ DEALINGS IN THE SOFTWARE.
 #define H_TOPAZDC__CONSOLE_DISPLAY__INCLUDED
 
 #include <topaz/backends/api/console_display_api.h>
-#include <topaz/backends/backend.h>
+#include <topaz/system.h>
 typedef struct topaz_t topaz_t;
 
 
@@ -55,7 +55,7 @@ typedef struct topazConsoleDisplay_t topazConsoleDisplay_t;
 
 /// Creates a new console display instance.
 ///
-topazConsoleDisplay_t * topaz_console_display_create(topaz_t *, topazBackend_t *, topazConsoleDisplayAPI_t);
+topazConsoleDisplay_t * topaz_console_display_create(topaz_t *, topazSystem_Backend_t *, topazConsoleDisplayAPI_t);
 
 
 /// Destroys and cleans up a console display instance.
@@ -66,7 +66,7 @@ void topaz_console_display_destroy(topazConsoleDisplay_t *);
 
 /// Gets the backend for this console display.
 ///
-topazBackend_t * topaz_console_display_get_backend(topazConsoleDisplay_t *);
+topazSystem_Backend_t * topaz_console_display_get_backend(topazConsoleDisplay_t *);
 
 
 /// Returns the API for this console display.
@@ -105,11 +105,6 @@ const topazString_t * topaz_console_display_get_line(const topazConsoleDisplay_t
 ///
 void topaz_console_display_send_input(topazConsoleDisplay_t *, const topazString_t *);
 
-
-/// Updates the console. This can include behavior such as 
-/// polling for input from the user, redrawing visuals
-///
-void topaz_console_display_update(topazConsoleDisplay_t *);
 
 /// Callback called by the console display if the user sends 
 /// input to the console display. A full line of input is 

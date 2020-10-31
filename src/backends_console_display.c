@@ -13,7 +13,7 @@
 
 struct topazConsoleDisplay_t {
     topazConsoleDisplayAPI_t api;
-    topazBackend_t * backend;
+    topazSystem_Backend_t * backend;
     topazBin_t * cbs;
     topazArray_t * lines;
     void * userData;
@@ -28,14 +28,13 @@ typedef struct {
 
 
 
-topazConsoleDisplay_t * topaz_console_display_create(topaz_t * topaz, topazBackend_t * b, topazConsoleDisplayAPI_t api) {
+topazConsoleDisplay_t * topaz_console_display_create(topaz_t * topaz, topazSystem_Backend_t * b, topazConsoleDisplayAPI_t api) {
     #ifdef TOPAZDC_DEBUG
-        assert(b && "topazBackend_t pointer cannot be NULL.");
+        assert(b && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(api.console_display_create);
         assert(api.console_display_destroy);
         assert(api.console_display_add_line);
         assert(api.console_display_clear);
-        assert(api.console_display_update);
     #endif
     topazConsoleDisplay_t * out = calloc(1, sizeof(topazConsoleDisplay_t));
     out->api = api;
@@ -68,7 +67,7 @@ void topaz_console_display_destroy(topazConsoleDisplay_t * d) {
 
 
 
-topazBackend_t * topaz_console_display_get_backend(topazConsoleDisplay_t * d) {
+topazSystem_Backend_t * topaz_console_display_get_backend(topazConsoleDisplay_t * d) {
     #ifdef TOPAZDC_DEBUG
         assert(d && "topazConsoleDisplay_t pointer cannot be NULL.");
     #endif
@@ -142,14 +141,6 @@ void topaz_console_display_send_input(topazConsoleDisplay_t * d, const topazStri
     topaz_array_destroy(allCBs);
 }
 
-
-void topaz_console_display_update(topazConsoleDisplay_t * d) {
-    #ifdef TOPAZDC_DEBUG
-        assert(d && "topazConsoleDisplay_t pointer cannot be NULL.");
-    #endif
-
-    d->api.console_display_update(d, d->userData);
-}
 
 
 uint32_t topaz_console_display_add_input_callback(

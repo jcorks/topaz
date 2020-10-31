@@ -38,10 +38,16 @@ DEALINGS IN THE SOFTWARE.
 
 
 
+static intptr_t api_nothing(){return 0;}
 
 
-topazBackend_t * topaz_system_filesys_noFilesys__backend() {
-    return topaz_backend_create(
+void topaz_system_filesys_noFilesys__backend(
+    topazSystem_t *         system, 
+    topazSystem_Backend_t * backend, 
+    topazFilesysAPI_t *     api
+) {
+    topaz_system_backend_bind(
+        backend,
         // name
         TOPAZ_STR_CAST("NoFilesys"),
 
@@ -56,12 +62,6 @@ topazBackend_t * topaz_system_filesys_noFilesys__backend() {
 
 
 
-
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
 
         // on step 
         NULL,
@@ -86,11 +86,6 @@ topazBackend_t * topaz_system_filesys_noFilesys__backend() {
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-}
-
-
-static intptr_t api_nothing(){return 0;}
-void topaz_system_filesys_noFilesys__api(topazFilesysAPI_t * api) {
     api->filesys_create = (void (*)(topazFilesysAPI_t *))api_nothing;
     api->filesys_destroy = (void (*)(topazFilesysAPI_t *))api_nothing;
     api->filesys_query = (const topazArray_t * (*)(topazFilesysAPI_t *))api_nothing;
@@ -103,7 +98,10 @@ void topaz_system_filesys_noFilesys__api(topazFilesysAPI_t * api) {
     api->filesys_write = (int (*)(topazFilesysAPI_t *, const topazString_t *, const topazWbuffer_t *))api_nothing;
     api->filesys_is_node = (int (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
     api->filesys_is_child = (int (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
+
 }
+
+
 
 
 

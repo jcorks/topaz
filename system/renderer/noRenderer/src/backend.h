@@ -33,7 +33,11 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__RENDERER_NORENDERER__INCLUDED
 #define H_TOPAZDC__RENDERER_NORENDERER__INCLUDED
 
-topazBackend_t * topaz_system_renderer_noRenderer__backend();
-void             topaz_system_renderer_noRenderer__api(topazRendererAPI_t *);
+void topaz_system_renderer_noRenderer__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazRendererAPI_t * api
+);
+
 
 #endif

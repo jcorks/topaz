@@ -44,53 +44,6 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-topazBackend_t * topaz_system_renderer_ogles2__backend() {
-    return topaz_backend_create(
-        // name
-        TOPAZ_STR_CAST("OpenGLES 2"),
-
-        // version 
-        TOPAZ_STR_CAST("1.0"),
-
-        // author
-        TOPAZ_STR_CAST("Johnathan Corkery, 2020"),
-
-        // desc 
-        TOPAZ_STR_CAST("Hope it works!"),
-
-
-
-
-        // On init
-        NULL,
-
-        // On init late
-        NULL,
-
-        // on step 
-        NULL,
-        
-        // on step late 
-        NULL,
-        
-        // on draw 
-        NULL,
-
-        // on draw late
-        NULL,
-
-
-
-        // backend callback user data
-        NULL,
-
-
-        // API version 
-        TOPAZ__VERSION__MAJOR,
-        TOPAZ__VERSION__MINOR,
-        TOPAZ__VERSION__MICRO
-    );
-}
 
 /*
 #include <stdio.h>
@@ -406,8 +359,56 @@ void * topaz_api_es2__framebuffer_create(topazRendererAPI_t * api, topazRenderer
 }
 
 
-void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
-    static int isInit = 0;
+
+void topaz_system_renderer_ogles2__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazRendererAPI_t * api
+) {
+    topaz_system_backend_bind(
+        backend
+        // name
+        TOPAZ_STR_CAST("OpenGLES 2"),
+
+        // version 
+        TOPAZ_STR_CAST("1.0"),
+
+        // author
+        TOPAZ_STR_CAST("Johnathan Corkery, 2020"),
+
+        // desc 
+        TOPAZ_STR_CAST("Hope it works!"),
+
+
+
+
+
+        // on step 
+        NULL,
+        
+        // on step late 
+        NULL,
+        
+        // on draw 
+        NULL,
+
+        // on draw late
+        NULL,
+
+
+
+        // backend callback user data
+        NULL,
+
+
+        // API version 
+        TOPAZ__VERSION__MAJOR,
+        TOPAZ__VERSION__MINOR,
+        TOPAZ__VERSION__MICRO
+    );
+
+
+static int isInit = 0;
     static GLFWwindow * context = NULL;
     if (!isInit) {
         glfwInit();
@@ -513,8 +514,6 @@ void topaz_system_renderer_ogles2__api(topazRendererAPI_t * api){
 
 
 }
-
-
 
 
 

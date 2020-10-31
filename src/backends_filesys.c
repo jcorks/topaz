@@ -11,16 +11,16 @@
 
 struct topazFilesys_t {
     topazFilesysAPI_t api;
-    topazBackend_t * backend;
+    topazSystem_Backend_t * backend;
 };
 
 
 
 
 
-topazFilesys_t * topaz_filesys_create(topazBackend_t * b, topazFilesysAPI_t api) {
+topazFilesys_t * topaz_filesys_create(topazSystem_Backend_t * b, topazFilesysAPI_t api) {
     #ifdef TOPAZDC_DEBUG
-        assert(b && "topazBackend_t pointer cannot be NULL.");
+        assert(b && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(api.filesys_create);
         assert(api.filesys_destroy);
         assert(api.filesys_set_path);
@@ -45,7 +45,7 @@ topazFilesys_t * topaz_filesys_create(topazBackend_t * b, topazFilesysAPI_t api)
 
 void topaz_filesys_destroy(topazFilesys_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
     t->api.filesys_destroy(&t->api);
 }
@@ -54,9 +54,9 @@ void topaz_filesys_destroy(topazFilesys_t * t) {
 
 
 
-topazBackend_t * topaz_filesys_get_backend(topazFilesys_t * t) {
+topazSystem_Backend_t * topaz_filesys_get_backend(topazFilesys_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     return t->backend;
@@ -64,7 +64,7 @@ topazBackend_t * topaz_filesys_get_backend(topazFilesys_t * t) {
 
 topazFilesysAPI_t topaz_filesys_get_api(topazFilesys_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     return t->api;
@@ -75,7 +75,7 @@ topazFilesysAPI_t topaz_filesys_get_api(topazFilesys_t * t) {
 
 int topaz_filesys_set_path(topazFilesys_t * t, const topazString_t * str) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(str && "topazString_t pointer cannot be NULL.");
     #endif
 
@@ -85,7 +85,7 @@ int topaz_filesys_set_path(topazFilesys_t * t, const topazString_t * str) {
 
 int topaz_filesys_go_to_child(topazFilesys_t * t, const topazString_t * str) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(str && "topazString_t pointer cannot be NULL.");
     #endif
 
@@ -95,7 +95,7 @@ int topaz_filesys_go_to_child(topazFilesys_t * t, const topazString_t * str) {
 
 int topaz_filesys_go_to_parent(topazFilesys_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     return t->api.filesys_go_to_parent(&t->api);
@@ -104,7 +104,7 @@ int topaz_filesys_go_to_parent(topazFilesys_t * t) {
 
 const topazString_t * topaz_filesys_get_path(topazFilesys_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     return t->api.filesys_get_path(&t->api);
@@ -112,7 +112,7 @@ const topazString_t * topaz_filesys_get_path(topazFilesys_t * t) {
 
 const topazArray_t * topaz_filesys_split_path(topazFilesys_t * t, const topazString_t * str) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(str && "topazString_t pointer cannot be NULL.");
     #endif
 
@@ -124,7 +124,7 @@ const topazArray_t * topaz_filesys_split_path(topazFilesys_t * t, const topazStr
 
 int topaz_filesys_create_node(topazFilesys_t * t, const topazString_t * str) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(str && "topazString_t pointer cannot be NULL.");
     #endif
 
@@ -133,7 +133,7 @@ int topaz_filesys_create_node(topazFilesys_t * t, const topazString_t * str) {
 
 topazRbuffer_t * topaz_filesys_read(topazFilesys_t * t, const topazString_t * str) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(str && "topazString_t pointer cannot be NULL.");
     #endif
 
@@ -146,7 +146,7 @@ topazRbuffer_t * topaz_filesys_read(topazFilesys_t * t, const topazString_t * st
 
 int topaz_filesys_write(topazFilesys_t * t, const topazString_t * str, const topazWbuffer_t * b) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(str && "topazString_t pointer cannot be NULL.");
         assert(str && "topazWbuffer_t pointer cannot be NULL.");
     #endif
@@ -156,7 +156,7 @@ int topaz_filesys_write(topazFilesys_t * t, const topazString_t * str, const top
 
 const topazArray_t * topaz_filesys_query(topazFilesys_t * t) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
 
     return t->api.filesys_query(&t->api);
@@ -164,7 +164,7 @@ const topazArray_t * topaz_filesys_query(topazFilesys_t * t) {
 
 int topaz_filesys_is_node(topazFilesys_t * t, const topazString_t * str) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(str && "topazString_t pointer cannot be NULL.");
     #endif
 
@@ -173,7 +173,7 @@ int topaz_filesys_is_node(topazFilesys_t * t, const topazString_t * str) {
 
 int topaz_filesys_is_child(topazFilesys_t * t, const topazString_t * str) {
     #ifdef TOPAZDC_DEBUG
-        assert(t && "topazBackend_t pointer cannot be NULL.");
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(str && "topazString_t pointer cannot be NULL.");
     #endif
 

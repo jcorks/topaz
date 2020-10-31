@@ -29,11 +29,16 @@ DEALINGS IN THE SOFTWARE.
 */
 
 #include <topaz/backends/script.h>
+#include <topaz/system.h>
 
 #ifndef H_TOPAZDC__SCRIPT_DUKTAPEJS__INCLUDED
 #define H_TOPAZDC__SCRIPT_DUKTAPEJS__INCLUDED
 
-topazBackend_t * topaz_system_script_duktapeJS__backend();
-void             topaz_system_script_duktapeJS__api(topazScriptAPI_t *);
+void topaz_system_script_duktapeJS__backend(
+    topazSystem_t *          system, 
+    topazSystem_Backend_t *  backend, 
+    topazScriptAPI_t      *  api
+);
+
 
 #endif
