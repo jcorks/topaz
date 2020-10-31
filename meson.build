@@ -46,6 +46,7 @@ src = [
     'src/modules_view_manager.c',
     'src/modules_graphics.c',
     'src/modules_script_manager.c',
+    'src/modules_console.c',
     'src/rbuffer.c',
     'src/refbank.c',
     'src/render2d.c',
@@ -112,7 +113,7 @@ handlerPreferredDisplay        = 'display/'        + get_option('DisplayBackend'
 handlerPreferredTime           = 'time/'           + get_option('TimeBackend')
 handlerPreferredFilesys        = 'filesys/'        + get_option('FilesystemBackend')
 handlerPreferredScript         = 'script/'         + get_option('ScriptBackend')
-handlerPreferredConsoleDisplay = 'consoleDisplay/' + get_option('ConsoleDisplay')
+handlerPreferredConsoleDisplay = 'consoleDisplay/' + get_option('ConsoleDisplayBackend')
 
 
 subdir('system')

@@ -173,7 +173,9 @@ void topaz_system_backend_pre_draw(topazSystem_Backend_t *);
 ///
 void topaz_system_backend_post_draw(topazSystem_Backend_t *);
 
-
+/// Retrieves the user data associated with the backend.
+///
+void * topaz_system_backend_get_user_data(topazSystem_Backend_t * t);
 
 
 

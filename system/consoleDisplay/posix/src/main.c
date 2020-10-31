@@ -43,15 +43,48 @@ DEALINGS IN THE SOFTWARE.
 
 static intptr_t api_nothing(){return 0;}
 
+typedef struct {
+    topazConsoleDisplay_t * ref;
+    char inputBuffer[256];
+} PosixTerm;
+
+
+
+static void update_input(topazSystem_Backend_t * b, PosixTerm * p) {
+    if (p->ref) {
+        int nRead = read(0, p->inputBuffer, 255);
+        if (nRead) {
+            topaz_console_display_send_input(p->ref, TOPAZ_STR_CAST(p->inputBuffer));
+        }
+    }
+}
+
+    
+
+void term_print(topazConsoleDisplay_t * d, void * data, const topazString_t * c, const topazColor_t * reqColor) {
+    printf("%s\n", topaz_string_get_c_str(c));
+}
+
+
+void term_clear(topazConsoleDisplay_t * d, void * data) {
+    printf("\033c");
+}
+
+
+
 void topaz_system_consoleDisplay_noConsoleDisplay__backend(
     topazSystem_t *            system, 
     topazSystem_Backend_t *    backend, 
     topazConsoleDisplayAPI_t * api
 ) {
+
+    PosixTerm * term = calloc(1, sizeof(PosixTerm));
+
+
     topaz_system_backend_bind(
         backend,
         // name
-        TOPAZ_STR_CAST("NoConsoleDisplay"),
+        TOPAZ_STR_CAST("Posix"),
 
         // version 
         TOPAZ_STR_CAST("1.0"),
@@ -60,14 +93,14 @@ void topaz_system_consoleDisplay_noConsoleDisplay__backend(
         TOPAZ_STR_CAST("Johnathan Corkery, 2020"),
 
         // desc 
-        TOPAZ_STR_CAST("Placeholder for a console display. Not ideal for debugging!"),
+        TOPAZ_STR_CAST("Simple console control for (modern?) POSIX systems."),
 
 
         // on step 
         NULL,
         
         // on step late 
-        NULL,
+        update_input, // occasionally check
         
         // on draw 
         NULL,
@@ -78,7 +111,7 @@ void topaz_system_consoleDisplay_noConsoleDisplay__backend(
 
 
         // backend callback user data
-        NULL,
+        term,
 
 
         // API version 
@@ -87,10 +120,12 @@ void topaz_system_consoleDisplay_noConsoleDisplay__backend(
         TOPAZ__VERSION__MICRO
     );
 
+    fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_NONBLOCK);
+
     api->console_display_create    = (void *                  (*)           (topazConsoleDisplay_t *, topaz_t *)) api_nothing;
     api->console_display_destroy   = (void                    (*)          (topazConsoleDisplay_t *, void *)) api_nothing;
-    api->console_display_add_line  = (void                    (*)         (topazConsoleDisplay_t *, void *, const topazString_t *, const topazColor_t * reqColor)) api_nothing;
-    api->console_display_clear     = (void                    (*)            (topazConsoleDisplay_t *, void *)) api_nothing;
+    api->console_display_add_line  = term_print;
+    api->console_display_clear     = term_clear;
 
 }
 

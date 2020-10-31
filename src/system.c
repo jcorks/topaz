@@ -388,6 +388,10 @@ void topaz_system_backend_post_draw(topazSystem_Backend_t * t) {
         t->on_post_draw(t, t->userData);
 }
 
+void * topaz_system_backend_get_user_data(topazSystem_Backend_t * t) {
+    return t->userData;
+}
+
 
 void topaz_system_pre_step(topazSystem_t * s) {
     uint32_t i;

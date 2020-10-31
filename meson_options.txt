@@ -33,7 +33,7 @@ option(
     type : 'combo',
 
 
-    value : 'ncurses',
+    value : 'noDisplay',
     choices : [
         'noDisplay',
         'ncurses',
@@ -100,12 +100,14 @@ option(
 )
 
 option(
-    'ConsoleDisplay',
+    'ConsoleDisplayBackend',
     type : 'combo',
 
-    value : 'noConsoleDisplay',
+    value : 'winapi',
     choices : [
         'noConsoleDisplay',
+        'posix',
+        'winapi'
     ]
 )
 
