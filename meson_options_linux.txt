@@ -1,0 +1,115 @@
+
+option(
+    'BuildMode', 
+    type : 'combo', 
+    choices : ['Debug', 'Release' ],
+
+    value : 'Debug'
+)
+option(
+    'IncludeTests', 
+    type : 'boolean',
+
+    value : true
+)
+
+
+option(
+    'RendererBackend',
+    type : 'combo',
+
+
+    value   : 'ogles2',
+    choices : [
+        'ogles2',
+        'noRenderer',
+        'srgs',
+    ]
+)
+
+
+option(
+    'DisplayBackend',
+    type : 'combo',
+
+
+    value : 'ogles2',
+    choices : [
+        'noDisplay',
+        'ncurses',
+        'ogles2'
+    ]
+)
+
+
+option(
+    'AudioManagerBackend',
+    type : 'combo',
+
+    value : 'noAudioManager',
+    choices : [
+        'noAudioManager'
+    ]
+)
+
+
+option(
+    'InputManagerBackend',
+    type : 'combo',
+
+    value : 'noInputManager',
+    choices : [
+        'noInputManager',
+        'ncurses'
+    ]
+)
+
+
+option(
+    'FilesystemBackend',
+    type : 'combo',
+
+    value : 'posix',
+    choices : [
+        'noFilesys',
+        'posix',
+        'winapi'
+    ]
+)
+
+
+option(
+    'TimeBackend',
+    type : 'combo',
+
+    value : 'posix',
+    choices : [
+        'noTime',
+        'posix'
+    ]
+)
+
+option(
+    'ScriptBackend',
+    type : 'combo',
+
+    value : 'duktapeJS',
+    choices : [
+        'noScript',
+        'duktapeJS'
+    ]
+)
+
+option(
+    'ConsoleDisplayBackend',
+    type : 'combo',
+
+    value : 'posix',
+    choices : [
+        'noConsoleDisplay',
+        'posix',
+        'winapi'
+    ]
+)
+
+
