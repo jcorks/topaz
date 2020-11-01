@@ -573,11 +573,42 @@ static topazScript_Object_t * topaz_duk_expression(
     const topazString_t * expr
 ) {
     TOPAZDUK * ctx = data;
-    duk_eval_string(ctx->js, topaz_string_get_c_str(expr));
-    topazScript_Object_t * out = topaz_duk_stack_object_to_tso(
-        ctx,
-        -1
-    );
+    topazScript_Object_t * out;
+    if (duk_peval_lstring(ctx->js, topaz_string_get_c_str(expr), topaz_string_get_length(expr))) {
+        topazString_t * str = topaz_string_create();;
+
+        if (duk_is_error(ctx->js, -1)) {
+            duk_get_prop_string(ctx->js, -1, "lineNumber");
+            topaz_string_concat_printf(str, "ERROR @ line %d", duk_to_int(ctx->js, -1));
+            duk_pop(ctx->js);
+
+            duk_get_prop_string(ctx->js, -1, "fileName");
+            topaz_string_concat_printf(str, " in \"%s\"\n", duk_to_string(ctx->js, -1));
+            duk_pop(ctx->js);
+
+            duk_get_prop_string(ctx->js, -1, "stack");
+            topaz_string_concat_printf(str, " in \"%s\"\n", duk_to_string(ctx->js, -1));
+            duk_pop(ctx->js);
+
+        }
+
+        printf("Eval error: %s", topaz_string_get_c_str(str));
+        topaz_string_destroy(str);
+        fflush(stdout);
+
+
+
+
+
+
+        out = topaz_script_object_undefined(ctx->script);    
+    } else {
+        out = topaz_duk_stack_object_to_tso(
+            ctx,
+            -1
+        );
+    }
+
     duk_pop(ctx->js);
     return out;
 }
@@ -618,7 +649,26 @@ void topaz_duk_run(
     duk_push_string(ctx->js, topaz_string_get_c_str(sourceData));
     duk_push_string(ctx->js, topaz_string_get_c_str(sourceName));
     duk_compile(ctx->js, 0);
-    duk_call(ctx->js, 0);
+    if (duk_pcall(ctx->js, 0)) {
+        topazString_t * str = topaz_string_create();
+        if (duk_is_error(ctx->js, -1)) {
+            duk_get_prop_string(ctx->js, -1, "lineNumber");
+            topaz_string_concat_printf(str, "ERROR @ line %d", duk_to_int(ctx->js, -1));
+            duk_pop(ctx->js);
+
+            duk_get_prop_string(ctx->js, -1, "fileName");
+            topaz_string_concat_printf(str, " in \"%s\"\n", duk_to_string(ctx->js, -1));
+            duk_pop(ctx->js);
+
+            duk_get_prop_string(ctx->js, -1, "stack");
+            topaz_string_concat_printf(str, " in \"%s\"\n", duk_to_string(ctx->js, -1));
+            duk_pop(ctx->js);
+        } else {
+            topaz_string_concat_printf(str, "%s", "Unknown error occurred within scripting context (DUKTAPE did not throw error object?)\n");
+        }
+        printf("%s", topaz_string_get_c_str(str));
+        fflush(stdout);
+    }
     duk_pop(ctx->js); // throw away result of last statement.
 
     #ifdef TOPAZDC_DEBUG 

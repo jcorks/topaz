@@ -34,8 +34,10 @@ DEALINGS IN THE SOFTWARE.
 #include "backend.h"
 #include <topaz/version.h>
 #include <topaz/system.h>
-
-
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 
 
@@ -53,13 +55,20 @@ typedef struct {
 static void update_input(topazSystem_Backend_t * b, PosixTerm * p) {
     if (p->ref) {
         int nRead = read(0, p->inputBuffer, 255);
-        if (nRead) {
+        if (nRead > 0) {    
+            p->inputBuffer[nRead-1] = 0;
             topaz_console_display_send_input(p->ref, TOPAZ_STR_CAST(p->inputBuffer));
         }
     }
 }
 
     
+static void * term_init(topazConsoleDisplay_t * d, topaz_t * t) {
+    topazSystem_Backend_t * backend = topaz_console_display_get_backend(d);
+    PosixTerm * term = topaz_system_backend_get_user_data(backend);
+    term->ref = d;
+    return term;
+}
 
 void term_print(topazConsoleDisplay_t * d, void * data, const topazString_t * c, const topazColor_t * reqColor) {
     printf("%s\n", topaz_string_get_c_str(c));
@@ -72,7 +81,7 @@ void term_clear(topazConsoleDisplay_t * d, void * data) {
 
 
 
-void topaz_system_consoleDisplay_noConsoleDisplay__backend(
+void topaz_system_consoleDisplay_posix__backend(
     topazSystem_t *            system, 
     topazSystem_Backend_t *    backend, 
     topazConsoleDisplayAPI_t * api
@@ -100,7 +109,7 @@ void topaz_system_consoleDisplay_noConsoleDisplay__backend(
         NULL,
         
         // on step late 
-        update_input, // occasionally check
+        (void (*)(topazSystem_Backend_t *, void *))update_input, // occasionally check
         
         // on draw 
         NULL,
@@ -122,7 +131,7 @@ void topaz_system_consoleDisplay_noConsoleDisplay__backend(
 
     fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_NONBLOCK);
 
-    api->console_display_create    = (void *                  (*)           (topazConsoleDisplay_t *, topaz_t *)) api_nothing;
+    api->console_display_create    = term_init;
     api->console_display_destroy   = (void                    (*)          (topazConsoleDisplay_t *, void *)) api_nothing;
     api->console_display_add_line  = term_print;
     api->console_display_clear     = term_clear;

@@ -5,15 +5,25 @@
 #include <stdio.h>
 
 int main() {
+    // Create the context and window
     topaz_t * ctx = topaz_context_create();
     topaz_view_manager_create_main_default(topaz_context_get_view_manager(ctx), TOPAZ_STR_CAST("Scripting"));
 
 
-
+    // Creates a script instance. The permissions can 
+    // activate / deactive certain features within the script context.
     topazScript_t * script = topaz_script_manager_create_context(
         topaz_context_get_script_manager(ctx),
         topazScriptManager_Permission_All
     );
+
+    // In case something goes wrong, it can be helpful to attach
+    // a script context to the console.
+    topaz_console_attach_script(
+        topaz_context_get_console(ctx),
+        script
+    );
+
 
     const topazString_t * str = topaz_script_object_as_string(
         topaz_script_expression(
@@ -27,7 +37,7 @@ int main() {
         )
     );
 
-    printf("\n\nRESULT IS: %s", topaz_string_get_c_str(str));
+    printf("\n\nRESULT IS: %s\n", topaz_string_get_c_str(str));
     fflush(stdout);
 
 

@@ -3,6 +3,7 @@
 #include <topaz/containers/table.h>
 #include <topaz/containers/array.h>
 #include <topaz/containers/string.h>
+#include <topaz/backends/script.h>
 #include <topaz/color.h>
 #include <topaz/topaz.h>
 #include <stdlib.h>
@@ -90,7 +91,24 @@ TOPAZCCOMMAND(command__quit) {
     return topaz_string_create();
 }
 
+TOPAZCCOMMAND(command__eval) {
+    if (!console->script) {
+        return topaz_string_create_from_c_str("No script attached to console!\n");
+    }
 
+    if (topaz_string_get_length(fullCommand) <= 5) {
+        return topaz_string_create();
+    }
+
+    
+    return topaz_string_clone(topaz_script_object_as_string(
+        topaz_script_expression(
+            console->script,
+            // TODO: assumes eval[DELIMITER], this will cause problems
+            topaz_string_get_substr(fullCommand, 5, topaz_string_get_length(fullCommand)-1)
+        )
+    ));
+}
 
 
 
@@ -117,6 +135,7 @@ topazConsole_t * topaz_console_create(topaz_t * t) {
     // add basic commands
     topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("echo"), command__echo, NULL);
     topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("quit"), command__quit, t);
+    topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("eval"), command__eval, t);
 
 
     out->inputID = topaz_console_display_add_input_callback(
@@ -217,7 +236,7 @@ topazString_t * topaz_console_run(topazConsole_t * c, const topazString_t * strS
 
     // break up command
     for(
-        iter = topaz_string_chain_start(str, TOPAZ_STR_CAST("()[]{}.,;:"));
+        iter = topaz_string_chain_start(str, TOPAZ_STR_CAST("()[]{}.,;: \n\t"));
         !topaz_string_chain_is_end(str);
         iter = topaz_string_chain_proceed(str)    
     ) {
@@ -311,7 +330,7 @@ void topaz_console_command_context_add_command(
 
     TopazConsoleCommand * cmd = topaz_table_find(c->commands, name);
     if (!cmd) {
-        TopazConsoleCommand * cmd = malloc(sizeof(TopazConsoleCommand));
+        cmd = malloc(sizeof(TopazConsoleCommand));
         topaz_table_insert(c->commands, name, cmd);
     }
     cmd->cb = cb;

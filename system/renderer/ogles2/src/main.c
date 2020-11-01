@@ -366,7 +366,7 @@ void topaz_system_renderer_ogles2__backend(
     topazRendererAPI_t * api
 ) {
     topaz_system_backend_bind(
-        backend
+        backend,
         // name
         TOPAZ_STR_CAST("OpenGLES 2"),
 
