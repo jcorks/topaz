@@ -36,8 +36,8 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/system.h>
 #include <windows.h>
 #include <stdio.h>
-
-
+#include <assert.h>
+#include <topaz/color.h>
 
 
 
@@ -49,23 +49,31 @@ typedef struct {
     char inputBuffer[256];
     CONSOLE_READCONSOLE_CONTROL readControl;
     HANDLE file;
+    HANDLE cout;
     topazString_t * str;
 
 } WINAPITerm;
 
-
+static void winapi_printf(HANDLE * outf, topazString_t * str) {
+    DWORD len;
+    WriteFile(outf, topaz_string_get_c_str(str), topaz_string_get_length(str), &len, NULL);
+    topaz_string_destroy(str);
+}
 
 static void update_input(topazSystem_Backend_t * b, WINAPITerm * t) {
+    
     // TODO: Unicode ;w; 
-    if (t->ref) {
+    if (t->ref && t->file) {
         INPUT_RECORD input;
         DWORD nu;
-        while(PeekConsoleInput(
+        PeekConsoleInput(
             t->file,
             &input,
             1,
             &nu
-        )) {
+        );
+        int i;
+        for(i = 0; i < nu; ++i) {
             ReadConsoleInput(
                 t->file,
                 &input,
@@ -74,23 +82,20 @@ static void update_input(topazSystem_Backend_t * b, WINAPITerm * t) {
             );
             if (input.EventType == KEY_EVENT && input.Event.KeyEvent.bKeyDown) {
                 if (input.Event.KeyEvent.uChar.AsciiChar == 13) { // return
-                    printf("\n");
-                    fflush(stdout);
+                    winapi_printf(t->cout, topaz_string_create_from_c_str("\n"));
                     topaz_console_display_send_input(t->ref, t->str);
                     topaz_string_clear(t->str);
-                    printf("$ ");
-                    fflush(stdout);
+                    winapi_printf(t->cout, topaz_string_create_from_c_str("$ "));
                 } else if (input.Event.KeyEvent.uChar.AsciiChar == 8) { // backspace!
                     if (topaz_string_get_length(t->str)) {
                         topazString_t * temp = t->str;
                         t->str = topaz_string_clone(topaz_string_get_substr(t->str, 0, topaz_string_get_length(t->str)-2));               
                         topaz_string_destroy(temp);
                     }
-                    printf("\b"); fflush(stdout);
+                    winapi_printf(t->cout, topaz_string_create_from_c_str("\b"));
                 } else if (!iscntrl(input.Event.KeyEvent.uChar.AsciiChar)) {
                     topaz_string_concat_printf(t->str, "%c", input.Event.KeyEvent.uChar.AsciiChar);
-                    printf("%c", input.Event.KeyEvent.uChar.AsciiChar); fflush(stdout);
-
+                    winapi_printf(t->cout, topaz_string_create_from_c_str("%c", input.Event.KeyEvent.uChar.AsciiChar));
                 } else {
                     //printf("%c(%d)", input.Event.KeyEvent.uChar.AsciiChar, input.Event.KeyEvent.uChar.AsciiChar); fflush(stdout);
                     
@@ -105,22 +110,53 @@ static void * term_init(topazConsoleDisplay_t * d, topaz_t * t) {
     topazSystem_Backend_t * backend = topaz_console_display_get_backend(d);
     WINAPITerm * term = topaz_system_backend_get_user_data(backend);
     term->ref = d;
-    AllocConsole();
-    ShowWindow(GetConsoleWindow(), TRUE);
+
     return term;
 }
 
 static void term_print(topazConsoleDisplay_t * d, void * data, const topazString_t * c, const topazColor_t * reqColor) {
-    printf("%s\n", topaz_string_get_c_str(c));
-    fflush(stdout);
+    WINAPITerm * term = data;
+    // from standard SGR custom color specification.
+    // Windows willl choose the nearest color for us
+    winapi_printf(term->cout, topaz_string_create_from_c_str("\x1b[38;2;%d;%d;%dm",
+        reqColor->r,
+        reqColor->g,
+        reqColor->b
+    ));
+    winapi_printf(term->cout, topaz_string_clone(c));
+    winapi_printf(term->cout, topaz_string_create_from_c_str("\n"));
+    winapi_printf(term->cout, topaz_string_create_from_c_str("\x1b[0m"));
 }
 
 
 static void term_clear(topazConsoleDisplay_t * d, void * data) {
-    system("cls");
-    fflush(stdout);
+
 }
 
+static void term_enable(topazConsoleDisplay_t * d, void * data, int enable) {
+    WINAPITerm * term = data;
+    if (enable) {
+        FreeConsole();
+        AllocConsole();
+        ShowWindow(GetConsoleWindow(), TRUE);
+        term->file = GetStdHandle(STD_INPUT_HANDLE);
+        term->cout = GetStdHandle(STD_OUTPUT_HANDLE);
+        assert(term->file != INVALID_HANDLE_VALUE);
+        winapi_printf(term->cout, topaz_string_create_from_c_str("$ "));
+
+        DWORD dwMode = 0;
+        if (GetConsoleMode(term->cout, &dwMode)) {
+            dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+            SetConsoleMode(term->cout, dwMode);
+        }
+
+
+    } else {
+        FreeConsole();
+        ShowWindow(GetConsoleWindow(), FALSE);
+        term->file = NULL;
+    }
+}
 
 
 void topaz_system_consoleDisplay_winapi__backend(
@@ -128,21 +164,13 @@ void topaz_system_consoleDisplay_winapi__backend(
     topazSystem_Backend_t *    backend, 
     topazConsoleDisplayAPI_t * api
 ) {
-
     WINAPITerm * term = calloc(1, sizeof(WINAPITerm));
     term->readControl.nLength = sizeof(CONSOLE_READCONSOLE_CONTROL);
     term->readControl.nInitialChars = 0;
     term->readControl.dwCtrlWakeupMask = '\r';
     term->readControl.dwControlKeyState = 0;
     term->str = topaz_string_create();
-    term->file = CreateFile(
-        "CONIN$",
-        GENERIC_READ,
-        FILE_SHARE_READ,
-        NULL,
-        OPEN_EXISTING,
-        0, NULL
-    );
+
 
 
 
@@ -190,7 +218,7 @@ void topaz_system_consoleDisplay_winapi__backend(
     api->console_display_destroy   = (void                    (*)          (topazConsoleDisplay_t *, void *)) api_nothing;
     api->console_display_add_line  = term_print;
     api->console_display_clear     = term_clear;
-
+    api->console_display_enable    = term_enable;
 }
 
 

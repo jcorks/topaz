@@ -35,6 +35,7 @@ topazConsoleDisplay_t * topaz_console_display_create(topaz_t * topaz, topazSyste
         assert(api.console_display_destroy);
         assert(api.console_display_add_line);
         assert(api.console_display_clear);
+        assert(api.console_display_enable);
     #endif
     topazConsoleDisplay_t * out = calloc(1, sizeof(topazConsoleDisplay_t));
     out->api = api;
@@ -100,6 +101,15 @@ void topaz_console_display_clear(topazConsoleDisplay_t * d) {
     topaz_array_set_size(d->lines, 0);
     d->api.console_display_clear(d, d->userData);
 }
+
+
+void topaz_console_display_enable(topazConsoleDisplay_t * d, int enabled) {
+    #ifdef TOPAZDC_DEBUG
+        assert(d && "topazConsoleDisplay_t pointer cannot be NULL.");
+    #endif
+    d->api.console_display_enable(d, d->userData, enabled);
+}
+
 
 void topaz_console_display_add_line(topazConsoleDisplay_t * d, const topazString_t * line, const topazColor_t * c) {
     #ifdef TOPAZDC_DEBUG

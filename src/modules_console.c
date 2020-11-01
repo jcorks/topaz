@@ -227,6 +227,11 @@ void topaz_console_attach_script(
 }
 
 
+
+void topaz_console_enable(topazConsole_t * c, int enabled) {
+    topaz_console_display_enable(c->display, enabled);
+}
+
 topazString_t * topaz_console_run(topazConsole_t * c, const topazString_t * strSrc) {
     topazString_t * out = NULL;
     topazString_t * str = topaz_string_clone(strSrc);

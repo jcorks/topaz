@@ -106,6 +106,11 @@ const topazString_t * topaz_console_display_get_line(const topazConsoleDisplay_t
 void topaz_console_display_send_input(topazConsoleDisplay_t *, const topazString_t *);
 
 
+/// Enables or disables the console display.
+/// 
+void topaz_console_display_enable(topazConsoleDisplay_t *, int enabled);
+
+
 /// Callback called by the console display if the user sends 
 /// input to the console display. A full line of input is 
 /// will be returned. The input isn't printed back to 

@@ -76,6 +76,9 @@ struct topazConsoleDisplayAPI_t {
     ///
     void                    (*console_display_clear)            (topazConsoleDisplay_t *, void *);
 
+    /// Requests that the console display be shown or hidden 
+    ///
+    void                    (*console_display_enable)           (topazConsoleDisplay_t *, void *, int);
 
 };
 

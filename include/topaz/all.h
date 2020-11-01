@@ -63,6 +63,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/modules/view_manager.h>
 #include <topaz/modules/script_manager.h>
 #include <topaz/modules/graphics.h>
+#include <topaz/modules/console.h>
 #include <topaz/modules/resources.h>
 
 #include <topaz/asset.h>

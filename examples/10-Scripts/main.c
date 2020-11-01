@@ -1,8 +1,6 @@
 #include <topaz/topaz.h>
 #include <topaz/modules/view_manager.h>
-
 #include <topaz/all.h>
-#include <stdio.h>
 
 int main() {
     // Create the context and window
@@ -17,10 +15,16 @@ int main() {
         topazScriptManager_Permission_All
     );
 
+    // We want to enable use of the debugging console.
+    //
+    topazConsole_t * console = topaz_context_get_console(ctx);
+    topaz_console_enable(console, TRUE);
+
+
     // In case something goes wrong, it can be helpful to attach
     // a script context to the console.
     topaz_console_attach_script(
-        topaz_context_get_console(ctx),
+        console,
         script
     );
 
@@ -36,9 +40,11 @@ int main() {
             )
         )
     );
-
-    printf("\n\nRESULT IS: %s\n", topaz_string_get_c_str(str));
-    fflush(stdout);
+    topaz_console_print(
+        console,
+        TOPAZ_STR_CAST("\n\nRESULT IS: ")
+    );
+    topaz_console_print(console, str);
 
 
     // extract the script data

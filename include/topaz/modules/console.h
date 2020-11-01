@@ -92,6 +92,10 @@ void topaz_console_destroy(topazConsole_t *);
 
 
 
+/// Enables or disables the console. The default state is the console is disabled.
+///
+void topaz_console_enable(topazConsole_t *, int enable);
+
 /// Prints a line to the console
 /// This is equivalent to topaz_console_print_type() with the 
 /// message type as topazConsole_MessageType_Normal
