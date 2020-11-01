@@ -49,26 +49,55 @@ typedef struct {
     char inputBuffer[256];
     CONSOLE_READCONSOLE_CONTROL readControl;
     HANDLE file;
+    topazString_t * str;
 
 } WINAPITerm;
 
 
 
 static void update_input(topazSystem_Backend_t * b, WINAPITerm * t) {
+    // TODO: Unicode ;w; 
     if (t->ref) {
-        DWORD readN = 0;
-        ReadConsole(
+        INPUT_RECORD input;
+        DWORD nu;
+        while(PeekConsoleInput(
             t->file,
-            t->inputBuffer,
-            255,
-            &readN,
-            &t->readControl
-        );
-        t->inputBuffer[readN] = 0;
+            &input,
+            1,
+            &nu
+        )) {
+            ReadConsoleInput(
+                t->file,
+                &input,
+                1,
+                &nu
+            );
+            if (input.EventType == KEY_EVENT && input.Event.KeyEvent.bKeyDown) {
+                if (input.Event.KeyEvent.uChar.AsciiChar == 13) { // return
+                    printf("\n");
+                    fflush(stdout);
+                    topaz_console_display_send_input(t->ref, t->str);
+                    topaz_string_clear(t->str);
+                    printf("$ ");
+                    fflush(stdout);
+                } else if (input.Event.KeyEvent.uChar.AsciiChar == 8) { // backspace!
+                    if (topaz_string_get_length(t->str)) {
+                        topazString_t * temp = t->str;
+                        t->str = topaz_string_clone(topaz_string_get_substr(t->str, 0, topaz_string_get_length(t->str)-2));               
+                        topaz_string_destroy(temp);
+                    }
+                    printf("\b"); fflush(stdout);
+                } else if (!iscntrl(input.Event.KeyEvent.uChar.AsciiChar)) {
+                    topaz_string_concat_printf(t->str, "%c", input.Event.KeyEvent.uChar.AsciiChar);
+                    printf("%c", input.Event.KeyEvent.uChar.AsciiChar); fflush(stdout);
 
-        if (readN) {
-            topaz_console_display_send_input(t->ref, TOPAZ_STR_CAST(t->inputBuffer));
+                } else {
+                    //printf("%c(%d)", input.Event.KeyEvent.uChar.AsciiChar, input.Event.KeyEvent.uChar.AsciiChar); fflush(stdout);
+                    
+                }
+            }
         }
+
     }
 }
 
@@ -76,6 +105,8 @@ static void * term_init(topazConsoleDisplay_t * d, topaz_t * t) {
     topazSystem_Backend_t * backend = topaz_console_display_get_backend(d);
     WINAPITerm * term = topaz_system_backend_get_user_data(backend);
     term->ref = d;
+    AllocConsole();
+    ShowWindow(GetConsoleWindow(), TRUE);
     return term;
 }
 
@@ -103,6 +134,7 @@ void topaz_system_consoleDisplay_winapi__backend(
     term->readControl.nInitialChars = 0;
     term->readControl.dwCtrlWakeupMask = '\r';
     term->readControl.dwControlKeyState = 0;
+    term->str = topaz_string_create();
     term->file = CreateFile(
         "CONIN$",
         GENERIC_READ,

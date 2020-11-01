@@ -64,7 +64,6 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
     topazDisplay_t * out = calloc(1, sizeof(topazDisplay_t));
     out->api = api;
     out->backend = b;
-    out->apiData = out->api.display_create(&out->api);
     out->camera2d = topaz_camera_create(ctx);
     out->camera3d = topaz_camera_create(ctx);
     out->cameraRender = topaz_camera_create(ctx);
@@ -74,6 +73,7 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
     topaz_context_attach_post_manager(ctx, out->camera2d);
     topaz_context_attach_post_manager(ctx, out->camera3d);
     topaz_context_attach_post_manager(ctx, out->cameraRender);
+    out->apiData = out->api.display_create(out, ctx);
     return out;
 }
 
@@ -82,10 +82,10 @@ void topaz_display_destroy(topazDisplay_t * t) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
+    t->api.display_destroy(t, t->apiData);
     topaz_entity_remove(t->camera2d);
     topaz_entity_remove(t->camera3d);
     topaz_entity_remove(t->cameraRender);
-    t->api.display_destroy(t->apiData);
 }
 
 
@@ -126,33 +126,33 @@ topazEntity_t * topaz_display_get_camera_render(topazDisplay_t * t) {
 
 
 void topaz_display_resize(topazDisplay_t * t, int w, int h) {
-    t->api.display_resize(t->apiData, w, h);
+    t->api.display_resize(t, t->apiData, w, h);
     if (t->vp == topazDisplay_ViewPolicy_MatchSize)
         topaz_camera_set_render_resolution(t->cameraRender, w, h);
 }
 
 void topaz_display_set_position(topazDisplay_t * t, int x, int y) {
-    t->api.display_set_position(t->apiData, x, y);
+    t->api.display_set_position(t, t->apiData, x, y);
 }
 
 void topaz_display_fullscreen(topazDisplay_t * t, int h) {
-    t->api.display_fullscreen(t->apiData, h);
+    t->api.display_fullscreen(t, t->apiData, h);
 }
 
 void topaz_display_hide(topazDisplay_t * t, int h) {
-    t->api.display_hide(t->apiData, h);
+    t->api.display_hide(t, t->apiData, h);
 }
 
 int topaz_display_has_input_focus(topazDisplay_t * t) {
-    return t->api.display_has_input_focus(t->apiData);
+    return t->api.display_has_input_focus(t, t->apiData);
 }
 
 void topaz_display_lock_client_resize(topazDisplay_t * t, int h) {
-    t->api.display_lock_client_resize(t->apiData, h);
+    t->api.display_lock_client_resize(t, t->apiData, h);
 }
 
 void topaz_display_lock_client_position(topazDisplay_t * t, int h) {
-    t->api.display_lock_client_position(t->apiData, h);
+    t->api.display_lock_client_position(t, t->apiData, h);
 }
 
 void topaz_display_set_view_policy(topazDisplay_t * t, topazDisplay_ViewPolicy p) {
@@ -162,49 +162,49 @@ void topaz_display_set_view_policy(topazDisplay_t * t, topazDisplay_ViewPolicy p
 
 
 int topaz_display_get_width(topazDisplay_t * t) {
-    return t->api.display_get_width(t->apiData);
+    return t->api.display_get_width(t, t->apiData);
 }
 
 int topaz_display_get_height(topazDisplay_t * t) {
-    return t->api.display_get_height(t->apiData);
+    return t->api.display_get_height(t, t->apiData);
 }
 
 int topaz_display_get_x(topazDisplay_t * t) {
-    return t->api.display_get_x(t->apiData);
+    return t->api.display_get_x(t, t->apiData);
 }
 
 int topaz_display_get_y(topazDisplay_t * t) {
-    return t->api.display_get_y(t->apiData);
+    return t->api.display_get_y(t, t->apiData);
 }
 
 
 
 
 void topaz_display_set_name(topazDisplay_t * t, const topazString_t * s) {
-    t->api.display_set_name(t->apiData, s);
+    t->api.display_set_name(t, t->apiData, s);
 }
 
 void topaz_display_add_resize_callback(topazDisplay_t * t, void(*cb)(int w, int h, void *), void * cbData) {
-    t->api.display_add_resize_callback(t->apiData, cb, cbData);
+    t->api.display_add_resize_callback(t, t->apiData, cb, cbData);
 }
 
 void topaz_display_remove_resize_callback(topazDisplay_t * t, void(*cb)(int w, int h, void *)) {
-    t->api.display_remove_resize_callback(t->apiData, cb);
+    t->api.display_remove_resize_callback(t, t->apiData, cb);
 }
 
 void topaz_display_add_close_callback(topazDisplay_t * t, void(*cb)(void *), void * data) {
-    t->api.display_add_close_callback(t->apiData, cb, data);
+    t->api.display_add_close_callback(t, t->apiData, cb, data);
 }
 
 void topaz_display_remove_close_callback(topazDisplay_t * t, void(*cb)(void *)) {
-    t->api.display_remove_close_callback(t->apiData, cb);
+    t->api.display_remove_close_callback(t, t->apiData, cb);
 }
 
 
 
 
 int topaz_display_is_capable(topazDisplay_t * t, topazDisplay_Capability c) {
-    return t->api.display_is_capable(t->apiData, c);
+    return t->api.display_is_capable(t, t->apiData, c);
 }
 
 
@@ -214,7 +214,7 @@ int topaz_display_is_capable(topazDisplay_t * t, topazDisplay_Capability c) {
 
 void topaz_display_update(topazDisplay_t * t) {
     topazRenderer_Framebuffer_t * fb = topaz_camera_get_framebuffer(t->cameraRender);
-    t->api.display_update(t->apiData, fb);
+    t->api.display_update(t, t->apiData, fb);
 
     topaz_camera_swap_buffers(t->cameraRender);
 
@@ -236,32 +236,32 @@ void topaz_display_update(topazDisplay_t * t) {
 }
 
 const topazArray_t * topaz_display_supported_framebuffers(topazDisplay_t * t) {
-    return t->api.display_supported_framebuffers(t->apiData);
+    return t->api.display_supported_framebuffers(t, t->apiData);
 }
 
 topazDisplay_Handle topaz_display_get_system_handle_type(topazDisplay_t * t) {
-    return t->api.display_get_system_handle_type(t->apiData);
+    return t->api.display_get_system_handle_type(t, t->apiData);
 }
 
 void * topaz_display_get_system_handle(topazDisplay_t * t) {
-    return t->api.display_get_system_handle(t->apiData);
+    return t->api.display_get_system_handle(t, t->apiData);
 }
 
 topazDisplay_Event topaz_display_get_system_event_type(topazDisplay_t * t) {
-    return t->api.display_get_system_event_type(t->apiData);
+    return t->api.display_get_system_event_type(t, t->apiData);
 }
 
 void * topaz_display_get_last_system_event(topazDisplay_t * t) {
-    return t->api.display_get_last_system_event(t->apiData);
+    return t->api.display_get_last_system_event(t, t->apiData);
 }
 
 
 topazArray_t * topaz_display_get_current_clipboard(topazDisplay_t * t) {
-    return t->api.display_get_current_clipboard(t->apiData);
+    return t->api.display_get_current_clipboard(t, t->apiData);
 }
 
 void topaz_display_set_current_clipboard(topazDisplay_t * t, const topazArray_t * s) {
-    t->api.display_set_current_clipboard(t->apiData, s);
+    t->api.display_set_current_clipboard(t, t->apiData, s);
 }
 
 void topaz_display_auto_refresh_camera(topazDisplay_t * d, int doIt) {

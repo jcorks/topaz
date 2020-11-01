@@ -37,6 +37,7 @@ DEALINGS IN THE SOFTWARE.
 
 typedef struct topazInputManager_t topazInputManager_t;
 typedef struct topazDisplay_t topazDisplay_t;
+typedef struct topaz_t topaz_t;
 /*
 
     InputManagerAPI
@@ -58,22 +59,16 @@ typedef struct topazInputManagerAPI_t topazInputManagerAPI_t;
 /// the user-side API for topazInputManager_t. See <topaz/backends/input_manager.h>
 ///
 struct topazInputManagerAPI_t {
-    void                    (*input_manager_create)           (topazInputManagerAPI_t *);
-    void                    (*input_manager_destroy)          (topazInputManagerAPI_t *);
+    void *                  (*input_manager_create)           (topazInputManager_t *, topaz_t *);
+    void                    (*input_manager_destroy)          (topazInputManager_t *, void *);
 
-    int                  (*input_manager_handle_events)          (topazInputManagerAPI_t *);
-    topazInputDevice_t * (*input_manager_query_device)           (topazInputManagerAPI_t *, int ID);
-    int                  (*input_manager_query_auxiliary_devices)(topazInputManagerAPI_t *, int * IDs);
-    int                  (*input_manager_max_devices)            (topazInputManagerAPI_t *);
-    void                 (*input_manager_set_focus)              (topazInputManagerAPI_t *, topazDisplay_t *);
-    topazDisplay_t *     (*input_manager_get_focus)              (topazInputManagerAPI_t *);
-    void                 (*input_manager_show_virtual_keyboard)  (topazInputManagerAPI_t *, int);
-
-
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the lifetime of the InputManager
-    ///
-    void * implementationData;
+    int                  (*input_manager_handle_events)          (topazInputManager_t *, void *);
+    topazInputDevice_t * (*input_manager_query_device)           (topazInputManager_t *, void *, int ID);
+    int                  (*input_manager_query_auxiliary_devices)(topazInputManager_t *, void *, int * IDs);
+    int                  (*input_manager_max_devices)            (topazInputManager_t *, void *);
+    void                 (*input_manager_set_focus)              (topazInputManager_t *, void *, topazDisplay_t *);
+    topazDisplay_t *     (*input_manager_get_focus)              (topazInputManager_t *, void *);
+    void                 (*input_manager_show_virtual_keyboard)  (topazInputManager_t *, void *, int);
 
 
 };

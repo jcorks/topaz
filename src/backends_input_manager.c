@@ -12,13 +12,14 @@
 struct topazInputManager_t {
     topazInputManagerAPI_t api;
     topazSystem_Backend_t * backend;
+    void * userData;
 };
 
 
 
 
 
-topazInputManager_t * topaz_input_manager_create(topazSystem_Backend_t * b, topazInputManagerAPI_t api) {
+topazInputManager_t * topaz_input_manager_create(topaz_t * ctx, topazSystem_Backend_t * b, topazInputManagerAPI_t api) {
     #ifdef TOPAZDC_DEBUG
         assert(b && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(api.input_manager_create);
@@ -34,7 +35,7 @@ topazInputManager_t * topaz_input_manager_create(topazSystem_Backend_t * b, topa
     topazInputManager_t * out = calloc(1, sizeof(topazInputManager_t));
     out->api = api;
     out->backend = b;
-    out->api.input_manager_create(&out->api);
+    out->userData = out->api.input_manager_create(out, ctx);
     return out;
 }
 
@@ -43,7 +44,7 @@ void topaz_input_manager_destroy(topazInputManager_t * t) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
-    t->api.input_manager_destroy(&t->api);
+    t->api.input_manager_destroy(t, t->userData);
 }
 
 
@@ -257,32 +258,32 @@ const topazString_t * topaz_input_manager_id_to_string(int id) {
 
 
 int topaz_input_manager_handle_events(topazInputManager_t * t) {
-    return t->api.input_manager_handle_events(&t->api);
+    return t->api.input_manager_handle_events(t, t->userData);
 }
 
 topazInputDevice_t * topaz_input_manager_query_device(topazInputManager_t * t, int ID) {
-    return t->api.input_manager_query_device(&t->api, ID);
+    return t->api.input_manager_query_device(t, t->userData, ID);
 }
 
 int topaz_input_manager_query_auxiliary_devices(topazInputManager_t * t, int * IDs) {
-    return t->api.input_manager_query_auxiliary_devices(&t->api, IDs);
+    return t->api.input_manager_query_auxiliary_devices(t, t->userData, IDs);
 }
 
 int topaz_input_manager_max_devices(topazInputManager_t * t) {
-    return t->api.input_manager_max_devices(&t->api);
+    return t->api.input_manager_max_devices(t, t->userData);
 }
 
 void topaz_input_manager_set_focus(topazInputManager_t * t, topazDisplay_t * d) {
-    t->api.input_manager_set_focus(&t->api, d);
+    t->api.input_manager_set_focus(t, t->userData, d);
 }
 
 topazDisplay_t * topaz_input_manager_get_focus(topazInputManager_t * t) {
-    return t->api.input_manager_get_focus(&t->api);
+    return t->api.input_manager_get_focus(t, t->userData);
 }
 
 
 void topaz_input_manager_show_virtual_keyboard(topazInputManager_t * t, int doIt) {
-    t->api.input_manager_show_virtual_keyboard(&t->api, doIt);
+    t->api.input_manager_show_virtual_keyboard(t, t->userData, doIt);
 }
 
 

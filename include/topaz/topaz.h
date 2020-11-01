@@ -213,7 +213,7 @@ topazArray_t * topaz_context_get_parameter_names(const topaz_t *);
 
 /// Creates a new, standard filesys instance.
 ///
-topazFilesys_t * topaz_context_filesys_create(const topaz_t *);
+topazFilesys_t * topaz_context_filesys_create(topaz_t *);
 
 
 

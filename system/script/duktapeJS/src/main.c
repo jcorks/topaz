@@ -35,6 +35,9 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/system.h>
 #include <topaz/version.h>
 #include <topaz/containers/array.h>
+#include <topaz/modules/console.h>
+#include <topaz/topaz.h>
+
 #include <stdio.h>
 #ifdef TOPAZDC_DEBUG
     #include <assert.h>
@@ -42,7 +45,24 @@ DEALINGS IN THE SOFTWARE.
 #include "duktape.h"
 
 
+void PWARN(topaz_t * t, topazString_t * str) {
+    topaz_console_print_message(
+        topaz_context_get_console(t),
+        str,
+        topazConsole_MessageType_Warning
+    );
+    topaz_string_destroy(str);
+}
 
+
+void PERROR(topaz_t * t, topazString_t * str) {
+    topaz_console_print_message(
+        topaz_context_get_console(t),
+        str,
+        topazConsole_MessageType_Error
+    );
+    topaz_string_destroy(str);
+}
 
 
 
@@ -51,6 +71,7 @@ typedef struct {
     topazScript_t * script;
     // used for object reference creation
     int lastObjectReference;
+    topaz_t * ctx;
 } TOPAZDUK;
 
 
@@ -242,7 +263,8 @@ static topazScript_Object_t * topaz_duk_stack_object_to_tso(TOPAZDUK * ctx, int 
     switch(duk_get_type(ctx->js, -1)) {
       case DUK_TYPE_NONE:
         #ifdef TOPAZDC_DEBUG
-            printf("WARNING: duktapeJS returned DUK_TYPE_NONE, this is likely indicative of programmer error!");
+            
+            PWARN(ctx->ctx, topaz_string_create_from_c_str("duktapeJS returned DUK_TYPE_NONE, this is likely indicative of programmer error!"));
         #endif
         break;
       case DUK_TYPE_BOOLEAN:
@@ -495,11 +517,10 @@ static topazString_t * topaz_duk_stack_where(TOPAZDUK * ctx) {
 
 static void topaz_duk_fatal(void * udata, const char *msg) {
     TOPAZDUK * ctx = udata;
-    printf("TOPAZ-DUKTAPE FATAL ERROR: %s\n", msg);
+    PERROR(ctx->ctx, topaz_string_create_from_c_str("TOPAZ-DUKTAPE FATAL ERROR: %s\n", msg));
 
     topazString_t * str = topaz_duk_stack_where(ctx);
-    printf("%s\n", topaz_string_get_c_str(str));
-    topaz_string_destroy(str);
+    PERROR(ctx->ctx, str);
     fflush(stdout);
 }
 
@@ -515,8 +536,9 @@ static void topaz_duk_fatal(void * udata, const char *msg) {
 
 
 
-static void * topaz_duk_create(topazScript_t * scr) {
+static void * topaz_duk_create(topazScript_t * scr, topaz_t * ctx) {
     TOPAZDUK * out = calloc(1, sizeof(TOPAZDUK));
+    out->ctx = ctx;
     out->js = duk_create_heap(
         NULL,
         NULL,
@@ -575,7 +597,7 @@ static topazScript_Object_t * topaz_duk_expression(
     TOPAZDUK * ctx = data;
     topazScript_Object_t * out;
     if (duk_peval_lstring(ctx->js, topaz_string_get_c_str(expr), topaz_string_get_length(expr))) {
-        topazString_t * str = topaz_string_create();;
+        topazString_t * str = topaz_string_create_from_c_str("Eval error: ");
 
         if (duk_is_error(ctx->js, -1)) {
             duk_get_prop_string(ctx->js, -1, "lineNumber");
@@ -592,8 +614,7 @@ static topazScript_Object_t * topaz_duk_expression(
 
         }
 
-        printf("Eval error: %s", topaz_string_get_c_str(str));
-        topaz_string_destroy(str);
+        PERROR(ctx->ctx, str);
         fflush(stdout);
 
 
@@ -666,7 +687,7 @@ void topaz_duk_run(
         } else {
             topaz_string_concat_printf(str, "%s", "Unknown error occurred within scripting context (DUKTAPE did not throw error object?)\n");
         }
-        printf("%s", topaz_string_get_c_str(str));
+        PERROR(ctx->ctx, str);
         fflush(stdout);
     }
     duk_pop(ctx->js); // throw away result of last statement.

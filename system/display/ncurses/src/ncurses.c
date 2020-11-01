@@ -320,7 +320,7 @@ static char printChars[0xff+1] = {
 #define GUESS_PIXELS_PER_CHAR__HEIGHT 10
 
 
-void ncurses_display_resize(void * a, int w, int h) {
+void ncurses_display_resize(topazDisplay_t * dispSrc, void * a, int w, int h) {
     NCURSESTOPAZ * disp = a;    
     disp->w = w;
     disp->h = w;
@@ -332,7 +332,7 @@ void ncurses_display_resize(void * a, int w, int h) {
 
 
 
-void * ncurses_display_create(topazDisplayAPI_t * api) {
+void * ncurses_display_create(topazDisplayAPI_t * api, topaz_t * topaz) {
     NCURSESTOPAZ * out = calloc(1, sizeof(NCURSESTOPAZ));
     initscr();
     raw();
@@ -349,7 +349,7 @@ void * ncurses_display_create(topazDisplayAPI_t * api) {
     ncurses_display_resize(api, 640, 480);
     return out;
 }
-void ncurses_display_destroy(void * a) {
+void ncurses_display_destroy(topazDisplay_t * dispSrc, void * a) {
     free(a);
 }
 
@@ -357,71 +357,71 @@ void ncurses_display_destroy(void * a) {
 
 
 
-void ncurses_display_set_position(void * a, int x, int y) {
+void ncurses_display_set_position(topazDisplay_t * dispSrc, void * a, int x, int y) {
     return; 
 }
-void ncurses_display_fullscreen(void * a, int doIT) {
+void ncurses_display_fullscreen(topazDisplay_t * dispSrc, void * a, int doIT) {
     return;
 }
 
-void ncurses_display_hide(void * a, int doIT) {
+void ncurses_display_hide(topazDisplay_t * dispSrc, void * a, int doIT) {
     return;
 }    
 
-int ncurses_display_has_input_focus (void * a) {
+int ncurses_display_has_input_focus (topazDisplay_t * dispSrc, void * a) {
     return TRUE;
 } 
 
-void ncurses_display_lock_client_resize(void * a, int h) {
+void ncurses_display_lock_client_resize(topazDisplay_t * dispSrc, void * a, int h) {
     return;    
 }
 
-void ncurses_display_lock_client_position(void * a, int h) {
+void ncurses_display_lock_client_position(topazDisplay_t * dispSrc, void * a, int h) {
     return;
 }
 
 
-int  ncurses_display_get_width(void * a) {
+int  ncurses_display_get_width(topazDisplay_t * dispSrc, void * a) {
     NCURSESTOPAZ * disp = a;    
     return disp->w;
 }
-int  ncurses_display_get_height(void * a) {
+int  ncurses_display_get_height(topazDisplay_t * dispSrc, void * a) {
     NCURSESTOPAZ * disp = a;    
     return disp->h;
 }
 
 
-int  ncurses_display_get_x(void * a) {
+int  ncurses_display_get_x(topazDisplay_t * dispSrc, void * a) {
     return 0;
 }
-int  ncurses_display_get_y(void * a) {
+int  ncurses_display_get_y(topazDisplay_t * dispSrc, void * a) {
     return 0;
 }
 
-void ncurses_display_set_name(void * a, const topazString_t * str) {
+void ncurses_display_set_name(topazDisplay_t * dispSrc, void * a, const topazString_t * str) {
     return;
 }
 
-void ncurses_display_add_resize_callback(void * a, void(*callback)(int w, int h, void *), void * resizeData) {
+void ncurses_display_add_resize_callback(topazDisplay_t * dispSrc, void * a, void(*callback)(int w, int h, void *), void * resizeData) {
     return; // TODO
 }
-void ncurses_display_remove_resize_callback(void * a, void(*cb)(int w, int h, void *)) {
+void ncurses_display_remove_resize_callback(topazDisplay_t * dispSrc, void * a, void(*cb)(int w, int h, void *)) {
     return; // TODO;
 }
-void ncurses_display_add_close_callback(void * a, void(*cb)(void *), void * resizeData) {
+void ncurses_display_add_close_callback(topazDisplay_t * dispSrc, void * a, void(*cb)(void *), void * resizeData) {
     return; // TODO
 }
-void ncurses_display_remove_close_callback(void * a, void(*cb)(void *)) {
+void ncurses_display_remove_close_callback(topazDisplay_t * dispSrc, void * a, void(*cb)(void *)) {
     return; // TODO
 }
 
 
-int ncurses_display_is_capable(void * a, topazDisplay_Capability cap) {
+int ncurses_display_is_capable(topazDisplay_t * dispSrc, void * a, topazDisplay_Capability cap) {
     return topazDisplay_Capability_CanResize; // thats it
 }
 
 
-void ncurses_display_update(void * a, topazRenderer_Framebuffer_t * fb) {
+void ncurses_display_update(topazDisplay_t * dispSrc, void * a, topazRenderer_Framebuffer_t * fb) {
     NCURSESTOPAZ * disp = a;    
 
     uint8_t * srcIter = topaz_renderer_framebuffer_get_handle(fb);
@@ -452,33 +452,33 @@ void ncurses_display_update(void * a, topazRenderer_Framebuffer_t * fb) {
 
 
 } 
-const topazArray_t * ncurses_display_supported_framebuffers(void * a) {
+const topazArray_t * ncurses_display_supported_framebuffers(topazDisplay_t * dispSrc, void * a) {
     topazRenderer_Framebuffer_Handle h = topazRenderer_Framebuffer_Handle_RGBA_PixelArray;
     return TOPAZ_ARRAY_CAST(&h, int, 1);
 }
 
-topazDisplay_Handle ncurses_display_get_system_handle_type(void * a) {
+topazDisplay_Handle ncurses_display_get_system_handle_type(topazDisplay_t * dispSrc, void * a) {
     return topazDisplay_Handle_Unknown;
 }
 
-void * ncurses_display_get_system_handle(void * a) {
+void * ncurses_display_get_system_handle(topazDisplay_t * dispSrc, void * a) {
     return NULL;
 }
 
-topazDisplay_Event ncurses_display_get_system_event_type(void * a) {
+topazDisplay_Event ncurses_display_get_system_event_type(topazDisplay_t * dispSrc, void * a) {
     return topazDisplay_Event_Unknown;
 }
 
 
-void * ncurses_display_get_last_system_event(void * a) {
+void * ncurses_display_get_last_system_event(topazDisplay_t * dispSrc, void * a) {
     return NULL;
 }
 
-topazArray_t * ncurses_display_get_current_clipboard(void * a) {
+topazArray_t * ncurses_display_get_current_clipboard(topazDisplay_t * dispSrc, void * a) {
     return NULL;
 }
 
-void ncurses_display_set_current_clipboard(void * api, const topazArray_t * arr) {
+void ncurses_display_set_current_clipboard(topazDisplay_t * dispSrc, void * api, const topazArray_t * arr) {
 
 }
 

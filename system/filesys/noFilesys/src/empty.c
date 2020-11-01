@@ -44,7 +44,7 @@ static intptr_t api_nothing(){return 0;}
 void topaz_system_filesys_noFilesys__backend(
     topazSystem_t *         system, 
     topazSystem_Backend_t * backend, 
-    topazFilesysAPI_t *     api
+    topazFilesys_t *, void *     api
 ) {
     topaz_system_backend_bind(
         backend,
@@ -86,18 +86,18 @@ void topaz_system_filesys_noFilesys__backend(
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-    api->filesys_create = (void (*)(topazFilesysAPI_t *))api_nothing;
-    api->filesys_destroy = (void (*)(topazFilesysAPI_t *))api_nothing;
-    api->filesys_query = (const topazArray_t * (*)(topazFilesysAPI_t *))api_nothing;
-    api->filesys_set_path = (int (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
-    api->filesys_get_path = (const topazString_t * (*)(topazFilesysAPI_t *))api_nothing;
-    api->filesys_go_to_child = (int (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
-    api->filesys_go_to_parent = (int (*)(topazFilesysAPI_t *))api_nothing;
-    api->filesys_create_node = (int (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
-    api->filesys_read = (topazRbuffer_t * (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
-    api->filesys_write = (int (*)(topazFilesysAPI_t *, const topazString_t *, const topazWbuffer_t *))api_nothing;
-    api->filesys_is_node = (int (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
-    api->filesys_is_child = (int (*)(topazFilesysAPI_t *, const topazString_t *))api_nothing;
+    api->filesys_create = (void * (*)(topazFilesys_t *, topaz_t *))api_nothing;
+    api->filesys_destroy = (void (*)(topazFilesys_t *, void *))api_nothing;
+    api->filesys_query = (const topazArray_t * (*)(topazFilesys_t *, void *))api_nothing;
+    api->filesys_set_path = (int (*)(topazFilesys_t *, void *, const topazString_t *))api_nothing;
+    api->filesys_get_path = (const topazString_t * (*)(topazFilesys_t *, void *))api_nothing;
+    api->filesys_go_to_child = (int (*)(topazFilesys_t *, void *, const topazString_t *))api_nothing;
+    api->filesys_go_to_parent = (int (*)(topazFilesys_t *, void *))api_nothing;
+    api->filesys_create_node = (int (*)(topazFilesys_t *, void *, const topazString_t *))api_nothing;
+    api->filesys_read = (topazRbuffer_t * (*)(topazFilesys_t *, void *, const topazString_t *))api_nothing;
+    api->filesys_write = (int (*)(topazFilesys_t *, void *, const topazString_t *, const topazWbuffer_t *))api_nothing;
+    api->filesys_is_node = (int (*)(topazFilesys_t *, void *, const topazString_t *))api_nothing;
+    api->filesys_is_child = (int (*)(topazFilesys_t *, void *, const topazString_t *))api_nothing;
 
 }
 

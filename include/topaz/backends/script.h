@@ -35,6 +35,7 @@ DEALINGS IN THE SOFTWARE.
 typedef struct topazScript_Object_t topazScript_Object_t;
 typedef struct topazArray_t topazArray_t;
 typedef struct topazString_t topazString_t;
+typedef struct topaz_t topaz_t;
 typedef struct topazSystem_Backend_t topazSystem_Backend_t;
 
 
@@ -140,7 +141,7 @@ typedef enum {
 /// topaz_t has a default instance that it generates for you. 
 /// See topaz_context_get_graphics();
 ///
-topazScript_t * topaz_script_create(topazSystem_Backend_t *, const topazScriptAPI_t *);
+topazScript_t * topaz_script_create(topaz_t *, topazSystem_Backend_t *, const topazScriptAPI_t *);
 
 /// Destroys and frees a topaz input instance.
 ///

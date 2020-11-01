@@ -53,39 +53,31 @@ typedef struct topazFilesys_t topazFilesys_t;
 
 */
 typedef struct topazFilesysAPI_t topazFilesysAPI_t;
+typedef struct topaz_t topaz_t;
 
 
 /// Each function is an implementation-facing copy of 
 /// the user-side API for topazFilesys_t. See <topaz/backends/filesys.h>
 ///
 struct topazFilesysAPI_t {
-    void                    (*filesys_create)           (topazFilesysAPI_t *);
-    void                    (*filesys_destroy)          (topazFilesysAPI_t *);
+    void *                  (*filesys_create)           (topazFilesys_t *, topaz_t *);
+    void                    (*filesys_destroy)          (topazFilesys_t *, void *);
 
 
-    const topazArray_t *    (*filesys_query)            (topazFilesysAPI_t *);
-    int                     (*filesys_set_path)         (topazFilesysAPI_t *, const topazString_t *);
-    const topazString_t *   (*filesys_get_path)         (topazFilesysAPI_t *);
-    const topazArray_t *    (*filesys_split_path)       (topazFilesysAPI_t *, const topazString_t *);
+    const topazArray_t *    (*filesys_query)            (topazFilesys_t *, void *);
+    int                     (*filesys_set_path)         (topazFilesys_t *, void *, const topazString_t *);
+    const topazString_t *   (*filesys_get_path)         (topazFilesys_t *, void *);
+    const topazArray_t *    (*filesys_split_path)       (topazFilesys_t *, void *, const topazString_t *);
 
 
-    int                     (*filesys_go_to_child)      (topazFilesysAPI_t *, const topazString_t *);
-    int                     (*filesys_go_to_parent)     (topazFilesysAPI_t *);
-    int                     (*filesys_create_node)      (topazFilesysAPI_t *, const topazString_t *);
-    topazRbuffer_t *        (*filesys_read)             (topazFilesysAPI_t *, const topazString_t *);
-    int                     (*filesys_write)            (topazFilesysAPI_t *, const topazString_t *, const topazWbuffer_t *);
+    int                     (*filesys_go_to_child)      (topazFilesys_t *, void *, const topazString_t *);
+    int                     (*filesys_go_to_parent)     (topazFilesys_t *, void *);
+    int                     (*filesys_create_node)      (topazFilesys_t *, void *, const topazString_t *);
+    topazRbuffer_t *        (*filesys_read)             (topazFilesys_t *, void *, const topazString_t *);
+    int                     (*filesys_write)            (topazFilesys_t *, void *, const topazString_t *, const topazWbuffer_t *);
 
-    int                     (*filesys_is_node)          (topazFilesysAPI_t *, const topazString_t * t);
-    int                     (*filesys_is_child)         (topazFilesysAPI_t *, const topazString_t * t);
-
-
-
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the lifetime of the filesys
-    ///
-    void * implementationData;
-
-
+    int                     (*filesys_is_node)          (topazFilesys_t *, void *, const topazString_t * t);
+    int                     (*filesys_is_child)         (topazFilesys_t *, void *, const topazString_t * t);
 };
 
 

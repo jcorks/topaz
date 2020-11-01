@@ -55,13 +55,13 @@ static void glfwim_key_callback(
     GLFWwindow * window,
     
 
-static void topaz_glfw_im_create(topazInputManagerAPI_t * api) {
+static void * topaz_glfw_im_create(topazInputManager_t * api, topaz_t * ctx) {
     
     GLFWIM * out = calloc(1, sizeof(GLFWIM));
     out->ctx = glfwGetCurrentContext();
 
-    api->implementationData = out;
     topaz_table_insert(glfww2im, out->ctx, out);
+    return out;
 }
 
 static void map_key(int k, int v) {
@@ -260,15 +260,15 @@ void topaz_system_inputManager_glfw__backend(
         glfww2im = topaz_table_create_hash_pointer();
         assign_glfw_lookups();
     }
-    api->input_manager_create = (void (*)(topazInputManagerAPI_t *)) api_nothing;
-    api->input_manager_destroy = (void (*)(topazInputManagerAPI_t *)) api_nothing;
-    api->input_manager_handle_events = (int (*)(topazInputManagerAPI_t *)) api_nothing;
-    api->input_manager_query_device = (topazInputDevice_t * (*)(topazInputManagerAPI_t *, int)) api_nothing;
-    api->input_manager_query_auxiliary_devices = (int (*)(topazInputManagerAPI_t *, int *)) api_nothing;
-    api->input_manager_max_devices = (int (*)(topazInputManagerAPI_t *)) api_nothing;
-    api->input_manager_set_focus = (void (*)(topazInputManagerAPI_t *, topazDisplay_t *)) api_nothing;
-    api->input_manager_get_focus = (topazDisplay_t * (*)(topazInputManagerAPI_t *)) api_nothing;
-    api->input_manager_show_virtual_keyboard = (void (*)(topazInputManagerAPI_t *, int)) api_nothing;
+    api->input_manager_create = (void * (*)(topazInputManager_t *, topaz_t *)) api_nothing;
+    api->input_manager_destroy = (void (*)(topazInputManager_t *, void *)) api_nothing;
+    api->input_manager_handle_events = (int (*)(topazInputManager_t *, void *)) api_nothing;
+    api->input_manager_query_device = (topazInputDevice_t * (*)(topazInputManager_t *, void *, int)) api_nothing;
+    api->input_manager_query_auxiliary_devices = (int (*)(topazInputManager_t *, void *, int *)) api_nothing;
+    api->input_manager_max_devices = (int (*)(topazInputManager_t *, void *)) api_nothing;
+    api->input_manager_set_focus = (void (*)(topazInputManager_t *, void *, topazDisplay_t *)) api_nothing;
+    api->input_manager_get_focus = (topazDisplay_t * (*)(topazInputManager_t *, void *)) api_nothing;
+    api->input_manager_show_virtual_keyboard = (void (*)(topazInputManager_t *, void *, int)) api_nothing;
 
 }
 

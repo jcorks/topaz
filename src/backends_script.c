@@ -70,7 +70,7 @@ struct topazScript_Object_t {
 
 
 
-topazScript_t * topaz_script_create(topazSystem_Backend_t * b, const topazScriptAPI_t * api) {
+topazScript_t * topaz_script_create(topaz_t * t, topazSystem_Backend_t * b, const topazScriptAPI_t * api) {
     topazScript_t * out = calloc(1, sizeof(topazScript_t));
     out->api = *api;
     out->backend = b;
@@ -85,7 +85,7 @@ topazScript_t * topaz_script_create(topazSystem_Backend_t * b, const topazScript
         assert(api->script_bootstrap);
     #endif
 
-    out->implementationData = out->api.script_create(out);
+    out->implementationData = out->api.script_create(out, t);
     return out;
 }
 

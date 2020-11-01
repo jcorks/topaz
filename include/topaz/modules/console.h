@@ -103,7 +103,7 @@ void topaz_console_print(topazConsole_t *, const topazString_t *);
 /// strings to make it more clear what type the message is 
 /// once displayed.
 ///
-void topaz_console_print_type(topazConsole_t *, const topazString_t *, topazConsole_MessageType_t);
+void topaz_console_print_message(topazConsole_t *, const topazString_t *, topazConsole_MessageType_t);
 
 /// Prints a color line to the console.
 ///

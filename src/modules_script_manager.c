@@ -59,7 +59,7 @@ topazScript_t * topaz_script_manager_create_context(
         &api
     );
 
-    topazScript_t * out = topaz_script_create(backend, &api);
+    topazScript_t * out = topaz_script_create(s->ctx, backend, &api);
 
     
     add_all_refs(

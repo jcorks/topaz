@@ -88,15 +88,15 @@ void topaz_system_inputManager_noInputManager__backend(
         TOPAZ__VERSION__MICRO
     );
 
-    api->input_manager_create = (void (*)(topazInputManagerAPI_t *)) api_nothing;
-    api->input_manager_destroy = (void (*)(topazInputManagerAPI_t *)) api_nothing;
-    api->input_manager_handle_events = (int (*)(topazInputManagerAPI_t *)) api_nothing;
-    api->input_manager_query_device = (topazInputDevice_t * (*)(topazInputManagerAPI_t *, int)) api_nothing;
-    api->input_manager_query_auxiliary_devices = (int (*)(topazInputManagerAPI_t *, int *)) api_nothing;
-    api->input_manager_max_devices = (int (*)(topazInputManagerAPI_t *)) api_nothing;
-    api->input_manager_set_focus = (void (*)(topazInputManagerAPI_t *, topazDisplay_t *)) api_nothing;
-    api->input_manager_get_focus = (topazDisplay_t * (*)(topazInputManagerAPI_t *)) api_nothing;
-    api->input_manager_show_virtual_keyboard = (void (*)(topazInputManagerAPI_t *, int)) api_nothing;
+    api->input_manager_create = (void * (*)(topazInputManager_t *, topaz_t *  )) api_nothing;
+    api->input_manager_destroy = (void (*)(topazInputManager_t *, void *)) api_nothing;
+    api->input_manager_handle_events = (int (*)(topazInputManager_t *, void *)) api_nothing;
+    api->input_manager_query_device = (topazInputDevice_t * (*)(topazInputManager_t *, void *, int)) api_nothing;
+    api->input_manager_query_auxiliary_devices = (int (*)(topazInputManager_t *, void *, int *)) api_nothing;
+    api->input_manager_max_devices = (int (*)(topazInputManager_t *, void *)) api_nothing;
+    api->input_manager_set_focus = (void (*)(topazInputManager_t *, void *, topazDisplay_t *)) api_nothing;
+    api->input_manager_get_focus = (topazDisplay_t * (*)(topazInputManager_t *, void *)) api_nothing;
+    api->input_manager_show_virtual_keyboard = (void (*)(topazInputManager_t *, void *, int)) api_nothing;
 
 }
 

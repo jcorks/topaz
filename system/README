@@ -34,11 +34,24 @@ format:
 
 
 
-#ifndef H_TOPAZDC__[backend_name][environment_name]__INCLUDED
-#define H_TOPAZDC__[backend_name][environment_name]__INCLUDED
+    #ifndef H_TOPAZDC__[backend_name][environment_name]__INCLUDED
+    #define H_TOPAZDC__[backend_name][environment_name]__INCLUDED
 
-topazBackend_t * topaz_system_[backend_name]_[environment_name]__backend();
+    void topaz_system_[backend_name]_[environment_name]__backend(
+        topazSystem_t *          system, 
+        topazSystem_Backend_t *  backend, 
+        topaz[backend_name]API_t * api
+    );
 
-void             topaz_system_[backend_name]_[environment_name]__api(topaz[backend_name]API_t *);
+    #endif
 
-#endif
+
+The function implementation should fulfill 2 requirements:
+1) Using topaz_system_backend_bind() to assign information 
+   to the backend. This includes text attributes, versioning 
+   information, and update controls 
+
+2) Populate the API reference with functions specific to 
+   that API that allow interfacing with some system-specific 
+   feature / library / hardware / etc.
+

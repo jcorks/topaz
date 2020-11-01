@@ -34,7 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <stdint.h>
 
-
+typedef struct topaz_t topaz_t;
 typedef struct topazTime_t topazTime_t;
 
 /*
@@ -57,17 +57,11 @@ typedef struct topazTimeAPI_t topazTimeAPI_t;
 /// the user-side API for topazTime_t. See <topaz/backends/Time.h>
 ///
 struct topazTimeAPI_t {
-    void                    (*time_create)           (topazTimeAPI_t *);
-    void                    (*time_destroy)          (topazTimeAPI_t *);
+    void *                  (*time_create)           (topazTime_t *, topaz_t *);
+    void                    (*time_destroy)          (topazTime_t *, void *);
 
-    void                    (*time_sleep_ms)         (topazTimeAPI_t *, uint64_t);
-    uint64_t                (*time_ms_since_startup) (topazTimeAPI_t *);
-
-
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the lifetime of the Time
-    ///
-    void * implementationData;
+    void                    (*time_sleep_ms)         (topazTime_t *, void *, uint64_t);
+    uint64_t                (*time_ms_since_startup) (topazTime_t *, void *);
 
 
 };

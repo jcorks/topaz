@@ -52,15 +52,15 @@ typedef struct {
 } NCURSESINPUT;
 
 
-static void ncurses_input_manager_create (topazInputManagerAPI_t * api) {
+static void * ncurses_input_manager_create (topazInputManager_t * api, topaz_t * t) {
     NCURSESINPUT * im = calloc(1, sizeof(NCURSESINPUT));
     im->keyboard = topaz_input_device_create(topaz_InputDevice_Class_Keyboard);
     im->mouse    = topaz_input_device_create(topaz_InputDevice_Class_Pointer);
     im->lastKeys = topaz_array_create(sizeof(int));
-    api->implementationData = im;
+    return im;
 }
-static void ncurses_input_manager_destroy(topazInputManagerAPI_t * api) {
-    NCURSESINPUT * im = api->implementationData;
+static void ncurses_input_manager_destroy(topazInputManager_t * im, void * userData) {
+    NCURSESINPUT * im = userData;
     topaz_input_device_destroy(im->keyboard);
     topaz_input_device_destroy(im->mouse);
     topaz_array_destroy(im->lastKeys);
@@ -88,8 +88,8 @@ static int ncurses_key_to_topaz_key(int ch) {
     return topazNotAnInput;
 }
 
-static int ncurses_input_manager_handle_events (topazInputManagerAPI_t * api) {
-    NCURSESINPUT * im = api->implementationData;
+static int ncurses_input_manager_handle_events (topazInputManager_t * im, void * userData) {
+    NCURSESINPUT * im = userData;
     int hasEvents = FALSE;
     int ch;
     topazInputDevice_Event_t ev;
@@ -174,8 +174,8 @@ static int ncurses_input_manager_handle_events (topazInputManagerAPI_t * api) {
     }
     return hasEvents;
 }
-static topazInputDevice_t * ncurses_input_manager_query_device(topazInputManagerAPI_t * api, int ID) {
-    NCURSESINPUT * im = api->implementationData;
+static topazInputDevice_t * ncurses_input_manager_query_device(topazInputManager_t * im, void * userData, int ID) {
+    NCURSESINPUT * im = userData;
     switch(ID) {
       case 0: return im->keyboard;
       case 1: return im->mouse;
@@ -183,24 +183,24 @@ static topazInputDevice_t * ncurses_input_manager_query_device(topazInputManager
     }
 }
 
-static int ncurses_input_manager_query_auxiliary_devices(topazInputManagerAPI_t * api, int * IDs) {
+static int ncurses_input_manager_query_auxiliary_devices(topazInputManager_t * im, void * userData, int * IDs) {
     return 0;
 }
 
-static int ncurses_input_manager_max_devices(topazInputManagerAPI_t * api) {
+static int ncurses_input_manager_max_devices(topazInputManager_t * im, void * userData) {
     return 2;
 }
 
-static void ncurses_input_manager_set_focus(topazInputManagerAPI_t * api, topazDisplay_t * disp) {
-    NCURSESINPUT * im = api->implementationData;
+static void ncurses_input_manager_set_focus(topazInputManager_t * im, void * userData, topazDisplay_t * disp) {
+    NCURSESINPUT * im = userData;
     im->disp = disp;
 }
 
-static topazDisplay_t * ncurses_input_manager_get_focus(topazInputManagerAPI_t * api) {
-    NCURSESINPUT * im = api->implementationData;
+static topazDisplay_t * ncurses_input_manager_get_focus(topazInputManager_t * im, void * userData) {
+    NCURSESINPUT * im = userData;
     return im->disp;
 }
-static void ncurses_input_manager_show_virtual_keyboard(topazInputManagerAPI_t * api, int doIt) {
+static void ncurses_input_manager_show_virtual_keyboard(topazInputManager_t * im, void * userData, int doIt) {
 }
 
 

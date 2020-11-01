@@ -89,7 +89,7 @@ topaz_t * topaz_context_create() {
     if (!configured)
         topaz_system_configure();
 
-    return topaz_context_create_from_system( topaz_system_create_default());
+    return topaz_context_create_from_system(topaz_system_create_default());
 }
 topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
     if (!configured)
@@ -105,7 +105,7 @@ topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
     {
         topazTimeAPI_t api;
         topazSystem_Backend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("time"), &api);
-        out->timeRef = topaz_time_create(ref, api);
+        out->timeRef = topaz_time_create(out, ref, api);
     }
 
 
@@ -457,14 +457,14 @@ uint64_t topaz_context_get_time(topaz_t * t) {
     return topaz_time_ms_since_startup(t->timeRef);
 }
 
-topazFilesys_t * topaz_context_filesys_create(const topaz_t * t) {
+topazFilesys_t * topaz_context_filesys_create(topaz_t * t) {
     topazFilesysAPI_t api;
     topazSystem_Backend_t * backend = topaz_system_create_backend(
         t->system,
         TOPAZ_STR_CAST("filesys"),
         &api
     );
-    return topaz_filesys_create(backend, api);
+    return topaz_filesys_create(t, backend, api);
 }
 
 

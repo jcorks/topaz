@@ -33,8 +33,7 @@ DEALINGS IN THE SOFTWARE.
 #define H_TOPAZDC__AUDIO_MANAGER_API__INCLUDED
 
 #include <stdint.h>
-
-
+typedef struct topaz_t topaz_t;
 typedef struct topazAudioManager_t topazAudioManager_t;
 
 /*
@@ -58,25 +57,18 @@ typedef struct topazAudioManagerAPI_t topazAudioManagerAPI_t;
 /// the user-side API for topazAudioManager_t. See <topaz/backends/AudioManager.h>
 ///
 struct topazAudioManagerAPI_t {
-    void      (*audio_manager_create)           (topazAudioManagerAPI_t *);
-    void      (*audio_manager_destroy)          (topazAudioManagerAPI_t *);
+    void *    (*audio_manager_create)           (topazAudioManager_t *, topaz_t *);
+    void      (*audio_manager_destroy)          (topazAudioManager_t *, void *);
 
 
-    int       (*audio_manager_connect)        (topazAudioManagerAPI_t *, void (*audioStreamHandler)(topazAudioManager_t *, uint32_t, float *, void *), void *);
-    void      (*audio_manager_set_sample_rate)(topazAudioManagerAPI_t *, uint32_t);
-    uint32_t  (*audio_manager_get_sample_rate)(topazAudioManagerAPI_t *);
-    int       (*audio_manager_is_underrun)    (topazAudioManagerAPI_t *);
-    void      (*audio_manager_enable_output)  (topazAudioManagerAPI_t *, int);
-    void      (*audio_manager_set_volume_multiplier)(topazAudioManagerAPI_t *, float);
-    float     (*audio_manager_get_volume_multiplier)(topazAudioManagerAPI_t *);
-    float     (*audio_manager_get_current_output_sample)(topazAudioManagerAPI_t *);
-
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the lifetime of the AudioManager
-    ///
-    void * implementationData;
-
-
+    int       (*audio_manager_connect)        (topazAudioManager_t *, void *, void (*audioStreamHandler)(topazAudioManager_t *, uint32_t, float *, void *), void *);
+    void      (*audio_manager_set_sample_rate)(topazAudioManager_t *, void *, uint32_t);
+    uint32_t  (*audio_manager_get_sample_rate)(topazAudioManager_t *, void *);
+    int       (*audio_manager_is_underrun)    (topazAudioManager_t *, void *);
+    void      (*audio_manager_enable_output)  (topazAudioManager_t *, void *, int);
+    void      (*audio_manager_set_volume_multiplier)(topazAudioManager_t *, void *, float);
+    float     (*audio_manager_get_volume_multiplier)(topazAudioManager_t *, void *);
+    float     (*audio_manager_get_current_output_sample)(topazAudioManager_t *, void *);
 };
 
 

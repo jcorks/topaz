@@ -176,7 +176,7 @@ struct topazScriptAPI_t {
     topazScript_Object_ReferenceAPI_t objectAPI;
 
 
-    void *(*script_create)             (topazScript_t *);
+    void *(*script_create)             (topazScript_t *, topaz_t *);
     void  (*script_destroy)            (topazScript_t *, void *);
     int   (*script_map_native_function)(topazScript_t *, void *, const topazString_t *, topaz_script_native_function, void * userData);
     void  (*script_run)                (topazScript_t *, void *, const topazString_t * sourceName, const topazString_t * scriptData);

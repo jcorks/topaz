@@ -86,10 +86,10 @@ void topaz_system_time_noTime__backend(
         TOPAZ__VERSION__MICRO
     );
 
-    api->time_create = (void (*)(topazTimeAPI_t *)) api_nothing;
-    api->time_destroy = (void (*)(topazTimeAPI_t *)) api_nothing;
-    api->time_sleep_ms = (void (*)(topazTimeAPI_t *, uint64_t)) api_nothing;
-    api->time_ms_since_startup = (uint64_t (*)(topazTimeAPI_t *)) api_nothing;
+    api->time_create = (void * (*)(topazTime_t *, topaz_t *)) api_nothing;
+    api->time_destroy = (void (*)(topazTime_t *, void *)) api_nothing;
+    api->time_sleep_ms = (void (*)(topazTime_t *, void *, uint64_t)) api_nothing;
+    api->time_ms_since_startup = (uint64_t (*)(topazTime_t *, void *)) api_nothing;
 
 }
 

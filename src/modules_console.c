@@ -165,7 +165,7 @@ void topaz_console_print(topazConsole_t * c, const topazString_t * str) {
     topaz_console_print_color(c, str, &color_normal);
 }
 
-void topaz_console_print_type(topazConsole_t * c, const topazString_t * str, topazConsole_MessageType_t t) {
+void topaz_console_print_message(topazConsole_t * c, const topazString_t * str, topazConsole_MessageType_t t) {
     switch(t) {
       case topazConsole_MessageType_Normal:
         topaz_console_print_color(c, str, &color_normal);

@@ -72,7 +72,7 @@ typedef struct topazFilesys_t topazFilesys_t;
 /// Creates a new filesys object. The starting path is 
 /// the same upon first creating the filsys instance.
 ///
-topazFilesys_t * topaz_filesys_create(topazSystem_Backend_t *, topazFilesysAPI_t);
+topazFilesys_t * topaz_filesys_create(topaz_t *, topazSystem_Backend_t *, topazFilesysAPI_t);
 
 
 /// Destroys and cleans up a filesys API

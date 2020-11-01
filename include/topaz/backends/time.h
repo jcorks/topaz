@@ -55,7 +55,7 @@ typedef struct topazTime_t topazTime_t;
 
 /// Creates a new time object
 ///
-topazTime_t * topaz_time_create(topazSystem_Backend_t *, topazTimeAPI_t);
+topazTime_t * topaz_time_create(topaz_t *, topazSystem_Backend_t *, topazTimeAPI_t);
 
 
 /// Destroys and cleans up a time API

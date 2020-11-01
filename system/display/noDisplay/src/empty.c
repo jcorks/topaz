@@ -88,32 +88,32 @@ void topaz_system_display_noDisplay__backend(
         TOPAZ__VERSION__MICRO
     );
 
-    api->display_create = (void (*)(topazDisplayAPI_t *)) api_nothing;
-    api->display_destroy = (void (*)(void *)) api_nothing;
-    api->display_resize = (void (*)(void *, int, int)) api_nothing;
-    api->display_set_position = (void (*)(void *, int, int)) api_nothing;
-    api->display_hide = (void (*)(void *, int)) api_nothing;
-    api->display_has_input_focus = (int (*)(void *)) api_nothing;
-    api->display_lock_client_resize = (void (*)(void *, int)) api_nothing;
-    api->display_lock_client_position = (void (*)(void *, int)) api_nothing;
-    api->display_get_height = (int (*)(void *)) api_nothing;
-    api->display_get_width = (int (*)(void *)) api_nothing;
-    api->display_get_x = (int (*)(void *)) api_nothing;
-    api->display_get_y = (int (*)(void *)) api_nothing;
-    api->display_set_name = (void (*)(void *, const topazString_t *)) api_nothing;
-    api->display_add_resize_callback = (void (*)(void *, void(*)(int w, int h, void *), void *)) api_nothing;
-    api->display_remove_resize_callback = (void (*)(void *, void(*)(int w, int h, void *))) api_nothing;
-    api->display_add_close_callback = (void (*)(void *, void(*)(void *), void *)) api_nothing;
-    api->display_remove_close_callback = (void (*)(void *, void(*)(void *))) api_nothing;
-    api->display_is_capable = (int (*)(void *, topazDisplay_Capability)) api_nothing;
-    api->display_update = (void (*)(void *, topazRenderer_Framebuffer_t *)) api_nothing;
-    api->display_supported_framebuffers = (const topazArray_t * (*)(void *)) api_nothing;
-    api->display_get_system_handle_type = (topazDisplay_Handle (*)(void *)) api_nothing;
-    api->display_get_system_handle = (void * (*)(void *)) api_nothing;
-    api->display_get_system_event_type = (topazDisplay_Event (*)(void *)) api_nothing;
-    api->display_get_last_system_event = (void * (*)(void *)) api_nothing;
-    api->display_get_current_clipboard = (topazArray_t * (*)(void *)) api_nothing;
-    api->display_set_current_clipboard = (void (*)(void *, const topazArray_t *)) api_nothing;
+    api->display_create = (void * (*)(topazDisplay_t *, topaz_t *)) api_nothing;
+    api->display_destroy = (void (*)(topazDisplay_t *, void *)) api_nothing;
+    api->display_resize = (void (*)(topazDisplay_t *, void *, int, int)) api_nothing;
+    api->display_set_position = (void (*)(topazDisplay_t *, void *, int, int)) api_nothing;
+    api->display_hide = (void (*)(topazDisplay_t *, void *, int)) api_nothing;
+    api->display_has_input_focus = (int (*)(topazDisplay_t *, void *)) api_nothing;
+    api->display_lock_client_resize = (void (*)(topazDisplay_t *, void *, int)) api_nothing;
+    api->display_lock_client_position = (void (*)(topazDisplay_t *, void *, int)) api_nothing;
+    api->display_get_height = (int (*)(topazDisplay_t *, void *)) api_nothing;
+    api->display_get_width = (int (*)(topazDisplay_t *, void *)) api_nothing;
+    api->display_get_x = (int (*)(topazDisplay_t *, void *)) api_nothing;
+    api->display_get_y = (int (*)(topazDisplay_t *, void *)) api_nothing;
+    api->display_set_name = (void (*)(topazDisplay_t *, void *, const topazString_t *)) api_nothing;
+    api->display_add_resize_callback = (void (*)(topazDisplay_t *, void *, void(*)(int w, int h, void *), void *)) api_nothing;
+    api->display_remove_resize_callback = (void (*)(topazDisplay_t *, void *, void(*)(int w, int h, void *))) api_nothing;
+    api->display_add_close_callback = (void (*)(topazDisplay_t *, void *, void(*)(void *), void *)) api_nothing;
+    api->display_remove_close_callback = (void (*)(topazDisplay_t *, void *, void(*)(void *))) api_nothing;
+    api->display_is_capable = (int (*)(topazDisplay_t *, void *, topazDisplay_Capability)) api_nothing;
+    api->display_update = (void (*)(topazDisplay_t *, void *, topazRenderer_Framebuffer_t *)) api_nothing;
+    api->display_supported_framebuffers = (const topazArray_t * (*)(topazDisplay_t *, void *)) api_nothing;
+    api->display_get_system_handle_type = (topazDisplay_Handle (*)(topazDisplay_t *, void *)) api_nothing;
+    api->display_get_system_handle = (void * (*)(topazDisplay_t *, void *)) api_nothing;
+    api->display_get_system_event_type = (topazDisplay_Event (*)(topazDisplay_t *, void *)) api_nothing;
+    api->display_get_last_system_event = (void * (*)(topazDisplay_t *, void *)) api_nothing;
+    api->display_get_current_clipboard = (topazArray_t * (*)(topazDisplay_t *, void *)) api_nothing;
+    api->display_set_current_clipboard = (void (*)(topazDisplay_t *, void *, const topazArray_t *)) api_nothing;
 
 }
 

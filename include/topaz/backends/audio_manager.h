@@ -53,7 +53,7 @@ typedef struct topazAudioManager_t topazAudioManager_t;
 
 /// Creates a new audio manager object. 
 ///
-topazAudioManager_t * topaz_audio_manager_create(topazSystem_Backend_t *, topazAudioManagerAPI_t);
+topazAudioManager_t * topaz_audio_manager_create(topaz_t *, topazSystem_Backend_t *, topazAudioManagerAPI_t);
 
 
 /// Destroys and cleans up an audio manager object

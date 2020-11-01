@@ -281,7 +281,7 @@ enum {
 
 /// Creates a new audio manager object. 
 ///
-topazInputManager_t * topaz_input_manager_create(topazSystem_Backend_t *, topazInputManagerAPI_t);
+topazInputManager_t * topaz_input_manager_create(topaz_t *, topazSystem_Backend_t *, topazInputManagerAPI_t);
 
 
 /// Destroys and cleans up an audio manager object

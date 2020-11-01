@@ -12,13 +12,14 @@
 struct topazAudioManager_t {
     topazAudioManagerAPI_t api;
     topazSystem_Backend_t * backend;
+    void * userData;
 };
 
 
 
 
 
-topazAudioManager_t * topaz_audio_manager_create(topazSystem_Backend_t * b, topazAudioManagerAPI_t api) {
+topazAudioManager_t * topaz_audio_manager_create(topaz_t * t, topazSystem_Backend_t * b, topazAudioManagerAPI_t api) {
     #ifdef TOPAZDC_DEBUG
         assert(b && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(api.audio_manager_create);
@@ -35,7 +36,7 @@ topazAudioManager_t * topaz_audio_manager_create(topazSystem_Backend_t * b, topa
     topazAudioManager_t * out = calloc(1, sizeof(topazAudioManager_t));
     out->api = api;
     out->backend = b;
-    out->api.audio_manager_create(&out->api);
+    out->userData = out->api.audio_manager_create(out, t);
     return out;
 }
 
@@ -44,7 +45,8 @@ void topaz_audio_manager_destroy(topazAudioManager_t * t) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
-    t->api.audio_manager_destroy(&t->api);
+    t->api.audio_manager_destroy(t, t->userData);
+    free(t);
 }
 
 
@@ -81,7 +83,7 @@ int topaz_audio_manager_connect(topazAudioManager_t * t,
         assert(t && "topazAudioManager_t pointer cannot be NULL.");
     #endif
 
-    return t->api.audio_manager_connect(&t->api, audioStreamHandler, data);
+    return t->api.audio_manager_connect(t, t->userData, audioStreamHandler, data);
 }
 
 void topaz_audio_manager_set_sample_rate(topazAudioManager_t * t, uint32_t a) {
@@ -89,7 +91,7 @@ void topaz_audio_manager_set_sample_rate(topazAudioManager_t * t, uint32_t a) {
         assert(t && "topazAudioManager_t pointer cannot be NULL.");
     #endif
 
-    t->api.audio_manager_set_sample_rate(&t->api, a);
+    t->api.audio_manager_set_sample_rate(t, t->userData, a);
 }
 
 uint32_t topaz_audio_manager_get_sample_rate(topazAudioManager_t * t) {
@@ -97,7 +99,7 @@ uint32_t topaz_audio_manager_get_sample_rate(topazAudioManager_t * t) {
         assert(t && "topazAudioManager_t pointer cannot be NULL.");
     #endif
 
-    return t->api.audio_manager_get_sample_rate(&t->api);
+    return t->api.audio_manager_get_sample_rate(t, t->userData);
 }
 
 
@@ -108,7 +110,7 @@ int topaz_audio_manager_is_underrun(topazAudioManager_t * t) {
         assert(t && "topazAudioManager_t pointer cannot be NULL.");
     #endif
 
-    return t->api.audio_manager_is_underrun(&t->api);
+    return t->api.audio_manager_is_underrun(t, t->userData);
 }
 
 void topaz_audio_manager_enable_output(topazAudioManager_t * t, int a) {
@@ -116,7 +118,7 @@ void topaz_audio_manager_enable_output(topazAudioManager_t * t, int a) {
         assert(t && "topazAudioManager_t pointer cannot be NULL.");
     #endif
 
-    t->api.audio_manager_enable_output(&t->api, a);
+    t->api.audio_manager_enable_output(t, t->userData, a);
 }
 
 
@@ -125,7 +127,7 @@ void topaz_audio_manager_set_volume_multiplier(topazAudioManager_t * t, float a)
         assert(t && "topazAudioManager_t pointer cannot be NULL.");
     #endif
 
-    t->api.audio_manager_set_volume_multiplier(&t->api, a);
+    t->api.audio_manager_set_volume_multiplier(t, t->userData, a);
 }
 
 
@@ -133,7 +135,7 @@ float topaz_audio_manager_get_volume_multiplier(topazAudioManager_t * t) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazAudioManager_t pointer cannot be NULL.");
     #endif
-    return t->api.audio_manager_get_volume_multiplier(&t->api);
+    return t->api.audio_manager_get_volume_multiplier(t, t->userData);
 }
 
 float topaz_audio_manager_get_current_output_sample(topazAudioManager_t * t) {
@@ -141,7 +143,7 @@ float topaz_audio_manager_get_current_output_sample(topazAudioManager_t * t) {
         assert(t && "topazAudioManager_t pointer cannot be NULL.");
     #endif
 
-    return t->api.audio_manager_get_current_output_sample(&t->api);
+    return t->api.audio_manager_get_current_output_sample(t, t->userData);
 }
 
 

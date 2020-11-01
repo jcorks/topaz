@@ -355,7 +355,7 @@ topazInput_t * topaz_input_create(topaz_t * context) {
             TOPAZ_STR_CAST("inputManager"), 
             &api
         );
-        out->manager = topaz_input_manager_create(ref, api);
+        out->manager = topaz_input_manager_create(context, ref, api);
     }
  
     out->stringMapInput = topaz_table_create_hash_topaz_string();

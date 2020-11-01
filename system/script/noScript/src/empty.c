@@ -97,7 +97,7 @@ void topaz_system_script_noScript__backend(
 
 
 
-    api->script_create = (void * (*)(topazScript_t *)) api_nothing;
+    api->script_create = (void * (*)(topazScript_t *, topaz_t *)) api_nothing;
     api->script_destroy = (void (*)(topazScript_t *, void *)) api_nothing;
     api->script_map_native_function = (int (*)(topazScript_t *, void *, const topazString_t *, topaz_script_native_function, void*)) api_nothing;
     api->script_run = (void (*)(topazScript_t *, void *, const topazString_t * sourceName, const topazString_t * scriptData)) api_nothing;

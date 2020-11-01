@@ -89,16 +89,16 @@ void topaz_system_audioManager_noAudioManager__backend(
     );
 
 
-    api->audio_manager_create          = (void (*)(topazAudioManagerAPI_t *)) api_nothing;
-    api->audio_manager_destroy         = (void (*)(topazAudioManagerAPI_t *)) api_nothing;
-    api->audio_manager_connect         = (int  (*)(topazAudioManagerAPI_t *, void (*audioStreamHandler)(topazAudioManager_t *, uint32_t, float *, void *), void *)) api_nothing;
-    api->audio_manager_set_sample_rate = (void (*)(topazAudioManagerAPI_t *, uint32_t)) api_nothing;
-    api->audio_manager_get_sample_rate = (uint32_t (*)(topazAudioManagerAPI_t *)) api_nothing;
-    api->audio_manager_is_underrun     = (int (*)(topazAudioManagerAPI_t *)) api_nothing;
-    api->audio_manager_enable_output   = (void (*)(topazAudioManagerAPI_t *, int)) api_nothing;
-    api->audio_manager_set_volume_multiplier = (void (*)(topazAudioManagerAPI_t *, float)) api_nothing;
-    api->audio_manager_get_volume_multiplier = (float (*)(topazAudioManagerAPI_t *)) api_nothing;
-    api->audio_manager_get_current_output_sample = (float (*)(topazAudioManagerAPI_t *)) api_nothing;
+    api->audio_manager_create          = (void * (*)(topazAudioManager_t *, topaz_t *)) api_nothing;
+    api->audio_manager_destroy         = (void (*)(topazAudioManager_t *, void *)) api_nothing;
+    api->audio_manager_connect         = (int  (*)(topazAudioManager_t *, void *, void (*audioStreamHandler)(topazAudioManager_t *, uint32_t, float *, void *), void *)) api_nothing;
+    api->audio_manager_set_sample_rate = (void (*)(topazAudioManager_t *, void *, uint32_t)) api_nothing;
+    api->audio_manager_get_sample_rate = (uint32_t (*)(topazAudioManager_t *, void *)) api_nothing;
+    api->audio_manager_is_underrun     = (int (*)(topazAudioManager_t *, void *)) api_nothing;
+    api->audio_manager_enable_output   = (void (*)(topazAudioManager_t *, void *, int)) api_nothing;
+    api->audio_manager_set_volume_multiplier = (void (*)(topazAudioManager_t *, void *, float)) api_nothing;
+    api->audio_manager_get_volume_multiplier = (float (*)(topazAudioManager_t *, void *)) api_nothing;
+    api->audio_manager_get_current_output_sample = (float (*)(topazAudioManager_t *, void *)) api_nothing;
 
 }
 
