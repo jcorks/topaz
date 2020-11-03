@@ -73,7 +73,6 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
     w->window = glfwCreateWindow(640, 480, "topaz", NULL, glfwGetCurrentContext());
     w->w = 640;
     w->h = 480;
-    glfwMakeContextCurrent(w->window);
 
 
 

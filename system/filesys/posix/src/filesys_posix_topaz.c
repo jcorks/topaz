@@ -145,8 +145,8 @@ static void topaz_filesys_posix_populate_objects(PosixFilesysData * fs) {
 }
 
 
-static int topaz_filesys_posix__set_path(topazFilesysAPI_t * t, const topazString_t * str) {
-    PosixFilesysData * fs = t->implementationData;
+static int topaz_filesys_posix__set_path(topazFilesys_t * t, void * userData, const topazString_t * str) {
+    PosixFilesysData * fs = userData;
 
     int pathMax = pathconf(topaz_string_get_c_str(fs->currentPath), _PC_PATH_MAX);
     char pathTemp[pathMax+1];
@@ -167,7 +167,7 @@ static int topaz_filesys_posix__go_to_child(topazFilesys_t * fsys, void * userDa
     topazString_t * child = topaz_string_clone(fs->currentPath);
     topaz_string_concat_printf(child, "%c", '/');
     topaz_string_concat(child, str); 
-    int result = topaz_filesys_posix__set_path(api, child);
+    int result = topaz_filesys_posix__set_path(fsys, userData, child);
     topaz_string_destroy(child);
     return result;
 }
