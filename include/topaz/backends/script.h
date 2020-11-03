@@ -212,6 +212,85 @@ void topaz_script_bootstrap(topazScript_t *);
 
 
 
+
+/// Enables debugging for this script context.
+///
+void topaz_script_enable_debugging(topazScript_t *);
+
+
+typedef enum {
+    topazScript_DebugCommand_Pause,
+    topazScript_DebugCommand_Resume,
+    topazScript_DebugCommand_StepInto,
+    topazScript_DebugCommand_StepOut,
+    topazScript_DebugCommand_StepOver,
+    topazScript_DebugCommand_ScopedEval,
+    topazScript_DebugCommand_AddBreakpoint,
+    topazScript_DebugCommand_RemoveBreakpoint,
+    topazScript_DebugCommand_Custom
+} topazScript_DebugCommand_t;
+
+
+topazString_t topaz_script_debug_send_command(
+    topazScript_t *, 
+    topazScript_DebugCommand_t command,
+    const topazString_t *
+);
+
+/// Holds information on a callstack frame. 
+typedef struct topazScript_CallstackFrame_t topazScript_CallstackFrame_t;
+
+
+struct topazScript_CallstackFrame_t {
+    /// The line number of the frame.
+    int lineNumber;
+
+    /// The filename of the frame.
+    ///
+    const topazString_t * filename;
+
+    /// The function (if any) of the frame
+    ///
+    const topazString_t * functionName;
+
+    /// A language-agnostic object name associated with the frame.
+    ///
+    const topazString_t * entityName;
+};
+
+
+typedef struct topazScript_Callstack_t topazScript_Callstack_t;
+
+struct topazScript_Callstack_t {
+    /// The label of the breakpoint reached, if any.
+    ///
+    topazString_t * breakpoint;
+
+    /// An array of topazScript_CallstackFrame_t objects.
+    /// The 0'th element is the "bottom" of the callstack, which is the current 
+    /// frame. The size-1'th element is the top frame.
+    ///
+    topazArray_t * callstack;
+};
+
+/// Retrieves information on the debugging callstack.
+/// A read-only pointer to the callstack is returned.
+/// In the case that debugging is not enabled or 
+///
+const topazScript_CallstackFrame_t * topaz_script_debug_get_callstack_info(
+    topazScript_t *,
+    uint32_t * callstackFrameCount
+);
+
+
+
+
+
+
+
+
+
+
 /*
 
     Script_Object
