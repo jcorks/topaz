@@ -71,6 +71,7 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
     TopazGLFWWindow * w = calloc(1, sizeof(TopazGLFWWindow));
     glfwWindowHint(GLFW_VISIBLE, 1);
     w->window = glfwCreateWindow(640, 480, "topaz", NULL, glfwGetCurrentContext());
+
     w->w = 640;
     w->h = 480;
 
@@ -256,6 +257,9 @@ static int topaz_glfw_is_capable(topazDisplay_t * dispSrc, void * api, topazDisp
 
 
 static void render_to_screen(TopazGLFWWindow * w, GLuint tex) {
+    GLFWwindow * wOld = glfwGetCurrentContext();
+    glfwMakeContextCurrent(w->window);
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex);
@@ -271,6 +275,9 @@ static void render_to_screen(TopazGLFWWindow * w, GLuint tex) {
     glDisableVertexAttribArray(w->vertexLocation);
     glUseProgram(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glfwMakeContextCurrent(wOld);
+
 }
 
 static void topaz_glfw_update(topazDisplay_t * dispSrc, void * api, topazRenderer_Framebuffer_t * fb) {
