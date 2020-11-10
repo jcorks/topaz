@@ -57,10 +57,11 @@ option(
     'InputManagerBackend',
     type : 'combo',
 
-    value : 'noInputManager',
+    value : 'glfw',
     choices : [
         'noInputManager',
-        'ncurses'
+        'ncurses',
+	'glfw'
     ]
 )
 
