@@ -95,7 +95,7 @@ int topaz_image_get_height(const topazAsset_t *);
 /// Resets the width/height of the image.
 /// Afterwhich, the contents of al frames are undefined
 ///
-void topaz_image_frame_resize(
+void topaz_image_resize(
     topazAsset_t *,
     int width,
     int height

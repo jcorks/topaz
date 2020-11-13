@@ -34,7 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/backends/api/font_renderer_api.h>
 #include <topaz/system.h>
-
+typedef struct topazAsset_t topazAsset_t;
 
 
 /*
@@ -53,12 +53,12 @@ typedef struct topazFontRenderer_t topazFontRenderer_t;
 
 
 
-/// Creates a new time object
+/// Creates a new font renderer object
 ///
-topazFontRenderer_t * topaz_font_renderer_create(topaz_t *, topazSystem_Backend_t *, topazTimeAPI_t);
+topazFontRenderer_t * topaz_font_renderer_create(topaz_t *, topazSystem_Backend_t *, topazFontRendererAPI_t);
 
 
-/// Destroys and cleans up a time API
+/// Destroys and cleans up a font renderer API
 ///
 void topaz_font_renderer_destroy(topazFontRenderer_t *);
 
@@ -66,12 +66,12 @@ void topaz_font_renderer_destroy(topazFontRenderer_t *);
 
 
 
-/// Retrieves the backend for this time object.
+/// Retrieves the backend for this font renderer object.
 ///
 topazSystem_Backend_t * topaz_font_renderer_get_backend(topazFontRenderer_t *);
 
 
-/// Returns the API for this time.
+/// Returns the API for this font renderer.
 ///
 topazFontRendererAPI_t topaz_font_renderer_get_api(topazFontRenderer_t *);
 
@@ -80,14 +80,14 @@ topazFontRendererAPI_t topaz_font_renderer_get_api(topazFontRenderer_t *);
 
 /// Returns a pixel buffer containing the glyph 
 /// in question. The pixel buffer is owned by the renderer.
-/// Each call to topaz_font_renderer_glyph_ref() incremenebts 
+/// Each call to topaz_font_renderer_glyph_ref() increments 
 /// a reference count to the pixel buffer representing the 
 /// glyph. Once the user is done with the buffer, they may 
 /// call topaz_font_renderer_glyph_unref to decrement the 
 /// reference count. Once the reference count reaches 0, 
-/// the topazImage_t * will be freed.
+/// the topazAsset_t * will be freed.
 ///
-const topazImage_t * topaz_font_renderer_glyph_ref(
+const topazAsset_t * topaz_font_renderer_image_ref(
     topazFontRenderer_t *,
 
     /// The codepoint for the character.
@@ -99,10 +99,13 @@ const topazImage_t * topaz_font_renderer_glyph_ref(
     int sizePixels
 );
 
-void topaz_font_renderer_glyph_unref(
-    topazFontRenderer_t *,
-    
-    int charcode
+/// Gives a hint to the font renderer to decrement 
+/// the reference count for the character in question.
+///
+void topaz_font_renderer_image_unref(
+    topazFontRenderer_t *,    
+    int charcode,
+    int sizePixels
 );
 
 
@@ -142,14 +145,35 @@ struct topazFontRenderer_Spacing_t {
 };
 
 
-const topazFontRenderer_Spacing_t * topaz_font_renderer_query_spacing(
+
+/// Returns sizing in 
+void topaz_font_renderer_query_spacing(
     topazFontRenderer_t *,
-    int 
+
+    /// The spacing information to populate.
+    /// The xNextOrigin and yNextOrigin should be 
+    /// zero'd when starting a new string of characters,
+    /// as the output xNextOrigin and yNextOrigin are relative
+    /// to the initial character.
+    ///
+    topazFontRenderer_Spacing_t *,
+
+    /// Requested size of the font in pixels.
+    ///
+    int sizePixels, 
+    
+    /// The previous character in the string. If none,
+    /// should be 0.
+    ///
+    int prevchar,
+
     /// The current character to request spacing info for.
     ///
     int thischar,
 
-    /// The next character 
+    /// The previous character in the string. If none,
+    /// should be 0.
+    ///
     int nextchar
 );
 

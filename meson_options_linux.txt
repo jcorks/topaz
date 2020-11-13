@@ -91,6 +91,17 @@ option(
 )
 
 option(
+    'FontRenderer',
+    type : 'combo',
+
+    value : 'noFontRenderer',
+    choices : [
+        'noFontRenderer'
+    ]
+)
+
+
+option(
     'ScriptBackend',
     type : 'combo',
 

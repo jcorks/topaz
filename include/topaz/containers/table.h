@@ -125,6 +125,17 @@ int topaz_table_entry_exists(const topazTable_t *, const void * key);
 ///
 void topaz_table_remove(topazTable_t *, const void * key);
 
+/// Same as topaz_table_remove, but treats the key as a signed integer
+/// Convenient for hash_pointer tables where keys are direct pointers.
+/// 
+#define topaz_table_remove_by_int(__T__, __K__) (topaz_table_remove(__T__, (void*)(intptr_t)(__K__)))
+
+/// Same as topaz_table_remove, but treats the key as an unsignedinteger
+/// Convenient for hash_pointer tables where keys are direct pointers.
+/// 
+#define topaz_table_remove_by_uint(__T__, __K__) (topaz_table_remove(__T__, (void*)(uintptr_t)(__K__)))
+
+
 /// Returns whether the table has entries.
 ///
 int topaz_table_is_empty(const topazTable_t *);
