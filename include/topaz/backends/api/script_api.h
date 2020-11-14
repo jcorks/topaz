@@ -54,7 +54,7 @@ DEALINGS IN THE SOFTWARE.
     scripting to be supported in a useful way.
 */
 typedef struct topazScriptAPI_t topazScriptAPI_t;
-
+typedef struct topazScript_DebugState_t topazScript_DebugState_t;
 
 
 
@@ -201,8 +201,31 @@ struct topazScriptAPI_t {
 
 
 
+
+
+
+    /// called by the script when a user has unlocked debugging capabilities.
+    /// 
+    void (*script_debug_start)(topazScript_t *, void *);
+
+    /// Sends a command to the debugger. Check out script.h command list.
+    ///
+    void (*script_debug_send_command)(topazScript_t *, void *, int commandEnum, const topazString_t *);
+
+
+    /// Retrieves the debug state following the requirements in script.h.
+    ///
+    const topazScript_DebugState_t * (*script_debug_get_state)(topazScript_t *, void *);
+
+
+
+
 };
 
-
+/// Function to be called by the implementation when the script debuggerr 
+/// accepts the debug request. If the implementation does not support 
+/// debugging, this does not need to be called.
+/// 
+void topaz_script_notify_command(topazScript_t *, int commandEnum, topazString_t * str);
 
 #endif

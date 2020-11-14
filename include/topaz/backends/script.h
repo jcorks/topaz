@@ -148,6 +148,19 @@ topazScript_t * topaz_script_create(topaz_t *, topazSystem_Backend_t *, const to
 void topaz_script_destroy(topazScript_t *);
 
 
+/// Retrieves the backend for this script object.
+///
+topazSystem_Backend_t * topaz_script_get_backend(topazScript_t *);
+
+
+/// Returns the API for this script.
+///
+topazScriptAPI_t topaz_script_get_api(topazScript_t *);
+
+
+
+
+
 /// Maps a native C function to a symbol name within the script context 
 /// 
 int topaz_script_map_native_function(
@@ -213,74 +226,6 @@ void topaz_script_bootstrap(topazScript_t *);
 
 
 
-/// Enables debugging for this script context.
-///
-void topaz_script_enable_debugging(topazScript_t *);
-
-
-typedef enum {
-    topazScript_DebugCommand_Pause,
-    topazScript_DebugCommand_Resume,
-    topazScript_DebugCommand_StepInto,
-    topazScript_DebugCommand_StepOut,
-    topazScript_DebugCommand_StepOver,
-    topazScript_DebugCommand_ScopedEval,
-    topazScript_DebugCommand_AddBreakpoint,
-    topazScript_DebugCommand_RemoveBreakpoint,
-    topazScript_DebugCommand_Custom
-} topazScript_DebugCommand_t;
-
-
-topazString_t topaz_script_debug_send_command(
-    topazScript_t *, 
-    topazScript_DebugCommand_t command,
-    const topazString_t *
-);
-
-/// Holds information on a callstack frame. 
-typedef struct topazScript_CallstackFrame_t topazScript_CallstackFrame_t;
-
-
-struct topazScript_CallstackFrame_t {
-    /// The line number of the frame.
-    int lineNumber;
-
-    /// The filename of the frame.
-    ///
-    const topazString_t * filename;
-
-    /// The function (if any) of the frame
-    ///
-    const topazString_t * functionName;
-
-    /// A language-agnostic object name associated with the frame.
-    ///
-    const topazString_t * entityName;
-};
-
-
-typedef struct topazScript_Callstack_t topazScript_Callstack_t;
-
-struct topazScript_Callstack_t {
-    /// The label of the breakpoint reached, if any.
-    ///
-    topazString_t * breakpoint;
-
-    /// An array of topazScript_CallstackFrame_t objects.
-    /// The 0'th element is the "bottom" of the callstack, which is the current 
-    /// frame. The size-1'th element is the top frame.
-    ///
-    topazArray_t * callstack;
-};
-
-/// Retrieves information on the debugging callstack.
-/// A read-only pointer to the callstack is returned.
-/// In the case that debugging is not enabled or 
-///
-const topazScript_CallstackFrame_t * topaz_script_debug_get_callstack_info(
-    topazScript_t *,
-    uint32_t * callstackFrameCount
-);
 
 
 
@@ -458,6 +403,217 @@ void topaz_script_object_reference_extendable_add_property(
     topaz_script_native_function onSet,
     topaz_script_native_function onGet
 );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// Enables debugging for this script context.
+///
+void topaz_script_enable_debugging(topazScript_t *);
+
+
+typedef enum {
+    /// Sends a command to pause the debugger.
+    /// If already in a paused state, this does nothing.
+    /// It is not guaranteed when the debugger will respond to the pause 
+    /// request, if at all.
+    /// Once the paused state is entered, the debug state is updated.
+    /// Any argument is ignored.
+    /// 
+    topazScript_DebugCommand_Pause,
+
+    /// Sends a command to resume normal execution of the engine.
+    /// If not in a paused state, no action is taken.
+    /// Any argument is ignored.
+    /// 
+    topazScript_DebugCommand_Resume,
+
+    /// Sends a command to step into the next function.
+    /// If not in a paused state, no action is taken.
+    /// After stepping into, the debug state is updated.
+    /// Any argument is ignored.
+    ///
+    topazScript_DebugCommand_StepInto,
+
+    /// Sends a command to step into the next function.
+    /// If not in a paused state, no action is taken.
+    /// After stepping into, the debug state is updated.
+    /// Any argument is ignored.
+    ///
+    topazScript_DebugCommand_StepOver,
+
+    /// Sends a command to evaluate an expression in the currently paused scope.
+    /// If not in a paused state, no action is taken.
+    /// The argument string is of the format:
+    ///
+    ///     [scope level]:[expression]
+    ///
+    /// For example, with javascript as the scripting language, an expression 
+    /// could look like:
+    /// 
+    ///     0:alert('hello world!')
+    ///
+    /// The string returned is the return value of the expression. 
+    /// If an error occurs, the empty string is returned.
+    ///
+    topazScript_DebugCommand_ScopedEval,
+
+    /// Sends a command to add a breakpoint to watch for. 
+    /// The argument string is the breakpoint to add.
+    /// If not in a paused state, no action is taken.
+    /// Breakpoints are language specific, but may be of the following formats:
+    /// [filename]:[line number]
+    ///
+    /// If successful, a unique string representing that breakpoint is returned. 
+    /// If failed, an empty string is returned.
+    ///
+    topazScript_DebugCommand_AddBreakpoint,
+
+    /// Sends a command to no longer listen for a breakpoint of the given ID.
+    /// The argument is the ID return from an AddBreakpoint command.
+    /// If not in a paused state, no action is taken.
+    /// If failed, an empty string is returned.
+    /// If successful, a non-empty string is returned.
+    ///
+    topazScript_DebugCommand_RemoveBreakpoint,
+
+    /// Some language contexts will except additional commands, this will be used 
+    /// in such a case.
+    ///
+    topazScript_DebugCommand_Custom
+} topazScript_DebugCommand_t;
+
+
+/// Sends a command to the debugger.
+/// All commands are pushed through as a deferred request, where
+/// this call will return relatively quickly 
+/// which a debugger implementation may 
+/// not be able to carry out the request immediately.
+/// The string returned should be freed by the caller, as ownership 
+/// is passed to the called.
+///
+void topaz_script_debug_send_command(
+    topazScript_t *, 
+    topazScript_DebugCommand_t command,
+    const topazString_t * argument
+);
+
+
+/// Callback for when the debugger accepts and has finished 
+/// carrying out a debug command request.
+///
+typedef void (*topaz_script_debug_command_callback)(
+    topazScript_t *, 
+    topazScript_DebugCommand_t command, 
+    const topazString_t * result,
+    void *
+);
+
+/// Adds a function to be called when the pause command has been 
+/// processed and committed by the debugger.
+/// The ID of the callback is returned, which may be used 
+/// to remove the callback.
+///
+uint32_t topaz_script_debug_add_command_callback(
+    topazScript_t *,
+    topaz_script_debug_command_callback,
+    void * data
+);
+
+/// Removes the callback references by ID from the list 
+/// of callbacks registered to be called when the debugger 
+/// excepts the pause request.
+void topaz_script_debug_remove_command_callback(
+    topazScript_t *,
+    uint32_t id
+);
+
+/// Returns whether the debugger is in a paused state.
+/// Most commands to the debugger only are accepted when the 
+/// debugger is in a paused state.
+///
+int topaz_script_debug_is_paused(topazScript_t *);
+
+
+/// Holds information on a callstack frame. 
+///
+typedef struct topazScript_CallstackFrame_t topazScript_CallstackFrame_t;
+
+
+struct topazScript_CallstackFrame_t {
+    /// The line number of the frame.
+    int lineNumber;
+
+    /// The filename of the frame.
+    ///
+    const topazString_t * filename;
+
+    /// The function (if any) of the frame
+    ///
+    const topazString_t * functionName;
+
+    /// A language-agnostic object name associated with the frame.
+    ///
+    const topazString_t * entityName;
+};
+
+
+/// Hold the entire state of the debugger.
+///
+typedef struct topazScript_DebugState_t topazScript_DebugState_t;
+
+struct topazScript_DebugState_t {
+    /// The label of the breakpoint reached, if any.
+    ///
+    topazString_t * breakpoint;
+
+
+    /// An array of topazScript_CallstackFrame_t objects.
+    /// The 0'th element is the "bottom" of the callstack, which is the current 
+    /// frame. The size-1'th element is the top frame.
+    ///
+    topazArray_t * callstack;
+};
+
+/// Retrieves read-only information on the debugging state.
+/// The data is guaranteed to be proper until the next call to this 
+/// function.
+///
+const topazScript_DebugState_t * topaz_script_debug_get_state(
+    topazScript_t *
+);
+
+
+
+
+
 
 
 

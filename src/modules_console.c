@@ -23,6 +23,11 @@ struct topazConsole_CommandContext_t {
 };
 
 
+const topazColor_t color_normal  = {255, 255, 200, 255};
+const topazColor_t color_warning = {255, 128, 64,  255};
+const topazColor_t color_debug   = {30,  87,  120, 255};
+const topazColor_t color_error   = {255, 64,  64,  255};
+
 
 
 
@@ -59,6 +64,9 @@ struct topazConsole_t {
     topazScript_t * script;
     uint32_t inputID;
 
+
+    int debugLevel;
+    uint32_t debugCBID;
 };
 
 static void send_command(
@@ -110,6 +118,164 @@ TOPAZCCOMMAND(command__eval) {
     ));
 }
 
+static topazString_t * stackframe_to_string(
+    const topazScript_DebugState_t * stack,
+    int level 
+) {
+    static topazString_t * out = NULL;
+    if (!out) out = topaz_string_create();
+    topaz_string_clear(out);
+
+    if (level < 0 || level >= topaz_array_get_size(stack->callstack)) {
+        return out;        
+    }
+
+    topazScript_CallstackFrame_t * frame = topaz_array_at(stack->callstack, topazScript_CallstackFrame_t *, level);
+    if (!topaz_string_get_length(frame->functionName)) {
+        topaz_string_concat_printf(
+            out, 
+            "[%d]  %s()  %s:%d",
+            level,
+            topaz_string_get_c_str(frame->functionName),
+            topaz_string_get_c_str(frame->filename),
+            frame->lineNumber
+        );
+    } else {
+        topaz_string_concat_printf(
+            out, 
+            "<unknown>"
+        );
+    }
+
+    return out;
+}
+
+
+static void console_print_debug_state(
+    topazConsole_t * console,
+    const topazScript_DebugState_t * state
+) {
+    topazColor_t line = color_normal;
+    topazColor_t lineBold = color_normal;
+    line.r *= 0.7;
+    line.g *= 0.7;
+    line.b *= 0.7;
+
+    if (topaz_array_get_size(state->callstack) == 0) {
+        topaz_console_print_message(console, topaz_string_create_from_c_str("[Callstack empty or unknown.]"), topazConsole_MessageType_Error);
+        return;
+    }
+    for(int i = 0; i < topaz_array_get_size(state->callstack); ++i) {
+        topazString_t * str = topaz_string_create();
+        topazString_t * substate = stackframe_to_string(
+            state,
+            i
+        );    
+        topaz_string_concat_printf(
+            str, 
+            "%s", 
+            (i == console->debugLevel ? "-> " : "   ")
+        );
+
+        topaz_string_concat(str, substate);
+        topaz_console_print_color(
+            console,
+            str,
+            console->debugLevel ? &lineBold : &line
+        );
+
+        topaz_string_destroy(str);
+        topaz_string_destroy(substate);
+    }
+}
+
+static void command_debug_response(
+    topazScript_t * script,
+    topazScript_DebugCommand_t command,
+    const topazString_t * result,
+    void * userData
+) {
+    topazConsole_t * console = userData;
+    
+    switch(command) {
+      case topazScript_DebugCommand_Pause:
+        topaz_console_print(console, topaz_string_create_from_c_str("Debugging context pause."));
+        break;
+
+      case topazScript_DebugCommand_Resume:
+        topaz_console_print(console, topaz_string_create_from_c_str("Debugging context resumed."));
+        break;
+
+      case topazScript_DebugCommand_StepInto:
+        topaz_console_print(console, topaz_string_create_from_c_str("Debugging context pause."));
+        break;
+
+      case topazScript_DebugCommand_ScopedEval:
+        topaz_console_print(console, result);
+        break;
+      default:
+        topaz_console_print(console, result);
+        break;
+    }
+}
+
+TOPAZCCOMMAND(command__dbg) {
+    if (console->script) {
+        topaz_console_push_command_context(console, console->dbg);
+        return topaz_string_create_from_c_str("[Entered topaz script debug context]");
+    } else {
+        topaz_console_print_message(
+            console, 
+            topaz_string_create_from_c_str("Error: No script attached for debugging (topaz_console_attach_script)."), 
+            topazConsole_MessageType_Error
+        );
+        return topaz_string_create();
+
+    }
+}
+
+TOPAZCCOMMAND(command__exit_dbg) {
+    topaz_console_pop_command_context(console);
+    return topaz_string_create_from_c_str("[Exiting topaz script debug context]");
+}
+
+
+TOPAZCCOMMAND(command__backtrace) {    
+    const topazScript_DebugState_t * state = topaz_script_debug_get_state(console->script);
+
+    console_print_debug_state(
+        console,
+        state
+    );
+
+    return topaz_string_create();
+}
+
+
+TOPAZCCOMMAND(command__print) {    
+    topazString_t * eval = topaz_string_create();
+    
+    topaz_string_concat_printf(eval, "%d:", console->debugLevel);
+    topaz_string_concat(eval, topaz_array_at(args, topazString_t *, 0));
+
+    topaz_script_debug_send_command(
+        console->script,
+        topazScript_DebugCommand_ScopedEval,
+        eval
+    );
+
+    topaz_string_destroy(eval);
+    return topaz_string_create();
+}
+
+TOPAZCCOMMAND(command__continue) {    
+    topaz_script_debug_send_command(
+        console->script,
+        topazScript_DebugCommand_Resume,
+        TOPAZ_STR_CAST("")
+    );
+    return topaz_string_create();
+}
 
 
 topazConsole_t * topaz_console_create(topaz_t * t) {
@@ -136,6 +302,14 @@ topazConsole_t * topaz_console_create(topaz_t * t) {
     topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("echo"), command__echo, NULL);
     topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("quit"), command__quit, t);
     topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("eval"), command__eval, t);
+    topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("dbg"),  command__dbg, t);
+
+
+    // debug commands 
+    topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("backtrace"), command__backtrace, t);
+    topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("print"),     command__print, t);
+    topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("continue"),  command__continue, t);
+    topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("quit"),      command__exit_dbg, t);
 
 
     out->inputID = topaz_console_display_add_input_callback(
@@ -154,11 +328,6 @@ void topaz_console_destroy(topazConsole_t * t) {
     topaz_array_destroy(t->contextStack);
     free(t);
 }
-
-const topazColor_t color_normal  = {255, 255, 200, 255};
-const topazColor_t color_warning = {255, 128, 64,  255};
-const topazColor_t color_debug   = {30,  87,  120, 255};
-const topazColor_t color_error   = {255, 64,  64,  255};
 
 
 void topaz_console_print(topazConsole_t * c, const topazString_t * str) {
@@ -223,7 +392,19 @@ void topaz_console_attach_script(
     topazConsole_t * c,
     topazScript_t * script
 ) {
+    if (c->script) {
+        topaz_script_debug_remove_command_callback(
+            c->script,
+            c->debugCBID
+        );
+        c->debugCBID = 0;
+    }
     c->script = script;
+    c->debugCBID = topaz_script_debug_add_command_callback(
+        c->script,
+        command_debug_response,
+        c
+    );
 }
 
 
