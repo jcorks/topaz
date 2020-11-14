@@ -349,7 +349,7 @@ static void input_ent__step(topazEntity_t * e, void * data) {
 topazInput_t * topaz_input_create(topaz_t * context) {
     topazInput_t * out = calloc(1, sizeof(topazInput_t));
     {
-        topazInputManagerAPI_t api;
+        topazInputManagerAPI_t api = {};
         topazSystem_Backend_t * ref = topaz_system_create_backend(
             topaz_context_get_system(context), 
             TOPAZ_STR_CAST("inputManager"), 

@@ -102,7 +102,7 @@ typedef struct {
 
     // Whether the debug state is waiting for the initial cooperation message 
     // to be processed.
-    int debugPendingInit;
+    int debugReachedInit;
 
     // sent commands t
     topazArray_t * lastCommand;
@@ -1154,6 +1154,9 @@ static void topaz_duk_trans_received(duk_trans_dvalue_ctx * ctxT, duk_dvalue * d
     TOPAZDUK * ctx = ctxT->userData;
     char * cpy = strdup(bufferSrc);
     topaz_array_push(ctx->pendingMessages, cpy);
+    #ifdef TOPAZDC_DEBUG
+        printf("RECEIVED DEBUG MSG: %s\n", cpy);
+    #endif
 }
 
 static void topaz_duk_trans_handshake(duk_trans_dvalue_ctx * ctx, const char * handshake) {
@@ -1314,7 +1317,17 @@ static void debug_state_add_frame(topazScript_DebugState_t * s,
 
 static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
     TOPAZDUK * ctx = ctxT->userData;
+    if (!ctx->debugReachedInit) {
+        #ifdef TOPAZDC_DEBUG
+            printf("Init response\n");
+        #endif
+        topaz_duk_trans_command__resume(ctx->trans_ctx);
+        ctx->debugReachedInit = 1;
+        return;
+    }
     
+
+
     if (topaz_array_get_size(ctx->pendingMessages) && 
         !strcmp(
             topaz_array_at(ctx->pendingMessages, char *, topaz_array_get_size(ctx->pendingMessages)-1), 
@@ -1333,12 +1346,6 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
             topaz_array_set_size(ctx->lastCommand, topaz_array_get_size(ctx->lastCommand)-1);
         }
 
-        if (ctx->debugPendingInit) {
-            printf("Init response\n");
-            topaz_duk_trans_command__resume(ctx->trans_ctx);
-            ctx->debugPendingInit = FALSE;
-            return;
-        }
 
 
         // notify from debugger (status)
@@ -1408,15 +1415,15 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
                 if (!strcmp(messages[1], "0")) {
                     topaz_script_notify_command(
                         ctx->script,
-                        topazScript_DebugCommand_Pause,
+                        topazScript_DebugCommand_ScopedEval,
                         topaz_string_create_from_c_str("%s", messages[2])
                     );
                 } else {
                     // Error
                     topaz_script_notify_command(
                         ctx->script,
-                        topazScript_DebugCommand_Pause,
-                        topaz_string_create()
+                        topazScript_DebugCommand_ScopedEval,
+                        topaz_string_create_from_c_str("Could not evaluate expression (%s).\n", messages[2])
                     );                    
                 }
                 break;
@@ -1473,7 +1480,7 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
     
     }
     if (!block) return; // still receiving messages
-
+    topaz_context_iterate(ctx->ctx);
 }
 
 
@@ -1541,7 +1548,11 @@ void topaz_duk_debug_send_command(
         const topazString_t * number = topaz_string_chain_start(str, TOPAZ_STR_CAST(":"));
         int scope = atoi(topaz_string_get_c_str(number));
 
-        const topazString_t * command = topaz_string_get_substr(str, 0, topaz_string_get_length(number)-1);
+        const topazString_t * command = topaz_string_get_substr(
+            str, 
+            topaz_string_get_length(number)+1, // skip the :
+            topaz_string_get_length(str)-1
+        );
         topaz_duk_trans_command__eval(ctx->trans_ctx, command, (scope+1)*-1);
         topaz_string_destroy(str);
         break;
@@ -1564,6 +1575,7 @@ static void topaz_duk_cooperate_update(topazSystem_Backend_t * backend, void * d
     for(i = 0; i < topaz_array_get_size(b->instances); ++i) {
         TOPAZDUK * ctx = topaz_array_at(b->instances, TOPAZDUK *, i);
         if (ctx->isDebugging) {
+            duk_debugger_cooperate(ctx->js);
             while(topaz_array_get_size(ctx->pendingMessages))
                 duk_debugger_cooperate(ctx->js);
         }

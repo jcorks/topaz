@@ -130,7 +130,7 @@ static topazString_t * stackframe_to_string(
         return out;        
     }
 
-    topazScript_CallstackFrame_t * frame = topaz_array_at(stack->callstack, topazScript_CallstackFrame_t *, level);
+    topazScript_CallstackFrame_t * frame = &topaz_array_at(stack->callstack, topazScript_CallstackFrame_t, level);
     if (!topaz_string_get_length(frame->functionName)) {
         topaz_string_concat_printf(
             out, 
@@ -255,16 +255,18 @@ TOPAZCCOMMAND(command__backtrace) {
 TOPAZCCOMMAND(command__print) {    
     topazString_t * eval = topaz_string_create();
     
-    topaz_string_concat_printf(eval, "%d:", console->debugLevel);
-    topaz_string_concat(eval, topaz_array_at(args, topazString_t *, 0));
+    if (topaz_array_get_size(args)) {
+        topaz_string_concat_printf(eval, "%d:", console->debugLevel);
+        topaz_string_concat(eval, fullCommand);
 
-    topaz_script_debug_send_command(
-        console->script,
-        topazScript_DebugCommand_ScopedEval,
-        eval
-    );
+        topaz_script_debug_send_command(
+            console->script,
+            topazScript_DebugCommand_ScopedEval,
+            eval
+        );
 
-    topaz_string_destroy(eval);
+        topaz_string_destroy(eval);
+    }
     return topaz_string_create();
 }
 
@@ -277,11 +279,20 @@ TOPAZCCOMMAND(command__continue) {
     return topaz_string_create();
 }
 
+TOPAZCCOMMAND(command__pause) {    
+    topaz_script_debug_send_command(
+        console->script,
+        topazScript_DebugCommand_Pause,
+        TOPAZ_STR_CAST("")
+    );
+    return topaz_string_create();
+}
+
 
 topazConsole_t * topaz_console_create(topaz_t * t) {
     topazConsole_t * out = calloc(1, sizeof(topazConsole_t));
     {
-        topazConsoleDisplayAPI_t api;
+        topazConsoleDisplayAPI_t api = {};
         topazSystem_Backend_t * b = topaz_system_create_backend(
             topaz_context_get_system(t),
             TOPAZ_STR_CAST("consoleDisplay"),
@@ -310,7 +321,7 @@ topazConsole_t * topaz_console_create(topaz_t * t) {
     topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("print"),     command__print, t);
     topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("continue"),  command__continue, t);
     topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("quit"),      command__exit_dbg, t);
-
+    topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("break"),     command__pause, t);
 
     out->inputID = topaz_console_display_add_input_callback(
         out->display,

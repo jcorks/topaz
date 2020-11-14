@@ -103,7 +103,7 @@ topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
     out->params = topaz_table_create_hash_topaz_string();
 
     {
-        topazTimeAPI_t api;
+        topazTimeAPI_t api = {};
         topazSystem_Backend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("time"), &api);
         out->timeRef = topaz_time_create(out, ref, api);
     }

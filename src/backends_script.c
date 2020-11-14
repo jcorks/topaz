@@ -594,7 +594,10 @@ void * topaz_script_object_get_api_data(topazScript_Object_t * o) {
 
 
 void topaz_script_enable_debugging(topazScript_t * s) {
-    s->debugEnabled = 1;
+    if (!s->debugEnabled) {
+        s->debugEnabled = 1;
+        s->api.script_debug_start(s, s->implementationData);
+    }
 }
 
 void topaz_script_debug_send_command(
@@ -610,7 +613,6 @@ void topaz_script_debug_send_command(
             break;
 
           case topazScript_DebugCommand_Resume:
-            s->debugPaused = 0;
             break;
           default:
             s->api.script_debug_send_command(s, s->implementationData, command, argument);
@@ -665,11 +667,16 @@ const topazScript_DebugState_t * topaz_script_debug_get_state(
 
 
 void topaz_script_notify_command(topazScript_t * s, int cmd, topazString_t * str) {
+    if (cmd == topazScript_DebugCommand_Pause) {
+        s->debugPaused = 1;
+    } else if (cmd == topazScript_DebugCommand_Resume) {
+        s->debugPaused = 0;
+    }
     topazArray_t * arr = topaz_bin_get_all(s->debugCBs);
     uint32_t i;
     for(i = 0; i < topaz_array_get_size(arr); ++i) {
         DebugCB * cb = topaz_array_at(arr, DebugCB *, i);
-        cb->cb(s, cmd, str, s->implementationData);
+        cb->cb(s, cmd, str, cb->data);
     }   
     topaz_array_destroy(arr);
     topaz_string_destroy(str);
