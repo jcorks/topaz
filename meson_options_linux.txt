@@ -57,10 +57,11 @@ option(
     'InputManagerBackend',
     type : 'combo',
 
-    value : 'noInputManager',
+    value : 'glfw',
     choices : [
         'noInputManager',
-        'ncurses'
+        'ncurses',
+	'glfw'
     ]
 )
 
@@ -88,6 +89,17 @@ option(
         'posix'
     ]
 )
+
+option(
+    'FontRenderer',
+    type : 'combo',
+
+    value : 'noFontRenderer',
+    choices : [
+        'noFontRenderer'
+    ]
+)
+
 
 option(
     'ScriptBackend',

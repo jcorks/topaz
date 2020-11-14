@@ -24,6 +24,7 @@ subdir(handlerPreferredRenderer)
 subdir(handlerPreferredTime)
 subdir(handlerPreferredScript)
 subdir(handlerPreferredConsoleDisplay)
+subdir(handlerPreferredFontRenderer)
 
 # actually process results
 foreach handler : handlers 

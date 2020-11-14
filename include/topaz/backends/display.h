@@ -110,6 +110,10 @@ typedef enum {
     ///
     topazDisplay_Handle_WINAPIHandle,   
 
+    /// THe display handle is a GLFWwindow instance.
+    ///
+    topazDisplay_Handle_GLFWwindow,
+
     /// The handle's type is not known and should not be relied on.
     ///
     topazDisplay_Handle_Unknown         

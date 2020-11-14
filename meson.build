@@ -20,6 +20,7 @@ src = [
     'src/backends_console_display.c',
     'src/backends_display.c',
     'src/backends_filesys.c',
+    'src/backends_font_renderer.c',
     'src/backends_input_manager.c',
     'src/backends_renderer.c',
     'src/backends_time.c',
@@ -114,6 +115,7 @@ handlerPreferredTime           = 'time/'           + get_option('TimeBackend')
 handlerPreferredFilesys        = 'filesys/'        + get_option('FilesystemBackend')
 handlerPreferredScript         = 'script/'         + get_option('ScriptBackend')
 handlerPreferredConsoleDisplay = 'consoleDisplay/' + get_option('ConsoleDisplayBackend')
+handlerPreferredFontRenderer   = 'fontRenderer/'           + get_option('FontRenderer')
 
 
 subdir('system')

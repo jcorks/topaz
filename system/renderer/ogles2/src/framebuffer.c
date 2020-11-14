@@ -124,7 +124,7 @@ int topaz_es2_fb_resize(topazES2_FB_t * out, int w, int h) {
         0
     ); TOPAZ_GLES_CALL_CHECK;
     glBindTexture(GL_TEXTURE_2D, 0);TOPAZ_GLES_CALL_CHECK;
-    glBindFramebuffer(GL_FRAMEBUFFER, out->fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, out->fbo);TOPAZ_GLES_CALL_CHECK;    
     glBindRenderbuffer(GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;    
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h); TOPAZ_GLES_CALL_CHECK;
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;

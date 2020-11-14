@@ -72,15 +72,15 @@ static void * topaz_time_posix__create(topazTime_t * api, topaz_t * ctx) {
 
 
 
-static void topaz_time_posix__destroy(topazTimeAPI_t * t, void * userData) {
+static void topaz_time_posix__destroy(topazTime_t * t, void * userData) {
     free(userData);
 }
 
-static void topaz_time_posix__sleep_ms(topazTimeAPI_t * t, void * userData, uint64_t ms) {
+static void topaz_time_posix__sleep_ms(topazTime_t * t, void * userData, uint64_t ms) {
     usleep(ms * 1000);
 }
 
-static uint64_t topaz_time_posix__ms_since_startup(topazTimeAPI_t * t, void * userData) {
+static uint64_t topaz_time_posix__ms_since_startup(topazTime_t * t, void * userData) {
     PosixTimeData * tData = userData;
     clock_gettime(CLOCK_REALTIME, &tData->time);
     return ((tData->time.tv_nsec / 1000000.0) + (tData->time.tv_sec *1000.0)) - tData->beginTicks;

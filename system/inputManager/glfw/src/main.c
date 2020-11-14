@@ -33,48 +33,45 @@ DEALINGS IN THE SOFTWARE.
 
 #include "backend.h"
 #include <topaz/version.h>
+#include <GLFW/glfw3.h>
+
+#include <topaz/containers/array.h>
+#include <topaz/containers/table.h>
+#include <topaz/backends/display.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 
 
 
 
-
+static topazTable_t * glfww2im = NULL;
 
 
 typedef struct {
     GLFWwindow * ctx;
+    topazDisplay_t * focus;
+    topazInputDevice_t * keyboard;
+    topazInputDevice_t * mouse;
+
+    topazArray_t * queuedKeyboardEvents;
+    topazArray_t * queuedPointerEvents;
 } GLFWIM;
 
-static topazTable_t * glfww2im = NULL;
-static topazTable_t * glfwKey2tp = NULL;
-static topazTable_t * glfwPad2tp = NULL;
-static topazTable_t * glfwMos2tp = NULL;
 
-static void glfwim_key_callback(
-    GLFWwindow * window,
-    
 
-static void * topaz_glfw_im_create(topazInputManager_t * api, topaz_t * ctx) {
-    
-    GLFWIM * out = calloc(1, sizeof(GLFWIM));
-    out->ctx = glfwGetCurrentContext();
 
-    topaz_table_insert(glfww2im, out->ctx, out);
-    return out;
-}
 
-static void map_key(int k, int v) {
-    topaz_table_insert_by_int(glfwKey2tp, k, (int)v);
-}
 
 
 #define SMAP(__K__, __V__) case __K__: return __V__;
+
 static int get_key(int kglfw) {
     switch(kglfw) {
         SMAP(GLFW_KEY_UNKNOWN , topazNotAnInput);
         SMAP(GLFW_KEY_SPACE , topazKey_space);
-        SMAP(GLFW_KEY_APOSTROPHE , topazKey_spotrophe);
+        SMAP(GLFW_KEY_APOSTROPHE , topazKey_apostrophe);
         SMAP(GLFW_KEY_COMMA , topazKey_comma);
         SMAP(GLFW_KEY_MINUS , topazKey_minus);
         SMAP(GLFW_KEY_PERIOD , topazKey_period);
@@ -123,7 +120,7 @@ static int get_key(int kglfw) {
         SMAP(GLFW_KEY_GRAVE_ACCENT , topazKey_grave);
         SMAP(GLFW_KEY_WORLD_1 , topazKey_world1);
         SMAP(GLFW_KEY_WORLD_2 , topazKey_world2);
-        SMAP(GLFW_KEY_ESCAPE , topazKey_escape);
+        SMAP(GLFW_KEY_ESCAPE , topazKey_esc);
         SMAP(GLFW_KEY_ENTER , topazKey_enter);
         SMAP(GLFW_KEY_TAB , topazKey_tab);
         SMAP(GLFW_KEY_BACKSPACE , topazKey_backspace);
@@ -154,6 +151,7 @@ static int get_key(int kglfw) {
         SMAP(GLFW_KEY_F10 , topazKey_F10);
         SMAP(GLFW_KEY_F11 , topazKey_F11);
         SMAP(GLFW_KEY_F12 , topazKey_F12);
+        /*
         SMAP(GLFW_KEY_F13 , topazKey_F13);
         SMAP(GLFW_KEY_F14 , topazKey_F14);
         SMAP(GLFW_KEY_F15 , topazKey_F15);
@@ -166,7 +164,7 @@ static int get_key(int kglfw) {
         SMAP(GLFW_KEY_F22 , topazKey_F22);
         SMAP(GLFW_KEY_F23 , topazKey_F23);
         SMAP(GLFW_KEY_F24 , topazKey_F24);
-        SMAP(GLFW_KEY_F25 , topazKey_F25);
+        SMAP(GLFW_KEY_F25 , topazKey_F25);*/
         SMAP(GLFW_KEY_KP_0 , topazKey_0);
         SMAP(GLFW_KEY_KP_1 , topazKey_1);
         SMAP(GLFW_KEY_KP_2 , topazKey_2);
@@ -193,21 +191,122 @@ static int get_key(int kglfw) {
         SMAP(GLFW_KEY_RIGHT_ALT , topazKey_ralt);
         SMAP(GLFW_KEY_RIGHT_SUPER , topazKey_rsuper);
     }
+    return topazNotAnInput;
 } 
 
-
-
-static assign_glfw_lookups() {
-    glfwKey2tp = topaz_table_create_hash_pointer();
-    glfwMos2tp = topaz_table_create_hash_pointer();
-    glfwPad2tp = topaz_table_create_hash_pointer();
-
-    map_key(GLFW_KEY_UNKNOWN
-
+static void topaz_glfw_im_key_callback(
+    GLFWwindow * window,
+    int key,
+    int scacode,
+    int action,
+    int mods
+) {
+    int keyTrans = get_key(key);
+    if (keyTrans != topazNotAnInput) {
+        GLFWIM * im = topaz_table_find(glfww2im, window);
+        topazInputDevice_Event_t ev;
+        ev.id = keyTrans;
+        ev.state = action == GLFW_PRESS || action == GLFW_REPEAT;
+        ev.utf8 = 0;
+        topaz_array_push(im->queuedKeyboardEvents, ev);    
+    }
 }
 
 
+
 static intptr_t api_nothing(){return 0;}
+
+
+
+    
+
+static void * topaz_glfw_im_create(topazInputManager_t * api, topaz_t * ctx) {
+    
+    GLFWIM * out = calloc(1, sizeof(GLFWIM));
+    out->ctx = NULL;
+    out->keyboard = topaz_input_device_create(topaz_InputDevice_Class_Keyboard);
+    out->mouse    = topaz_input_device_create(topaz_InputDevice_Class_Pointer);
+    out->queuedKeyboardEvents = topaz_array_create(sizeof(topazInputDevice_Event_t));
+    out->queuedPointerEvents  = topaz_array_create(sizeof(topazInputDevice_Event_t));
+
+    return out;
+}
+
+static int topaz_glfw_im_handle_events(topazInputManager_t * imSrc, void * userData) {
+    GLFWIM * im = userData;
+    if (!im->ctx) return FALSE;
+
+    int hasEvents = 0;
+
+    // likely will fire off the keyboard/pointer/gamepad events for 
+    // glfw. This caches them in the queued event arrays.
+    glfwPollEvents();
+
+    
+    // we then manually transfer them here. This is because we want to stay as 
+    // close to spec as possible and add events to the devices when they are 
+    // expected.
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(im->queuedKeyboardEvents);
+    for(i = 0; i < len; ++i) {
+        topaz_input_device_push_event(
+            im->keyboard, 
+            &topaz_array_at(
+                im->queuedKeyboardEvents,
+                topazInputDevice_Event_t,
+                i
+            )
+        );
+        hasEvents = TRUE;
+    } 
+    topaz_array_set_size(im->queuedKeyboardEvents, 0);
+    return hasEvents;
+}
+
+
+static void topaz_glfw_im_set_focus(topazInputManager_t * imSrc, void * userData, topazDisplay_t * disp) {
+    GLFWIM * im = userData;
+    if (im->ctx) {
+        topaz_table_remove(glfww2im, im->ctx);                  
+        glfwSetKeyCallback(im->ctx, NULL);
+        im->ctx = NULL;
+        im->focus = NULL;
+    }
+    if (disp && topaz_display_get_system_handle_type(disp) == topazDisplay_Handle_GLFWwindow) {
+        if (im->ctx == topaz_display_get_system_handle(disp)) {
+            return;
+        } 
+        im->focus = disp;
+        im->ctx = topaz_display_get_system_handle(disp);
+        topaz_table_insert(glfww2im, im->ctx, im);    
+        glfwSetKeyCallback(im->ctx, topaz_glfw_im_key_callback);
+
+        
+    }
+}
+
+static topazDisplay_t * topaz_glfw_im_get_focus(topazInputManager_t * imSrc, void * userData) {
+    GLFWIM * im = userData;
+    return im->focus;
+}
+
+
+static topazInputDevice_t * topaz_glfw_im_query_device(topazInputManager_t * imSrc, void * userData, int ID) {
+    GLFWIM * im = userData;
+    switch(ID) {
+      case 0: return im->keyboard;
+      case 1: return im->mouse;
+      default: return NULL;
+    }
+}
+
+static int topaz_glfw_im_query_auxiliary_devices(topazInputManager_t * imSrc, void * userData, int * IDs) {
+    return 0;
+}
+
+static int topaz_glfw_im_max_devices(topazInputManager_t * imSrc, void * userData) {
+    return 2;
+}
 
 void topaz_system_inputManager_glfw__backend(
     topazSystem_t *          system, 
@@ -258,16 +357,15 @@ void topaz_system_inputManager_glfw__backend(
 
     if (!glfww2im) {
         glfww2im = topaz_table_create_hash_pointer();
-        assign_glfw_lookups();
     }
-    api->input_manager_create = (void * (*)(topazInputManager_t *, topaz_t *)) api_nothing;
+    api->input_manager_create = topaz_glfw_im_create;
     api->input_manager_destroy = (void (*)(topazInputManager_t *, void *)) api_nothing;
-    api->input_manager_handle_events = (int (*)(topazInputManager_t *, void *)) api_nothing;
-    api->input_manager_query_device = (topazInputDevice_t * (*)(topazInputManager_t *, void *, int)) api_nothing;
-    api->input_manager_query_auxiliary_devices = (int (*)(topazInputManager_t *, void *, int *)) api_nothing;
-    api->input_manager_max_devices = (int (*)(topazInputManager_t *, void *)) api_nothing;
-    api->input_manager_set_focus = (void (*)(topazInputManager_t *, void *, topazDisplay_t *)) api_nothing;
-    api->input_manager_get_focus = (topazDisplay_t * (*)(topazInputManager_t *, void *)) api_nothing;
+    api->input_manager_handle_events = topaz_glfw_im_handle_events;
+    api->input_manager_query_device = topaz_glfw_im_query_device;
+    api->input_manager_query_auxiliary_devices = topaz_glfw_im_query_auxiliary_devices;
+    api->input_manager_max_devices = topaz_glfw_im_max_devices;
+    api->input_manager_set_focus = topaz_glfw_im_set_focus;
+    api->input_manager_get_focus = topaz_glfw_im_get_focus;
     api->input_manager_show_virtual_keyboard = (void (*)(topazInputManager_t *, void *, int)) api_nothing;
 
 }

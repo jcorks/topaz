@@ -408,7 +408,7 @@ void topaz_system_renderer_ogles2__backend(
     );
 
 
-static int isInit = 0;
+    static int isInit = 0;
     static GLFWwindow * context = NULL;
     if (!isInit) {
         glfwInit();

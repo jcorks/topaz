@@ -71,9 +71,9 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
     TopazGLFWWindow * w = calloc(1, sizeof(TopazGLFWWindow));
     glfwWindowHint(GLFW_VISIBLE, 1);
     w->window = glfwCreateWindow(640, 480, "topaz", NULL, glfwGetCurrentContext());
+
     w->w = 640;
     w->h = 480;
-    glfwMakeContextCurrent(w->window);
 
 
 
@@ -257,6 +257,9 @@ static int topaz_glfw_is_capable(topazDisplay_t * dispSrc, void * api, topazDisp
 
 
 static void render_to_screen(TopazGLFWWindow * w, GLuint tex) {
+    GLFWwindow * wOld = glfwGetCurrentContext();
+    glfwMakeContextCurrent(w->window);
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex);
@@ -272,6 +275,9 @@ static void render_to_screen(TopazGLFWWindow * w, GLuint tex) {
     glDisableVertexAttribArray(w->vertexLocation);
     glUseProgram(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glfwMakeContextCurrent(wOld);
+
 }
 
 static void topaz_glfw_update(topazDisplay_t * dispSrc, void * api, topazRenderer_Framebuffer_t * fb) {
@@ -290,36 +296,15 @@ static const topazArray_t * topaz_glfw_supported_framebuffers(topazDisplay_t * d
 
 
 static topazDisplay_Handle topaz_glfw_get_system_handle_type(topazDisplay_t * dispSrc, void * api) {
-    #if _WIN64 || _WIN32
-        return topazDisplay_Handle_WINAPIHandle;
-    #endif
-    #ifdef __linux__
-        return topazDisplay_Handle_X11Display;
-    #endif
-    return topazDisplay_Handle_Unknown;
+    return topazDisplay_Handle_GLFWwindow;
 }
 
 static void * topaz_glfw_get_system_handle(topazDisplay_t * dispSrc, void * api) {
-    #if _WIN64 || _WIN32
-        TopazGLFWWindow * d = api;      
-        return glfwGetWin32Window(d->window);
-    #endif
-    #ifdef __linux__
-        return glfwGetX11Display();
-    #endif
-    return 0;
-}
-
-static topazDisplay_Event topaz_glfw_get_system_event_type(topazDisplay_t * dispSrc, void * api) {
     TopazGLFWWindow * d = api;      
-    #if _WIN64 || _WIN32
-        return topazDisplay_event_WINAPIMsg;
-    #endif
-    #ifdef __linux__
-        return topazDisplay_Event_X11Event;
-    #endif
-    return topazDisplay_Event_Unknown;
-    
+    return d->window;
+}
+static topazDisplay_Event topaz_glfw_get_system_event_type(topazDisplay_t * dispSrc, void * api) {
+    return topazDisplay_Event_Unknown;    
 }
 
 static void * topaz_glfw_get_last_system_event(topazDisplay_t * dispSrc, void * api) {

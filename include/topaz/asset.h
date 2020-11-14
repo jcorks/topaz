@@ -50,14 +50,16 @@ typedef struct topazAsset_t topazAsset_t;
 typedef enum {
     topazAsset_Type_None,
     topazAsset_Type_Image,
-    topazAsset_Type_Font,
     topazAsset_Type_Audio,
     topazAsset_Type_Model,
     topazAsset_Type_Particle,
-    topazAsset_Type_RawData,
+    topazAsset_Type_Data,
     topazAsset_Type_Actor,
     topazAsset_Type_Count,    
 } topazAsset_Type;
+
+
+
 
 
 
@@ -107,7 +109,7 @@ typedef struct topazAsset_LoadingProfile_t topazAsset_LoadingProfile_t;
 
 // 
 struct topazAsset_LoadingProfile_t {
-    /// Called when the asset has received all that bytes.
+    /// Called when the asset has received all bytes.
     /// In most cases, this is when the asset will finalize
     /// the data. In the case of streaming, this is called
     /// after stream_end has been called, signaling the end 
@@ -173,6 +175,13 @@ const topazAsset_LoadingProfile_t * topaz_asset_get_loading_profile(
     const topazAsset_t *
 );
 
+const topazString_t * topaz_asset_get_name(const topazAsset_t *);
+
+topazAsset_Type topaz_asset_get_type(const topazAsset_t *);
+
+
+
+
 
 /// Loads raw data from memory into an asset. 
 /// When done, triggers on_load. If successful, returns TRUE.
@@ -228,12 +237,6 @@ int topaz_asset_stream_active(const topazAsset_t *);
 ///
 int topaz_asset_is_loaded(const topazAsset_t *);
 
-
-
-
-const topazString_t * topaz_asset_get_name(const topazAsset_t *);
-
-topazAsset_Type topaz_asset_get_type(const topazAsset_t *);
 
 
 
