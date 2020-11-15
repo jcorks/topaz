@@ -500,7 +500,7 @@ typedef enum {
     /// The argument is the ID return from an AddBreakpoint command.
     /// If not in a paused state, no action is taken.
     /// If failed, an empty string is returned.
-    /// If successful, a non-empty string is returned.
+    /// If successful, the label removed is returned.
     ///
     topazScript_DebugCommand_RemoveBreakpoint,
 

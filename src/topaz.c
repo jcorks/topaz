@@ -235,7 +235,7 @@ void topaz_context_break(topaz_t * t) {
 
 
 void topaz_context_resume(topaz_t * t) {
-    t->paused = TRUE;
+    t->paused = FALSE;
 }
     
 void topaz_context_step(topaz_t * t) {

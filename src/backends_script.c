@@ -2,6 +2,7 @@
 #include <topaz/containers/array.h>
 #include <topaz/containers/string.h>
 #include <topaz/containers/bin.h>
+#include <topaz/topaz.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -17,6 +18,7 @@ typedef struct {
 
 /// script context
 struct topazScript_t {
+    topaz_t * ctx;
     topazScriptAPI_t api;
 
     void * implementationData;
@@ -90,6 +92,7 @@ topazScript_t * topaz_script_create(topaz_t * t, topazSystem_Backend_t * b, cons
     out->objectPool = topaz_array_create(sizeof(topazScript_Object_t *));
     out->objectAllocRefs = topaz_array_create(sizeof(void *));
     out->debugCBs = topaz_bin_create();
+    out->ctx = t;
     #ifdef TOPAZDC_DEBUG
         assert(api->script_create);
         assert(api->script_destroy);
@@ -613,7 +616,6 @@ void topaz_script_debug_send_command(
             break;
 
           case topazScript_DebugCommand_Resume:
-            break;
           default:
             s->api.script_debug_send_command(s, s->implementationData, command, argument);
         }
@@ -669,8 +671,10 @@ const topazScript_DebugState_t * topaz_script_debug_get_state(
 void topaz_script_notify_command(topazScript_t * s, int cmd, topazString_t * str) {
     if (cmd == topazScript_DebugCommand_Pause) {
         s->debugPaused = 1;
+        topaz_context_pause(s->ctx);
     } else if (cmd == topazScript_DebugCommand_Resume) {
         s->debugPaused = 0;
+        topaz_context_resume(s->ctx);
     }
     topazArray_t * arr = topaz_bin_get_all(s->debugCBs);
     uint32_t i;
