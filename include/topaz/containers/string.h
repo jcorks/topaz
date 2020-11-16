@@ -126,7 +126,12 @@ int topaz_string_get_char(const topazString_t *, uint32_t position);
 /// Sets the character within the string at the given 
 /// 0-indexed position. If an invalid position, no action is taken
 ///
-void topaz_string_set_char(const topazString_t *, uint32_t position, int value);
+void topaz_string_set_char(topazString_t *, uint32_t position, int value);
+
+/// Adds a character to the end of the string
+///
+void topaz_string_append_char(topazString_t *, int value);
+
 
 /// Gets the byte length of the data representation 
 /// of this string. Depending on the context, this could 

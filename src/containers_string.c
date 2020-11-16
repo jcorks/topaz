@@ -118,6 +118,7 @@ void topaz_string_destroy(topazString_t * s) {
 
 void topaz_string_clear(topazString_t * s) {
     s->len = 0;
+    s->cstr[0] = 0;
 }
 
 void topaz_string_set(topazString_t * s, const topazString_t * src) {
@@ -203,10 +204,18 @@ int topaz_string_get_char(const topazString_t * t, uint32_t p) {
     return t->cstr[p];
 }
 
-void topaz_string_set_char(const topazString_t * t, uint32_t p, int value) {
+void topaz_string_set_char(topazString_t * t, uint32_t p, int value) {
     if (p >= t->len) return;
     t->cstr[p] = value;
 }
+
+void topaz_string_append_char(topazString_t * t, int value) {
+    char str[2];
+    str[1] = 0;
+    str[0] = value;
+    topaz_string_concat_cstr(t, str, 1);
+}
+
 
 uint32_t topaz_string_get_byte_length(const topazString_t * t) {
     // for now same as string length. will change when unicode is supported.

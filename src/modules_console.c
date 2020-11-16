@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 
 
 typedef struct {
@@ -174,10 +175,62 @@ static void console_print_debug_state(
     lineBold.g = 255;
     lineBold.b = 255;
 
+
+
     if (topaz_array_get_size(state->callstack) == 0) {
         topaz_console_print_message(console, topaz_string_create_from_c_str("[Callstack empty or unknown.]"), topazConsole_MessageType_Error);
         return;
     }
+
+    #define LINES_FROM_CENTER 5
+    // first print source.
+    {
+        const topazScript_CallstackFrame_t * homeFrame = &topaz_array_at(state->callstack, topazScript_CallstackFrame_t, console->debugLevel);
+        int l;
+        topazString_t * output = topaz_string_create();
+        int digitCount = ((int)(log10(topaz_script_get_line_count(console->script, homeFrame->filename))))+1;
+        if (digitCount < 2) digitCount = 2;
+        topazString_t * headerNormal = topaz_string_create_from_c_str(" %%%dd | ", digitCount);
+        topazString_t * headerCurrent = topaz_string_create_from_c_str(" %%%ds | ", digitCount);
+        int lineIndex = homeFrame->lineNumber-1;        
+        for(l = lineIndex-5; l <= lineIndex+5; ++l) {
+            topaz_string_clear(output);
+            if (l < 0 || l > topaz_script_get_line_count(console->script, homeFrame->filename)) {
+                topaz_console_print_color(
+                    console,
+                    TOPAZ_STR_CAST("-----------------------------"),
+                    &line
+                );
+            } else {
+                if (l == lineIndex) {
+                    topaz_string_concat_printf(output, topaz_string_get_c_str(headerCurrent), "->");
+                    topaz_string_concat(output, topaz_script_get_line(console->script, homeFrame->filename, l));
+                } else {
+                    topaz_string_concat_printf(output, topaz_string_get_c_str(headerNormal), l+1);
+                    topaz_string_concat(output, topaz_script_get_line(console->script, homeFrame->filename, l));
+                }
+
+                topaz_console_print_color(
+                    console,
+                    output,
+                    (l == lineIndex ? &lineBold : &line)
+                );
+
+            }
+
+
+
+        }
+        topaz_string_destroy(output);
+
+        topaz_console_print_color(
+            console,
+            TOPAZ_STR_CAST(""),
+            (l == lineIndex ? &lineBold : &line)
+        );
+
+    }
+
     for(int i = 0; i < topaz_array_get_size(state->callstack); ++i) {
         topazString_t * str = topaz_string_create();
         const topazString_t * substate = stackframe_to_string(

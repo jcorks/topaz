@@ -180,6 +180,27 @@ void topaz_script_run(
     const topazString_t * scriptData
 );
 
+
+/// Returns a source line from a previously run script of the given name.
+/// The lineNumber is a 0-index to the line, where the first 
+/// line is always index 0. If the index is invalid, an empty 
+/// string is returned.
+///
+const topazString_t * topaz_script_get_line(
+    topazScript_t *,
+    const topazString_t * sourceName,
+    int lineNumber
+);
+
+/// Gets the number of lines within a previously-run script of the given name.
+/// If no such script exists, 0 is returned.
+///
+int topaz_script_get_line_count(
+    topazScript_t *,
+    const topazString_t * sourceName    
+);
+
+
 /// Runs the given expression and returns the result as an object.
 /// Note that if the expression results in a complex value (i.e. an in-script
 /// object reference) an external object may be returned. See 

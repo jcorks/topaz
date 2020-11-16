@@ -1,6 +1,7 @@
 #include <topaz/backends/script.h>
 #include <topaz/containers/array.h>
 #include <topaz/containers/string.h>
+#include <topaz/containers/table.h>
 #include <topaz/containers/bin.h>
 #include <topaz/topaz.h>
 #include <stdio.h>
@@ -46,6 +47,9 @@ struct topazScript_t {
     // a bin of all the pause notification CBs. These are called when the 
     // pause state is confirmed by the debugging implementation.
     topazBin_t * debugCBs;
+
+    // [source name] -> GArray[line] -> topazString_t *
+    topazTable_t * sources;
     
 };
 
@@ -93,6 +97,7 @@ topazScript_t * topaz_script_create(topaz_t * t, topazSystem_Backend_t * b, cons
     out->objectAllocRefs = topaz_array_create(sizeof(void *));
     out->debugCBs = topaz_bin_create();
     out->ctx = t;
+    out->sources = topaz_table_create_hash_topaz_string();
     #ifdef TOPAZDC_DEBUG
         assert(api->script_create);
         assert(api->script_destroy);
@@ -110,6 +115,23 @@ topazScript_t * topaz_script_create(topaz_t * t, topazSystem_Backend_t * b, cons
 ///
 void topaz_script_destroy(topazScript_t * s) {
     s->api.script_destroy(s, s->implementationData);
+    
+    topazTableIter_t * iter = topaz_table_iter_create();
+    for(topaz_table_iter_start(iter, s->sources);
+        !topaz_table_iter_is_end(iter);
+        topaz_table_iter_proceed(iter)) {
+        topazArray_t * value = topaz_table_iter_get_value(iter);
+        uint32_t i;
+        uint32_t len = topaz_array_get_size(value);
+        for(i = 0; i < len; ++i) {
+            topaz_string_destroy(topaz_array_at(value, topazString_t *, i));
+        }
+        topaz_array_destroy(value);
+    }
+    topaz_table_iter_destroy(iter);
+    topaz_table_destroy(s->sources);
+    
+
     uint32_t i;
     for(i = 0; i < topaz_array_get_size(s->objectAllocRefs); ++i) {
         free(topaz_array_at(s->objectAllocRefs, void*, i));
@@ -152,11 +174,75 @@ void topaz_script_run(
     const topazString_t * sourceName,
     const topazString_t * scriptData
 ) {
+    topazArray_t * source = topaz_table_find(s->sources, sourceName);
+    if (source) {
+        uint32_t i;
+        uint32_t len = topaz_array_get_size(source);
+        for(i = 0; i < len; ++i) {
+            topaz_string_destroy(topaz_array_at(source, topazString_t *, i));
+        }
+        topaz_array_set_size(source, 0);
+    } else {
+        source = topaz_array_create(sizeof(topazString_t *));
+
+        // line breakdown
+        uint32_t len = topaz_string_get_length(scriptData);
+        uint32_t i = 0;
+        topazString_t * line = topaz_string_create();
+        while(i < len) {
+            int c  = topaz_string_get_char(scriptData, i);
+            int cN = i+1 >= len ? 0 : topaz_string_get_char(scriptData, i);
+
+            if (c == '\r' && cN == '\n') {
+                topazString_t * lineComplete = topaz_string_clone(line);
+                topaz_array_push(source, lineComplete);
+                topaz_string_clear(line);
+                i+=2;
+            } else if (c == '\n') {
+                topazString_t * lineComplete = topaz_string_clone(line);
+                topaz_array_push(source, lineComplete);
+                topaz_string_clear(line);
+                i++;
+            } else {
+                topaz_string_append_char(line, c);
+                i++;
+            }
+        }
+        topaz_string_destroy(line);
+        topaz_table_insert(s->sources, sourceName, source);
+
+    }
+
     s->api.script_run(
         s, s->implementationData,
         sourceName,
         scriptData
     );
+}
+
+
+
+int topaz_script_get_line_count(
+    topazScript_t * s,
+    const topazString_t * sourceName    
+) {
+    topazArray_t * source = topaz_table_find(s->sources, sourceName);
+    if (!source) return 0;
+    return (int)topaz_array_get_size(source);
+}
+
+
+
+const topazString_t * topaz_script_get_line(
+    topazScript_t * s,
+    const topazString_t * sourceName,
+    int lineNumber
+) {
+    topazArray_t * source = topaz_table_find(s->sources, sourceName);
+    if (!source) return TOPAZ_STR_CAST("");
+    int lineCount = (int)topaz_array_get_size(source);
+    if (lineNumber < 0 || lineNumber >= lineCount) return TOPAZ_STR_CAST("");
+    return topaz_array_at(source, topazString_t *, lineNumber);
 }
 
 topazScript_Object_t * topaz_script_expression(
