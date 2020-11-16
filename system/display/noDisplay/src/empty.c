@@ -89,6 +89,7 @@ void topaz_system_display_noDisplay__backend(
     );
 
     api->display_create = (void * (*)(topazDisplay_t *, topaz_t *)) api_nothing;
+    api->display_fullscreen = (void (*)(topazDisplay_t *, void *, int)) api_nothing;
     api->display_destroy = (void (*)(topazDisplay_t *, void *)) api_nothing;
     api->display_resize = (void (*)(topazDisplay_t *, void *, int, int)) api_nothing;
     api->display_set_position = (void (*)(topazDisplay_t *, void *, int, int)) api_nothing;

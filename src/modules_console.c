@@ -166,10 +166,13 @@ static void console_print_debug_state(
     const topazScript_DebugState_t * state
 ) {
     topazColor_t line = color_normal;
-    topazColor_t lineBold = color_normal;
     line.r *= 0.7;
     line.g *= 0.7;
     line.b *= 0.7;
+    topazColor_t lineBold;
+    lineBold.r = 255;
+    lineBold.g = 255;
+    lineBold.b = 255;
 
     if (topaz_array_get_size(state->callstack) == 0) {
         topaz_console_print_message(console, topaz_string_create_from_c_str("[Callstack empty or unknown.]"), topazConsole_MessageType_Error);
@@ -191,7 +194,7 @@ static void console_print_debug_state(
         topaz_console_print_color(
             console,
             str,
-            console->debugLevel ? &lineBold : &line
+            (i == console->debugLevel ? &lineBold : &line)
         );
 
         topaz_string_destroy(str);

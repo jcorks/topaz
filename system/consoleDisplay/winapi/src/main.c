@@ -85,7 +85,6 @@ static void update_input(topazSystem_Backend_t * b, WINAPITerm * t) {
                     winapi_printf(t->cout, topaz_string_create_from_c_str("\n"));
                     topaz_console_display_send_input(t->ref, t->str);
                     topaz_string_clear(t->str);
-                    winapi_printf(t->cout, topaz_string_create_from_c_str("$ "));
                 } else if (input.Event.KeyEvent.uChar.AsciiChar == 8) { // backspace!
                     if (topaz_string_get_length(t->str)) {
                         topazString_t * temp = t->str;
@@ -124,6 +123,11 @@ static void term_print(topazConsoleDisplay_t * d, void * data, const topazString
         reqColor->b
     ));
     winapi_printf(term->cout, topaz_string_clone(c));
+    winapi_printf(term->cout, topaz_string_create_from_c_str("\x1b[0m"));
+}
+
+static void term_newline(topazConsoleDisplay_t * d, void * data) {
+    WINAPITerm * term = data;
     winapi_printf(term->cout, topaz_string_create_from_c_str("\n"));
     winapi_printf(term->cout, topaz_string_create_from_c_str("\x1b[0m"));
 }
@@ -142,7 +146,6 @@ static void term_enable(topazConsoleDisplay_t * d, void * data, int enable) {
         term->file = GetStdHandle(STD_INPUT_HANDLE);
         term->cout = GetStdHandle(STD_OUTPUT_HANDLE);
         assert(term->file != INVALID_HANDLE_VALUE);
-        winapi_printf(term->cout, topaz_string_create_from_c_str("$ "));
 
         DWORD dwMode = 0;
         if (GetConsoleMode(term->cout, &dwMode)) {
@@ -216,7 +219,8 @@ void topaz_system_consoleDisplay_winapi__backend(
 
     api->console_display_create    = term_init;
     api->console_display_destroy   = (void                    (*)          (topazConsoleDisplay_t *, void *)) api_nothing;
-    api->console_display_add_line  = term_print;
+    api->console_display_add_text  = term_print;
+    api->console_display_new_line  = term_newline;
     api->console_display_clear     = term_clear;
     api->console_display_enable    = term_enable;
 }
