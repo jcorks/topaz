@@ -33,7 +33,8 @@ topazConsoleDisplay_t * topaz_console_display_create(topaz_t * topaz, topazSyste
         assert(b && "topazSystem_Backend_t pointer cannot be NULL.");
         assert(api.console_display_create);
         assert(api.console_display_destroy);
-        assert(api.console_display_add_line);
+        assert(api.console_display_add_text);
+        assert(api.console_display_new_line);
         assert(api.console_display_clear);
         assert(api.console_display_enable);
     #endif
@@ -43,6 +44,8 @@ topazConsoleDisplay_t * topaz_console_display_create(topaz_t * topaz, topazSyste
     out->lines = topaz_array_create(sizeof(topazString_t*));
     out->cbs = topaz_bin_create();
     out->userData = out->api.console_display_create(out, topaz);
+    topazString_t * first = topaz_string_create();
+    topaz_array_push(out->lines, first);
     return out;
 }
 
@@ -99,6 +102,8 @@ void topaz_console_display_clear(topazConsoleDisplay_t * d) {
         topaz_string_destroy(topaz_array_at(d->lines, topazString_t *, i));
     }
     topaz_array_set_size(d->lines, 0);
+    topazString_t * first = topaz_string_create();
+    topaz_array_push(d->lines, first);
     d->api.console_display_clear(d, d->userData);
 }
 
@@ -111,14 +116,25 @@ void topaz_console_display_enable(topazConsoleDisplay_t * d, int enabled) {
 }
 
 
-void topaz_console_display_add_line(topazConsoleDisplay_t * d, const topazString_t * line, const topazColor_t * c) {
+void topaz_console_display_add_text(topazConsoleDisplay_t * d, const topazString_t * line, const topazColor_t * c) {
     #ifdef TOPAZDC_DEBUG
         assert(d && "topazConsoleDisplay_t pointer cannot be NULL.");
     #endif
-    d->api.console_display_add_line(d, d->userData, line, c);
-    topazString_t * str = topaz_string_clone(line);
+    d->api.console_display_add_text(d, d->userData, line, c);
+    topazString_t * current = topaz_array_at(d->lines, topazString_t *, topaz_array_get_size(d->lines)-1);
+    topaz_string_concat(current, line);
+}
+
+void topaz_console_display_new_line(topazConsoleDisplay_t * d) {
+    #ifdef TOPAZDC_DEBUG
+        assert(d && "topazConsoleDisplay_t pointer cannot be NULL.");
+    #endif
+    d->api.console_display_new_line(d, d->userData);
+
+    topazString_t * str = topaz_string_create();
     topaz_array_push(d->lines, str);
 }
+
 
 uint32_t topaz_console_display_get_line_count(const topazConsoleDisplay_t * d) {
     #ifdef TOPAZDC_DEBUG

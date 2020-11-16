@@ -1,6 +1,8 @@
 #include <topaz/backends/script.h>
 #include <topaz/containers/array.h>
 #include <topaz/containers/string.h>
+#include <topaz/containers/bin.h>
+#include <topaz/topaz.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -16,6 +18,7 @@ typedef struct {
 
 /// script context
 struct topazScript_t {
+    topaz_t * ctx;
     topazScriptAPI_t api;
 
     void * implementationData;
@@ -31,6 +34,18 @@ struct topazScript_t {
 
     // functiosn called for object events.
     EventHandler handlers[topaz_Script_Event_OnError+1];
+
+    // whether debugging is enabled. If not enabled, all debug functions 
+    // are ignored.
+    int debugEnabled;
+
+    // whether the debugger is paused. Only certain commands can 
+    // be sent if the debugger is paused.
+    int debugPaused;
+
+    // a bin of all the pause notification CBs. These are called when the 
+    // pause state is confirmed by the debugging implementation.
+    topazBin_t * debugCBs;
     
 };
 
@@ -76,6 +91,8 @@ topazScript_t * topaz_script_create(topaz_t * t, topazSystem_Backend_t * b, cons
     out->backend = b;
     out->objectPool = topaz_array_create(sizeof(topazScript_Object_t *));
     out->objectAllocRefs = topaz_array_create(sizeof(void *));
+    out->debugCBs = topaz_bin_create();
+    out->ctx = t;
     #ifdef TOPAZDC_DEBUG
         assert(api->script_create);
         assert(api->script_destroy);
@@ -102,6 +119,18 @@ void topaz_script_destroy(topazScript_t * s) {
     free(s);
 }
 
+
+topazSystem_Backend_t * topaz_script_get_backend(topazScript_t * s) {
+    return s->backend;
+}
+
+topazScriptAPI_t topaz_script_get_api(topazScript_t * s) {
+    return s->api;
+}
+
+
+
+topazScriptAPI_t topaz_script_get_api(topazScript_t *);
 
 int topaz_script_map_native_function(
     topazScript_t * s,
@@ -566,4 +595,94 @@ void * topaz_script_object_get_api_data(topazScript_Object_t * o) {
 
 
 
+
+void topaz_script_enable_debugging(topazScript_t * s) {
+    if (!s->debugEnabled) {
+        s->debugEnabled = 1;
+        s->api.script_debug_start(s, s->implementationData);
+    }
+}
+
+void topaz_script_debug_send_command(
+    topazScript_t * s, 
+    topazScript_DebugCommand_t command,
+    const topazString_t * argument
+) {
+    if (!s->debugEnabled) return;
+
+    if (s->debugPaused) {
+        switch(command) {
+          case topazScript_DebugCommand_Pause:
+            break;
+
+          case topazScript_DebugCommand_Resume:
+          default:
+            s->api.script_debug_send_command(s, s->implementationData, command, argument);
+        }
+    } else {
+        switch(command) {
+          case topazScript_DebugCommand_Pause:
+            return s->api.script_debug_send_command(s, s->implementationData, command, argument);
+
+          // ignored if not officially paused
+          default:;
+        }
+    }
+}
+
+typedef struct {
+    topaz_script_debug_command_callback cb;
+    void * data;
+} DebugCB;
+
+uint32_t topaz_script_debug_add_command_callback(
+    topazScript_t * s,
+    topaz_script_debug_command_callback cbSrc,
+    void * data
+) {
+    DebugCB * cb = malloc(sizeof(DebugCB));
+    cb->cb = cbSrc;
+    cb->data = data;
+
+    return topaz_bin_add(s->debugCBs, cb);
+}
+
+/// Removes the callback references by ID from the list 
+/// of callbacks registered to be called when the debugger 
+/// excepts the pause request.
+void topaz_script_debug_remove_command_callback(
+    topazScript_t * s,
+    uint32_t id
+) {
+    DebugCB * cb = topaz_bin_fetch(s->debugCBs, id);
+    if (cb) {
+        free(cb);
+        topaz_bin_remove(s->debugCBs, id);
+    }
+}
+
+const topazScript_DebugState_t * topaz_script_debug_get_state(
+    topazScript_t * s
+) {
+    return s->api.script_debug_get_state(s, s->implementationData);
+}
+
+
+void topaz_script_notify_command(topazScript_t * s, int cmd, topazString_t * str) {
+    if (cmd == topazScript_DebugCommand_Pause) {
+        s->debugPaused = 1;
+        topaz_context_pause(s->ctx);
+    } else if (cmd == topazScript_DebugCommand_Resume) {
+        s->debugPaused = 0;
+        topaz_context_resume(s->ctx);
+    }
+    topazArray_t * arr = topaz_bin_get_all(s->debugCBs);
+    uint32_t i;
+    for(i = 0; i < topaz_array_get_size(arr); ++i) {
+        DebugCB * cb = topaz_array_at(arr, DebugCB *, i);
+        cb->cb(s, cmd, str, cb->data);
+    }   
+    topaz_array_destroy(arr);
+    topaz_string_destroy(str);
+}
 

@@ -15,6 +15,9 @@ int main() {
         topazScriptManager_Permission_All
     );
 
+    // enable debugging!
+    topaz_script_enable_debugging(script);
+
     // We want to enable use of the debugging console.
     //
     topazConsole_t * console = topaz_context_get_console(ctx);

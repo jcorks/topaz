@@ -367,6 +367,7 @@ void topaz_system_display_ogles2__backend(
     api->display_destroy = topaz_glfw_destroy;
     api->display_resize = topaz_glfw_resize;
     api->display_set_position = topaz_glfw_set_position;
+    api->display_fullscreen = (void (*)(topazDisplay_t *, void *, int)) api_nothing;
     api->display_hide = topaz_glfw_hide;
     api->display_has_input_focus = topaz_glfw_has_input_focus;
     api->display_lock_client_resize = topaz_glfw_lock_client_resize;

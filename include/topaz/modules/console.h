@@ -205,6 +205,12 @@ void topaz_console_command_context_add_command(
     void * data
 );
 
+/// Sets the header prompt text to show within the console.
+///
+void topaz_console_command_context_set_prompt(
+    topazConsole_CommandContext_t *,
+    const topazString_t * header
+);
 
 
 #endif

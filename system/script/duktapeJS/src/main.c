@@ -43,6 +43,17 @@ DEALINGS IN THE SOFTWARE.
     #include <assert.h>
 #endif
 #include "duktape.h"
+#include "duk_trans_dvalue.h"
+
+
+void PLOG(topaz_t * t, topazString_t * str) {
+    topaz_console_print_message(
+        topaz_context_get_console(t),
+        str,
+        topazConsole_MessageType_Warning
+    );
+    topaz_string_destroy(str);
+}
 
 
 void PWARN(topaz_t * t, topazString_t * str) {
@@ -64,6 +75,11 @@ void PERROR(topaz_t * t, topazString_t * str) {
     topaz_string_destroy(str);
 }
 
+typedef struct {
+    // all TOPAZDUK * instances active.
+    topazArray_t * instances;
+
+} TOPAZDUKBackend;
 
 
 typedef struct {
@@ -72,6 +88,37 @@ typedef struct {
     // used for object reference creation
     int lastObjectReference;
     topaz_t * ctx;
+
+    //// debugging
+
+    // whether debugging has started
+    int isDebugging;
+
+    // facilitates debug messages from the duktape context
+    duk_trans_dvalue_ctx * trans_ctx;
+
+    // debug messages left to process
+    topazArray_t * pendingMessages;
+
+    // Whether the debug state is waiting for the initial cooperation message 
+    // to be processed.
+    int debugReachedInit;
+
+    // sent commands t
+    topazArray_t * lastCommand;
+
+    // the level of stack for the current debug context
+    int debugLevel;
+
+    // state of the defbug
+    topazScript_DebugState_t debugState;
+
+    // queue of breakpoints requested
+    // Maps the "duktape" index to the duktapeJS id
+    topazArray_t * debugBreakpoints;
+
+    // queue of breakpoints requested to be removed.
+    topazArray_t * debugRemoveBreakpoint;
 } TOPAZDUK;
 
 
@@ -538,7 +585,11 @@ static void topaz_duk_fatal(void * udata, const char *msg) {
 
 static void * topaz_duk_create(topazScript_t * scr, topaz_t * ctx) {
     TOPAZDUK * out = calloc(1, sizeof(TOPAZDUK));
+    out->debugState.callstack = topaz_array_create(sizeof(topazScript_CallstackFrame_t));
     out->ctx = ctx;
+    out->debugBreakpoints = topaz_array_create(sizeof(int));
+    out->debugRemoveBreakpoint = topaz_array_create(sizeof(int));
+
     out->js = duk_create_heap(
         NULL,
         NULL,
@@ -547,14 +598,27 @@ static void * topaz_duk_create(topazScript_t * scr, topaz_t * ctx) {
         topaz_duk_fatal
     );
     out->script = scr;
+
+    TOPAZDUKBackend * backend = topaz_system_backend_get_user_data(topaz_script_get_backend(scr));
+    topaz_array_push(backend->instances, out);
     return out;
 } 
 
 static void topaz_duk_destroy(topazScript_t * scr, void * data) {
+    TOPAZDUKBackend * backend = topaz_system_backend_get_user_data(topaz_script_get_backend(scr));
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(backend->instances);
+    for(i = 0; i < len; ++i) {
+        if (topaz_array_at(backend->instances, TOPAZDUK*, i) == data) {
+            topaz_array_remove(backend->instances, i);
+            break;
+        }
+    }
+
+
     TOPAZDUK * ctx = data;
     // TODO: destroy ALL objects??
     duk_destroy_heap(ctx->js);
-    free(ctx);
 }
 
 static int topaz_duk_map_native_function(
@@ -1083,13 +1147,569 @@ void topaz_duk_object_reference_extendable_add_property(
 }
 
 
- 
+
+// SUPPORT TRANS WRITES
+
+static const char * dvalue_to_string(duk_dvalue * dv) {
+    static char bufOut[64];
+
+	if (!dv) {
+		return "NULL";
+	}
+
+	switch (dv->tag) {
+	case DUK_DVALUE_EOM:
+        return "EOM";
+
+	case DUK_DVALUE_REQ:
+        return "REQ";
+
+	case DUK_DVALUE_REP:
+        return "REP";
+
+	case DUK_DVALUE_ERR:
+        return "ERR";
+
+	case DUK_DVALUE_NFY:
+        return "NFY";
+
+	case DUK_DVALUE_INTEGER: {
+		sprintf(bufOut, "%d", dv->i);
+		return bufOut;
+    }
+
+	case DUK_DVALUE_STRING:
+        return (const char*)dv->buf;        
+
+	case DUK_DVALUE_BUFFER:
+        return "[Buffer]";
+
+	case DUK_DVALUE_UNUSED:
+        return "undefined";
+
+	case DUK_DVALUE_UNDEFINED:
+        return "undefined";
+
+	case DUK_DVALUE_NULL:
+        return "null";
+
+	case DUK_DVALUE_TRUE:
+        return "true";
+
+	case DUK_DVALUE_FALSE:
+        return "false";
+
+	case DUK_DVALUE_NUMBER:
+		if (fpclassify(dv->d) == FP_ZERO) {
+			if (signbit(dv->d)) {
+                return "-0";
+			} else {
+                return "0";
+			}
+		} else {
+			sprintf(bufOut, "%lg", dv->d);
+            return bufOut;
+		}
+
+	case DUK_DVALUE_OBJECT:
+        return "[Object]";
+
+	case DUK_DVALUE_POINTER:
+        return "[Pointer]";
+
+	case DUK_DVALUE_LIGHTFUNC:
+        return "[L-Function]";
+
+	case DUK_DVALUE_HEAPPTR:
+        return "[H-Pointer]";
+
+	default:;
+	}
+    return "[Unknown]";
+
+}
+
+static void topaz_duk_trans_received(duk_trans_dvalue_ctx * ctxT, duk_dvalue * dv) {
+
+    //printf("dvalue received: %s\n", &bufferSrc[0]);
+    TOPAZDUK * ctx = ctxT->userData;
+    char * cpy = strdup(dvalue_to_string(dv));
+    topaz_array_push(ctx->pendingMessages, cpy);
+    #ifdef TOPAZDC_DEBUG
+        //printf("RECEIVED DEBUG MSG: %s\n", cpy);
+    #endif
+}
+
+static void topaz_duk_trans_handshake(duk_trans_dvalue_ctx * ctx, const char * handshake) {
+    //printf("handshake: %s\n", handshake);
+    fflush(stdout);
+
+}
+
+static void topaz_duk_trans_detached(duk_trans_dvalue_ctx * ctx) {
+    //printf("was detached!\n");
+    fflush(stdout);
+
+}
+
+
+// commands
+
+#define DUKTAPE_COMMAND__GET_CALLSTACK 256
+
+static void topaz_duk_trans_command__pause(duk_trans_dvalue_ctx * ctxT) {
+    TOPAZDUK * ctx = ctxT->userData;
+
+    duk_trans_dvalue_send_req(ctxT);
+    duk_trans_dvalue_send_integer(ctxT, 0x12);  
+    duk_trans_dvalue_send_eom(ctxT);
+    //printf("sent pause request\n");
+
+    topazScript_DebugCommand_t c = topazScript_DebugCommand_Pause;
+    topaz_array_push(ctx->lastCommand, c);    
+}
+
+
+
+static void topaz_duk_trans_command__resume(duk_trans_dvalue_ctx * ctxT) {
+    TOPAZDUK * ctx = ctxT->userData;
+
+    duk_trans_dvalue_send_req(ctxT);
+    duk_trans_dvalue_send_integer(ctxT, 0x13);  
+    duk_trans_dvalue_send_eom(ctxT);
+    //printf("sent resume request\n");
+
+    topazScript_DebugCommand_t c = topazScript_DebugCommand_Resume;
+    topaz_array_push(ctx->lastCommand, c);    
+}
+
+static void topaz_duk_trans_command__step_into(duk_trans_dvalue_ctx * ctxT) {
+    TOPAZDUK * ctx = ctxT->userData;
+
+    duk_trans_dvalue_send_req(ctxT);
+    duk_trans_dvalue_send_integer(ctxT, 0x14);  
+    duk_trans_dvalue_send_eom(ctxT);
+    //printf("sent step into request\n");
+
+
+    topazScript_DebugCommand_t c = topazScript_DebugCommand_StepInto;
+    topaz_array_push(ctx->lastCommand, c);    
+}
+
+
+
+static void topaz_duk_trans_command__step_over(duk_trans_dvalue_ctx * ctxT) {
+    TOPAZDUK * ctx = ctxT->userData;
+
+    duk_trans_dvalue_send_req(ctxT);
+    duk_trans_dvalue_send_integer(ctxT, 0x15);  
+    duk_trans_dvalue_send_eom(ctxT);
+    //printf("sent step over request\n");
+
+    topazScript_DebugCommand_t c = topazScript_DebugCommand_StepOver;
+    topaz_array_push(ctx->lastCommand, c);    
+}
+
+static void topaz_duk_trans_command__add_breakpoint(duk_trans_dvalue_ctx * ctxT, const topazString_t * filename, int line) {
+    TOPAZDUK * ctx = ctxT->userData;
+
+    duk_trans_dvalue_send_req(ctxT);
+    duk_trans_dvalue_send_integer(ctxT, 0x18);  
+    duk_trans_dvalue_send_string(ctxT, topaz_string_get_c_str(filename));
+    duk_trans_dvalue_send_integer(ctxT, line);
+    duk_trans_dvalue_send_eom(ctxT);
+    //printf("sent add break request\n");
+
+    topazScript_DebugCommand_t c = topazScript_DebugCommand_AddBreakpoint;
+    topaz_array_push(ctx->lastCommand, c);    
+}
+
+static void topaz_duk_trans_command__delete_breakpoint(duk_trans_dvalue_ctx * ctxT, int index) {
+    TOPAZDUK * ctx = ctxT->userData;
+
+    // assumes that we're keeping track of the debug indices correctly.
+    if (index >= 0 && index < topaz_array_get_size(ctx->debugBreakpoints)) {
+        int id = topaz_array_at(ctx->debugBreakpoints, int, index);
+        topaz_array_remove(ctx->debugBreakpoints, index);
+        topaz_array_push(ctx->debugRemoveBreakpoint, id);
+    }
+
+
+    duk_trans_dvalue_send_req(ctxT);
+    duk_trans_dvalue_send_integer(ctxT, 0x19);  
+    duk_trans_dvalue_send_integer(ctxT, index);  
+    duk_trans_dvalue_send_eom(ctxT);
+    //printf("sent breakpoint delete request %d\n", index);
+
+    topazScript_DebugCommand_t c = topazScript_DebugCommand_RemoveBreakpoint;
+    topaz_array_push(ctx->lastCommand, c);    
+
+}
+
+static void topaz_duk_trans_command__eval(duk_trans_dvalue_ctx * ctxT, const topazString_t * eval, int callstackLevel) {
+    TOPAZDUK * ctx = ctxT->userData;
+
+    duk_trans_dvalue_send_req(ctxT);
+    duk_trans_dvalue_send_integer(ctxT, 0x1e);  
+    duk_trans_dvalue_send_integer(ctxT, callstackLevel);
+    duk_trans_dvalue_send_string(ctxT, topaz_string_get_c_str(eval));
+    duk_trans_dvalue_send_eom(ctxT);
+    //printf("sent eval request\n");
+
+
+    topazScript_DebugCommand_t c = topazScript_DebugCommand_ScopedEval;
+    topaz_array_push(ctx->lastCommand, c);    
+}
+
+static void topaz_duk_trans_command__get_call_stack(duk_trans_dvalue_ctx * ctxT) {
+    TOPAZDUK * ctx = ctxT->userData;
+
+    duk_trans_dvalue_send_req(ctxT);
+    duk_trans_dvalue_send_integer(ctxT, 0x1c);  
+    duk_trans_dvalue_send_eom(ctxT);
+
+    int c = DUKTAPE_COMMAND__GET_CALLSTACK;
+    topaz_array_push(ctx->lastCommand, c);    
+}    
 
 
 
 
 
 
+
+
+static void clear_debug_state(topazScript_DebugState_t * s) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(s->callstack);
+    for(i = 0; i < len; ++i) {
+        topazScript_CallstackFrame_t * frame = &topaz_array_at(s->callstack, topazScript_CallstackFrame_t, i);
+        topaz_string_destroy((topazString_t*)frame->filename);
+        topaz_string_destroy((topazString_t*)frame->functionName);
+        topaz_string_destroy((topazString_t*)frame->entityName);
+    }
+    topaz_array_set_size(s->callstack, 0);
+}
+
+static void debug_state_add_frame(topazScript_DebugState_t * s,
+    int lineNumber,
+    const char * filename,
+    const char * functionName
+) {
+    topazScript_CallstackFrame_t frame;
+    frame.lineNumber   = lineNumber;
+    frame.filename     = topaz_string_create_from_c_str("%s", filename);
+    frame.functionName = topaz_string_create_from_c_str("%s", functionName);
+    frame.entityName   = topaz_string_create();
+
+    topaz_array_push(s->callstack, frame);
+}
+
+static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
+    TOPAZDUK * ctx = ctxT->userData;
+    if (!ctx->debugReachedInit) {
+        #ifdef TOPAZDC_DEBUG
+            printf("Init response\n");
+        #endif
+        topaz_duk_trans_command__resume(ctx->trans_ctx);
+        ctx->debugReachedInit = 1;
+        return;
+    }
+    
+
+
+    if (topaz_array_get_size(ctx->pendingMessages) && 
+        !strcmp(
+            topaz_array_at(ctx->pendingMessages, char *, topaz_array_get_size(ctx->pendingMessages)-1), 
+            "EOM"
+        )) {
+
+        topazArray_t * messagesSrc = topaz_array_clone(ctx->pendingMessages);
+        char ** messages     = topaz_array_get_data(messagesSrc);
+        uint32_t messagesLen = topaz_array_get_size(messagesSrc);
+
+        topaz_array_set_size(ctx->pendingMessages, 0);
+        
+        topazScript_DebugCommand_t command = topazScript_DebugCommand_Custom;
+        if (topaz_array_get_size(ctx->lastCommand)) {
+            command = topaz_array_at(ctx->lastCommand, topazScript_DebugCommand_t, topaz_array_get_size(ctx->lastCommand)-1);
+            topaz_array_set_size(ctx->lastCommand, topaz_array_get_size(ctx->lastCommand)-1);
+        }
+
+
+
+        // notify from debugger (status)
+        if (!strcmp(messages[0], "NFY")) {
+            if (!strcmp(messages[1], "1")) {
+                topaz_duk_trans_command__get_call_stack(ctx->trans_ctx);
+                if (!strcmp(messages[2], "1")) { // paused state
+                    ctx->debugLevel = 0;
+                    topaz_script_notify_command(
+                        ctx->script,
+                        topazScript_DebugCommand_Pause,
+                        topaz_string_create()
+                    );
+                } else if (!strcmp(messages[2], "0")) { // resume
+                    ctx->debugLevel = 0;
+                    topaz_script_notify_command(
+                        ctx->script,
+                        topazScript_DebugCommand_Resume,
+                        topaz_string_create()
+                    );
+                } 
+            } 
+        } else {
+
+            switch((int)command) {
+              case topazScript_DebugCommand_AddBreakpoint: {
+                if (!strcmp(messages[0], "ERR")) {
+                    // error
+                    topaz_script_notify_command(
+                        ctx->script,
+                        topazScript_DebugCommand_AddBreakpoint,
+                        topaz_string_create()
+                    );
+                } else {
+                    static int localID = 1000;
+                    topaz_array_push(ctx->debugBreakpoints, localID);
+
+                    // success
+                    topaz_script_notify_command(
+                        ctx->script,
+                        topazScript_DebugCommand_AddBreakpoint,
+                        topaz_string_create_from_c_str("%d", localID++)
+                    );
+                }
+                break;
+              }
+              case topazScript_DebugCommand_Pause:
+                ctx->debugLevel = 0;
+                topaz_script_notify_command(
+                    ctx->script,
+                    topazScript_DebugCommand_Pause,
+                    topaz_string_create()
+                );
+                break;
+                
+              case topazScript_DebugCommand_Resume:
+                ctx->debugLevel = 0;
+                topaz_script_notify_command(
+                    ctx->script,
+                    topazScript_DebugCommand_Resume,
+                    topaz_string_create()
+                );
+
+                break;
+                
+              case topazScript_DebugCommand_ScopedEval:
+
+                if (!strcmp(messages[1], "0")) {
+                    topaz_script_notify_command(
+                        ctx->script,
+                        topazScript_DebugCommand_ScopedEval,
+                        topaz_string_create_from_c_str("%s", messages[2])
+                    );
+                } else {
+                    // Error
+                    topaz_script_notify_command(
+                        ctx->script,
+                        topazScript_DebugCommand_ScopedEval,
+                        topaz_string_create_from_c_str("Could not evaluate expression (%s).\n", messages[2])
+                    );                    
+                }
+                break;
+              case topazScript_DebugCommand_StepInto:
+                topaz_script_notify_command(
+                    ctx->script,
+                    topazScript_DebugCommand_StepInto,
+                    topaz_string_create()
+                );                    
+                break;
+              case topazScript_DebugCommand_StepOver:
+                ctx->debugLevel = 0;
+                topaz_script_notify_command(
+                    ctx->script,
+                    topazScript_DebugCommand_StepOver,
+                    topaz_string_create()
+                );                    
+                break;
+                
+
+                
+              case topazScript_DebugCommand_RemoveBreakpoint:{
+                int id = topaz_array_at(ctx->debugRemoveBreakpoint, int, 0);
+                topaz_array_remove(ctx->debugRemoveBreakpoint, 0);
+
+                if (!strcmp(messages[0], "ERR")) {
+                    topaz_script_notify_command(
+                        ctx->script,
+                        topazScript_DebugCommand_RemoveBreakpoint,
+                        topaz_string_create()
+                    );                    
+                } else {
+
+                    topaz_script_notify_command(
+                        ctx->script,
+                        topazScript_DebugCommand_RemoveBreakpoint,
+                        topaz_string_create_from_c_str("%d", id)
+                    );                    
+                    
+                }
+                break;
+              }
+
+              case DUKTAPE_COMMAND__GET_CALLSTACK: {
+                messages++;
+                messagesLen-=1;
+
+                clear_debug_state(&ctx->debugState);
+
+                int i;    
+                for(i = 0; i < messagesLen/4; ++i) {
+                    debug_state_add_frame(&ctx->debugState,
+                        atoi(messages[i*4+2]),
+                        messages[i*4+0],
+                        messages[i*4+1]
+                    );
+                }
+                break;
+              }
+
+              default:
+                //topaz_duk_trans_command__get_call_stack(ctx);
+                //printf("Received %d messages.\n", messagesLen);
+                fflush(stdout);
+            }
+        }
+    
+    }
+    if (!block) return; // still receiving messages
+    topaz_context_iterate(ctx->ctx);
+}
+
+
+static void topaz_duk_debug_start(topazScript_t * scr, void * data) {
+    TOPAZDUK * ctx = data;
+    #ifdef TOPAZDC_DEBUG
+        int stackSize = duk_get_top(ctx->js);
+    #endif
+    ctx->isDebugging = TRUE;
+    ctx->trans_ctx = duk_trans_dvalue_init();
+    ctx->trans_ctx->cooperate = topaz_duk_trans_cooperate;
+    ctx->trans_ctx->received  = topaz_duk_trans_received;
+    ctx->trans_ctx->handshake = topaz_duk_trans_handshake;
+    ctx->trans_ctx->detached  = topaz_duk_trans_detached;
+    ctx->trans_ctx->userData  = ctx;
+
+    ctx->pendingMessages = topaz_array_create(sizeof(char *));
+    ctx->lastCommand     = topaz_array_create(sizeof(topazScript_DebugCommand_t));
+
+    duk_debugger_attach(
+        ctx->js,
+        duk_trans_dvalue_read_cb,
+        duk_trans_dvalue_write_cb,
+        duk_trans_dvalue_peek_cb,
+        duk_trans_dvalue_read_flush_cb,
+        duk_trans_dvalue_write_flush_cb,
+        NULL,  /* app request cb */
+        duk_trans_dvalue_detached_cb,
+        (void *)ctx->trans_ctx
+    );
+
+
+    #ifdef TOPAZDC_DEBUG 
+        assert(duk_get_top(ctx->js) == stackSize);
+    #endif
+
+}
+
+void topaz_duk_debug_send_command(
+    topazScript_t * scr, 
+    void * data, 
+    int cmd, 
+    const topazString_t * arg
+) {
+    TOPAZDUK * ctx = data;
+    switch(cmd) {
+      case topazScript_DebugCommand_Pause:
+        topaz_duk_trans_command__pause(ctx->trans_ctx);
+        break;    
+
+      case topazScript_DebugCommand_Resume:
+        topaz_duk_trans_command__resume(ctx->trans_ctx);
+        break;    
+
+      case topazScript_DebugCommand_StepInto:
+        topaz_duk_trans_command__step_into(ctx->trans_ctx);
+        break;
+
+      case topazScript_DebugCommand_StepOver:
+        topaz_duk_trans_command__step_over(ctx->trans_ctx);
+        break;
+
+      case topazScript_DebugCommand_AddBreakpoint: {
+        topazString_t * str = topaz_string_clone(arg);
+        const topazString_t * iter = topaz_string_chain_start(str, TOPAZ_STR_CAST(":"));
+        topazString_t * filename = topaz_string_clone(iter);
+        iter = topaz_string_chain_proceed(str);        
+        int lineNumber = atoi(topaz_string_get_c_str(iter));
+                
+        topaz_duk_trans_command__add_breakpoint(ctx->trans_ctx, filename, lineNumber);
+        break;
+      }
+
+      case topazScript_DebugCommand_RemoveBreakpoint: {
+        int id = atoi(topaz_string_get_c_str(arg));
+        uint32_t i;
+        uint32_t len = topaz_array_get_size(ctx->debugBreakpoints);
+        for(i = 0; i < len; ++i) {
+            if (topaz_array_at(ctx->debugBreakpoints, int, i) == id) {
+                topaz_duk_trans_command__delete_breakpoint(ctx->trans_ctx, i);
+                return;
+            }
+        } 
+        topaz_duk_trans_command__delete_breakpoint(ctx->trans_ctx, -1);
+        break;
+      }
+
+      case topazScript_DebugCommand_ScopedEval: {
+        topazString_t * str = topaz_string_clone(arg);
+        const topazString_t * number = topaz_string_chain_start(str, TOPAZ_STR_CAST(":"));
+        int scope = atoi(topaz_string_get_c_str(number));
+
+        const topazString_t * command = topaz_string_get_substr(
+            str, 
+            topaz_string_get_length(number)+1, // skip the :
+            topaz_string_get_length(str)-1
+        );
+        topaz_duk_trans_command__eval(ctx->trans_ctx, command, (scope+1)*-1);
+        topaz_string_destroy(str);
+        break;
+      }
+      default:
+        assert(!"TODO");
+    }
+}
+
+
+const topazScript_DebugState_t * topaz_duk_debug_get_state(topazScript_t * scr, void * data) {
+    TOPAZDUK * ctx = data;
+    return &ctx->debugState;
+}
+
+
+static void topaz_duk_cooperate_update(topazSystem_Backend_t * backend, void * data) {
+    TOPAZDUKBackend * b = data;
+    uint32_t i;
+    for(i = 0; i < topaz_array_get_size(b->instances); ++i) {
+        TOPAZDUK * ctx = topaz_array_at(b->instances, TOPAZDUK *, i);
+        if (ctx->isDebugging) {
+            duk_debugger_cooperate(ctx->js);
+            while(topaz_array_get_size(ctx->pendingMessages))
+                duk_debugger_cooperate(ctx->js);
+        }
+    }    
+}
 
 
 void topaz_system_script_duktapeJS__backend(
@@ -1097,6 +1717,8 @@ void topaz_system_script_duktapeJS__backend(
     topazSystem_Backend_t *  backend, 
     topazScriptAPI_t      *  api
 ) {
+    TOPAZDUKBackend * b = calloc(1, sizeof(TOPAZDUKBackend));
+    b->instances = topaz_array_create(sizeof(TOPAZDUK*));
     topaz_system_backend_bind(
         backend,
         // name
@@ -1117,7 +1739,7 @@ void topaz_system_script_duktapeJS__backend(
         NULL,
         
         // on step late 
-        NULL,
+        topaz_duk_cooperate_update,
         
         // on draw 
         NULL,
@@ -1128,7 +1750,7 @@ void topaz_system_script_duktapeJS__backend(
 
 
         // backend callback user data
-        NULL,
+        b,
 
 
         // API version 
@@ -1161,6 +1783,11 @@ void topaz_system_script_duktapeJS__backend(
     api->script_create_empty_object = topaz_duk_create_empty_object;
     api->script_throw_error = topaz_duk_throw_error;
     api->script_bootstrap = topaz_duk_bootstrap;
+
+
+    api->script_debug_start = topaz_duk_debug_start;
+    api->script_debug_send_command = topaz_duk_debug_send_command;
+    api->script_debug_get_state = topaz_duk_debug_get_state;
 }
 
 

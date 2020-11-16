@@ -72,7 +72,7 @@ void topaz_view_manager_destroy(topazViewManager_t * t) {
 
 
 topazDisplay_t * topaz_view_manager_create_display(topazViewManager_t * v, const topazString_t * name, int w, int h) {
-    topazDisplayAPI_t api;
+    topazDisplayAPI_t api = {};
     topazSystem_Backend_t * backend = topaz_system_create_backend(
         topaz_context_get_system(v->t),
         TOPAZ_STR_CAST("display"),
