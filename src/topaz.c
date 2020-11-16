@@ -31,6 +31,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/compat.h>
 #include <topaz/topaz.h>
 #include <topaz/backends/time.h>
+#include <topaz/backends/font_renderer.h>
 #include <topaz/backends/filesys.h>
 #include <topaz/modules/graphics.h>
 #include <topaz/modules/script_manager.h>
@@ -74,6 +75,7 @@ struct topaz_t {
     topazConsole_t * console;
 
     topazTime_t * timeRef;
+    topazFontRenderer_t * fontRendererRef;
     uint64_t frameEnd;
     uint64_t frameStart;
     
@@ -107,6 +109,14 @@ topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
         topazSystem_Backend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("time"), &api);
         out->timeRef = topaz_time_create(out, ref, api);
     }
+
+    {
+        topazFontRendererAPI_t api;
+        topazSystem_Backend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("fontRenderer"), &api);
+        out->fontRendererRef = topaz_font_renderer_create(out, ref, api);
+    }
+
+
 
 
     // defaultParams
@@ -474,6 +484,10 @@ topazInput_t * topaz_context_get_input(topaz_t * t) {
 
 topazViewManager_t * topaz_context_get_view_manager(topaz_t * t) {
     return t->viewManager;
+}
+
+topazFontRenderer_t * topaz_context_get_font_renderer(topaz_t * t) {
+    return t->fontRendererRef;
 }
 
 topazResources_t * topaz_context_get_resources(topaz_t * t) {

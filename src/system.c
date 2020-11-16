@@ -11,6 +11,7 @@ static topazTable_t * inputManagers = NULL;
 static topazTable_t * audioManagers = NULL;
 static topazTable_t * filesystems = NULL;
 static topazTable_t * times = NULL;
+static topazTable_t * fontRenderers = NULL;
 static topazTable_t * displays = NULL;
 static topazTable_t * scripts = NULL;
 static topazTable_t * consoleDisplays = NULL;
@@ -28,6 +29,7 @@ struct topazSystem_t {
     BackendHandler audioManager;
     BackendHandler filesystem;
     BackendHandler time;
+    BackendHandler fontRenderer;
     BackendHandler display;
     BackendHandler script;
     BackendHandler consoleDisplay;
@@ -62,6 +64,7 @@ static BackendHandler default_inputManager;
 static BackendHandler default_audioManager;
 static BackendHandler default_filesystem;
 static BackendHandler default_time;
+static BackendHandler default_fontRenderer;
 static BackendHandler default_display;
 static BackendHandler default_script;
 static BackendHandler default_consoleDisplay;
@@ -72,6 +75,7 @@ BackendHandler * system_get_backend(topazSystem_t * s, const topazString_t * nam
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("audioManager"))) return &s->audioManager;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("filesys")))return &s->filesystem;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("time"))) return &s->time;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("fontRenderer"))) return &s->fontRenderer;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return &s->display;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return &s->script;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("consoleDisplay"))) return &s->consoleDisplay;
@@ -84,6 +88,7 @@ static topazTable_t * backend_type_to_table(const topazString_t * name) {
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("audioManager"))) return audioManagers;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("filesys"))) return filesystems;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("time"))) return times;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("fontRenderer"))) return fontRenderers;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return displays;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return scripts;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("consoleDisplay"))) return consoleDisplays;
@@ -117,6 +122,7 @@ static BackendHandler * get_backend_default(const topazString_t * name) {
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("audioManager"))) return &default_audioManager;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("filesys"))) return &default_filesystem;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("time"))) return &default_time;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("fontRenderer"))) return &default_fontRenderer;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return &default_display;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return &default_script;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("consoleDisplay"))) return &default_consoleDisplay;
@@ -136,6 +142,7 @@ void topaz_system_configure() {
     audioManagers   = topaz_table_create_hash_topaz_string();
     filesystems     = topaz_table_create_hash_topaz_string();
     times           = topaz_table_create_hash_topaz_string();
+    fontRenderers   = topaz_table_create_hash_topaz_string();
     displays        = topaz_table_create_hash_topaz_string();
     scripts         = topaz_table_create_hash_topaz_string();
     consoleDisplays = topaz_table_create_hash_topaz_string();
@@ -188,6 +195,7 @@ topazSystem_t * topaz_system_create_default() {
     s->audioManager   = default_audioManager;
     s->filesystem     = default_filesystem;
     s->time           = default_time;
+    s->fontRenderer   = default_fontRenderer;
     s->display        = default_display;
     s->script         = default_script;
     s->consoleDisplay = default_consoleDisplay;
