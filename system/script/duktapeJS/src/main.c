@@ -1236,18 +1236,18 @@ static void topaz_duk_trans_received(duk_trans_dvalue_ctx * ctxT, duk_dvalue * d
     char * cpy = strdup(dvalue_to_string(dv));
     topaz_array_push(ctx->pendingMessages, cpy);
     #ifdef TOPAZDC_DEBUG
-        printf("RECEIVED DEBUG MSG: %s\n", cpy);
+        //printf("RECEIVED DEBUG MSG: %s\n", cpy);
     #endif
 }
 
 static void topaz_duk_trans_handshake(duk_trans_dvalue_ctx * ctx, const char * handshake) {
-    printf("handshake: %s\n", handshake);
+    //printf("handshake: %s\n", handshake);
     fflush(stdout);
 
 }
 
 static void topaz_duk_trans_detached(duk_trans_dvalue_ctx * ctx) {
-    printf("was detached!\n");
+    //printf("was detached!\n");
     fflush(stdout);
 
 }
@@ -1263,7 +1263,7 @@ static void topaz_duk_trans_command__pause(duk_trans_dvalue_ctx * ctxT) {
     duk_trans_dvalue_send_req(ctxT);
     duk_trans_dvalue_send_integer(ctxT, 0x12);  
     duk_trans_dvalue_send_eom(ctxT);
-    printf("sent pause request\n");
+    //printf("sent pause request\n");
 
     topazScript_DebugCommand_t c = topazScript_DebugCommand_Pause;
     topaz_array_push(ctx->lastCommand, c);    
@@ -1277,7 +1277,7 @@ static void topaz_duk_trans_command__resume(duk_trans_dvalue_ctx * ctxT) {
     duk_trans_dvalue_send_req(ctxT);
     duk_trans_dvalue_send_integer(ctxT, 0x13);  
     duk_trans_dvalue_send_eom(ctxT);
-    printf("sent resume request\n");
+    //printf("sent resume request\n");
 
     topazScript_DebugCommand_t c = topazScript_DebugCommand_Resume;
     topaz_array_push(ctx->lastCommand, c);    
@@ -1289,7 +1289,7 @@ static void topaz_duk_trans_command__step_into(duk_trans_dvalue_ctx * ctxT) {
     duk_trans_dvalue_send_req(ctxT);
     duk_trans_dvalue_send_integer(ctxT, 0x14);  
     duk_trans_dvalue_send_eom(ctxT);
-    printf("sent step into request\n");
+    //printf("sent step into request\n");
 
 
     topazScript_DebugCommand_t c = topazScript_DebugCommand_StepInto;
@@ -1304,7 +1304,7 @@ static void topaz_duk_trans_command__step_over(duk_trans_dvalue_ctx * ctxT) {
     duk_trans_dvalue_send_req(ctxT);
     duk_trans_dvalue_send_integer(ctxT, 0x15);  
     duk_trans_dvalue_send_eom(ctxT);
-    printf("sent step over request\n");
+    //printf("sent step over request\n");
 
     topazScript_DebugCommand_t c = topazScript_DebugCommand_StepOver;
     topaz_array_push(ctx->lastCommand, c);    
@@ -1318,7 +1318,7 @@ static void topaz_duk_trans_command__add_breakpoint(duk_trans_dvalue_ctx * ctxT,
     duk_trans_dvalue_send_string(ctxT, topaz_string_get_c_str(filename));
     duk_trans_dvalue_send_integer(ctxT, line);
     duk_trans_dvalue_send_eom(ctxT);
-    printf("sent add break request\n");
+    //printf("sent add break request\n");
 
     topazScript_DebugCommand_t c = topazScript_DebugCommand_AddBreakpoint;
     topaz_array_push(ctx->lastCommand, c);    
@@ -1339,7 +1339,7 @@ static void topaz_duk_trans_command__delete_breakpoint(duk_trans_dvalue_ctx * ct
     duk_trans_dvalue_send_integer(ctxT, 0x19);  
     duk_trans_dvalue_send_integer(ctxT, index);  
     duk_trans_dvalue_send_eom(ctxT);
-    printf("sent breakpoint delete request %d\n", index);
+    //printf("sent breakpoint delete request %d\n", index);
 
     topazScript_DebugCommand_t c = topazScript_DebugCommand_RemoveBreakpoint;
     topaz_array_push(ctx->lastCommand, c);    
@@ -1354,7 +1354,7 @@ static void topaz_duk_trans_command__eval(duk_trans_dvalue_ctx * ctxT, const top
     duk_trans_dvalue_send_integer(ctxT, callstackLevel);
     duk_trans_dvalue_send_string(ctxT, topaz_string_get_c_str(eval));
     duk_trans_dvalue_send_eom(ctxT);
-    printf("sent eval request\n");
+    //printf("sent eval request\n");
 
 
     topazScript_DebugCommand_t c = topazScript_DebugCommand_ScopedEval;
@@ -1577,7 +1577,7 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
 
               default:
                 //topaz_duk_trans_command__get_call_stack(ctx);
-                printf("Received %d messages.\n", messagesLen);
+                //printf("Received %d messages.\n", messagesLen);
                 fflush(stdout);
             }
         }

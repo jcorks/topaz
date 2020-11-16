@@ -20,6 +20,7 @@ typedef struct {
 
 struct topazConsole_CommandContext_t {
     topazTable_t * commands; // string -> TopazConsoleCommand *
+    topazString_t * header;
 };
 
 
@@ -75,6 +76,21 @@ struct topazConsole_t {
     topazArray_t * debugBreakpoints;
 };
 
+static void print_prompt(topazConsole_t * c) {
+    topaz_console_display_add_text(
+        c->display,
+        topaz_array_get_size(c->contextStack) ?
+            topaz_array_at(c->contextStack, 
+                topazConsole_CommandContext_t *,
+                topaz_array_get_size(c->contextStack)-1
+            )->header
+        :
+            c->cmd->header,
+        &color_normal
+    );
+
+}
+
 static void send_command(
     topazConsoleDisplay_t * d, 
     const topazString_t * line, 
@@ -82,7 +98,11 @@ static void send_command(
 ) {
     topazConsole_t * c = userData;
     topazString_t * output = topaz_console_run(c, line);
-    topaz_console_print(c, output);
+    if (topaz_string_get_length(output)) {
+        topaz_console_print(c, output);
+        print_prompt(c);
+    }
+
     topaz_string_destroy(output);
 }
 
@@ -105,24 +125,6 @@ TOPAZCCOMMAND(command__quit) {
     return topaz_string_create();
 }
 
-TOPAZCCOMMAND(command__eval) {
-    if (!console->script) {
-        return topaz_string_create_from_c_str("No script attached to console!\n");
-    }
-
-    if (topaz_string_get_length(fullCommand) <= 5) {
-        return topaz_string_create();
-    }
-
-    
-    return topaz_string_clone(topaz_script_object_as_string(
-        topaz_script_expression(
-            console->script,
-            // TODO: assumes eval[DELIMITER], this will cause problems
-            topaz_string_get_substr(fullCommand, 5, topaz_string_get_length(fullCommand)-1)
-        )
-    ));
-}
 
 static const topazString_t * stackframe_to_string(
     const topazScript_DebugState_t * stack,
@@ -231,10 +233,10 @@ static void command_debug_response(
 
       case topazScript_DebugCommand_Resume:
         topaz_console_print(console, TOPAZ_STR_CAST("Debugging context resumed."));
+        return; // circumvent prompt
         break;
 
       case topazScript_DebugCommand_StepInto:
-        topaz_console_print(console, TOPAZ_STR_CAST("Debugging context pause."));
         break;
 
       case topazScript_DebugCommand_ScopedEval:
@@ -308,9 +310,9 @@ static void command_debug_response(
         }
       }
       default:
-        topaz_console_print(console, result);
         break;
     }
+    print_prompt(console);
 }
 
 TOPAZCCOMMAND(command__dbg) {
@@ -342,11 +344,11 @@ TOPAZCCOMMAND(command__backtrace) {
         state
     );
 
-    return topaz_string_create();
+    return topaz_string_create_from_c_str(".");
 }
 
 
-TOPAZCCOMMAND(command__print) {    
+TOPAZCCOMMAND(command__eval) {    
     topazString_t * eval = topaz_string_create();
     
     if (topaz_array_get_size(args)) {
@@ -593,6 +595,8 @@ topazConsole_t * topaz_console_create(topaz_t * t) {
     out->contextStack = topaz_array_create(sizeof(topazConsole_CommandContext_t*));
     out->debugBreakpoints = topaz_array_create(sizeof(DebugBreakpoint));
 
+    topaz_console_command_context_set_prompt(out->dbg, TOPAZ_STR_CAST("(dbg) "));
+
     // add basic commands
     topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("echo"), command__echo, NULL);
     topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("quit"), command__quit, t);
@@ -604,8 +608,8 @@ topazConsole_t * topaz_console_create(topaz_t * t) {
     topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("backtrace"), command__backtrace, t);
     topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("bt"),        command__backtrace, t);
 
-    topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("print"),     command__print, t);
-    topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("p"),         command__print, t);
+    topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("eval"),      command__eval, t);
+    topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("e"),         command__eval, t);
 
     topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("continue"),  command__continue, t);
     topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("c"),         command__continue, t);
@@ -707,7 +711,8 @@ void topaz_console_print_message(topazConsole_t * c, const topazString_t * str, 
 
 
 void topaz_console_print_color(topazConsole_t * c, const topazString_t * str, const topazColor_t * color) {
-    topaz_console_display_add_line(c->display, str, color);
+    topaz_console_display_add_text(c->display, str, color);
+    topaz_console_display_new_line(c->display);
 }
 
 void topaz_console_attach_script(
@@ -797,6 +802,7 @@ topazString_t * topaz_console_run(topazConsole_t * c, const topazString_t * strS
     }
     topaz_array_destroy(arr);
 
+
     return out; 
 }
 
@@ -809,6 +815,7 @@ topazConsole_CommandContext_t * topaz_console_get_default_command_context(topazC
 topazConsole_CommandContext_t * topaz_console_command_context_create() {
     topazConsole_CommandContext_t * out = calloc(1, sizeof(topazConsole_CommandContext_t));
     out->commands = topaz_table_create_hash_topaz_string();
+    out->header = topaz_string_create_from_c_str("$ ");
     return out;
 }
 
@@ -828,7 +835,12 @@ void topaz_console_pop_command_context(topazConsole_t * c) {
     topaz_array_set_size(c->contextStack, topaz_array_get_size(c->contextStack)-1);
 }
 
-
+void topaz_console_command_context_set_prompt(
+    topazConsole_CommandContext_t * c,
+    const topazString_t * str
+) {
+    topaz_string_set(c->header, str);
+}
 void topaz_console_command_context_add_command(
     topazConsole_CommandContext_t * c, 
     const topazString_t * name, 

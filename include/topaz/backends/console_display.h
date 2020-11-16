@@ -84,12 +84,18 @@ const topazConsoleDisplayAPI_t * topaz_console_display_get_api(topazConsoleDispl
 /// 
 void topaz_console_display_clear(topazConsoleDisplay_t * t);
 
+
+/// Adds text to the current line in the given color.
+///
+void topaz_console_display_add_text(topazConsoleDisplay_t * t, const topazString_t *, const topazColor_t *);
+
 /// Adds a line to the console display. This line becomes the next line to 
 /// be display. This increases the line count by 1. The line count prior 
 /// to this call becomes this new line's index. This index can be used with 
 /// topaz_console_display_get_line().
 ///
-void topaz_console_display_add_line(topazConsoleDisplay_t * t, const topazString_t *, const topazColor_t *);
+void topaz_console_display_new_line(topazConsoleDisplay_t * t);
+
 
 /// Gets the count of lines that were added to the console display.
 ///

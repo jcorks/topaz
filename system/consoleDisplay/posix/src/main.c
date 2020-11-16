@@ -58,7 +58,6 @@ static void update_input(topazSystem_Backend_t * b, PosixTerm * p) {
         if (nRead > 0) {    
             p->inputBuffer[nRead-1] = 0;
             topaz_console_display_send_input(p->ref, TOPAZ_STR_CAST(p->inputBuffer));
-            printf("$ ");
             fflush(stdout);
         }
     }
@@ -69,20 +68,25 @@ static void * term_init(topazConsoleDisplay_t * d, topaz_t * t) {
     topazSystem_Backend_t * backend = topaz_console_display_get_backend(d);
     PosixTerm * term = topaz_system_backend_get_user_data(backend);
     term->ref = d;
-    printf("$ ");
     fflush(stdout);
 
     return term;
 }
 
 void term_print(topazConsoleDisplay_t * d, void * data, const topazString_t * c, const topazColor_t * reqColor) {
-    printf("%s\n", topaz_string_get_c_str(c));
+    printf("%s", topaz_string_get_c_str(c));
+    fflush(stdout);
+
+}
+
+void term_newline(topazConsoleDisplay_t * d, void * data) {
+    printf("\n");
+    fflush(stdout);
 }
 
 
 void term_clear(topazConsoleDisplay_t * d, void * data) {
     printf("\033c");
-    printf("$ ");
     fflush(stdout);
 }
 
@@ -140,7 +144,8 @@ void topaz_system_consoleDisplay_posix__backend(
 
     api->console_display_create    = term_init;
     api->console_display_destroy   = (void                    (*)          (topazConsoleDisplay_t *, void *)) api_nothing;
-    api->console_display_add_line  = term_print;
+    api->console_display_add_text  = term_print;
+    api->console_display_new_line  = term_newline;
     api->console_display_clear     = term_clear;
     api->console_display_enable    = (void (*)(topazConsoleDisplay_t *, void *, int)) api_nothing;
 }

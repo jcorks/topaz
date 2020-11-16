@@ -68,9 +68,14 @@ struct topazConsoleDisplayAPI_t {
     /// 
     void                    (*console_display_destroy)          (topazConsoleDisplay_t *, void *);
 
+    /// Proceeds to the next console line.
+    ///
+    void                    (*console_display_new_line)         (topazConsoleDisplay_t *, void *);
+
     /// Adds a new line to the console display in the requested color.
     ///
-    void                    (*console_display_add_line)         (topazConsoleDisplay_t *, void *, const topazString_t *, const topazColor_t * reqColor);
+    void                    (*console_display_add_text)         (topazConsoleDisplay_t *, void *, const topazString_t *, const topazColor_t * reqColor);
+
 
     /// Requests that the console display gets clear
     ///
