@@ -557,10 +557,15 @@ typedef void (*topaz_script_debug_command_callback)(
     void *
 );
 
-/// Adds a function to be called when the pause command has been 
+/// Adds a function to be called when debugger a command has been 
 /// processed and committed by the debugger.
 /// The ID of the callback is returned, which may be used 
 /// to remove the callback.
+/// The debugger is allowed to issue its own commands to itself and send notifications 
+/// even though the user code may not have issued a command. 
+/// For example, breakpoints will issue a pause command callback 
+/// to facilitate debugging
+
 ///
 uint32_t topaz_script_debug_add_command_callback(
     topazScript_t *,

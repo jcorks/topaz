@@ -34,6 +34,7 @@ DEALINGS IN THE SOFTWARE.
 #include "backend.h"
 #include <topaz/version.h>
 #include <topaz/system.h>
+#include <topaz/color.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -74,7 +75,13 @@ static void * term_init(topazConsoleDisplay_t * d, topaz_t * t) {
 }
 
 void term_print(topazConsoleDisplay_t * d, void * data, const topazString_t * c, const topazColor_t * reqColor) {
+    printf("\x1b[38;2;%d;%d;%dm",
+        reqColor->r,
+        reqColor->g,
+        reqColor->b
+    );
     printf("%s", topaz_string_get_c_str(c));
+
     fflush(stdout);
 
 }

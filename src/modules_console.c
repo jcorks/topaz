@@ -283,16 +283,33 @@ static void command_debug_response(
 ) {
     topazConsole_t * console = userData;
     const topazScript_DebugState_t * state = topaz_script_debug_get_state(console->script);
-
+    if (!topaz_array_get_size(console->contextStack)) {
+        topaz_console_run(console, TOPAZ_STR_CAST("dbg"));
+    }
 
     switch(command) {
       case topazScript_DebugCommand_Pause:
         topaz_console_display_clear(console->display);
-        topaz_console_print(console, TOPAZ_STR_CAST("Debugging context pause."));
         console_print_debug_state(
             console,
             state
         );
+
+
+        if (!topaz_string_get_length(result)) {
+            topaz_console_print(console, TOPAZ_STR_CAST(""));
+            topaz_console_print(console, TOPAZ_STR_CAST("Debugging context pause."));
+            topaz_console_print(console, TOPAZ_STR_CAST(""));
+        } else {
+            topaz_console_print(console, TOPAZ_STR_CAST(""));
+            topaz_console_print(console, TOPAZ_STR_CAST("Debugging context pause."));
+            if (topaz_string_test_contains(result, TOPAZ_STR_CAST("E"))) {
+                topaz_console_print_message(console, result, topazConsole_MessageType_Error);
+            } else {
+                topaz_console_print(console, result);
+            }
+            topaz_console_print(console, TOPAZ_STR_CAST(""));
+        }
         break;
 
       case topazScript_DebugCommand_Resume:

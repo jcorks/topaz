@@ -1509,7 +1509,13 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
                         topaz_string_create()
                     );
                 } 
-            } 
+            } else if (!strcmp(messages[1], "5")) { // error?
+                topaz_duk_debug_queue_notify(
+                    ctx,
+                    topazScript_DebugCommand_Pause,
+                    topaz_string_create_from_c_str("[ERROR DETECTED]: %s", messages[3])
+                );
+            }
         } else {
 
             switch((int)command) {
@@ -1599,7 +1605,6 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
                         topaz_string_create()
                     );                    
                 } else {
-
                     topaz_duk_debug_queue_notify(
                         ctx,
                         topazScript_DebugCommand_RemoveBreakpoint,
