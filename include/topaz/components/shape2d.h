@@ -139,4 +139,9 @@ void topaz_shape2d_form_triangles(topazComponent_t *, const topazArray_t *);
 void topaz_shape2d_form_lines(topazComponent_t *, const topazArray_t *);
 
 
+
+
+
+
+
 #endif

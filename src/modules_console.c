@@ -303,11 +303,7 @@ static void command_debug_response(
         } else {
             topaz_console_print(console, TOPAZ_STR_CAST(""));
             topaz_console_print(console, TOPAZ_STR_CAST("Debugging context pause."));
-            if (topaz_string_test_contains(result, TOPAZ_STR_CAST("E"))) {
-                topaz_console_print_message(console, result, topazConsole_MessageType_Error);
-            } else {
-                topaz_console_print(console, result);
-            }
+            topaz_console_print_message(console, result, topazConsole_MessageType_Error);
             topaz_console_print(console, TOPAZ_STR_CAST(""));
         }
         break;
