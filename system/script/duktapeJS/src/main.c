@@ -119,6 +119,11 @@ typedef struct {
 
     // queue of breakpoints requested to be removed.
     topazArray_t * debugRemoveBreakpoint;
+
+    // queue of notifications to send to the script instance.
+    // theyre queued until ALL intermediate steps are finished, allowing 
+    // the script context to rely on the debug state properly. 
+    topazArray_t * debugQueuedNotifications;
 } TOPAZDUK;
 
 
@@ -150,6 +155,18 @@ typedef struct {
     uint32_t stashID;
 } TOPAZDUKObjectTag;
 
+
+
+// when notifications are prepared, they are stored intermediately 
+// in in this.
+typedef struct {
+    // relecant command
+    int command;
+
+    // the result to deliver to the script instance
+    topazString_t * result;
+
+} DebugNotification;
 
 
 // assumes object to receive prop is already at the top of the stack
@@ -589,6 +606,7 @@ static void * topaz_duk_create(topazScript_t * scr, topaz_t * ctx) {
     out->ctx = ctx;
     out->debugBreakpoints = topaz_array_create(sizeof(int));
     out->debugRemoveBreakpoint = topaz_array_create(sizeof(int));
+    out->debugQueuedNotifications = topaz_array_create(sizeof(DebugNotification));
 
     out->js = duk_create_heap(
         NULL,
@@ -799,11 +817,20 @@ topazScript_Object_t * topaz_duk_create_empty_object(
 
 void topaz_duk_bootstrap(topazScript_t * script, void * n) {
     #include "bootstrap_bytes"
-    topaz_duk_run(
-        script, n,
-        TOPAZ_STR_CAST("__bootstrap__.js"),
-        TOPAZ_STR_CAST((char*)bootstrap_bytes)
-    );
+
+    #ifdef TOPAZDC_DEBUG
+        topaz_script_run(
+            script,
+            TOPAZ_STR_CAST("TOPAZ_BOOTSTRAP.js"),
+            TOPAZ_STR_CAST((char*)bootstrap_bytes)
+        );
+    #else
+        topaz_duk_run(
+            script, n,
+            TOPAZ_STR_CAST("[internal]"),
+            TOPAZ_STR_CAST((char*)bootstrap_bytes)
+        );
+    #endif
 }
 
 
@@ -1405,6 +1432,31 @@ static void debug_state_add_frame(topazScript_DebugState_t * s,
     topaz_array_push(s->callstack, frame);
 }
 
+// queues a notification. Ownership of the string 
+static void topaz_duk_debug_queue_notify(TOPAZDUK * ctx, int cmd, topazString_t * str) {
+    DebugNotification n;
+    n.command = cmd;
+    n.result = str;
+    topaz_array_push(ctx->debugQueuedNotifications, n);
+}
+
+static void topaz_duk_push_notify(TOPAZDUK * ctx) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(ctx->debugQueuedNotifications);
+    if (!len) return;
+    for(i = 0; i < len; ++i) {
+        topaz_script_notify_command(
+            ctx->script, 
+            topaz_array_at(ctx->debugQueuedNotifications, DebugNotification, i).command,            
+            topaz_array_at(ctx->debugQueuedNotifications, DebugNotification, i).result  
+        );
+    }
+    topaz_array_set_size(ctx->debugQueuedNotifications, 0);
+    #ifdef TOPAZDC_DEBUG
+        //printf("Pushed %d notifications to the script instance.\n", (int)len);
+    #endif
+}
+
 static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
     TOPAZDUK * ctx = ctxT->userData;
     if (!ctx->debugReachedInit) {
@@ -1444,15 +1496,15 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
                 topaz_duk_trans_command__get_call_stack(ctx->trans_ctx);
                 if (!strcmp(messages[2], "1")) { // paused state
                     ctx->debugLevel = 0;
-                    topaz_script_notify_command(
-                        ctx->script,
+                    topaz_duk_debug_queue_notify(
+                        ctx,
                         topazScript_DebugCommand_Pause,
                         topaz_string_create()
                     );
                 } else if (!strcmp(messages[2], "0")) { // resume
                     ctx->debugLevel = 0;
-                    topaz_script_notify_command(
-                        ctx->script,
+                    topaz_duk_debug_queue_notify(
+                        ctx,
                         topazScript_DebugCommand_Resume,
                         topaz_string_create()
                     );
@@ -1464,8 +1516,8 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
               case topazScript_DebugCommand_AddBreakpoint: {
                 if (!strcmp(messages[0], "ERR")) {
                     // error
-                    topaz_script_notify_command(
-                        ctx->script,
+                    topaz_duk_debug_queue_notify(
+                        ctx,
                         topazScript_DebugCommand_AddBreakpoint,
                         topaz_string_create()
                     );
@@ -1474,8 +1526,8 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
                     topaz_array_push(ctx->debugBreakpoints, localID);
 
                     // success
-                    topaz_script_notify_command(
-                        ctx->script,
+                    topaz_duk_debug_queue_notify(
+                        ctx,
                         topazScript_DebugCommand_AddBreakpoint,
                         topaz_string_create_from_c_str("%d", localID++)
                     );
@@ -1484,8 +1536,8 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
               }
               case topazScript_DebugCommand_Pause:
                 ctx->debugLevel = 0;
-                topaz_script_notify_command(
-                    ctx->script,
+                topaz_duk_debug_queue_notify(
+                    ctx,
                     topazScript_DebugCommand_Pause,
                     topaz_string_create()
                 );
@@ -1493,8 +1545,8 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
                 
               case topazScript_DebugCommand_Resume:
                 ctx->debugLevel = 0;
-                topaz_script_notify_command(
-                    ctx->script,
+                topaz_duk_debug_queue_notify(
+                    ctx,
                     topazScript_DebugCommand_Resume,
                     topaz_string_create()
                 );
@@ -1504,31 +1556,31 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
               case topazScript_DebugCommand_ScopedEval:
 
                 if (!strcmp(messages[1], "0")) {
-                    topaz_script_notify_command(
-                        ctx->script,
+                    topaz_duk_debug_queue_notify(
+                        ctx,
                         topazScript_DebugCommand_ScopedEval,
                         topaz_string_create_from_c_str("%s", messages[2])
                     );
                 } else {
                     // Error
-                    topaz_script_notify_command(
-                        ctx->script,
+                    topaz_duk_debug_queue_notify(
+                        ctx,
                         topazScript_DebugCommand_ScopedEval,
                         topaz_string_create_from_c_str("Could not evaluate expression (%s).\n", messages[2])
                     );                    
                 }
                 break;
               case topazScript_DebugCommand_StepInto:
-                topaz_script_notify_command(
-                    ctx->script,
+                topaz_duk_debug_queue_notify(
+                    ctx,
                     topazScript_DebugCommand_StepInto,
                     topaz_string_create()
                 );                    
                 break;
               case topazScript_DebugCommand_StepOver:
                 ctx->debugLevel = 0;
-                topaz_script_notify_command(
-                    ctx->script,
+                topaz_duk_debug_queue_notify(
+                    ctx,
                     topazScript_DebugCommand_StepOver,
                     topaz_string_create()
                 );                    
@@ -1541,15 +1593,15 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
                 topaz_array_remove(ctx->debugRemoveBreakpoint, 0);
 
                 if (!strcmp(messages[0], "ERR")) {
-                    topaz_script_notify_command(
-                        ctx->script,
+                    topaz_duk_debug_queue_notify(
+                        ctx,
                         topazScript_DebugCommand_RemoveBreakpoint,
                         topaz_string_create()
                     );                    
                 } else {
 
-                    topaz_script_notify_command(
-                        ctx->script,
+                    topaz_duk_debug_queue_notify(
+                        ctx,
                         topazScript_DebugCommand_RemoveBreakpoint,
                         topaz_string_create_from_c_str("%d", id)
                     );                    
@@ -1707,6 +1759,8 @@ static void topaz_duk_cooperate_update(topazSystem_Backend_t * backend, void * d
             duk_debugger_cooperate(ctx->js);
             while(topaz_array_get_size(ctx->pendingMessages))
                 duk_debugger_cooperate(ctx->js);
+
+            topaz_duk_push_notify(ctx);
         }
     }    
 }

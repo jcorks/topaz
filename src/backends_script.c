@@ -753,15 +753,34 @@ const topazScript_DebugState_t * topaz_script_debug_get_state(
     return s->api.script_debug_get_state(s, s->implementationData);
 }
 
+int topaz_script_debug_is_paused(topazScript_t * s) {
+    return s->debugPaused;
+}
+
 
 void topaz_script_notify_command(topazScript_t * s, int cmd, topazString_t * str) {
+    if (cmd == topazScript_DebugCommand_Pause ||
+        cmd == topazScript_DebugCommand_Resume) {
+        int different = 0;
+        if (cmd == topazScript_DebugCommand_Pause && !s->debugPaused) {
+            s->debugPaused = 1;
+            different = 1;
+        } else if (cmd == topazScript_DebugCommand_Resume && s->debugPaused) {
+            s->debugPaused = 0;
+            different = 1;
+        }
+
+        if (!different) return;
+    }
+
+
     if (cmd == topazScript_DebugCommand_Pause) {
-        s->debugPaused = 1;
         topaz_context_pause(s->ctx);
     } else if (cmd == topazScript_DebugCommand_Resume) {
-        s->debugPaused = 0;
         topaz_context_resume(s->ctx);
     }
+
+
     topazArray_t * arr = topaz_bin_get_all(s->debugCBs);
     uint32_t i;
     for(i = 0; i < topaz_array_get_size(arr); ++i) {

@@ -182,7 +182,8 @@ static void console_print_debug_state(
         return;
     }
 
-    #define LINES_FROM_CENTER 5
+
+    #define LINES_FROM_CENTER 10
     // first print source.
     {
         const topazScript_CallstackFrame_t * homeFrame = &topaz_array_at(state->callstack, topazScript_CallstackFrame_t, console->debugLevel);
@@ -193,7 +194,7 @@ static void console_print_debug_state(
         topazString_t * headerNormal = topaz_string_create_from_c_str(" %%%dd | ", digitCount);
         topazString_t * headerCurrent = topaz_string_create_from_c_str(" %%%ds | ", digitCount);
         int lineIndex = homeFrame->lineNumber-1;        
-        for(l = lineIndex-5; l <= lineIndex+5; ++l) {
+        for(l = lineIndex-LINES_FROM_CENTER; l <= lineIndex+LINES_FROM_CENTER; ++l) {
             topaz_string_clear(output);
             if (l < 0 || l > topaz_script_get_line_count(console->script, homeFrame->filename)) {
                 topaz_console_print_color(
@@ -281,18 +282,39 @@ static void command_debug_response(
     void * userData
 ) {
     topazConsole_t * console = userData;
-    
+    const topazScript_DebugState_t * state = topaz_script_debug_get_state(console->script);
+
+
     switch(command) {
       case topazScript_DebugCommand_Pause:
+        topaz_console_display_clear(console->display);
         topaz_console_print(console, TOPAZ_STR_CAST("Debugging context pause."));
+        console_print_debug_state(
+            console,
+            state
+        );
         break;
 
       case topazScript_DebugCommand_Resume:
+        topaz_console_display_clear(console->display);
         topaz_console_print(console, TOPAZ_STR_CAST("Debugging context resumed."));
         return; // circumvent prompt
         break;
 
       case topazScript_DebugCommand_StepInto:
+        topaz_console_display_clear(console->display);
+        console_print_debug_state(
+            console,
+            state
+        );
+        break;
+
+      case topazScript_DebugCommand_StepOver:
+        topaz_console_display_clear(console->display);
+        console_print_debug_state(
+            console,
+            state
+        );
         break;
 
       case topazScript_DebugCommand_ScopedEval:
@@ -368,6 +390,7 @@ static void command_debug_response(
       default:
         break;
     }
+
     print_prompt(console);
 }
 
@@ -425,24 +448,35 @@ TOPAZCCOMMAND(command__eval) {
 }
 
 TOPAZCCOMMAND(command__continue) {    
-    topaz_script_debug_send_command(
-        console->script,
-        topazScript_DebugCommand_Resume,
-        TOPAZ_STR_CAST("")
-    );
+    int paused = topaz_script_debug_is_paused(console->script);
+    if (paused) {
+        topaz_script_debug_send_command(
+            console->script,
+            topazScript_DebugCommand_Resume,
+            TOPAZ_STR_CAST("")
+        );
+    } else {
+        return topaz_string_create_from_c_str("Debug state is not currently paused.");
+    }
     return topaz_string_create();
 }
 
-TOPAZCCOMMAND(command__pause) {    
-    topaz_script_debug_send_command(
-        console->script,
-        topazScript_DebugCommand_Pause,
-        TOPAZ_STR_CAST("")
-    );
+TOPAZCCOMMAND(command__pause) {
+    int paused = topaz_script_debug_is_paused(console->script);    
+    if (paused) {
+        return topaz_string_create_from_c_str("Debug state is already paused.");
+    } else {
+        topaz_script_debug_send_command(
+            console->script,
+            topazScript_DebugCommand_Pause,
+            TOPAZ_STR_CAST("")
+        );
+    }
     return topaz_string_create();
 }
 
 TOPAZCCOMMAND(command__up) {    
+    topaz_console_display_clear(console->display);
     const topazScript_DebugState_t * state = topaz_script_debug_get_state(console->script);
     console->debugLevel++;
     if (console->debugLevel >= topaz_array_get_size(state->callstack)) {
@@ -453,11 +487,14 @@ TOPAZCCOMMAND(command__up) {
         console,
         state
     );    
+    print_prompt(console);
+
     return topaz_string_create();
 }
 
 
-TOPAZCCOMMAND(command__down) {    
+TOPAZCCOMMAND(command__down) {   
+    topaz_console_display_clear(console->display); 
     const topazScript_DebugState_t * state = topaz_script_debug_get_state(console->script);
     console->debugLevel--;
     if (console->debugLevel < 0) {
@@ -468,6 +505,8 @@ TOPAZCCOMMAND(command__down) {
         console,
         state
     );    
+    print_prompt(console);
+
     return topaz_string_create();
 }
 
