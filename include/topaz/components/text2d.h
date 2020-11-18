@@ -53,7 +53,7 @@ topazComponent_t * topaz_text2d_create(topaz_t*);
 
 /// Sets the text content and font size to use.
 ///
-void topaz_shape2d_set_text(topazComponent_t *,
+void topaz_text2d_set_text(topazComponent_t *,
     const topazString_t *,
     int pixelSize,
 );
@@ -61,7 +61,7 @@ void topaz_shape2d_set_text(topazComponent_t *,
 /// Sets the text content and font size to use,
 /// but uses the same spacing between all characters
 ///
-void topaz_shape2d_set_text_monospace(
+void topaz_text2d_set_text_monospace(
     topazComponent_t *,
     const topazString_t *,
     int pixelSize,
@@ -69,7 +69,7 @@ void topaz_shape2d_set_text_monospace(
 
 /// Gets the text being displayed by the component.
 ///
-const topazString_t * topaz_shape2d_get_text(topazComponent_t *);
+const topazString_t * topaz_text2d_get_text(topazComponent_t *);
 
 /// Gets the width of the text without transformation.
 ///
@@ -108,7 +108,7 @@ void topaz_text2d_set_color_section(
 void topaz_text2d_set_color(
     topazComponent_t *,
     const topazColor_t *
-)
+);
 
 
 
