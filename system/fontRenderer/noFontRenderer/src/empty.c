@@ -59,7 +59,7 @@ static GlyphVisual glyphs[] = {
     {}, {}, {}, {}, {}, {}, {}, {},
     {}, {}, {}, {}, {}, {}, {}, {},
     {}, {}, {}, {}, {}, {}, {}, {},
-
+    {},
     // 33
     {
         "  #   "
@@ -145,17 +145,6 @@ static GlyphVisual glyphs[] = {
         "      "
     },
 
-    // 39
-    {
-        "      "
-        "  ##  "
-        "  #.  "
-        "  #   "
-        "      "
-        "      "
-        "      "
-        "      "
-    },
 
     // 40
     {
@@ -695,9 +684,9 @@ static GlyphVisual glyphs[] = {
     //83
     {
         " ####."
-        "#.   #"
-        " #.   "
-        "   #. "
+        "##.  #"
+        " ##.  "
+        "  ### "
         "#.  ##"
         " ####."
         "      "
@@ -1089,9 +1078,9 @@ static GlyphVisual glyphs[] = {
     //115
     {
         " ####."
-        "#.   #"
-        " #.   "
-        "   #. "
+        "##.  #"
+        " ##.  "
+        "  ### "
         "#.  ##"
         " ####."
         "      "
@@ -1245,7 +1234,8 @@ static uint8_t * visual_to_texture(int charcode) {
         g = glyphs+charcode;
     }
 
-    uint8_t * data = malloc(sizeof(uint32_t)*6*8);
+    uint8_t * src = malloc(sizeof(uint32_t)*6*8);
+    uint8_t * data = src;
     int i;  
     for(i = 0; i < 6*8; ++i, data+=4) {
         switch(g->data[i]) {
@@ -1271,7 +1261,7 @@ static uint8_t * visual_to_texture(int charcode) {
         }
     }
     
-    return data;
+    return src;
 }
 
 
@@ -1344,10 +1334,18 @@ void no_query_spacing(
 
 ) {
     float aspectRatio = (6.0 / 8.0);
-    spacing->width = sizePixels;
-    spacing->height = sizePixels*aspectRatio;
-    spacing->xOffset = 0;
-    spacing->yOffset = 0;
+    if (thischar >= 'a' && thischar <= 'z') {
+        // fake lower case
+        spacing->width = sizePixels;
+        spacing->height = (sizePixels/aspectRatio)*0.75;
+        spacing->xOffset = 0;
+        spacing->yOffset = (sizePixels/aspectRatio)*0.25;
+    } else {
+        spacing->width = sizePixels;
+        spacing->height = sizePixels/aspectRatio;
+        spacing->xOffset = 0;
+        spacing->yOffset = 0;
+    }
     if (thischar == '\n') {
         spacing->xNextOrigin = 0;
         spacing->yNextOrigin += spacing->height + sizePixels / 6.0;

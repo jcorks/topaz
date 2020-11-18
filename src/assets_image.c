@@ -205,7 +205,7 @@ topazAsset_t * topaz_image_create(topaz_t * t, const topazString_t * name, topaz
     img->ctx = t;
 
 
-    topazAsset_Attributes_t attribs;
+    topazAsset_Attributes_t attribs = {};
     attribs.on_destroy = image__destroy;
     attribs.userData = img;
 
@@ -236,7 +236,7 @@ topazImage_Frame_t * topaz_image_add_frame(topazAsset_t * a) {
     TopazImage * img = image__retrieve(a);
     topazImage_Frame_t * frame = calloc(sizeof(topazImage_Frame_t), 1);
     frame->img = img;
-    frame->object = topaz_renderer_texture_create(topaz_graphics_get_renderer(topaz_context_get_graphics(img->ctx)), 4, 4, default_texture_data);
+    frame->object = topaz_renderer_texture_create(topaz_graphics_get_renderer(topaz_context_get_graphics(img->ctx)), img->width, img->height, default_texture_data);
     topaz_array_push(img->frames, frame);
     return frame;
 }

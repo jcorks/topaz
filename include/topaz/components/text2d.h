@@ -33,7 +33,11 @@ DEALINGS IN THE SOFTWARE.
 
 #ifndef H_TOPAZDC__TEXT2D__INCLUDED
 #define H_TOPAZDC__TEXT2D__INCLUDED
-
+#include <topaz/color.h>
+typedef struct topazComponent_t topazComponent_t;
+typedef struct topazString_t topazString_t;
+typedef struct topaz_t topaz_t;
+typedef struct topazTransform_t topazTransform_t;
 
 /*
 
@@ -53,9 +57,10 @@ topazComponent_t * topaz_text2d_create(topaz_t*);
 
 /// Sets the text content and font size to use.
 ///
-void topaz_text2d_set_text(topazComponent_t *,
+void topaz_text2d_set_text(
+    topazComponent_t *,
     const topazString_t *,
-    int pixelSize,
+    int pixelSize
 );
 
 /// Sets the text content and font size to use,
@@ -64,7 +69,7 @@ void topaz_text2d_set_text(topazComponent_t *,
 void topaz_text2d_set_text_monospace(
     topazComponent_t *,
     const topazString_t *,
-    int pixelSize,
+    int pixelSize
 );
 
 /// Gets the text being displayed by the component.
@@ -100,14 +105,14 @@ void topaz_text2d_set_color_section(
     topazComponent_t *, 
     int fromIndex,
     int toIndex,
-    const topazColor_t *
+    topazColor_t
 );
 
 /// Sets the color for all characters.
 ///
 void topaz_text2d_set_color(
     topazComponent_t *,
-    const topazColor_t *
+    topazColor_t
 );
 
 

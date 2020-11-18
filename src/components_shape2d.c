@@ -151,7 +151,7 @@ topazComponent_t * topaz_shape2d_create(topaz_t * t) {
     data->color.b = 255;
     data->color.a = 255;
 
-    data->render2d = topaz_render2d_create(topaz_graphics_get_renderer_2d(topaz_context_get_graphics(t)));
+    data->render2d = topaz_render2d_create(topaz_graphics_get_renderer_2d(topaz_context_get_graphics(t)), NULL);
 
     // create base component and assign attribs
     topazComponent_Attributes_t attribs;

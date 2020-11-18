@@ -32,6 +32,7 @@ struct topazSpatial_t {
 typedef struct {
     void (*fn)(topazSpatial_t *, void * data);
     void * data;
+    uint32_t id;
 } UpdateCallback;
 
 
@@ -210,30 +211,30 @@ void topaz_spatial_check_update(topazSpatial_t * s) {
 }
 
 
-void topaz_spatial_add_update_callback(
+uint32_t topaz_spatial_add_update_callback(
     topazSpatial_t * s, 
     void(*fn)(topazSpatial_t *, void *), 
     void * userData
 ) {
+    static uint32_t idPool = 1;
     UpdateCallback cb;
     cb.fn = fn;
     cb.data = userData;
+    cb.id = idPool++;
     topaz_array_push(s->callbacks, cb);
+    return cb.id;
 }
 
 
 void topaz_spatial_remove_update_callback(
-    topazSpatial_t * s, 
-    void(*fn)(topazSpatial_t *, void *), 
-    void * userData
-
+    topazSpatial_t * s,
+    uint32_t id
 ) {
     uint32_t i;
     uint32_t len = topaz_array_get_size(s->callbacks);
     for(i = 0; i < len; ++i) {
         UpdateCallback * cb = &topaz_array_at(s->callbacks, UpdateCallback, i);
-        if (cb->fn == fn &&
-            cb->data == userData) {
+        if (cb->id == id) {
             topaz_array_remove(s->callbacks, i);
             return;
         }

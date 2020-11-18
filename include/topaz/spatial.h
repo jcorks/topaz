@@ -110,8 +110,10 @@ void topaz_spatial_update_model_transforms(topazSpatial_t *, topazRenderer_Buffe
 /// Function called when the spatial object 
 /// changes it transform in 3D space. This can be triggered 
 /// either by local changes or by hierarchy changes.
+/// An ID to the added callback is returned, which can 
+/// be used to remove it in the future.
 ///
-void topaz_spatial_add_update_callback(
+uint32_t topaz_spatial_add_update_callback(
     topazSpatial_t *, 
 
     /// Callback
@@ -128,16 +130,7 @@ void topaz_spatial_add_update_callback(
 ///
 void topaz_spatial_remove_update_callback(
     topazSpatial_t *, 
-
-    /// Callback
-    /// 
-    void(*)(topazSpatial_t *, void *), 
-
-
-    /// User data for the callback
-    ///
-    void * userData
-
+    uint32_t id
 );
 
 

@@ -57,6 +57,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/components/scheduler.h>
 #include <topaz/components/shape2d.h>
 #include <topaz/components/state_control.h>
+#include <topaz/components/text2d.h>
 
 #include <topaz/modules/graphics.h>
 #include <topaz/modules/input.h>

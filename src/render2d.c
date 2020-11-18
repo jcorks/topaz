@@ -42,8 +42,10 @@ struct topazRender2D_t {
     uint32_t objectID;
     int absolute;
     topazRenderer_ProcessAttribs_t attribs;
+    uint32_t updateID;
 
-    topazSpatial_t * spatial;    
+    topazSpatial_t * spatial;   
+    int inheritedSpatial; 
     topazRenderer_2D_t * renderer;
     topazArray_t * vertexCopy;
     
@@ -73,19 +75,24 @@ void topaz_render2d_set_texture(topazRender2D_t * r, topazRenderer_Texture_t * t
 
 
 
-topazRender2D_t * topaz_render2d_create(topazRenderer_2D_t * r) {
+topazRender2D_t * topaz_render2d_create(topazRenderer_2D_t * r, topazSpatial_t * inherit) {
     topazRender2D_t * out = calloc(1, sizeof(topazRender2D_t));
     out->renderer = r;
     out->vertexSrc = NULL;
-    out->spatial = topaz_spatial_create();
 
+    if (!inherit) {
+        out->spatial = topaz_spatial_create();
+    } else {
+        out->spatial = inherit;
+        out->inheritedSpatial = 1;
+    }
     topaz_renderer_2d_add_objects(out->renderer, &out->objectID, 1);
     out->attribs.primitive = topazRenderer_Primitive_Triangle;
     out->attribs.depthTest = topazRenderer_DepthTest_None;
     out->attribs.alphaRule = topazRenderer_AlphaRule_Allow;
     out->attribs.etchRule  = topazRenderer_EtchRule_NoEtching;
     out->attribs.textureFilter = topazRenderer_TextureFilterHint_Linear;
-    topaz_spatial_add_update_callback(
+    out->updateID = topaz_spatial_add_update_callback(
         out->spatial,
         (void(*)(topazSpatial_t *, void *))topaz_render2d_update_transform,
         out
@@ -95,11 +102,13 @@ topazRender2D_t * topaz_render2d_create(topazRenderer_2D_t * r) {
 }
 
 void topaz_render2d_destroy(topazRender2D_t * t) {
+    topaz_spatial_remove_update_callback(t->spatial, t->updateID);
     topaz_renderer_2d_remove_objects(t->renderer, &t->objectID, 1);
     if (t->vertexSrc)
         topaz_renderer_buffer_destroy(t->vertexSrc);
 
-    topaz_spatial_destroy(t->spatial);
+    if (!t->inheritedSpatial)
+        topaz_spatial_destroy(t->spatial);
     if (t->vertexCopy) topaz_array_destroy(t->vertexCopy);
     free(t);
 }

@@ -49,9 +49,13 @@ typedef struct topazRender2D_t topazRender2D_t;
 
 
 
-/// Creates a new 2d object
+/// Creates a new 2d object. If a collection of 
+/// render2d objects are used, you may pass a pre-existing 
+/// spatial object, which will be used to generate the local transform 
+/// for the object. Else, passing NULL will prompt the render2d 
+/// instance to create its own.
 ///
-topazRender2D_t * topaz_render2d_create(topazRenderer_2D_t *);
+topazRender2D_t * topaz_render2d_create(topazRenderer_2D_t *, topazSpatial_t *);
 
 /// Destroys the 2d object.
 ///

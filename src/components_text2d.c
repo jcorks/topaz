@@ -29,9 +29,11 @@ DEALINGS IN THE SOFTWARE.
 */
 
 #include <topaz/compat.h>
+#include <topaz/component.h>
 #include <topaz/components/text2d.h>
 #include <topaz/containers/string.h>
 #include <topaz/containers/array.h>
+#include <topaz/backends/font_renderer.h>
 #include <topaz/render2d.h>
 #include <topaz/assets/image.h>
 #include <topaz/topaz.h>
@@ -61,9 +63,10 @@ typedef struct {
     char * MAGIC_ID;
     #endif
     topaz_t * ctx;
-    topazAsset_t * id;
     topazVector_t center;
     topazString_t * text;
+    topazSpatial_t * spatial;
+    int currentSize;
 
     float width;
     float height;
@@ -75,27 +78,11 @@ typedef struct {
 
 
 
-static void generate_text_renderable_kerning(
-    Text2D * t, 
-    int pixelSize
-) {
-    topazArray_t * arr = topaz_array_create(sizeof(topazRenderer_2D_Vertex_t));
-    topazRenderer_2D_Vertex_t v; 
-
-    uint32_t slen = topaz_string_get_length(t->text);
-    topazFontRenderer_Spacing_t space = {};
-    for(i = 0; i < slen; ++i) {
-        
-    }
-}
-
-
-
 static void text2d__on_draw(topazComponent_t * c, Text2D * s) {
     // now that its finalized, send the shape2d as-is to the graphics 
     // module for it to be renderered.
     uint32_t i;
-    uint32_t len = topaz_array_get_size(s->glyphs);
+    uint32_t len = topaz_string_get_length(s->text);
     for(i = 0; i < len; ++i) {
         topazRender2D_t * t = topaz_array_at(s->glyphs, topazRender2D_t *, i);
         topaz_graphics_request_draw_2d(
@@ -114,36 +101,26 @@ static void text2d__on_attach(topazComponent_t * c, Text2D * s) {
         assert(topaz_entity_is_valid(e) && "Text2D attached to a non-valid entity.");
     #endif
 
-    uint32_t i;
-    uint32_t len = topaz_array_get_size(s->glyphs);
-    for(i = 0; i < len; ++i) {
-        topazRender2D_t * t = topaz_array_at(s->glyphs, topazRender2D_t *, i);
-        topaz_spatial_set_as_parent(
-            topaz_render2d_get_spatial(t),
-            topaz_entity_get_spatial(e)
-        );
-    }
+    topaz_spatial_set_as_parent(
+        s->spatial,
+        topaz_entity_get_spatial(e)
+    );
 }
 
 // unparenting should happen when detaching to not affect 
 // the operation of the render2d instance if used independently of an
 // entity somehow
 static void text2d__on_detach(topazComponent_t * c, Text2D * s) {
-    uint32_t i;
-    uint32_t len = topaz_array_get_size(s->glyphs);
-    for(i = 0; i < len; ++i) {
-        topazRender2D_t * t = topaz_array_at(s->glyphs, topazRender2D_t *, i);
-        topaz_spatial_set_as_parent(
-            topaz_render2d_get_spatial(t),
-            NULL        
-        );
-    }
+    topaz_spatial_set_as_parent(
+        s->spatial,
+        NULL        
+    );
 }
 
 
 // retrieves the component and asserts accuracy in debug
 static Text2D * text2d__retrieve(topazComponent_t * c) {
-    Shape2D * s = topaz_component_get_attributes(c)->userData;
+    Text2D * s = topaz_component_get_attributes(c)->userData;
     #ifdef TOPAZDC_DEBUG
         assert(s && "Text2D instance is missing or instance invalid.");
         assert(s->MAGIC_ID == MAGIC_ID__TEXT_2D);
@@ -161,7 +138,7 @@ topazComponent_t * topaz_text2d_create(topaz_t * t) {
     #endif
     data->text = topaz_string_create();
     data->glyphs = topaz_array_create(sizeof(topazRender2D_t *));
-
+    data->spatial = topaz_spatial_create();
     // create base component and assign attribs
     topazComponent_Attributes_t attribs;
     memset(&attribs, 0, sizeof(topazComponent_Attributes_t));
@@ -180,13 +157,140 @@ topazComponent_t * topaz_text2d_create(topaz_t * t) {
 void topaz_text2d_set_text(
     topazComponent_t * c,
     const topazString_t * str,
-    int pixelSize,
+    int pixelSize
 ) {
     Text2D * t = text2d__retrieve(c);
-    topaz_string_set(t->text, str);
-    generate_text_renderable_kerning(t, pixelSize);
-}
+    uint32_t i;
+    uint32_t len;
 
+
+    // get context
+    topazFontRenderer_t * fontRenderer = topaz_context_get_font_renderer(t->ctx);
+    topazFontRenderer_Spacing_t spacing = {};
+    float originX = 0;
+    float originY = 0;
+    
+   
+    // first, unref all current glphs
+    len = topaz_string_get_length(t->text);
+    for(i = 0; i < len; ++i) {
+        topaz_font_renderer_image_unref(
+            fontRenderer,
+            topaz_string_get_char(t->text, i),
+            t->currentSize
+        );
+    }
+
+    // update source data
+    t->currentSize = pixelSize;
+    topaz_string_set(t->text, str);
+
+
+    // base vertices
+    topazRenderer_2D_Vertex_t vtx_base[6] = {
+        {0, 0,    0, 0, 0, 0,   0, 0},
+        {0, 0,    0, 0, 0, 0,   1, 1},
+        {0, 0,    0, 0, 0, 0,   1, 0},
+
+        {0, 0,    0, 0, 0, 0,   0, 0},
+        {0, 0,    0, 0, 0, 0,   0, 1},
+        {0, 0,    0, 0, 0, 0,   1, 1},
+    };
+
+
+    // glyphs act as a cache of renderables for the text,
+    // so need to match in size
+    while(topaz_array_get_size(t->glyphs) < topaz_string_get_length(t->text)) {
+        topazRender2D_t * r = topaz_render2d_create(topaz_graphics_get_renderer_2d(topaz_context_get_graphics(t->ctx)), t->spatial);
+        topaz_render2d_set_vertices(r, TOPAZ_ARRAY_CAST(vtx_base, topazRenderer_2D_Vertex_t, 6));
+        topaz_array_push(t->glyphs, r);
+    }
+
+
+
+    len = topaz_string_get_length(t->text);
+    for(i = 0; i < len; ++i) {
+        topazRender2D_t * r = topaz_array_at(t->glyphs, topazRender2D_t *, i);
+
+
+        // set the next texture    
+        const topazAsset_t * image = topaz_font_renderer_image_ref(
+            fontRenderer,
+            topaz_string_get_char(t->text, i),
+            t->currentSize
+        );
+
+        topazRenderer_Texture_t * texture = topaz_image_frame_get_texture(topaz_image_get_frame((topazAsset_t *)image, 0));
+        topaz_render2d_set_texture(r, texture);
+
+
+        // Get spacing 
+        topaz_font_renderer_query_spacing(
+            fontRenderer, 
+            &spacing,
+            t->currentSize,
+            i == 0 ? 0 : topaz_string_get_char(t->text, i-1),
+            topaz_string_get_char(t->text, i),
+            i >= len ? 0 : topaz_string_get_char(t->text, i+1)
+        );
+            
+
+        // apply data
+        topazRenderer_2D_Vertex_t * v = &vtx_base[0];
+
+
+        // top left
+        v->x = originX+spacing.xOffset;
+        v->y = originY+spacing.yOffset;
+        v->r = v->b = v->g = v->a = 1.f;
+        v++;
+
+
+        // bottom right
+        v->x = originX+spacing.width+spacing.xOffset;
+        v->y = originY+spacing.height+spacing.yOffset;
+        v->r = v->b = v->g = v->a = 1.f;
+        v++;
+
+
+        // top right
+        v->x = originX+spacing.width+spacing.xOffset;
+        v->y = originY+spacing.yOffset;
+        v->r = v->b = v->g = v->a = 1.f;
+        v++;
+
+
+
+
+
+
+        // top left
+        v->x = originX+spacing.xOffset;
+        v->y = originY+spacing.yOffset;
+        v->r = v->b = v->g = v->a = 1.f;
+        v++;
+
+
+        // bottom left
+        v->x = originX+spacing.xOffset;
+        v->y = originY+spacing.height+spacing.yOffset;
+        v->r = v->b = v->g = v->a = 1.f;
+        v++;
+
+
+        // bottom right
+        v->x = originX+spacing.width+spacing.xOffset;
+        v->y = originY+spacing.height+spacing.yOffset;
+        v->r = v->b = v->g = v->a = 1.f;
+        
+
+        originX = spacing.xNextOrigin;
+        originY = spacing.yNextOrigin; 
+
+        topaz_render2d_set_vertices(r, TOPAZ_ARRAY_CAST(vtx_base, topazRenderer_2D_Vertex_t, 6));
+    }
+
+}
 
 
 /// Sets the text content and font size to use,
@@ -195,12 +299,8 @@ void topaz_text2d_set_text(
 void topaz_text2d_set_text_monospace(
     topazComponent_t * c,
     const topazString_t * str,
-    int pixelSize,
+    int pixelSize
 ) {
-    Text2D * t = text2d__retrieve(c);
-    topaz_string_set(t->text, str);
-    generate_text_renderable_monospace(t, pixelSize);
-
 }
 
 /// Gets the text being displayed by the component.
@@ -225,56 +325,58 @@ float topaz_text2d_get_extent_height(topazComponent_t * c) {
 
 float topaz_text2d_get_char_x(topazComponent_t * c, int charIndex) {
     Text2D * t = text2d__retrieve(c);
-    if (charIndex < 0 || charIndex >= topaz_array_get_size(t->glyphs)) return 0;
+    if (charIndex < 0 || charIndex >= topaz_string_get_length(t->text)) return 0;
 
     topazRender2D_t * r = topaz_array_at(t->glyphs, topazRender2D_t *, charIndex);
-    topazArray_t * vtx = topaz_render2d_get_vertices(r);    
-    return topaz_array_index(vtx, topazRenderer_2D_Vertex_t, 0).x;
+    const topazArray_t * vtx = topaz_render2d_get_vertices(r);    
+    return topaz_array_at(vtx, topazRenderer_2D_Vertex_t, 0).x;
 }
 
 float topaz_text2d_get_char_y(topazComponent_t * c, int charIndex) {
     Text2D * t = text2d__retrieve(c);
-    if (charIndex < 0 || charIndex >= topaz_array_get_size(t->glyphs)) return 0;
+    if (charIndex < 0 || charIndex >= topaz_string_get_length(t->text)) return 0;
 
     topazRender2D_t * r = topaz_array_at(t->glyphs, topazRender2D_t *, charIndex);
-    topazArray_t * vtx = topaz_render2d_get_vertices(r);    
-    return topaz_array_index(vtx, topazRenderer_2D_Vertex_t, 0).y;
+    const topazArray_t * vtx = topaz_render2d_get_vertices(r);    
+    return topaz_array_at(vtx, topazRenderer_2D_Vertex_t, 0).y;
 }
 
 
 topazTransform_t * topaz_text2d_get_node(topazComponent_t * c) {
     Text2D * t = text2d__retrieve(c);
-    return topaz_spatial_get_node(topaz_render2d_get_spatial(t->render2d));
+    return topaz_spatial_get_node(t->spatial);
 }
 
 void topaz_text2d_set_color_section(
     topazComponent_t * c, 
     int fromIndex,
     int toIndex,
-    const topazColor_t * clr
+    topazColor_t clr
 ) {
     Text2D * t = text2d__retrieve(c);
-    topazArray_t * vtx = topaz_array_clone(topaz_render2d_get_vertices(t->render2d));
 
-    uint32_t i;
-    uint32_t len = topaz_array_get_size(vtx);
+    uint32_t i, n;
+    uint32_t len = topaz_string_get_length(t->text);
     for(i = (uint32_t)fromIndex; i < len && i <= (uint32_t)toIndex; ++i) {
-        topazRenderer_2D_Context_t * v = &topaz_array_at(vtx, topazRenderer_2D_Context_t, i);
-        v->r = clr->r / 255.0;
-        v->g = clr->g / 255.0;
-        v->b = clr->b / 255.0;
-        v->a = clr->a / 255.0;
+        topazRender2D_t * r = topaz_array_at(t->glyphs, topazRender2D_t *, i);
+        topazArray_t * vtx = topaz_array_clone(topaz_render2d_get_vertices(r));
+        for(n = 0; n < 6; ++n) {
+            topazRenderer_2D_Vertex_t * v = &topaz_array_at(vtx, topazRenderer_2D_Vertex_t, n);
+            v->r = topaz_color_r_amt(clr);
+            v->g = topaz_color_g_amt(clr);
+            v->b = topaz_color_b_amt(clr);
+            v->a = topaz_color_a_amt(clr);
+        }
+        topaz_render2d_set_vertices(r, vtx);
+        topaz_array_destroy(vtx);
     }
-
-    topaz_render2d_set_vertices(t->render2d, vtx);
-    topaz_array_destroy(vtx);
 }
 
 /// Sets the color for all characters.
 ///
 void topaz_text2d_set_color(
     topazComponent_t * c,
-    const topazColor_t * clr 
+    topazColor_t clr 
 ) {
     Text2D * t = text2d__retrieve(c);
 
