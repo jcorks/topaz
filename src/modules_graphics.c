@@ -105,7 +105,7 @@ void topaz_graphics_request_draw_2d(topazGraphics_t * g, topazRender2D_t * objec
 
 
     // recommit 
-    topazRenderer_Buffer_t * buffer = topaz_camera_get_view_transform(topaz_display_get_camera_2d(d));
+    topazRenderer_Buffer_t * buffer = topaz_camera_get_view_transform(topaz_display_get_2d_camera(d));
     topaz_renderer_buffer_read(
         buffer,
         (float*)&g->ctxMatrix,

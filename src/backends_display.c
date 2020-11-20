@@ -109,15 +109,15 @@ topazDisplayAPI_t topaz_display_get_api(topazDisplay_t * t) {
 }
 
 
-topazEntity_t * topaz_display_get_camera_2d(topazDisplay_t * t) {
+topazEntity_t * topaz_display_get_2d_camera(topazDisplay_t * t) {
     return t->camera2d;
 }
 
-topazEntity_t * topaz_display_get_camera_3d(topazDisplay_t * t) {
+topazEntity_t * topaz_display_get_3d_camera(topazDisplay_t * t) {
     return t->camera3d;
 }
 
-topazEntity_t * topaz_display_get_camera_render(topazDisplay_t * t) {
+topazEntity_t * topaz_display_get_render_camera(topazDisplay_t * t) {
     return t->cameraRender;
 }
 

@@ -154,19 +154,19 @@ void topaz_display_destroy(topazDisplay_t *);
 /// used for 2d operations. This camera is used when the display is set as 
 /// the main display. see topazViewManager_t
 ///
-topazEntity_t * topaz_display_get_camera_2d(topazDisplay_t *);
+topazEntity_t * topaz_display_get_2d_camera(topazDisplay_t *);
 
 /// Retrieves the camera associated with the display thats 
 /// used for 3d operations. This camera is used when the display is set as 
 /// the main display. see topazViewManager_t
 ///
-topazEntity_t * topaz_display_get_camera_3d(topazDisplay_t *);
+topazEntity_t * topaz_display_get_3d_camera(topazDisplay_t *);
 
 
 /// Gets the camera used for output rendering results. This camera's 
 /// framebuffers are used for storing the visual of whats shown in the display 
 ///
-topazEntity_t * topaz_display_get_camera_render(topazDisplay_t *);
+topazEntity_t * topaz_display_get_render_camera(topazDisplay_t *);
 
 
 

@@ -112,6 +112,8 @@ void topaz_es2_fb_destroy(topazES2_FB_t * fb) {
 int topaz_es2_fb_resize(topazES2_FB_t * out, int w, int h) {
     TOPAZ_GLES_FN_IN;
     glBindTexture(GL_TEXTURE_2D, out->tex); TOPAZ_GLES_CALL_CHECK;
+    out->w = w;
+    out->h = h;
     glTexImage2D(
         GL_TEXTURE_2D,
         0,
