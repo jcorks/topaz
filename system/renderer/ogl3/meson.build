@@ -22,7 +22,7 @@ handlers += {
         },
         {
             'name'          : 'GL',
-            'alternateName' : 'opengl32'
+            'alternateName' : 'OpenGL'
         },
         {
             'name'          : 'GLEW',

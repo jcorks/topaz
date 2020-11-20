@@ -200,7 +200,7 @@ TSO_SCRIPT_API_FN(shape2d_api__form_lines) {
         topazVector_t * v = calloc(len, sizeof(topazVector_t));
         for(i = 0; i < len; i+=2) {
             v[i/2].x = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i));
-            v[i/2].y = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i));
+            v[i/2].y = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i+1));
         }
         topaz_shape2d_form_lines(
             native,

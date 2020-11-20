@@ -1047,7 +1047,7 @@ static topazScript_Object_t * topaz_duk_object_reference_array_get_nth(
 
     topaz_duk_object_push_to_top_from_tag(tag);
     duk_get_prop_index(tag->ctx->js, -1, index);
-    topazScript_Object_t * o = topaz_duk_stack_object_to_tso(tag->ctx, index);
+    topazScript_Object_t * o = topaz_duk_stack_object_to_tso(tag->ctx, -1);
     duk_pop_2(tag->ctx->js);
 
     #ifdef TOPAZDC_DEBUG 

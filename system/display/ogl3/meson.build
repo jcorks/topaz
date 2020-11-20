@@ -11,7 +11,7 @@ handlers += {
         },
         {
             'name'          : 'GL',
-            'alternateName' : 'opengl'
+            'alternateName' : 'OpenGL'
         },
 
     ]

@@ -68,6 +68,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/modules/resources.h>
 
 #include <topaz/asset.h>
+#include <topaz/camera.h>
 #include <topaz/color.h>
 #include <topaz/component.h>
 #include <topaz/entity.h>
