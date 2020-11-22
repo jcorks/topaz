@@ -1,4 +1,5 @@
 #include <topaz/topaz.h>
+#include <topaz/modules/console.h>
 #include <topaz/compat.h>
 
 TSO_SCRIPT_API_FN(topaz_api__run) {
@@ -138,8 +139,9 @@ TSO_SCRIPT_API_FN(topaz_api__get_version_minor) {
 TSO_SCRIPT_API_FN(topaz_api__log) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    printf("%s", topaz_string_get_c_str(topaz_script_object_as_string(arg0)));
-    fflush(stdout);
+    topazScriptManager_t * mgr = context;
+    topazConsole_t * c = topaz_context_get_console(mgr->ctx);
+    topaz_console_print(c, topaz_script_object_as_string(arg0));
     TSO_NO_RETURN;
 }
 

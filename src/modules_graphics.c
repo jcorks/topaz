@@ -70,6 +70,7 @@ static void set_display_mode_2d(
             &g->ctx2d,
             &g->lastAttr
         );
+        topaz_renderer_2d_clear_queue(g->renderer2d);
         g->lastAttr = *attr;
     }
 

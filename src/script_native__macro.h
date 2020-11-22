@@ -80,9 +80,12 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 typedef enum {
     TSO_OBJECT_ID__COLOR = 1,
     TSO_OBJECT_ID__VECTOR = 2,
+    TSO_OBJECT_ID__INPUTLISTENER = 3,
+    TSO_OBJECT_ID__UNICODELISTENER = 4,
     TSO_OBJECT_ID__ENTITY = 128,
     TSO_OBJECT_ID__COMPONENT = 256,
     TSO_OBJECT_ID__SHAPE2D = 512,
-    TSO_OBJECT_ID__OBJECT2D = 1024
+    TSO_OBJECT_ID__OBJECT2D = 1024,
+    TSO_OBJECT_ID__TEXT2D = 2048,
 } TSO_OBJECT_ID;
 

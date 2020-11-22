@@ -19,9 +19,10 @@ option(
     type : 'combo',
 
 
-    value   : 'srgs',
+    value   : 'ogl3',
     choices : [
         'ogles2',
+        'ogl3',
         'noRenderer',
         'srgs',
     ]
@@ -33,11 +34,12 @@ option(
     type : 'combo',
 
 
-    value : 'noDisplay',
+    value : 'ogl3',
     choices : [
         'noDisplay',
         'ncurses',
-        'ogles2'
+        'ogles2',
+        'ogl3'
     ]
 )
 
@@ -57,10 +59,11 @@ option(
     'InputManagerBackend',
     type : 'combo',
 
-    value : 'noInputManager',
+    value : 'glfw',
     choices : [
         'noInputManager',
-        'ncurses'
+        'ncurses',
+        'glfw'
     ]
 )
 

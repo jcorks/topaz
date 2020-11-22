@@ -209,6 +209,8 @@ void topaz_text2d_set_text(
 
 
     len = topaz_string_get_length(t->text);
+    t->width = 0;
+    t->height = 0;
     for(i = 0; i < len; ++i) {
         topazRender2D_t * r = topaz_array_at(t->glyphs, topazRender2D_t *, i);
 
@@ -284,8 +286,18 @@ void topaz_text2d_set_text(
         v->r = v->b = v->g = v->a = 1.f;
         
 
+
+        // update total extent width/height
+        if (originX+spacing.width+spacing.xOffset > t->width)
+            t->width = originX+spacing.width+spacing.xOffset;
+
+        if (originY+spacing.height+spacing.yOffset > t->height)
+            t->height = originY+spacing.height+spacing.yOffset;
+
+
         originX = spacing.xNextOrigin;
         originY = spacing.yNextOrigin; 
+
 
         topaz_render2d_set_vertices(r, TOPAZ_ARRAY_CAST(vtx_base, topazRenderer_2D_Vertex_t, 6));
     }
@@ -320,7 +332,7 @@ float topaz_text2d_get_extent_width(topazComponent_t * c) {
 
 float topaz_text2d_get_extent_height(topazComponent_t * c) {
     Text2D * t = text2d__retrieve(c);
-    return t->width;
+    return t->height;
 }
 
 float topaz_text2d_get_char_x(topazComponent_t * c, int charIndex) {

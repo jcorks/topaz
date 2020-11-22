@@ -295,7 +295,7 @@ topazColor_t topaz_color_from_string(const topazString_t * name) {
             }
         }
     } else {
-        topazColor_t * c = topaz_table_find(dictionary, name);
+        topazColor_t * c = topaz_table_find(dictionary, str);
         if (c) {
             out = *c;
         }

@@ -437,7 +437,7 @@ void camera__on_step(topazEntity_t * e, void * data) {
     topazSpatial_t * s = topaz_entity_get_spatial(e);
     topazMatrix_t m = *topaz_spatial_get_global_transform(s);
     topaz_matrix_invert(&m);
-    topaz_matrix_reverse_majority(&m);
+    //topaz_matrix_reverse_majority(&m);
     topaz_renderer_buffer_update(c->mv, &m.data[0], 0, 16);
 
 

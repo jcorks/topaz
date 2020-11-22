@@ -7,6 +7,13 @@ int main() {
     topaz_t * ctx = topaz_context_create();
     topaz_view_manager_create_main_default(topaz_context_get_view_manager(ctx), TOPAZ_STR_CAST("Scripting"));
 
+    // make the center 0, 0
+    topazDisplay_t * disp = topaz_view_manager_get_main(topaz_context_get_view_manager(ctx));
+    topazEntity_t * cam = topaz_display_get_render_camera(disp);
+    topaz_camera_set_render_resolution(cam, 320, 240);
+    topazVector_t p = {160, -120, 0};
+    *topaz_entity_position(topaz_display_get_2d_camera(disp)) = p;
+
 
     // Creates a script instance. The permissions can 
     // activate / deactive certain features within the script context.
@@ -31,23 +38,6 @@ int main() {
         script
     );
 
-
-    const topazString_t * str = topaz_script_object_as_string(
-        topaz_script_expression(
-            script,
-            TOPAZ_STR_CAST(
-                "(function(){\n"
-                "   return 'Version: ' + topaz.versionMajor + '.' + topaz.versionMicro;"
-                "})()"
-            
-            )
-        )
-    );
-    topaz_console_print(
-        console,
-        TOPAZ_STR_CAST("\n\nRESULT IS: ")
-    );
-    topaz_console_print(console, str);
 
 
     // extract the script data

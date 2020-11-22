@@ -289,7 +289,7 @@ struct DeviceState {
     }
 
     static void device_state_remove_listener(DeviceState * d, const topazInput_Listener_t * l) {
-        topaz_array_push(d->deletedListeners, l);
+        topaz_array_push(d->deletedListeners, *l);
     }
 
 
