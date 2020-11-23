@@ -120,8 +120,12 @@ uint32_t topaz_array_lower_bound(const topazArray_t * t, const void * ptrToEle, 
 }
 
 void topaz_array_insert_n(topazArray_t * t, uint32_t index, void * ele, uint32_t count) {
-    topaz_array_set_size(t, t->size+count);
-
+    if (index >= t->size) {
+        topaz_array_push_n(t, ele, count);
+        return;
+    }
+    topaz_array_set_size(t, t->size+count);    
+    
     memmove(
         t->data+(t->sizeofType*(index+count)),
         t->data+(t->sizeofType*index),

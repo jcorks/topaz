@@ -825,8 +825,8 @@ int bb_contains_box(const bbox_t * a, const bbox_t * b) {
 */
 int bb_overlaps(const bbox_t * a, const bbox_t * b) {
     return 
-        a->x < b->x+b->width  && a->x+a->width > b->x &&
-        a->y+b->height > b->y && a->y < b->y+b->height;
+        a->x < (b->x+b->width)  && (a->x+a->width) > b->x &&
+        (a->y+a->height) > b->y && a->y < (b->y+b->height);
 }
 
 
@@ -1034,7 +1034,7 @@ typedef struct {
     topazTable_t * collided;
     topazArray_t * setObjs;
 } T2DMData;
-
+#include <stdio.h>
 
 static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
     uint32_t numObj = topaz_array_get_size(m->objects);
@@ -1135,13 +1135,13 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
         
         // get all collisions
         current = topaz_component_get_attributes(objects[i])->userData;
-        spatial_map_query(m->sMap, collider_get_moment_bounds(object->collider), m->setObjs);
+        spatial_map_query(m->sMap, collider_get_moment_bounds(current->collider), m->setObjs);
         
 
         // process each detected collision
         len = topaz_array_get_size(m->setObjs);
         uint32_t * setObjs = topaz_array_get_data(m->setObjs);
-        for(uint32_t n = 0; n != len; ++n) {                
+        for(uint32_t n = 0; n != len; ++n) {          
             other = topaz_component_get_attributes(objects[setObjs[n]])->userData;
             
             // is it just the same entity?
@@ -1157,7 +1157,7 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
 
             // no repeats! If we're already collided, skip very overlap check
             if (i < setObjs[n]) {
-                collidedKey = ((void*)0x0 + i + (setObjs[n]*numObj));
+                collidedKey = ((void*)0x0 + i + ((setObjs[n])*numObj));
             } else {
                 collidedKey = ((void*)0x0 + i*numObj + (setObjs[n]));
             }

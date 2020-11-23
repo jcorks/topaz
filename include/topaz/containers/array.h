@@ -107,7 +107,9 @@ void topaz_array_remove(topazArray_t *, uint32_t index);
 
 
 /// Returns the index that this element should be inserted into 
-/// given that the rest of the array is sorted.
+/// given that the rest of the array is sorted. If the element is 
+/// greater than the rest of the array's elements, the index 
+/// after the array is returned.
 ///
 uint32_t topaz_array_lower_bound(
     const topazArray_t *, 
@@ -122,7 +124,9 @@ uint32_t topaz_array_lower_bound(
     int(*less)(const void * a, const void * b)
 );
 
-/// Inserts the given value at the given position. 
+/// Inserts the given value at the given position. If the position 
+/// is above or equal to the size of the array, the new element is 
+/// placed at the end.
 ///
 #define topaz_array_insert(__A__, __I__, __V__) (topaz_array_insert_n(__A__, __I__, &(__V__), 1))
 
