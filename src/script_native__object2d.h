@@ -255,11 +255,11 @@ TSO_SCRIPT_API_FN(object2d_api__set_collider) {
         topazVector_t * v = calloc(len, sizeof(topazVector_t));
         for(i = 0; i < len; i+=2) {
             v[i/2].x = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i));
-            v[i/2].y = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i));
+            v[i/2].y = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i+1));
         }
         topaz_object2d_set_collider(
             native,
-            TOPAZ_ARRAY_CAST(v, topazVector_t, len)
+            TOPAZ_ARRAY_CAST(v, topazVector_t, len/2)
         );
         free(v);
     }

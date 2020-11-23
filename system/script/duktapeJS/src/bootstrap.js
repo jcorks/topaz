@@ -18,6 +18,8 @@ topaz = {
         var checked = [];
         var levelG = levelSrc ? levelSrc : 10;
         var helper = function(obj, level) {
+            if (obj === undefined) return 'undefined';
+            if (obj === null) return 'null';
             if (!(typeof obj === 'object')) return ''+obj;
             if (checked.indexOf(obj) != -1) return '[Already Printed]'
             checked.push(obj);
@@ -478,13 +480,13 @@ topaz = {
         if (defineProps) {
             ctx.define(defineProps);
         }
-        topaz.log('REFERENCE CREATED:\n' + topaz.objectToString(this));
+        //topaz.log('REFERENCE CREATED:\n' + topaz.objectToString(this));
 
     },
     componentNull : function() {return topaz_component__null();},
     component : function(defineProps, implPre) {
-        if (implPre)
-            topaz.log('REFERENCE CREATED:\n' + topaz.objectToString(this));
+        //if (implPre)
+            //topaz.log('REFERENCE CREATED:\n' + topaz.objectToString(this));
 
         this.uniqueID = topaz.uniqueObjectPool++;
         var ctx = this;
