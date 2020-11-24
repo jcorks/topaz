@@ -136,6 +136,7 @@ TSO_SCRIPT_API_FN(topaz_api__get_version_minor) {
     return topaz_script_object_from_int(script, TOPAZ__VERSION__MINOR);
 }
 
+
 TSO_SCRIPT_API_FN(topaz_api__log) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;

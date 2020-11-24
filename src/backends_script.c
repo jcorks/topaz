@@ -169,6 +169,18 @@ int topaz_script_map_native_function(
     );
 }
 
+
+void topaz_script_run_once(
+    topazScript_t * s, 
+    const topazString_t * sourceName,
+    const topazString_t * scriptData
+) {
+    if (!topaz_table_find(s->sources, sourceName)) {
+        topaz_script_run(s, sourceName, scriptData);
+    }
+}
+
+
 void topaz_script_run(
     topazScript_t * s, 
     const topazString_t * sourceName,

@@ -180,6 +180,15 @@ void topaz_script_run(
     const topazString_t * scriptData
 );
 
+/// Runs the given script logic within the given string,
+/// but will ignore the data if the sourceName has been 
+/// used for either topaz_script_run or topaz_script_run_once.
+///
+void topaz_script_run_once(
+    topazScript_t * t, 
+    const topazString_t * sourceName,
+    const topazString_t * scriptData    
+);
 
 /// Returns a source line from a previously run script of the given name.
 /// The lineNumber is a 0-index to the line, where the first 
