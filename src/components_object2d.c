@@ -1062,7 +1062,9 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
             &next
         );        
     }
-    topazComponent_t ** objects = topaz_array_get_data(m->objects);
+    // collision events may produce new objects, which could disrupt the data.
+    topazArray_t * objectsNow = topaz_array_clone(m->objects);
+    topazComponent_t ** objects = topaz_array_get_data(objectsNow);
 
 
 
@@ -1093,6 +1095,7 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
 
     // no viable collision detection can occur, so just update the objects and drop out.
     if (spaceW == 0.f || spaceH == 0.f) {
+        topaz_array_destroy(objectsNow);
         return;
     }
 
@@ -1191,6 +1194,8 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
             hadCol = 1;
         }
     }
+    topaz_array_destroy(objectsNow);
+
 }
 
 

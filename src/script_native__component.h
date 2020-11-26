@@ -46,6 +46,7 @@ typedef struct {
     topazComponent_t * source;
     topazScriptManager_t * manager;
     topazScript_Object_t * fn;
+    topazScript_t * script;
 } TSOCHandlerData;
 
 TSO_SCRIPT_API_FN(component_api__create) {
@@ -231,11 +232,31 @@ static int component_api_callback_cleanup(topazComponent_t * c, void * data, top
 
 static int component_api_callback(topazComponent_t * c, void * data, topazEntity_t * source, void * sourceEvent) {
     TSOCHandlerData * handler = data;
+    topazScript_t * script = handler->script;
     void * context = handler->manager;
-    topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(c);
+    
+    topazScript_Object_t * a[2];
+    a[0] = TSO_OBJECT_FETCH_NATIVE(c);
+
     #ifdef TOPAZDC_DEBUG
-        assert(a && "Base component responding to emission of event should always have a corresponding cached script object. This is indicative of engine error");
+        assert(a[0] && "Base component responding to emission of event should always have a corresponding cached script object. This is indicative of engine error");
     #endif
+
+    if (source) {
+        topazScript_Object_t * sourceObject = TSO_OBJECT_FETCH_NATIVE(source);
+        if (sourceObject) {
+            a[1] = sourceObject;
+        } else {
+            TSO_OBJECT_NEW(source, TSO_OBJECT_ID__ENTITY, NULL);
+            a[1] = object;
+        }    
+        topaz_script_object_reference_call(
+            handler->fn, 
+            TOPAZ_ARRAY_CAST(&a, topazScript_Object_t *, 2)
+        );
+        return 1;
+    }
+
     topaz_script_object_reference_call(
         handler->fn, 
         TOPAZ_ARRAY_CAST(&a, topazScript_Object_t *, 1)
@@ -254,6 +275,7 @@ TSO_SCRIPT_API_FN(component_api__install_event) {
     TSOCHandlerData * data = calloc(1, sizeof(TSOCHandlerData));
     data->source = native;
     data->manager = context;
+    data->script = script;
     data->fn = topaz_script_object_from_object(script, arg2);
 
     topaz_component_install_hook(
@@ -301,6 +323,7 @@ TSO_SCRIPT_API_FN(component_api__install_hook) {
     TSOCHandlerData * data = calloc(1, sizeof(TSOCHandlerData));
     data->source = native;
     data->manager = context;
+    data->script = script;
     data->fn = topaz_script_object_from_object(script, arg2);
 
     topaz_component_install_hook(
@@ -354,6 +377,7 @@ TSO_SCRIPT_API_FN(component_api__install_handler) {
     TSOCHandlerData * data = calloc(1, sizeof(TSOCHandlerData));
     data->source = native;
     data->manager = context;
+    data->script = script;
     data->fn = topaz_script_object_from_object(script, arg2);
 
     topaz_component_install_hook(

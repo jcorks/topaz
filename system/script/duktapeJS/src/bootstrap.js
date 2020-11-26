@@ -593,7 +593,9 @@ topaz = {
         }
 
         this.installEvent = function(event, callback) {
-            topaz_component__install_event(impl, event, callback);
+            topaz_component__install_event(impl, event, function(component, entity) {
+                callback(component.__ctx, entity.__ctx);
+            });
         }
 
         this.uninstallEvent = function(event) {
@@ -601,14 +603,18 @@ topaz = {
         }
 
         this.installHook = function(event, callback) {
-            return topaz_component__install_hook(impl, event, callback);
+            return topaz_component__install_hook(impl, event, function(component, entity) {
+                callback(component.__ctx, entity.__ctx);
+            });
         }
         this.uninstallHook = function(event, id) {
             topaz_component__uninstall_hook(impl, event, id);
         }
 
         this.installHandler = function(event, callback) {
-            return topaz_component__install_handler(impl, event, callback);
+            return topaz_component__install_handler(impl, event, function(component, entity) {
+                callback(component.__ctx, entity.__ctx);
+            });
         }
         this.uninstallHandler = function(event, id) {
             topaz_component__uninstall_handler(impl, event, id);
