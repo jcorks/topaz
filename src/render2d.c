@@ -188,12 +188,20 @@ void topaz_render2d_set_vertices(topazRender2D_t * t, const topazArray_t * src) 
                 srcData,
                 srcLen*sizeof(topazRenderer_2D_Vertex_t)
             );
-            topaz_renderer_buffer_destroy(t->vertexSrc);
+            topazRenderer_Buffer_t * old = t->vertexSrc;
             t->vertexSrc = topaz_renderer_buffer_create(
                 topaz_renderer_2d_get_context(t->renderer),
                 srcData,
                 (sizeof(topazRenderer_2D_Vertex_t) / sizeof(float)) * srcLen
             );            
+            topaz_renderer_2d_set_object_vertices(
+                t->renderer,
+                t->objectID,
+                t->vertexSrc
+            );
+            topaz_renderer_buffer_destroy(old);
+
+
         } else {
             memcpy(
                 topaz_array_get_data(t->vertexCopy),

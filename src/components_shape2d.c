@@ -75,6 +75,7 @@ typedef struct {
 } Shape2D;
 
 static void shape2d__on_draw(topazComponent_t * c, Shape2D * s) {
+    if (!topaz_render2d_get_vertices(s->render2d)) return;
     if (!topaz_color_cmp(s->realColor, s->color)) {
         topazArray_t * arr = topaz_array_clone(topaz_render2d_get_vertices(s->render2d));
         uint32_t i;

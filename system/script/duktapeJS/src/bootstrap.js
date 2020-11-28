@@ -359,13 +359,13 @@ topaz = {
 
             ctx.props.entity = this;
             this.name = props.name;
-            impl.onStep = props.onStep ? function(e){props.onStep(e.__ctx.props);} : undefined;
-            impl.onDraw = props.onDraw ? function(e){props.onDraw(e.__ctx.props);} : undefined;
-            impl.onPreStep = props.onPreStep ? function(e){props.onPreStep(e.__ctx.props);} : undefined;
-            impl.onPreDraw = props.onPreDraw ? function(e){props.onPreDraw(e.__ctx.props);} : undefined;
-            impl.onAttach = props.onAttach ? function(e){props.onAttach(e.__ctx.props);} : undefined;
-            impl.onDetach = props.onDetach ? function(e){props.onDetach(e.__ctx.props);} : undefined;
-            impl.onRemove = props.onRemove ? function(e){props.onRemove(e.__ctx.props);} : undefined;
+            if (props.onStep) topaz_entity__set_on_step(impl, function(e){props.onStep(e.__ctx.props)});
+            if (props.onDraw) topaz_entity__set_on_draw(impl, function(e){props.onDraw(e.__ctx.props)});
+            if (props.onPreStep) topaz_entity__set_on_pre_step(impl, function(e){props.onPreStep(e.__ctx.props)});
+            if (props.onPreDraw) topaz_entity__set_on_pre_draw(impl, function(e){props.onPreDraw(e.__ctx.props)});
+            if (props.onAttach) topaz_entity__set_on_attach(impl, function(e){props.onAttach(e.__ctx.props)});
+            if (props.onDetach) topaz_entity__set_on_detach(impl, function(e){props.onDetach(e.__ctx.props)});
+            if (props.onRemove) topaz_entity__set_on_remove(impl, function(e){props.onRemove(e.__ctx.props)});
             if (props.onReady) {
                 props.onReady(ctx.props);
             }

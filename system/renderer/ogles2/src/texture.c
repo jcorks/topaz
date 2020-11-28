@@ -395,7 +395,9 @@ void atlas_read(GLTexAtlas * a, int x, int y, int w, int h, uint8_t * target) {
 
 
     // not implemented yet.
-    assert(!(needsXshift || needsYshift));
+    #ifdef TOPAZDC_DEBUG
+        assert(!(needsXshift || needsYshift));
+    #endif
 }
 
 
@@ -557,9 +559,9 @@ static void atlas_write(GLTexAtlas * a, int x, int y, int w, int h, const uint8_
         return;
     }
 
-
-    assert(!(needsXshift || needsYshift));
-
+    #ifdef TOPAZDC_DEBUG
+        assert(!(needsXshift || needsYshift));
+    #endif
 
     glTexSubImage2D(
         GL_TEXTURE_2D,

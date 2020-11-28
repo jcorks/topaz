@@ -1,4 +1,5 @@
 #include <topaz/components/object2d.h>
+#include <topaz/components/shape2d.h>
 #include <topaz/containers/array.h>
 #include <topaz/containers/table.h>
 #include <topaz/containers/string.h>
@@ -101,6 +102,10 @@ typedef struct smap_t smap_t;
 // Creates a spatial map instance
 static smap_t * spatial_map_create();
 
+// Destroys a spatial map instance 
+static void spatial_map_destroy(smap_t *);
+
+
 // Resets a spatial map based on the span of all objects to be contained within it.
 static void spatial_map_reset(
     smap_t *,
@@ -108,7 +113,8 @@ static void spatial_map_reset(
     float spanY_, 
     float spanW_, 
     float spanH_, 
-    uint32_t numObjects
+    uint32_t estimateNumberwithinContainer,
+    uint32_t MaxID
 );
 
 // Inserts a region covered in the spatial map and associates 
@@ -116,17 +122,23 @@ static void spatial_map_reset(
 static void spatial_map_insert(
     smap_t *,
     const bbox_t *,
-    uint32_t 
+    uint32_t ,
+    uint8_t
 );
 
-// Given a region, returns all regions stored that are close to it.
-// The returned set of region ID is guaranteed to be a superset of the 
-// possible objects that could be encountered.
-static void spatial_map_query(
-    smap_t *,
-    const bbox_t *,
-    topazArray_t * ids
-);
+typedef struct {
+    // object index that collided from 
+    uint32_t self;
+
+    // object index that collided with
+    uint32_t other;
+
+} smapCollision_t;
+
+// Returns an array of all possible collisions determined 
+// from the spatial map.
+static topazArray_t * spatial_map_get_collisions(smap_t * m);
+
 
 
 ///// T2DManager 
@@ -170,6 +182,7 @@ struct TopazObject2D_t {
     topazEntity_t * manager;
     tcollider_t * collider;
     topazObject2D_Group group;
+    int id;
 };
 
 
@@ -248,7 +261,8 @@ topazComponent_t * topaz_object2d_create(topaz_t * t) {
     topazComponent_t * out = topaz_component_create_with_attributes(TOPAZ_STR_CAST("Object2D"), t, &attribs);
     t2dm_register_object(data->manager, out);
     topaz_component_install_event(out, TOPAZ_STR_CAST("on-collide"), NULL, NULL);
- 
+    static int idp = 1;
+    data->id = idp++;    
     return out;
 }
 
@@ -845,12 +859,15 @@ struct smap_t {
       
     int span;
     // every slot holds uint32_t
-    topazArray_t * visitedQuery; // size numObjects, holds uint8_t
-    topazArray_t *** field;
+    topazArray_t *** fieldRed;
+    topazArray_t *** fieldBlu;
     topazArray_t *   slotHeap;
-    topazArray_t *   fieldAlloc; // holds topazArray_t *, size span*span
-    uint32_t heapSize;
-
+    topazArray_t *   fieldAllocRed; // holds topazArray_t *, size span*span
+    topazArray_t *   fieldAllocBlu; // holds topazArray_t *, size span*span
+    topazTable_t * collisions;
+    uint32_t heapIter;
+    uint32_t heapAlloc;
+    uint32_t numObjects;
 };
 
 
@@ -891,7 +908,6 @@ XYRange spatial_map_get_covered_regions(const smap_t * m, const bbox_t * cover) 
     return range;
 }
 
-
 #define SMAP_SIZE_CHUNK 64
 
 static void spatial_map_heap_resize(smap_t * m) {
@@ -899,20 +915,36 @@ static void spatial_map_heap_resize(smap_t * m) {
     for(i = 0; i < SMAP_SIZE_CHUNK; ++i) {
         topazArray_t * slot = topaz_array_create(sizeof(uint32_t));
         topaz_array_push(m->slotHeap, slot);
+        m->heapAlloc++;
     }
-    m->heapSize += SMAP_SIZE_CHUNK;
-    
+
 }
 
 // Creates a spatial map instance
 static smap_t * spatial_map_create() {
     smap_t * out = calloc(1, sizeof(smap_t));
-    out->visitedQuery = topaz_array_create(sizeof(uint8_t));
-    out->slotHeap     = topaz_array_create(sizeof(topazArray_t*));
-    out->fieldAlloc   = topaz_array_create(sizeof(topazArray_t*));
+    out->slotHeap      = topaz_array_create(sizeof(topazArray_t*));
+    out->fieldAllocRed = topaz_array_create(sizeof(topazArray_t*));
+    out->fieldAllocBlu = topaz_array_create(sizeof(topazArray_t*));
+    out->collisions    = topaz_table_create_hash_pointer();
 
     spatial_map_heap_resize(out);
     return out;
+}
+
+static void spatial_map_destroy(smap_t * m) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(m->slotHeap);
+    for(i = 0; i < len; ++i) {
+        topaz_array_destroy(topaz_array_at(m->slotHeap, topazArray_t *, i));
+    }
+    topaz_array_destroy(m->slotHeap);
+    topaz_table_destroy(m->collisions);
+    free(m->fieldRed);
+    topaz_array_destroy(m->fieldAllocRed);
+    free(m->fieldBlu);
+    topaz_array_destroy(m->fieldAllocBlu);
+    
 }
 
 // Resets a spatial map based on the span of all objects to be contained within it.
@@ -922,106 +954,231 @@ static void spatial_map_reset(
     float spanY_, 
     float spanW_, 
     float spanH_, 
-    uint32_t numObjects
+    uint32_t numObjectsContainer,
+    uint32_t maxID
 ) {
     m->spanX = spanX_;
     m->spanY = spanY_;
     m->spanW = spanW_;
     m->spanH = spanH_;
 
-    m->span = spatial_map_get_closest_enclosing_span(numObjects);
+    m->span = spatial_map_get_closest_enclosing_span(numObjectsContainer);
 
-    // reset visited 
-    if (topaz_array_get_size(m->visitedQuery) < numObjects) {
-        topaz_array_set_size(m->visitedQuery, numObjects);
-        memset(topaz_array_get_data(m->visitedQuery), 0, numObjects);
-    }
 
-    topaz_array_set_size(m->fieldAlloc, m->span*m->span);
+    topaz_array_set_size(m->fieldAllocRed, m->span*m->span);
+    topaz_array_set_size(m->fieldAllocBlu, m->span*m->span);
     
+    m->heapIter = 0;
+    m->numObjects = maxID;
+    topaz_table_clear(m->collisions);
+
 
     // first prep
-    topazArray_t ** fieldAIter = topaz_array_get_data(m->fieldAlloc);
+    topazArray_t ** fieldAIter = topaz_array_get_data(m->fieldAllocRed);
     uint32_t i;
     uint32_t len = m->span*m->span;
     for(i = 0; i < len; ++i) {
         fieldAIter[i] = NULL;
     }
 
+    // then populate
+    free(m->fieldRed);
+    m->fieldRed = malloc(sizeof(topazArray_t**)*m->span);
+    for(i = 0; i < m->span; ++i) {
+        m->fieldRed[i] = fieldAIter+i*m->span;
+    }
 
+
+    fieldAIter = topaz_array_get_data(m->fieldAllocBlu);
+    for(i = 0; i < len; ++i) {
+        fieldAIter[i] = NULL;
+    }
 
     // then populate
-    free(m->field);
-    m->field = malloc(sizeof(topazArray_t**)*m->span);
+    free(m->fieldBlu);
+    m->fieldBlu = malloc(sizeof(topazArray_t**)*m->span);
     for(i = 0; i < m->span; ++i) {
-        m->field[i] = fieldAIter+i*m->span;
+        m->fieldBlu[i] = fieldAIter+i*m->span;
     }
+
+
+
 }
 
+
 // Inserts a region covered in the spatial map and associates 
-// that region with an ID.
+// that region with an ID and adds the ID collisions with it to 
+// a hash table.
+// Every spat
 static void spatial_map_insert(
     smap_t * m,
     const bbox_t * region,
-    uint32_t id
+    uint32_t id,
+    uint8_t isRed
 ) {
     XYRange range = spatial_map_get_covered_regions(m, region);
-    int x, y;
-    
+    int x, y, i;
+    topazArray_t *** fieldWrite;
+    topazArray_t *** fieldTest;
+
+    if (isRed) {
+        fieldWrite = m->fieldRed;
+        fieldTest  = m->fieldBlu;
+    } else {
+        fieldWrite = m->fieldBlu;
+        fieldTest  = m->fieldRed;
+    }
+
     for(y = range.minY; y <= range.maxY; ++y) {
         for(x = range.minX; x <= range.maxX; ++x) {
-            if (!m->field[x][y]) {
-                if (!m->heapSize) {
+            if (!fieldWrite[x][y]) {
+                if (m->heapIter >= m->heapAlloc) {
                     spatial_map_heap_resize(m);
                 }
-                m->field[x][y] = topaz_array_at(m->slotHeap, topazArray_t *, m->heapSize-1);
-                topaz_array_set_size(m->field[x][y], 0); // reset
-                m->heapSize--;
+                fieldWrite[x][y] = topaz_array_at(m->slotHeap, topazArray_t *, m->heapIter);
+                topaz_array_set_size(fieldWrite[x][y], 0); // reset
+                m->heapIter++;
             }
-               
-            topaz_array_push(m->field[x][y], id);
-        }
-    }
-}
+            topaz_array_push(fieldWrite[x][y], id);
 
-// Given a region, returns all regions stored that are close to it.
-// The returned set of region ID is guaranteed to be a superset of the 
-// possible objects that could be encountered.
-static void spatial_map_query(
-    smap_t * m,
-    const bbox_t * region,
-    topazArray_t * ids
-) {
-    XYRange range = spatial_map_get_covered_regions(m, region);
-    uint32_t len, i, n;
-    int x, y;
-    for(y = range.minY; y <= range.maxY; ++y) {
-        for(x = range.minX; x <= range.maxX; ++x) {
-            topazArray_t * obj = m->field[x][y];
-            len = topaz_array_get_size(obj);
-            if (len) {
-                
-                for(n = 0; n < len; ++n) {
-                    uint32_t id = topaz_array_at(obj, uint32_t, n);
-                    if (topaz_array_at(m->visitedQuery, uint8_t, id)) continue;
-                    topaz_array_push(ids, id);
-                    topaz_array_at(m->visitedQuery, uint8_t, id) = 1;
+
+
+            if (fieldTest[x][y]) {
+                topazArray_t * a = fieldTest[x][y];
+                uint32_t len = topaz_array_get_size(a);
+                for(i = 0; i < len; ++i) {
+                    uint32_t other = topaz_array_at(a, uint32_t, i);
+
+                    void * collidedKey;
+                    if (id < other) {
+                        collidedKey = ((void*)0x0 + id + ((other)*m->numObjects));
+                    } else {
+                        collidedKey = ((void*)0x0 + id*m->numObjects + (other));
+                    }            
+                    topaz_table_insert(m->collisions, collidedKey, (void*)1);
                 }
             }
         }
     }
-
-    // cleanup visited
-    len = topaz_array_get_size(ids);    
-    uint32_t * idsData = topaz_array_get_data(ids);
-    for(i = 0; i < len; ++i) {
-        topaz_array_at(m->visitedQuery, uint8_t, idsData[i]) = 0;
-    }
 }
 
 
+// gets all unique collisions as an array of spamCollision_t 
+static topazArray_t * spatial_map_get_collisions(smap_t * m) {
+    topazTableIter_t * iter = topaz_table_iter_create();
+    topazArray_t * out = topaz_array_create(sizeof(smapCollision_t));
+    if (sizeof(void*) == sizeof(uint64_t)) {
+        for(topaz_table_iter_start(iter, m->collisions);
+            !topaz_table_iter_is_end(iter);
+            topaz_table_iter_proceed(iter)) {
+            
+            const void * collisionKey = topaz_table_iter_get_key(iter);
+        
+            smapCollision_t c = {
+                ((uint64_t)collisionKey)%m->numObjects,
+                ((uint64_t)collisionKey)/m->numObjects
+            };
+
+            topaz_array_push(out, c);
+        }
+    } else if (sizeof(void*) == sizeof(uint32_t)) {
+        for(topaz_table_iter_start(iter, m->collisions);
+            !topaz_table_iter_is_end(iter);
+            topaz_table_iter_proceed(iter)) {
+            
+            const void * collisionKey = topaz_table_iter_get_key(iter);
+        
+            smapCollision_t c = {
+                ((uint32_t)collisionKey)%m->numObjects,
+                ((uint32_t)collisionKey)/m->numObjects
+            };
+
+            topaz_array_push(out, c);
+        }
+    } // 16 bit worth it?
+    topaz_table_iter_destroy(iter);
+    return out;
+}
+
+/*
+// dumps the spatial map into some visuals. Just for debugging
+static void spatial_map_dump_visual(smap_t * m, topazComponent_t * bgShape, topazComponent_t * fgShape) {
+    topazArray_t * bg = topaz_array_create(sizeof(topazVector_t));
+    topazArray_t * fg = topaz_array_create(sizeof(topazVector_t));
+    
+
+    int x, y;
+
+    for(x = 0; x <= m->span; ++x) {
+        topazVector_t v;
+        v.z = 0;
+        v.x = m->spanX + ((m->spanW) / (float)m->span)*x; 
+        v.y = m->spanY;
+        topaz_array_push(bg, v); 
+
+        v.y = m->spanY+m->spanH; 
+        topaz_array_push(bg, v); 
+
+    }
+    for(y = 0; y <= m->span; ++y) {
+        topazVector_t v;
+        v.z = 0;
+        v.x = m->spanX; 
+        v.y = m->spanY + ((m->spanH) / (float)m->span)*y; 
+        topaz_array_push(bg, v); 
+        
+        v.x = m->spanX + m->spanW; 
+        topaz_array_push(bg, v); 
+    }
+
+    topaz_shape2d_form_lines(bgShape, bg);
+    topaz_shape2d_set_color(bgShape, topaz_color_from_amt(.3, .2, .2, 1));
+
+    for(y = 0; y < m->span; ++y) {
+        for(x = 0; x < m->span; ++x) {
+            topazArray_t * obj = m->field[x][y];
+            if (obj && topaz_array_get_size(obj)) {
+                topazVector_t v;
+                v.y = m->spanY + ((m->spanH) / (float)m->span)*y; 
+                v.x = m->spanX + ((m->spanW) / (float)m->span)*x; 
+                v.z = 0;
+                topaz_array_push(fg, v); 
+
+                v.x += (m->spanW) / (float)m->span;
+                v.y += (m->spanH) / (float)m->span;
+                topaz_array_push(fg, v); 
+
+                v.y -= (m->spanH) / (float)m->span;
+                topaz_array_push(fg, v); 
 
 
+
+
+                v.y = m->spanY + ((m->spanH) / (float)m->span)*y; 
+                v.x = m->spanX + ((m->spanW) / (float)m->span)*x; 
+                v.z = 0;
+                topaz_array_push(fg, v); 
+
+                v.y += (m->spanH) / (float)m->span;
+                topaz_array_push(fg, v); 
+
+                v.x += (m->spanW) / (float)m->span;
+                topaz_array_push(fg, v); 
+
+
+
+            }
+        }
+    }
+
+    topaz_shape2d_form_triangles(fgShape, fg);
+    topaz_shape2d_set_color(fgShape, topaz_color_from_int(255, 255, 0, 255));
+
+
+    topaz_array_destroy(fg);
+    topaz_array_destroy(bg);
+}
+*/
 
 ///////////////////////////////
 ////// T2DM 
@@ -1029,10 +1186,15 @@ static void spatial_map_query(
 
 typedef struct {
     topazArray_t * objects;
-    uint8_t interactionMatrix[topazObject2D_Group_Z+1][topazObject2D_Group_Z+1];
-    smap_t * sMap;
-    topazTable_t * collided;
     topazArray_t * setObjs;
+    topazComponent_t * debugVisual;
+    topazComponent_t * debugVisualActive;
+
+    topazTable_t * smapTable;
+    //smap_t * sMap[topazObject2D_Group_Z+1][topazObject2D_Group_Z+1];
+
+
+
 } T2DMData;
 #include <stdio.h>
 
@@ -1042,7 +1204,8 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
     topazEntity_t * host;
     topazComponent_t * c;
     TopazObject2D_t * object;
-    
+
+    uint32_t counts[topazObject2D_Group_Z+1] = {};    
 
     // first, update colliders
     for(i = 0; i < numObj; ++i) {
@@ -1061,6 +1224,7 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
             object->collider,
             &next
         );        
+        counts[object->group]++;
     }
     // collision events may produce new objects, which could disrupt the data.
     topazArray_t * objectsNow = topaz_array_clone(m->objects);
@@ -1100,102 +1264,136 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
     }
 
 
-    // setup tracking of who collided with who this iteration.
-    // tracked with just a hashtable. The table id is always:
-    // (void*)(0x0 + indexLower + indexHigher*numObj) 
-    void * collidedKey;
-    topaz_table_clear(m->collided);
-    
+    topazArray_t * activeLo[topazObject2D_Group_Z+1] = {};
+    topazArray_t * activeHi[topazObject2D_Group_Z+1] = {};
 
-    spatial_map_reset(m->sMap,
-        spaceX,
-        spaceY,
-        spaceW,
-        spaceH,
-        numObj
-    );
-    
-    
-    for(uint32_t i = 0; i < numObj; ++i) {
-        object = topaz_component_get_attributes(objects[i])->userData;
-        spatial_map_insert(m->sMap, collider_get_moment_bounds(object->collider), i);
+    topazArray_t * allintersect = topaz_array_create(sizeof(smap_t*));    
+
+
+    // gather valid tables for faster lookup
+    topazTableIter_t * iter = topaz_table_iter_create();
+    for(topaz_table_iter_start(iter, m->smapTable);
+        !topaz_table_iter_is_end(iter);
+        topaz_table_iter_proceed(iter)) {
+        uint32_t val = (uintptr_t)topaz_table_iter_get_key(iter);
+        
+        uint16_t lo_x = val%(topazObject2D_Group_Z+1);
+        uint16_t hi_y = val/(topazObject2D_Group_Z+1);
+
+        smap_t * smap = topaz_table_iter_get_value(iter);
+        spatial_map_reset(smap,
+            spaceX,
+            spaceY,
+            spaceW,
+            spaceH,
+            counts[lo_x] + counts[hi_y],
+            numObj
+        );        
+
+        // ACTIVE HAS REPEATS
+        if (!activeLo[lo_x]) { 
+            activeLo[lo_x] = topaz_array_create(sizeof(smap_t *));
+        } 
+
+        if (!activeHi[hi_y]) { 
+            activeHi[hi_y] = topaz_array_create(sizeof(smap_t *));
+        } 
+
+        topaz_array_push(activeLo[lo_x], smap);        
+        topaz_array_push(activeHi[hi_y], smap);        
+
+        topaz_array_push(allintersect, smap);        
+
+            
     }
     
+
+
+    uint32_t n;
+    for(i = 0; i < numObj; ++i) {
+        object = topaz_component_get_attributes(objects[i])->userData;        
+        topazArray_t * r = activeLo[object->group];
+
+        // for all active smaps that refer to this group, add the bounds
+        // this is where interaction group filtering occurs
+        if (r) {
+            for(n = 0; n < topaz_array_get_size(r); ++n) {
+                spatial_map_insert(
+                    topaz_array_at(r, smap_t *, n), 
+                    collider_get_moment_bounds(object->collider), 
+                    i,
+                    1
+                );
+            }
+        }
+
+        
+        r = activeHi[object->group];
+        if (r) {
+            for(n = 0; n < topaz_array_get_size(r); ++n) {
+                spatial_map_insert(
+                    topaz_array_at(r, smap_t *, n), 
+                    collider_get_moment_bounds(object->collider), 
+                    i,
+                    0
+                );
+            }
+        }
+    }
     
+
     
     TopazObject2D_t * current;
     TopazObject2D_t * other;
-    uint32_t len;
+    uint32_t mapN;
 
 
-    topaz_array_set_size(m->setObjs, 0);
-    int hadCol = 0;
-    for(i = 0; i < numObj; ++i) {
-        if (hadCol) {
-            topaz_array_set_size(m->setObjs, 0);
-            hadCol = 0;
-        }
-        
-        // get all collisions
-        current = topaz_component_get_attributes(objects[i])->userData;
-        spatial_map_query(m->sMap, collider_get_moment_bounds(current->collider), m->setObjs);
-        
+    uint32_t mapCount = topaz_array_get_size(allintersect);
+    for(mapN = 0; mapN < mapCount; ++mapN) {
+        smap_t * smap = topaz_array_at(allintersect, smap_t *, mapN);
 
-        // process each detected collision
-        len = topaz_array_get_size(m->setObjs);
-        uint32_t * setObjs = topaz_array_get_data(m->setObjs);
-        for(uint32_t n = 0; n != len; ++n) {          
-            other = topaz_component_get_attributes(objects[setObjs[n]])->userData;
-            
-            // is it just the same entity?
-            if (other == current) {
-                continue;
-            }
-
-            // filter based on collision groups
-            if (!m->interactionMatrix[current->group][other->group]) {
-                continue;                
-            }
-
-
-            // no repeats! If we're already collided, skip very overlap check
-            if (i < setObjs[n]) {
-                collidedKey = ((void*)0x0 + i + ((setObjs[n])*numObj));
-            } else {
-                collidedKey = ((void*)0x0 + i*numObj + (setObjs[n]));
-            }
-
-            if (topaz_table_find(m->collided, collidedKey)) continue;
-            topaz_table_insert(m->collided, collidedKey, (void*)0x1);
+        topazArray_t * collisions = spatial_map_get_collisions(smap);
+        uint32_t nCol = topaz_array_get_size(collisions);
+        for(i = 0; i < nCol; ++i) {
+            smapCollision_t possible = topaz_array_at(collisions, smapCollision_t, i);
+            current = topaz_component_get_attributes(objects[possible.self])->userData;
+            other   = topaz_component_get_attributes(objects[possible.other])->userData;
 
 
 
-            // too far, would not result in a collidion
+            // too far, would not result in a collision
             if (!bb_overlaps(
                     collider_get_moment_bounds(current->collider),
                     collider_get_moment_bounds(  other->collider)
             )) {
                 continue;
             }
+            
 
-    
+
             // do full collision detection
             if (collides_with(
                     current->collider,
                       other->collider               
             )) {
-                topazEntity_t * currentHost = topaz_component_get_host(objects[i]);
-                topazEntity_t * otherHost   = topaz_component_get_host(objects[setObjs[n]]);
-                topaz_component_emit_event(objects[i],          TOPAZ_STR_CAST("on-collide"), otherHost,   NULL);
-                topaz_component_emit_event(objects[setObjs[n]], TOPAZ_STR_CAST("on-collide"), currentHost, NULL);
+                topazEntity_t * currentHost = topaz_component_get_host(objects[possible.self]);
+                topazEntity_t * otherHost   = topaz_component_get_host(objects[possible.other]);
+                topaz_component_emit_event(objects[possible.self],  TOPAZ_STR_CAST("on-collide"), otherHost,   NULL);
+                topaz_component_emit_event(objects[possible.other], TOPAZ_STR_CAST("on-collide"), currentHost, NULL);
                 collider_set_last_collided(current->collider, otherHost);
                 collider_set_last_collided(other->collider,   currentHost);
             }
-            hadCol = 1;
+
         }
     }
+    
+    topaz_array_destroy(allintersect);
     topaz_array_destroy(objectsNow);
+    for(i = 0; i <= topazObject2D_Group_Z; ++i) {
+        if (activeLo[i])topaz_array_destroy(activeLo[i]);
+        if (activeHi[i])topaz_array_destroy(activeHi[i]);
 
+    }
 }
 
 
@@ -1209,9 +1407,9 @@ topazEntity_t * t2dm_fetch(topaz_t * t) {
 
     T2DMData * m = calloc(1, sizeof(T2DMData));
     m->objects = topaz_array_create(sizeof(topazComponent_t *));
-    m->collided = topaz_table_create_hash_pointer();
     m->setObjs = topaz_array_create(sizeof(uint32_t));
-    m->sMap = spatial_map_create();
+    m->smapTable = topaz_table_create_hash_pointer();
+
 
     topazEntity_Attributes_t attribs = {0};
     attribs.on_step = (topaz_entity_attribute_callback)t2dm_on_step;
@@ -1220,6 +1418,14 @@ topazEntity_t * t2dm_fetch(topaz_t * t) {
     mE = topaz_entity_create_with_attributes(t, &attribs);
     topaz_table_insert(allManagers, t, mE);
     topaz_context_attach_post_manager(t, mE);
+
+
+    // spatial map visual debugging, if needed.
+        //m->debugVisual = topaz_shape2d_create(t);
+        //m->debugVisualActive = topaz_shape2d_create(t);
+        //topaz_entity_add_component(mE, m->debugVisual);
+        //topaz_entity_add_component(mE, m->debugVisualActive);
+
     return mE;
 }
 
@@ -1245,8 +1451,24 @@ void t2dm_unregister_object(topazEntity_t * e, topazComponent_t * o) {
 // Sets the group interaction.
 void t2dm_set_interaction(topazEntity_t * e, topazObject2D_Group a, topazObject2D_Group b, int doIt) {
     T2DMData * inst = topaz_entity_get_attributes(e)->userData;
-    inst->interactionMatrix[a][b] = doIt;
-    inst->interactionMatrix[b][a] = doIt;
+    
+    // a is always first, a is 'X' and b is 'Y', x is always less.
+    if (a > b) {
+        topazObject2D_Group temp = a;
+        a = b;
+        b = temp;
+    }
+
+    uint32_t key = a + b*(topazObject2D_Group_Z+1);
+    smap_t * smap = topaz_table_find_by_uint(inst->smapTable, key);
+    
+    if (smap && !doIt) {
+        spatial_map_destroy(smap);
+        topaz_table_remove_by_uint(inst->smapTable, key);
+    } else if (!smap && doIt) {
+        smap_t * smap = spatial_map_create();
+        topaz_table_insert_by_uint(inst->smapTable, key, smap);
+    }
 }
 
 

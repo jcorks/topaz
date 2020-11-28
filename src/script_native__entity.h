@@ -3,21 +3,32 @@
 typedef struct {
     topazScript_Object_t * self;
     topazScriptManager_t * manager;
+
+    topazScript_Object_t * onStep;
+    topazScript_Object_t * onDraw;
+    topazScript_Object_t * onPreStep;
+    topazScript_Object_t * onPreDraw;
+    topazScript_Object_t * onAttach;
+    topazScript_Object_t * onDetach;
+    topazScript_Object_t * onRemove;
 } TopazScriptEntity;
 
 
 static void topaz_script_entity__on_attach(topazEntity_t * e, TopazScriptEntity * scr) {
-    topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onAttach"));
+    topazScript_Object_t * fn = scr->onAttach;
+    if (!fn) return;
     topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 static void topaz_script_entity__on_detach(topazEntity_t * e, TopazScriptEntity * scr) {
-    topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onDetach"));
+    topazScript_Object_t * fn = scr->onDetach;
+    if (!fn) return;
     topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 static void topaz_script_entity__on_remove(topazEntity_t * e, TopazScriptEntity * scr) {
-    topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onRemove"));
+    topazScript_Object_t * fn = scr->onRemove;
+    if (!fn) return;
     topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
     topaz_script_object_reference_unref(scr->self);
     void * context = scr->manager;
@@ -26,22 +37,26 @@ static void topaz_script_entity__on_remove(topazEntity_t * e, TopazScriptEntity 
 }
 
 static void topaz_script_entity__on_pre_step(topazEntity_t * e, TopazScriptEntity * scr) {
-    topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onPreStep"));
+    topazScript_Object_t * fn = scr->onPreStep;
+    if (!fn) return;
     topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 static void topaz_script_entity__on_step(topazEntity_t * e, TopazScriptEntity * scr) {
-    topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onStep"));
+    topazScript_Object_t * fn = scr->onStep;
+    if (!fn) return;
     topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 static void topaz_script_entity__on_pre_draw(topazEntity_t * e, TopazScriptEntity * scr) {
-    topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onPreDraw"));
+    topazScript_Object_t * fn = scr->onPreDraw;
+    if (!fn) return;
     topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
 static void topaz_script_entity__on_draw(topazEntity_t * e, TopazScriptEntity * scr) {
-    topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(scr->self, TOPAZ_STR_CAST("onDraw"));
+    topazScript_Object_t * fn = scr->onDraw;
+    if (!fn) return;
     topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
 }
 
@@ -154,12 +169,131 @@ TSO_SCRIPT_API_FN(entity_api__attach) {
     TSO_NO_RETURN;
 }
 
+
 TSO_SCRIPT_API_FN(entity_api__detach) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
     topaz_entity_detach(native);
     TSO_NO_RETURN;
 }
+
+TSO_SCRIPT_API_FN(entity_api__set_on_step) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    TopazScriptEntity * e = topaz_entity_get_attributes(native)->userData;
+    if (!(topaz_script_object_reference_get_feature_mask(arg1) & topazScript_Object_Feature_Callable)) { 
+        script_error(script, "entity_api__set_on_step requires a function object to be set.");
+    } else {
+        if (e->onStep) {
+            topaz_script_object_destroy(e->onStep);
+        }
+        e->onStep = topaz_script_object_from_object(script, arg1);
+    }    
+    TSO_NO_RETURN;
+}
+
+TSO_SCRIPT_API_FN(entity_api__set_on_draw) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    TopazScriptEntity * e = topaz_entity_get_attributes(native)->userData;
+    if (!(topaz_script_object_reference_get_feature_mask(arg1) & topazScript_Object_Feature_Callable)) { 
+        script_error(script, "entity_api__set_on_draw requires a function object to be set.");
+    } else {
+        if (e->onDraw) {
+            topaz_script_object_destroy(e->onDraw);
+        }
+        e->onDraw = topaz_script_object_from_object(script, arg1);
+    }    
+    TSO_NO_RETURN;
+}
+
+TSO_SCRIPT_API_FN(entity_api__set_on_pre_step) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    TopazScriptEntity * e = topaz_entity_get_attributes(native)->userData;
+    if (!(topaz_script_object_reference_get_feature_mask(arg1) & topazScript_Object_Feature_Callable)) { 
+        script_error(script, "entity_api__set_on_pre_step requires a function object to be set.");
+    } else {
+        if (e->onPreStep) {
+            topaz_script_object_destroy(e->onPreStep);
+        }
+        e->onPreStep = topaz_script_object_from_object(script, arg1);
+    }    
+    TSO_NO_RETURN;
+}
+
+TSO_SCRIPT_API_FN(entity_api__set_on_pre_draw) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    TopazScriptEntity * e = topaz_entity_get_attributes(native)->userData;
+    if (!(topaz_script_object_reference_get_feature_mask(arg1) & topazScript_Object_Feature_Callable)) { 
+        script_error(script, "entity_api__set_on_pre_draw requires a function object to be set.");
+    } else {
+        if (e->onPreDraw) {
+            topaz_script_object_destroy(e->onPreDraw);
+        }
+        e->onPreDraw = topaz_script_object_from_object(script, arg1);
+    }    
+    TSO_NO_RETURN;
+}
+
+
+
+TSO_SCRIPT_API_FN(entity_api__set_on_attach) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    TopazScriptEntity * e = topaz_entity_get_attributes(native)->userData;
+    if (!(topaz_script_object_reference_get_feature_mask(arg1) & topazScript_Object_Feature_Callable)) { 
+        script_error(script, "entity_api__set_on_attach requires a function object to be set.");
+    } else {
+        if (e->onAttach) {
+            topaz_script_object_destroy(e->onAttach);
+        }
+        e->onAttach = topaz_script_object_from_object(script, arg1);
+    }    
+    TSO_NO_RETURN;
+}
+
+TSO_SCRIPT_API_FN(entity_api__set_on_detach) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    TopazScriptEntity * e = topaz_entity_get_attributes(native)->userData;
+    if (!(topaz_script_object_reference_get_feature_mask(arg1) & topazScript_Object_Feature_Callable)) { 
+        script_error(script, "entity_api__set_on_detach requires a function object to be set.");
+    } else {
+        if (e->onDetach) {
+            topaz_script_object_destroy(e->onDetach);
+        }
+        e->onDetach = topaz_script_object_from_object(script, arg1);
+    }    
+    TSO_NO_RETURN;
+}
+
+TSO_SCRIPT_API_FN(entity_api__set_on_remove) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    TopazScriptEntity * e = topaz_entity_get_attributes(native)->userData;
+    if (!(topaz_script_object_reference_get_feature_mask(arg1) & topazScript_Object_Feature_Callable)) { 
+        script_error(script, "entity_api__set_on_remove requires a function object to be set.");
+    } else {
+        if (e->onRemove) {
+            topaz_script_object_destroy(e->onRemove);
+        }
+        e->onRemove = topaz_script_object_from_object(script, arg1);
+    }    
+    TSO_NO_RETURN;
+}
+
+
+
+
 
 TSO_SCRIPT_API_FN(entity_api__get_parent) {
     TSO_ARG_0;
@@ -414,6 +548,14 @@ static void add_refs__entity_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_entity__set_drawing", entity_api__set_drawing);
     TS_MAP_NATIVE_FN("topaz_entity__get_stepping", entity_api__get_stepping);
     TS_MAP_NATIVE_FN("topaz_entity__get_drawing", entity_api__get_drawing);
+
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_attach", entity_api__set_on_attach);
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_detach", entity_api__set_on_detach);
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_remove", entity_api__set_on_remove);
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_step", entity_api__set_on_step);
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_draw", entity_api__set_on_draw);
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_pre_step", entity_api__set_on_pre_step);
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_pre_draw", entity_api__set_on_pre_draw);
 
 
     TS_MAP_NATIVE_FN("topaz_entity__set_name", entity_api__set_name);

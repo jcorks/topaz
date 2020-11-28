@@ -240,11 +240,14 @@ static void topaz_duk_object_keep_reference(TOPAZDUK * ctx, TOPAZDUKObjectTag * 
     #endif
     
     duk_push_global_stash(ctx->js);
-    duk_push_sprintf(ctx->js, "p%d", tag->stashID);
-    duk_dup(ctx->js, -3);
-    
-    assert(duk_is_object(ctx->js, -1));
-    assert(duk_put_prop(ctx->js, -3));
+    //duk_push_sprintf(ctx->js, "p%d", tag->stashID);
+    duk_dup(ctx->js, -2);
+    #ifdef TOPAZDC_DEBUG    
+        assert(duk_is_object(ctx->js, -1));
+        assert(duk_put_prop_index(ctx->js, -2, tag->stashID));
+    #else
+        duk_put_prop(ctx->js, -2);
+    #endif
     duk_pop(ctx->js);
 
 
@@ -262,9 +265,9 @@ static void topaz_duk_object_unkeep_reference(TOPAZDUK * ctx, TOPAZDUKObjectTag 
     #endif
 
     duk_push_global_stash(ctx->js);
-    duk_push_sprintf(ctx->js, "p%d", tag->stashID);
+    //duk_push_sprintf(ctx->js, "p%d", tag->stashID);
 
-    duk_del_prop(ctx->js, -2);
+    duk_del_prop_index(ctx->js, -1, tag->stashID);
     duk_pop(ctx->js);
 
     #ifdef TOPAZDC_DEBUG 
@@ -298,8 +301,8 @@ static duk_ret_t topaz_duk_object_finalizer(duk_context * js) {
 
 static void topaz_duk_object_push_to_top_from_tag(TOPAZDUKObjectTag * tag) {
     duk_push_global_stash(tag->ctx->js);
-    duk_push_sprintf(tag->ctx->js, "p%d", tag->stashID);
-    if (!duk_get_prop(tag->ctx->js, -2)) {
+    //duk_push_sprintf(tag->ctx->js, "p%d", tag->stashID);
+    if (!duk_get_prop_index(tag->ctx->js, -1, tag->stashID)) {
         #ifdef TOPAZDC_DEBUG
             if (duk_is_undefined(tag->ctx->js, -1)) {
                 assert(!"topaz_duk_object_push_to_top_from_tag() resulted in UNDEFINED. This shouldn't happen!\n");
@@ -1645,6 +1648,7 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
     
     }
     if (!block) return; // still receiving messages
+    topaz_context_pause(ctx->ctx);
     topaz_context_iterate(ctx->ctx);
 }
 
@@ -1747,8 +1751,7 @@ void topaz_duk_debug_send_command(
         topaz_string_destroy(str);
         break;
       }
-      default:
-        assert(!"TODO");
+      default:;
     }
 }
 

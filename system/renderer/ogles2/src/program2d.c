@@ -104,25 +104,30 @@ topazES2_Program2D_t * topaz_es2_p2d_create() {
     glDeleteShader(out->fragmentShader);TOPAZ_GLES_CALL_CHECK;
     
     out->locationVBOposition = glGetAttribLocation(out->program, "position");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationVBOposition != -1);
     out->locationVBOuv       = glGetAttribLocation(out->program, "uv");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationVBOuv != -1);
     out->locationVBOrgba     = glGetAttribLocation(out->program, "rgba");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationVBOrgba != -1);
+
 
 
 
     out->locationUniformMatrixGlobalProj = glGetUniformLocation(out->program, "proj");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationUniformMatrixGlobalProj != -1);
     out->locationUniformMatrixGlobalTF   = glGetUniformLocation(out->program, "mv");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationUniformMatrixGlobalTF != -1);
     out->locationUniformMatrixLocal      = glGetUniformLocation(out->program, "localMat");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationUniformMatrixLocal != -1);
 
     out->locationUniformSampler      = glGetUniformLocation(out->program, "sampler");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationUniformSampler != -1);
     out->locationUniformUseTexturing = glGetUniformLocation(out->program, "useTexturing");TOPAZ_GLES_CALL_CHECK;
+
+    #ifdef TOPAZDC_DEBUG
     assert(out->locationUniformUseTexturing != -1);
+    assert(out->locationVBOrgba != -1);
+    assert(out->locationUniformSampler != -1);
+    assert(out->locationVBOuv != -1);
+    assert(out->locationUniformMatrixLocal != -1);
+    assert(out->locationVBOposition != -1);
+    assert(out->locationUniformMatrixGlobalTF != -1);
+    assert(out->locationUniformMatrixGlobalProj != -1);
+    #endif
+
 
 
     glUseProgram(out->program);TOPAZ_GLES_CALL_CHECK;

@@ -425,7 +425,9 @@ void topaz_system_renderer_ogles2__backend(
         glfwWindowHint(GLFW_STENCIL_BITS, 8);
 
         context = glfwCreateWindow(640, 480, __FILE__, NULL, NULL);
-        assert(context);
+        #ifdef TOPAZDC_DEBUG
+            assert(context);
+        #endif
         glfwMakeContextCurrent(context);
         isInit = 1;
     }

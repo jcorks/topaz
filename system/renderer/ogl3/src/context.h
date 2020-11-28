@@ -15,8 +15,8 @@ const char * topaz_gles_error_to_string(int);
 #define TOPAZ_GLES_FN_IN       int __er = glGetError(); if (__er != GL_NO_ERROR) {printf("Encountered OpenGLGL3 error on function enter (%s). Please check the program.\n", topaz_gles_error_to_string(__er)); exit(999);}
 #define TOPAZ_GLES_CALL_CHECK      __er = glGetError(); if (__er != GL_NO_ERROR) {printf("Encountered OpenGLGL3 error after previous call (%s). Please check the program.\n", topaz_gles_error_to_string(__er)); exit(999);}
 #else
-#define TOPAZ_GLES_FN_IN;
-#define TOPAZ_GLES_CALL_CHECK;
+#define TOPAZ_GLES_FN_IN ;;
+#define TOPAZ_GLES_CALL_CHECK ;;
 #endif
 
 
