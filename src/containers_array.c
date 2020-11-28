@@ -207,7 +207,7 @@ void topaz_array_set_size(topazArray_t * t, uint32_t size) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazArray_t pointer cannot be NULL.");
     #endif
-    while(size > t->allocSize) {
+    while(size >= t->allocSize) {
         t->allocSize += t->allocSize*array_presize_amt;
         t->data = realloc(t->data, t->allocSize*t->sizeofType);
     }

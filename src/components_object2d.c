@@ -561,13 +561,14 @@ void collider_set_from_points(
     tcollider_t * c, 
     const topazArray_t * pts
 ) { 
+    if (c->srcPoints)
+        topaz_array_destroy(c->srcPoints);
     c->srcPoints = topaz_array_clone(pts);
     // transfer raw points into lines
     topaz_array_set_size(c->staticPoints, 0);
     uint32_t len = topaz_array_get_size(pts);
     if (!len || len == 1) return;
 
-    topaz_array_destroy(c->srcPoints);
 
     topazVector_t * ptsData = topaz_array_get_data(pts);
     cline_t line;
@@ -1378,10 +1379,10 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
             )) {
                 topazEntity_t * currentHost = topaz_component_get_host(objects[possible.self]);
                 topazEntity_t * otherHost   = topaz_component_get_host(objects[possible.other]);
-                topaz_component_emit_event(objects[possible.self],  TOPAZ_STR_CAST("on-collide"), otherHost,   NULL);
-                topaz_component_emit_event(objects[possible.other], TOPAZ_STR_CAST("on-collide"), currentHost, NULL);
                 collider_set_last_collided(current->collider, otherHost);
                 collider_set_last_collided(other->collider,   currentHost);
+                topaz_component_emit_event(objects[possible.self],  TOPAZ_STR_CAST("on-collide"), otherHost,   NULL);
+                topaz_component_emit_event(objects[possible.other], TOPAZ_STR_CAST("on-collide"), currentHost, NULL);
             }
 
         }

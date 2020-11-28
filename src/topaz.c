@@ -303,6 +303,7 @@ void topaz_context_step(topaz_t * t) {
 
     topaz_system_post_step(t->system);
 
+    topaz_entity_sweep();
 }
 
 

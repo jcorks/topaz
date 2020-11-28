@@ -140,10 +140,15 @@ int topaz_entity_is_valid(const topazEntity_t *);
 topazEntity_t * topaz_entity_null();
 #define TOPAZ_ENULL (topaz_entity_null())
 
+/// Physically destroys entities that were marked for deletion prior.
+///
+void topaz_entity_sweep();
 
 
 /// Flags an entity for destruction. This destroys all attached components 
-/// and child entities as well.
+/// and child entities as well. The entity isn't actually destroyed until
+/// topaz_entity_sweep() is called. This is normally called at the end of a context 
+/// iteration for you.
 ///
 void topaz_entity_remove(topazEntity_t *);
 

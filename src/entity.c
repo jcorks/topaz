@@ -48,6 +48,7 @@ DEALINGS IN THE SOFTWARE.
 
 // Entities are never deleted and freed. Instead, they are recycled.
 static topazArray_t * dead  = NULL;
+static topazArray_t * pending = NULL;
 
 struct topazEntity_t {
     topazEntity_t * parent;
@@ -94,7 +95,8 @@ topazEntity_t * topaz_entity_null() {
 topazEntity_t * topaz_entity_create_with_attributes(topaz_t * ctx, const topazEntity_Attributes_t * a) {
     topazEntity_t * out;
     if (!dead) {
-        dead = topaz_array_create(sizeof(topazEntity_t *));
+        dead    = topaz_array_create(sizeof(topazEntity_t *));
+        pending = topaz_array_create(sizeof(topazEntity_t *));
     } 
     uint32_t deadLen = topaz_array_get_size(dead);
     if (deadLen) {
@@ -155,18 +157,26 @@ int topaz_entity_is_valid(const topazEntity_t * e) {
 
 void topaz_entity_remove(topazEntity_t * e) {
     if (!e->valid) return;
+    topaz_array_push(pending, e);
+}
+
+
+
+static void topaz_entity_delete(topazEntity_t * e) {
+    if (!e->valid) return;
 
     if (e->api.on_remove) 
         e->api.on_remove(e, e->api.userData);
 
 
+    topazArray_t * components = topaz_array_clone(e->components);
     uint32_t i;
-    uint32_t len = topaz_array_get_size(e->components);
+    uint32_t len = topaz_array_get_size(components);
     for(i = 0; i < len; ++i) {
-        topazComponent_t * c = topaz_array_at(e->components, topazComponent_t *, i);
+        topazComponent_t * c = topaz_array_at(components, topazComponent_t *, i);
         topaz_component_destroy(c);
-
     }
+    topaz_array_destroy(components);
 
 
 
@@ -187,6 +197,15 @@ void topaz_entity_remove(topazEntity_t * e) {
     e->valid = 0;
 
     topaz_array_push(dead, e);
+}
+
+void topaz_entity_sweep() {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(pending);
+    for(i = 0; i < len; ++i) {
+        topaz_entity_delete(topaz_array_at(pending, topazEntity_t *, i));
+    }
+    topaz_array_set_size(pending, 0);
 }
 
 
@@ -393,14 +412,8 @@ void topaz_entity_detach(topazEntity_t * e) {
     if (!e->parent->valid) return;
     uint32_t len = topaz_array_get_size(e->parent->children);
     if (len > 1) {
-        uint32_t iter = topaz_array_lower_bound(
-            e->parent->children, 
-            e,
-            (int(*)(const void *, const void *))priority_comp
-        );
-
         uint32_t i;
-        for(i = iter; i < len; ++i) {
+        for(i = 0; i < len; ++i) {
             if (topaz_array_at(e->parent->children, topazEntity_t *, i) == e) break;
         }
 

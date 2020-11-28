@@ -278,7 +278,14 @@ static void topaz_duk_object_unkeep_reference(TOPAZDUK * ctx, TOPAZDUKObjectTag 
 
 
 static duk_ret_t topaz_duk_object_finalizer(duk_context * js) {
-    TOPAZDUKObjectTag * tag = topaz_duk_object_get_tag_from_top(js);
+    duk_get_prop_string(js, 0, "___tz");
+    TOPAZDUKObjectTag * tag;
+    const char * target = duk_get_string(js, -1);
+    if (target)
+        sscanf(target, "p%p", &tag);
+    duk_pop(js);
+
+
     #ifdef TOPAZDC_DEBUG
         assert(tag);
     #endif
@@ -292,7 +299,6 @@ static duk_ret_t topaz_duk_object_finalizer(duk_context * js) {
                 topaz_array_empty(), 
                 tag->cfinalizerData
         );
-
     free(tag);
     return 0;
 }
@@ -877,7 +883,7 @@ static void * topaz_duk_object_reference_create(topazScript_Object_t * o, void *
  
 
         // Sets the standard finalizer function.
-        duk_push_c_function(ctx->js, topaz_duk_object_finalizer, 0);
+        duk_push_c_function(ctx->js, topaz_duk_object_finalizer, 1);
         duk_set_finalizer(ctx->js, -2);
     }
 
