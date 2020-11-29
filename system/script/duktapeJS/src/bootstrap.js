@@ -298,9 +298,23 @@ topaz = {
 
         this.nthChild = function(n) {
             var f = topaz_entity__get_nth_child(impl, n);
-            if (f.__ctx) return f.ctx;
+            if (f.__ctx) return f.__ctx;
             return new topaz.entity(undefined, f);
         }
+
+        
+        Object.defineProperty(this, 'children', {
+            get : function(){
+                var children = [];
+                const len = topaz_entity__get_child_count(impl);
+                for(var i = 0; i < len; ++i) {
+                    children.push(topaz_entity__get_nth_child(impl, i).__ctx);
+                }
+                return children;
+            }
+        });
+
+
 
         this.step = function() {topaz_entity__step(n);}
         this.draw = function() {topaz_entity__draw(n);}
