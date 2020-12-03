@@ -38,7 +38,7 @@ topaz = {
         
         return helper(obj, 0) + '\n';
     },
-
+    deadEntityPool : [],
     input : {
         addKeyboardListener : function(obj) {
             topaz_input__add_keyboard_listener(obj);
@@ -291,6 +291,7 @@ topaz = {
         
         this.remove = function() {
             topaz_entity__remove(impl);
+            topaz.deadEntityPool.push(this);
         }
 
 
@@ -364,11 +365,14 @@ topaz = {
         }
 
         this.define = function(props) {
+
             ctx.props = {};
             // todo: shallow copy
-            var keys = Object.keys(props.props);
-            for(var i = 0; i < keys.length; ++i) {
-                ctx.props[keys[i]] = props.props[keys[i]];
+            if (props.props) {
+                var keys = Object.keys(props.props);
+                for(var i = 0; i < keys.length; ++i) {
+                    ctx.props[keys[i]] = props.props[keys[i]];
+                }
             }
 
             ctx.props.entity = this;
@@ -1098,7 +1102,6 @@ topaz = {
     }
 }
 
-
 Object.defineProperty(topaz, 'isPaused', {get : function(){return topaz__is_paused();}});
 Object.defineProperty(topaz, 'root', {
     get : function(){return new topaz.entity(undefined, topaz__get_root());},
@@ -1113,5 +1116,24 @@ Object.defineProperty(topaz.input, 'mouseY', {get : function(){return topaz_inpu
 Object.defineProperty(topaz.input, 'mouseDeltaX', {get : function(){return topaz_input__mouse_delta_x();}});
 Object.defineProperty(topaz.input, 'mouseDeltaY', {get : function(){return topaz_input__mouse_delta_y();}});
 Object.defineProperty(topaz.input, 'mouseWheel', {get : function(){return topaz_input__mouse_wheel();}});
+
+topaz.attachPreManager(
+    new topaz.entity({
+        name : 'TOPAZEntityCleaner',
+        onStep : function() {
+            const pool = topaz.deadEntityPool;
+            if (pool.length) {
+                for(var i = 0; i < pool.length; ++i) {
+                    if (pool[i].impl) {
+                        pool[i].impl.__ctx.props = undefined;
+                        pool[i].impl.__ctx = undefined;
+                        pool[i].impl = undefined;
+                    }
+                }
+                topaz.deadEntityPool = [];
+            }
+        }
+    })
+);
 
 

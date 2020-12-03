@@ -165,8 +165,12 @@ void topaz_entity_remove(topazEntity_t * e) {
 static void topaz_entity_delete(topazEntity_t * e) {
     if (!e->valid) return;
 
+    topaz_entity_detach(e);
+
     if (e->api.on_remove) 
         e->api.on_remove(e, e->api.userData);
+
+
 
 
     topazArray_t * components = topaz_array_clone(e->components);
@@ -186,7 +190,6 @@ static void topaz_entity_delete(topazEntity_t * e) {
         if (topaz_entity_is_valid(c))
             topaz_entity_remove(c);
     }
-    topaz_entity_detach(e);
 
     topaz_string_clear(e->name);
     topaz_array_set_size(e->children, 0);
