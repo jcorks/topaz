@@ -117,6 +117,47 @@ void topaz_system_backend_bind(
 );
 
 
+/// Populates the decoder with information.
+/// Only allowed to be called within backend_callback calls 
+/// given to topaz_system_config_add_handler
+///
+void topaz_system_decoder_bind(
+    topazSystem_Backend_t *,
+
+    /// The name of the decoder.
+    const topazString_t * name,
+
+    /// The version of the backend
+    const topazString_t * version,
+
+    /// The author of the backend
+    const topazString_t * author,
+
+    /// A description of the backend
+    const topazString_t * description,
+
+
+
+
+
+
+
+    /// Topaz major version number
+    ///
+    int topazMajorVersion,
+
+    /// Topaz minor version number
+    ///
+    int topazMinorVersion,
+
+    /// Topaz micro version number
+    ///
+    int topazMicroVersion
+
+);
+
+
+
 /// Returns the major version of the topaz library 
 /// that this backend was built with.
 ///

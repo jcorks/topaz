@@ -73,7 +73,7 @@ int topaz_resources_set_path(topazResources_t *, const topazString_t *);
 /// Convenience function that attempts to load a new asset 
 /// from disk directly. This is recommended for small assets that are 
 /// effectively instanteous. If a more robust solution is needed,
-/// consider topaz_resources_fetch_asset().
+/// consider topaz_resources_fetch_asset() + topaz_resources_get_decoder
 ///
 /// Like with topaz_resources_fetch_asset, if an asset of the given name 
 /// already exists, the preloaded asset is returned. If not, 
@@ -103,9 +103,16 @@ topazAsset_t * topaz_resources_load_asset(
 /// 
 topazAsset_t * topaz_resources_fetch_asset(
     topazResources_t *,
-    const topazString_t * fileType,
+    topazAsset_Type,
     const topazString_t * name
 );
+
+/// Fetches a decoder for the given filetype. The decoder can be used for 
+/// fine control over timing and loading of assets. This 
+topazDecoder_t * topaz_resources_get_decoder(
+    topazResources_t *,
+    const topazString_t * fileType
+)
 
 
 void topaz_resources_remove_asset(

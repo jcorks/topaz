@@ -56,8 +56,7 @@ typedef struct topazImage_Frame_t topazImage_Frame_t;
 ///
 topazAsset_t * topaz_image_create(
     topaz_t *, 
-    const topazString_t *, 
-    topazAsset_LoadingProfile_t *
+    const topazString_t *
 );
 
 /// Creates a new image object, but without 
