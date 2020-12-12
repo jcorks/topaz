@@ -195,7 +195,7 @@ static int image__asset_callback_empty(topazAsset_t * asset, const void * dataIn
 }
 
 
-topazAsset_t * topaz_image_create(topaz_t * t, const topazString_t * name, topazAsset_LoadingProfile_t * loading) {
+topazAsset_t * topaz_image_create(topaz_t * t, const topazString_t * name) {
 
     TopazImage * img = calloc(1, sizeof(TopazImage));
     #ifdef TOPAZDC_DEBUG
@@ -213,20 +213,15 @@ topazAsset_t * topaz_image_create(topaz_t * t, const topazString_t * name, topaz
         t,
         topazAsset_Type_Image,
         name, 
-        &attribs,
-        loading
+        &attribs
     );
 }
 
 
 topazAsset_t * topaz_image_create_empty(topaz_t * t) {
-    topazAsset_LoadingProfile_t dummyProfile;
-    dummyProfile.on_load   = image__asset_callback_empty;
-    dummyProfile.on_unload = image__asset_callback_empty;
     return topaz_image_create(
         t,
-        TOPAZ_STR_CAST(""),
-        &dummyProfile
+        TOPAZ_STR_CAST("")
     );
 }
 

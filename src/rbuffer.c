@@ -139,7 +139,7 @@ const void * topaz_rbuffer_get_buffer(topazRbuffer_t * t, uint64_t numBytes) {
         assert(t && "topazRbuffer_t pointer cannot be NULL.");
     #endif
 
-    if (t->bufferPos + numBytes >= t->size) {
+    if (t->bufferPos + numBytes > t->size || !numBytes) {
         return NULL;
     }
 

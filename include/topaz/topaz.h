@@ -76,7 +76,7 @@ topaz_t * topaz_context_create_empty();
 
 /// Gets the system that belongs to the context.
 ///
-const topazSystem_t * topaz_context_get_system();
+topazSystem_t * topaz_context_get_system();
 
 /// Destroys and frees the topaz context.
 ///

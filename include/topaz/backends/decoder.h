@@ -29,8 +29,8 @@ DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef H_TOPAZDC__FILESYS__INCLUDED
-#define H_TOPAZDC__FILESYS__INCLUDED
+#ifndef H_TOPAZDC__DECODER__INCLUDED
+#define H_TOPAZDC__DECODER__INCLUDED
 
 #include <topaz/asset.h>
 #include <topaz/backends/api/decoder_api.h>
@@ -82,13 +82,25 @@ topazSystem_Backend_t * topaz_decoder_get_backend(topazDecoder_t *);
 topazDecoderAPI_t topaz_decoder_get_api(topazDecoder_t *);
 
 
-/// Gets the extension associated with this decoder.
+/// Gets the extensions associated with this decoder.
 ///
-const topazString_t * topaz_decoder_get_extension(const topazDecoder_t *);
+const topazArray_t * topaz_decoder_get_extensions(const topazDecoder_t *);
 
 /// Returns the asset type expected for this asset type
 ///
-topazAsset_Type_t topaz_decoder_get_type(const topazDecoder_t *);
+topazAsset_Type topaz_decoder_get_type(const topazDecoder_t *);
+
+
+
+/// Streams raw data from memory into an asset all at once. 
+/// If successful, returns TRUE. This is equivalent to:
+/// topaz_decoder_stream_start()
+/// topaz_decoder_stream(allData)
+/// topaz_decoder_stream_finish()
+///
+int topaz_decoder_load(topazDecoder_t *, topazAsset_t *, const void * dataIn, uint64_t numBytes);
+
+
 
 
 /// Signals to the decoder to accept a new asset to begin to decode.
@@ -107,21 +119,26 @@ void topaz_decoder_stream_start(topazDecoder_t *, topazAsset_t *);
 ///
 void topaz_decoder_stream_set_threshold(topazDecoder_t *, topazAsset_t *, uint64_t);
 
+
+/// Called when the asset has been passed streaming data
+/// For more flexible performannce, asset streaming is 
+/// buffered, meaning not every topaz_decoder_stream() call
+/// will invoke an on-stream callback. Instead, once a threshold
+/// is reached, on_stream will be invoked.
+/// See topaz_decoder_stream_set_threshold()
+/// If a problem occurs, the decoding process may be cancelled. If 
+/// such a thing were to happen, FALSE would be returned.
+///
+int topaz_decoder_stream(topazDecoder_t *, topazAsset_t *, const void * dataIn, uint64_t byteSize);
+
+
 /// Flushes the stream buffer. If theres any waiting data 
 /// whose size is below the stream threshold, then that 
 /// data is immediately sent to the asset via on_stream.
+/// If a problem occurs, the decoding process may be cancelled. If 
+/// such a thing were to happen, FALSE would be returned.
 ///
-void topaz_decoder_stream_flush(topazDecoder_t *, topazAsset_t *);
-
-
-
-/// Streams raw data from memory into an asset all at once. 
-/// If successful, returns TRUE. This is equivalent to:
-/// topaz_decoder_stream_start()
-/// topaz_decoder_stream(allData)
-/// topaz_decoder_stream_finish()
-///
-int topaz_decoder_load(topazDecoder_t *, topazAsset_t *, const void * dataIn, uint64_t numBytes);
+int topaz_decoder_stream_flush(topazDecoder_t *, topazAsset_t *);
 
 
 
@@ -136,16 +153,6 @@ int topaz_decoder_load(topazDecoder_t *, topazAsset_t *, const void * dataIn, ui
 ///
 void topaz_decoder_stream_finish(topazDecoder_t *, topazAsset_t *);
 
-/// Called when the asset has been passed streaming data
-/// For more flexible performannce, asset streaming is 
-/// buffered, meaning not every topaz_decoder_stream() call
-/// will invoke an on-stream callback. Instead, once a threshold
-/// is reached, on_stream will be invoked.
-/// See topaz_decoder_stream_set_threshold()
-///
-void topaz_decoder_stream(topazDecoder_t *, topazAsset_t *, const void * dataIn, uint64_t byteSize);
-
-
 /// Called when the stream is cancelled. If the asset is not currently being 
 /// streamed, no action is taken.
 ///
@@ -153,7 +160,7 @@ void topaz_decoder_stream_cancel(topazDecoder_t *, topazAsset_t *);
 
 /// Returns whether the asset is question it currently being streamed.
 ///
-void topaz_decoder_is_streaming(topazDecoder_t *, topazAsset_t *)
+int topaz_decoder_is_streaming(topazDecoder_t *, topazAsset_t *);
 
 
 #endif

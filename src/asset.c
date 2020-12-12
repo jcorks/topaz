@@ -53,18 +53,13 @@ topazAsset_t * topaz_asset_create(
     topaz_t * ctx, 
     topazAsset_Type type,
     const topazString_t * name,
-    const topazAsset_Attributes_t * attribs,
+    const topazAsset_Attributes_t * attribs
 ) {
     topazAsset_t * out = calloc(1, sizeof(topazAsset_t));
     out->attribs = *attribs;
     out->type = type;
     out->name = topaz_string_clone(name);
     out->ctx = ctx;
-
-    #ifdef TOPAZDC_DEBUG
-        assert(loading->on_load);
-        assert(loading->on_unload);
-    #endif
 
     if (attribs->on_create) out->attribs.on_create(out, attribs->userData);
     return out;

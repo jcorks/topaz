@@ -160,7 +160,7 @@ topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
     return out;
 }
 
-const topazSystem_t * topaz_context_get_system(const topaz_t * t) {
+topazSystem_t * topaz_context_get_system(const topaz_t * t) {
     return t->system;
 }
 
@@ -202,12 +202,12 @@ topaz_t * topaz_context_create_empty() {
         topaz_system_configure();
 
     topazSystem_t * sys = topaz_system_create_default();
-    topaz_system_set_backend(sys, TOPAZ_STR_CAST("renderer"),     TOPAZ_STR_CAST("noRenderer"));
-    topaz_system_set_backend(sys, TOPAZ_STR_CAST("audioManager"), TOPAZ_STR_CAST("noAudioManager"));
-    topaz_system_set_backend(sys, TOPAZ_STR_CAST("inputManager"), TOPAZ_STR_CAST("noInputManager"));
-    topaz_system_set_backend(sys, TOPAZ_STR_CAST("display"),      TOPAZ_STR_CAST("noDisplay"));
-    topaz_system_set_backend(sys, TOPAZ_STR_CAST("time"),         TOPAZ_STR_CAST("noTime"));
-    topaz_system_set_backend(sys, TOPAZ_STR_CAST("filesys"),      TOPAZ_STR_CAST("noFilesys"));
+    topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("renderer"),     TOPAZ_STR_CAST("noRenderer"));
+    topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("audioManager"), TOPAZ_STR_CAST("noAudioManager"));
+    topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("inputManager"), TOPAZ_STR_CAST("noInputManager"));
+    topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("display"),      TOPAZ_STR_CAST("noDisplay"));
+    topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("time"),         TOPAZ_STR_CAST("noTime"));
+    topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("filesys"),      TOPAZ_STR_CAST("noFilesys"));
     return topaz_context_create(sys);
 }
 

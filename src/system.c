@@ -2,6 +2,7 @@
 #include <topaz/containers/table.h>
 #include <topaz/containers/string.h>
 #include <topaz/containers/array.h>
+#include <topaz/backends/api/decoder_api.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <topaz/compat.h>
@@ -15,6 +16,7 @@ static topazTable_t * fontRenderers = NULL;
 static topazTable_t * displays = NULL;
 static topazTable_t * scripts = NULL;
 static topazTable_t * consoleDisplays = NULL;
+static topazTable_t * decoders = NULL;
 
 // external
 void topaz_system_configure_base();
@@ -33,6 +35,7 @@ struct topazSystem_t {
     BackendHandler display;
     BackendHandler script;
     BackendHandler consoleDisplay;
+    BackendHandler decoder;
 
     topazArray_t * backends;
 };
@@ -68,6 +71,7 @@ static BackendHandler default_fontRenderer;
 static BackendHandler default_display;
 static BackendHandler default_script;
 static BackendHandler default_consoleDisplay;
+static BackendHandler default_decoder;
 
 BackendHandler * system_get_backend(topazSystem_t * s, const topazString_t * name) {
     if (topaz_string_test_eq(name, TOPAZ_STR_CAST("renderer"))) return &s->renderer;
@@ -79,6 +83,7 @@ BackendHandler * system_get_backend(topazSystem_t * s, const topazString_t * nam
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return &s->display;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return &s->script;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("consoleDisplay"))) return &s->consoleDisplay;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("decoder"))) return &s->decoder;
     return NULL;
 }
 
@@ -92,6 +97,7 @@ static topazTable_t * backend_type_to_table(const topazString_t * name) {
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return displays;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return scripts;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("consoleDisplay"))) return consoleDisplays;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("decoder"))) return decoders;
     return NULL;
 }
 
@@ -126,7 +132,8 @@ static BackendHandler * get_backend_default(const topazString_t * name) {
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return &default_display;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return &default_script;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("consoleDisplay"))) return &default_consoleDisplay;
-    return NULL;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("decoder"))) return &default_decoder; 
+   return NULL;
 }
 
 
@@ -146,6 +153,7 @@ void topaz_system_configure() {
     displays        = topaz_table_create_hash_topaz_string();
     scripts         = topaz_table_create_hash_topaz_string();
     consoleDisplays = topaz_table_create_hash_topaz_string();
+    decoders        = topaz_table_create_hash_topaz_string();
 
     topaz_system_configure_base();
 }
@@ -199,12 +207,13 @@ topazSystem_t * topaz_system_create_default() {
     s->display        = default_display;
     s->script         = default_script;
     s->consoleDisplay = default_consoleDisplay;
+    s->decoder        = default_decoder;
     s->backends = topaz_array_create(sizeof(topazSystem_Backend_t *));
     return s; 
 }
 
 
-int topaz_system_set_backend(
+int topaz_system_set_backend_handler(
     topazSystem_t * s, 
     const topazString_t * backendType,
     const topazString_t * backendName
@@ -245,6 +254,27 @@ int topaz_system_is_backend_available(
     const topazString_t * backendName
 ) {
     return backend_retrieve(backendType, backendName, NULL) != NULL;
+}
+
+
+topazArray_t * topaz_system_get_available_backends(
+    const topazString_t * backendType
+) {
+    topazArray_t * out = topaz_array_create(sizeof(topazString_t *));
+    topazTable_t * table;
+    table = backend_type_to_table(backendType);
+    if (!table) {
+        return out;
+    }
+
+    topazTableIter_t * iter = topaz_table_iter_create();
+    for(topaz_table_iter_start(iter, table);
+        !topaz_table_iter_is_end(iter);
+        topaz_table_iter_proceed(iter)) {
+        topazString_t * key = topaz_table_iter_get_key(iter);
+        topaz_array_push(out, key);
+    }
+    return out;
 }
 
 

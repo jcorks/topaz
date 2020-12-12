@@ -35,7 +35,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/asset.h>
 typedef struct topaz_t topaz_t;
-
+typedef struct topazDecoder_t topazDecoder_t;
 
 
 /*
@@ -103,7 +103,7 @@ topazAsset_t * topaz_resources_load_asset(
 /// 
 topazAsset_t * topaz_resources_fetch_asset(
     topazResources_t *,
-    topazAsset_Type,
+    topazAsset_Type ,
     const topazString_t * name
 );
 
@@ -111,8 +111,8 @@ topazAsset_t * topaz_resources_fetch_asset(
 /// fine control over timing and loading of assets. This 
 topazDecoder_t * topaz_resources_get_decoder(
     topazResources_t *,
-    const topazString_t * fileType
-)
+    const topazString_t * fileExtension
+);
 
 
 void topaz_resources_remove_asset(
@@ -128,19 +128,15 @@ int topaz_resources_is_extension_supported(
 );
 
 
-/// Adds a new possible extension to be read 
-/// topazAsset_LoadingProfile_t defines the set of functions
-/// to interact with a specific data format. This is used to 
-/// automatically pick the type of asset that should be 
-/// generated for a specific set of data. If the extensions is 
-/// already added, its attributes are replaced.
+/// Adds a new possible extension to be read.
+/// The decoderBackendName is the name of the backend registered with 
+/// the topaz system instance (topaz_context_get_system()). To add a 
+/// new extension, a new backend handler will have to be made. See system.h.
 ///
-void topaz_resources_add_extension(
+void topaz_resources_add_decoder(
     topazResources_t *, 
-    const topazString_t * ext,
-    topazAsset_Type,
-    const topazAsset_LoadingProfile_t *,
-    const topazAsset_Attributes_t *
+    const topazString_t * decoderBackendName
+    
 );
 
 

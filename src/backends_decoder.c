@@ -30,12 +30,20 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/backends/decoder.h>
 #include <topaz/containers/string.h>
+#include <topaz/containers/table.h>
+#include <topaz/containers/array.h>
+#include <stdlib.h>
+#include <string.h>
+#ifdef TOPAZDC_DEBUG
+    #include <assert.h>
+#endif
+
 struct topazDecoder_t {
     topazAsset_Type type;
-    topazString_t * ext;
+    topazArray_t * exts;
     uint64_t recBufferSize;
 
-    topazConsoleDisplayAPI_t api;
+    topazDecoderAPI_t api;
     topazSystem_Backend_t * backend;
     void * userData;    
     
@@ -57,13 +65,18 @@ typedef struct {
 
     // buffer for stream
     uint8_t * buffer;
+
+    // whether canceling was from the decoder implementation. If false, the cancel is user-requested
+    int badStream;
 } DecoderAssetState;
 
+
+#define TOPAZ_ASSET__STREAM_THRESHOLD (1024*16)
 
 topazDecoder_t * topaz_decoder_create(
     topaz_t * topaz, 
     topazSystem_Backend_t * b, 
-    topazConsoleDisplayAPI_t api
+    topazDecoderAPI_t api
 ) {
     #ifdef TOPAZDC_DEBUG
         assert(b && "topazSystem_Backend_t pointer cannot be NULL.");
@@ -77,21 +90,46 @@ topazDecoder_t * topaz_decoder_create(
     topazDecoder_t * out = calloc(1, sizeof(topazDecoder_t));
     out->api = api;
     out->backend = b;
-    out->ext = topaz_string_create();
+    out->exts = topaz_array_create(sizeof(topazString_t *));
     out->streams = topaz_table_create_hash_pointer();
     out->recBufferSize = TOPAZ_ASSET__STREAM_THRESHOLD;
     out->type = topazAsset_Type_None;
-    out->userData = out->api.decoder_create(out, topaz, out->ext, &out->type, &out->recBufferSize);
+    out->userData = out->api.decoder_create(out, topaz, out->exts, &out->type, &out->recBufferSize);
   
 
     return out;
-}
+} 
 
 
 
 
 void topaz_decoder_destroy(topazDecoder_t * d) {
+    topazTableIter_t * iter = topaz_table_iter_create();
+    topazArray_t * arr = topaz_array_create(sizeof(topazAsset_t *));
+    for(topaz_table_iter_start(iter, d->streams);
+        !topaz_table_iter_is_end(iter);
+        topaz_table_iter_proceed(iter)) {
+        const topazAsset_t * a = topaz_table_iter_get_key(iter);
+        topaz_array_push(arr, a);
+    }
 
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(arr);
+    topazAsset_t ** assets = topaz_array_get_data(arr);
+    for(i = 0; i < len; ++i) {
+        topaz_decoder_stream_cancel(d, assets[i]);
+    }
+
+    d->api.decoder_destroy(d, d->userData);
+    
+    topaz_table_destroy(d->streams);
+    topaz_table_iter_destroy(iter);
+    len = topaz_array_get_size(d->exts);
+    for(i = 0; i < len; ++i) {
+        topaz_string_destroy(topaz_array_at(d->exts, topazString_t *, i));
+    }
+    topaz_array_destroy(d->exts);
+    free(d);
 }
 
 
@@ -104,20 +142,34 @@ topazDecoderAPI_t topaz_deocder_get_api(topazDecoder_t * d) {
     return d->api;
 }
 
-const topazString_t * topaz_decoder_get_extension(const topazDecoder_t * d) {
-    return d->name;
+const topazArray_t * topaz_decoder_get_extensions(const topazDecoder_t * d) {
+    return d->exts;
 }
 
-topazAsset_Type_t topaz_decoder_get_type(const topazDecoder_t * d) {
+topazAsset_Type topaz_decoder_get_type(const topazDecoder_t * d) {
     return d->type;
 }
 
-void topaz_decoder_stream_set_threshold(topazDecoder_t * d, uint64_t amt) {
-    d->threshold = amt;
+
+int topaz_decoder_load(topazDecoder_t * d, topazAsset_t * asset, const void * dataIn, uint64_t numBytes) {
+    topaz_decoder_stream_start(d, asset);
+    topaz_decoder_stream_set_threshold(d, asset, numBytes);
+    if (topaz_decoder_stream(d, asset, dataIn, numBytes)) {
+        topaz_decoder_stream_finish(d, asset);
+        return 1;
+    } 
+    return 0;
 }
 
+
+
+
 void topaz_decoder_stream_start(topazDecoder_t * d, topazAsset_t * asset) {
-    DecoderAssetState * state = calloc(1, sizeof(DecoderAssetState));
+    DecoderAssetState * state = topaz_table_find(d->streams, asset);
+    if (state) return;
+
+    state = calloc(1, sizeof(DecoderAssetState));
+    if (!state) return;
     state->buffer = malloc(d->recBufferSize);
     state->threshold = d->recBufferSize;
     topaz_table_insert(d->streams, asset, state);
@@ -126,103 +178,156 @@ void topaz_decoder_stream_start(topazDecoder_t * d, topazAsset_t * asset) {
 
 void topaz_decoder_stream_set_threshold(topazDecoder_t * d, topazAsset_t * asset, uint64_t th) {
     DecoderAssetState * state = topaz_table_find(d->streams, asset);
+    if (!state) return;
+    if (!th) th = TOPAZ_ASSET__STREAM_THRESHOLD;
+
+    if (th > state->threshold)
+        state->buffer = realloc(state->buffer, th);    
+
     state->threshold = th;
-    state->buffer = realloc(state->buffer);
 }
 
 
-static void stream_round(DecoderAssetState * a, const void * data, uint64_t * numBytes) {
-    int left = a->threshold - a->tsize;
-    uint64_t count = left < *numBytes ? left : *numBytes;
-    memcpy(a->buffer, data, count);
 
-    *numBytes -= count;
 
-    if (a->tsize == a->threshold) {
-        topaz_decoder_stream_flush(a);
-    }
-}
+int topaz_decoder_stream(topazDecoder_t * d, topazAsset_t * asset, const void * data, uint64_t numBytes) {    
+    DecoderAssetState * state = topaz_table_find(d->streams, asset);
 
-void topaz_decoder_stream(topazAsset_t * a, const void * data, uint64_t numBytes) {
-    if (!a->stream) return;
 
-    topaz_array_push_n(
-        a->stream,
+    uint64_t limit = state->tsize + numBytes < state->threshold ? numBytes : state->threshold - state->tsize;
+    memcpy(
+        state->buffer + state->tsize,
         data,
-        numBytes
+        limit
     );
+    state->tsize += limit;
 
-
-    while(numBytes) {
-        stream_round(a, data, &numBytes);
-    }
-
-}
-
-void topaz_asset_stream_flush(topazAsset_t * a) {
-    if (!(a->stream && a->streamSize)) return;
-    if (a->loading.on_stream) {
-        a->loading.on_stream(
-            a,
-            a->streamBuffer,
-            a->streamSize
-        );
-    }
-    a->streamSize = 0;
-}
-
-
-void topaz_asset_stream_end(topazAsset_t * a) {
-    if (!a->stream) return;
-    topaz_asset_stream_flush(a);
-
-
-    // trigger on_load 
-    a->isLoaded = a->loading.on_load(
-        a, 
-        topaz_array_get_data(a->stream),
-        topaz_array_get_size(a->stream)
-    );
+    if (state->tsize >= state->threshold) {
+        state->tsize = 0; // prevents bad behavior if stream callback tries to flush the buffer
+        if (!d->api.decoder_stream(
+            d,
+            d->userData,
+            asset,
+            state->userData,
+            state->buffer,
+            state->threshold
+        )) {
+            state->badStream = 1;
+            topaz_decoder_stream_cancel(d, asset);
+            return 0;        
+        }
+    }   
+     
     
 
-    // cleanup
-    topaz_asset_stream_cancel(a);
-}
+    // process extra data 
+    if (numBytes > limit) {
+        numBytes -= limit;
+        data += limit;        
 
-void topaz_asset_stream_cancel(topazAsset_t * a) {
-    if (!a->stream) return;
+        // skip populating stream buffer if remaining buffer would trigger a flush anyway
+        while(numBytes >= state->threshold) {
 
-    topaz_array_destroy(a->stream);
-    free(a->streamBuffer);
-    a->streamSize = 0;
-    a->stream = NULL;
-    a->streamBuffer = NULL;    
-    if (a->loading.on_stream_cancel) {
-        a->loading.on_stream_cancel(
-            a, NULL, 0
-        );
+            // could support: flushing and threshold changes
+            numBytes -= state->threshold;
+            const void * next = data + state->threshold;
+            if (!d->api.decoder_stream(
+                d,
+                d->userData,
+                asset,
+                state->userData,
+                data,
+                state->threshold
+            )) {
+                state->badStream = 1;
+                topaz_decoder_stream_cancel(d, asset);
+                return 0;        
+            }
+            data = next;
+        }
+
+        // dump remaining in buffer
+        if (numBytes) {
+            memcpy(state->buffer, data, numBytes);
+            state->tsize = numBytes;
+        }
     }
+    return 1;
+}
+
+
+int topaz_decoder_stream_flush(topazDecoder_t * d, topazAsset_t * asset) {
+    DecoderAssetState * state = topaz_table_find(d->streams, asset);
+    if (!state) return 0;
+    if (!state->tsize) return 0;
+    
+    int res = d->api.decoder_stream(
+        d,
+        d->userData,
+        asset,
+        state->userData,
+        state->buffer,
+        state->tsize
+    );
+    state->tsize = 0;
+
+    if (!res) {
+        state->badStream = 1;
+        topaz_decoder_stream_cancel(d, asset);
+    }   
+    return res;
 }
 
 
 
-
-
-
-int topaz_asset_load(
-    topazAsset_t * a, 
-    const void * data,
-    uint64_t dataSize
+static void decoder_state_cleanup(
+    topazTable_t * streams,
+    topazAsset_t * key,
+    DecoderAssetState * data
 ) {
-    a->isLoaded = a->loading.on_load(a, data, dataSize);
-    return a->isLoaded;
+    free(data->buffer);
+    free(data);
+    topaz_table_remove(streams, key);
 }
 
-void topaz_asset_stream_start(topazAsset_t * a) {
-    // stream array is the flag for stream mode;
-    if (a->stream) return;
 
-    a->stream = topaz_array_create(sizeof(uint8_t));
-    a->streamBuffer = malloc(TOPAZ_ASSET__STREAM_THRESHOLD);
-    a->streamSize = 0;
+void topaz_decoder_stream_finish(topazDecoder_t * d, topazAsset_t * asset) {
+    DecoderAssetState * state = topaz_table_find(d->streams, asset);
+    if (!state) return;
+
+    topaz_decoder_stream_flush(d, asset);
+
+    d->api.decoder_stream_finish(
+        d,
+        d->userData,
+        asset, 
+        state->userData
+    );
+
+    decoder_state_cleanup(d->streams, asset, state);
 }
+
+void topaz_decoder_stream_cancel(topazDecoder_t * d, topazAsset_t * asset) {
+    DecoderAssetState * state = topaz_table_find(d->streams, asset);
+    if (!state) return;
+
+    d->api.decoder_stream_cancel(
+        d,
+        d->userData,
+        asset, 
+        state->userData,
+        state->badStream
+    );
+
+    decoder_state_cleanup(d->streams, asset, state);    
+}
+
+int topaz_decoder_is_streaming(topazDecoder_t * d, topazAsset_t * asset) {
+    return topaz_table_find(d->streams, asset) != NULL;
+}
+
+
+
+
+
+

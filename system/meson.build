@@ -25,6 +25,10 @@ subdir(handlerPreferredTime)
 subdir(handlerPreferredScript)
 subdir(handlerPreferredConsoleDisplay)
 subdir(handlerPreferredFontRenderer)
+foreach decoder : handlerPreferredDecoders
+    subdir(decoder)
+endforeach
+
 
 # actually process results
 foreach handler : handlers 

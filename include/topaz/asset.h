@@ -60,7 +60,7 @@ typedef enum {
     topazAsset_Type_Data,
     topazAsset_Type_Actor,
     topazAsset_Type_Count,    
-} topazAsset_Type_t;
+} topazAsset_Type;
 
 
 
@@ -121,7 +121,7 @@ const topazString_t * topaz_asset_get_name(const topazAsset_t *);
 
 /// Gets the type of the asset. This is immutable.
 ///
-topazAsset_Type_t topaz_asset_get_type(const topazAsset_t *);
+topazAsset_Type topaz_asset_get_type(const topazAsset_t *);
 
 
 #endif

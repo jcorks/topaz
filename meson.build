@@ -16,6 +16,7 @@ mainIncdir = include_directories('include')
 src = [
     'src/asset.c',
     'src/assets_image.c',
+    'src/assets_data.c',
     'src/backends_audio_manager.c',
     'src/backends_console_display.c',
     'src/backends_display.c',
@@ -25,6 +26,7 @@ src = [
     'src/backends_renderer.c',
     'src/backends_time.c',
     'src/backends_script.c',
+    'src/backends_decoder.c',
     'src/camera.c',
     'src/color.c',
     'src/component.c',
@@ -116,7 +118,14 @@ handlerPreferredTime           = 'time/'           + get_option('TimeBackend')
 handlerPreferredFilesys        = 'filesys/'        + get_option('FilesystemBackend')
 handlerPreferredScript         = 'script/'         + get_option('ScriptBackend')
 handlerPreferredConsoleDisplay = 'consoleDisplay/' + get_option('ConsoleDisplayBackend')
-handlerPreferredFontRenderer   = 'fontRenderer/'           + get_option('FontRenderer')
+handlerPreferredFontRenderer   = 'fontRenderer/'   + get_option('FontRendererBackend')
+
+_allDecs = get_option('DecoderBackends')
+handlerPreferredDecoders = []
+foreach s : _allDecs
+    handlerPreferredDecoders += 'decoder/' + s
+endforeach
+
 
 
 subdir('system')

@@ -91,7 +91,7 @@ option(
 )
 
 option(
-    'FontRenderer',
+    'FontRendererBackend',
     type : 'combo',
 
     value : 'noFontRenderer',
@@ -121,6 +121,19 @@ option(
         'noConsoleDisplay',
         'posix',
         'winapi'
+    ]
+)
+
+option(
+    'DecoderBackends',
+    type : 'array',
+
+    choices : [
+        'binary'
+    ],
+
+    value : [
+        'binary'
     ]
 )
 

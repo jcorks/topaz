@@ -39,6 +39,8 @@ DEALINGS IN THE SOFTWARE.
 
 
 #include <topaz/assets/image.h>
+#include <topaz/assets/data.h>
+
 
 #include <topaz/backends/audio_manager.h>
 #include <topaz/backends/display.h>
@@ -47,6 +49,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/backends/renderer.h>
 #include <topaz/backends/script.h>
 #include <topaz/backends/time.h>
+#include <topaz/backends/decoder.h>
 
 #include <topaz/containers/array.h>
 #include <topaz/containers/bin.h>
