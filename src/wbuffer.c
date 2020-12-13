@@ -80,12 +80,12 @@ void topaz_wbuffer_write_c_string(topazWbuffer_t * t, const topazString_t * str)
 void topaz_wbuffer_write_buffer(topazWbuffer_t * t, const void * src, uint64_t lenBytes) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazWbuffer_t pointer cannot be NULL.");
-        assert(!src &&  lenBytes && "topazWbuffer_t writing disallows a NULL buffer with a non-zero size");
+        assert(!(src && !lenBytes && "topazWbuffer_t writing disallows a NULL buffer with a non-zero size"));
     #endif
 
-    uint8_t * data = topaz_array_get_data(t->data);
 
     topaz_array_set_size(t->data, lenBytes + t->bufferPos);
+    uint8_t * data = topaz_array_get_data(t->data);
     memcpy(
         data+t->bufferPos, 
         src,

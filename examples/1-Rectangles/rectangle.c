@@ -1,6 +1,7 @@
 #include "rectangle.h"
 #include <topaz/all.h>
 #include <stdio.h>
+#include <string.h>
 static void on_active(topazInput_t * input, int key, float v, void * e) {
     if (key == topazKey_up && v > 0)
         topaz_entity_position(e)->y -= 10;
@@ -69,7 +70,17 @@ topazEntity_t * rectangle_create(topaz_t * ctx) {
     topaz_entity_add_component(e, shape);
 
 
+    
+    topazAsset_t * rawdata = topaz_data_create_empty(ctx);  
+    const char * str = "Testing testing!";
+    topaz_data_set(rawdata, TOPAZ_ARRAY_CAST((void*)str, uint8_t, strlen(str)));
 
+    topaz_resources_write_asset(
+        topaz_context_get_resources(ctx),
+        rawdata,
+        TOPAZ_STR_CAST("txt"),
+        TOPAZ_STR_CAST("TEST.txt")
+    );
 
 
 

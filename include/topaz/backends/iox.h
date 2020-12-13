@@ -29,83 +29,92 @@ DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef H_TOPAZDC__DECODER__INCLUDED
-#define H_TOPAZDC__DECODER__INCLUDED
+#ifndef H_TOPAZDC__IOX__INCLUDED
+#define H_TOPAZDC__IOX__INCLUDED
 
 #include <topaz/asset.h>
-#include <topaz/backends/api/decoder_api.h>
+#include <topaz/backends/api/iox_api.h>
 #include <topaz/system.h>
 
 
 
 /*
 
-    Decoder
+    IO Translator
     -----
     
-    The Decoder is responsible for interpreting byte data, translating and processing it 
-    to something useful, and taking this useful data to populate an asset.
+    The IO Translator (IOX) is responsible for interpreting byte data, translating and processing it 
+    to something useful, and taking this useful data to populate an asset or file.
 
 
 
 */
 
-typedef struct topazDecoder_t topazDecoder_t;
+typedef struct topazIOX_t topazIOX_t;
 
 
 
 
 
 
-/// Creates a new decoder object. The starting path is 
+
+/// Creates a new iox object. The starting path is 
 /// the same upon first creating the filsys instance.
 ///
-topazDecoder_t * topaz_decoder_create(
+topazIOX_t * topaz_iox_create(
     topaz_t *, 
     topazSystem_Backend_t *, 
-    topazDecoderAPI_t
+    topazIOXAPI_t
 );
 
 
-/// Destroys and cleans up a decoder API
+/// Destroys and cleans up a iox API
 ///
-void topaz_decoder_destroy(topazDecoder_t *);
+void topaz_iox_destroy(topazIOX_t *);
 
 
-/// Retrieves the backend for this decoder object.
+/// Retrieves the backend for this iox object.
 ///
-topazSystem_Backend_t * topaz_decoder_get_backend(topazDecoder_t *);
+topazSystem_Backend_t * topaz_iox_get_backend(topazIOX_t *);
 
 
-/// Returns the API for this decoder.
+/// Returns the API for this iox.
 ///
-topazDecoderAPI_t topaz_decoder_get_api(topazDecoder_t *);
+topazIOXAPI_t topaz_iox_get_api(topazIOX_t *);
 
 
-/// Gets the extensions associated with this decoder.
+/// Gets the extensions associated with this iox.
 ///
-const topazArray_t * topaz_decoder_get_extensions(const topazDecoder_t *);
+const topazArray_t * topaz_iox_get_extensions(const topazIOX_t *);
 
-/// Returns the asset type expected for this asset type
+/// Returns the asset type expected for this iox
 ///
-topazAsset_Type topaz_decoder_get_type(const topazDecoder_t *);
+topazAsset_Type topaz_iox_get_asset_type(const topazIOX_t *);
 
+
+/// Writes the state of the asset to a byte buffer.
+/// If an error occurs or the asset is invalid, the returned size 
+/// is 0.
+/// If the requested extension isnt recognized by the io translator, 
+/// the returned size is 0.
+///
+void * topaz_iox_encode(topazIOX_t *, topazAsset_t *, uint64_t * byteCount, const topazString_t * extension);
 
 
 /// Streams raw data from memory into an asset all at once. 
 /// If successful, returns TRUE. This is equivalent to:
-/// topaz_decoder_stream_start()
-/// topaz_decoder_stream(allData)
-/// topaz_decoder_stream_finish()
+/// topaz_iox_stream_start()
+/// topaz_iox_stream(allData)
+/// topaz_iox_stream_finish()
 ///
-int topaz_decoder_load(topazDecoder_t *, topazAsset_t *, const void * dataIn, uint64_t numBytes);
+int topaz_iox_load(topazIOX_t *, topazAsset_t *, const void * dataIn, uint64_t numBytes);
 
 
 
 
-/// Signals to the decoder to accept a new asset to begin to decode.
+/// Signals to the iox to accept a new asset to begin to decode.
 ///
-void topaz_decoder_stream_start(topazDecoder_t *, topazAsset_t *);
+void topaz_iox_stream_start(topazIOX_t *, topazAsset_t *);
 
 
 
@@ -114,22 +123,22 @@ void topaz_decoder_stream_start(topazDecoder_t *, topazAsset_t *);
 /// the data is passed to the on_stream callback for further processing.
 /// This can be used to control how often data is processed when 
 /// posting many individual stream requests. Setting a threshold of 
-/// 0 indicates that ever topaz_decoder_stream() triggers an
+/// 0 indicates that ever topaz_iox_stream() triggers an
 /// on_stream call.
 ///
-void topaz_decoder_stream_set_threshold(topazDecoder_t *, topazAsset_t *, uint64_t);
+void topaz_iox_stream_set_threshold(topazIOX_t *, topazAsset_t *, uint64_t);
 
 
 /// Called when the asset has been passed streaming data
 /// For more flexible performannce, asset streaming is 
-/// buffered, meaning not every topaz_decoder_stream() call
+/// buffered, meaning not every topaz_iox_stream() call
 /// will invoke an on-stream callback. Instead, once a threshold
 /// is reached, on_stream will be invoked.
-/// See topaz_decoder_stream_set_threshold()
+/// See topaz_iox_stream_set_threshold()
 /// If a problem occurs, the decoding process may be cancelled. If 
 /// such a thing were to happen, FALSE would be returned.
 ///
-int topaz_decoder_stream(topazDecoder_t *, topazAsset_t *, const void * dataIn, uint64_t byteSize);
+int topaz_iox_stream(topazIOX_t *, topazAsset_t *, const void * dataIn, uint64_t byteSize);
 
 
 /// Flushes the stream buffer. If theres any waiting data 
@@ -138,7 +147,7 @@ int topaz_decoder_stream(topazDecoder_t *, topazAsset_t *, const void * dataIn, 
 /// If a problem occurs, the decoding process may be cancelled. If 
 /// such a thing were to happen, FALSE would be returned.
 ///
-int topaz_decoder_stream_flush(topazDecoder_t *, topazAsset_t *);
+int topaz_iox_stream_flush(topazIOX_t *, topazAsset_t *);
 
 
 
@@ -151,16 +160,16 @@ int topaz_decoder_stream_flush(topazDecoder_t *, topazAsset_t *);
 /// of data loaded in. dataSizeBytes is the length of that 
 /// buffer in bytes.
 ///
-void topaz_decoder_stream_finish(topazDecoder_t *, topazAsset_t *);
+void topaz_iox_stream_finish(topazIOX_t *, topazAsset_t *);
 
 /// Called when the stream is cancelled. If the asset is not currently being 
 /// streamed, no action is taken.
 ///
-void topaz_decoder_stream_cancel(topazDecoder_t *, topazAsset_t *);
+void topaz_iox_stream_cancel(topazIOX_t *, topazAsset_t *);
 
 /// Returns whether the asset is question it currently being streamed.
 ///
-int topaz_decoder_is_streaming(topazDecoder_t *, topazAsset_t *);
+int topaz_iox_is_streaming(topazIOX_t *, topazAsset_t *);
 
 
 #endif

@@ -2,7 +2,7 @@
 #include <topaz/containers/table.h>
 #include <topaz/containers/string.h>
 #include <topaz/containers/array.h>
-#include <topaz/backends/api/decoder_api.h>
+#include <topaz/backends/api/iox_api.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <topaz/compat.h>
@@ -16,7 +16,7 @@ static topazTable_t * fontRenderers = NULL;
 static topazTable_t * displays = NULL;
 static topazTable_t * scripts = NULL;
 static topazTable_t * consoleDisplays = NULL;
-static topazTable_t * decoders = NULL;
+static topazTable_t * ioxs = NULL;
 
 // external
 void topaz_system_configure_base();
@@ -35,7 +35,7 @@ struct topazSystem_t {
     BackendHandler display;
     BackendHandler script;
     BackendHandler consoleDisplay;
-    BackendHandler decoder;
+    BackendHandler iox;
 
     topazArray_t * backends;
 };
@@ -71,7 +71,7 @@ static BackendHandler default_fontRenderer;
 static BackendHandler default_display;
 static BackendHandler default_script;
 static BackendHandler default_consoleDisplay;
-static BackendHandler default_decoder;
+static BackendHandler default_iox;
 
 BackendHandler * system_get_backend(topazSystem_t * s, const topazString_t * name) {
     if (topaz_string_test_eq(name, TOPAZ_STR_CAST("renderer"))) return &s->renderer;
@@ -83,7 +83,7 @@ BackendHandler * system_get_backend(topazSystem_t * s, const topazString_t * nam
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return &s->display;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return &s->script;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("consoleDisplay"))) return &s->consoleDisplay;
-    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("decoder"))) return &s->decoder;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("iox"))) return &s->iox;
     return NULL;
 }
 
@@ -97,7 +97,7 @@ static topazTable_t * backend_type_to_table(const topazString_t * name) {
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return displays;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return scripts;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("consoleDisplay"))) return consoleDisplays;
-    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("decoder"))) return decoders;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("iox"))) return ioxs;
     return NULL;
 }
 
@@ -132,7 +132,7 @@ static BackendHandler * get_backend_default(const topazString_t * name) {
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return &default_display;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("script"))) return &default_script;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("consoleDisplay"))) return &default_consoleDisplay;
-    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("decoder"))) return &default_decoder; 
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("iox"))) return &default_iox; 
    return NULL;
 }
 
@@ -153,7 +153,7 @@ void topaz_system_configure() {
     displays        = topaz_table_create_hash_topaz_string();
     scripts         = topaz_table_create_hash_topaz_string();
     consoleDisplays = topaz_table_create_hash_topaz_string();
-    decoders        = topaz_table_create_hash_topaz_string();
+    ioxs            = topaz_table_create_hash_topaz_string();
 
     topaz_system_configure_base();
 }
@@ -207,7 +207,7 @@ topazSystem_t * topaz_system_create_default() {
     s->display        = default_display;
     s->script         = default_script;
     s->consoleDisplay = default_consoleDisplay;
-    s->decoder        = default_decoder;
+    s->iox            = default_iox;
     s->backends = topaz_array_create(sizeof(topazSystem_Backend_t *));
     return s; 
 }

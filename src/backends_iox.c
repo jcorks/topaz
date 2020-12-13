@@ -28,7 +28,7 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
-#include <topaz/backends/decoder.h>
+#include <topaz/backends/iox.h>
 #include <topaz/containers/string.h>
 #include <topaz/containers/table.h>
 #include <topaz/containers/array.h>
@@ -38,12 +38,12 @@ DEALINGS IN THE SOFTWARE.
     #include <assert.h>
 #endif
 
-struct topazDecoder_t {
+struct topazIOX_t {
     topazAsset_Type type;
     topazArray_t * exts;
     uint64_t recBufferSize;
 
-    topazDecoderAPI_t api;
+    topazIOXAPI_t api;
     topazSystem_Backend_t * backend;
     void * userData;    
     
@@ -66,35 +66,35 @@ typedef struct {
     // buffer for stream
     uint8_t * buffer;
 
-    // whether canceling was from the decoder implementation. If false, the cancel is user-requested
+    // whether canceling was from the iox implementation. If false, the cancel is user-requested
     int badStream;
-} DecoderAssetState;
+} IOXAssetState;
 
 
 #define TOPAZ_ASSET__STREAM_THRESHOLD (1024*16)
 
-topazDecoder_t * topaz_decoder_create(
+topazIOX_t * topaz_iox_create(
     topaz_t * topaz, 
     topazSystem_Backend_t * b, 
-    topazDecoderAPI_t api
+    topazIOXAPI_t api
 ) {
     #ifdef TOPAZDC_DEBUG
         assert(b && "topazSystem_Backend_t pointer cannot be NULL.");
-        assert(api.decoder_create);
-        assert(api.decoder_destroy);
-        assert(api.decoder_stream_start);
-        assert(api.decoder_stream);
-        assert(api.decoder_stream_cancel);
-        assert(api.decoder_stream_finish);
+        assert(api.iox_create);
+        assert(api.iox_destroy);
+        assert(api.iox_stream_start);
+        assert(api.iox_stream);
+        assert(api.iox_stream_cancel);
+        assert(api.iox_stream_finish);
     #endif
-    topazDecoder_t * out = calloc(1, sizeof(topazDecoder_t));
+    topazIOX_t * out = calloc(1, sizeof(topazIOX_t));
     out->api = api;
     out->backend = b;
     out->exts = topaz_array_create(sizeof(topazString_t *));
     out->streams = topaz_table_create_hash_pointer();
     out->recBufferSize = TOPAZ_ASSET__STREAM_THRESHOLD;
     out->type = topazAsset_Type_None;
-    out->userData = out->api.decoder_create(out, topaz, out->exts, &out->type, &out->recBufferSize);
+    out->userData = out->api.iox_create(out, topaz, out->exts, &out->type, &out->recBufferSize);
   
 
     return out;
@@ -103,7 +103,7 @@ topazDecoder_t * topaz_decoder_create(
 
 
 
-void topaz_decoder_destroy(topazDecoder_t * d) {
+void topaz_iox_destroy(topazIOX_t * d) {
     topazTableIter_t * iter = topaz_table_iter_create();
     topazArray_t * arr = topaz_array_create(sizeof(topazAsset_t *));
     for(topaz_table_iter_start(iter, d->streams);
@@ -117,10 +117,10 @@ void topaz_decoder_destroy(topazDecoder_t * d) {
     uint32_t len = topaz_array_get_size(arr);
     topazAsset_t ** assets = topaz_array_get_data(arr);
     for(i = 0; i < len; ++i) {
-        topaz_decoder_stream_cancel(d, assets[i]);
+        topaz_iox_stream_cancel(d, assets[i]);
     }
 
-    d->api.decoder_destroy(d, d->userData);
+    d->api.iox_destroy(d, d->userData);
     
     topaz_table_destroy(d->streams);
     topaz_table_iter_destroy(iter);
@@ -134,28 +134,50 @@ void topaz_decoder_destroy(topazDecoder_t * d) {
 
 
 
-topazSystem_Backend_t * topaz_decoder_get_backend(topazDecoder_t * d) {
+topazSystem_Backend_t * topaz_iox_get_backend(topazIOX_t * d) {
     return d->backend;
 }
 
-topazDecoderAPI_t topaz_deocder_get_api(topazDecoder_t * d) {
+topazIOXAPI_t topaz_deocder_get_api(topazIOX_t * d) {
     return d->api;
 }
 
-const topazArray_t * topaz_decoder_get_extensions(const topazDecoder_t * d) {
+const topazArray_t * topaz_iox_get_extensions(const topazIOX_t * d) {
     return d->exts;
 }
 
-topazAsset_Type topaz_decoder_get_type(const topazDecoder_t * d) {
+topazAsset_Type topaz_iox_get_asset_type(const topazIOX_t * d) {
     return d->type;
 }
 
+void * topaz_iox_encode(topazIOX_t * d, topazAsset_t * asset, uint64_t * byteCount, const topazString_t * req) {
+    uint32_t i;
+    uint64_t size = topaz_array_get_size(d->exts);
+    for(i = 0; i < size; ++i) {
+        if (topaz_string_test_eq(topaz_array_at(d->exts, topazString_t *, i), req)) {
+            *byteCount = 0;
+            if (d->api.iox_encode) {
+                return d->api.iox_encode(
+                    d,
+                    d->userData,
+                    asset, 
+                    byteCount,
+                    req
+                );
+            }
+        }
+    }
 
-int topaz_decoder_load(topazDecoder_t * d, topazAsset_t * asset, const void * dataIn, uint64_t numBytes) {
-    topaz_decoder_stream_start(d, asset);
-    topaz_decoder_stream_set_threshold(d, asset, numBytes);
-    if (topaz_decoder_stream(d, asset, dataIn, numBytes)) {
-        topaz_decoder_stream_finish(d, asset);
+    *byteCount = 0;
+    return NULL;
+}
+
+
+int topaz_iox_load(topazIOX_t * d, topazAsset_t * asset, const void * dataIn, uint64_t numBytes) {
+    topaz_iox_stream_start(d, asset);
+    topaz_iox_stream_set_threshold(d, asset, numBytes);
+    if (topaz_iox_stream(d, asset, dataIn, numBytes)) {
+        topaz_iox_stream_finish(d, asset);
         return 1;
     } 
     return 0;
@@ -164,20 +186,20 @@ int topaz_decoder_load(topazDecoder_t * d, topazAsset_t * asset, const void * da
 
 
 
-void topaz_decoder_stream_start(topazDecoder_t * d, topazAsset_t * asset) {
-    DecoderAssetState * state = topaz_table_find(d->streams, asset);
+void topaz_iox_stream_start(topazIOX_t * d, topazAsset_t * asset) {
+    IOXAssetState * state = topaz_table_find(d->streams, asset);
     if (state) return;
 
-    state = calloc(1, sizeof(DecoderAssetState));
+    state = calloc(1, sizeof(IOXAssetState));
     if (!state) return;
     state->buffer = malloc(d->recBufferSize);
     state->threshold = d->recBufferSize;
     topaz_table_insert(d->streams, asset, state);
-    state->userData = d->api.decoder_stream_start(d, d->userData, asset);
+    state->userData = d->api.iox_stream_start(d, d->userData, asset);
 }
 
-void topaz_decoder_stream_set_threshold(topazDecoder_t * d, topazAsset_t * asset, uint64_t th) {
-    DecoderAssetState * state = topaz_table_find(d->streams, asset);
+void topaz_iox_stream_set_threshold(topazIOX_t * d, topazAsset_t * asset, uint64_t th) {
+    IOXAssetState * state = topaz_table_find(d->streams, asset);
     if (!state) return;
     if (!th) th = TOPAZ_ASSET__STREAM_THRESHOLD;
 
@@ -190,8 +212,8 @@ void topaz_decoder_stream_set_threshold(topazDecoder_t * d, topazAsset_t * asset
 
 
 
-int topaz_decoder_stream(topazDecoder_t * d, topazAsset_t * asset, const void * data, uint64_t numBytes) {    
-    DecoderAssetState * state = topaz_table_find(d->streams, asset);
+int topaz_iox_stream(topazIOX_t * d, topazAsset_t * asset, const void * data, uint64_t numBytes) {    
+    IOXAssetState * state = topaz_table_find(d->streams, asset);
 
 
     uint64_t limit = state->tsize + numBytes < state->threshold ? numBytes : state->threshold - state->tsize;
@@ -204,7 +226,7 @@ int topaz_decoder_stream(topazDecoder_t * d, topazAsset_t * asset, const void * 
 
     if (state->tsize >= state->threshold) {
         state->tsize = 0; // prevents bad behavior if stream callback tries to flush the buffer
-        if (!d->api.decoder_stream(
+        if (!d->api.iox_stream(
             d,
             d->userData,
             asset,
@@ -213,7 +235,7 @@ int topaz_decoder_stream(topazDecoder_t * d, topazAsset_t * asset, const void * 
             state->threshold
         )) {
             state->badStream = 1;
-            topaz_decoder_stream_cancel(d, asset);
+            topaz_iox_stream_cancel(d, asset);
             return 0;        
         }
     }   
@@ -231,7 +253,7 @@ int topaz_decoder_stream(topazDecoder_t * d, topazAsset_t * asset, const void * 
             // could support: flushing and threshold changes
             numBytes -= state->threshold;
             const void * next = data + state->threshold;
-            if (!d->api.decoder_stream(
+            if (!d->api.iox_stream(
                 d,
                 d->userData,
                 asset,
@@ -240,7 +262,7 @@ int topaz_decoder_stream(topazDecoder_t * d, topazAsset_t * asset, const void * 
                 state->threshold
             )) {
                 state->badStream = 1;
-                topaz_decoder_stream_cancel(d, asset);
+                topaz_iox_stream_cancel(d, asset);
                 return 0;        
             }
             data = next;
@@ -256,12 +278,12 @@ int topaz_decoder_stream(topazDecoder_t * d, topazAsset_t * asset, const void * 
 }
 
 
-int topaz_decoder_stream_flush(topazDecoder_t * d, topazAsset_t * asset) {
-    DecoderAssetState * state = topaz_table_find(d->streams, asset);
+int topaz_iox_stream_flush(topazIOX_t * d, topazAsset_t * asset) {
+    IOXAssetState * state = topaz_table_find(d->streams, asset);
     if (!state) return 0;
     if (!state->tsize) return 0;
     
-    int res = d->api.decoder_stream(
+    int res = d->api.iox_stream(
         d,
         d->userData,
         asset,
@@ -273,17 +295,17 @@ int topaz_decoder_stream_flush(topazDecoder_t * d, topazAsset_t * asset) {
 
     if (!res) {
         state->badStream = 1;
-        topaz_decoder_stream_cancel(d, asset);
+        topaz_iox_stream_cancel(d, asset);
     }   
     return res;
 }
 
 
 
-static void decoder_state_cleanup(
+static void iox_state_cleanup(
     topazTable_t * streams,
     topazAsset_t * key,
-    DecoderAssetState * data
+    IOXAssetState * data
 ) {
     free(data->buffer);
     free(data);
@@ -291,27 +313,27 @@ static void decoder_state_cleanup(
 }
 
 
-void topaz_decoder_stream_finish(topazDecoder_t * d, topazAsset_t * asset) {
-    DecoderAssetState * state = topaz_table_find(d->streams, asset);
+void topaz_iox_stream_finish(topazIOX_t * d, topazAsset_t * asset) {
+    IOXAssetState * state = topaz_table_find(d->streams, asset);
     if (!state) return;
 
-    topaz_decoder_stream_flush(d, asset);
+    topaz_iox_stream_flush(d, asset);
 
-    d->api.decoder_stream_finish(
+    d->api.iox_stream_finish(
         d,
         d->userData,
         asset, 
         state->userData
     );
 
-    decoder_state_cleanup(d->streams, asset, state);
+    iox_state_cleanup(d->streams, asset, state);
 }
 
-void topaz_decoder_stream_cancel(topazDecoder_t * d, topazAsset_t * asset) {
-    DecoderAssetState * state = topaz_table_find(d->streams, asset);
+void topaz_iox_stream_cancel(topazIOX_t * d, topazAsset_t * asset) {
+    IOXAssetState * state = topaz_table_find(d->streams, asset);
     if (!state) return;
 
-    d->api.decoder_stream_cancel(
+    d->api.iox_stream_cancel(
         d,
         d->userData,
         asset, 
@@ -319,10 +341,10 @@ void topaz_decoder_stream_cancel(topazDecoder_t * d, topazAsset_t * asset) {
         state->badStream
     );
 
-    decoder_state_cleanup(d->streams, asset, state);    
+    iox_state_cleanup(d->streams, asset, state);    
 }
 
-int topaz_decoder_is_streaming(topazDecoder_t * d, topazAsset_t * asset) {
+int topaz_iox_is_streaming(topazIOX_t * d, topazAsset_t * asset) {
     return topaz_table_find(d->streams, asset) != NULL;
 }
 

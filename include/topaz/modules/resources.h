@@ -35,7 +35,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/asset.h>
 typedef struct topaz_t topaz_t;
-typedef struct topazDecoder_t topazDecoder_t;
+typedef struct topazIOX_t topazIOX_t;
 
 
 /*
@@ -73,7 +73,7 @@ int topaz_resources_set_path(topazResources_t *, const topazString_t *);
 /// Convenience function that attempts to load a new asset 
 /// from disk directly. This is recommended for small assets that are 
 /// effectively instanteous. If a more robust solution is needed,
-/// consider topaz_resources_fetch_asset() + topaz_resources_get_decoder
+/// consider topaz_resources_fetch_asset() + topaz_resources_get_translator
 ///
 /// Like with topaz_resources_fetch_asset, if an asset of the given name 
 /// already exists, the preloaded asset is returned. If not, 
@@ -92,6 +92,16 @@ topazAsset_t * topaz_resources_load_asset(
 );
 
 
+/// Writes an asset to the filesystem at the outputpath 
+/// given relative to the resources path.
+///
+int topaz_resources_write_asset(
+    topazResources_t *,
+    topazAsset_t *,
+    const topazString_t * fileType,
+    const topazString_t * outputPath
+);
+
 
 /// Either creates a new asset if the given name doesn't exist, or 
 /// returns an existing asset.
@@ -107,9 +117,11 @@ topazAsset_t * topaz_resources_fetch_asset(
     const topazString_t * name
 );
 
-/// Fetches a decoder for the given filetype. The decoder can be used for 
-/// fine control over timing and loading of assets. This 
-topazDecoder_t * topaz_resources_get_decoder(
+/// Fetches a translator for the given filetype. The translator can be used for 
+/// fine control over timing and loading of assets. 
+/// See iox.h
+///
+topazIOX_t * topaz_resources_get_translator(
     topazResources_t *,
     const topazString_t * fileExtension
 );
@@ -129,13 +141,13 @@ int topaz_resources_is_extension_supported(
 
 
 /// Adds a new possible extension to be read.
-/// The decoderBackendName is the name of the backend registered with 
+/// The ioxBackendName is the name of the backend registered with 
 /// the topaz system instance (topaz_context_get_system()). To add a 
 /// new extension, a new backend handler will have to be made. See system.h.
 ///
-void topaz_resources_add_decoder(
+void topaz_resources_add_translator(
     topazResources_t *, 
-    const topazString_t * decoderBackendName
+    const topazString_t * ioxBackendName
     
 );
 

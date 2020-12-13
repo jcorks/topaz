@@ -26,7 +26,7 @@ src = [
     'src/backends_renderer.c',
     'src/backends_time.c',
     'src/backends_script.c',
-    'src/backends_decoder.c',
+    'src/backends_iox.c',
     'src/camera.c',
     'src/color.c',
     'src/component.c',
@@ -120,10 +120,10 @@ handlerPreferredScript         = 'script/'         + get_option('ScriptBackend')
 handlerPreferredConsoleDisplay = 'consoleDisplay/' + get_option('ConsoleDisplayBackend')
 handlerPreferredFontRenderer   = 'fontRenderer/'   + get_option('FontRendererBackend')
 
-_allDecs = get_option('DecoderBackends')
-handlerPreferredDecoders = []
+_allDecs = get_option('IOTranslators')
+handlerPreferredIOXs = []
 foreach s : _allDecs
-    handlerPreferredDecoders += 'decoder/' + s
+    handlerPreferredIOXs += 'iox/' + s
 endforeach
 
 

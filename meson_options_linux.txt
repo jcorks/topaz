@@ -125,15 +125,15 @@ option(
 )
 
 option(
-    'DecoderBackends',
+    'IOTranslators',
     type : 'array',
 
     choices : [
-        'binary'
+        'rawdata'
     ],
 
     value : [
-        'binary'
+        'rawdata'
     ]
 )
 

@@ -25,8 +25,8 @@ subdir(handlerPreferredTime)
 subdir(handlerPreferredScript)
 subdir(handlerPreferredConsoleDisplay)
 subdir(handlerPreferredFontRenderer)
-foreach decoder : handlerPreferredDecoders
-    subdir(decoder)
+foreach iox : handlerPreferredIOXs
+    subdir(iox)
 endforeach
 
 

@@ -247,7 +247,7 @@ static int topaz_filesys_posix__write(
     topaz_string_concat(fullPath, fname);
     
     const topazArray_t * arr = topaz_wbuffer_get_data(data);
-    FILE * f = fopen("wb", topaz_string_get_c_str(fullPath));
+    FILE * f = fopen(topaz_string_get_c_str(fullPath), "wb");
     if (f) {
         fwrite(
             topaz_array_get_data(arr),
