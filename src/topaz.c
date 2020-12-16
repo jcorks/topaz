@@ -469,7 +469,7 @@ uint64_t topaz_context_get_time(topaz_t * t) {
 }
 
 topazFilesys_t * topaz_context_filesys_create(topaz_t * t) {
-    topazFilesysAPI_t api;
+    topazFilesysAPI_t api = {};
     topazSystem_Backend_t * backend = topaz_system_create_backend(
         t->system,
         TOPAZ_STR_CAST("filesys"),

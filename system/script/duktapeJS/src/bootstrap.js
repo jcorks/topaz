@@ -291,7 +291,7 @@ topaz = {
         },
 
         loadAsset : function(ext, name) {
-            return topaz.resources._rawAssetToInstance(topaz_resources__fetch_asset(ext, name));
+            return topaz.resources._rawAssetToInstance(topaz_resources__load_asset(ext, name));
         },
 
         writeAsset : function(asset, ext, name) {
