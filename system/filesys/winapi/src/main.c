@@ -41,6 +41,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/compat.h>
 #include <string.h>
 #include <windows.h>
+#include <shlwapi.h>
 #include <direct.h> // _getcwd
 #include <stdio.h>
 #include "backend.h"
@@ -52,17 +53,6 @@ typedef struct {
 } WINAPIFilesysData;
 
 
-
-static void * topaz_filesys_winapi__create(topazFilesys_t * fsys, topaz_t * ctx) {
-    WINAPIFilesysData * tData = calloc(1, sizeof(WINAPIFilesysData));
-    tData->dirObjects = topaz_array_create(sizeof(topazString_t*));
-    tData->dirIsFile = topaz_array_create(sizeof(int));
-    char * path = malloc(PATH_MAX+1);
-    _getcwd(path, PATH_MAX);
-    tData->currentPath = topaz_string_create_from_c_str(path);
-    free(path);
-    return tData;
-}
 
 
 
@@ -93,10 +83,14 @@ static void topaz_filesys_winapi_populate_objects(WINAPIFilesysData * fs) {
     HANDLE dObj;
     WIN32_FIND_DATA ls;
 
-    dObj = FindFirstFile(topaz_string_get_c_str(fs->currentPath), &ls);
+    topazString_t * search = topaz_string_clone(fs->currentPath);
+    topaz_string_concat(search, TOPAZ_STR_CAST("\\*"));
+
+    dObj = FindFirstFile(topaz_string_get_c_str(search), &ls);
     if (dObj == INVALID_HANDLE_VALUE) {
         return;
     }
+    topaz_string_destroy(search);
 
 
     
@@ -129,6 +123,18 @@ static void topaz_filesys_winapi_populate_objects(WINAPIFilesysData * fs) {
 
 	// dump file names in base vector;
     
+}
+
+static void * topaz_filesys_winapi__create(topazFilesys_t * fsys, topaz_t * ctx) {
+    WINAPIFilesysData * tData = calloc(1, sizeof(WINAPIFilesysData));
+    tData->dirObjects = topaz_array_create(sizeof(topazString_t*));
+    tData->dirIsFile = topaz_array_create(sizeof(int));
+    char * path = malloc(PATH_MAX+1);
+    _getcwd(path, PATH_MAX);
+    tData->currentPath = topaz_string_create_from_c_str(path);
+    topaz_filesys_winapi_populate_objects(tData);
+    free(path);
+    return tData;
 }
 
 
@@ -175,6 +181,20 @@ static int topaz_filesys_winapi__go_to_parent(topazFilesys_t * fsys, void * user
 static const topazString_t * topaz_filesys_winapi__get_path(topazFilesys_t * fsys, void * userData) {
     WINAPIFilesysData * fs = userData;
     return fs->currentPath;    
+}
+
+static topazString_t * topaz_filesys_winapi__get_child_path(topazFilesys_t * fsys, void * userData, const topazString_t * item) {
+    WINAPIFilesysData * fs = userData;
+    topazString_t * out = topaz_string_clone(fs->currentPath);
+    topaz_string_concat(out, TOPAZ_STR_CAST("\\"));
+    topaz_string_concat(out, item);
+
+    
+
+    if (GetFileAttributes(topaz_string_get_c_str(out)) == INVALID_FILE_ATTRIBUTES) {
+        topaz_string_set(out, TOPAZ_STR_CAST(""));
+    }
+    return out;    
 }
 
 static int topaz_filesys_winapi__create_node(topazFilesys_t * fsys, void * userData, const topazString_t * dir) {
@@ -357,7 +377,7 @@ void topaz_system_filesys_winapi__backend(
         NULL,
 
 
-
+ 
         // backend callback user data
         NULL,
 
@@ -377,6 +397,7 @@ void topaz_system_filesys_winapi__backend(
     api->filesys_go_to_child = topaz_filesys_winapi__go_to_child;
     api->filesys_go_to_parent = topaz_filesys_winapi__go_to_parent;
     api->filesys_get_path = topaz_filesys_winapi__get_path;
+    api->filesys_get_child_path = topaz_filesys_winapi__get_child_path;
     api->filesys_create_node = topaz_filesys_winapi__create_node;
     api->filesys_read = topaz_filesys_winapi__read;
     api->filesys_write = topaz_filesys_winapi__write;

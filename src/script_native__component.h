@@ -54,7 +54,7 @@ TSO_SCRIPT_API_FN(component_api__create) {
     TSO_ARG_0;
     topazComponent_t * component = topaz_component_create(topaz_script_object_as_string(arg0), ((topazScriptManager_t*)context)->ctx);
     // creates new object and sets native pointer
-    TSO_OBJECT_NEW(component, TSO_OBJECT_ID__COMPONENT, NULL);
+    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT, NULL);
 
 
 
@@ -84,7 +84,7 @@ TSO_SCRIPT_API_FN(component_api__create) {
 TSO_SCRIPT_API_FN(component_api__destroy) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     topaz_component_destroy(native);    
     TSO_NO_RETURN;
 }
@@ -92,7 +92,7 @@ TSO_SCRIPT_API_FN(component_api__destroy) {
 TSO_SCRIPT_API_FN(component_api__step) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     topaz_component_step(native);
     TSO_NO_RETURN;
 }
@@ -100,7 +100,7 @@ TSO_SCRIPT_API_FN(component_api__step) {
 TSO_SCRIPT_API_FN(component_api__draw) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     topaz_component_draw(native);
     TSO_NO_RETURN;
 }
@@ -109,7 +109,7 @@ TSO_SCRIPT_API_FN(component_api__set_stepping) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     topaz_component_set_stepping(native, topaz_script_object_as_number(arg1));
     TSO_NO_RETURN;
 }
@@ -118,7 +118,7 @@ TSO_SCRIPT_API_FN(component_api__set_drawing) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     topaz_component_set_drawing(native, topaz_script_object_as_number(arg1));
     TSO_NO_RETURN;
 }
@@ -127,14 +127,14 @@ TSO_SCRIPT_API_FN(component_api__set_drawing) {
 TSO_SCRIPT_API_FN(component_api__get_stepping) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     return topaz_script_object_from_int(script, topaz_component_get_stepping(native));
 }
 
 TSO_SCRIPT_API_FN(component_api__get_drawing) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     return topaz_script_object_from_int(script, topaz_component_get_drawing(native));
 }
 
@@ -143,7 +143,7 @@ TSO_SCRIPT_API_FN(component_api__set_tag) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     topaz_component_set_tag(native, topaz_script_object_as_string(arg1));
     TSO_NO_RETURN;
 }
@@ -152,7 +152,7 @@ TSO_SCRIPT_API_FN(component_api__set_tag) {
 TSO_SCRIPT_API_FN(component_api__get_tag) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     return topaz_script_object_from_string(script, topaz_component_get_tag(native));
 }
 
@@ -160,20 +160,20 @@ TSO_SCRIPT_API_FN(component_api__get_tag) {
 TSO_SCRIPT_API_FN(component_api__get_host) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     topazEntity_t * out = topaz_component_get_host(native);
     if (!out) out = topaz_entity_null();
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(out, TSO_OBJECT_ID__ENTITY, NULL);
+    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL);
     return object;
 }
 
 
 TSO_SCRIPT_API_FN(component_api__null) {
     topazComponent_t * out = topaz_component_null();
-    TSO_OBJECT_NEW(out, TSO_OBJECT_ID__COMPONENT, NULL);
+    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__COMPONENT, NULL);
     return object;
 }
 
@@ -185,8 +185,8 @@ TSO_SCRIPT_API_FN(component_api__emit_event) {
     TSO_ARG_0;
     TSO_ARG_1; // event name
     TSO_ARG_2; // entity
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
-    TSO_NATIVIZE_2(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
+    TSO_NATIVIZE_2(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
     
     topaz_component_emit_event(
         native,
@@ -202,7 +202,7 @@ TSO_SCRIPT_API_FN(component_api__emit_event_anonymous) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1; // event name
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     
     topaz_component_emit_event_anonymous(
         native,
@@ -216,7 +216,7 @@ TSO_SCRIPT_API_FN(component_api__can_handle_event) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     return topaz_script_object_from_int(
         script, 
         topaz_component_can_handle_event(native, topaz_script_object_as_string(arg1))
@@ -247,7 +247,7 @@ static int component_api_callback(topazComponent_t * c, void * data, topazEntity
         if (sourceObject) {
             a[1] = sourceObject;
         } else {
-            TSO_OBJECT_NEW(source, TSO_OBJECT_ID__ENTITY, NULL);
+            TSO_OBJECT_NEW(source, TSO_OBJECT_TYPE__ENTITY, NULL);
             a[1] = object;
         }    
         topaz_script_object_reference_call(
@@ -270,7 +270,7 @@ TSO_SCRIPT_API_FN(component_api__install_event) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT); 
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT); 
 
     TSOCHandlerData * data = calloc(1, sizeof(TSOCHandlerData));
     data->source = native;
@@ -301,7 +301,7 @@ TSO_SCRIPT_API_FN(component_api__uninstall_event) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
 
     //TODO: check callable??????
     topaz_component_uninstall_event(
@@ -318,7 +318,7 @@ TSO_SCRIPT_API_FN(component_api__install_hook) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
 
     TSOCHandlerData * data = calloc(1, sizeof(TSOCHandlerData));
     data->source = native;
@@ -354,7 +354,7 @@ TSO_SCRIPT_API_FN(component_api__uninstall_hook) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
 
     //TODO: check callable??????
     topaz_component_uninstall_hook(
@@ -372,7 +372,7 @@ TSO_SCRIPT_API_FN(component_api__install_handler) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
 
     TSOCHandlerData * data = calloc(1, sizeof(TSOCHandlerData));
     data->source = native;
@@ -408,7 +408,7 @@ TSO_SCRIPT_API_FN(component_api__uninstall_handler) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
 
     //TODO: check callable??????
     topaz_component_uninstall_handler(
@@ -438,8 +438,8 @@ TSO_SCRIPT_API_FN(entity_api__add_component) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_NATIVIZE( topazEntity_t *, TSO_OBJECT_ID__ENTITY);
-    TSO_NATIVIZE_1(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE( topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);
+    TSO_NATIVIZE_1(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
 
     topaz_entity_add_component(
         native,
@@ -453,8 +453,8 @@ TSO_SCRIPT_API_FN(entity_api__add_component_after) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_NATIVIZE( topazEntity_t *, TSO_OBJECT_ID__ENTITY);
-    TSO_NATIVIZE_1(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);   
+    TSO_NATIVIZE( topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);
+    TSO_NATIVIZE_1(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
 
     topaz_entity_add_component_after(
         native,
@@ -468,7 +468,7 @@ TSO_SCRIPT_API_FN(entity_api__add_component_after) {
 TSO_SCRIPT_API_FN(entity_api__get_component_count) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);
 
     uint32_t count = topaz_array_get_size(topaz_entity_get_components(native));
     return topaz_script_object_from_int(script, count);
@@ -478,7 +478,7 @@ TSO_SCRIPT_API_FN(entity_api__get_nth_component) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);
 
     int index = topaz_script_object_as_int(arg1);
     uint32_t count = topaz_array_get_size(topaz_entity_get_components(native));
@@ -492,7 +492,7 @@ TSO_SCRIPT_API_FN(entity_api__get_nth_component) {
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(component);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(component, TSO_OBJECT_ID__COMPONENT, NULL);
+    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT, NULL);
     return object;
 }
 
@@ -501,7 +501,7 @@ TSO_SCRIPT_API_FN(entity_api__query_component) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);
 
     const topazString_t * str = topaz_script_object_as_string(arg1);
 
@@ -511,7 +511,7 @@ TSO_SCRIPT_API_FN(entity_api__query_component) {
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(component);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(component, TSO_OBJECT_ID__COMPONENT, NULL);
+    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT, NULL);
     return object;
 }
 
@@ -519,8 +519,8 @@ TSO_SCRIPT_API_FN(entity_api__remove_component) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);
-    TSO_NATIVIZE_1(topazComponent_t *, TSO_OBJECT_ID__COMPONENT);
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);
+    TSO_NATIVIZE_1(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);
 
     topaz_entity_remove_component(native, native1);
     TSO_NO_RETURN;

@@ -25,6 +25,7 @@ struct topazResources_t {
     topazTable_t * name2asset;
 
     topazTable_t * ioxs; //extension -> iox
+    topazArray_t * fsAssets;
 };
 
 
@@ -46,6 +47,9 @@ topazResources_t * topaz_resources_create(topaz_t * ctx) {
         topaz_resources_add_translator(out, name);
     }
     topaz_array_destroy(ioxNames);
+
+
+    out->fsAssets = topaz_array_create(sizeof(topazString_t*));
     
     return out;
 }
@@ -330,3 +334,58 @@ void topaz_resources_add_translator(
         );
     }
 }
+
+
+void topaz_resources_query_asset_paths(topazResources_t * p) {
+
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(p->fsAssets);
+    for(i = 0; i < len; ++i) {
+        topaz_string_destroy(topaz_array_at(p->fsAssets, topazString_t *, i));
+    }
+    topaz_array_set_size(p->fsAssets, 0);
+
+
+    topazString_t * cwd = topaz_string_clone(topaz_filesys_get_path(p->fs));
+    topazArray_t * dirs = topaz_array_create(sizeof(topazString_t *));
+    topazString_t * iter = topaz_string_clone(cwd);
+    topazTable_t * visited = topaz_table_create_hash_topaz_string();
+    topaz_array_push(dirs, iter);
+
+
+
+    while(topaz_array_get_size(dirs)) {
+        topazString_t * s = topaz_array_at(dirs, topazString_t *, topaz_array_get_size(dirs)-1);
+        topaz_array_set_size(dirs,  topaz_array_get_size(dirs)-1);
+        topaz_filesys_set_path(p->fs, s);
+
+
+        const topazArray_t * subs = topaz_filesys_query(p->fs);
+        len = topaz_array_get_size(subs);
+        for(i = 0; i < len; ++i) {
+            iter = topaz_string_clone(topaz_filesys_get_child_path(p->fs, topaz_array_at(subs, topazString_t *, i)));
+            if (topaz_table_find(visited, iter)) {
+                topaz_string_destroy(iter);
+                continue;
+            }
+
+            if (topaz_filesys_is_node(p->fs, topaz_array_at(subs, topazString_t *, i))) {
+                topaz_table_insert(visited, iter, (void*)1);
+                topaz_array_push(dirs, iter);
+            } else {
+                topaz_array_push(p->fsAssets, iter);
+            }
+        }
+
+
+        topaz_string_destroy(s);
+    }
+    topaz_table_destroy(visited);
+
+    topaz_filesys_set_path(p->fs, cwd);
+}
+
+const topazArray_t * topaz_resources_get_asset_paths(topazResources_t * p) {
+    return p->fsAssets;
+}
+

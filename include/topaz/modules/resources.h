@@ -69,9 +69,18 @@ void topaz_resources_destroy(topazResources_t *);
 ///
 int topaz_resources_set_path(topazResources_t *, const topazString_t *);
 
+/// Queries the filesystem for all assets within the asset directory.
+///
+void topaz_resources_query_asset_paths(topazResources_t *);
+
+/// Returns a read-only list of filesystem paths of resources within the current path
+/// 
+const topazArray_t * topaz_resources_get_asset_paths(topazResources_t *);
+
+
 
 /// Convenience function that attempts to load a new asset 
-/// from disk directly. This is recommended for small assets that are 
+/// from the filesystem directly. This is recommended for small assets that are 
 /// effectively instanteous. If a more robust solution is needed,
 /// consider topaz_resources_fetch_asset() + topaz_resources_get_translator
 ///

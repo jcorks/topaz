@@ -82,17 +82,20 @@ topazScript_t * topaz_script_manager_create_context(
 ////////////////////////
 //////////////////////// script_native__
 ////////////////////////
-
 #include "script_native__macro.h"
 #include "script_native__vector.h"
 #include "script_native__color.h"
 #include "script_native__entity.h"
+#include "script_native__asset.h"
 #include "script_native__topaz.h"
 #include "script_native__component.h"
 #include "script_native__shape2d.h"
 #include "script_native__object2d.h"
 #include "script_native__text2d.h"
+#include "script_native__image.h"
+#include "script_native__data.h"
 #include "script_native__input.h"
+#include "script_native__resources.h"
 ////////////////////////
 //////////////////////// script_native__
 ////////////////////////
@@ -102,11 +105,17 @@ static void add_all_refs(topazScriptManager_t * s, topazScript_t * script, int p
     add_refs__vector_api(script, s);
     add_refs__color_api(script, s);
     add_refs__entity_api(script, s);
+    add_refs__asset_api(script, s);
     add_refs__topaz_api(script, s);
     add_refs__component_api(script, s);
     add_refs__shape2d_api(script, s);
     add_refs__object2d_api(script, s);
     add_refs__text2d_api(script, s);
+    add_refs__image_api(script, s);
+    add_refs__data_api(script, s);
     add_refs__input_api(script, s);
+    add_refs__resources_api(script, s);
+
+
 }
  

@@ -116,6 +116,14 @@ const topazArray_t * topaz_filesys_query(topazFilesys_t *);
 ///
 int topaz_filesys_set_path(topazFilesys_t *, const topazString_t *);
 
+
+/// Returns a read-only string containing the full path of a child item from 
+/// the current directory. This is a convenient way to get the path of an item 
+/// without worrying about appending implementation-specific pathing notation.
+/// If an error occurs, or the item given isn't a child, an empty string is returned.
+///
+const topazString_t * topaz_filesys_get_child_path(topazFilesys_t *, const topazString_t *);
+
 /// Returns the current path
 ///
 const topazString_t * topaz_filesys_get_path(topazFilesys_t *);

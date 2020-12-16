@@ -53,14 +53,14 @@ TSO_SCRIPT_API_FN(topaz_api__is_paused) {
 TSO_SCRIPT_API_FN(topaz_api__get_root) {
     topazScriptManager_t * mgr = context;
     topazEntity_t * e = topaz_context_get_root(mgr->ctx);
-    TSO_OBJECT_NEW(e, TSO_OBJECT_ID__ENTITY, NULL);
+    TSO_OBJECT_NEW(e, TSO_OBJECT_TYPE__ENTITY, NULL);
     return object;
 }
 
 TSO_SCRIPT_API_FN(topaz_api__set_root) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
     topazScriptManager_t * mgr = context;
     topaz_context_set_root(mgr->ctx, native);    
     TSO_NO_RETURN;
@@ -69,7 +69,7 @@ TSO_SCRIPT_API_FN(topaz_api__set_root) {
 TSO_SCRIPT_API_FN(topaz_api__attach_pre_manager) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
     topazScriptManager_t * mgr = context;
     topaz_context_attach_pre_manager(mgr->ctx, native);    
     TSO_NO_RETURN;
@@ -78,7 +78,7 @@ TSO_SCRIPT_API_FN(topaz_api__attach_pre_manager) {
 TSO_SCRIPT_API_FN(topaz_api__attach_pre_manager_unpausable) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
     topazScriptManager_t * mgr = context;
     topaz_context_attach_pre_manager_unpausable(mgr->ctx, native);    
     TSO_NO_RETURN;
@@ -88,7 +88,7 @@ TSO_SCRIPT_API_FN(topaz_api__attach_pre_manager_unpausable) {
 TSO_SCRIPT_API_FN(topaz_api__attach_post_manager) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
     topazScriptManager_t * mgr = context;
     topaz_context_attach_post_manager(mgr->ctx, native);    
     TSO_NO_RETURN;
@@ -97,7 +97,7 @@ TSO_SCRIPT_API_FN(topaz_api__attach_post_manager) {
 TSO_SCRIPT_API_FN(topaz_api__attach_post_manager_unpausable) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__ENTITY);   
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
     topazScriptManager_t * mgr = context;
     topaz_context_attach_post_manager_unpausable(mgr->ctx, native);    
     TSO_NO_RETURN;

@@ -13,6 +13,8 @@ struct topazFilesys_t {
     topazFilesysAPI_t api;
     topazSystem_Backend_t * backend;
     void * userData;
+
+    topazString_t * childPath;
 };
 
 
@@ -28,6 +30,7 @@ topazFilesys_t * topaz_filesys_create(topaz_t * ctx, topazSystem_Backend_t * b, 
         assert(api.filesys_go_to_child);
         assert(api.filesys_go_to_parent);
         assert(api.filesys_get_path);
+        assert(api.filesys_get_child_path);
         assert(api.filesys_create_node);
         assert(api.filesys_read);
         assert(api.filesys_write);
@@ -49,6 +52,7 @@ void topaz_filesys_destroy(topazFilesys_t * t) {
         assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
     t->api.filesys_destroy(t, t->userData);
+    if (t->childPath) topaz_string_destroy(t->childPath);
 }
 
 
@@ -110,6 +114,17 @@ const topazString_t * topaz_filesys_get_path(topazFilesys_t * t) {
 
     return t->api.filesys_get_path(t, t->userData);
 }
+
+const topazString_t * topaz_filesys_get_child_path(topazFilesys_t * t, const topazString_t * name) {
+    #ifdef TOPAZDC_DEBUG
+        assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
+    #endif
+    if (t->childPath) topaz_string_destroy(t->childPath);
+    t->childPath = t->api.filesys_get_child_path(t, t->userData, name);
+    return t->childPath;
+}
+
+
 
 const topazArray_t * topaz_filesys_split_path(topazFilesys_t * t, const topazString_t * str) {
     #ifdef TOPAZDC_DEBUG

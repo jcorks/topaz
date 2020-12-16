@@ -267,9 +267,175 @@ topaz = {
     
         topazPad_options: 511,
         topazInput_Count: 512
+    },
+
+    resources : {
+        assetType_None : 0,
+        assetType_Image : 1,
+        assetType_Audio : 2,
+        assetType_Model : 3,
+        assetType_Particle : 4,
+        assetType_Data : 5,
+        assetType_Actor : 6,
+        _rawAssetToInstance : function(impl) {
+            switch(topaz_asset__get_type(impl)) {
+              case topaz.resources.assetType_Image: return new topaz.image(impl); break;
+              case topaz.resources.assetType_Data:  return new topaz.data (impl); break;
+            }
+            return new topaz.asset(impl);
+
+        },
+
+        fetchAsset : function(type, name) {
+            return topaz.resources._rawAssetToInstance(topaz_resources__fetch_asset(type, name));
+        },
+
+        loadAsset : function(ext, name) {
+            return topaz.resources._rawAssetToInstance(topaz_resources__fetch_asset(ext, name));
+        },
+
+        writeAsset : function(asset, ext, name) {
+            return topaz_resources__fetch_asset(asset.impl, ext, name);
+        },
+
+        removeAsset : function(asset) {
+            topaz_resources__remove_asset(asset.impl);
+            asset.impl = undefined;
+        },
+
+        queryAssetPaths : function() {
+            topaz_resources__query_asset_paths();
+        },
+
+        isExtensionSupported : function(ext) {
+            return topaz_resources__is_extension_supported(ext);
+        }
+    },
+    _assetSetCommonSymbols : function(obj) {
+        obj.uniqueID = topaz.uniqueObjectPool++;
+        Object.defineProperty(
+            obj,
+            'type', {
+                get : function()  { return topaz_asset__get_type(impl);},
+                set : function(v) {        topaz_asset__get_type(impl, v);}
+            }
+        );
+
+        Object.defineProperty(
+            obj,
+            'name', {
+                get : function()  { return topaz_asset__get_type(impl);},
+                set : function(v) {        topaz_asset__get_type(impl, v);}
+            }
+        );
+    },
+
+    image : function(implPre) {
+        var impl;
+        var ctx = this;
+
+        if (implPre)
+            impl = implPre;
+        else {
+            throw new Error("Image asset cannot be make without a LL asset instance.");
+        }
+        impl.__ctx = this;
+
+
+        
+        Object.defineProperty(
+            this,
+            'width', {
+                get : function()  { return topaz_image__get_width(impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'height', {
+                get : function()  { return topaz_image__get_height(impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'frameCount', {
+                get : function()  { return topaz_image__get_frame_count(impl);}
+            }
+        );
 
 
 
+
+        this.resize = function(w, h) {
+            topaz_image__resize(impl, w, h);
+        }
+
+        this.addFrame = function() {
+            topaz_image__add_frame(impl);
+        }
+
+        this.removeFrame = function(f) {
+            topaz_image__remove_frame(impl, f);
+        }
+
+        this.setRGBA = function(i, rgbaData) {
+            topaz_image__frame_set_rgba(impl, i, rgba);
+        }
+
+        this.impl = impl;
+        _assetSetCommonSymbols(implPre);
+
+    },
+
+    data : function(implPre) {
+        var impl;
+        var ctx = this;
+
+        if (implPre)
+            impl = implPre;
+        else {
+            throw new Error("Data asset cannot be make without a LL asset instance.");
+        }
+        impl.__ctx = this;
+
+
+    
+        Object.defineProperty(
+            this,
+            'byteCount', {
+                get : function()  { return topaz_data__get_byte_count(impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'string', {
+                get : function()  { return topaz_data__get_as_string(impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'bytes', {
+                get : function()  { 
+                    const bytes = [];
+                    const len = topaz_data__get_byte_count(impl);
+                    for(var i = 0; i < len; ++i) {
+                        bytes.push(topaz_data__get_bth_byte(impl, i));
+                    }
+                    return bytes;
+                },
+
+                set : function(v) {
+                    topaz_date__set(impl, v);
+                }
+            }
+        );
+
+
+        this.impl = impl;
+        _assetSetCommonSymbols(implPre);
 
     },
 
@@ -502,6 +668,105 @@ topaz = {
 
     },
     componentNull : function() {return topaz_component__null();},
+
+
+
+    text2d : function(implPre) {
+        var ctx = this;
+        var impl;
+
+        if (implPre) 
+            impl = implPre;
+        else {
+
+            impl = topaz_text2d__create();
+        }
+        impl.__ctx = this;
+
+        
+        // initialize with component properties
+        const componentInit = topaz.component.bind(this);;
+        componentInit(undefined, impl);
+        
+
+        Object.defineProperty(
+            this,
+            'text', {
+                get : function() {return topaz_text2d__get_text(impl);},
+            }
+        );
+
+        this.setText = function(text, c) {
+            topaz_text2d__set_text(impl, text, c);
+        }
+        this.setTextMonospace = function(text, c) {
+            topaz_text2d__set_text_monospace(impl, text, c);
+        }
+
+
+        this.setColor = function(c) {
+            topaz_text2d__set_color(impl, c.impl);
+        }
+
+        this.setColorSection = function(from, to, c) {
+            topaz_text2d__set_color_section(impl, from, to, c.impl);
+        }
+
+
+        Object.defineProperty(
+            this,
+            'extentWidth', {
+                get : function() {return topaz_text2d__get_extent_width(impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'extentHeight', {
+                get : function() {return topaz_text2d__get_extent_height(impl);}
+            }
+        );
+
+
+        this.getCharX = function(i) {
+            return topaz_text2d__get_char_x(impl, i);
+        }
+
+        this.getCharY = function(i) {
+            return topaz_text2d__get_char_y(impl, i);
+        }
+
+
+        Object.defineProperty(
+            this,
+            'position', {
+                get : function() {return new topaz.vector(0, 0, 0, topaz_text2d__get_position(impl));},
+                set : function(v){topaz_text2d__set_position(impl, v.impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'rotation', {
+                get : function() {return new topaz.vector(0, 0, 0, topaz_text2d__get_rotation(impl));},
+                set : function(v){topaz_text2d__set_rotation(impl, v.impl);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'scale', {
+                get : function() {return new topaz.vector(0, 0, 0, topaz_text2d__get_scale(impl));},
+                set : function(v){topaz_text2d__set_scale(impl, v.impl);}
+            }
+        );
+
+
+
+        
+
+    },
+
     component : function(defineProps, implPre) {
         //if (implPre)
             //topaz.log('REFERENCE CREATED:\n' + topaz.objectToString(this));
@@ -981,6 +1246,8 @@ topaz = {
 
     },
 
+
+
     color : function(name, implPre) {
         var impl;
 
@@ -1116,6 +1383,19 @@ Object.defineProperty(topaz.input, 'mouseY', {get : function(){return topaz_inpu
 Object.defineProperty(topaz.input, 'mouseDeltaX', {get : function(){return topaz_input__mouse_delta_x();}});
 Object.defineProperty(topaz.input, 'mouseDeltaY', {get : function(){return topaz_input__mouse_delta_y();}});
 Object.defineProperty(topaz.input, 'mouseWheel', {get : function(){return topaz_input__mouse_wheel();}});
+Object.defineProperty(topaz.resources, 'assetPaths', {
+        get : function(){
+            var paths = [];
+            const len = topaz_resources__asset_path_count();
+            for(var i = 0; i < len; ++i) {
+                paths.push(topaz_resources__nth_asset_path(i))                
+            }
+            return paths;
+        }
+    }
+);
+Object.defineProperty(topaz.resources, 'path', {set : function(v){return topaz_resources__set_path(v);}});
+
 
 topaz.attachPreManager(
     new topaz.entity({

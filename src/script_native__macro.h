@@ -84,13 +84,20 @@ typedef enum {
     TSO_OBJECT_ID__UNICODELISTENER = 4,
     TSO_OBJECT_ID__RBUFFER = 5,
     TSO_OBJECT_ID__WBUFFER = 6,
+    TSO_OBJECT_ID__SHAPE2D = 7,
+    TSO_OBJECT_ID__OBJECT2D = 8,
+    TSO_OBJECT_ID__TEXT2D = 9,
+    TSO_OBJECT_ID__DATA = 10,
+    TSO_OBJECT_ID__IMAGE = 11,
 
 
 
-    TSO_OBJECT_ID__ENTITY = 128,
-    TSO_OBJECT_ID__COMPONENT = 256,
-    TSO_OBJECT_ID__SHAPE2D = 512,
-    TSO_OBJECT_ID__OBJECT2D = 1024,
-    TSO_OBJECT_ID__TEXT2D = 2048,
+    /// All types are above and including the 25th bit .
+    /// Below the 25th bit are specific instances
+    TSO_OBJECT_TYPE__ENTITY    = 1 << 25,
+    TSO_OBJECT_TYPE__COMPONENT = 1 << 26,
+    TSO_OBJECT_TYPE__ASSET     = 1 << 27
+
+
 } TSO_OBJECT_ID;
 
