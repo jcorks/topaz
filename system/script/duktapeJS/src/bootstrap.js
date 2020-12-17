@@ -290,12 +290,12 @@ topaz = {
             return topaz.resources._rawAssetToInstance(topaz_resources__fetch_asset(type, name));
         },
 
-        loadAsset : function(ext, name) {
-            return topaz.resources._rawAssetToInstance(topaz_resources__load_asset(ext, name));
+        loadAsset : function(ext, path, name) {
+            return topaz.resources._rawAssetToInstance(topaz_resources__load_asset(ext, path, name));
         },
 
-        writeAsset : function(asset, ext, name) {
-            return topaz_resources__fetch_asset(asset.impl, ext, name);
+        writeAsset : function(asset, ext, path) {
+            return topaz_resources__fetch_asset(asset.impl, ext, path);
         },
 
         removeAsset : function(asset) {
@@ -384,7 +384,7 @@ topaz = {
         }
 
         this.impl = impl;
-        _assetSetCommonSymbols(implPre);
+        topaz._assetSetCommonSymbols(implPre);
 
     },
 
@@ -435,7 +435,7 @@ topaz = {
 
 
         this.impl = impl;
-        _assetSetCommonSymbols(implPre);
+        topaz._assetSetCommonSymbols(implPre);
 
     },
 
@@ -1394,7 +1394,10 @@ Object.defineProperty(topaz.resources, 'assetPaths', {
         }
     }
 );
-Object.defineProperty(topaz.resources, 'path', {set : function(v){return topaz_resources__set_path(v);}});
+Object.defineProperty(topaz.resources, 'path', {
+    set : function(v){topaz_resources__set_path(v);},
+    get : function(){return topaz_resources__get_path();}
+});
 
 
 topaz.attachPreManager(

@@ -82,11 +82,15 @@ int topaz_resources_set_path(topazResources_t * r, const topazString_t * path) {
     return topaz_filesys_set_path(r->fs, path);
 }
 
+const topazString_t * topaz_resources_get_path(const topazResources_t * r) {
+    return topaz_filesys_get_path(r->fs);
+}
 
 
 topazAsset_t * topaz_resources_load_asset(
     topazResources_t * r,
     const topazString_t * extension,
+    const topazString_t * path,
     const topazString_t * name
 ) {
 
@@ -111,34 +115,8 @@ topazAsset_t * topaz_resources_load_asset(
     if (!asset) return NULL;
 
     // at this point, we want a data buffer 
-    const topazArray_t * pathTokens = topaz_filesys_split_path(r->fs, name);
-    uint32_t len = topaz_array_get_size(pathTokens);
 
-    // not a valid path/name given
-    if (!len) {
-        topaz_asset_destroy(asset);
-        topaz_table_remove(r->name2asset, name);
-        return NULL;
-    }
-
-    topazRbuffer_t * data = NULL;
-
-    // walk through directories
-    topazString_t * originalDir = topaz_string_clone(topaz_filesys_get_path(r->fs));
-    int i;
-    for(i = 0; i < len-1; ++i) {
-        if (!topaz_filesys_go_to_child(r->fs, topaz_array_at(pathTokens, topazString_t *, i))) {
-            topaz_filesys_set_path(r->fs, originalDir);
-            topaz_string_destroy(originalDir);
-            topaz_asset_destroy(asset);
-            topaz_table_remove(r->name2asset, name);
-            return NULL;
-        }
-    }
-
-    data = topaz_filesys_read(r->fs, topaz_array_at(pathTokens, topazString_t *, len-1));
-    topaz_filesys_set_path(r->fs, originalDir);
-    topaz_string_destroy(originalDir);
+    topazRbuffer_t * data = topaz_filesys_read(r->fs, path);
 
     // check to see if read failed.
     if (topaz_rbuffer_is_empty(data)) {
@@ -179,30 +157,6 @@ int topaz_resources_write_asset(
 
 
 
-    // TODO: group into separate functions 
-
-    // at this point, we want a data buffer 
-    const topazArray_t * pathTokens = topaz_filesys_split_path(r->fs, name);
-    uint32_t len = topaz_array_get_size(pathTokens);
-
-    // not a valid path/name given
-    if (!len) {
-        return 0;
-    }
-
-    topazWbuffer_t * data = NULL;
-
-    // walk through directories
-    topazString_t * originalDir = topaz_string_clone(topaz_filesys_get_path(r->fs));
-    int i;
-    for(i = 0; i < len-1; ++i) {
-        if (!topaz_filesys_go_to_child(r->fs, topaz_array_at(pathTokens, topazString_t *, i))) {
-            topaz_filesys_set_path(r->fs, originalDir);
-            topaz_string_destroy(originalDir);
-            return 0;
-        }
-    }
-
 
     uint64_t rawdataSize = 0;
     void * rawdata = topaz_iox_encode(
@@ -213,24 +167,20 @@ int topaz_resources_write_asset(
     );
 
     if (!rawdataSize) {
-        topaz_filesys_set_path(r->fs, originalDir);
-        topaz_string_destroy(originalDir);
         return 0;
     }
 
 
-    data = topaz_wbuffer_create();
+    topazWbuffer_t * data = topaz_wbuffer_create();
     topaz_wbuffer_write_buffer(data, rawdata, rawdataSize);
     
 
 
     int success = topaz_filesys_write(
         r->fs, 
-        topaz_array_at(pathTokens, topazString_t *, len-1),
+        name,
         data
     );
-    topaz_filesys_set_path(r->fs, originalDir);
-    topaz_string_destroy(originalDir);
 
 
     topaz_wbuffer_destroy(data);

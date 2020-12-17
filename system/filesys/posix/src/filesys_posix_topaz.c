@@ -227,10 +227,15 @@ static int topaz_filesys_posix__create_node(topazFilesys_t * fsys, void * userDa
 
 static topazRbuffer_t * topaz_filesys_posix__read(topazFilesys_t * fsys, void * userData, const topazString_t * dir) {
     PosixFilesysData * fs = userData;
+
     topazString_t * fullPath = topaz_string_clone(fs->currentPath);
-    topaz_string_concat(fullPath, dir);
-    
+    topaz_string_concat(fullPath, dir);    
     FILE * f = fopen(topaz_string_get_c_str(fullPath), "rb");
+    // try fullpath
+    if (!f) {
+        f = fopen(topaz_string_get_c_str(dir), "rb");
+    }
+
     topazRbuffer_t * buffer = topaz_rbuffer_create();
     if (f) {
         topazArray_t * fullData = topaz_array_create(sizeof(uint8_t));
@@ -269,6 +274,9 @@ static int topaz_filesys_posix__write(
     
     const topazArray_t * arr = topaz_wbuffer_get_data(data);
     FILE * f = fopen(topaz_string_get_c_str(fullPath), "wb");
+    if (!f) {
+        f = fopen(topaz_string_get_c_str(fname), "wb");
+    }
     if (f) {
         fwrite(
             topaz_array_get_data(arr),

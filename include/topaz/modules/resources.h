@@ -69,6 +69,9 @@ void topaz_resources_destroy(topazResources_t *);
 ///
 int topaz_resources_set_path(topazResources_t *, const topazString_t *);
 
+
+const topazString_t * topaz_resources_get_path(const topazResources_t *);
+
 /// Queries the filesystem for all assets within the asset directory.
 ///
 void topaz_resources_query_asset_paths(topazResources_t *);
@@ -84,12 +87,22 @@ const topazArray_t * topaz_resources_get_asset_paths(topazResources_t *);
 /// effectively instanteous. If a more robust solution is needed,
 /// consider topaz_resources_fetch_asset() + topaz_resources_get_translator
 ///
+/// "name" is used as the name of the asset. For functions that refer to 
+/// asset names to uniquely identify an asset such as topaz_resources_fetch_asset().
+///
+/// "path" is used as the filesystem path to read the asset from. This assumes the 
+/// current path is topaz_resources_get_path() and is guaranteed to behave as if 
+/// from topaz_filesys_read(). 
+///
+/// "fileType" is the extension of the file used to determine with IO Translator 
+/// to use to interpret data.
+///
 /// Like with topaz_resources_fetch_asset, if an asset of the given name 
 /// already exists, the preloaded asset is returned. If not, 
 /// then a new asset is created whos name will match the path given.
 /// Then, the data is attempted to be loaded from disk. The name given is 
 /// first checked to see if its a partial path relative to 
-/// the resources's resource path (topaz_resources_set_resource_path()). Then 
+/// the resources's resource path (topaz_resources_set_path()). Then 
 /// its interpreted as a full path.
 /// If the data could not be inerpreted as the given type, or the source 
 /// data is unavailable, NULL is returned.
@@ -97,6 +110,7 @@ const topazArray_t * topaz_resources_get_asset_paths(topazResources_t *);
 topazAsset_t * topaz_resources_load_asset(
     topazResources_t *,
     const topazString_t * fileType,
+    const topazString_t * path,
     const topazString_t * name
 );
 
