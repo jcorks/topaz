@@ -13,6 +13,7 @@ topaz = {
     attachPostManagerUnpausable : function(v){topaz__attach_post_manager_unpausable(v.impl);},        
     quit : topaz__quit,
     wait : topaz__wait,
+    import : topaz_script__import,
     log : topaz__log,
     objectToString : function(obj, levelSrc) {
         var checked = [];
