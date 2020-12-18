@@ -37,21 +37,17 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/containers/array.h>
 #include <topaz/containers/string.h>
 
-/*
-
-    Wbuffer
-    -----
-    Wbuffers (Write Buffers) are the complement to Rbuffers. Once instantiated, the
-    user can easily and quickly write data to the buffer in a variety of
-    formats verbatim. Once the user is ready, they can write the buffer to
-    either a new file or either write over or append an existing file.
-    It is also possible to view already written data to the buffer
-    via get_data(). If they so wish, the user may also clear the entire
-    buffer that they have written to as well.
-
-
-
-*/
+///
+///    Wbuffer
+///    -----
+///    Wbuffers (Write Buffers) are the complement to Rbuffers. Once instantiated, the
+///    user can easily and quickly write data to the buffer in a variety of
+///    formats verbatim. Once the user is ready, they can write the buffer to
+///    either a new file or either write over or append an existing file.
+///    It is also possible to view already written data to the buffer
+///    via get_data(). If they so wish, the user may also clear the entire
+///    buffer that they have written to as well.
+///
 typedef struct topazWbuffer_t topazWbuffer_t;
 
 

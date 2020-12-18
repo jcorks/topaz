@@ -35,20 +35,18 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/containers/string.h>
 #include <topaz/matrix.h>
 #include <topaz/transform.h>
-/*
-
-    Spatial
-    -----
-    A hierarchical transform object.
- 
-    Allows for chaining transformation information including
-    position, rotation, and scaling. Because spatial objects are hierarchical,
-    each has a local transform and a global transform.
-
-
-
-
-*/
+///
+///
+///    Spatial
+///    -----
+///    A hierarchical transform object.
+/// 
+///    Allows for chaining transformation information including
+///    position, rotation, and scaling. Because spatial objects are hierarchical,
+///    each has a local transform and a global transform.
+///
+///
+///
 typedef struct topazSpatial_t topazSpatial_t;
 
 

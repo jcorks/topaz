@@ -36,15 +36,14 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/vector.h>
 typedef struct topazTransform_t topazTransform_t;
 typedef struct topazAsset_t topazAsset_t;
-/*
 
-    Object2D
-    -----
-
-    Contains simple 2D movement and collision detection.
-
-*/
-
+///
+///    Object2D
+///    -----
+///
+///    Contains simple 2D movement and collision detection.
+///
+///
 
 
 /// Determines the collision group that the object is a part of.
@@ -52,7 +51,8 @@ typedef struct topazAsset_t topazAsset_t;
 /// Using topaz_object2d_set_group_interation(), collision groups can 
 /// be set.
 ///
-typedef enum {
+typedef enum topazObject2D_Group topazObject2D_Group;
+enum topazObject2D_Group {
     topazObject2D_Group_A,
     topazObject2D_Group_B,
     topazObject2D_Group_C,
@@ -79,7 +79,7 @@ typedef enum {
     topazObject2D_Group_X,
     topazObject2D_Group_Y,
     topazObject2D_Group_Z,
-} topazObject2D_Group;
+};
 
 
 

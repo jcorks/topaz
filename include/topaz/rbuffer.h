@@ -37,20 +37,18 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/containers/array.h>
 #include <topaz/containers/string.h>
 
-/*
 
-    Rbuffer
-    -----
-
-    Rbuffer ("Read Buffer") handles input data. Once instantiated
-    with a target, the Rbuffer can then easily read and process binary data.
-    Rbuffers are the most effective for unpacking data, especially data
-    that is packed in accordance to OutBuffer routines, as all
-    OutBuffer writing functions mirror the reading functions of Rbuffer.
-
-
-
-*/
+///
+///    Rbuffer
+///    -----
+///
+///    Rbuffer ("Read Buffer") handles input data. Once instantiated
+///    with a target, the Rbuffer can then easily read and process binary data.
+///    Rbuffers are the most effective for unpacking data, especially data
+///    that is packed in accordance to OutBuffer routines, as all
+///    OutBuffer writing functions mirror the reading functions of Rbuffer.
+///
+///
 typedef struct topazRbuffer_t topazRbuffer_t;
 
 /// Creates a new, empty input buffer 

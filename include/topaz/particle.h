@@ -34,6 +34,17 @@ DEALINGS IN THE SOFTWARE.
 typedef struct topazEntity_t topazEntity_t;
 
 
+///
+///    Particle
+///    -----
+///
+///    Allows for dynamic graphics that change every frame.
+///
+///
+///
+///
+
+
 /// Represents a particle attribute's range. This defines 
 /// how the values start and change over time.
 ///
@@ -65,11 +76,11 @@ struct topazParticle_Range_t {
 };
 
 
-typedef struct topazParticle_t topazParticle_t;
 
 /// The specification of a particle. This is used as a roadmap to 
 /// generate a real particle instance using topaz_particle_emitter_2d_emit()
-/// 
+///
+typedef struct topazParticle_t topazParticle_t;
 struct topazParticle_t {
     /// Duration of the particle, in frames.
     ///

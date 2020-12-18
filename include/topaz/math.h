@@ -33,14 +33,15 @@ DEALINGS IN THE SOFTWARE.
 #define H_TOPAZDC__MATH__INCLUDED
 
 
-/*
+///
+///
+///    Math
+///    -----
+///
+///    Collection of math utilities 
+///
+///
 
-    Math
-    -----
-
-    Collection of math utilities 
-
-*/
 
 /// Standard PI value used by topaz.
 ///

@@ -15,6 +15,16 @@ var symbolTable = (function(){
         LANGUAGE_TYPE : 4
     }
 
+    const typeToString = function(type) {
+        switch(type) {
+          case types.NONE:           return "None";
+          case types.FUNCTION:       return "Function";
+          case types.CLASS:          return "Class";
+          case types.ENUMERATOR:     return "Enumerator";
+          case types.OPEN_STRUCTURE: return "Structure";
+          case types.LANGUAGE_TYPE:  return "BuiltIn";
+        }
+    }
     
     // registers a new symbol
     const newRef = function(name) {
@@ -55,6 +65,11 @@ var symbolTable = (function(){
             symbols[nameCleaned].type = type;
             symbols[parentCleaned].children.push(nameCleaned);
 
+
+            if (!files[file]) {
+                files[file] = [];
+            }
+            files[file].push(nameCleaned);
         },
 
 
@@ -86,8 +101,8 @@ var symbolTable = (function(){
 
         // Sets a plain text hint for a certain type
         setTypeHint : function(
-            type,
-            hint
+            hint,
+            type
         ) {
             hints.push({'hint' : hint, 'type' : type});
         },
@@ -120,8 +135,35 @@ var symbolTable = (function(){
         ) {
             if (type == types.NONE) return '';
             if (!symbolExtractors[type]) return '';
-            
+
             return line.match(symbolExtractors[type])[1];
+        },
+
+        getReport : function(file) {
+            var text = 'Within ' + file + '...\n\n';
+            const names = files[file];
+            if (!names) return '';
+            for(var i = 0; i < names.length; ++i) {
+                const symbol = symbols[names[i]];
+                text += 'Name:        ' + names[i] + '\n';
+                text += 'Type:        ' + typeToString(symbol.type) + '\n';
+                text += 'Description: ' + symbol.desc + '\n';
+                text += 'parent:      ' + symbol.parent + '\n\n';
+            }
+            return text;
+        },
+
+        getFileEntities : function(file) {
+            var out = [];
+            const names = files[file];
+            if (!names) return out;
+            for(var i = 0; i < names.length; ++i) {
+                const symbol = symbols[names[i]];
+                const obj = symbol;
+                obj.name = names[i];
+                out.push(obj);
+            }
+            return out;
         }
     }
 })();

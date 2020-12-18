@@ -37,14 +37,13 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/backends/renderer.h>
 #include <topaz/spatial.h>
 
-/*
-
-    Render2D
-    -----
-    Base object to render a 2D object.
-    
-
-*/
+///
+///    Render2D
+///    -----
+///    Base object to render a 2D object.
+///    
+///
+///
 typedef struct topazRender2D_t topazRender2D_t;
 
 

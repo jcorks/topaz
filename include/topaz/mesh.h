@@ -38,9 +38,30 @@ DEALINGS IN THE SOFTWARE.
 typedef struct topaz_t topaz_t;
 
 
+
+///
+///    Mesh
+///    -----
+///
+///    3D object defined by triangle primitives.
+///    A Mesh contains 2 components: the Mesh itself and a series of MeshObject s.
+///    The Mesh itself provides the base data: vertex positions, normals,
+///    UVs, you name it. A MeshObject contains the actual application of that source data, expressing what
+///    vertices to use, the material to render the vertices with, etc.
+///    Using the Mesh - MeshObject reloationship aptly can allow for flexible
+///    control over performance vs. memory cost.
+///
+///
+///
+///
+typedef struct topazMesh_t topazMesh_t;
+
+
+
 /// The type of vertex attribute.
 ///
-typedef enum {
+typedef enum topazMesh_VertexAttribute topazMesh_VertexAttribute;
+enum topazMesh_VertexAttribute {
     ///  Position of the vertex. 3 components: xyz.
     ///
     topazMesh_VertexAttribute_Position, 
@@ -58,26 +79,9 @@ typedef enum {
     ///
     topazMesh_VertexAttribute_UserData  
 
-} topazMesh_VertexAttribute;
+};
 
 
-/*
-
-    Mesh
-    -----
-
-    3D object defined by triangle primitives.
-    A Mesh contains 2 components: the Mesh itself and a series of MeshObject s.
-    The Mesh itself provides the base data: vertex positions, normals,
-    UVs, you name it. A MeshObject contains the actual application of that source data, expressing what
-    vertices to use, the material to render the vertices with, etc.
-    Using the Mesh - MeshObject reloationship aptly can allow for flexible
-    control over performance vs. memory cost.
-
-
-
-*/
-typedef struct topazMesh_t topazMesh_t;
 
 /// Creates a new, empty mesh.
 ///

@@ -43,13 +43,11 @@ DEALINGS IN THE SOFTWARE.
 #define MINIMUM_LIGHT_COUNT             32
 #define MINIMUM_TEXTURE_BINDING_COUNT   32
 
-/*
 
-    Renderer
-    -----
-
-*/
-
+///
+///    Renderer
+///    -----
+///
 typedef struct topazRenderer_t topazRenderer_t;
 
 
@@ -67,7 +65,8 @@ typedef struct topazRenderer_t topazRenderer_t;
 /// a smoother look to textures when scaled up.
 /// Hints may be ignored by the renderer
 ///
-typedef enum {
+typedef enum topazRenderer_TextureFilterHint topazRenderer_TextureFilterHint;
+enum topazRenderer_TextureFilterHint {
     /// Linear filtering of textures.
     ///
     topazRenderer_TextureFilterHint_Linear,
@@ -76,13 +75,14 @@ typedef enum {
     ///
     topazRenderer_TextureFilterHint_None,
 
-} topazRenderer_TextureFilterHint;
+};
 
 
 
 /// Defines the polygon type 
 ///
-typedef enum {
+typedef enum topazRenderer_Primitive topazRenderer_Primitive;
+enum topazRenderer_Primitive {
     /// Triangle primitive. The most basic and versatile.
     ///
     topazRenderer_Primitive_Triangle,
@@ -90,7 +90,7 @@ typedef enum {
     /// Line primitive. 
     ///
     topazRenderer_Primitive_Line
-} topazRenderer_Primitive;
+};
 
 
 
@@ -100,7 +100,8 @@ typedef enum {
 /// with a lower depth to be drawn in front. "NoTest" is standard for 2D, which 
 /// allows graphics drawn later to be on top.
 ///
-typedef enum {
+typedef enum topazRenderer_DepthTest topazRenderer_DepthTest;
+enum topazRenderer_DepthTest {
 
     /// Generated framebuffer elements whose calculated depth are less
     /// will be in front.
@@ -131,7 +132,7 @@ typedef enum {
     ///
     topazRenderer_DepthTest_None
 
-} topazRenderer_DepthTest;
+};
 
 
 
@@ -139,7 +140,8 @@ typedef enum {
 
 /// Allows for differenct transparency effects 
 ///
-typedef enum {
+typedef enum topazRenderer_AlphaRule topazRenderer_AlphaRule;
+enum topazRenderer_AlphaRule {
     /// allows for standard "fade" transparency. What we're all used to
     ///
     topazRenderer_AlphaRule_Allow,       
@@ -158,14 +160,15 @@ typedef enum {
     /// information may still be written.
     ///
     topazRenderer_AlphaRule_Invisible    
-} topazRenderer_AlphaRule;
+};
 
 
 
 /// Allows for etching, which will ignore rendered results if they arent in the etch.
 /// Etch regions last until next frame by default.
 ///
-typedef enum {
+typedef enum topazRenderer_EtchRule topazRenderer_EtchRule;
+enum topazRenderer_EtchRule {
     /// Default, no etching is done
     ///
     topazRenderer_EtchRule_NoEtching,    
@@ -191,7 +194,7 @@ typedef enum {
     ///
     topazRenderer_EtchRule_Out       
 
-} topazRenderer_EtchRule;
+};
 
 
 /// Attributes that govern how to process vertices and visuals 
@@ -199,7 +202,6 @@ typedef enum {
 /// program in the case of 3D rendering.
 ///
 typedef struct topazRenderer_ProcessAttribs_t topazRenderer_ProcessAttribs_t;
-
 struct topazRenderer_ProcessAttribs_t {
     /// The primitive. See topazRenderer_Primitive
     ///
@@ -234,7 +236,8 @@ struct topazRenderer_ProcessAttribs_t {
 
 /// Data component of the a framebuffer.
 ///
-typedef enum {
+typedef enum topazRenderer_DataLayer topazRenderer_DataLayer;
+enum topazRenderer_DataLayer {
     /// RGBA component.
     ///
     topazRenderer_DataLayer_Color = 1,
@@ -250,7 +253,7 @@ typedef enum {
     /// All components.
     ///
     topazRenderer_DataLayer_All = 7
-} topazRenderer_DataLayer;
+};
 
 
 
@@ -374,17 +377,13 @@ int topaz_renderer_buffer_get_size(topazRenderer_Buffer_t *);
 
 
 
-/*
-    Renderer2D
-    ----
-    // The general use case for 2D geometry is we will draw many 
-    // small objects with unique tranform properties. Thus, a static rendering 
-    // approach is less favorable as that would lead to more frequent draws.
-    // Render2DVertices, using user-maintained global vertices, is a more 
-    // performant option for drawing specifically 2D vertices.
-
-*/
-
+/// Renderer2D
+/// -----
+/// The general use case for 2D geometry is we will draw many 
+/// small objects with unique tranform properties. Thus, a static rendering 
+/// approach is less favorable as that would lead to more frequent draws.
+/// Render2DVertices, using user-maintained global vertices, is a more 
+/// performant option for drawing specifically 2D vertices.
 typedef struct topazRenderer_2D_t topazRenderer_2D_t;
 
 
@@ -523,26 +522,27 @@ topazRenderer_t * topaz_renderer_2d_get_context(topazRenderer_2D_t *);
 
 
 
-/*
-
-    RendererLight
-    -----
-    TODO: change to RendererProgramData as a generic 
-    buffer, which is more accurate and usable.
-
-*/
-
+///
+///    RendererLight
+///    -----
+///    TODO: change to RendererProgramData as a generic 
+///    buffer, which is more accurate and usable.
+///
+///
+///
 typedef struct topazRenderer_Light_t topazRenderer_Light_t;
 
 
 
 
 /// Types of rendering lights.
-typedef enum {
+///
+typedef enum topazRenderer_LightType topazRenderer_LightType;
+enum topazRenderer_LightType {
     topazRenderer_LightType_Point,
     topazRenderer_LightType_Directional,
     topazRenderer_LightType_Spot
-} topazRenderer_LightType;
+};
 
 
 
@@ -579,13 +579,13 @@ void topaz_renderer_light_enable(topazRenderer_Light_t *, int doIt);
 
 
 
-/* 
 
-    RendererProgram
-    -----
-
-*/
-
+///
+///    RendererProgram
+///    -----
+///
+///
+///
 typedef struct topazRenderer_Program_t topazRenderer_Program_t;
 
 
@@ -593,7 +593,8 @@ typedef struct topazRenderer_Program_t topazRenderer_Program_t;
 
 /// Preset programs are default contexts 
 ///
-typedef enum {
+typedef enum topazRenderer_PresetProgram topazRenderer_PresetProgram;
+enum topazRenderer_PresetProgram {
     /// MaterialIDs for render objects should be only 4 floats
     /// Each float represents a color, all 4 corresponding to RGBA.
     /// No lighting is enabled
@@ -605,9 +606,7 @@ typedef enum {
     /// and set material for the object
     ///
     topazRenderer_PresetProgram_Light,
-
-
-} topazRenderer_PresetProgram;
+};
 
 
 // Compiles and enacts a shader for use with Static Rendering. If the shader fails
@@ -664,27 +663,24 @@ struct topazRenderer_3D_Vertex_t {
 
 
 
-/*
 
-    RendererFramebuffer
-    -----
-    
-
-
-*/
-
+///
+///    RendererFramebuffer
+///    -----
+///
 typedef struct topazRenderer_Framebuffer_t topazRenderer_Framebuffer_t;
 
 
 
-/// \brief Types refer to the internal class by which visual information is
+/// Types refer to the internal class by which visual information is
 /// passed to the Display.
 ///
-typedef enum {
-    topazRenderer_Framebuffer_Handle_RGBA_PixelArray, ///< (uint8_t *) RGBA-ordered pixel array with no padding, matched to the dimensions given
-    topazRenderer_Framebuffer_Handle_GLFBPacket,      ///< (GLuint[2])  A pointer to a pointer to an array of to GLuints, the first representing the framebuffer object, the next representing the texture attached to that target.
-    topazRenderer_Framebuffer_Handle_Unknown,         ///< The framebuffer's data contents are unknown and should not be relied on.
-} topazRenderer_Framebuffer_Handle;
+typedef enum topazRenderer_Framebuffer_Handle topazRenderer_Framebuffer_Handle;
+enum topazRenderer_Framebuffer_Handle {
+    topazRenderer_Framebuffer_Handle_RGBA_PixelArray, //< (uint8_t *) RGBA-ordered pixel array with no padding, matched to the dimensions given
+    topazRenderer_Framebuffer_Handle_GLFBPacket,      //< (GLuint[2])  A pointer to a pointer to an array of to GLuints, the first representing the framebuffer object, the next representing the texture attached to that target.
+    topazRenderer_Framebuffer_Handle_Unknown,         //< The framebuffer's data contents are unknown and should not be relied on.
+};
 
 
 

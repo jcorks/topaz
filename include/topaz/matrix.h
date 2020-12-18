@@ -36,15 +36,16 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/vector.h>
 #include <topaz/containers/string.h>
 
-/*
 
-    Matrix
-    -----
-
-    Transform matrix
-
-*/
-typedef struct {float data[16];} topazMatrix_t;
+///
+///    Matrix
+///    -----
+///
+///    Transform matrix
+///
+///
+typedef struct topazMatrix_t topazMatrix_t;
+struct topazMatrix_t {float data[16];};
 
 /// Sets the matrix to the identity matrix, removing all transformations.
 ///

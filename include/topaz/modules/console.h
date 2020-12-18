@@ -40,20 +40,18 @@ typedef struct topazScript_t topazScript_t;
 typedef struct topazSystem_Backend_t topazSystem_Backend_t;
 typedef struct topazConsoleDisplay_t topazConsoleDisplay_t;
 
-/*
-
-    Console
-    -----
-
-
-*/
+///
+///    Console
+///    -----
+///
 typedef struct topazConsole_t topazConsole_t;
 
 
 
 /// Defines different types of messages.
 ///
-typedef enum {
+typedef enum topazConsole_MessageType_t topazConsole_MessageType_t;
+enum topazConsole_MessageType_t {
     /// Message type for normal messages.
     /// These do not include any additional information
     ///
@@ -73,7 +71,7 @@ typedef enum {
     /// Includes "Error" as well as the time when posted.
     ///
     topazConsole_MessageType_Error
-} topazConsole_MessageType_t;
+};
 
 
 
@@ -132,22 +130,20 @@ void topaz_console_attach_script(
 topazString_t * topaz_console_run(topazConsole_t *, const topazString_t *);
 
 
-/*
 
-    ConsoleCommandContext
-    -----
-
-    A command context is the basic means by which 
-    the console can understand commands. The command context 
-    holds all the keywords for valid commands at a given time.
-
-    By pushing and popping command contexts, it is possible to create 
-    advanced commands with choices built in.
-
-    By default, the default command context is pushed
-
-*/
-
+///
+///    ConsoleCommandContext
+///    -----
+///
+///    A command context is the basic means by which 
+///    the console can understand commands. The command context 
+///    holds all the keywords for valid commands at a given time.
+///
+///    By pushing and popping command contexts, it is possible to create 
+///    advanced commands with choices built in.
+///
+///    By default, the default command context is pushed
+///
 typedef struct topazConsole_CommandContext_t topazConsole_CommandContext_t;
 
 /// Retrieves the default command context.

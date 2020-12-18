@@ -35,15 +35,12 @@ DEALINGS IN THE SOFTWARE.
 
 #include <stdint.h>
 
-/*
-
-    RNG
-    -----
-
-    Instanced random number generator
-
-
-*/
+///
+///    RNG
+///    -----
+///
+///    Instanced random number generator
+///
 typedef struct topazRNG_t topazRNG_t;
 
 /// Creates a new random number generator.

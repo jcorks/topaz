@@ -296,7 +296,7 @@ topaz = {
         },
 
         writeAsset : function(asset, ext, path) {
-            return topaz_resources__fetch_asset(asset.impl, ext, path);
+            return topaz_resources__write_asset(asset.impl, ext, path);
         },
 
         removeAsset : function(asset) {
@@ -429,7 +429,7 @@ topaz = {
                 },
 
                 set : function(v) {
-                    topaz_date__set(impl, v);
+                    topaz_data__set(impl, v);
                 }
             }
         );

@@ -44,7 +44,8 @@ DEALINGS IN THE SOFTWARE.
 
 
 */
-typedef struct {float x; float y; float z;} topazVector_t;
+typedef struct topazVector_t topazVector_t;
+struct topazVector_t {float x; float y; float z;};
 
 
 /// Initializes x, y, and z to 0.

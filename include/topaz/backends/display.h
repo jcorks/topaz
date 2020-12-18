@@ -37,15 +37,14 @@ DEALINGS IN THE SOFTWARE.
 typedef struct topazEntity_t topazEntity_t;
 typedef struct topaz_t topaz_t;
 
-/*
 
-    Display
-    -----
-    An abstraction for millisecond resolution timing.
-    This short set of utilities allows for timing 
-
-*/
-
+///
+///    Display
+///    -----
+///    An abstraction for millisecond resolution timing.
+///    This short set of utilities allows for timing 
+///
+///
 typedef struct topazDisplay_t topazDisplay_t;
 
 
@@ -55,7 +54,8 @@ typedef struct topazDisplay_t topazDisplay_t;
 
 /// The standard functional capabilities of a Display.
 ///
-typedef enum {
+typedef enum topazDisplay_Capability topazDisplay_Capability;
+enum topazDisplay_Capability {
     /// The Display can be resized.
     ///
     topazDisplay_Capability_CanResize,      
@@ -78,13 +78,14 @@ typedef enum {
     ///
     topazDisplay_Capability_CanLockSize     
 
-} topazDisplay_Capability;
+};
 
 
 
 ///  Controls how the Display displays Rendered data.
 ///
-typedef enum {
+typedef enum topazDisplay_ViewPolicy topazDisplay_ViewPolicy;
+enum topazDisplay_ViewPolicy {
     /// The Display will show the attached Framebuffer's contents with no transformation
     ///
     topazDisplay_ViewPolicy_None,       
@@ -94,14 +95,15 @@ typedef enum {
     /// This is the default.
     ///
     topazDisplay_ViewPolicy_MatchSize,      
-} topazDisplay_ViewPolicy;
+};
 
 
 
 
 ///  The variety of system handle types that Display can represent.
 ///
-typedef enum {
+typedef enum topazDisplay_Handle topazDisplay_Handle;
+enum topazDisplay_Handle {
     /// The display handle is an X11Display instance. In this case, the display is a window in an X11 environment
     ///
     topazDisplay_Handle_X11Display,     
@@ -117,11 +119,12 @@ typedef enum {
     /// The handle's type is not known and should not be relied on.
     ///
     topazDisplay_Handle_Unknown         
-} topazDisplay_Handle;
+};
 
 /// The varienty of system event types that Display can give.
 ///
-typedef enum {
+typedef enum topazDisplay_Event topazDisplay_Event;
+enum topazDisplay_Event {
     /// The event is a pointer to a topazArray_t of <XEvent>.
     ///
     topazDisplay_Event_X11Event,      
@@ -133,7 +136,7 @@ typedef enum {
     ///< The event's type is not known and should not be relied on.
     ///
     topazDisplay_Event_Unknown            
-} topazDisplay_Event;
+};
 
 #include <topaz/backends/api/display_api.h>
 

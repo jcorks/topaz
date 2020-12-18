@@ -35,23 +35,21 @@ DEALINGS IN THE SOFTWARE.
 
 #include <stdint.h>
 #include <topaz/containers/table.h>
-/*
 
-    Refbank
-    -----
-    A simple, generic reference counter
-
-    Refbank represents a generic, multi-instance reference counter.
-    RefBank manages a number of accounts. Each account 
-    signifies a set of references. Accounts are uniquely identified
-    by the user supplied object T and are automatically created once Deposit() is called. 
-    Each account has a reference balance associated with it. Once an
-    account balance has reached 0 or less, the account is removed. If an AccountRemover is set
-    , the AccountRemover callback will be run on the account before removal.
-
-
-
-*/
+///
+///    Refbank
+///    -----
+///    A simple, generic reference counter
+///
+///    Refbank represents a generic, multi-instance reference counter.
+///    RefBank manages a number of accounts. Each account 
+///    signifies a set of references. Accounts are uniquely identified
+///    by the user supplied object T and are automatically created once Deposit() is called. 
+///    Each account has a reference balance associated with it. Once an
+///    account balance has reached 0 or less, the account is removed. If an AccountRemover is set
+///    , the AccountRemover callback will be run on the account before removal.
+///
+///
 typedef struct topazRefbank_t topazRefbank_t;
 
 

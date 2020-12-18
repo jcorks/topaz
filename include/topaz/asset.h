@@ -35,32 +35,56 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/containers/string.h>
 typedef struct topaz_t topaz_t;
 
-/*
 
-    Asset
-    -----
-
-    An asset represents a useful abstraction for an object 
-    that was populated from raw data, usually from a file or 
-    from memory.
-
-    On it's own, it does not do much. But, it serves as a
-    base class for more useful classes.
-
-*/
-
+///
+///    Asset
+///    -----
+///
+///    An asset represents a useful abstraction for an object 
+///    that was populated from raw data, usually from a file or 
+///    from memory.
+///
+///    On it's own, it does not do much. But, it serves as a
+///    base class for more useful classes.
+///
+///
 typedef struct topazAsset_t topazAsset_t;
 
-typedef enum {
+
+
+
+/// Type of asset.
+///
+typedef enum topazAsset_Type topazAsset_Type; 
+enum topazAsset_Type {
+    /// The asset doesnt have a type. This is used for 
+    /// error cases.
+    ///
     topazAsset_Type_None,
+
+    /// The asset is an image. See image.h
+    ///
     topazAsset_Type_Image,
+
+    /// The asset is an audio waveform.
+    ///
     topazAsset_Type_Audio,
+
+    /// The asset is a 3D model with assets.
+    ///
     topazAsset_Type_Model,
+
+    /// The asset is a particle specification.
+    ///
     topazAsset_Type_Particle,
+
+    /// The asset is raw bytes / text.
+    ///
     topazAsset_Type_Data,
+
     topazAsset_Type_Actor,
     topazAsset_Type_Count,    
-} topazAsset_Type;
+};
 
 
 
@@ -74,10 +98,8 @@ typedef void (*topaz_asset_callback)(
 );
 
 
-
-typedef struct topazAsset_Attributes_t topazAsset_Attributes_t;
-
 /// Serves as the interface for asset objects
+typedef struct topazAsset_Attributes_t topazAsset_Attributes_t;
 struct topazAsset_Attributes_t {
     
     /// Called when the asset is finalized.

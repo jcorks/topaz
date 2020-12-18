@@ -48,13 +48,12 @@ typedef struct topazFontRenderer_t topazFontRenderer_t;
 
 
 
-/*
-    Topaz   
-    -----
-
-    The context instance for the toolkit. 
-
-*/
+///
+///    Topaz   
+///    -----
+///
+///    The context instance for the toolkit. 
+///
 typedef struct topaz_t topaz_t;
 
 

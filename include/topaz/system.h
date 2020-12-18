@@ -37,28 +37,21 @@ typedef struct topazArray_t topazArray_t;
 
 
 
-/*
-
-    System
-    -----
-
-    Bundles and abstracts system-level middleware that topaz 
-    uses to implement the engine.
-
-*/
-
+///
+///    System
+///    -----
+///
+///    Bundles and abstracts system-level middleware that topaz 
+///    uses to implement the engine.
+///
 typedef struct topazSystem_t topazSystem_t;
 
 
 
 
-/* 
-
-    SystemBackend
-    -----
-
-    Represents a discreet API implementation for System 
-*/
+ 
+/// Represents a discreet API implementation for System.
+///
 typedef struct topazSystem_Backend_t topazSystem_Backend_t;
 
 

@@ -42,24 +42,24 @@ typedef struct topazRenderer_Buffer_t topazRenderer_Buffer_t;
 typedef struct topazAsset_t topazAsset_t;
 
 
-/*
-
-    Camera
-    -----
-
-    The symbolic viewing port for the engine.
-    It acts as the bridge between the rendered scene and the viewer.
-    Any number of Cameras can be maintained, but only one may be used at a time.
-    See graphics.h for swapping between which camera is used for the display.
-
-*/
-
+///
+///
+///    Camera
+///    -----
+///
+///    The symbolic viewing port for the engine.
+///    It acts as the bridge between the rendered scene and the viewer.
+///    Any number of Cameras can be maintained, but only one may be used at a time.
+///    See graphics.h for swapping between which camera is used for the display.
+///
+///
 
 
 
 /// The type dictates how the camera should be updated.
 ///
-typedef enum {
+typedef enum topazCamera_Type topazCamera_Type;
+enum topazCamera_Type {
     /// Indicates use for 3D perspective 
     ///
     topazCamera_Type_Perspective3D,
@@ -74,7 +74,7 @@ typedef enum {
     ///
     topazCamera_Type_Manual
 
-} topazCamera_Type;
+};
 
 
 
@@ -97,6 +97,7 @@ void topaz_camera_refresh(topazEntity_t *);
 
 /// When called, the camera will orient itself so that it "looks"
 /// at the given point in 3D space
+///
 void topaz_camera_look_at(
     topazEntity_t *, 
     const topazVector_t * target,

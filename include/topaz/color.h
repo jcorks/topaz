@@ -34,18 +34,16 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/containers/string.h>
 
-/*
 
-    Color
-    -----
 
-    A standard object representing an RGBA color
-
-*/
-
+///
+///    Color
+///    -----
+///
+///    A standard object representing an RGBA color
+///
+///
 typedef struct topazColor_t topazColor_t;
-
-
 struct topazColor_t {
     /// The red component of the color.
     ///

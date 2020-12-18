@@ -86,7 +86,8 @@ static void * rawdata_encode(
     topazIOX_t * d, 
     void * notUsed, 
     topazAsset_t * asset, 
-    uint64_t * size
+    uint64_t * size,
+    const topazString_t * requestedExt
 ) {
     if (topaz_asset_get_type(asset) == topazAsset_Type_Data) {
         const topazArray_t * arr = topaz_data_get_as_bytes(asset);

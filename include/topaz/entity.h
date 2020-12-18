@@ -38,31 +38,29 @@ DEALINGS IN THE SOFTWARE.
 typedef struct topazComponent_t topazComponent_t;
 typedef struct topazSpatial_t topazSpatial_t;
 typedef struct topaz_t topaz_t;
-/*
 
-    Entity
-    -----
-    
-    Basic interactive object.
- 
-    Entities are the main classes that are extended to meet abstractions for your 
-    multimedia project. By defining attributes the you can dynamically extend 
-    entities. By attaching components you can extend the entity further.
-
-    Entities are also inherently hierarchical. By Attach()ing other Entities,
-    you can create trees of self-managed Entities.
-
-    NULL is not accepted as an argument for any entity functions.
-    Instead, use the topaz_entity_null() value to represent this 
-    no-entity state. 
-
-
-*/
+///
+///    Entity
+///    -----
+///    
+///    Basic interactive object.
+/// 
+///    Entities are the main classes that are extended to meet abstractions for your 
+///    multimedia project. By defining attributes the you can dynamically extend 
+///    entities. By attaching components you can extend the entity further.
+///
+///    Entities are also inherently hierarchical. By Attach()ing other Entities,
+///    you can create trees of self-managed Entities.
+///
+///    NULL is not accepted as an argument for any entity functions.
+///    Instead, use the topaz_entity_null() value to represent this 
+///    no-entity state. 
+///
+///
+///
 typedef struct topazEntity_t topazEntity_t;
 
 
-
-typedef struct topazEntity_Attributes_t topazEntity_Attributes_t;
 
 
 /// Standard function for all entity attribute callbacks
@@ -71,6 +69,10 @@ typedef void (*topaz_entity_attribute_callback)(topazEntity_t *, void *);
 
 
 
+/// Attributes that define the behavior of a 
+/// an entity.
+///
+typedef struct topazEntity_Attributes_t topazEntity_Attributes_t;
 struct topazEntity_Attributes_t {
 
     /// Function called when the entity is attached to a parent entity.

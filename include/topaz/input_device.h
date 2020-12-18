@@ -51,7 +51,8 @@ typedef struct topazInputDevice_t topazInputDevice_t;
 
 /// A type of event.
 ///
-typedef enum {
+typedef enum topazInputDevice_Class topazInputDevice_Class;
+enum topazInputDevice_Class {
     /// Input device id for a keyboard.
     ///
     topaz_InputDevice_Class_Keyboard,
@@ -63,12 +64,13 @@ typedef enum {
     /// Input device id for a pointer/touchpad.
     ///
     topaz_InputDevice_Class_Pointer,
-} topazInputDevice_Class;
+};
 
 
 /// A single input event state.
 ///
-typedef struct {
+typedef struct topazInputDevice_Event_t topazInputDevice_Event_t;
+struct topazInputDevice_Event_t {
     /// input mapping. UserInput enums for ones below the count, else unmarked ints that are system-dependent
     ///
     int id;  
@@ -80,7 +82,7 @@ typedef struct {
     /// An associated unicode input with the event. If none, will be 0.
     ///
     int utf8;
-} topazInputDevice_Event_t;
+};
 
 
 

@@ -153,18 +153,26 @@ static void * topaz_filesys_posix__create(topazFilesys_t * fsys, topaz_t * ctx) 
 
 
 
-static int topaz_filesys_posix__set_path(topazFilesys_t * t, void * userData, const topazString_t * str) {
+static int topaz_filesys_posix__set_path(topazFilesys_t * t, void * userData, const topazString_t * strSrc) {
     PosixFilesysData * fs = userData;
 
     int pathMax = pathconf(topaz_string_get_c_str(fs->currentPath), _PC_PATH_MAX);
     char pathTemp[pathMax+1];
-  	if (!realpath(topaz_string_get_c_str(str), pathTemp)) 
-        return FALSE;
+    topazString_t * str = topaz_string_clone(strSrc);
+  	if (!realpath(topaz_string_get_c_str(str), pathTemp)) {
+        topaz_string_set(str, fs->currentPath);
+        topaz_string_concat(str, strSrc);
+      	if (!realpath(topaz_string_get_c_str(str), pathTemp)) {
+            topaz_string_destroy(str);
+            return FALSE;
+        }
+    } 
 
-
+    topaz_string_destroy(str);
 
     
-    topaz_string_set(fs->currentPath, str);
+    topaz_string_clear(fs->currentPath);
+    topaz_string_concat_printf(fs->currentPath, "%s", pathTemp);
     if (topaz_string_get_char(fs->currentPath, topaz_string_get_length(fs->currentPath)-1) != '/') {
         topaz_string_concat(fs->currentPath, TOPAZ_STR_CAST("/"));
     }

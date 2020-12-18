@@ -36,18 +36,16 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/vector.h>
 #include <topaz/matrix.h>
 
-/*
-
-    Transform
-    -----
-
-    A hierarchical transform object.
-  
-    Allows for chaining transformation information including
-    position, rotation, and scaling. Because Transforms are hierarchical,
-    each has a local transform and a global transform.
-
-*/
+///
+///    Transform
+///    -----
+///
+///    A hierarchical transform object.
+///  
+///    Allows for chaining transformation information including
+///    position, rotation, and scaling. Because Transforms are hierarchical,
+///    each has a local transform and a global transform.
+///
 typedef struct topazTransform_t topazTransform_t;
 
 

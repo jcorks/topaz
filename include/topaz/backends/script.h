@@ -40,13 +40,13 @@ typedef struct topazSystem_Backend_t topazSystem_Backend_t;
 
 
 
-/*
 
-    Script
-    -----
-    The controller for the scripting interface
-    
-*/
+///
+///    Script
+///    -----
+///    The controller for the scripting interface
+///    
+///
 typedef struct topazScript_t topazScript_t;
 typedef struct topazScript_Object_t topazScript_Object_t;
 
@@ -54,18 +54,20 @@ typedef struct topazScript_Object_t topazScript_Object_t;
 
 
 
-typedef enum {
+typedef enum topazScript_Event_t topazScript_Event_t;
+enum topazScript_Event_t {
     /// The script engine has encountered a fatal error.
     /// The callback will be given string arguments containing info
     /// on the error that occurred.
     ///
     topaz_Script_Event_OnError,
 
-} topazScript_Event_t;
+};
 
 
 
-typedef enum {
+typedef enum topazScript_Object_Feature_t topazScript_Object_Feature_t;
+enum topazScript_Object_Feature_t {
     /// The object has no features.
     ///
     topazScript_Object_Feature_None,
@@ -90,7 +92,7 @@ typedef enum {
     /// topaz_script_object_reference_extendable_* family of functions.
     topazScript_Object_Feature_Extendable = 8,
 
-} topazScript_Object_Feature_t;
+};
 
 
 /// Function that is called from 
@@ -103,7 +105,8 @@ typedef topazScript_Object_t * (*topaz_script_native_function)(topazScript_t *, 
 /// what data it can hold. Types have implicit conversions 
 /// to and from each other.
 ///
-typedef enum {
+typedef enum topazScript_Object_Type_t topazScript_Object_Type_t;
+enum topazScript_Object_Type_t {
     /// The object type used for unset data, errors, and similar data.
     ///
     topazScript_Object_Type_Undefined,
@@ -128,7 +131,7 @@ typedef enum {
     /// See topaz_script_object_get_reference_features().
     /// 
     topazScript_Object_Type_Reference
-} topazScript_Object_Type_t;
+};
 
 
 #include <topaz/backends/api/script_api.h>
@@ -266,13 +269,13 @@ void topaz_script_bootstrap(topazScript_t *);
 
 
 
-/*
 
-    Script_Object
-    -----
-    Dynamically-typed object that interfaces with script primitives.
-    
-*/
+///
+///    Script_Object
+///    -----
+///    Dynamically-typed object that interfaces with script primitives.
+///    
+///
 typedef struct topazScript_Object_t topazScript_Object_t;
 
 
@@ -468,8 +471,10 @@ void topaz_script_object_reference_extendable_add_property(
 ///
 void topaz_script_enable_debugging(topazScript_t *);
 
-
-typedef enum {
+/// Commands for script debuggers.
+///
+typedef enum topazScript_DebugCommand_t topazScript_DebugCommand_t;
+enum topazScript_DebugCommand_t {
     /// Sends a command to pause the debugger.
     /// If already in a paused state, this does nothing.
     /// It is not guaranteed when the debugger will respond to the pause 
@@ -538,7 +543,7 @@ typedef enum {
     /// in such a case.
     ///
     topazScript_DebugCommand_Custom
-} topazScript_DebugCommand_t;
+};
 
 
 /// Sends a command to the debugger.

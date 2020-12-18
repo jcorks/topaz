@@ -55,11 +55,10 @@ typedef void (*topaz_component_attribute_callback)(topazComponent_t *, void *);
 
 
 
-typedef struct topazComponent_Attributes_t topazComponent_Attributes_t;
-
 /// Attributes of the component. Attributes define a baseline behavior 
 /// in response to common events. 
 ///
+typedef struct topazComponent_Attributes_t topazComponent_Attributes_t;
 struct topazComponent_Attributes_t {
 
     /// Function called when stepping

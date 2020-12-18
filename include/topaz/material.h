@@ -40,19 +40,15 @@ typedef struct topazImage_Frame_t topazImage_Frame_t;
 typedef struct topazRenderer_Framebuffer_t topazRenderer_Framebuffer_t;
 typedef struct topazRenderer_3D_t topazRenderer_3D_t;
 
-/*
-
-    Material
-    -----
-
-    Defines how 3D objects visually express their vertex data. This
-    includes things such as textures, shader programs, and color definitions.
-
-*/
-
-
+///
+///    Material
+///    -----
+///
+///    Defines how 3D objects visually express their vertex data. This
+///    includes things such as textures, shader programs, and color definitions.
+///
+///
 typedef struct topazMaterial_t topazMaterial_t;
-typedef struct topazMaterial_ProgramData_t topazMaterial_ProgramData_t;
 
 
 
@@ -64,6 +60,7 @@ typedef struct topazMaterial_ProgramData_t topazMaterial_ProgramData_t;
 ///                specular = {1, 0, 1, 1}
 ///                userData = {0..0}
 ///
+typedef struct topazMaterial_ProgramData_t topazMaterial_ProgramData_t;
 struct topazMaterial_ProgramData_t {
     /// The ambient color of the material.
     ///
