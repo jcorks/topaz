@@ -122,14 +122,19 @@ void topaz_string_clear(topazString_t * s) {
 }
 
 void topaz_string_set(topazString_t * s, const topazString_t * src) {
-    free(s->cstr);
-    s->len = src->len;
-    s->alloc = src->alloc;
-    s->cstr = malloc(s->alloc);
-    memcpy(s->cstr, src->cstr, src->len+1);
-
+    if (s->alloc >= src->alloc) {
+        memcpy(s->cstr, src->cstr, src->len+1);
+        s->len = src->len;
+    } else {
+        free(s->cstr);
+        s->len = src->len;
+        s->alloc = src->alloc;
+        s->cstr = malloc(s->alloc);
+        memcpy(s->cstr, src->cstr, src->len+1);
+    }
     if (s->delimiters) topaz_string_destroy(s->delimiters);
     if (s->chain) topaz_string_destroy(s->chain);
+
 
 }
 

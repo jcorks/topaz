@@ -201,6 +201,16 @@ void topaz_console_command_context_add_command(
     void * data
 );
 
+
+/// Adds a default handler. This will be called for a context 
+/// if an unrecognized command is given to the context.
+///
+void topaz_console_command_context_set_default_handler(
+    topazConsole_CommandContext_t *,
+    topaz_console_command_callback handler;
+
+);
+
 /// Sets the header prompt text to show within the console.
 ///
 void topaz_console_command_context_set_prompt(

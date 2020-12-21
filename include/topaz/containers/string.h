@@ -34,14 +34,9 @@ DEALINGS IN THE SOFTWARE.
 
 #include <stdint.h>
 
-/*
-
-    String
-    -----
-    
-
-
-*/
+///
+/// Holds an array of characters, usually meant to convey text.
+///
 typedef struct topazString_t topazString_t;
 
 

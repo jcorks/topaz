@@ -37,15 +37,13 @@ typedef struct topaz_t topaz_t;
 
 
 ///
-///    Asset
-///    -----
 ///
 ///    An asset represents a useful abstraction for an object 
 ///    that was populated from raw data, usually from a file or 
 ///    from memory.
 ///
 ///    On it's own, it does not do much. But, it serves as a
-///    base class for more useful classes.
+///    base class for more useful applications
 ///
 ///
 typedef struct topazAsset_t topazAsset_t;
@@ -54,6 +52,9 @@ typedef struct topazAsset_t topazAsset_t;
 
 
 /// Type of asset.
+///
+/// Every asset has a type that gives a hint to what child class
+/// it is. 
 ///
 typedef enum topazAsset_Type topazAsset_Type; 
 enum topazAsset_Type {

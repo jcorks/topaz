@@ -12,7 +12,8 @@ var symbolTable = (function(){
         CLASS : 1,
         ENUMERATOR : 2,
         OPEN_STRUCTURE : 3,
-        LANGUAGE_TYPE : 4
+        LANGUAGE_TYPE : 4,
+        ENUM_VALUE : 5
     }
 
     const typeToString = function(type) {
@@ -23,6 +24,8 @@ var symbolTable = (function(){
           case types.ENUMERATOR:     return "Enumerator";
           case types.OPEN_STRUCTURE: return "Structure";
           case types.LANGUAGE_TYPE:  return "BuiltIn";
+          case types.ENUM_VALUE:     return "EnumValue";
+          case types.OPEN_STRUCTURE_MEMBER: return "StructureMember";
         }
     }
     
@@ -151,6 +154,10 @@ var symbolTable = (function(){
                 text += 'parent:      ' + symbol.parent + '\n\n';
             }
             return text;
+        },
+
+        getSymbol : function(symbolName) {
+            return symbols[symbolName];
         },
 
         getFileEntities : function(file) {

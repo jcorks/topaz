@@ -138,18 +138,28 @@ static void * topaz_filesys_winapi__create(topazFilesys_t * fsys, topaz_t * ctx)
 }
 
 
-static int topaz_filesys_winapi__set_path(topazFilesys_t * fsys, void * userData, const topazString_t * str) {
+static int topaz_filesys_winapi__set_path(topazFilesys_t * fsys, void * userData, const topazString_t * strSrc) {
     WINAPIFilesysData * fs = userData;
     
     int pathMax = MAX_PATH;
     char pathTemp[pathMax+1];
-  	if (!GetFullPathNameA(topaz_string_get_c_str(str), MAX_PATH, pathTemp, NULL)) 
-        return FALSE;
+    topazString_t * str = topaz_string_clone(strSrc);
+  	if (!GetFullPathNameA(topaz_string_get_c_str(str), MAX_PATH, pathTemp, NULL)) {
+        topaz_string_set(str, fs->currentPath);
+        topaz_string_concat(str, TOPAZ_STR_CAST("\\"));
+        topaz_string_concat(str, strSrc);
+      	if (!GetFullPathNameA(topaz_string_get_c_str(str), MAX_PATH, pathTemp, NULL)) {
+            topaz_string_destroy(str);
+            return FALSE;
+        }
+    }
 
 
 
-    
-    topaz_string_set(fs->currentPath, str);
+    topaz_string_clear(fs->currentPath);
+    topaz_string_concat_printf(fs->currentPath, "%s", pathTemp);
+    topaz_string_destroy(str);
+
     topaz_filesys_winapi_populate_objects(fs);
 
 	return TRUE;
@@ -216,6 +226,9 @@ static topazRbuffer_t * topaz_filesys_winapi__read(topazFilesys_t * fsys, void *
     topaz_string_concat(fullPath, dir);
     
     FILE * f = fopen(topaz_string_get_c_str(fullPath), "rb");
+    if (!f) {
+        f = fopen(topaz_string_get_c_str(dir), "rb");
+    }
     topazRbuffer_t * buffer = topaz_rbuffer_create();
     if (f) {
         topazArray_t * fullData = topaz_array_create(sizeof(uint8_t));
@@ -250,11 +263,15 @@ static int topaz_filesys_winapi__write(
 {
     WINAPIFilesysData * fs = userData;
     topazString_t * fullPath = topaz_string_clone(fs->currentPath);
-    topaz_string_concat_printf(fullPath, "%c", '/');
+    topaz_string_concat_printf(fullPath, "%c", '\\');
     topaz_string_concat(fullPath, fname);
     
     const topazArray_t * arr = topaz_wbuffer_get_data(data);
     FILE * f = fopen("wb", topaz_string_get_c_str(fullPath));
+    if (!f) {
+        f = fopen(topaz_string_get_c_str(fname), "wb");
+    }
+
     if (f) {
         fwrite(
             topaz_array_get_data(arr),

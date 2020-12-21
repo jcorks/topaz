@@ -10,8 +10,8 @@ gendoc = (function(){
                 _level : 0,
 
                 // creates an element string
-                createElement : function(content, tag) {
-                    return '<'+tag+'>\n'+content+'\n</'+tag+'>\n';
+                createElement : function(content, tag, attribs) {
+                    return '<'+tag+(attribs?' '+attribs:'')+'>\n'+content+'\n</'+tag+'>\n';
                 },
 
                 // adds text content
