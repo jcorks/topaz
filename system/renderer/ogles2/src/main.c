@@ -298,6 +298,7 @@ static void topaz_api_es2__destroy(topazRendererAPI_t * api, topazRenderer_CoreA
 
 static void topaz_api_es2__draw_2d(topazRendererAPI_t * api, void *d2, const topazRenderer_2D_Context_t * ctx, const topazRenderer_ProcessAttribs_t * attribs) {
     topaz_es2_start(api->implementationData);
+    topaz_es2_commit_process_attribs(api->implementationData, attribs);
     topaz_es2_2d_render(
         d2,
         ctx,
@@ -427,8 +428,19 @@ void topaz_system_renderer_ogles2__backend(
         context = glfwCreateWindow(640, 480, __FILE__, NULL, NULL);
         #ifdef TOPAZDC_DEBUG
             assert(context);
-        #endif
+        #endif                
         glfwMakeContextCurrent(context);
+
+        #ifdef TOPAZDC_DEBUG
+            printf("CHOSEN ATTRIBS FOR ES:\n");
+            int st;
+            glGetIntegerv(GL_RED_BITS, &st);     printf("R:       %d\n", st);
+            glGetIntegerv(GL_GREEN_BITS, &st);   printf("G:       %d\n", st);
+            glGetIntegerv(GL_BLUE_BITS, &st);    printf("B:       %d\n", st);
+            glGetIntegerv(GL_DEPTH_BITS, &st);   printf("Depth:   %d\n", st);
+            glGetIntegerv(GL_STENCIL_BITS, &st); printf("Stencil: %d\n", st);
+        #endif
+
         isInit = 1;
     }
     

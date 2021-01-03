@@ -62,25 +62,44 @@ void topaz_render2d_destroy(topazRender2D_t *);
 
 
 
-/// Gets the currently set etch rule, which determines how the 
-/// etch rules is applied when rendering this 2d object.
-/// Default is topazRenderer_EtchRule_Out
-///
-topazRenderer_EtchRule topaz_render2d_get_etch_rule(const topazRender2D_t *);
+typedef enum topazRender2D_Parameter topazRender2D_Parameter;
 
-/// Sets the etch rule.
+/// The parameters control more fine operations when rendering the 
+/// the objects.
 ///
-void topaz_render2d_set_etch_rule(topazRender2D_t *, topazRenderer_EtchRule);
+enum topazRender2D_Parameter {
+    /// The transparency rule for the 2D object.
+    /// Default is topazRenderer_AlphaRule_Allow
+    ///
+    topazRender2D_Parameter_AlphaRule,
+
+    /// The transparency rule for the 2D object.
+    /// Default is topazRenderer_AlphaRule_Allow
+    ///
+    topazRender2D_Parameter_DepthTest,
+
+    /// The currently set etch rule, which determines how the 
+    /// etch rules is applied when rendering this 2d object.
+    /// Default is topazRenderer_EtchRule_Out
+    ///
+    topazRender2D_Parameter_EtchRule,
+
+    /// The texturing hint for the 2D object.
+    /// Default is topazRenderer_TextureFilterHint_Linear
+    ///
+    topazRender2D_Parameter_TextureFilterHint
+};
 
 
-/// Retrieves the transparency rule for the 2D object.
-/// Default is topazRenderer_AlphaRule_Allow
-///
-topazRenderer_AlphaRule topaz_render2d_get_alpha_rule(const topazRender2D_t *);
 
-/// Sets how transparency is applied when rendering this 2d object.
+/// Sets the parameter value. The value accepted is one of the appropriate 
+/// enum values within renderer.h
 ///
-void topaz_render2d_set_alpha_rule(topazRender2D_t *, topazRenderer_AlphaRule);
+void topaz_render2d_set_parameter(topazRender2D_t *, topazRender2D_Parameter, int);
+
+/// Gets the parameter value.
+///
+int topaz_render2d_get_parameter(topazRender2D_t *, topazRender2D_Parameter);
 
 
 /// Gets whether this 2D object is renderered in abolute coordinates

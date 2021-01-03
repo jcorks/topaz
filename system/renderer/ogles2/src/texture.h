@@ -29,6 +29,15 @@ void topaz_es2_texman_print_section(
 );
 
 
+// sets whether to filter for all subsequent rendering operations
+// that use textures from this texture manager.
+void topaz_es2_texman_set_filter(
+    topazES2_TexMan_t *,
+    int filter
+);
+
+
+
 // Sets a callback to be fired when a texture 
 // has its atlas coordinates changed due to a reset event.
 // good idea for object2d stuff

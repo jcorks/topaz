@@ -15,6 +15,29 @@ topaz = {
     wait : topaz__wait,
     import : topaz_script__import,
     log : topaz__log,
+
+    topazRenderer_EtchRule_NoEtching : 0,
+    topazRenderer_EtchRule_Define : 1,
+    topazRenderer_EtchRule_Undefine : 2,
+    topazRenderer_EtchRule_In : 3,
+    topazRenderer_EtchRule_Out : 4,
+
+    topazRenderer_DepthTest_Less : 0,
+    topazRenderer_DepthTest_LEQ : 1,
+    topazRenderer_DepthTest_Greater : 2,
+    topazRenderer_DepthTest_GEQ : 3,
+    topazRenderer_DepthTest_Equal : 4,
+    topazRenderer_DepthTest_Nonde : 5,
+
+    topazRenderer_AlphaRule_Allow : 0,
+    topazRenderer_AlphaRule_Opaque : 1,
+    topazRenderer_AlphaRule_Translucent : 2,
+    topazRenderer_AlphaRule_Invisible : 3,
+
+    topazRenderer_TextureFilterHint_Linear : 0,
+    topazRenderer_TextureFilterHint_None : 1,
+
+
     objectToString : function(obj, levelSrc) {
         var checked = [];
         var levelG = levelSrc ? levelSrc : 10;
@@ -1149,8 +1172,37 @@ topaz = {
             }
         );
 
-        
+        Object.defineProperty(
+            this,
+            'alphaRule', {
+                get : function() {return topaz_shape2d__get_parameter(impl, 0)},
+                set : function(v){topaz_shape2d__set_parameter(impl, 0, v);}
+            }
+        );
 
+        Object.defineProperty(
+            this,
+            'depthTest', {
+                get : function() {return topaz_shape2d__get_parameter(impl, 1)},
+                set : function(v){topaz_shape2d__set_parameter(impl, 1, v);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'etchRule', {
+                get : function() {return topaz_shape2d__get_parameter(impl, 2)},
+                set : function(v){topaz_shape2d__set_parameter(impl, 2, v);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'textureFilter', {
+                get : function() {return topaz_shape2d__get_parameter(impl, 3)},
+                set : function(v){topaz_shape2d__set_parameter(impl, 3, v);}
+            }
+        );
     },
     text2d : function(implPre) {
         var ctx = this;
@@ -1242,7 +1294,37 @@ topaz = {
         );
 
 
+        Object.defineProperty(
+            this,
+            'alphaRule', {
+                get : function() {return topaz_text2d__get_parameter(impl, 0)},
+                set : function(v){topaz_text2d__set_parameter(impl, 0, v);}
+            }
+        );
 
+        Object.defineProperty(
+            this,
+            'depthTest', {
+                get : function() {return topaz_text2d__get_parameter(impl, 1)},
+                set : function(v){topaz_text2d__set_parameter(impl, 1, v);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'etchRule', {
+                get : function() {return topaz_text2d__get_parameter(impl, 2)},
+                set : function(v){topaz_text2d__set_parameter(impl, 2, v);}
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'textureFilter', {
+                get : function() {return topaz_text2d__get_parameter(impl, 3)},
+                set : function(v){topaz_text2d__set_parameter(impl, 3, v);}
+            }
+        );
         
 
     },

@@ -433,5 +433,14 @@ void topaz_shape2d_form_lines(topazComponent_t * c, const topazArray_t * ptsSrc)
     );
 }
 
+void topaz_shape2d_set_parameter(topazComponent_t * c, topazRender2D_Parameter p, int i) {
+    Shape2D * s = shape2d__retrieve(c);
+    topaz_render2d_set_parameter(s->render2d, p, i);
+}
+
+int topaz_shape2d_get_parameter(topazComponent_t * c, topazRender2D_Parameter p) {
+    Shape2D * s = shape2d__retrieve(c);
+    return topaz_render2d_get_parameter(s->render2d, p);
+}
 
 

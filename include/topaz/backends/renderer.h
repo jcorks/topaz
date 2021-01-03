@@ -175,7 +175,7 @@ enum topazRenderer_EtchRule {
 
 
     /// Along with whatever is being drawn, the etch region is defined. 
-    /// In the 3D case, etches are only defined in ares where the depth test passes
+    /// Etches are only defined in ares where the depth test passes
     ///
     topazRenderer_EtchRule_Define,   
 

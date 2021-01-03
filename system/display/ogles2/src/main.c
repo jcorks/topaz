@@ -268,13 +268,29 @@ static void render_to_screen(TopazGLFWWindow * w, GLuint tex) {
     glBindBuffer(GL_ARRAY_BUFFER, w->vbo);    
     glEnableVertexAttribArray(w->vertexLocation);
     glVertexAttribPointer(w->vertexLocation, 2, GL_FLOAT, GL_FALSE, sizeof(float)*2, 0);
+
+    int stateBlend, 
+        stateCull, 
+        stateDepth;
+
+    glGetIntegerv(GL_BLEND,      &stateBlend);
+    glGetIntegerv(GL_CULL_FACE,  &stateCull);
+    glGetIntegerv(GL_DEPTH_TEST, &stateDepth);
+
     glDisable(GL_BLEND);
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
+    
+
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glDisableVertexAttribArray(w->vertexLocation);
     glUseProgram(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    if (stateBlend) glEnable(stateBlend);
+    if (stateCull)  glEnable(stateCull);
+    if (stateDepth) glEnable(stateDepth);
+
 
     glfwMakeContextCurrent(wOld);
 

@@ -35,6 +35,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/component.h>
 #include <topaz/color.h>
 #include <topaz/vector.h>
+#include <topaz/render2d.h>
 typedef struct topazTransform_t topazTransform_t;
 typedef struct topazAsset_t topazAsset_t;
 /*
@@ -139,8 +140,14 @@ void topaz_shape2d_form_triangles(topazComponent_t *, const topazArray_t *);
 void topaz_shape2d_form_lines(topazComponent_t *, const topazArray_t *);
 
 
+/// Sets the parameter value. The value accepted is one of the appropriate 
+/// enum values within renderer.h
+///
+void topaz_shape2d_set_parameter(topazComponent_t *, topazRender2D_Parameter, int);
 
-
+/// Gets the parameter value.
+///
+int topaz_shape2d_get_parameter(topazComponent_t *, topazRender2D_Parameter);
 
 
 

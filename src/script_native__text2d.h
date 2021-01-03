@@ -44,6 +44,39 @@ TSO_SCRIPT_API_FN(text2d_api__set_text_monospace) {
 }
 
 
+TSO_SCRIPT_API_FN(text2d_api__get_parameter) {
+    TSO_ASSERT_ARG_COUNT(2);
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);
+
+    return topaz_script_object_from_number(
+        script,
+        topaz_text2d_get_parameter(
+            native,
+            topaz_script_object_as_number(arg1)
+        )
+    );
+}
+
+TSO_SCRIPT_API_FN(text2d_api__set_parameter) {
+    TSO_ASSERT_ARG_COUNT(3);
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);   
+
+
+    topaz_text2d_set_parameter(
+        native,
+        topaz_script_object_as_number(arg1),
+        topaz_script_object_as_number(arg2)
+    );  
+    TSO_NO_RETURN;
+}
+
+
+
 TSO_SCRIPT_API_FN(text2d_api__get_extent_width) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
@@ -171,6 +204,9 @@ static void add_refs__text2d_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_text2d__get_text", text2d_api__get_text);
     TS_MAP_NATIVE_FN("topaz_text2d__set_text", text2d_api__set_text);
     TS_MAP_NATIVE_FN("topaz_text2d__set_text_monospace", text2d_api__set_text_monospace);
+
+    TS_MAP_NATIVE_FN("topaz_text2d__get_parameter", text2d_api__get_parameter);
+    TS_MAP_NATIVE_FN("topaz_text2d__set_parameter", text2d_api__set_parameter);
 
 
     TS_MAP_NATIVE_FN("topaz_text2d__get_extent_width", text2d_api__get_extent_width);

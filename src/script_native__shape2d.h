@@ -29,6 +29,38 @@ TSO_SCRIPT_API_FN(shape2d_api__set_color) {
     TSO_NO_RETURN;
 }
 
+TSO_SCRIPT_API_FN(shape2d_api__get_parameter) {
+    TSO_ASSERT_ARG_COUNT(2);
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);
+
+    return topaz_script_object_from_number(
+        script,
+        topaz_shape2d_get_parameter(
+            native,
+            topaz_script_object_as_number(arg1)
+        )
+    );
+}
+
+TSO_SCRIPT_API_FN(shape2d_api__set_parameter) {
+    TSO_ASSERT_ARG_COUNT(3);
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
+
+
+    topaz_shape2d_set_parameter(
+        native,
+        topaz_script_object_as_number(arg1),
+        topaz_script_object_as_number(arg2)
+    );  
+    TSO_NO_RETURN;
+}
+
+
 TSO_SCRIPT_API_FN(shape2d_api__get_anim_speed) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
@@ -217,6 +249,8 @@ static void add_refs__shape2d_api(topazScript_t * script, topazScriptManager_t *
     TS_MAP_NATIVE_FN("topaz_shape2d__create", shape2d_api__create);
     TS_MAP_NATIVE_FN("topaz_shape2d__get_color", shape2d_api__get_color);
     TS_MAP_NATIVE_FN("topaz_shape2d__set_color", shape2d_api__set_color);
+    TS_MAP_NATIVE_FN("topaz_shape2d__get_parameter", shape2d_api__get_parameter);
+    TS_MAP_NATIVE_FN("topaz_shape2d__set_parameter", shape2d_api__set_parameter);
 
 
 
@@ -234,11 +268,12 @@ static void add_refs__shape2d_api(topazScript_t * script, topazScriptManager_t *
     TS_MAP_NATIVE_FN("topaz_shape2d__set_rotation", shape2d_api__set_rotation);
     TS_MAP_NATIVE_FN("topaz_shape2d__set_scale",    shape2d_api__set_scale);
 
+
     TS_MAP_NATIVE_FN("topaz_shape2d__form_rectangle", shape2d_api__form_rectangle);
     //TS_MAP_NATIVE_FN("topaz_shape2d__form_image", shape2d_api__form_image);
     //TS_MAP_NATIVE_FN("topaz_shape2d__form_image_scaled", shape2d_api__form_image_scaled);
     TS_MAP_NATIVE_FN("topaz_shape2d__form_radial", shape2d_api__form_radial);
     TS_MAP_NATIVE_FN("topaz_shape2d__form_triangles", shape2d_api__form_triangles);
     TS_MAP_NATIVE_FN("topaz_shape2d__form_lines", shape2d_api__form_lines);
-
+    
 }

@@ -34,6 +34,7 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__TEXT2D__INCLUDED
 #define H_TOPAZDC__TEXT2D__INCLUDED
 #include <topaz/color.h>
+#include <topaz/render2d.h>
 typedef struct topazComponent_t topazComponent_t;
 typedef struct topazString_t topazString_t;
 typedef struct topaz_t topaz_t;
@@ -71,6 +72,7 @@ void topaz_text2d_set_text_monospace(
     const topazString_t *,
     int pixelSize
 );
+
 
 /// Gets the text being displayed by the component.
 ///
@@ -114,6 +116,16 @@ void topaz_text2d_set_color(
     topazComponent_t *,
     topazColor_t
 );
+
+/// Sets the parameter value. The value accepted is one of the appropriate 
+/// enum values within renderer.h
+///
+void topaz_text2d_set_parameter(topazComponent_t *, topazRender2D_Parameter, int);
+
+/// Gets the parameter value.
+///
+int topaz_text2d_get_parameter(topazComponent_t *, topazRender2D_Parameter);
+
 
 
 

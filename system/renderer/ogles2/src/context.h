@@ -2,6 +2,7 @@
 #define H_TOPAZES2_CONTEXT_INCLUDED
 
 #define GLFW_INCLUDE_ES2
+#define GLFW_INCLUDE_GLEXT
 #include <GLFW/glfw3.h>
 
 
@@ -51,6 +52,10 @@ void topaz_es2_start(topazES2_t *);
 
 // releases the framebuffer (unbind)
 void topaz_es2_end(topazES2_t *);
+
+// Ensures that following rendering options adhere to the process 
+// attribs specified here.
+void topaz_es2_commit_process_attribs(topazES2_t *, const topazRenderer_ProcessAttribs_t *);
 
 // glFinish()?
 void topaz_es2_sync(topazES2_t *);

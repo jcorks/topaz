@@ -134,7 +134,6 @@ topazES2_Program2D_t * topaz_es2_p2d_create() {
     glUniform1i(out->locationUniformSampler, 0);TOPAZ_GLES_CALL_CHECK;
     glUseProgram(0);TOPAZ_GLES_CALL_CHECK;
 
-
     return out;
 }
 
@@ -155,6 +154,8 @@ static void projection_orthographic(topazMatrix_t * out,
     projection[11] = -(zFar + zNear) / (zFar - zNear);
 
 }
+
+
 
 void topaz_es2_p2d_render(
     topazES2_Program2D_t * p, 

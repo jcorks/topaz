@@ -132,6 +132,60 @@ void topaz_render2d_set_alpha_rule(topazRender2D_t * t, topazRenderer_AlphaRule 
     t->attribs.alphaRule = a;
 }
 
+topazRenderer_DepthTest topaz_render2d_get_depth_test(const topazRender2D_t * t) {
+    return t->attribs.depthTest;
+}
+
+void topaz_render2d_set_depth_test(topazRender2D_t * t, topazRenderer_DepthTest a) {
+    t->attribs.depthTest = a;
+}
+
+topazRenderer_TextureFilterHint topaz_render2d_get_texture_filter_hint(const topazRender2D_t * t) {
+    return t->attribs.textureFilter;
+}
+
+void topaz_render2d_set_texture_filter_hint(topazRender2D_t * t, topazRenderer_TextureFilterHint a) {
+    t->attribs.textureFilter = a;
+}
+
+
+
+void topaz_render2d_set_parameter(topazRender2D_t * c, topazRender2D_Parameter p, int i) {
+    switch(p) {
+      case topazRender2D_Parameter_AlphaRule:
+        c->attribs.alphaRule = i;                
+        break;
+      case topazRender2D_Parameter_DepthTest:
+        c->attribs.depthTest = i;                
+        break;
+      case topazRender2D_Parameter_EtchRule:
+        c->attribs.etchRule = i;                
+        break;
+      case topazRender2D_Parameter_TextureFilterHint:
+        c->attribs.textureFilter = i;                
+        break;
+    }    
+}
+
+int topaz_render2d_get_parameter(topazRender2D_t * c, topazRender2D_Parameter p) {
+    switch(p) {
+      case topazRender2D_Parameter_AlphaRule:
+        return c->attribs.alphaRule;
+      case topazRender2D_Parameter_DepthTest:
+        return c->attribs.depthTest;
+      case topazRender2D_Parameter_EtchRule:
+        return c->attribs.etchRule;
+      case topazRender2D_Parameter_TextureFilterHint:
+        return c->attribs.textureFilter;
+    }    
+    return -1;
+}
+
+
+
+
+
+
 
 
 int topaz_render2d_get_absolute(const topazRender2D_t * t) {

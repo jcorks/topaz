@@ -128,8 +128,12 @@ int topaz_es2_fb_resize(topazES2_FB_t * out, int w, int h) {
     glBindTexture(GL_TEXTURE_2D, 0);TOPAZ_GLES_CALL_CHECK;
     glBindFramebuffer(GL_FRAMEBUFFER, out->fbo);TOPAZ_GLES_CALL_CHECK;    
     glBindRenderbuffer(GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;    
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h); TOPAZ_GLES_CALL_CHECK;
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, w, h); TOPAZ_GLES_CALL_CHECK;
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;
+
+    //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h); TOPAZ_GLES_CALL_CHECK;
+    //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;
     //glBindRenderbuffer(GL_RENDERBUFFER, out->rbo_stencil); TOPAZ_GLES_CALL_CHECK;    
     //glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, w, h); TOPAZ_GLES_CALL_CHECK;
     //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, out->rbo_stencil); TOPAZ_GLES_CALL_CHECK;
@@ -189,9 +193,13 @@ void topaz_es2_fb_clear_layer(topazES2_FB_t * fb, int layers) {
     channels |= (layers & topazRenderer_DataLayer_Depth) ? GL_DEPTH_BUFFER_BIT   : 0;
     channels |= (layers & topazRenderer_DataLayer_Etch)  ? GL_STENCIL_BUFFER_BIT : 0;
 
+    int prevMask[4];
+    glGetIntegerv(GL_COLOR_WRITEMASK, prevMask);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); 
     glBindFramebuffer(GL_FRAMEBUFFER, fb->fbo); TOPAZ_GLES_CALL_CHECK;
     glClear(channels);TOPAZ_GLES_CALL_CHECK;
     glBindFramebuffer(GL_FRAMEBUFFER, 0); TOPAZ_GLES_CALL_CHECK;
+    glColorMask(prevMask[0], prevMask[1], prevMask[2], prevMask[3]); 
 
 
 }
