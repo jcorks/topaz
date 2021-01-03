@@ -56,13 +56,15 @@ static void topaz_api_gl3__destroy(topazRendererAPI_t * api, topazRenderer_CoreA
 }
 
 static void topaz_api_gl3__draw_2d(topazRendererAPI_t * api, void *d2, const topazRenderer_2D_Context_t * ctx, const topazRenderer_ProcessAttribs_t * attribs) {
-    topaz_gl3_start(api->implementationData);
-    topaz_gl3_2d_render(
-        d2,
-        ctx,
-        attribs
-    );
-    topaz_gl3_end(api->implementationData);    
+    if (topaz_gl3_start(api->implementationData)) {
+        topaz_gl3_commit_process_attribs(api->implementationData, attribs);
+        topaz_gl3_2d_render(
+            d2,
+            ctx,
+            attribs
+        );
+        topaz_gl3_end(api->implementationData);    
+    }
 }
 
 static void topaz_api_gl3__clear_layer(topazRendererAPI_t* api, topazRenderer_DataLayer layer) {
@@ -171,6 +173,7 @@ void topaz_system_renderer_ogl3__backend(
     static GLFWwindow * context = NULL;
     if (!isInit) {
         glfwInit();
+        glfwSwapInterval(1);
         glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -186,6 +189,21 @@ void topaz_system_renderer_ogl3__backend(
         context = glfwCreateWindow(640, 480, __FILE__, NULL, NULL);
         assert(context);
         glfwMakeContextCurrent(context);
+        glewExperimental = GL_TRUE;
+        assert(glewInit() == GLEW_OK);
+        glGetError();
+        assert(GLEW_VERSION_3_1);
+
+        #ifdef TOPAZDC_DEBUG
+            printf("CHOSEN ATTRIBS FOR GL:\n");
+            int st;
+            glGetIntegerv(GL_RED_BITS, &st);     printf("R:       %d\n", st);
+            glGetIntegerv(GL_GREEN_BITS, &st);   printf("G:       %d\n", st);
+            glGetIntegerv(GL_BLUE_BITS, &st);    printf("B:       %d\n", st);
+            glGetIntegerv(GL_DEPTH_BITS, &st);   printf("Depth:   %d\n", st);
+            glGetIntegerv(GL_STENCIL_BITS, &st); printf("Stencil: %d\n", st);
+        #endif
+
         isInit = 1;
     }
     

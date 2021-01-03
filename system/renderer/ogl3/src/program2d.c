@@ -11,6 +11,7 @@ struct topazGL3_Program2D_t {
     GLint locationVBOposition;
     GLint locationVBOuv;
     GLint locationVBOrgba;
+    GLuint vao;
 
     GLint locationUniformMatrixGlobalTF;
     GLint locationUniformMatrixGlobalProj;
@@ -127,8 +128,18 @@ topazGL3_Program2D_t * topaz_gl3_p2d_create() {
 
     glUseProgram(out->program);TOPAZ_GLES_CALL_CHECK;
     glUniform1i(out->locationUniformSampler, 0);TOPAZ_GLES_CALL_CHECK;
-    glUseProgram(0);TOPAZ_GLES_CALL_CHECK;
 
+    glGenVertexArrays(1, &out->vao);
+    glBindVertexArray(out->vao);
+
+    glEnableVertexAttribArray(out->locationVBOposition);TOPAZ_GLES_CALL_CHECK;
+    glEnableVertexAttribArray(out->locationVBOuv);TOPAZ_GLES_CALL_CHECK;
+    glEnableVertexAttribArray(out->locationVBOrgba);TOPAZ_GLES_CALL_CHECK;
+
+
+
+    glBindVertexArray(0);
+    glUseProgram(0);TOPAZ_GLES_CALL_CHECK;
 
     return out;
 }
@@ -194,10 +205,6 @@ void topaz_gl3_p2d_render(
     );TOPAZ_GLES_CALL_CHECK;
 
 
-    glEnableVertexAttribArray(p->locationVBOposition);TOPAZ_GLES_CALL_CHECK;
-    glEnableVertexAttribArray(p->locationVBOuv);TOPAZ_GLES_CALL_CHECK;
-    glEnableVertexAttribArray(p->locationVBOrgba);TOPAZ_GLES_CALL_CHECK;
-
 
 
     glActiveTexture(GL_TEXTURE0);TOPAZ_GLES_CALL_CHECK;
@@ -207,6 +214,11 @@ void topaz_gl3_p2d_render(
     int primitive = attribs->primitive == topazRenderer_Primitive_Triangle ? GL_TRIANGLES : GL_LINES;
     GLuint lastTexture = 0;
     const topazGL3_Program2D_Renderable_t * current;
+
+    glBindVertexArray(p->vao);
+
+
+
     for(i = 0; i < count; ++i) {
         current = objects[i];
         glBindBuffer(GL_ARRAY_BUFFER, current->vbo);TOPAZ_GLES_CALL_CHECK;
@@ -236,12 +248,9 @@ void topaz_gl3_p2d_render(
     }
     
 
-    glDisableVertexAttribArray(p->locationVBOposition);TOPAZ_GLES_CALL_CHECK;
-    glDisableVertexAttribArray(p->locationVBOuv);TOPAZ_GLES_CALL_CHECK;
-    glDisableVertexAttribArray(p->locationVBOrgba);TOPAZ_GLES_CALL_CHECK;
-
     glUseProgram(0);TOPAZ_GLES_CALL_CHECK;
     glBindBuffer(GL_ARRAY_BUFFER, 0);TOPAZ_GLES_CALL_CHECK;
+    glBindVertexArray(0);
 
 } 
 

@@ -47,10 +47,14 @@ topazGL3_FB_t * topaz_gl3_get_target(topazGL3_t *);
 void topaz_gl3_set_target(topazGL3_t *, topazGL3_FB_t *);
 
 // attaches framebuffer for drawing operations
-void topaz_gl3_start(topazGL3_t *);
+int topaz_gl3_start(topazGL3_t *);
 
 // releases the framebuffer (unbind)
 void topaz_gl3_end(topazGL3_t *);
+
+// Ensures that following rendering options adhere to the process 
+// attribs specified here.
+void topaz_gl3_commit_process_attribs(topazGL3_t *, const topazRenderer_ProcessAttribs_t *);
 
 // glFinish()?
 void topaz_gl3_sync(topazGL3_t *);

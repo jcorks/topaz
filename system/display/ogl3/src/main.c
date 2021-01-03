@@ -63,6 +63,7 @@ typedef struct {
     GLint program;
     GLuint vbo;
     GLint vertexLocation;
+    GLuint vao;
 } TopazGLFWWindow;
 
 
@@ -70,7 +71,12 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
 
     TopazGLFWWindow * w = calloc(1, sizeof(TopazGLFWWindow));
     glfwWindowHint(GLFW_VISIBLE, 1);
+
+    GLFWwindow * wOld = glfwGetCurrentContext();
     w->window = glfwCreateWindow(640, 480, "topaz", NULL, glfwGetCurrentContext());
+
+    glfwMakeContextCurrent(w->window);
+
 
     w->w = 640;
     w->h = 480;
@@ -161,6 +167,9 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
     GLint i = glGetUniformLocation(w->program, "sampler");
     w->vertexLocation = glGetAttribLocation(w->program, "pos");
     glUseProgram(w->program);
+    glGenVertexArrays(1, &w->vao);
+    glBindVertexArray(w->vao);
+    glEnableVertexAttribArray(w->vertexLocation);
     glUniform1i(i, 0);
     glUseProgram(0);
     
@@ -178,6 +187,10 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
     };
     glBufferData(GL_ARRAY_BUFFER, 12*sizeof(float), staticVertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+    glfwMakeContextCurrent(wOld);
+
+
     return w;
 }
 
@@ -263,18 +276,36 @@ static void render_to_screen(TopazGLFWWindow * w, GLuint tex) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex);
-
+    glBindVertexArray(w->vao);
     glUseProgram(w->program);
+
     glBindBuffer(GL_ARRAY_BUFFER, w->vbo);    
-    glEnableVertexAttribArray(w->vertexLocation);
     glVertexAttribPointer(w->vertexLocation, 2, GL_FLOAT, GL_FALSE, sizeof(float)*2, 0);
+
+    int stateBlend, 
+        stateCull, 
+        stateDepth;
+
+    glGetIntegerv(GL_BLEND,      &stateBlend);
+    glGetIntegerv(GL_CULL_FACE,  &stateCull);
+    glGetIntegerv(GL_DEPTH_TEST, &stateDepth);
+
+
     glDisable(GL_BLEND);
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
+
+
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDisableVertexAttribArray(w->vertexLocation);
     glUseProgram(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    if (stateBlend) glEnable(stateBlend);
+    if (stateCull)  glEnable(stateCull);
+    if (stateDepth) glEnable(stateDepth);
+
+    glBindVertexArray(0);
+
 
     glfwMakeContextCurrent(wOld);
 

@@ -116,6 +116,36 @@ const GLuint * topaz_gl3_texman_gl_textures(const topazGL3_TexMan_t * a) {
     return a->ids;
 }
 
+void topaz_gl3_texman_set_filter(
+    topazGL3_TexMan_t * tm,
+    int filter
+) {
+    TOPAZ_GLES_FN_IN;
+    
+
+    int i;
+    for(i = 0; i < 16; ++i) {
+        if (!tm->atlases[i]) continue;
+        glBindTexture(GL_TEXTURE_2D, tm->ids[i]); TOPAZ_GLES_CALL_CHECK;
+        glTexParameteri(
+            GL_TEXTURE_2D,
+            GL_TEXTURE_MIN_FILTER,
+            filter ? GL_LINEAR : GL_NEAREST
+        ); TOPAZ_GLES_CALL_CHECK;
+
+
+        glTexParameteri(
+            GL_TEXTURE_2D,
+            GL_TEXTURE_MAG_FILTER,
+            filter ? GL_LINEAR : GL_NEAREST
+        ); TOPAZ_GLES_CALL_CHECK;        
+    }
+
+
+}
+
+
+
 void topaz_gl3_texman_print_section(
     topazGL3_TexMan_t * tm,
     int x,

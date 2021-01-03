@@ -18,6 +18,13 @@ void topaz_gl3_texman_destroy(topazGL3_TexMan_t *);
 // for that particular atlasIndex
 const GLuint * topaz_gl3_texman_gl_textures(const topazGL3_TexMan_t *);
 
+// sets whether to filter for all subsequent rendering operations
+// that use textures from this texture manager.
+void topaz_gl3_texman_set_filter(
+    topazGL3_TexMan_t *,
+    int filter
+);
+
 // Prints part of an atlas
 void topaz_gl3_texman_print_section(
     topazGL3_TexMan_t *, 
