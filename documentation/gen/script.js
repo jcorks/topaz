@@ -155,7 +155,8 @@ var linkObject = function(doc, objectString) {
 
 }
 
-for(var n = 0; n < files.length; ++n) {
+//for(var n = 0; n < files.length; ++n) {
+for(var n = 0; n <= 6; n++) {
     const symbols = symbolTable.getFileEntities(files[n]);
     if (!symbols.length) continue;
 
@@ -166,61 +167,93 @@ for(var n = 0; n < files.length; ++n) {
         topaz.log(symbols[i].name+'('+symbolTable.typeToString(symbols[i].type)+')  - generating');
         switch(symbols[i].type) {
           case symbolTable.type.FUNCTION:
-            typename = 'Function';
+          case symbolTable.type.FUNCTION_POINTER:
+            typename = symbols[i].type == symbolTable.type.FUNCTION ? 'Function' : 'FunctionPointer';
             block = doc.createElement(
-                linkObject(doc, symbols[i].returns) + '  ' + symbols[i].name + '(',    
-                'h3',
-                'id="'+symbols[i].name+'"'
-            );
-            for(var m = 0; m < symbols[i].children.length; ++m) {
-                block += 
-                doc.createElement(
-                    linkObject(doc, symbolTable.getChildSymbol(symbols[i], m).returns) + ' ' + symbols[i].children[m],
-                    'h4'
-                );                    
-            }
-            block += doc.createElement(
-                ')',    
-                'h3'
-            );
-            
-            block += doc.createElement(
-                symbols[i].desc,
-                'pre'
+                linkObject(doc, symbols[i].returns),
+                'h5',
+                'class="FunctionReturnValue"'
             );
 
-            block += doc.createElement(
-                "<b>Arguments:</b></br></br>",
-                'div'
-            );
-
-            for(var m = 0; m < symbols[i].children.length; ++m) {
-                block += 
-                doc.createElement(
-                    symbols[i].children[m],
-                    'div'
-                ) +
-                doc.createElement(
-                    symbolTable.getChildSymbol(symbols[i], m).desc,
-                    'pre'
+            // write out all arguments within a table for better formatting.
+            if (symbols[i].children.length) {
+                block += doc.createElement(
+                    symbols[i].type == symbolTable.type.FUNCTION ? 
+                        symbols[i].name + '(' 
+                    : 
+                        '(*' + symbols[i].name + ')('
+                    ,    
+                    'h3',
+                    'id="'+symbols[i].name+'"'
+                );
+                block += doc.createElement(
+                    (function() {
+                        var out = '';
+                        for(var m = 0; m < symbols[i].children.length; ++m) {
+                            out += doc.createElement(
+                                (function(m) {
+                                    var row = '';
+                                    row += doc.createElement(
+                                        linkObject(doc, symbolTable.getChildSymbol(symbols[i], m).returns),
+                                        'th',
+                                        'class="FunctionArgumentType"'
+                                    );
+                                    row += doc.createElement(
+                                        symbols[i].children[m],
+                                        'th',
+                                        'class="FunctionArgumentName"'
+                                    );
+                                    return row;    
+                                })(m),
+                                'tr'
+                            )
+                            
+                        }
+                        return out;
+                    })(),
+                    'table'
+                );
+                block += doc.createElement(
+                    ')',    
+                    'h3'
+                );
+            } else {
+                // no arguments? iconic empty parenth!
+                block += doc.createElement(
+                    symbols[i].type == symbolTable.type.FUNCTION ? 
+                        symbols[i].name + '()' 
+                    : 
+                        '(*' + symbols[i].name + ')()'
+                    ,   
+                    'h3',
+                    'id="'+symbols[i].name+'"'
                 );
             }
-
-            break;
-
-          case symbolTable.type.FUNCTION_POINTER:
-            typename = 'FunctionPointer';
-            block = doc.createElement(
-                symbols[i].name + '(function pointer)',    
-                'h3',
-                'id="'+symbols[i].name+'"'
-            );
-
             block += doc.createElement(
                 symbols[i].desc,
                 'pre'
             );
+            if (symbols[i].children.length) {
+                block += doc.createElement(
+                    "<b>Arguments:</b></br></br>",
+                    'div'
+                );
+
+                for(var m = 0; m < symbols[i].children.length; ++m) {
+                    block += 
+                    doc.createElement(
+                        symbols[i].children[m],
+                        'div'
+                    ) +
+                    doc.createElement(
+                        symbolTable.getChildSymbol(symbols[i], m).desc,
+                        'pre'
+                    );
+                }
+            }
             break;
+
+
           case symbolTable.type.CLASS:
             typename = 'Class';
             block = doc.createElement(
@@ -233,6 +266,14 @@ for(var n = 0; n < files.length; ++n) {
                 symbols[i].desc + '',    
                 'pre'
             );
+
+
+            block += doc.createElement(
+                "<b>Relevant elements:</b></br></br>",
+                'div'
+            );
+
+
             // list all quick symbols
             doc.addContent('<div>\n');
             for(var m = 0; m < symbols[i].children.length; ++m) {
@@ -266,7 +307,7 @@ for(var n = 0; n < files.length; ++n) {
           case symbolTable.type.ENUMERATOR:
             typename = 'Enumerator';
             block = doc.createElement(
-                symbols[i].name + ' (enum) ',    
+                symbols[i].name,    
                 'h3',
                 'id="'+symbols[i].name+'"'
             );
@@ -281,7 +322,7 @@ for(var n = 0; n < files.length; ++n) {
                 const value = symbolTable.getSymbol(symbols[i].children[m]);
                 block += "<tr>\n";
                 block += doc.createElement(symbols[i].children[m], 'th');
-                block += doc.createElement(symbolTable.getChildSymbol(symbols[i], m).desc, 'th');
+                block += doc.createElement(symbolTable.getChildSymbol(symbols[i], m).desc, 'td');
                 block += "</tr>\n";
             }
             block += "</table>\n";
@@ -296,7 +337,7 @@ for(var n = 0; n < files.length; ++n) {
           case symbolTable.type.OPEN_STRUCTURE:
             typename = 'OpenStructure';
             block = doc.createElement(
-                symbols[i].name + ' (structure) ',    
+                symbols[i].name,    
                 'h3',
                 'id="'+symbols[i].name+'"'
             );
@@ -307,7 +348,7 @@ for(var n = 0; n < files.length; ++n) {
             );
 
             block += doc.createElement(
-                "<b>Members:</b></br>",
+                "<b>Members:</b></br></br>",
                 'div'
             );
 

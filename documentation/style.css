@@ -10,6 +10,7 @@ pre {
   font-family: codeText;
   font-size: 14px;
   margin-left: 30px;
+  word-wrap:anywhere;
 }
 
 a {
@@ -44,6 +45,33 @@ a:hover {
   font-family: codeText;
 }
 
+
+
+.FunctionReturnValue {
+  font-size: 18px;
+  margin-top: 0px;
+  margin-bottom: 5px;
+  color : #666666;
+}
+
+.FunctionArgumentType {
+  font-size: 16px;
+  word-break: keep-all;
+  color : #666666;
+}
+
+.FunctionArgumentName {
+  font-size: 16px;
+  word-break: keep-all;
+  padding-left: 30px;
+  color : #666666;
+}
+
+.Function table {
+  padding-left: 30px;
+  text-align: left;
+}
+
 .Function h3 {
   font-size: 26px;
   margin-top: 0px;
@@ -51,6 +79,46 @@ a:hover {
 }
 
 .Function h4 {
+  padding-left: 60px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  font-size: 18px;
+}
+
+
+
+/* function pointer */
+.FunctionPointer {
+  
+  width:50vw;
+  background-color: #eeeeee;
+  margin: 15px;
+
+  border-top-width: 5px;
+  border-color: #e9e296;
+  border-top-style: solid;
+  padding:14px;
+  
+  font-family: codeText;
+}
+
+
+
+
+
+
+.FunctionPointer table {
+  padding-left: 30px;
+  text-align: left;
+}
+
+.FunctionPointer h3 {
+  font-size: 26px;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.FunctionPointer h4 {
   padding-left: 60px;
   margin-bottom: 0px;
   margin-top: 0px;
@@ -71,6 +139,10 @@ a:hover {
   padding:14px;
   
   font-family: codeText;
+}
+
+.Class a {
+  margin-left: 30px;
 }
 
 .Class h1 {
@@ -113,3 +185,63 @@ a:hover {
   padding-left: 60px;
   font-size: 18px;
 }
+
+
+
+
+/* class*/
+.OpenStructure {
+  width:50vw;
+  background-color: #eeeeee;
+  margin: 15px;
+
+  border-top-width: 5px;
+  border-color: #e9e296;
+  border-top-style: solid;
+  padding:14px;
+  
+  font-family: codeText;
+}
+
+.OpenStructure h3 {
+  font-size: 28px;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.OpenStructure h4 {
+  padding-left: 60px;
+  font-size: 18px;
+}
+
+
+
+/* enum */
+.Enumerator {
+  width:50vw;
+  background-color: #eeeeee;
+  margin: 15px;
+
+  border-top-width: 5px;
+  border-color: #e9e296;
+  border-top-style: solid;
+  padding:14px;
+  
+  font-family: codeText;
+}
+
+.Enumerator h3 {
+  font-size: 28px;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+
+.Enumerator table {
+  font-size: 15px;
+  text-align:left;
+  padding-left:20px;
+  word-wrap: break-word;
+}
+
+
