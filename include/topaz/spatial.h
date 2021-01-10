@@ -116,7 +116,7 @@ uint32_t topaz_spatial_add_update_callback(
 
     /// Callback
     /// 
-    void(*)(topazSpatial_t *, void *), 
+    void(*callback)(topazSpatial_t *, void *), 
 
 
     /// User data for the callback

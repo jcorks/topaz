@@ -10,12 +10,13 @@ topaz.log(topaz.resources.assetPaths);
 
 
 // c hints 
-symbolTable.setTypeHint(');',              symbolTable.type.FUNCTION);
+symbolTable.setTypeHint('#define',         symbolTable.type.MACRO);
 symbolTable.setTypeHint('typedef struct ', symbolTable.type.CLASS);
 symbolTable.setTypeHint('enum',            symbolTable.type.ENUMERATOR);
+symbolTable.setTypeHint('typedef',         symbolTable.type.FUNCTION_POINTER);
+symbolTable.setTypeHint('(',              symbolTable.type.FUNCTION, '(*');
 symbolTable.setTypeHint(' {',              symbolTable.type.OPEN_STRUCTURE);
-symbolTable.setTypeHint(',',               symbolTable.type.ENUM_VALUE);
-symbolTable.setTypeHint(';',               symbolTable.type.OPEN_STRUCTURE_MEMBER);
+symbolTable.setTypeHint('',               symbolTable.type.VARIABLE);
 
 
 symbolTable.setSymbolExtractor(/(\S+)\s*\(/, symbolTable.type.FUNCTION); 
@@ -23,7 +24,16 @@ symbolTable.setSymbolExtractor(/struct\s(.+)\s/, symbolTable.type.OPEN_STRUCTURE
 symbolTable.setSymbolExtractor(/struct\s(.+)\s/, symbolTable.type.CLASS); 
 symbolTable.setSymbolExtractor(/enum\s(\S+)\s/, symbolTable.type.ENUMERATOR); 
 symbolTable.setSymbolExtractor(/(\S+)\s*\S*,/, symbolTable.type.ENUM_VALUE); 
-symbolTable.setSymbolExtractor(/\s*(.+)\s*;/, symbolTable.type.OPEN_STRUCTURE_MEMBER); 
+symbolTable.setSymbolExtractor(/\s*([^\(\*\s,;]*)\s*(?:\)\(|$|\,|\;)/, symbolTable.type.VARIABLE); 
+symbolTable.setSymbolExtractor(/\s*\(\*(\S+)\s*\)/, symbolTable.type.FUNCTION_POINTER); 
+symbolTable.setSymbolExtractor(/\s*#define\s*(\S*)/, symbolTable.type.MACRO);
+
+symbolTable.setReturnObjectExtractor(/^\s*(.*)\s\S*\s*\(/, symbolTable.type.FUNCTION);
+symbolTable.setReturnObjectExtractor(/^\s*((?:const\s*|\s*)[^\s*]*(?:\s*\*)*)/, symbolTable.type.VARIABLE);
+symbolTable.setReturnObjectExtractor(/\s*(\S*)\s*\(\*/, symbolTable.type.FUNCTION_POINTER);
+
+symbolTable.setObjectExtractor(/\s*(?:const)?\s*(\S*)\s*/)
+
 //
 
 
@@ -69,14 +79,16 @@ var data2doc = function(filename) {
             } else {
                 const type = symbolTable.guessType(doclineContent);
                 symbolName = symbolTable.getSymbolName(type, doclineContent);
-
+                const returnObject = symbolTable.getReturnObject(type, doclineContent);
 
                 symbolTable.add(
                     filename,
                     symbolName,
                     type,
                     treeStack.length ? treeStack[treeStack.length-1] : '',
-                    currentDesc
+                    currentDesc,
+                    returnObject,
+                    doclineContent
                 );
 
                 if (!treeStack.length) {
@@ -118,6 +130,31 @@ for(var i = 0; i < files.length; ++i) {
 
 topaz.resources.path = origPath;
 
+// replaces the objectstring with a link element IF 
+// it contains a reference name. THe link generated should
+// lead a user to the location of that symbol.
+var linkObject = function(doc, objectString) {
+    var symbol = symbolTable.getSymbolFromObject(objectString);
+    if (symbol != '') {
+        var symbolRef = symbolTable.getSymbol(symbol);
+
+        // Get the parent symbol
+        var parent = symbolRef;
+        while(parent && parent.parent) {
+            parent = symbolTable.getSymbol(symbolRef.parent);
+        }
+
+        return doc.createElement(
+            objectString,
+            'a',
+            'href="'+parent.name+'.html#'+symbol+'"'
+        )
+    } else {
+        return objectString
+    }
+
+}
+
 for(var n = 0; n < files.length; ++n) {
     const symbols = symbolTable.getFileEntities(files[n]);
     if (!symbols.length) continue;
@@ -125,10 +162,56 @@ for(var n = 0; n < files.length; ++n) {
     const doc = gendoc.createDoc();
     for(var i = 0; i < symbols.length; ++i) {
         var block = '';
+        var typename = ''
+        topaz.log(symbols[i].name+'('+symbolTable.typeToString(symbols[i].type)+')  - generating');
         switch(symbols[i].type) {
           case symbolTable.type.FUNCTION:
+            typename = 'Function';
             block = doc.createElement(
-                symbols[i].name + '()',    
+                linkObject(doc, symbols[i].returns) + '  ' + symbols[i].name + '(',    
+                'h3',
+                'id="'+symbols[i].name+'"'
+            );
+            for(var m = 0; m < symbols[i].children.length; ++m) {
+                block += 
+                doc.createElement(
+                    linkObject(doc, symbolTable.getChildSymbol(symbols[i], m).returns) + ' ' + symbols[i].children[m],
+                    'h4'
+                );                    
+            }
+            block += doc.createElement(
+                ')',    
+                'h3'
+            );
+            
+            block += doc.createElement(
+                symbols[i].desc,
+                'pre'
+            );
+
+            block += doc.createElement(
+                "<b>Arguments:</b></br></br>",
+                'div'
+            );
+
+            for(var m = 0; m < symbols[i].children.length; ++m) {
+                block += 
+                doc.createElement(
+                    symbols[i].children[m],
+                    'div'
+                ) +
+                doc.createElement(
+                    symbolTable.getChildSymbol(symbols[i], m).desc,
+                    'pre'
+                );
+            }
+
+            break;
+
+          case symbolTable.type.FUNCTION_POINTER:
+            typename = 'FunctionPointer';
+            block = doc.createElement(
+                symbols[i].name + '(function pointer)',    
                 'h3',
                 'id="'+symbols[i].name+'"'
             );
@@ -137,13 +220,9 @@ for(var n = 0; n < files.length; ++n) {
                 symbols[i].desc,
                 'pre'
             );
-
-
-
             break;
-
-
           case symbolTable.type.CLASS:
+            typename = 'Class';
             block = doc.createElement(
                 symbols[i].name + '',    
                 'h1',
@@ -157,17 +236,35 @@ for(var n = 0; n < files.length; ++n) {
             // list all quick symbols
             doc.addContent('<div>\n');
             for(var m = 0; m < symbols[i].children.length; ++m) {
-                block += doc.createElement(
-                    symbols[i].children[m],
-                    'div'
-                );
-                    
+                if (symbolTable.getChildSymbol(symbols[i], m).type == symbolTable.type.VARIABLE) {
+                    // for structs treated as classes
+                    block += 
+                    doc.createElement(
+                        linkObject(doc, symbolTable.getChildSymbol(symbols[i], m).returns) + ' ' + symbols[i].children[m],
+                        'div'
+                    ) +
+                    doc.createElement(
+                        symbolTable.getChildSymbol(symbols[i], m).desc,
+                        'pre'
+                    );
+                } else {
+                    block += 
+                    doc.createElement(
+                        doc.createElement(
+                            symbols[i].children[m],
+                            'a',
+                            'href="'+symbols[i].name+'.html#'+symbols[i].children[m]+'"'
+                        ),
+                        'div'
+                    );
+                }
             }
             doc.addContent('</div>\n');
             break;
 
 
           case symbolTable.type.ENUMERATOR:
+            typename = 'Enumerator';
             block = doc.createElement(
                 symbols[i].name + ' (enum) ',    
                 'h3',
@@ -184,7 +281,7 @@ for(var n = 0; n < files.length; ++n) {
                 const value = symbolTable.getSymbol(symbols[i].children[m]);
                 block += "<tr>\n";
                 block += doc.createElement(symbols[i].children[m], 'th');
-                block += doc.createElement(symbolTable.getSymbol(symbols[i].children[m]).desc, 'th');
+                block += doc.createElement(symbolTable.getChildSymbol(symbols[i], m).desc, 'th');
                 block += "</tr>\n";
             }
             block += "</table>\n";
@@ -197,40 +294,75 @@ for(var n = 0; n < files.length; ++n) {
             case symbolTable.type.ENUM_VALUE:    
                 break;
           case symbolTable.type.OPEN_STRUCTURE:
+            typename = 'OpenStructure';
             block = doc.createElement(
                 symbols[i].name + ' (structure) ',    
-                'div',
+                'h3',
                 'id="'+symbols[i].name+'"'
             );
 
             block += doc.createElement(
                 symbols[i].desc,    
+                'pre'
+            );
+
+            block += doc.createElement(
+                "<b>Members:</b></br>",
                 'div'
             );
+
+            for(var m = 0; m < symbols[i].children.length; ++m) {
+                block += 
+                doc.createElement(
+                    linkObject(doc, symbolTable.getChildSymbol(symbols[i], m).returns) + ' ' + symbols[i].children[m],
+                    'div'
+                ) +
+                doc.createElement(
+                    symbolTable.getChildSymbol(symbols[i], m).desc,
+                    'pre'
+                );
+            }
 
             break;
 
-          case symbolTable.type.OPEN_STRUCTURE_MEMBER:
-            block = doc.createElement(
-                symbols[i].name + ' (structure member) ',    
-                'div',
+          case symbolTable.type.MACRO:
+            typename = 'Macro';
+            block += doc.createElement(
+                symbols[i].name,    
+                'h3',
                 'id="'+symbols[i].name+'"'
             );
 
             block += doc.createElement(
                 symbols[i].desc,    
-                'div'
+                'pre'
             );
-
+              
             break;
 
 
         }
 
-        doc.addContent(doc.createElement(block, 'div')+doc.createElement('', 'br'));
+        doc.addContent(
+            doc.createElement(
+                doc.createElement(
+                    '('+typename+')</br>',
+                    'div',
+                    'class="typetag"'
+                )+
+                
+                doc.createElement(
+                    block, 
+                    'div'
+                ) + "</br>",
+
+                'div',
+                'class="'+typename+'"'
+            )
+        );
     }
 
-    doc.write(symbols[0].name+'.html');
+    doc.write('../'+symbols[0].name+'.html');
     topaz.log(symbols[0].name+'.html');
 }
 

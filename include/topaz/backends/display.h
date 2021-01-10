@@ -261,11 +261,11 @@ void topaz_display_set_name(topazDisplay_t *, const topazString_t *);
 /// Adds an additional callback function to be be called after
 /// the occurance of a resize event.Callbacks are run in the order that they
 /// were added in.
-void topaz_display_add_resize_callback(topazDisplay_t *, void(*)(int w, int h, void *), void *);
+void topaz_display_add_resize_callback(topazDisplay_t *, void(*cb)(int w, int h, void *), void *);
 
 /// Removes the callback of the same instance as one given via
 /// AddResizeCallback.
-void topaz_display_remove_resize_callback(topazDisplay_t *, void(*)(int w, int h, void *));
+void topaz_display_remove_resize_callback(topazDisplay_t *, void(*cb)(int w, int h, void *));
 
 /// Adds an additional callback function to be be called after
 /// the occurance of a closing event.
@@ -275,12 +275,12 @@ void topaz_display_remove_resize_callback(topazDisplay_t *, void(*)(int w, int h
 /// associated with the Display. Callbacks are run in the order that they
 /// were added in.
 ///
-void topaz_display_add_close_callback(topazDisplay_t *, void(*)(void *), void *);
+void topaz_display_add_close_callback(topazDisplay_t *, void(*cb)(void *), void *);
 
 /// Removes the callback of the same instance as one given via
 /// AddCloseCallback.
 ///
-void topaz_display_remove_close_callback(topazDisplay_t *, void(*)(void *));
+void topaz_display_remove_close_callback(topazDisplay_t *, void(*cb)(void *));
 
 
 

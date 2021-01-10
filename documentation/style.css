@@ -1,0 +1,115 @@
+@font-face {
+  font-family: codeText;
+  src: url(inconsolata.ttf);
+}
+html {
+  background-color: #407487
+}
+
+pre {
+  font-family: codeText;
+  font-size: 14px;
+  margin-left: 30px;
+}
+
+a {
+  text-decoration: none;
+  color: #967e1a;
+}
+
+a:hover {
+  color: #ab9936;
+  text-decoration: underline;
+}
+
+
+.typetag {
+  float:right;
+  font-size: 15px
+}
+
+
+/* function control */
+.Function {
+  
+  width:50vw;
+  background-color: #eeeeee;
+  margin: 15px;
+
+  border-top-width: 5px;
+  border-color: #e9e296;
+  border-top-style: solid;
+  padding:14px;
+  
+  font-family: codeText;
+}
+
+.Function h3 {
+  font-size: 26px;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.Function h4 {
+  padding-left: 60px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  font-size: 18px;
+}
+
+
+
+/* class*/
+.Class {
+  width:50vw;
+  background-color: #eeeeee;
+  margin: 15px;
+
+  border-top-width: 5px;
+  border-color: #e9e296;
+  border-top-style: solid;
+  padding:14px;
+  
+  font-family: codeText;
+}
+
+.Class h1 {
+  font-size: 28px;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.Class h4 {
+  padding-left: 60px;
+  font-size: 18px;
+}
+
+
+
+
+/* macro */
+
+.Macro {
+  width:50vw;
+  background-color: #eeeeee;
+  margin: 15px;
+
+  border-top-width: 5px;
+  border-color: #e9e296;
+  border-top-style: solid;
+  padding:14px;
+  
+  font-family: codeText;
+}
+
+.Macro h3 {
+  font-size: 28px;
+  margin-top: 0px;
+  margin-bottom: 5px;
+
+}
+
+.Macro h4 {
+  padding-left: 60px;
+  font-size: 18px;
+}

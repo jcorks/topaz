@@ -39,10 +39,7 @@ typedef struct topazComponent_t topazComponent_t;
 typedef struct topazSpatial_t topazSpatial_t;
 typedef struct topaz_t topaz_t;
 
-///
-///    Entity
-///    -----
-///    
+
 ///    Basic interactive object.
 /// 
 ///    Entities are the main classes that are extended to meet abstractions for your 

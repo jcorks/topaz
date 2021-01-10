@@ -8,6 +8,9 @@ This project will adhere to the following style guidelines:
 	- shall use the project name "topaz" as a prefix to serve as the namespace
 	- shall be "verb" oriented in its name
 	- shall use snake_case for their symbol names
+    - shall have its declaration be split across multiple lines if the argument list contains arguments
+    - shall have each argument commented and named
+    - shall have function pointer arguments named
 - All class-based structs of the public user interface shall:
 	- be opaque 
 	- uniquely defined within a header bearing the same name as the struct, effectively representing a "class"
@@ -62,20 +65,17 @@ Example header (all headers will employ the opaque class pattern):
 #include <topaz/dependencies.h>
 
 
-/*
-    ExampleClass
-    -----
-    
-    Description of ExampleClass.
 
-*/
+/// Description of ExampleClass.
+///
 typedef struct topazExampleClass_t topazExampleClass_t;
 
 
 
 /// Description of this enum overall
 ///
-typedef enum {
+typedef enum topazExampleClass_Enum topazExampleClass_Enum
+enum topazExampleClass_Enum {
     /// Value A contains this description.
     ///
     topazExampleClas_Enum_ValueA,
@@ -83,14 +83,14 @@ typedef enum {
     /// Value B contains this description.
     ///
     topazExampleClas_Enum_ValueB
+}
 
-} topazExampleClass_Enum;
 
-
+typedef struct topazExampleClass_HelperOpenStruct topazExampleClass_HelperOpenStruct
 
 /// A naked, open struct used as a helper to this class.
 ///
-typedef struct {
+struct topazExampleClass_HelperOpenStruct {
     /// explanation of this member
     ///
     int dataA;
@@ -98,8 +98,7 @@ typedef struct {
     /// explanation of this member.
     ///
     float dataB;
-
-} topazExampleClass_HelperOpenStruct;
+};
 
 
 
@@ -112,12 +111,24 @@ topazExampleClass_t * topaz_example_class_create();
 
 /// Description of the destruction function.
 ///
-void topaz_example_class_destroy(topazExampleClass_t *);
+void topaz_example_class_destroy(
+
+    /// Comment on the argument
+    topazExampleClass_t *
+    
+);
 
 
 /// Description of member function
 ///
-int topaz_example_class_do_action(topazExampleClass_t *, int argument);
+int topaz_example_class_do_action(
+
+    /// Comment on the argument
+    topazExampleClass_t *, 
+
+    /// Comment on the argument
+    int argument
+);
 
 
 /* 
@@ -134,12 +145,20 @@ typedef struct topazExampleClass_Helper_t topazExampleClass_Helper_t;
 
 /// Description of the creation function.
 ///
-topazExampleClass_Helper_t * topaz_example_class_helper_create(topazExampleClass_t *);
+topazExampleClass_Helper_t * topaz_example_class_helper_create(
+
+    /// Comment on the argument    
+    topazExampleClass_t *
+);
 
 
 /// Description of the destruction function.
 ///
-void topaz_example_class_helper_destroy(topazExampleClass_Helper_t *);
+void topaz_example_class_helper_destroy(
+
+    /// Comment on the argument    
+    topazExampleClass_Helper_t *    
+);
 
 
 

@@ -44,16 +44,13 @@ typedef struct topazAsset_t topazAsset_t;
 
 ///
 ///
-///    Camera
-///    -----
-///
 ///    The symbolic viewing port for the engine.
 ///    It acts as the bridge between the rendered scene and the viewer.
 ///    Any number of Cameras can be maintained, but only one may be used at a time.
 ///    See graphics.h for swapping between which camera is used for the display.
 ///
 ///
-
+typedef struct topazCamera_t topazCamera_t;
 
 
 /// The type dictates how the camera should be updated.
@@ -82,16 +79,28 @@ enum topazCamera_Type {
 
 /// Creates a new camera instance.
 ///
-topazEntity_t * topaz_camera_create(topaz_t *);
+topazEntity_t * topaz_camera_create(
+    /// topaz instance reference.
+    topaz_t * context
+);
 
 /// Sets the type of the camera.
 ///
-void topaz_camera_set_type(topazEntity_t *, topazCamera_Type);
+void topaz_camera_set_type(
+    /// Camera to have its type set
+    topazEntity_t * camera, 
+
+    /// The type to use
+    topazCamera_Type type
+);
 
 
 /// Forces clearing of the results of drawing stored within the camera.
 ///
-void topaz_camera_refresh(topazEntity_t *);
+void topaz_camera_refresh(
+    /// The camera to clear.
+    topazEntity_t * camera
+);
 
 
 
@@ -99,8 +108,14 @@ void topaz_camera_refresh(topazEntity_t *);
 /// at the given point in 3D space
 ///
 void topaz_camera_look_at(
-    topazEntity_t *, 
+    /// The camera to modify
+    topazEntity_t * camera, 
+
+    /// The 3D position of the focal target that the camera should look at
     const topazVector_t * target,
+
+    /// What vector direction constitutes the "Up" position of the camera.
+    /// This helps determine rotations of the camera.
     const topazVector_t * up
 );
 
@@ -108,56 +123,108 @@ void topaz_camera_look_at(
 /// Given a point on the screen, returns the unprojected point in 
 /// world-space. The z value of the given point is interpreted as a depth.
 ///
-topazVector_t topaz_camera_screen_to_world(topazEntity_t *, const topazVector_t *);
+topazVector_t topaz_camera_screen_to_world(
+    /// The camera to use.
+    topazEntity_t * camera, 
+
+    /// The screen coordinate with Z coordinate to use.
+    const topazVector_t * coord
+);
 
 /// Given a point in world space, returns a projected point in screen space
 ///
-topazVector_t topaz_camera_world_to_screen(topazEntity_t *, const topazVector_t *);
+topazVector_t topaz_camera_world_to_screen(
+    /// The camera to use.
+    topazEntity_t * camera, 
+
+    /// The world-coordinate to use.
+    const topazVector_t * coord
+);
 
 /// Sets the render resolution for the camera in pixels.
 ///
-void topaz_camera_set_render_resolution(topazEntity_t *, int w, int h);
+void topaz_camera_set_render_resolution(
+    /// The camera to change.
+    topazEntity_t * camera, 
+
+    /// The width of the new resolution.
+    int w, 
+
+    /// The height of the new resolution
+    int h
+);
+
 
 /// Returns the current render resolution height.
 ///
-int topaz_camera_get_render_height(const topazEntity_t *);
+int topaz_camera_get_render_height(
+    /// The camera to query.
+    const topazEntity_t * camera
+);
 
 /// Returns the current render resolution width.
 ///
-int topaz_camera_get_render_width(const topazEntity_t *);
+int topaz_camera_get_render_width(
+    /// The camera to query.
+    const topazEntity_t * camera
+);
 
 /// Sets whether the camera should filter all its visuals. This 
 /// prevents graininess in the case the render resolution does not match the 
 /// size of the display. The default is to filter.
-void topaz_camera_set_filtered(topazEntity_t *, int);
+void topaz_camera_set_filtered(
+    /// The camera to affect.
+    topazEntity_t * camera, 
+
+    /// Whether to enable filtering. The default is to filter.
+    int onOrOff
+);
 
 /// Gets the raw framebuffer for the camera.
 ///
-topazRenderer_Framebuffer_t * topaz_camera_get_framebuffer(topazEntity_t *);
+topazRenderer_Framebuffer_t * topaz_camera_get_framebuffer(
+    /// The camera to query.
+    topazEntity_t * camera
+);
 
 /// Creates a new image that contains the visual data corresponding to the 
 /// front visual. The front visual is what is actively rendered to.
 ///
-topazAsset_t * topaz_camera_get_front_visual(topazEntity_t *);
+topazAsset_t * topaz_camera_get_front_visual(
+    /// The camera to query.
+    topazEntity_t * camera
+);
 
 /// Creates a new image that contains the visual data corresponding to the 
 /// back visual. The back visual is what was last sent to the display, so it matches 
 /// exactly whats on the display accoring to the user if this camera were in use.
 ///
-topazAsset_t * topaz_camera_get_back_visual(topazEntity_t *);
+topazAsset_t * topaz_camera_get_back_visual(
+    /// The camera to query.
+    topazEntity_t * camera
+);
 
 /// Swaps the camera's buffers.
 ///
-void topaz_camera_swap_buffers(topazEntity_t *);
+void topaz_camera_swap_buffers(
+    /// The camera to affect.
+    topazEntity_t * camera
+);
 
 /// Gets the buffer that the camera uses as its resultant 
 /// viewing transform.
 ///
-topazRenderer_Buffer_t * topaz_camera_get_view_transform(topazEntity_t *);
+topazRenderer_Buffer_t * topaz_camera_get_view_transform(
+    /// The camera to query.
+    topazEntity_t * camera
+);
 
 /// Gets the buffer that the camera uses as its resultant 
 /// projection transform.
 ///
-topazRenderer_Buffer_t * topaz_camera_get_projection_transform(topazEntity_t *);
+topazRenderer_Buffer_t * topaz_camera_get_projection_transform(
+    /// The camera to query.
+    topazEntity_t * camera
+);
 
 #endif

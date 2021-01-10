@@ -92,15 +92,21 @@ enum topazAsset_Type {
 
 
 
-
+/// Callback for assets.
+///
 typedef void (*topaz_asset_callback)(
-    topazAsset_t *,
+    /// Asset in question
+    topazAsset_t * asset,
+
+    /// generic data associated with the asset 
     void * userData
 );
 
 
-/// Serves as the interface for asset objects
+
 typedef struct topazAsset_Attributes_t topazAsset_Attributes_t;
+/// Serves as the interface for asset objects
+///
 struct topazAsset_Attributes_t {
     
     /// Called when the asset is finalized.
@@ -123,28 +129,47 @@ struct topazAsset_Attributes_t {
 /// Creates a new asset.
 ///
 topazAsset_t * topaz_asset_create(
-    topaz_t *, 
-    topazAsset_Type type,
-    const topazString_t * name,
-    const topazAsset_Attributes_t *
+    /// Topaz context.
+    topaz_t * context, 
+
+    /// Type of the asset.
+    topazAsset_Type type, 
+
+    /// Name of the asset.
+    const topazString_t * name, 
+
+    /// Attributes of the asset.
+    const topazAsset_Attributes_t * attribs
 );
 
 /// Destroys an asset.
 ///
-void topaz_asset_destroy(topazAsset_t *);
+void topaz_asset_destroy(
+    /// The asset to destroy.
+    topazAsset_t * asset
+);
 
 /// Returns the attributes that the asset was 
 /// created with.
 ///
-const topazAsset_Attributes_t * topaz_asset_get_attributes(const topazAsset_t *);
+const topazAsset_Attributes_t * topaz_asset_get_attributes(
+    /// The asset to retrieve attributes from.    
+    const topazAsset_t * asset
+);
 
 /// Gets the name of the asset. This is immutable.
 ///
-const topazString_t * topaz_asset_get_name(const topazAsset_t *);
+const topazString_t * topaz_asset_get_name(
+    /// The asset in question.
+    const topazAsset_t * asset
+);
 
 /// Gets the type of the asset. This is immutable.
 ///
-topazAsset_Type topaz_asset_get_type(const topazAsset_t *);
+topazAsset_Type topaz_asset_get_type(
+    /// The asset in question.
+    const topazAsset_t * asset
+);
 
 
 #endif

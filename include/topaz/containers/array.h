@@ -35,15 +35,15 @@ DEALINGS IN THE SOFTWARE.
 
 #include <stdint.h>
 
-/*
-
-    Array
-    -----
-
-    Dynamically resizing container
 
 
-*/
+
+
+/// Dynamically resizing container
+///
+/// Standard containers in many languages, this will hold shallow data
+/// and resize itself as need be. 
+///
 typedef struct topazArray_t topazArray_t;
 
 

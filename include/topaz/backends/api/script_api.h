@@ -36,29 +36,22 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-/*
-
-    ScriptAPI
-    -----
-    
-    The set of functions that define how the scripting abstraction should 
-    behave. Creating scripting abstractions requires this API to be 
-    populated.
-
-    These API functions are called as underlying implementations for the symbols 
-    within <topaz/backends/script.h> and provide a way for custom, possibly 
-    system-dependent behavior to account for an environment in a robust way.
-
-    Specifically, this is designed to not focus on a particular scripting
-    language, but instead, define the minimum set of functions needed for 
-    scripting to be supported in a useful way.
-*/
+///    The set of functions that define how the scripting abstraction should 
+///    behave. Creating scripting abstractions requires this API to be 
+///    populated.
+///
+///    These API functions are called as underlying implementations for the symbols 
+///    within <topaz/backends/script.h> and provide a way for custom, possibly 
+///    system-dependent behavior to account for an environment in a robust way.
+///
+///    Specifically, this is designed to not focus on a particular scripting
+///    language, but instead, define the minimum set of functions needed for 
+///    scripting to be supported in a useful way.
+///
 typedef struct topazScriptAPI_t topazScriptAPI_t;
 typedef struct topazScript_DebugState_t topazScript_DebugState_t;
 
 
-
-typedef struct topazScript_Object_ReferenceAPI_t topazScript_Object_ReferenceAPI_t;
 
 /// For objects that exist and are managed independently of the native context,
 /// the implementation can create "wrapper" objects with externally-defined 
@@ -68,6 +61,7 @@ typedef struct topazScript_Object_ReferenceAPI_t topazScript_Object_ReferenceAPI
 /// Note: all functions are allowed to be NULL, in that case a default handler 
 /// will be used.
 ///
+typedef struct topazScript_Object_ReferenceAPI_t topazScript_Object_ReferenceAPI_t;
 struct topazScript_Object_ReferenceAPI_t {
     /// Called when the object is first starting up. 
     /// The return value is used as the data argument for all object_reference calls.
