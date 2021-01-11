@@ -39,6 +39,8 @@ symbolTable.setObjectExtractor(/\s*(?:const)?\s*(\S*)\s*/)
 
 
 
+const doc = gendoc.createDoc();
+var navlistContent = '';
 
 var data2doc = function(filename) {
     var text = topaz.resources.loadAsset('txt', filename, filename).string;
@@ -90,6 +92,19 @@ var data2doc = function(filename) {
                     returnObject,
                     doclineContent
                 );
+
+                // add to navlist
+                if (type == symbolTable.type.CLASS) {
+                    navlistContent += doc.createElement(
+                        doc.createElement(
+                            symbolName,
+                            'div',
+                            'class="navlist-item"'
+                        ),
+                        'a',
+                        'href="'+symbolName+'.html"'
+                    );
+                }
 
                 if (!treeStack.length) {
                     treeStack.push(symbolName);
@@ -156,11 +171,13 @@ var linkObject = function(doc, objectString) {
 }
 
 //for(var n = 0; n < files.length; ++n) {
+
 for(var n = 0; n <= 6; n++) {
+    var content = '';
     const symbols = symbolTable.getFileEntities(files[n]);
     if (!symbols.length) continue;
 
-    const doc = gendoc.createDoc();
+
     for(var i = 0; i < symbols.length; ++i) {
         var block = '';
         var typename = ''
@@ -301,6 +318,9 @@ for(var n = 0; n <= 6; n++) {
                 }
             }
             doc.addContent('</div>\n');
+
+
+            
             break;
 
 
@@ -384,24 +404,58 @@ for(var n = 0; n <= 6; n++) {
 
         }
 
-        doc.addContent(
-            doc.createElement(
-                doc.createElement(
-                    '('+typename+')</br>',
-                    'div',
-                    'class="typetag"'
-                )+
-                
-                doc.createElement(
-                    block, 
-                    'div'
-                ) + "</br>",
+        
 
+        content += doc.createElement(
+            doc.createElement(
+                '('+typename+')</br>',
                 'div',
-                'class="'+typename+'"'
-            )
+                'class="typetag"'
+            )+
+            
+            doc.createElement(
+                block, 
+                'div'
+            ) + "</br>",
+
+            'div',
+            'class="'+typename+'"'
         );
+
     }
+
+
+    var navsearch = doc.createElement(
+        doc.createElement(
+            '',
+            'input',
+            'class="navsearch-input"'
+        ),
+        'div'
+    );
+
+
+
+
+    doc.addContent(
+        doc.createElement(
+            '(navbar)',
+            'div',
+            'class="navbar"'
+        ) + doc.createElement(
+            doc.createElement(
+                navsearch + navlistContent,
+                'div',
+                'class="navlist"'
+            ) + 
+            doc.createElement(
+                content,
+                'div',
+                'class="symbollist"'  
+            ),
+            'div'
+        )
+    );
 
     doc.write('../'+symbols[0].name+'.html');
     topaz.log(symbols[0].name+'.html');

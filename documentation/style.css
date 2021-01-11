@@ -2,8 +2,63 @@
   font-family: codeText;
   src: url(inconsolata.ttf);
 }
+
+.navbar {
+  height: 100px;
+  background-color: #555555;
+  margin-left: 265px;
+}
+
+.navsearch-input {
+  width:200px;
+  margin: 3px;
+  margin-left:10px;
+  background-color: #b0b0b0;
+  
+  
+}
+
+.navlist {
+  display:inline-block;
+  position: fixed;
+  top : 0px;
+  width: 250px;
+  background-color: #222222;
+  height: 100vh;
+  overflow:auto;
+}
+
+.navlist-item {
+  text-decoration: none;
+  font-family: codeText;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  font-size: 16px;
+  padding-left: 8px;
+}
+
+
+.navlist-item:hover {
+  border: 0px;
+  border-left: 0px;
+  border-style: solid;
+  background-color: #000000;
+  text-decoration: none;  
+}
+
+
+.symbollist {
+  display:inline-block;  
+  margin-left: 250px;
+  width:60%;
+}
+
 html {
-  background-color: #407487
+  background-color: #407487;  
+}
+
+body {
+  margin: 0px;
 }
 
 pre {
@@ -33,7 +88,6 @@ a:hover {
 /* function control */
 .Function {
   
-  width:50vw;
   background-color: #eeeeee;
   margin: 15px;
 
@@ -90,7 +144,6 @@ a:hover {
 /* function pointer */
 .FunctionPointer {
   
-  width:50vw;
   background-color: #eeeeee;
   margin: 15px;
 
@@ -129,7 +182,6 @@ a:hover {
 
 /* class*/
 .Class {
-  width:50vw;
   background-color: #eeeeee;
   margin: 15px;
 
@@ -162,7 +214,6 @@ a:hover {
 /* macro */
 
 .Macro {
-  width:50vw;
   background-color: #eeeeee;
   margin: 15px;
 
@@ -191,7 +242,6 @@ a:hover {
 
 /* class*/
 .OpenStructure {
-  width:50vw;
   background-color: #eeeeee;
   margin: 15px;
 
@@ -218,7 +268,6 @@ a:hover {
 
 /* enum */
 .Enumerator {
-  width:50vw;
   background-color: #eeeeee;
   margin: 15px;
 

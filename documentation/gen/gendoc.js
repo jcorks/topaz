@@ -30,6 +30,7 @@ gendoc = (function(){
 
                     asset.bytes = bytes;
                     topaz.resources.writeAsset(asset, 'txt', filename);
+                    this._content = ''+header;
                 }
             }
         }
