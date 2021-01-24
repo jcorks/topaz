@@ -36,110 +36,110 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-///    The set of functions that define how the scripting abstraction should 
-///    behave. Creating scripting abstractions requires this API to be 
-///    populated.
-///
-///    These API functions are called as underlying implementations for the symbols 
-///    within <topaz/backends/script.h> and provide a way for custom, possibly 
-///    system-dependent behavior to account for an environment in a robust way.
-///
-///    Specifically, this is designed to not focus on a particular scripting
-///    language, but instead, define the minimum set of functions needed for 
-///    scripting to be supported in a useful way.
-///
+//    The set of functions that define how the scripting abstraction should 
+//    behave. Creating scripting abstractions requires this API to be 
+//    populated.
+//
+//    These API functions are called as underlying implementations for the symbols 
+//    within <topaz/backends/script.h> and provide a way for custom, possibly 
+//    system-dependent behavior to account for an environment in a robust way.
+//
+//    Specifically, this is designed to not focus on a particular scripting
+//    language, but instead, define the minimum set of functions needed for 
+//    scripting to be supported in a useful way.
+//
 typedef struct topazScriptAPI_t topazScriptAPI_t;
 typedef struct topazScript_DebugState_t topazScript_DebugState_t;
 
 
 
-/// For objects that exist and are managed independently of the native context,
-/// the implementation can create "wrapper" objects with externally-defined 
-/// functions to facilitate script language / context-specific behaviour through 
-/// a generic interface. 
-///
-/// Note: all functions are allowed to be NULL, in that case a default handler 
-/// will be used.
-///
+// For objects that exist and are managed independently of the native context,
+// the implementation can create "wrapper" objects with externally-defined 
+// functions to facilitate script language / context-specific behaviour through 
+// a generic interface. 
+//
+// Note: all functions are allowed to be NULL, in that case a default handler 
+// will be used.
+//
 typedef struct topazScript_Object_ReferenceAPI_t topazScript_Object_ReferenceAPI_t;
 struct topazScript_Object_ReferenceAPI_t {
-    /// Called when the object is first starting up. 
-    /// The return value is used as the data argument for all object_reference calls.
-    /// fromRefData is the data argument given from script_object_from_reference which is populated if this creation is 
-    /// derived from a topaz_script_object_from_reference constructor.
-    ///
-    ///
+    // Called when the object is first starting up. 
+    // The return value is used as the data argument for all object_reference calls.
+    // fromRefData is the data argument given from script_object_from_reference which is populated if this creation is 
+    // derived from a topaz_script_object_from_reference constructor.
+    //
+    //
     void * (*object_reference_create)(topazScript_Object_t *, void * fromRefData);
 
-    /// Similar to object_reference_create, but its a new reference 
-    /// that points to the same location as an existing reference.
-    /// fromRefData is the data argument given from script_object_from_reference
-    /// from is the topazScript_Object_t * reference that points to the object that this new reference should point to
-    /// fromData is the original fromRefData that was passed to object_reference_create to create "from"
+    // Similar to object_reference_create, but its a new reference 
+    // that points to the same location as an existing reference.
+    // fromRefData is the data argument given from script_object_from_reference
+    // from is the topazScript_Object_t * reference that points to the object that this new reference should point to
+    // fromData is the original fromRefData that was passed to object_reference_create to create "from"
     void * (*object_reference_create_from_reference)(topazScript_Object_t *, void * fromRefData, topazScript_Object_t * from, void * fromData);
 
-    /// Called when the object reference is no longer needed by the native context.
-    ///
+    // Called when the object reference is no longer needed by the native context.
+    //
     void (*object_reference_destroy)(topazScript_Object_t *, void *);
 
-    /// Returns the feature set of the object.
-    ///
+    // Returns the feature set of the object.
+    //
     int (*object_reference_get_feature_mask)(topazScript_Object_t *, void *);
 
-    /// Retrieve the native data thats associated with the scripting object 
-    ///
+    // Retrieve the native data thats associated with the scripting object 
+    //
     void * (*object_reference_get_native_data)(topazScript_Object_t *, int * tag, void *);
 
-    /// Sets native data that will be associated with the object across the 
-    /// script instance. 
-    ///
+    // Sets native data that will be associated with the object across the 
+    // script instance. 
+    //
     void (*object_reference_set_native_data)(topazScript_Object_t *, void * native, int nativeTag, void *);
 
-    /// Increments the reference count. The script context should use the reference 
-    /// count to control any garbage collection done, as a nonzero ref count means 
-    /// that the object CANNOT be destroyed.
-    ///
+    // Increments the reference count. The script context should use the reference 
+    // count to control any garbage collection done, as a nonzero ref count means 
+    // that the object CANNOT be destroyed.
+    //
     void (*object_reference_ref)(topazScript_Object_t *, void *);
 
 
-    /// Decrements the reference count. See the notes on the function above.
-    ///
+    // Decrements the reference count. See the notes on the function above.
+    //
     void (*object_reference_unref)(topazScript_Object_t *, void *);
 
-    /// This function is called if a user runs the "topaz_script_object_call" function 
-    /// The intent is to have the in-script object function run, if any. If this is
-    /// impossible, an undefined object should be returned.
-    /// The default handler will always return undefined.
-    ///
+    // This function is called if a user runs the "topaz_script_object_call" function 
+    // The intent is to have the in-script object function run, if any. If this is
+    // impossible, an undefined object should be returned.
+    // The default handler will always return undefined.
+    //
     topazScript_Object_t * (*object_reference_call)(topazScript_Object_t *, const topazArray_t *, void *);
 
 
-    /// This implements the array accessor for the object, if any.
-    /// If unsupported, an undefined object should be returned. 
-    /// If the access is out of bounds, undefined should be returned.
-    /// The default handler will always return undefined.
-    ///
+    // This implements the array accessor for the object, if any.
+    // If unsupported, an undefined object should be returned. 
+    // If the access is out of bounds, undefined should be returned.
+    // The default handler will always return undefined.
+    //
     topazScript_Object_t * (*object_reference_array_get_nth)(topazScript_Object_t * , int,  void *);
 
-    /// Returns the array count fetch. If not supported, -1 should be returned.
-    /// The default handler will always return -1.
-    ///
+    // Returns the array count fetch. If not supported, -1 should be returned.
+    // The default handler will always return -1.
+    //
     int (*object_reference_array_get_count)(topazScript_Object_t *, void *);
 
-    /// Implements the map property fetch. If not implemented, the undefined object can be returned.
-    /// The default handler will always return undefined.
-    ///
+    // Implements the map property fetch. If not implemented, the undefined object can be returned.
+    // The default handler will always return undefined.
+    //
     topazScript_Object_t * (*object_reference_map_get_property)(topazScript_Object_t *, const topazString_t * prop, void *);
 
-    /// Returns a stringification of this object.
-    /// The default handler will return "[Object]"
-    ///
+    // Returns a stringification of this object.
+    // The default handler will return "[Object]"
+    //
     void (*object_reference_to_string)(topazScript_Object_t *, topazString_t * s, void *);
 
-    /// Adds a controlled value property to the object reference.
-    /// If its just a single static value, its probably better to just do it within the 
-    /// script context itself.
-    ///
+    // Adds a controlled value property to the object reference.
+    // If its just a single static value, its probably better to just do it within the 
+    // script context itself.
+    //
     void (*object_reference_extendable_add_property)(
         topazScript_Object_t *, 
         const topazString_t * propName,
@@ -151,22 +151,22 @@ struct topazScript_Object_ReferenceAPI_t {
 
 };
 
-/// Gets the data pointer given from object_reference_create to be 
-/// used for internal implementations.
-///
+// Gets the data pointer given from object_reference_create to be 
+// used for internal implementations.
+//
 void * topaz_script_object_get_api_data(topazScript_Object_t *);
 
 
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazTime_t. See <topaz/backends/Time.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazTime_t. See <topaz/backends/Time.h>
+//
 
 struct topazScriptAPI_t {
-    /// Every script context will likely have external objects, where it 
-    /// uses topazScript_Object_t's as wrappers for an externally stored 
-    /// scripting object. This API facilitates this wrapping behavior.
-    ///
+    // Every script context will likely have external objects, where it 
+    // uses topazScript_Object_t's as wrappers for an externally stored 
+    // scripting object. This API facilitates this wrapping behavior.
+    //
     topazScript_Object_ReferenceAPI_t objectAPI;
 
 
@@ -181,16 +181,16 @@ struct topazScriptAPI_t {
     // an error condition in the language's own mechanisms.
     void  (*script_throw_error)(topazScript_t *, void *, const topazArray_t * args);
 
-    /// This function is completely optional to implement, but is 
-    /// mostly likely needed if the scripting language API is more than 
-    /// just a few functions. I.E. if your scripting API requires namespacing, 
-    /// which isnt inherently supported by the interface, this would be a 
-    /// good time to organize that, as when bootstrap() is called, topaz 
-    /// would have added all the "base" function symbols as plain functions 
-    /// (this of course depends on the implementation of script_map_native_function, 
-    /// but using this function as part of the API preparation stage may make 
-    /// this simpler design-wise.)
-    /// 
+    // This function is completely optional to implement, but is 
+    // mostly likely needed if the scripting language API is more than 
+    // just a few functions. I.E. if your scripting API requires namespacing, 
+    // which isnt inherently supported by the interface, this would be a 
+    // good time to organize that, as when bootstrap() is called, topaz 
+    // would have added all the "base" function symbols as plain functions 
+    // (this of course depends on the implementation of script_map_native_function, 
+    // but using this function as part of the API preparation stage may make 
+    // this simpler design-wise.)
+    // 
     void (*script_bootstrap)          (topazScript_t *, void *);
 
 
@@ -198,17 +198,17 @@ struct topazScriptAPI_t {
 
 
 
-    /// called by the script when a user has unlocked debugging capabilities.
-    /// 
+    // called by the script when a user has unlocked debugging capabilities.
+    // 
     void (*script_debug_start)(topazScript_t *, void *);
 
-    /// Sends a command to the debugger. Check out script.h command list.
-    ///
+    // Sends a command to the debugger. Check out script.h command list.
+    //
     void (*script_debug_send_command)(topazScript_t *, void *, int commandEnum, const topazString_t *);
 
 
-    /// Retrieves the debug state following the requirements in script.h.
-    ///
+    // Retrieves the debug state following the requirements in script.h.
+    //
     const topazScript_DebugState_t * (*script_debug_get_state)(topazScript_t *, void *);
 
 
@@ -216,10 +216,10 @@ struct topazScriptAPI_t {
 
 };
 
-/// Function to be called by the implementation when the script debuggerr 
-/// accepts the debug request. If the implementation does not support 
-/// debugging, this does not need to be called.
-/// 
+// Function to be called by the implementation when the script debuggerr 
+// accepts the debug request. If the implementation does not support 
+// debugging, this does not need to be called.
+// 
 void topaz_script_notify_command(topazScript_t *, int commandEnum, topazString_t * str);
 
 #endif

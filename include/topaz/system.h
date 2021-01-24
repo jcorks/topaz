@@ -38,9 +38,6 @@ typedef struct topazArray_t topazArray_t;
 
 
 ///
-///    System
-///    -----
-///
 ///    Bundles and abstracts system-level middleware that topaz 
 ///    uses to implement the engine.
 ///
@@ -50,9 +47,22 @@ typedef struct topazSystem_t topazSystem_t;
 
 
  
-/// Represents a discreet API implementation for System.
+/// Represents a discrete API implementation for a system.
+///
+/// Backends are built to handle function calls and 
+/// data external to the main topaz codebase.
 ///
 typedef struct topazSystem_Backend_t topazSystem_Backend_t;
+
+
+/// Callback for when backends update themselves.
+typedef void (*topaz_system_backend_update_callback)(
+    /// The backend to be updated.
+    topazSystem_Backend_t * backend,
+
+    // The data bound to the callback.
+    void * callbackData
+);
 
 
 /// Populates the backend with information.
@@ -60,7 +70,8 @@ typedef struct topazSystem_Backend_t topazSystem_Backend_t;
 /// given to topaz_system_config_add_handler
 ///
 void topaz_system_backend_bind(
-    topazSystem_Backend_t *,
+    /// The backend to bind data to.
+    topazSystem_Backend_t * backend,
 
     /// The name of the backend.
     const topazString_t * name,
@@ -79,19 +90,19 @@ void topaz_system_backend_bind(
 
     /// Called when the backend is stepped. Backend is passed.
     ///  
-    void (*on_pre_step)(topazSystem_Backend_t *, void *),
+    topaz_system_backend_update_callback on_pre_step,
 
     /// Called after all the backends are stepped. Backend is passed.
     ///
-    void (*on_post_step)(topazSystem_Backend_t *, void *),
+    topaz_system_backend_update_callback on_post_step,
 
     /// Called when the backend is drawn. Backend is passed.
     ///
-    void (*on_pre_draw)(topazSystem_Backend_t *, void *),
+    topaz_system_backend_update_callback on_pre_draw,
 
     /// Called after all the backends have drawn. Backend is passed.
     ///
-    void (*on_post_draw)(topazSystem_Backend_t *, void *),
+    topaz_system_backend_update_callback on_post_draw,
 
     /// User-provided data.
     ///
@@ -118,17 +129,26 @@ void topaz_system_backend_bind(
 /// Returns the major version of the topaz library 
 /// that this backend was built with.
 ///
-int topaz_system_backend_get_topaz_major_version(const topazSystem_Backend_t *);
+int topaz_system_backend_get_topaz_major_version(
+    /// The backend to query.
+    const topazSystem_Backend_t * backend
+);
 
 /// Returns the minor version of the topaz library 
 /// that this backend was built with.
 ///
-int topaz_system_backend_get_topaz_minor_version(const topazSystem_Backend_t *);
+int topaz_system_backend_get_topaz_minor_version(
+    /// The backend to query.
+    const topazSystem_Backend_t * backend
+);
 
 /// Returns the micro version of the topaz library 
 /// that this backend was build with.
 ///
-int topaz_system_backend_get_topaz_micro_version(const topazSystem_Backend_t *);
+int topaz_system_backend_get_topaz_micro_version(
+    /// The backend to query.
+    const topazSystem_Backend_t * backend
+);
 
 
 
@@ -136,20 +156,32 @@ int topaz_system_backend_get_topaz_micro_version(const topazSystem_Backend_t *);
 
 /// Gets the name of this backend.
 ///
-const topazString_t * topaz_system_backend_get_name   (const topazSystem_Backend_t *);
+const topazString_t * topaz_system_backend_get_name(
+    /// The backend to query.
+    const topazSystem_Backend_t * backend
+);
 
 
 /// Gets the name of this backend.
 ///
-const topazString_t * topaz_system_backend_get_version(const topazSystem_Backend_t *);
+const topazString_t * topaz_system_backend_get_version(
+    /// The backend to query.
+    const topazSystem_Backend_t * backend
+);
 
 /// Gets the author name 
 ///
-const topazString_t * topaz_system_backend_get_author (const topazSystem_Backend_t *);
+const topazString_t * topaz_system_backend_get_author(
+    /// The backend to query.
+    const topazSystem_Backend_t * backend
+);
 
 /// Gets the description 
 ///
-const topazString_t * topaz_system_backend_get_description(const topazSystem_Backend_t *);
+const topazString_t * topaz_system_backend_get_description(
+    /// The backend to query.
+    const topazSystem_Backend_t * backend
+);
 
 
 
@@ -157,23 +189,42 @@ const topazString_t * topaz_system_backend_get_description(const topazSystem_Bac
 
 /// Steps the backend
 ///
-void topaz_system_backend_pre_step(topazSystem_Backend_t *);
+void topaz_system_backend_pre_step(
+    /// The backend to step.
+    topazSystem_Backend_t * backend
+);
 
 /// Posts that initialization has finished
 ///
-void topaz_system_backend_post_step(topazSystem_Backend_t *);
+void topaz_system_backend_post_step(
+    /// The backend to step.
+    topazSystem_Backend_t * backend
+);
+
 
 /// Draws the backend
 ///
-void topaz_system_backend_pre_draw(topazSystem_Backend_t *);
+void topaz_system_backend_pre_draw(
+    /// The backend to draw.
+    topazSystem_Backend_t * backend
+);
+
 
 /// Posts that initialization has finished
 ///
-void topaz_system_backend_post_draw(topazSystem_Backend_t *);
+void topaz_system_backend_post_draw(
+    /// The backend to draw.
+    topazSystem_Backend_t * backend
+);
+
 
 /// Retrieves the user data associated with the backend.
 ///
-void * topaz_system_backend_get_user_data(topazSystem_Backend_t * t);
+void * topaz_system_backend_get_user_data(
+    /// The backend to query.
+    topazSystem_Backend_t * backend
+);
+
 
 
 
@@ -196,8 +247,13 @@ topazSystem_t * topaz_system_create_default();
 /// Sucess is returned.
 ///
 int topaz_system_set_backend_handler(
-    topazSystem_t *, 
+    /// The system to modify.
+    topazSystem_t * system, 
+
+    /// The type of backend in string form.
     const topazString_t * backendType,
+
+    /// The name of the backend to use.
     const topazString_t * backendName
 );
 
@@ -205,7 +261,10 @@ int topaz_system_set_backend_handler(
 /// Returns whether the given backend is available for the given type.
 ///
 int topaz_system_is_backend_available(
+    /// The backend type.
     const topazString_t * backendType,
+
+    /// The name of the backend.
     const topazString_t * backendName
 );
 
@@ -216,6 +275,7 @@ int topaz_system_is_backend_available(
 /// for the type, an empty array is returned.
 ///
 topazArray_t * topaz_system_get_available_backends(
+    /// The type of backend to query.
     const topazString_t * backendType
 );
 
@@ -225,10 +285,31 @@ topazArray_t * topaz_system_get_available_backends(
 /// topaz_system_set_backend().
 ///
 topazSystem_Backend_t * topaz_system_create_backend(
-    const topazSystem_t *, 
+    /// The system to create a backend from.
+    const topazSystem_t * system, 
+    /// The type of backend to create.
     const topazString_t * backendType, 
+    /// A pointer to the API structure that the backend should 
+    /// populate with API functions of its ownership.
     void * APImappingPtr
 );
+
+
+/// Callback to actually populate a backend's API.
+///
+typedef void (*topaz_system_backend_handler)(
+    /// The source system managing / owning the backend.
+    topazSystem_t * system, 
+
+    /// The backend instance to modify within the backend
+    topazSystem_Backend_t * backend, 
+
+    /// A pointer to the API instance for the backend,
+    /// which needs to be casted to the appropriate
+    /// API type based on the backend type advertised.
+    void * api
+);
+
 
 
 /// Adds a new backend to be recognized by the system.
@@ -249,29 +330,44 @@ int topaz_system_config_add_handler(
     /// The function to be called that populates a new 
     /// backend instance and API. The API is specific to the backend.
     ///
-    void (*backend_callback)(topazSystem_t *, topazSystem_Backend_t *, void * api)
+    topaz_system_backend_handler handler
 );
 
 
 /// Pre-steps all backends. This is normally called within the topaz_context
 /// before the engine's managers and entities
 ///
-void topaz_system_pre_step(topazSystem_t *);
+void topaz_system_pre_step(
+    /// The system to step.
+    topazSystem_t * system
+);
 
 /// Post-steps all backends. This is normally called within the topaz_context
 /// after the engine's managers and entities
 ///
-void topaz_system_post_step(topazSystem_t *);
+void topaz_system_post_step(
+    /// The system to step.
+    topazSystem_t * system
+);
+
 
 /// Pre-draws all backends. This is normally called within the topaz_context
 /// before the engine's managers and entities
 ///
-void topaz_system_pre_draw(topazSystem_t *);
+void topaz_system_pre_draw(
+    /// The system to draw.
+    topazSystem_t * system
+);
+
 
 /// Post-draws all backends. This is normally called within the topaz_context
 /// after the engine's managers and entities
 ///
-void topaz_system_post_draw(topazSystem_t *);
+void topaz_system_post_draw(
+    /// The system to draw.
+    topazSystem_t * system
+);
+
 
 
 

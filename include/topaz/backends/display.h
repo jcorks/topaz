@@ -39,11 +39,16 @@ typedef struct topaz_t topaz_t;
 
 
 ///
-///    Display
-///    -----
-///    An abstraction for millisecond resolution timing.
-///    This short set of utilities allows for timing 
+/// An abstraction for the environment's means of 
+/// displaying rendered information.
 ///
+/// In most contexts / systems, the display is a window within the 
+/// desktop environment. On embedded systems, this may be the entire
+/// screen display.
+///
+/// Because of the flexibility / variation in what a display can be
+/// some backends may choose to implement features differently
+/// or omit features altogether where appropriate.
 ///
 typedef struct topazDisplay_t topazDisplay_t;
 
@@ -145,55 +150,97 @@ enum topazDisplay_Event {
 /// Creates a new display object. Usually you can use topaz_view_manager_create_display() 
 /// instead of calling this function directly.
 ///
-topazDisplay_t * topaz_display_create(topaz_t *, topazSystem_Backend_t *, topazDisplayAPI_t);
+topazDisplay_t * topaz_display_create(
+    /// The topaz context.
+    topaz_t * context, 
+
+
+    /// The backend to implement the backend's features.
+    topazSystem_Backend_t * backend, 
+
+    /// The raw API to implement the backend's features.
+    topazDisplayAPI_t api
+);
 
 
 /// Destroys and cleans up a display API
 ///
-void topaz_display_destroy(topazDisplay_t *);
+void topaz_display_destroy(
+    /// The display to destroy
+    topazDisplay_t * display
+);
 
 
 /// Retrieves the camera associated with the display thats 
 /// used for 2d operations. This camera is used when the display is set as 
 /// the main display. see topazViewManager_t
 ///
-topazEntity_t * topaz_display_get_2d_camera(topazDisplay_t *);
+topazEntity_t * topaz_display_get_2d_camera(
+    /// The display to query.
+    topazDisplay_t * display
+);
 
 /// Retrieves the camera associated with the display thats 
 /// used for 3d operations. This camera is used when the display is set as 
 /// the main display. see topazViewManager_t
 ///
-topazEntity_t * topaz_display_get_3d_camera(topazDisplay_t *);
+topazEntity_t * topaz_display_get_3d_camera(
+    /// The display to query.
+    topazDisplay_t * display
+);
 
 
 /// Gets the camera used for output rendering results. This camera's 
 /// framebuffers are used for storing the visual of whats shown in the display 
 ///
-topazEntity_t * topaz_display_get_render_camera(topazDisplay_t *);
+topazEntity_t * topaz_display_get_render_camera(
+    /// The display to query.
+    topazDisplay_t * display
+);
 
 
 
 /// Retrieves the backend for this display object.
 ///
-topazSystem_Backend_t * topaz_display_get_backend(topazDisplay_t *);
+topazSystem_Backend_t * topaz_display_get_backend(
+    /// The display to query.
+    topazDisplay_t * display
+);
 
 
 /// Returns the API for this display.
 ///
-topazDisplayAPI_t topaz_display_get_api(topazDisplay_t *);
+topazDisplayAPI_t topaz_display_get_api(
+    /// The display to query.
+    topazDisplay_t * display
+);
 
 
 /// Sets whether refreshing of the main-display's camera should be handled by the 
 /// display itself. The default is "true".
 ///
-void topaz_display_auto_refresh_camera(topazDisplay_t *, int);
+void topaz_display_auto_refresh_camera(
+    /// The display to modify.
+    topazDisplay_t * display, 
+    /// Whether to auto-update.
+    int autoUpdate
+);
 
 
 
 
 /// Resizes the display. If the display does not support resizing, no action is taken.
 ///    
-void topaz_display_resize(topazDisplay_t *, int w, int h);
+void topaz_display_resize(
+    /// The display to resize.
+    topazDisplay_t * display, 
+
+    /// The new width.
+    int w, 
+    
+    /// The new height.
+    int h
+);
 
 /// Sets the position of the display. 
 ///
@@ -202,22 +249,44 @@ void topaz_display_resize(topazDisplay_t *, int w, int h);
 /// an offset from the DE's origin. If the display does not support moving,
 /// no action is taken.
 ///
-void topaz_display_set_position(topazDisplay_t *, int x, int y);
+void topaz_display_set_position(
+    /// The display to move.
+    topazDisplay_t * display, 
+    /// The x position. This is context dependent.
+    int x, 
+    /// The y position. This is context dependent.
+    int y
+);
 
 /// Set the display into a fullscreen context. If fullscreen is not supported,
 /// no action is taken.
 ///
-void topaz_display_fullscreen(topazDisplay_t *, int);
+void topaz_display_fullscreen(
+    /// The display to make fullscreen
+    topazDisplay_t * display, 
+
+    /// Whether to set fullscreen
+    int fullscreen
+);
 
 /// Attempts to hide the display. If hiding is not supported, no action is taken.
 ///
-void topaz_display_hide(topazDisplay_t *, int);
+void topaz_display_hide(
+    /// The display to hide
+    topazDisplay_t * display, 
+
+    /// Whether to hide.
+    int state
+);
 
 /// Returns whether the display has user input focus. On display implementations
 /// where this doesnt apply, i.e. where there is only one logical display available,,
 /// this will always return true. 
 ///
-int topaz_display_has_input_focus(topazDisplay_t *); 
+int topaz_display_has_input_focus(
+    /// The display to query.
+    topazDisplay_t * display
+); 
 
 /// Attempts to prevent resizing on the user's side. 
 ///
@@ -225,47 +294,101 @@ int topaz_display_has_input_focus(topazDisplay_t *);
 /// in a desktop environment, this would disable the feature of resizing
 /// the window.
 ///
-void topaz_display_lock_client_resize(topazDisplay_t *, int);
+void topaz_display_lock_client_resize(
+    /// The display to lock.
+    topazDisplay_t * display, 
+
+    /// Whether to lock.
+    int state
+);
 
 /// Attempts to prevent moving on the user's side. 
 /// 
-void topaz_display_lock_client_position(topazDisplay_t *, int);
+void topaz_display_lock_client_position(
+    /// The display to lock.
+    topazDisplay_t * display, 
+
+    /// Whether to lock.
+    int state
+);
 
 /// Controls how the Renderer's information is displayed. The default policy is "MatchSize"
 /// See ViewPolicy for more information. 
 ///
-void topaz_display_set_view_policy(topazDisplay_t *, topazDisplay_ViewPolicy);
+void topaz_display_set_view_policy(
+    /// The display to modify.
+    topazDisplay_t * display,
+
+    /// The new policy. 
+    topazDisplay_ViewPolicy policy
+);
 
 /// Returns the width of the display.
 ///
-int topaz_display_get_width(topazDisplay_t *);
+int topaz_display_get_width(
+    /// The display to query.
+    topazDisplay_t * display
+);
 
 /// Returns the height of the display.
 ///
-int topaz_display_get_height(topazDisplay_t *);
+int topaz_display_get_height(
+    /// The display to query.
+    topazDisplay_t * display
+);
 
 /// Returns the X position of the display.
 ///
-int topaz_display_get_x(topazDisplay_t *);
+int topaz_display_get_x(
+    /// The display to query.
+    topazDisplay_t * display
+);
+
 
 /// Returns the Y position of the display.
 ///
-int topaz_display_get_y(topazDisplay_t *);
+int topaz_display_get_y(
+    /// The display to query.
+    topazDisplay_t * display
+);
+
 
 
 
 /// Sets the name of the display. On some systems, this can, for example,
 /// set the title bar of the application to the specified name.
-void topaz_display_set_name(topazDisplay_t *, const topazString_t *);
+void topaz_display_set_name(
+    /// The display to modify.
+    topazDisplay_t * display, 
+
+    /// The new displayName
+    const topazString_t * name
+);
+
 
 /// Adds an additional callback function to be be called after
 /// the occurance of a resize event.Callbacks are run in the order that they
 /// were added in.
-void topaz_display_add_resize_callback(topazDisplay_t *, void(*cb)(int w, int h, void *), void *);
+void topaz_display_add_resize_callback(
+    /// The display to add a callback to.
+    topazDisplay_t * display, 
+
+    /// The callback to add.
+    topaz_display_callback callback, 
+
+    /// The data to bind to the callback.
+    void * data
+);
 
 /// Removes the callback of the same instance as one given via
 /// AddResizeCallback.
-void topaz_display_remove_resize_callback(topazDisplay_t *, void(*cb)(int w, int h, void *));
+void topaz_display_remove_resize_callback(
+    /// The display to modify.
+    topazDisplay_t * display, 
+
+    /// The callback to remove.
+    topaz_display_callback callback
+);
 
 /// Adds an additional callback function to be be called after
 /// the occurance of a closing event.
@@ -275,69 +398,120 @@ void topaz_display_remove_resize_callback(topazDisplay_t *, void(*cb)(int w, int
 /// associated with the Display. Callbacks are run in the order that they
 /// were added in.
 ///
-void topaz_display_add_close_callback(topazDisplay_t *, void(*cb)(void *), void *);
+void topaz_display_add_close_callback(
+    /// The display to add a callback to.
+    topazDisplay_t * display, 
+
+    /// The callback to add.
+    topaz_display_callback callback, 
+
+    /// The data to bind to the callback.
+    void * data
+);
+
 
 /// Removes the callback of the same instance as one given via
 /// AddCloseCallback.
 ///
-void topaz_display_remove_close_callback(topazDisplay_t *, void(*cb)(void *));
+void topaz_display_remove_close_callback(
+    /// The display to modify.
+    topazDisplay_t * display, 
+
+    /// The callback to remove.
+    topaz_display_callback callback
+);
+
 
 
 
 /// Returns whether or not the Display is able to 
 /// perform the requested capability.
 ///
-int topaz_display_is_capable(topazDisplay_t *, topazDisplay_Capability); 
+int topaz_display_is_capable(
+    /// The display to query.
+    topazDisplay_t * display,
 
+    /// The capability to query.    
+    topazDisplay_Capability capability
+); 
 
-
-////////////////////// Interfacing with others
 
 
 /// Updates display with input visual data that is 
 /// populated in the internal framebuffer.
 ///
-void topaz_display_update(topazDisplay_t *);    
+void topaz_display_update(
+    /// The display to update.
+    topazDisplay_t * display
+);    
 
 /// Returns the framebuffer types that this renderer supports.
 /// Should the framebuffer not match one of the given types, the framebuffer 
 /// attachment will fail
 ///
-const topazArray_t * topaz_display_supported_framebuffers(topazDisplay_t *);
+const topazArray_t * topaz_display_supported_framebuffers(
+    /// The display to query.
+    topazDisplay_t * display
+);
 
 /// Returns the type associated with data returned by 
 /// GetSystemHandle. Meant for internal use, but can be handy when
 /// doing weird things.
 ///
-topazDisplay_Handle topaz_display_get_system_handle_type(topazDisplay_t *);
+topazDisplay_Handle topaz_display_get_system_handle_type(
+    /// The display to query.
+    topazDisplay_t * display
+);
 
 /// Returns an implementation-specific handle that represents this
 /// Display or this Display's properties. Meant for internal use, but can 
 /// be handy when doing weird things.
 ///
-void * topaz_display_get_system_handle(topazDisplay_t *);
+void * topaz_display_get_system_handle(
+    /// The display to query.
+    topazDisplay_t * display
+);
+
 
 /// Returns the type of the system events returned by 
 /// GetLastSystemEvent(). Like getting the system handle, it's mostly meant for internal 
 /// use, but can come in handy when doing weird things.
 ///
-topazDisplay_Event topaz_display_get_system_event_type(topazDisplay_t *);
+topazDisplay_Event topaz_display_get_system_event_type(
+    /// The display to query.
+    topazDisplay_t * display
+);
+
 
 /// Returns an implementation-specific value that represents the 
 /// last processed event generated form the display. It is guaranteed to be updated
 /// after Update() has been called and is valid until the next Update() call.
 ///
-void * topaz_display_get_last_system_event(topazDisplay_t *);
+void * topaz_display_get_last_system_event(
+    /// The display to query.
+    topazDisplay_t * display
+);
+
 
 
 /// Returns the current contents of the clipboard, if applicable.
 /// This buffer is owned by the caller.
 ///
-topazArray_t * topaz_display_get_current_clipboard(topazDisplay_t *);
+topazArray_t * topaz_display_get_current_clipboard(
+    /// The display to query.
+    topazDisplay_t * display
+);
+
 
 /// Sets the current contents of the clipboard, if applicable.
 ///
-void topaz_display_set_current_clipboard(topazDisplay_t *, const topazArray_t *);
+void topaz_display_set_current_clipboard(
+    /// The display to modify.
+    topazDisplay_t * display, 
+
+    /// The new contents of the clipboard.
+    const topazArray_t * contents
+);
 
 
 

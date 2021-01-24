@@ -53,9 +53,9 @@ typedef struct topazTime_t topazTime_t;
 typedef struct topazTimeAPI_t topazTimeAPI_t;
 
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazTime_t. See <topaz/backends/Time.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazTime_t. See <topaz/backends/Time.h>
+//
 struct topazTimeAPI_t {
     void *                  (*time_create)           (topazTime_t *, topaz_t *);
     void                    (*time_destroy)          (topazTime_t *, void *);

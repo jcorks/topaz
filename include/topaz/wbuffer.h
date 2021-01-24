@@ -38,8 +38,6 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/containers/string.h>
 
 ///
-///    Wbuffer
-///    -----
 ///    Wbuffers (Write Buffers) are the complement to Rbuffers. Once instantiated, the
 ///    user can easily and quickly write data to the buffer in a variety of
 ///    formats verbatim. Once the user is ready, they can write the buffer to
@@ -57,21 +55,45 @@ topazWbuffer_t * topaz_wbuffer_create();
 
 /// Destroys the given buffer
 ///
-void topaz_wbuffer_destroy(topazWbuffer_t *);
+void topaz_wbuffer_destroy(
+    /// The buffer to destroy.
+    topazWbuffer_t * buffer
+);
 
 
 
 /// Writes the given array of bytes to the Wbuffer.
 ///
-void topaz_wbuffer_write_bytes(topazWbuffer_t *, const topazArray_t *);
+void topaz_wbuffer_write_bytes(
+    /// The buffer to populate.
+    topazWbuffer_t * buffer, 
+
+    //// Source data to copy into the buffer.
+    const topazArray_t * data
+);
 
 /// Writes the given string to the Wbuffer as a C-String.
 ///
-void topaz_wbuffer_write_c_string(topazWbuffer_t *, const topazString_t *);
+void topaz_wbuffer_write_c_string(
+    /// The buffer to populate.
+    topazWbuffer_t * buffer, 
+
+    //// Source data to copy into the buffer.
+    const topazString_t * string
+);
 
 /// Writes the given raw buffer to the Wbuffer.
 ///
-void topaz_wbuffer_write_buffer(topazWbuffer_t *, const void * data, uint64_t len);
+void topaz_wbuffer_write_buffer(
+    /// The buffer to populate.
+    topazWbuffer_t * buffer, 
+
+    /// Source data to copy into the buffer.
+    const void * data, 
+
+    /// Length of the data in bytes.
+    uint64_t len
+);
 
 
 /// Writes the given addressable variable to the Wbuffer.
@@ -81,25 +103,40 @@ void topaz_wbuffer_write_buffer(topazWbuffer_t *, const void * data, uint64_t le
 ///     topaz_wbuffer_write(wbuffer, int, value);
 ///
 ///
-#define topaz_wbuffer_write(__B__, __T__, __D__) (topaz_wbuffer_write_buffer(__B__, &__D__, sizeof(__T__)))
+#define topaz_wbuffer_write(__B__,__T__,__D__) (topaz_wbuffer_write_buffer(__B__, &__D__, sizeof(__T__)))
 
 
 
 /// Set the buffer position to the specifified byte
 ///
-void topaz_wbuffer_go_to_byte(topazWbuffer_t *, uint64_t n);
+void topaz_wbuffer_go_to_byte(
+    /// The buffer to set a new position.
+    topazWbuffer_t * buffer, 
+
+    /// The new position to seek to.
+    uint64_t n
+);
 
 /// Returns the queued data.
 ///    
-const topazArray_t * topaz_wbuffer_get_data(const topazWbuffer_t *);
+const topazArray_t * topaz_wbuffer_get_data(
+    /// The buffer to query.
+    const topazWbuffer_t * buffer
+);
 
 /// Returns the size of the queued data in bytes.
 ///    
-int topaz_wbuffer_get_size(const topazWbuffer_t *);
+int topaz_wbuffer_get_size(
+    /// The buffer to query.
+    const topazWbuffer_t * buffer
+);
 
 /// Resets the queued data buffer.
 ///    
-void topaz_wbuffer_clear(const topazWbuffer_t *);
+void topaz_wbuffer_clear(
+    /// The buffer to clear.
+    topazWbuffer_t * buffer
+);
 
 
 

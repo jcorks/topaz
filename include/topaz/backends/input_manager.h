@@ -40,10 +40,7 @@ typedef struct topazDisplay_t topazDisplay_t;
 
 
 ///
-///    InputManager
-///    -----
-///    
-///    Interacts with device drivers to retrieve the requested input information
+/// Interacts with device drivers to retrieve the requested input information
 ///
 typedef struct topazInputManager_t topazInputManager_t;
 
@@ -53,181 +50,352 @@ typedef struct topazInputManager_t topazInputManager_t;
 ///
 typedef enum topazKey topazKey;
 enum topazKey {
+    /// Not an input.
     topazNotAnInput = 0,
-    topazKey_0= 1, //< 0
-    topazKey_1= 2, //< 1
-    topazKey_2= 3, //< 2
-    topazKey_3= 4, //< 3
-    topazKey_4= 5, //< 4
-    topazKey_5= 6, //< 5
-    topazKey_6= 7, //< 6
-    topazKey_7= 8, //< 7
-    topazKey_8= 9, //< 8
-    topazKey_9= 10, //< 9
-    topazKey_a= 11, //< a
-    topazKey_b= 12, //< b
-    topazKey_c= 13, //< c
-    topazKey_d= 14, //< d
-    topazKey_e= 15, //< e
-    topazKey_f= 16, //< f
-    topazKey_g= 17, //< g
-    topazKey_h= 18, //< h
-    topazKey_i= 19, //< i
-    topazKey_j= 20, //< j
-    topazKey_k= 21, //< k
-    topazKey_l= 22, //< l
-    topazKey_m= 23, //< m
-    topazKey_n= 24, //< n
-    topazKey_o= 25, //< o
-    topazKey_p= 26, //< p
-    topazKey_q= 27, //< q
-    topazKey_r= 28, //< r
-    topazKey_s= 29, //< s
-    topazKey_t= 30, //< t
-    topazKey_u= 31, //< u
-    topazKey_v= 32, //< v
-    topazKey_w= 33, //< w
-    topazKey_x= 34, //< x
-    topazKey_y= 35, //< y
-    topazKey_z= 36, //< z
-    topazKey_lshift= 37, //< Left shift key
-    topazKey_rshift= 38, //< Right shift key
-    topazKey_lctrl= 39,  //< Left control key
-    topazKey_rctrl= 40,  //< Right control key
-    topazKey_lalt= 41,   //< Left alt key
-    topazKey_ralt= 42,   //< Right alt key
-    topazKey_tab= 43,    //< Tab
-    topazKey_F1= 44,     //< F1
-    topazKey_F2= 45,     //< F2
-    topazKey_F3= 46,     //< F3
-    topazKey_F4= 47,     //< F4
-    topazKey_F5= 48,     //< F5
-    topazKey_F6= 49,     //< F6
-    topazKey_F7= 50,     //< F7
-    topazKey_F8= 51,     //< F8
-    topazKey_F9= 52,     //< F9
-    topazKey_F10= 53,    //< F10
-    topazKey_F11= 54,    //< F11
-    topazKey_F12= 55,    //< F12
-    topazKey_up= 100,     //< Up arrow
-    topazKey_down= 101,   //< Down arrow
-    topazKey_left= 102,   //< Left arrow
-    topazKey_right= 103,  //< Right arrow
-    topazKey_minus= 104,  //< -
-    topazKey_equal= 105,  //< = 
-    topazKey_backspace= 106,  //< Backspace
-    topazKey_grave= 107,  //< `
-    topazKey_esc= 108,    //< Escape
-    topazKey_home= 109,   //< Home key
-    topazKey_pageUp= 110, //< Page up key
-    topazKey_pageDown= 111,  //< Page down key
-    topazKey_end= 112,    //< End key
-    topazKey_backslash= 113, //< '\'
-    topazKey_lbracket= 114, //< [
-    topazKey_rbracket= 115, //< ]
-    topazKey_semicolon= 116, //< ;
-    topazKey_apostrophe= 117, //< '
-    topazKey_frontslash= 118, //< /
-    topazKey_enter= 119, //< Enter
-    topazKey_delete= 120, //< Delete
-    topazKey_numpad0= 121, //< Numpad 0
-    topazKey_numpad1= 122, //< Numpad 1
-    topazKey_numpad2= 123, //< Numpad 2
-    topazKey_numpad3= 124, //< Numpad 3
-    topazKey_numpad4= 125, //< Numpad 4
-    topazKey_numpad5= 126, //< Numpad 5
-    topazKey_numpad6= 127, //< Numpad 6
-    topazKey_numpad7= 128, //< Numpad 7
-    topazKey_numpad8= 129, //< Numpad 8
-    topazKey_numpad9= 130, //< Numpad 9
-    topazKey_prtscr= 131, //< Print screen button
-    topazKey_lsuper= 132, //< Left Super key (Windows key)
-    topazKey_rsuper= 133, //< Right Super key (Windows key)
-    topazKey_space= 134,  //< Space
-    topazKey_insert= 135, //< Insert key
-    topazKey_comma= 136, //< ,
-    topazKey_period= 137 , //< .
-    topazKey_world1= 138, // I8n key0
-    topazKey_world2= 139, // I8n key1
-    topazKey_world3= 140, // I8n key2
-    topazKey_world4= 141, // I8n key3
-    topazKey_world5= 142, // I8n key4
-    topazKey_world6= 143, // I8n key5
-    topazKey_world7= 144, // I8n key6
-    topazKey_world8= 145, // I8n key7
-    topazKey_world9= 146, // I8n key8
+    /// The 0 key.
+    topazKey_0= 1,
+    /// The 1 key.
+    topazKey_1= 2,
+    /// The 2 key.
+    topazKey_2= 3, 
+    /// The 3 key.
+    topazKey_3= 4,
+    /// The 4 key.
+    topazKey_4= 5,
+    /// The 5 key.
+    topazKey_5= 6,
+    /// The 6 key.
+    topazKey_6= 7,
+    /// The 7 key.
+    topazKey_7= 8,
+    /// The 8 key.
+    topazKey_8= 9,
+    /// The 9 key.
+    topazKey_9= 10,
+    /// The a key.
+    topazKey_a= 11,
+    /// The b key.
+    topazKey_b= 12, 
+    /// The c key.
+    topazKey_c= 13, 
+    /// The d key.
+    topazKey_d= 14, 
+    /// The e key.
+    topazKey_e= 15, 
+    /// The f key.
+    topazKey_f= 16, 
+    /// The g key.
+    topazKey_g= 17, 
+    /// The h key.
+    topazKey_h= 18, 
+    /// The i key.
+    topazKey_i= 19, 
+    /// The j key.
+    topazKey_j= 20,  
+    /// The k key.
+    topazKey_k= 21, 
+    /// The l key.
+    topazKey_l= 22, 
+    /// The m key.
+    topazKey_m= 23, 
+    /// The n key.
+    topazKey_n= 24, 
+    /// The o key.
+    topazKey_o= 25, 
+    /// The p key.
+    topazKey_p= 26, 
+    /// The q key.
+    topazKey_q= 27, 
+    /// The r key.
+    topazKey_r= 28, 
+    /// The s key.
+    topazKey_s= 29, 
+    /// The t key.
+    topazKey_t= 30, 
+    /// The u key.
+    topazKey_u= 31, 
+    /// The v key.
+    topazKey_v= 32, 
+    /// The w key.
+    topazKey_w= 33, 
+    /// The x key.
+    topazKey_x= 34, 
+    /// The y key.
+    topazKey_y= 35, 
+    /// The z key.
+    topazKey_z= 36, 
+    /// The lshift key.
+    topazKey_lshift= 37, 
+    /// The rshift key.
+    topazKey_rshift= 38, 
+    /// The lctrl key.
+    topazKey_lctrl= 39,  
+    /// The rctrl key.
+    topazKey_rctrl= 40,  
+    /// The lalt key.
+    topazKey_lalt= 41,   
+    /// The ralt key.
+    topazKey_ralt= 42,   
+    /// The tab key.
+    topazKey_tab= 43,    
+    /// The F1 key.
+    topazKey_F1= 44,     
+    /// The F2 key.
+    topazKey_F2= 45,     
+    /// The F3 key.
+    topazKey_F3= 46,     
+    /// The F4 key.
+    topazKey_F4= 47,     
+    /// The F5 key.
+    topazKey_F5= 48,     
+    /// The F6 key.
+    topazKey_F6= 49,     
+    /// The F7 key.
+    topazKey_F7= 50,     
+    /// The F8 key.
+    topazKey_F8= 51,     
+    /// The F9 key.
+    topazKey_F9= 52,     
+    /// The F10 key.
+    topazKey_F10= 53,    
+    /// The F11 key.
+    topazKey_F11= 54,    
+    /// The F12 key.
+    topazKey_F12= 55,    
+    /// The up key.
+    topazKey_up= 100,     
+    /// The down key.
+    topazKey_down= 101,   
+    /// The left key.
+    topazKey_left= 102,   
+    /// The right key.
+    topazKey_right= 103,  
+    /// The minus key.
+    topazKey_minus= 104,  
+    /// The equal key.
+    topazKey_equal= 105,  
+    /// The backspace key.
+    topazKey_backspace= 106,  
+    /// The grave key.
+    topazKey_grave= 107,  
+    /// The esc key.
+    topazKey_esc= 108,    
+    /// The home key.
+    topazKey_home= 109,   
+    /// The pageUp key.
+    topazKey_pageUp= 110, 
+    /// The pageDown key.
+    topazKey_pageDown= 111,  
+    /// The end key.
+    topazKey_end= 112,    
+    /// The backslash key.
+    topazKey_backslash= 113, 
+    /// The lbracket key.
+    topazKey_lbracket= 114, 
+    /// The rbracket key.
+    topazKey_rbracket= 115, 
+    /// The semicolon key.
+    topazKey_semicolon= 116, 
+    /// The apostrophe key.
+    topazKey_apostrophe= 117, 
+    /// The frontslash key.
+    topazKey_frontslash= 118, 
+    /// The enter key.
+    topazKey_enter= 119, 
+    /// The delete key.
+    topazKey_delete= 120, 
+    /// The numpad0 key.
+    topazKey_numpad0= 121, 
+    /// The numpad1 key.
+    topazKey_numpad1= 122, 
+    /// The numpad2 key.
+    topazKey_numpad2= 123, 
+    /// The numpad3 key.
+    topazKey_numpad3= 124, 
+    /// The numpad4 key.
+    topazKey_numpad4= 125, 
+    /// The numpad5 key.
+    topazKey_numpad5= 126, 
+    /// The numpad6 key.
+    topazKey_numpad6= 127, 
+    /// The numpad7 key.
+    topazKey_numpad7= 128, 
+    /// The numpad8 key.
+    topazKey_numpad8= 129, 
+    /// The numpad9 key.
+    topazKey_numpad9= 130, 
+    /// The prtscr key.
+    topazKey_prtscr= 131, 
+    /// The lsuper key.
+    topazKey_lsuper= 132, 
+    /// The rsuper key.
+    topazKey_rsuper= 133, 
+    /// The space key.
+    topazKey_space= 134,  
+    /// The insert key.
+    topazKey_insert= 135, 
+    /// The comma key.
+    topazKey_comma= 136, 
+    /// The period key.
+    topazKey_period= 137 , 
+    /// The world1 key.
+    topazKey_world1= 138, 
+    /// The world2 key.
+    topazKey_world2= 139, 
+    /// The world3 key.
+    topazKey_world3= 140, 
+    /// The world4 key.
+    topazKey_world4= 141,  
+    /// The world5 key.
+    topazKey_world5= 142,  
+    /// The world6 key.
+    topazKey_world6= 143, 
+    /// The world7 key.
+    topazKey_world7= 144,  
+    /// The world8 key.
+    topazKey_world8= 145,  
+    /// The world9 key.
+    topazKey_world9= 146,  
 
-    topazPointer_0= 256, //< Left click
-    topazPointer_1= 257, //< Right click
-    topazPointer_2= 258, //< Middle click
+    /// The 0th pointer button.
+    topazPointer_0= 256, 
+    /// The 1st pointer button.
+    topazPointer_1= 257, 
+    /// The 2nd pointer button.
+    topazPointer_2= 258, 
 
-    topazPointer_X= 259, //< Horizontal axis. Usually for the X axis of the pointer
-    topazPointer_Y= 260, //< Horizontal axis. Usually for the X axis of the pointer
-    topazPointer_Wheel= 261, //< Mouse wheel.
+    /// The pointer x axis.
+    topazPointer_X= 259, 
+    /// The pointer y axis.
+    topazPointer_Y= 260, 
+    /// The pointer wheel axis.
+    topazPointer_Wheel= 261, 
 
-    topazPad_a= 300,     //< Button 0
-    topazPad_b= 301,     //< Button 1
-    topazPad_c= 302,     //< Button 2
-    topazPad_x= 303,     //< Button 3
-    topazPad_y= 304,     //< Button 4
-    topazPad_r= 305,     //< Button 5
-    topazPad_l= 306,     //< Button 6
-    topazPad_r2= 307,    //< Button 7
-    topazPad_l2= 308,    //< Button 8
-    topazPad_r3= 309,    //< Button 9
-    topazPad_l3= 310,    //< Button 10
-    topazPad_start= 311,    //< Button 11
-    topazPad_select= 312,//< Button 12
-    topazPad_b13= 313,//< Button 13
-    topazPad_b14= 314,//< Button 14
-    topazPad_b15= 315,//< Button 15
-    topazPad_b16= 316,//< Button 16
-    topazPad_b17= 317,//< Button 17
-    topazPad_b18= 318,//< Button 18
-    topazPad_b19= 319,//< Button 19
-    topazPad_b20= 320,//< Button 20
-    topazPad_b21= 321,//< Button 21
-    topazPad_b22= 322,//< Button 22
-    topazPad_b23= 323,//< Button 23
-    topazPad_b24= 324,//< Button 24
-    topazPad_b25= 325,//< Button 25
-    topazPad_b26= 326,//< Button 26
-    topazPad_b27= 327,//< Button 27
-    topazPad_b28= 328,//< Button 28
-    topazPad_b29= 329,//< Button 29
-    topazPad_b30= 330,//< Button 30
-    topazPad_b31= 331,//< Button 31
-    topazPad_b32= 332,//< Button 32
+    /// The a pad input.
+    topazPad_a= 300,     
+    /// The b pad input.
+    topazPad_b= 301,     
+    /// The c pad input.
+    topazPad_c= 302,     
+    /// The x pad input.
+    topazPad_x= 303,     
+    /// The y pad input.
+    topazPad_y= 304,     
+    /// The r pad input.
+    topazPad_r= 305,     
+    /// The l pad input.
+    topazPad_l= 306,     
+    /// The r2 pad input.
+    topazPad_r2= 307,    
+    /// The l2 pad input.
+    topazPad_l2= 308,    
+    /// The r3 pad input.
+    topazPad_r3= 309,    
+    /// The l3 pad input.
+    topazPad_l3= 310,    
+    /// The start pad input.
+    topazPad_start= 311,    
+    /// The select pad input.
+    topazPad_select= 312,
+    /// The b13 pad input.
+    topazPad_b13= 313,
+    /// The b14 pad input.
+    topazPad_b14= 314,
+    /// The b15 pad input.
+    topazPad_b15= 315,
+    /// The b16 pad input.
+    topazPad_b16= 316,
+    /// The b17 pad input.
+    topazPad_b17= 317,
+    /// The b18 pad input.
+    topazPad_b18= 318,
+    /// The b19 pad input.
+    topazPad_b19= 319,
+    /// The b20 pad input.
+    topazPad_b20= 320,
+    /// The b21 pad input.
+    topazPad_b21= 321,
+    /// The b22 pad input.
+    topazPad_b22= 322,
+    /// The b23 pad input.
+    topazPad_b23= 323,
+    /// The b24 pad input.
+    topazPad_b24= 324,
+    /// The b25 pad input.
+    topazPad_b25= 325,
+    /// The b26 pad input.
+    topazPad_b26= 326,
+    /// The b27 pad input.
+    topazPad_b27= 327,
+    /// The b28 pad input.
+    topazPad_b28= 328,
+    /// The b29 pad input.
+    topazPad_b29= 329,
+    /// The b30 pad input.
+    topazPad_b30= 330,
+    /// The b31 pad input.
+    topazPad_b31= 331,
+    /// The b32 pad input.
+    topazPad_b32= 332,
 
-    topazPad_axisX= 400, //< X button
-    topazPad_axisY= 401, //< Y button
-    topazPad_axisZ= 402, //< Z button
-    topazPad_axisX2= 403,//< X2 button 
-    topazPad_axisY2= 404,//< Y2 button
-    topazPad_axisZ2= 405,//< Z2 button
-    topazPad_axisX3= 406,//< X3 button
-    topazPad_axisY3= 407,//< Y3 button
-    topazPad_axisZ3= 408,//< Z3 button
-    topazPad_axisX4= 409,//< X4 button
-    topazPad_axisY4= 410,//< Y4 button
-    topazPad_axisZ4= 411,//< Z4 button
-    topazPad_axisX5= 412,//< X4 button
-    topazPad_axisY5= 413,//< Y4 button
-    topazPad_axisZ5= 414,//< Z4 button
-    topazPad_axisX6= 415,//< X4 button
-    topazPad_axisY6= 416,//< Y4 button
-    topazPad_axisZ6= 417,//< Z4 button
+    /// The axisX pad input.
+    topazPad_axisX= 400, 
+    /// The axisY pad input.
+    topazPad_axisY= 401, 
+    /// The axisZ pad input.
+    topazPad_axisZ= 402, 
+    /// The axisX2 pad input.
+    topazPad_axisX2= 403,
+    /// The axisY2 pad input.
+    topazPad_axisY2= 404,
+    /// The axisZ2 pad input.
+    topazPad_axisZ2= 405,
+    /// The axisX3 pad input.
+    topazPad_axisX3= 406,
+    /// The axisY3 pad input.
+    topazPad_axisY3= 407,
+    /// The axisZ3 pad input.
+    topazPad_axisZ3= 408,
+    /// The axisX4 pad input.
+    topazPad_axisX4= 409,
+    /// The axisY4 pad input.
+    topazPad_axisY4= 410,
+    /// The axisZ4 pad input.
+    topazPad_axisZ4= 411,
+    /// The axisX5 pad input.
+    topazPad_axisX5= 412,
+    /// The axisY5 pad input.
+    topazPad_axisY5= 413,
+    /// The axisZ5 pad input.
+    topazPad_axisZ5= 414,
+    /// The axisX6 pad input.
+    topazPad_axisX6= 415,
+    /// The axisY6 pad input.
+    topazPad_axisY6= 416,
+    /// The axisZ6 pad input.
+    topazPad_axisZ6= 417,
 
+    /// The axisR pad input.
     topazPad_axisR= 450,   
+    /// The axisL pad input.
     topazPad_axisL= 451,    
+    /// The axisR2 pad input.
     topazPad_axisR2= 452,    
+    /// The axisL2 pad input.
     topazPad_axisL2= 453,    
+    /// The axisR3 pad input.
     topazPad_axisR3= 454,    
+    /// The axisL3 pad input.
     topazPad_axisL3= 455,    
+    /// The axisR4 pad input.
     topazPad_axisR4= 456,    
+    /// The axisL4 pad input.
     topazPad_axisL4= 457,    
 
+    /// The options pad input.
     topazPad_options= 511,
+
+    /// Number of built-in inputs.
     topazInput_Count= 512
 };
 
@@ -277,12 +445,26 @@ enum topazInputManager_DefaultDevice {
 
 /// Creates a new audio manager object. 
 ///
-topazInputManager_t * topaz_input_manager_create(topaz_t *, topazSystem_Backend_t *, topazInputManagerAPI_t);
+topazInputManager_t * topaz_input_manager_create(
+    /// The topaz context.
+    topaz_t * context, 
+
+
+    /// The backend to implement the backend's features.
+    topazSystem_Backend_t * backend, 
+
+    /// The raw API to implement the backend's features.
+    topazInputManagerAPI_t api
+);
+
 
 
 /// Destroys and cleans up an audio manager object
 ///
-void topaz_input_manager_destroy(topazInputManager_t *);
+void topaz_input_manager_destroy(
+    /// The input manager to destroy.
+    topazInputManager_t * input
+);
 
 
 
@@ -290,32 +472,51 @@ void topaz_input_manager_destroy(topazInputManager_t *);
 
 /// Retrieves the backend for this audio manager object.
 ///
-topazSystem_Backend_t * topaz_input_manager_get_backend(topazInputManager_t *);
+topazSystem_Backend_t * topaz_input_manager_get_backend(
+    /// The input to query.
+    topazInputManager_t * input
+);
 
 
 /// Returns the API for this audio manager.
 ///
-topazInputManagerAPI_t topaz_input_manager_get_api(topazInputManager_t *);
+topazInputManagerAPI_t topaz_input_manager_get_api(
+    /// The input to query.
+    topazInputManager_t * input
+);
+
 
 
 
 /// Returns a read-only string representation of 
 /// the given input id.
 ///
-const topazString_t * topaz_input_manager_id_to_string(int);
+const topazString_t * topaz_input_manager_id_to_string(
+    /// Id to get a string version of. 
+    int id
+);
 
 
 /// Updates the state of registered devices.
 /// Returns whether or not there were new input events that were pulled  
 ///
-int topaz_input_manager_handle_events(topazInputManager_t *);
+int topaz_input_manager_handle_events(
+    /// The input to query.
+    topazInputManager_t * input
+);
 
 /// Returns a reference to the internally maintained input device.
 /// Do not free or modify the contents of the device. The first few slots 
 /// up to topazInputManager_NumDefaultDevices will match the device expected.
 /// If the device is unsupported, NULL will be returned.
 ///
-topazInputDevice_t * topaz_input_manager_query_device(topazInputManager_t *, int ID);
+topazInputDevice_t * topaz_input_manager_query_device(
+    /// The input manager to query.
+    topazInputManager_t * input,
+
+    /// The ID to query.
+    int ID
+);
 
 /// Returns the number of additional devices available.
 /// up to MaxDevices(). Typically, any overflow devices that weren't able to 
@@ -324,12 +525,21 @@ topazInputDevice_t * topaz_input_manager_query_device(topazInputManager_t *, int
 /// with the index to a device available through QueryDevice that isnt 
 /// a default device.
 ///
-int topaz_input_manager_query_auxiliary_devices(topazInputManager_t *, int * IDs);
+int topaz_input_manager_query_auxiliary_devices(
+    /// The input manager to query.
+    topazInputManager_t * input,
+
+    /// The devices from the input manager that will be populated.
+    int * IDs
+);
 
 
 /// Maximum number of supported. Will always be at least NumDefaultDevices in count
 ///
-int topaz_input_manager_max_devices(topazInputManager_t *);
+int topaz_input_manager_max_devices(
+    /// The input manager to query.
+    topazInputManager_t * input
+);
 
 /// Sets the focus on which to query input from.
 /// On multi-display systems, such as a desktop environment,
@@ -340,11 +550,20 @@ int topaz_input_manager_max_devices(topazInputManager_t *);
 /// Passing in nullptr should disable input until a 
 /// valid display is given.
 ///
-void topaz_input_manager_set_focus(topazInputManager_t *, topazDisplay_t *);
+void topaz_input_manager_set_focus(
+    /// The input manager to modify.
+    topazInputManager_t * input,
+
+    /// The display to focus on. 
+    topazDisplay_t * display
+);
 
 /// Returns the current focus. The default is NULL
 ///
-topazDisplay_t * topaz_input_manager_get_focus(topazInputManager_t *);
+topazDisplay_t * topaz_input_manager_get_focus(
+    /// The input manager to query.
+    topazInputManager_t * input
+);
 
 
 /// Attempts to open a virtual keyboard. This is intended to 
@@ -352,7 +571,13 @@ topazDisplay_t * topaz_input_manager_get_focus(topazInputManager_t *);
 /// behavior is required or guaranteed outside of the conceptual idea 
 /// of the opening of a virtual keyboard. By default, this does nothing.
 ///
-void topaz_input_manager_show_virtual_keyboard(topazInputManager_t *, int);
+void topaz_input_manager_show_virtual_keyboard(
+    /// The input manager to request.
+    topazInputManager_t * inputManager,
+
+    /// whether to show the virtual keyboard. 
+    int state
+);
 
 
 

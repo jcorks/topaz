@@ -37,15 +37,8 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-/*
-
-    Time
-    -----
-    An abstraction for millisecond resolution timing.
-    This short set of utilities allows for timing 
-
-*/
-
+/// An abstraction for millisecond resolution timing.
+/// This short set of utilities allows for timing 
 typedef struct topazTime_t topazTime_t;
 
 
@@ -55,12 +48,25 @@ typedef struct topazTime_t topazTime_t;
 
 /// Creates a new time object
 ///
-topazTime_t * topaz_time_create(topaz_t *, topazSystem_Backend_t *, topazTimeAPI_t);
+topazTime_t * topaz_time_create(
+    /// The topaz context.
+    topaz_t * context, 
+
+
+    /// The backend to implement the backend's features.
+    topazSystem_Backend_t * backend, 
+
+    /// The raw API to implement the backend's features.
+    topazTimeAPI_t api
+);
 
 
 /// Destroys and cleans up a time API
 ///
-void topaz_time_destroy(topazTime_t *);
+void topaz_time_destroy(
+    /// The time instance to destroy.
+    topazTime_t * t
+);
 
 
 
@@ -68,12 +74,18 @@ void topaz_time_destroy(topazTime_t *);
 
 /// Retrieves the backend for this time object.
 ///
-topazSystem_Backend_t * topaz_time_get_backend(topazTime_t *);
+topazSystem_Backend_t * topaz_time_get_backend(
+    /// The time instance to query.
+    topazTime_t * t
+);
 
 
 /// Returns the API for this time.
 ///
-topazTimeAPI_t topaz_time_get_api(topazTime_t *);
+topazTimeAPI_t topaz_time_get_api(
+    /// The time instance to query.
+    topazTime_t * t
+);
 
 
 
@@ -82,13 +94,22 @@ topazTimeAPI_t topaz_time_get_api(topazTime_t *);
 /// Designates the main thread to sleep for the given 
 /// number of milliseconds.
 ///
-void topaz_time_sleep_ms(topazTime_t * t, uint64_t ms);
+void topaz_time_sleep_ms(
+    /// The time instance.
+    topazTime_t * t, 
+
+    /// The time amount to sleep.
+    uint64_t ms
+);
 
 
 /// Returns the number of milliseconds that have passed since 
 /// the creation of this time instance.
 ///
-uint64_t topaz_time_ms_since_startup(topazTime_t *);
+uint64_t topaz_time_ms_since_startup(
+    /// The time instance to query.
+    topazTime_t * t
+);
 
 
 

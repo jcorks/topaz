@@ -45,8 +45,21 @@ DEALINGS IN THE SOFTWARE.
 
 
 ///
-///    Renderer
-///    -----
+/// Low-level renderer abstraction. Using this interface,
+/// applications can create rendered visuals with accelerated pathways.
+/// The most common use is to create visuals that Displays can present
+/// the users quickly and repeatedly. Its possible to also use renderers
+/// to create visuals without displays (though usually, this is more 
+/// slow)
+///
+/// The renderer is split up into smaller components:
+/// - Textures:     holds image information, has its own objects.
+/// - Buffers:      holds generic information for the rest of the renderer. Usually 
+///                 its stored on the renderering device when applicable.
+/// - Renderer2D:   Handles components optimized for 2D rendering.
+/// - Lights:       Light specifications for 3D rendering.
+/// - Programs:     Programmable pipeline interface if the renderer supports it.
+/// - Framebuffers: Accelerated targets for rendering operations.
 ///
 typedef struct topazRenderer_t topazRenderer_t;
 
@@ -258,11 +271,10 @@ enum topazRenderer_DataLayer {
 
 
 
+typedef struct topazRenderer_Parameters_t topazRenderer_Parameters_t;
 /// Parameters that define how geometry is drawn and processed in 
 /// a general sense.
 ///
-typedef struct topazRenderer_Parameters_t topazRenderer_Parameters_t;
-
 struct topazRenderer_Parameters_t {
     // Returns the maximum number of textures that can be referred to
     // by a StaticObject when rendering.
@@ -284,11 +296,11 @@ struct topazRenderer_Parameters_t {
 
 
 
-/*
-    RendererTexture
-    -----
-*/
 
+/// Textures hold visual information expressed in pixels.
+/// All textures are encoded RGBA (red-green-blue-alpha) 
+/// where each component is 8-bits of saturation information.
+///
 typedef struct topazRenderer_Texture_t topazRenderer_Texture_t;
 
 
@@ -296,19 +308,40 @@ typedef struct topazRenderer_Texture_t topazRenderer_Texture_t;
 /// Returns the textureIndex. Passing a NULL as the rgbaTextureData
 /// will allocate space for the texture, keep its contents as undefined
 ///
-topazRenderer_Texture_t * topaz_renderer_texture_create(topazRenderer_t *, int w, int h, const uint8_t * rgbaTextureData);
+topazRenderer_Texture_t * topaz_renderer_texture_create(
+    /// The renderer to use.
+    topazRenderer_t * renderer, 
+
+    /// Width of the new texture.
+    int w, 
+
+    /// Height of the new texture.
+    int h, 
+
+    /// The RGBA source data. Optional.
+    const uint8_t * rgbaTextureData
+);
 
 /// Flags a texture for deletion. Deletion is not guaranteed to be immediate, nor does it guarantee
 /// freeing of GPU memory; however, it does guarantee the possibility of adding one or more
 /// textures of its size or less.
 ///
-void topaz_renderer_texture_destroy(topazRenderer_Texture_t *);
+void topaz_renderer_texture_destroy(
+    /// The texture object to destroy.
+    topazRenderer_Texture_t * tex
+);
 
 /// redefines the contents of an existing image without
 /// deleting it and re-adding it. The image is expected to be the
 /// same dimensions as the original.
 ///
-void topaz_renderer_texture_update(topazRenderer_Texture_t *, const uint8_t * newData);
+void topaz_renderer_texture_update(
+    /// The texture object to update.
+    topazRenderer_Texture_t * tex, 
+
+    /// The new RGBA data whose size matches the existing texture.
+    const uint8_t * newData
+);
 
 
 
@@ -316,25 +349,35 @@ void topaz_renderer_texture_update(topazRenderer_Texture_t *, const uint8_t * ne
 /// THe input buffer should be allocated to GetTextureWidth()*GetTextureHeight()*4
 /// As with input buffered data, the format is RGBA with no padding.
 ///
-void topaz_renderer_texture_get(topazRenderer_Texture_t *, uint8_t *);
+void topaz_renderer_texture_get(
+    /// The texture to query.
+    topazRenderer_Texture_t * tex, 
+    /// The buffer to populate with RGBA information.
+    uint8_t * buffer
+);
 
 
 /// Retrieves the texture's width
 ///
-int topaz_renderer_texture_get_width(topazRenderer_Texture_t *);
+int topaz_renderer_texture_get_width(
+    /// The texture to query.
+    topazRenderer_Texture_t * tex
+);
 
 /// Retrieves the texture's height
 ///
-int topaz_renderer_texture_get_height(topazRenderer_Texture_t *);
+int topaz_renderer_texture_get_height(
+    /// The texture to query.
+    topazRenderer_Texture_t * tex
+);
 
 
 
 
-/*
-    RendererBuffer
-    -----
 
-*/
+/// Generically holds data, usually on accelerated
+/// mediums so that they are ready for rendering operations.
+/// 
 typedef struct topazRenderer_Buffer_t topazRenderer_Buffer_t;
 
 
@@ -342,11 +385,23 @@ typedef struct topazRenderer_Buffer_t topazRenderer_Buffer_t;
 /// but if you are using a backend with hardware support, it is likely in VRAM.
 /// If the allocation fails in some way, the id returned will be invalid
 ///
-topazRenderer_Buffer_t * topaz_renderer_buffer_create(topazRenderer_t *, float * data, uint32_t numElements);
+topazRenderer_Buffer_t * topaz_renderer_buffer_create(
+    /// The renderer to use.
+    topazRenderer_t * renderer,
+
+    /// The initial data of the buffer. 
+    float * data, 
+
+    /// The number of floating values.
+    uint32_t numElements
+);
 
 /// Frees the buffer store.
 ///
-void topaz_renderer_buffer_destroy(topazRenderer_Buffer_t *);
+void topaz_renderer_buffer_destroy(
+    /// The buffer to destroy.
+    topazRenderer_Buffer_t * buffer
+);
 
 
 
@@ -355,17 +410,41 @@ void topaz_renderer_buffer_destroy(topazRenderer_Buffer_t *);
 /// No check is made to see if this oversteps the original buffer size. If
 /// overstepping occurs, the result is undefined.
 ///
-void topaz_renderer_buffer_update(topazRenderer_Buffer_t *, const float * newData, uint32_t offset, uint32_t numElements);
+void topaz_renderer_buffer_update(
+    /// The buffer to update.
+    topazRenderer_Buffer_t * buffer,
+    /// The incoming data. 
+    const float * newData,
+    /// The offset to start editing the buffer. 
+    uint32_t offset, 
+    /// The number of float values to upload.
+    uint32_t numElements
+);
 
 
 /// Populates outputData with the relevant data contained in the buffer. On most implementations
 /// this will require expensive communication, so use with caution.
 ///
-void topaz_renderer_buffer_read(topazRenderer_Buffer_t *, float * ouputData, uint32_t offset, uint32_t numELements);
+void topaz_renderer_buffer_read(
+    /// The buffer to read.
+    topazRenderer_Buffer_t * buffer,
+
+    /// The buffer to populate with data. 
+    float * ouputData, 
+
+    /// The offset of the buffer to start reading.
+    uint32_t offset, 
+
+    /// the number of elements to read.
+    uint32_t numElements
+);
 
 /// Returns the number of elements of the buffer.
 ///
-int topaz_renderer_buffer_get_size(topazRenderer_Buffer_t *);
+int topaz_renderer_buffer_get_size(
+    /// The buffer to query.
+    topazRenderer_Buffer_t * buffer
+);
 
 
 
@@ -377,8 +456,6 @@ int topaz_renderer_buffer_get_size(topazRenderer_Buffer_t *);
 
 
 
-/// Renderer2D
-/// -----
 /// The general use case for 2D geometry is we will draw many 
 /// small objects with unique tranform properties. Thus, a static rendering 
 /// approach is less favorable as that would lead to more frequent draws.
@@ -389,33 +466,39 @@ typedef struct topazRenderer_2D_t topazRenderer_2D_t;
 
 
 
+typedef struct topazRenderer_2D_Vertex_t topazRenderer_2D_Vertex_t;
+
 /// Struct representing a dynamic (2D) vertex state.
 /// Dynamic vertices do not support lighting or 
 /// custom graphics programs.
 ///
-typedef struct topazRenderer_2D_Vertex_t topazRenderer_2D_Vertex_t;
-
 struct topazRenderer_2D_Vertex_t{
-    /// vertex position
-    ///
-    float x, y,       
+    /// The vertex x position.
+    float x;    
+    /// The vertex y position.
+    float y;       
     
-    /// color, scale from 0.f to 1.f (red, green, blue, and alpha)             
-    ///
-          r, g, b, a,
+    /// Color, scale from 0.f to 1.f: red.
+    float r;
+    /// Color, scale from 0.f to 1.f: green.
+    float g; 
+    /// Color, scale from 0.f to 1.f: blue.
+    float b; 
+    /// Color, scale from 0.f to 1.f: alpha.
+    float a;
     
-    /// texture coordinates (0, 0 is topleft)
-    ///
-          texX, texY;       
+    /// Texture coordinates (UVs), x position. (0, 0 is topleft)
+    float texX;
+    /// Texture coordinates (UVs), y position. (0, 0 is topleft)
+    float texY;       
 };
 
 
 
+typedef struct topazRenderer_2D_Context_t topazRenderer_2D_Context_t;
 /// Context parameters used to give additional information 
 /// when drawing a collection of 2D vertices.
 ///
-typedef struct topazRenderer_2D_Context_t topazRenderer_2D_Context_t;
-
 struct topazRenderer_2D_Context_t {
     /// Output display width.
     ///
@@ -442,36 +525,62 @@ struct topazRenderer_2D_Context_t {
 
 /// Creates a 2D render object.
 ///
-topazRenderer_2D_t * topaz_renderer_2d_create(topazRenderer_t *);
+topazRenderer_2D_t * topaz_renderer_2d_create(
+    /// The source renderer
+    topazRenderer_t * renderer
+);
 
 /// Destroys a 2D render object.
 ///
-void topaz_renderer_2d_destroy(topazRenderer_2D_t *);
+void topaz_renderer_2d_destroy(
+    /// The 2D renderer to destroy.
+    topazRenderer_2D_t * r2d
+);
 
 /// Adds a new 2D objects and returns its IDs.
 /// count should be the number of objects to request 
 /// output is a buffer of sizeof(uint32_t)*count length.
 /// Success is returned.
 ///
-int topaz_renderer_2d_add_objects(topazRenderer_2D_t *, uint32_t * output, uint32_t count);
+int topaz_renderer_2d_add_objects(
+    /// The 2D renderer to modify.
+    topazRenderer_2D_t * r2d,
+    /// The created objects. This buffer will be populated with object IDs. 
+    uint32_t * output, 
+    /// The number of objects to create.
+    uint32_t count
+);
 
 /// Removes a collection of objects.
 ///
-void topaz_renderer_2d_remove_objects(topazRenderer_2D_t *, uint32_t * ids, uint32_t count);
+void topaz_renderer_2d_remove_objects(
+    /// The 2D renderer to remove objects from.
+    topazRenderer_2D_t * r2d, 
+    /// The objects to remove.
+    uint32_t * ids, 
+    /// The number of objects to read and remove.
+    uint32_t count
+);
 
 
 /// Requests that an additional set of objects 
 /// be drawn when using topaz_renderer_draw_2d
 ///
 void topaz_renderer_2d_queue_objects(
-    topazRenderer_2D_t *,
+    /// The 2D renderer to queue objects to.
+    topazRenderer_2D_t * r2d,
+    /// The obejcts to queue.
     const uint32_t * objects,
+    /// The number of objects to queue.
     uint32_t count
 );
 
 /// Clears all requests queued
 ///
-void topaz_renderer_2d_clear_queue(topazRenderer_2D_t *);
+void topaz_renderer_2d_clear_queue(
+    /// The 2D renderer to clear.
+    topazRenderer_2D_t * r2d
+);
 
 
 
@@ -480,27 +589,38 @@ void topaz_renderer_2d_clear_queue(topazRenderer_2D_t *);
 /// contiguous topazRenderer_Vertex_2D_t objects.
 ///
 void topaz_renderer_2d_set_object_vertices(
-    topazRenderer_2D_t *, 
-    uint32_t i, 
-    topazRenderer_Buffer_t * 
+    /// The owner of the object
+    topazRenderer_2D_t * r2d, 
+
+    /// The ID of the object to modify
+    uint32_t object, 
+
+    /// The buffer containing vertex info.
+    topazRenderer_Buffer_t * buffer
 );
 
 
 /// Sets parameters for a specific object
 ///
 void topaz_renderer_2d_set_object_transform(
-    topazRenderer_2D_t *, 
-    uint32_t object, 
-    /// transform
-    ///
+    /// The owner of the object
+    topazRenderer_2D_t * r2d,
+
+    /// The object to modify.
+    uint32_t object,
+
+    /// Transform to use.
     const topazMatrix_t * transform
 );
 
 void topaz_renderer_2d_set_object_texture(
-    topazRenderer_2D_t *, 
+    /// The owner of the object
+    topazRenderer_2D_t * r2d, 
+
+    /// The object to modify.
     uint32_t object, 
-    /// Texture to be used. If NULL, no texture is used
-    ///
+
+    /// The texture to 
     topazRenderer_Texture_t * texture
 
 
@@ -509,7 +629,10 @@ void topaz_renderer_2d_set_object_texture(
 /// Gets the source renderer context that made 
 /// this renderer2D instance 
 ///
-topazRenderer_t * topaz_renderer_2d_get_context(topazRenderer_2D_t *);
+topazRenderer_t * topaz_renderer_2d_get_context(
+    /// The 2D renderer to query.
+    topazRenderer_2D_t * r2d
+);
 
 
 
@@ -522,13 +645,8 @@ topazRenderer_t * topaz_renderer_2d_get_context(topazRenderer_2D_t *);
 
 
 
-///
-///    RendererLight
-///    -----
-///    TODO: change to RendererProgramData as a generic 
-///    buffer, which is more accurate and usable.
-///
-///
+/// TODO: change to RendererProgramData as a generic 
+/// buffer, which is more accurate and usable.
 ///
 typedef struct topazRenderer_Light_t topazRenderer_Light_t;
 
@@ -539,9 +657,12 @@ typedef struct topazRenderer_Light_t topazRenderer_Light_t;
 ///
 typedef enum topazRenderer_LightType topazRenderer_LightType;
 enum topazRenderer_LightType {
+    /// The light is a point-light. It has a single position in 3D space.
     topazRenderer_LightType_Point,
-    topazRenderer_LightType_Directional,
-    topazRenderer_LightType_Spot
+
+    /// The light is applied in a direction universally. This is useful for 
+    /// things like sunlight
+    topazRenderer_LightType_Directional
 };
 
 
@@ -549,21 +670,41 @@ enum topazRenderer_LightType {
 // Creates a new light. When the light is first created, the state of the light
 // is undefined. (It is expected that you will update the lights attributes
 // before drawing);
-topazRenderer_Light_t * topaz_renderer_light_create(topazRenderer_t *, topazRenderer_LightType);
+topazRenderer_Light_t * topaz_renderer_light_create(
+    /// The renderer to create the light for.
+    topazRenderer_t * renderer, 
+
+    /// The type of the light.
+    topazRenderer_LightType type
+);
 
 // Removes all resources associated with the light ID.
-void topaz_renderer_light_destroy(topazRenderer_Light_t *);
+void topaz_renderer_light_destroy(
+    /// The light to remove.
+    topazRenderer_Light_t * light
+);
 
 // As the default, the attributes requred are
 //  Position (3-components)
 //  Color (3-components)
 //  Intensity (1 component)
 // Thus, the renderer expects the array passed to have at least 7 components.
+void topaz_renderer_light_update_attribs(
+    /// The light to modify.
+    topazRenderer_Light_t * light, 
 
-void topaz_renderer_light_update_attribs(topazRenderer_Light_t *, float *);
+    /// The data to copy to the light.
+    float * data
+);
 
 // Enables or diables the light by default, once added, the light is enabled by default
-void topaz_renderer_light_enable(topazRenderer_Light_t *, int doIt);
+void topaz_renderer_light_enable(
+    /// The light to enable.
+    topazRenderer_Light_t * light, 
+
+    /// The state of the light.
+    int doIt
+);
 
 
 
@@ -580,20 +721,20 @@ void topaz_renderer_light_enable(topazRenderer_Light_t *, int doIt);
 
 
 
-///
-///    RendererProgram
-///    -----
-///
-///
-///
+
+
+/// Renderer programs allow for a bridge to 
+/// platform-dependent programmable graphics.
+/// Because they are managed by the platform, the 
+/// language is backend-dependent for 
 typedef struct topazRenderer_Program_t topazRenderer_Program_t;
 
 
 
 
-/// Preset programs are default contexts 
-///
 typedef enum topazRenderer_PresetProgram topazRenderer_PresetProgram;
+/// Preset programs are default contexts.
+///
 enum topazRenderer_PresetProgram {
     /// MaterialIDs for render objects should be only 4 floats
     /// Each float represents a color, all 4 corresponding to RGBA.
@@ -608,53 +749,73 @@ enum topazRenderer_PresetProgram {
     topazRenderer_PresetProgram_Light,
 };
 
-
-// Compiles and enacts a shader for use with Static Rendering. If the shader fails
-// to compile or is invalid in some way, the id returned is invalid. See StaticState.
-// In any case, log will be populated with information on the building process status.
+// TODO: this should be changed to something more abstract. I.e. program_add_stage()
+// which could add a vertex / fragment processing stage which are supported by 
+// backends optionally.
+/// Compiles and enacts a shader for use with Static Rendering. If the shader fails
+/// to compile or is invalid in some way, the id returned is invalid. See StaticState.
+/// In any case, log will be populated with information on the building process status.
 topazRenderer_Program_t * topaz_renderer_program_create(
-    topazRenderer_t *,
-    const topazString_t *   vertexSrc, 
-    const topazString_t *   fragSrc, 
-    topazString_t *         log
+    /// The renderer to create the program with
+    topazRenderer_t * renderer,
+
+    /// Source for the custom vertex shader stage.
+    const topazString_t * vertexSrc, 
+
+    /// Source for the custom fragment shader stage.
+    const topazString_t * fragSrc, 
+    
+    /// Output log. May be modified in case of error.
+    topazString_t * log
 );
 
 
 // Returns a standard renderer program from built-in params.
 topazRenderer_Program_t * topaz_renderer_program_get_preset(
-    topazRenderer_t *,
-    topazRenderer_PresetProgram
+    /// The renderer to query.
+    topazRenderer_t * renderer,
+
+    /// The preset program to retrieve.
+    topazRenderer_PresetProgram preset
 );
 
 
-void topaz_renderer_program_destroy(topazRenderer_Program_t *);
+void topaz_renderer_program_destroy(
+    /// The program to destroy.
+    topazRenderer_Program_t * program
+);
 
 
 
 
 
 
+
+typedef struct topazRenderer_3D_Vertex_t topazRenderer_3D_Vertex_t;
 
 /// Vertex for 3D rendering.
 ///
-typedef struct topazRenderer_3D_Vertex_t topazRenderer_3D_Vertex_t;
-
-
 struct topazRenderer_3D_Vertex_t {
-    /// Positional 3D coordinates
-    ///
-    float x, y, z;
+    /// Positional 3D coordinates: x
+    float x;
+    /// Positional 3D coordinates: x
+    float y; 
+    /// Positional 3D coordinates: z
+    float z;
 
-    /// Normal vector, normalized
-    ///
-    float normalX, normalY, normalZ;
+    /// Normal vector, normalized: x
+    float normalX; 
+    /// Normal vector, normalized: y
+    float normalY; 
+    /// Normal vector, normalized: z
+    float normalZ;
 
-    /// Texture UVs. [0, 1]
-    ///
-    float texX, texY;
+    /// Texture UVs: x / u [0, 1]
+    float texX;
+    /// Texture UVs: y / v [0, 1]
+    float texY;
 
     /// User-define data (for programs)
-    ///
     float userDefinedData[4];
 
 };
@@ -664,10 +825,7 @@ struct topazRenderer_3D_Vertex_t {
 
 
 
-///
-///    RendererFramebuffer
-///    -----
-///
+/// Holds the results of rendering operations
 typedef struct topazRenderer_Framebuffer_t topazRenderer_Framebuffer_t;
 
 
@@ -677,9 +835,12 @@ typedef struct topazRenderer_Framebuffer_t topazRenderer_Framebuffer_t;
 ///
 typedef enum topazRenderer_Framebuffer_Handle topazRenderer_Framebuffer_Handle;
 enum topazRenderer_Framebuffer_Handle {
-    topazRenderer_Framebuffer_Handle_RGBA_PixelArray, //< (uint8_t *) RGBA-ordered pixel array with no padding, matched to the dimensions given
-    topazRenderer_Framebuffer_Handle_GLFBPacket,      //< (GLuint[2])  A pointer to a pointer to an array of to GLuints, the first representing the framebuffer object, the next representing the texture attached to that target.
-    topazRenderer_Framebuffer_Handle_Unknown,         //< The framebuffer's data contents are unknown and should not be relied on.
+    /// (uint8_t *) RGBA-ordered pixel array with no padding, matched to the dimensions given
+    topazRenderer_Framebuffer_Handle_RGBA_PixelArray, 
+    /// (GLuint[2])  A pointer to a pointer to an array of to GLuints, the first representing the framebuffer object, the next representing the texture attached to that target.
+    topazRenderer_Framebuffer_Handle_GLFBPacket,      
+    /// The framebuffer's data contents are unknown and should not be relied on.
+    topazRenderer_Framebuffer_Handle_Unknown,         
 };
 
 
@@ -688,39 +849,67 @@ enum topazRenderer_Framebuffer_Handle {
 /// Creates a new framebuffer for the renderer. Framebuffers hold 
 /// results of drawing operations from the renderer.
 ///
-topazRenderer_Framebuffer_t * topaz_renderer_framebuffer_create(topazRenderer_t *);
+topazRenderer_Framebuffer_t * topaz_renderer_framebuffer_create(
+    /// The renderer to create the framebuffer for.
+    topazRenderer_t * renderer
+);
 
 
 /// Destroys a framebuffer.
 ///
-void topaz_renderer_framebuffer_destroy(topazRenderer_Framebuffer_t *);
+void topaz_renderer_framebuffer_destroy(
+    /// The framebuffer to destroy.
+    topazRenderer_Framebuffer_t * fb
+);
 
 
 
 
 /// Resizes the framebuffer. Success is returned.
 ///
-int topaz_renderer_framebuffer_resize(topazRenderer_Framebuffer_t *, int newW, int newH);
+int topaz_renderer_framebuffer_resize(
+    /// The framebuffer to resize.
+    topazRenderer_Framebuffer_t * fb, 
+    /// The new width of the framebuffer.
+    int newW, 
+    /// The new height of the framebuffer.
+    int newH
+);
 
 
 /// Returns the width of the framebuffer.
 ///
-int topaz_renderer_framebuffer_get_width(topazRenderer_Framebuffer_t *);
+int topaz_renderer_framebuffer_get_width(
+    /// The framebuffer to query.
+    topazRenderer_Framebuffer_t * fb
+);
 
 /// Returns the height of the framebuffer.
 ///
-int topaz_renderer_framebuffer_get_height(topazRenderer_Framebuffer_t *);
+int topaz_renderer_framebuffer_get_height(
+    /// The framebuffer to query.
+    topazRenderer_Framebuffer_t * fb
+);
+
 
 /// Returns what type the handle refers to
 ///
-topazRenderer_Framebuffer_Handle topaz_renderer_framebuffer_get_handle_type(topazRenderer_Framebuffer_t *);
+topazRenderer_Framebuffer_Handle topaz_renderer_framebuffer_get_handle_type(
+    /// The framebuffer to query.
+    topazRenderer_Framebuffer_t * fb
+);
+
 
 /// Returns the source data that reflects the framebuffer's data
 /// in the context of the implemented child. For example, on an OpenGL-variant
 /// backend, the handle is likely an OpenGL texture object id.
 /// This allows things like topazDisplay_t to utilize the rendered data.
 ///
-void * topaz_renderer_framebuffer_get_handle(topazRenderer_Framebuffer_t *);
+void * topaz_renderer_framebuffer_get_handle(
+    /// The framebuffer to query.
+    topazRenderer_Framebuffer_t * fb
+);
+
 
 
 
@@ -729,7 +918,12 @@ void * topaz_renderer_framebuffer_get_handle(topazRenderer_Framebuffer_t *);
 /// the buffer should be of size Width*Height*4. Note that on
 /// hardware-accelerated implementations, calling this could be very costly.
 /// Alpha color information is always 1.f
-int topaz_renderer_framebuffer_get_raw_data(topazRenderer_Framebuffer_t *, uint8_t *);
+int topaz_renderer_framebuffer_get_raw_data(
+    /// The framebuffer to query.
+    topazRenderer_Framebuffer_t * fb, 
+    /// The buffer to populate with the framebuffer's current contents.
+    uint8_t * buffer
+);
 
 /// Sets whether to interpret the Framebuffer's data
 /// in a filtered way.
@@ -742,14 +936,24 @@ int topaz_renderer_framebuffer_get_raw_data(topazRenderer_Framebuffer_t *, uint8
 /// that any module that utilizes the Framebuffer may choose to ignore the
 /// the filtered hint. As such, you should expect the filtered setting
 /// to be a purely cosmetic effect after all graphics processing as finished. 
-/// The default is true.
-void topaz_renderer_framebuffer_set_filtered_hint(topazRenderer_Framebuffer_t *, int filter);
+/// The default is true. This does not affect the retrieval of pixels from 
+/// topaz_renderer_framebuffer_get_raw_data().
+void topaz_renderer_framebuffer_set_filtered_hint(
+    /// The framebuffer to modify.
+    topazRenderer_Framebuffer_t * fb, 
+
+    /// whether to filter.
+    int filter
+);
 
 /// \brief Returns whether to interpret the Framebuffer's data in a filtered
 /// way.
 ///
 /// See set_filtered_hint().
-int topaz_renderer_framebuffer_get_filtered_hint(topazRenderer_Framebuffer_t *);
+int topaz_renderer_framebuffer_get_filtered_hint(
+    /// The framebuffer to query.
+    topazRenderer_Framebuffer_t * fb
+);
 
 
 
@@ -759,11 +963,10 @@ int topaz_renderer_framebuffer_get_filtered_hint(topazRenderer_Framebuffer_t *);
 
 
 
+
+typedef struct topazRenderer_3D_t topazRenderer_3D_t;
 /// A 3D rendering object 
 ///
-typedef struct topazRenderer_3D_t topazRenderer_3D_t;
-
-
 struct topazRenderer_3D_t {
     
     /// Vertices points to a renderbuffer containing all the vertex dat  a pertinent to the RenderObject.
@@ -801,9 +1004,10 @@ struct topazRenderer_3D_t {
 
 
     /// specifies the textures to be used. Each pair is a slot referred to by 
-    /// each program and the texture objects 
-    ///
+    /// each program.
     topazArray_t * textureSlots;
+
+    //// The texture objects to use. Each index has a corresponding
     topazArray_t * textureObjects;
 
 
@@ -838,14 +1042,20 @@ struct topazRenderer_3D_t {
 /// a whole even though they are separate objects.
 ///
 topazRenderer_t * topaz_renderer_create(
-    topazSystem_Backend_t *, 
-    topazRendererAPI_t 
+    /// The backend to use to create the renderer.
+    topazSystem_Backend_t * backend, 
+
+    /// The API for the renderer.
+    topazRendererAPI_t api
 );
 
 
 /// Destroys and cleans up a renderer
 ///
-void topaz_renderer_destroy(topazRenderer_t *);
+void topaz_renderer_destroy(
+    /// The renderer to destroy.
+    topazRenderer_t * renderer
+);
 
 
 
@@ -853,20 +1063,21 @@ void topaz_renderer_destroy(topazRenderer_t *);
 
 /// Retrieves the backend for this time object.
 ///
-topazSystem_Backend_t * topaz_renderer_get_backend(topazRenderer_t *);
+topazSystem_Backend_t * topaz_renderer_get_backend(
+    /// The renderer to query.
+    topazRenderer_t * renderer
+);
+
 
 
 /// Returns the API for this time.
 ///
-topazRendererAPI_t topaz_renderer_get_api(topazRenderer_t *);
+topazRendererAPI_t topaz_renderer_get_api(
+    /// The renderer to query.
+    topazRenderer_t * renderer
+);
 
 
-
-
-
-
-
-///////////// Drawing Requests
 
 
 
@@ -877,9 +1088,14 @@ topazRendererAPI_t topaz_renderer_get_api(topazRenderer_t *);
 /// yield better performance for static (3D) rendering over dynamic (2D) rendering. Vertices
 /// here are transformed by the renderer.
 void topaz_renderer_draw_3d(
-    topazRenderer_t *,
-    topazRenderer_3D_t *,
-    const topazRenderer_ProcessAttribs_t *
+    /// The renderer to use.
+    topazRenderer_t * renderer,
+
+    /// The 3D instance to render.
+    topazRenderer_3D_t * inst,
+
+    /// The processing attributes for rendering the object.
+    const topazRenderer_ProcessAttribs_t * attribs
 );
 
 
@@ -887,10 +1103,18 @@ void topaz_renderer_draw_3d(
 /// Renders all queued objects and their vertices.
 ///
 void topaz_renderer_draw_2d(
-    topazRenderer_t *,
-    topazRenderer_2D_t *,
-    const topazRenderer_2D_Context_t *,
-    const topazRenderer_ProcessAttribs_t *
+    /// The renderer to use.
+    topazRenderer_t * renderer,
+
+    /// The 2D renderer instance to use. This will have 
+    /// queued data to render.
+    topazRenderer_2D_t * inst,
+
+    /// The context for the 2D instance.
+    const topazRenderer_2D_Context_t * context,
+
+    /// Further processing details for rendering the 2D instance.
+    const topazRenderer_ProcessAttribs_t * attribs
 
 );
 
@@ -899,33 +1123,47 @@ void topaz_renderer_draw_2d(
 /// a 4x4 matrix representing the translation, scale, etc of the view.
 /// Row-major matrices are expected.
 ///
-void topaz_renderer_set_3d_viewing_matrix(topazRenderer_t *, topazRenderer_Buffer_t *);
+void topaz_renderer_set_3d_viewing_matrix(
+    /// The renderer to modify.
+    topazRenderer_t * renderer, 
+
+    /// The viewing matrix to use.
+    topazRenderer_Buffer_t * transform
+);
 
 /// Sets the 3D projection matrix buffer. The buffer should be 
 /// a 4x4 matrix representing this matrix.
 /// Row-major matrices are expected.
 ///
-void topaz_renderer_set_3d_projection_matrix(topazRenderer_t *, topazRenderer_Buffer_t *);
+void topaz_renderer_set_3d_projection_matrix(
+    /// The renderer to modify.
+    topazRenderer_t * renderer, 
+
+    /// The viewing matrix to use.
+    topazRenderer_Buffer_t * transform
+);
+
 
 
 /// Returns the 3D viewing matrix buffer currently set. 
 /// The default is "none".
 ///
-topazRenderer_Buffer_t * topaz_renderer_get_3d_viewing_matrix(topazRenderer_t *);
+topazRenderer_Buffer_t * topaz_renderer_get_3d_viewing_matrix(
+    /// The renderer to query.
+    topazRenderer_t * renderer
+);
 
 /// Returns the 3D projection matrix.
 /// The default is "none".
-topazRenderer_Buffer_t * topaz_renderer_get_3d_projection_matrix(topazRenderer_t *);
+topazRenderer_Buffer_t * topaz_renderer_get_3d_projection_matrix(
+    /// The renderer to query.
+    topazRenderer_t * renderer
+);
 
 
 
 
 
-
-
-
-
-///////////// Framebuffer
 
 
     
@@ -933,34 +1171,54 @@ topazRenderer_Buffer_t * topaz_renderer_get_3d_projection_matrix(topazRenderer_t
 /// complex scenes.
 /// The individual datalayers may be optionally ORd 
 ///
-void topaz_renderer_clear_layer(topazRenderer_t *, topazRenderer_DataLayer);
+void topaz_renderer_clear_layer(
+    /// The renderer to clear.
+    topazRenderer_t * renderer, 
+
+    /// The layer of the attached framebuffer to clear.
+    topazRenderer_DataLayer layer
+);
 
 /// Gets logistical information about the renderer.
 /// Some backends may not given meanginful information here.
 ///
-topazRenderer_Parameters_t topaz_renderer_get_parameters(topazRenderer_t *);
+topazRenderer_Parameters_t topaz_renderer_get_parameters(
+    /// The renderer to query.
+    topazRenderer_t * renderer
+);
 
 
 
-/* Display management */
+
+
+
 
 
 
 /// Ensures that the all rendering operations are reflected in the attached target.
 ///
-void topaz_renderer_sync(topazRenderer_t *);
+void topaz_renderer_sync(
+    /// The renderer to sync.
+    topazRenderer_t * renderer
+);
 
 /// The passed framebuffer becomes the destination for all future renderings
 /// until a different valid framebuffer is given. If NULL is passed, rendering 
 //// will have no effect.
 ///
-void topaz_renderer_attach_target(topazRenderer_t *, topazRenderer_Framebuffer_t *);
+void topaz_renderer_attach_target(
+    topazRenderer_t * renderer, 
+    topazRenderer_Framebuffer_t * fb
+);
 
 
 /// Returns the current target for renderings. The default is
 /// NULL.
 ///
-topazRenderer_Framebuffer_t * topaz_renderer_get_target(topazRenderer_t *);
+topazRenderer_Framebuffer_t * topaz_renderer_get_target(
+    /// the renderer to query.
+    topazRenderer_t * renderer
+);
 
 
 

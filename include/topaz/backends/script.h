@@ -41,12 +41,13 @@ typedef struct topazSystem_Backend_t topazSystem_Backend_t;
 
 
 
-///
-///    Script
-///    -----
-///    The controller for the scripting interface
+/// The controller for the scripting interface.
+/// The scripting backend abstracts out different scripting languages
+/// that can manipulate and use most of topaz' features. In general,
+/// most common operations possible with the C API would be 
+/// possible with a scripting language that satisfies the backend API
+/// for scripting.
 ///    
-///
 typedef struct topazScript_t topazScript_t;
 typedef struct topazScript_Object_t topazScript_Object_t;
 
@@ -54,6 +55,7 @@ typedef struct topazScript_Object_t topazScript_Object_t;
 
 
 
+/// Events that the scripting backend can generate.
 typedef enum topazScript_Event_t topazScript_Event_t;
 enum topazScript_Event_t {
     /// The script engine has encountered a fatal error.
@@ -65,7 +67,10 @@ enum topazScript_Event_t {
 };
 
 
-
+/// For scripting objects that are not pure-value types, 
+/// there is often behavior that is scripting-language dependent.
+/// These are the features for script-level objects that 
+/// topaz uses / relies on.
 typedef enum topazScript_Object_Feature_t topazScript_Object_Feature_t;
 enum topazScript_Object_Feature_t {
     /// The object has no features.
@@ -95,8 +100,18 @@ enum topazScript_Object_Feature_t {
 };
 
 
-/// Function that is called from 
-typedef topazScript_Object_t * (*topaz_script_native_function)(topazScript_t *, const topazArray_t * args, void * userData);
+/// Function that is called from the scripting context.
+typedef topazScript_Object_t * (*topaz_script_native_function)(
+    /// The script generating the call.
+    topazScript_t * script, 
+
+    /// The arguments passed to the function from 
+    /// the scripting context. Each argument is a topazScript_Object_t *.
+    const topazArray_t * args, 
+
+    /// Data bound to the function.
+    void * userData
+);
 
 
 
@@ -144,32 +159,63 @@ enum topazScript_Object_Type_t {
 /// topaz_t has a default instance that it generates for you. 
 /// See topaz_context_get_graphics();
 ///
-topazScript_t * topaz_script_create(topaz_t *, topazSystem_Backend_t *, const topazScriptAPI_t *);
+topazScript_t * topaz_script_create(
+    /// The topaz context.
+    topaz_t * context, 
+
+
+    /// The backend to implement the backend's features.
+    topazSystem_Backend_t * backend, 
+
+    /// The raw API to implement the backend's features.
+    topazScriptAPI_t api
+);
+
 
 /// Destroys and frees a topaz input instance.
 ///
-void topaz_script_destroy(topazScript_t *);
+void topaz_script_destroy(
+    /// The script to destroy.
+    topazScript_t * script
+);
 
 
 /// Retrieves the backend for this script object.
 ///
-topazSystem_Backend_t * topaz_script_get_backend(topazScript_t *);
+topazSystem_Backend_t * topaz_script_get_backend(
+    /// The script to query.
+    topazScript_t * script
+);
+
 
 
 /// Returns the API for this script.
 ///
-topazScriptAPI_t topaz_script_get_api(topazScript_t *);
+topazScriptAPI_t topaz_script_get_api(
+    /// The script to query.
+    topazScript_t * script
+);
 
 
 
 
 
 /// Maps a native C function to a symbol name within the script context 
-/// 
+/// In most scripting languages, this will bind the function 
+/// to the global context. Success is returned.
 int topaz_script_map_native_function(
-    topazScript_t *,
+    /// The script to map with.
+    topazScript_t * script,
+
+    /// The symbol name to refer to the native function by.
+    /// Must follow scripting language-dependent restrictions.
     const topazString_t * localSymbolName,
-    topaz_script_native_function,
+
+    /// The native function to call when the scripting dummy 
+    /// function is called.
+    topaz_script_native_function fn,
+
+    /// The data to bind to the callback.
     void * userData
 );
 
@@ -178,8 +224,11 @@ int topaz_script_map_native_function(
 /// Runs the given script logic within the given string.
 /// 
 void topaz_script_run(
-    topazScript_t * t, 
+    /// The script context.
+    topazScript_t * script, 
+    /// The name of the script to refer to it within the script context.
     const topazString_t * sourceName,
+    /// The data for the script that will be run. Usually plaintext.
     const topazString_t * scriptData
 );
 
@@ -188,9 +237,12 @@ void topaz_script_run(
 /// used for either topaz_script_run or topaz_script_run_once.
 ///
 void topaz_script_run_once(
-    topazScript_t * t, 
+    /// The script context.
+    topazScript_t * script, 
+    /// The name of the script to refer to it within the script context.
     const topazString_t * sourceName,
-    const topazString_t * scriptData    
+    /// The data for the script that will be run. Usually plaintext.
+    const topazString_t * scriptData
 );
 
 /// Returns a source line from a previously run script of the given name.
@@ -199,8 +251,11 @@ void topaz_script_run_once(
 /// string is returned.
 ///
 const topazString_t * topaz_script_get_line(
-    topazScript_t *,
+    /// The script context.
+    topazScript_t * script,
+    /// the source name given before.
     const topazString_t * sourceName,
+    /// Line number.
     int lineNumber
 );
 
@@ -208,7 +263,9 @@ const topazString_t * topaz_script_get_line(
 /// If no such script exists, 0 is returned.
 ///
 int topaz_script_get_line_count(
+    /// The script context.
     topazScript_t *,
+    /// The source to query.
     const topazString_t * sourceName    
 );
 
@@ -218,12 +275,27 @@ int topaz_script_get_line_count(
 /// object reference) an external object may be returned. See 
 /// topaz_script_object_from_external().
 ///
-topazScript_Object_t * topaz_script_expression(topazScript_t * t, const topazString_t *);
+topazScript_Object_t * topaz_script_expression(
+    /// The script context.
+    topazScript_t * t, 
+
+    /// The expression to run. This is usually run in the global context.
+    const topazString_t * expression
+);
 
 
 /// Sets the function that should be called in response to an event.
 ///
-void topaz_script_set_handler(topazScript_t *, topazScript_Event_t, topaz_script_native_function, void * data);
+void topaz_script_set_handler(
+    /// The script context
+    topazScript_t * script, 
+    /// The event to set a handler for.
+    topazScript_Event_t event, 
+    /// The function to call when an event is triggered.
+    topaz_script_native_function, 
+    /// The data to bind to the function
+    void * data
+);
 
 /// Triggers the event within the script instance.
 /// The array and its contents, which must be topazScript_Object_t *, are owned by the caller.
@@ -238,8 +310,11 @@ void topaz_script_emit_event(topazScript_t *, topazScript_Event_t, const topazAr
 /// will be called
 ///
 topazScript_Object_t * topaz_script_create_empty_object(
-    topazScript_t *, 
+    /// The script to create the object from
+    topazScript_t * script, 
+    /// The function to call once all references to the object are gone.
     topaz_script_native_function cleanupFn, 
+    /// The data to bind to the cleanup function.
     void * cleanupData
 );
 
@@ -249,7 +324,10 @@ topazScript_Object_t * topaz_script_create_empty_object(
 /// to a useable interface. This is called for you after the script manager 
 /// adds topaz' references.
 ///
-void topaz_script_bootstrap(topazScript_t *);
+void topaz_script_bootstrap(
+    /// The script to bootstrap.
+    topazScript_t * script
+);
 
 
 
@@ -271,10 +349,12 @@ void topaz_script_bootstrap(topazScript_t *);
 
 
 ///
-///    Script_Object
-///    -----
-///    Dynamically-typed object that interfaces with script primitives.
-///    
+/// Dynamically-typed object that interfaces with script primitives.
+/// Because scripting languages can have their own 
+/// conventions for typing, this script interface attempts to access
+/// a subset of features within the scripting environment, namely object 
+/// instances that support basic use-cases, i.e., number values, strings, functions 
+/// and arrays.
 ///
 typedef struct topazScript_Object_t topazScript_Object_t;
 
@@ -282,24 +362,53 @@ typedef struct topazScript_Object_t topazScript_Object_t;
 
 /// Creates a new object with no type.
 ///
-topazScript_Object_t * topaz_script_object_undefined(topazScript_t *);
+topazScript_Object_t * topaz_script_object_undefined(
+    /// The script to create from.
+    topazScript_t * script
+);
 
 /// Creates a new integer object with the value given.
 ///
-topazScript_Object_t * topaz_script_object_from_int(topazScript_t *, int);
+topazScript_Object_t * topaz_script_object_from_int(
+    /// The script to create from.
+    topazScript_t * script,
+
+    /// The value to assign to the object.
+    int value
+);
 
 /// Creates a new object from a double.
 ///
-topazScript_Object_t * topaz_script_object_from_number(topazScript_t *, double);
+topazScript_Object_t * topaz_script_object_from_number(
+    /// The script to create from.
+    topazScript_t * script,
+
+    /// The value to assign to the object.
+    double value
+);
 
 /// Creates a new object from a string
 ///
-topazScript_Object_t * topaz_script_object_from_string(topazScript_t *, const topazString_t *);
+topazScript_Object_t * topaz_script_object_from_string(
+    /// The script to create from.
+    topazScript_t * script,
+
+    /// The value to assign to the object.
+    const topazString_t * value
+);
+
 
 /// Creates a new object from an existing object.
 /// If the object is an integer, number, or string, the object is copied. In the case that its a 
 /// reference, the topazScript_Object_t 
-topazScript_Object_t * topaz_script_object_from_object(topazScript_t *, topazScript_Object_t *);
+topazScript_Object_t * topaz_script_object_from_object(
+    /// The script to create from.
+    topazScript_t * script,
+
+    /// The value to assign to the object.
+    topazScript_Object_t * value
+);
+
 
 
 /// Creates a new object that acts as a "wrapper" to an object managed by the 
@@ -310,21 +419,31 @@ topazScript_Object_t * topaz_script_object_from_object(topazScript_t *, topazScr
 /// topaz_script_create_empty_object().
 ///
 topazScript_Object_t * topaz_script_object_from_reference(
-    topazScript_t * context,    
+    /// The script to create from.
+    topazScript_t * script,
+
+    /// The userdata to generate a reference from.
     void * userdata
 );
+
 
 /// Destroys the object. In the case the object was external, the object 
 /// may still exist in the scripting context, but this particular object will 
 /// be unavailable.
 ///
-void topaz_script_object_destroy(topazScript_Object_t *);
+void topaz_script_object_destroy(
+    /// The script to destroy.
+    topazScript_Object_t * script
+);
 
 
 /// Gets the object's source context. Objects can only be used with 
 /// the context it was created from.
 ///
-topazScript_t * topaz_script_object_get_source(topazScript_Object_t *);
+topazScript_t * topaz_script_object_get_source(
+    /// The object to query.
+    topazScript_Object_t * object
+);
 
 
 
@@ -335,25 +454,44 @@ topazScript_t * topaz_script_object_get_source(topazScript_Object_t *);
 /// Returns the integer representation of this object.
 /// If there is none, 0 is returned.
 ///
-int topaz_script_object_as_int(const topazScript_Object_t *);
+int topaz_script_object_as_int(
+    /// The object to re-interpret.
+    const topazScript_Object_t * object
+);
+
 
 /// Returns the decimal representation of this object.
 /// If there is none, 0.0 is returned.
 ///
-double topaz_script_object_as_number(const topazScript_Object_t *);
+double topaz_script_object_as_number(
+    /// The object to re-interpret.
+    const topazScript_Object_t * object
+);
 
 /// Returns the string representation of this object.
 ///
-const topazString_t * topaz_script_object_as_string(const topazScript_Object_t *);
+const topazString_t * topaz_script_object_as_string(
+    /// The object to re-interpret.
+    const topazScript_Object_t * object
+);
 
 /// Sets the object value to the value of other. 
 /// This will change the current object's type to match the receiving object's type.
 ///
-void topaz_script_object_set(topazScript_Object_t * , const topazScript_Object_t * other);
+void topaz_script_object_set(
+    /// The object to set.
+    topazScript_Object_t * object,
+
+    /// The object to copy from. 
+    const topazScript_Object_t * other
+);
 
 /// Returns the type for the object.
 ///
-topazScript_Object_Type_t topaz_script_object_get_type(const topazScript_Object_t *);
+topazScript_Object_Type_t topaz_script_object_get_type(
+    /// The object to query.
+    const topazScript_Object_t * object
+);
 
 
 
@@ -361,23 +499,48 @@ topazScript_Object_Type_t topaz_script_object_get_type(const topazScript_Object_
 /// contains. If the object isnt a reference, topazScript_Object_Feature_None
 /// is returned.
 ///
-topazScript_Object_Feature_t topaz_script_object_reference_get_feature_mask(topazScript_Object_t *);
+topazScript_Object_Feature_t topaz_script_object_reference_get_feature_mask(
+    /// The object to query.
+    topazScript_Object_t * object
+);
+
 
 
 /// Attempts to run the object as a function with the arguments defined within the 
 /// given array. If the object is not callable, undefined is returned.
 ///
-topazScript_Object_t * topaz_script_object_reference_call(topazScript_Object_t *, const topazArray_t *);
+topazScript_Object_t * topaz_script_object_reference_call(
+    /// The object that can be called.
+    topazScript_Object_t * object,
+
+    /// The arguments to pass to the function. The array will be read. 
+    const topazArray_t *
+);
 
 /// Associates this data object with a pointer. This is only modifiable
-/// within the native context. This is only applicable to 
+/// within the native context. This is only applicable to object references.
 ///
-void topaz_script_object_reference_set_native_data(topazScript_Object_t *, void *, int tag);
+void topaz_script_object_reference_set_native_data(
+    /// The object to modify.
+    topazScript_Object_t * object, 
+
+    /// The data to set to the object.
+    void * data, 
+
+    /// An additional data tag if more information is needed.
+    int tag
+);
 
 /// Retrieves the native data associated with the object. If none, then 
 /// NULL is returned.
 ///
-void * topaz_script_object_reference_get_native_data(topazScript_Object_t *, int * tag);
+void * topaz_script_object_reference_get_native_data(
+    /// The object to query.
+    topazScript_Object_t * object, 
+
+    /// The ref to populate with the tag.
+    int * tag
+);
 
 
 /// Increments the reference count. Any time an object reference is created 
@@ -387,11 +550,18 @@ void * topaz_script_object_reference_get_native_data(topazScript_Object_t *, int
 /// (i.e. through garbage collection). Increasing the ref count can keep the 
 /// object alive until it is decremented again with topaz_script_object_reference_ref();
 ///
-void topaz_script_object_reference_ref(topazScript_Object_t *);
+void topaz_script_object_reference_ref(
+    /// The object to ref.
+    topazScript_Object_t * object
+);
 
 /// Decrements the reference count.
 ///
-void topaz_script_object_reference_unref(topazScript_Object_t *);
+void topaz_script_object_reference_unref(
+    /// The object to unref.
+    topazScript_Object_t * object
+);
+
 
 
 /// Returns the named property of the 
@@ -399,8 +569,11 @@ void topaz_script_object_reference_unref(topazScript_Object_t *);
 /// an undefined object is returned.
 ///
 topazScript_Object_t * topaz_script_object_reference_map_get_property(
-    topazScript_Object_t *,
-    const topazString_t *
+    /// The object to query.
+    topazScript_Object_t * object,
+
+    /// The name of the property.
+    const topazString_t * str
 );
 
 
@@ -408,14 +581,17 @@ topazScript_Object_t * topaz_script_object_reference_map_get_property(
 /// not an array, this value will always be -1.
 ///
 int topaz_script_object_reference_array_get_count(
-    topazScript_Object_t *
+    /// The object to query.
+    topazScript_Object_t * object
 );
 
 /// Gets the nth (starting from 0) object within the array. If the object isn't 
 /// an array or accesses the array out-of-bounds, undefined is returned.
 ///
 topazScript_Object_t * topaz_script_object_reference_array_get_nth(
-    topazScript_Object_t *,
+    /// The object to query.
+    topazScript_Object_t * object,
+    /// The nth reference to get.
     int n
 );
 
@@ -431,9 +607,13 @@ topazScript_Object_t * topaz_script_object_reference_array_get_nth(
 /// This can be used to represent a read-only value.
 ///
 void topaz_script_object_reference_extendable_add_property(
-    topazScript_Object_t *,
+    /// The object to add a property to.
+    topazScript_Object_t * object,
+    /// The new property name.
     const topazString_t * propName,
+    /// The function to call when setting the property. The incoming property is passed as an argument.
     topaz_script_native_function onSet,
+    /// The function to call when getting the property. The return value is the value to get.
     topaz_script_native_function onGet
 );
 
@@ -469,7 +649,10 @@ void topaz_script_object_reference_extendable_add_property(
 
 /// Enables debugging for this script context.
 ///
-void topaz_script_enable_debugging(topazScript_t *);
+void topaz_script_enable_debugging(
+    /// The script instance to enable debugger.
+    topazScript_t * script
+);
 
 /// Commands for script debuggers.
 ///
@@ -555,8 +738,13 @@ enum topazScript_DebugCommand_t {
 /// is passed to the called.
 ///
 void topaz_script_debug_send_command(
-    topazScript_t *, 
+    /// The script instance to send a command to.
+    topazScript_t * script, 
+
+    /// The command to send.
     topazScript_DebugCommand_t command,
+
+    /// The argument to the command.
     const topazString_t * argument
 );
 
@@ -565,10 +753,14 @@ void topaz_script_debug_send_command(
 /// carrying out a debug command request.
 ///
 typedef void (*topaz_script_debug_command_callback)(
-    topazScript_t *, 
+    /// The script that was responded to the callback.
+    topazScript_t * script, 
+    /// The command that was responded to.
     topazScript_DebugCommand_t command, 
+    /// The result of the command.
     const topazString_t * result,
-    void *
+    /// The data bounded to callback.
+    void * data
 );
 
 /// Adds a function to be called when debugger a command has been 
@@ -579,11 +771,13 @@ typedef void (*topaz_script_debug_command_callback)(
 /// even though the user code may not have issued a command. 
 /// For example, breakpoints will issue a pause command callback 
 /// to facilitate debugging
-
 ///
 uint32_t topaz_script_debug_add_command_callback(
-    topazScript_t *,
-    topaz_script_debug_command_callback,
+    /// The script to add a callback to.
+    topazScript_t * script,
+    /// The callback to add.
+    topaz_script_debug_command_callback cb,
+    /// The data to bind to the callback.
     void * data
 );
 
@@ -591,7 +785,9 @@ uint32_t topaz_script_debug_add_command_callback(
 /// of callbacks registered to be called when the debugger 
 /// excepts the pause request.
 void topaz_script_debug_remove_command_callback(
+    /// The script to remove the callback from.
     topazScript_t *,
+    /// ID for the callback.
     uint32_t id
 );
 
@@ -599,14 +795,16 @@ void topaz_script_debug_remove_command_callback(
 /// Most commands to the debugger only are accepted when the 
 /// debugger is in a paused state.
 ///
-int topaz_script_debug_is_paused(topazScript_t *);
+int topaz_script_debug_is_paused(
+    /// The script to query.
+    topazScript_t * script
+);
 
+
+typedef struct topazScript_CallstackFrame_t topazScript_CallstackFrame_t;
 
 /// Holds information on a callstack frame. 
 ///
-typedef struct topazScript_CallstackFrame_t topazScript_CallstackFrame_t;
-
-
 struct topazScript_CallstackFrame_t {
     /// The line number of the frame.
     int lineNumber;
@@ -625,10 +823,9 @@ struct topazScript_CallstackFrame_t {
 };
 
 
+typedef struct topazScript_DebugState_t topazScript_DebugState_t;
 /// Hold the entire state of the debugger.
 ///
-typedef struct topazScript_DebugState_t topazScript_DebugState_t;
-
 struct topazScript_DebugState_t {
     /// The label of the breakpoint reached, if any.
     ///
@@ -647,7 +844,8 @@ struct topazScript_DebugState_t {
 /// function.
 ///
 const topazScript_DebugState_t * topaz_script_debug_get_state(
-    topazScript_t *
+    /// The script to query.
+    topazScript_t * script
 );
 
 

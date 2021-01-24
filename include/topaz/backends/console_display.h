@@ -38,14 +38,7 @@ typedef struct topaz_t topaz_t;
 
 
 
-/*
-
-    Console Display
-    -----
-    Abstracts an interface for interacting with a console.
-
-*/
-
+/// Defines a visual interface for interacting with a console.
 typedef struct topazConsoleDisplay_t topazConsoleDisplay_t;
 
 
@@ -55,23 +48,41 @@ typedef struct topazConsoleDisplay_t topazConsoleDisplay_t;
 
 /// Creates a new console display instance.
 ///
-topazConsoleDisplay_t * topaz_console_display_create(topaz_t *, topazSystem_Backend_t *, topazConsoleDisplayAPI_t);
+topazConsoleDisplay_t * topaz_console_display_create(
+    /// The topaz context
+    topaz_t * context, 
+
+    /// The backend to implement the backend's features.
+    topazSystem_Backend_t * backend, 
+
+    /// The raw API to implement the backend's features.
+    topazConsoleDisplayAPI_t api
+);
 
 
 /// Destroys and cleans up a console display instance.
 ///
-void topaz_console_display_destroy(topazConsoleDisplay_t *);
+void topaz_console_display_destroy(
+    /// The console display to destroy.
+    topazConsoleDisplay_t * cDisplay
+);
 
 
 
 /// Gets the backend for this console display.
 ///
-topazSystem_Backend_t * topaz_console_display_get_backend(topazConsoleDisplay_t *);
+topazSystem_Backend_t * topaz_console_display_get_backend(
+    /// The console display to query.
+    topazConsoleDisplay_t * cDisplay
+);
 
 
 /// Returns the API for this console display.
 ///
-const topazConsoleDisplayAPI_t * topaz_console_display_get_api(topazConsoleDisplay_t *);
+const topazConsoleDisplayAPI_t * topaz_console_display_get_api(
+    /// The console display to query.
+    topazConsoleDisplay_t * cDisplay
+);
 
 
 
@@ -82,39 +93,75 @@ const topazConsoleDisplayAPI_t * topaz_console_display_get_api(topazConsoleDispl
 /// This means topaz_console_display_get_line_count() will return 0 and 
 /// all topaz_console_display_get_line() calls will return the empty string.
 /// 
-void topaz_console_display_clear(topazConsoleDisplay_t * t);
+void topaz_console_display_clear(
+    /// The console display to clear.
+    topazConsoleDisplay_t * cDisplay
+);
 
 
 /// Adds text to the current line in the given color.
 ///
-void topaz_console_display_add_text(topazConsoleDisplay_t * t, const topazString_t *, const topazColor_t *);
+void topaz_console_display_add_text(
+    /// The console display to modify.
+    topazConsoleDisplay_t * cDisplay, 
+
+    /// The text to add to the current line.
+    const topazString_t * text, 
+
+    /// The color of the text to add.
+    const topazColor_t * color
+);
 
 /// Adds a line to the console display. This line becomes the next line to 
 /// be display. This increases the line count by 1. The line count prior 
 /// to this call becomes this new line's index. This index can be used with 
 /// topaz_console_display_get_line().
 ///
-void topaz_console_display_new_line(topazConsoleDisplay_t * t);
+void topaz_console_display_new_line(
+    /// The console display to add a new line to.
+    topazConsoleDisplay_t * cDisplay
+);
 
 
 /// Gets the count of lines that were added to the console display.
 ///
-uint32_t topaz_console_display_get_line_count(const topazConsoleDisplay_t *);
+uint32_t topaz_console_display_get_line_count(
+    /// The console display to query.
+    const topazConsoleDisplay_t * cDisplay
+);
 
 /// Gets a read-only copy of the line for the given index.
 ///
-const topazString_t * topaz_console_display_get_line(const topazConsoleDisplay_t *, uint32_t);
+const topazString_t * topaz_console_display_get_line(
+    /// The console display to query.
+    const topazConsoleDisplay_t * cDisplay, 
+
+    /// The line to read.
+    uint32_t line
+);
 
 
 /// Sends input as if it came from the console. This is indistinguishable from 
 /// externally generated input.
 ///
-void topaz_console_display_send_input(topazConsoleDisplay_t *, const topazString_t *);
+void topaz_console_display_send_input(
+    /// The console display to send input to.
+    topazConsoleDisplay_t * cDisplay, 
+
+    /// The text to send.
+    const topazString_t * input
+);
 
 
 /// Enables or disables the console display.
 /// 
-void topaz_console_display_enable(topazConsoleDisplay_t *, int enabled);
+void topaz_console_display_enable(
+    /// The console display to toggle.
+    topazConsoleDisplay_t * cDisplay, 
+
+    /// Whether to enable.
+    int enabled
+);
 
 
 /// Callback called by the console display if the user sends 
@@ -123,7 +170,16 @@ void topaz_console_display_enable(topazConsoleDisplay_t *, int enabled);
 /// the console display, so it is up to the callback itself 
 /// to print it to the display when applicable.
 ///
-typedef void (*topaz_console_display_input_callback)(topazConsoleDisplay_t *, const topazString_t * line, void * userData);
+typedef void (*topaz_console_display_input_callback)(
+    /// The console display that received the event.
+    topazConsoleDisplay_t * cDisplay,
+
+    /// The text received. 
+    const topazString_t * line,
+
+    /// Data bound to the console display. 
+    void * userData
+);
 
 
 /// Adds an input callback to be called when input from the user is 
@@ -131,8 +187,13 @@ typedef void (*topaz_console_display_input_callback)(topazConsoleDisplay_t *, co
 /// be used to remove the callback.
 ///
 uint32_t topaz_console_display_add_input_callback(
-    topazConsoleDisplay_t *, 
-    topaz_console_display_input_callback,
+    /// The console display to add an input hook to.
+    topazConsoleDisplay_t * cDisplay, 
+
+    /// The callback to add.
+    topaz_console_display_input_callback callback,
+
+    /// The data to bind to the callback.
     void * data
 );
 
@@ -140,8 +201,11 @@ uint32_t topaz_console_display_add_input_callback(
 /// input callback, then no action is taken.
 ///
 void topaz_console_display_remove_input_callback(
-    topazConsoleDisplay_t *,
-    uint32_t id;
+    /// The console display to remove a callback from.
+    topazConsoleDisplay_t * cDisplay,
+
+    /// The id of the callback to remove.
+    uint32_t id
 );
 
 

@@ -56,77 +56,77 @@ typedef struct topazIOXAPI_t topazIOXAPI_t;
 
 
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazIOX_t. See <topaz/backends/iox.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazIOX_t. See <topaz/backends/iox.h>
+//
 struct topazIOXAPI_t {
-    /// Creates a iox.
-    ///
+    // Creates a iox.
+    //
     void * (*iox_create) (
         topazIOX_t *, 
         topaz_t *, 
-        /// "extension" are the extensions to associate with 
-        /// this iox. The implementation should populate 
-        /// this array with new topazString_t * instances 
-        /// that represent the extension to map to this 
-        /// iox.
+        // "extension" are the extensions to associate with 
+        // this iox. The implementation should populate 
+        // this array with new topazString_t * instances 
+        // that represent the extension to map to this 
+        // iox.
         topazArray_t * extensions,
 
-        /// "type" is the type that this iox 
-        /// assumes and uses throughout to populate the asset with useful data.
-        /// The type essentially determines which subclass of topazAsset_t will 
-        /// be used within the iox implementation.
+        // "type" is the type that this iox 
+        // assumes and uses throughout to populate the asset with useful data.
+        // The type essentially determines which subclass of topazAsset_t will 
+        // be used within the iox implementation.
         topazAsset_Type * atype,    
 
-        /// This is the recommended buffer size to use when buffering streams.
-        ///
+        // This is the recommended buffer size to use when buffering streams.
+        //
         uint64_t * recommendedBufferSize
     );
 
-    /// Destroys the iox. All active streams will be cancelled by the iox 
-    /// before calling this destructor.
-    ///
+    // Destroys the iox. All active streams will be cancelled by the iox 
+    // before calling this destructor.
+    //
     void (*iox_destroy) (topazIOX_t *, void *);
 
 
-    /// Takes the topaz asset and translates its data into a byte buffer.
-    /// If an error occurs, the size should be written to 0. 
-    /// Else, the size should be written as the number of bytes in the output
-    /// buffer. Ownership of the buffer is passed.
-    /// The requestedExt is going to be one of the extensions recognized 
-    /// by the IOX instance.
-    ///
+    // Takes the topaz asset and translates its data into a byte buffer.
+    // If an error occurs, the size should be written to 0. 
+    // Else, the size should be written as the number of bytes in the output
+    // buffer. Ownership of the buffer is passed.
+    // The requestedExt is going to be one of the extensions recognized 
+    // by the IOX instance.
+    //
     void * (*iox_encode) (topazIOX_t *, void *, topazAsset_t *, uint64_t *, const topazString_t * requestedExt);
 
 
 
-    /// Starts the decoding process for a specific asset. The iox may generate 
-    /// data specific to this asset to assist in the loading process. This data 
-    /// will be passed to all the iox_stream_* family of functions as "streamData"
-    ///
+    // Starts the decoding process for a specific asset. The iox may generate 
+    // data specific to this asset to assist in the loading process. This data 
+    // will be passed to all the iox_stream_* family of functions as "streamData"
+    //
     void * (*iox_stream_start) (topazIOX_t *, void *, topazAsset_t *);
 
-    /// Adds data to the stream. Its the iox's responsibility to accumulate 
-    /// data or not. Since some assets work on a stream basis and dont necessarily 
-    /// require all data at once, it's left up to the implementation to make that 
-    /// decision. The return value dictates if the stream operation is valid. If 
-    /// 0 is returned, the iox stream will end and iox_stream_cancel will be called,
-    /// ending the stream process.
-    /// If a stream is cancelled within this call using the user-facing cancel function,
-    /// undefined behavior will occur.
-    ///
+    // Adds data to the stream. Its the iox's responsibility to accumulate 
+    // data or not. Since some assets work on a stream basis and dont necessarily 
+    // require all data at once, it's left up to the implementation to make that 
+    // decision. The return value dictates if the stream operation is valid. If 
+    // 0 is returned, the iox stream will end and iox_stream_cancel will be called,
+    // ending the stream process.
+    // If a stream is cancelled within this call using the user-facing cancel function,
+    // undefined behavior will occur.
+    //
     int (*iox_stream) (topazIOX_t *, void *, topazAsset_t *, void * streamData, const void * data, uint64_t dataIn);
 
 
-    /// Called when either the program request cancellation of stream OR if a streaming operation 
-    /// fails partway through (one reason could be invalid data). In the case that 
-    /// it's from an invalid stream, fromFailed will be true. 
-    ///
+    // Called when either the program request cancellation of stream OR if a streaming operation 
+    // fails partway through (one reason could be invalid data). In the case that 
+    // it's from an invalid stream, fromFailed will be true. 
+    //
     void (*iox_stream_cancel) (topazIOX_t *, void *, topazAsset_t *, void * streamData, int fromFailed);
 
-    /// Called when all data for an asset has been streamed. At this point, the iox implementation 
-    /// can finalize any asset data.
-    ///
+    // Called when all data for an asset has been streamed. At this point, the iox implementation 
+    // can finalize any asset data.
+    //
     int (*iox_stream_finish) (topazIOX_t *, void *, topazAsset_t *, void * streamData);
 
 };

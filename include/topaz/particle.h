@@ -33,22 +33,18 @@ DEALINGS IN THE SOFTWARE.
 
 typedef struct topazEntity_t topazEntity_t;
 
-
+/// The specification of a particle. This is used as a roadmap to 
+/// generate a real particle instance using topaz_particle_emitter_2d_emit()
 ///
-///    Particle
-///    -----
-///
-///    Allows for dynamic graphics that change every frame.
-///
-///
-///
-///
+typedef struct topazParticle_t topazParticle_t;
 
 
+typedef struct topazParticle_Range_t topazParticle_Range_t;
 /// Represents a particle attribute's range. This defines 
 /// how the values start and change over time.
 ///
-typedef struct topazParticle_Range_t topazParticle_Range_t;
+///
+///
 struct topazParticle_Range_t {
     /// The minimum value for the attribute to start.
     ///
@@ -74,8 +70,6 @@ struct topazParticle_Range_t {
     ///
     float noiseMax;
 };
-
-
 
 /// The specification of a particle. This is used as a roadmap to 
 /// generate a real particle instance using topaz_particle_emitter_2d_emit()
@@ -130,38 +124,59 @@ struct topazParticle_t {
     /// 
     topazParticle_Range_t alpha;
 
+
+
     /// Optional image
     topazAsset_t * image;
+
+    /// Whether the particle is translucent
+    int translucent;
+
+    /// Whether the particle is filtered.
+    int filtered;
 };
 
 
 /// Creates a new particle emitter entity.
 ///
-topazEntity_t * topaz_particle_emitter_2d_create();
+topazEntity_t * topaz_particle_emitter_2d_create(
+    /// the topaz context.
+    topaz_t * context
+);
 
 
 /// Sets which particle that this emitter should emit.
 ///
-void topaz_particle_emitter_2d_set_particle(topazEntity_t *, const topazParticle_t *);
+void topaz_particle_emitter_2d_set_particle(
+    /// The emitter to modify.
+    topazEntity_t * emitter, 
 
-/// Sets whether to enable translucency when rendering the particles.
-/// 
-void topaz_particle_emitter_2d_enable_translucency(topazEntity_t *, int enable);
+    /// The particle that acts as a specification 
+    /// for future particles produced by the emitter.
+    /// Its information is copied into the emitter.
+    const topazParticle_t * particle
+);
 
-/// Sets whether to enable texture filtering when rendering the particles
-/// 
-void topaz_particle_emitter_2d_enable_filtering(topazEntity_t *, int enable);
 
 /// Emits a particle with position tracking from the emitter.
 /// That is, when the emitter moves, the particles will move with it
 /// This method is more efficient for drawing large numbers of particles
 ///
-void topaz_particle_emitter_2d_emit(topazEntity_t *);
+void topaz_particle_emitter_2d_emit(
+    /// The emitter to emit from.
+    topazEntity_t * emitter
+);
 
 /// Same as topaz_particle_emitter_2d_emit, except will be emitted count 
 /// number of times
 ///
-void topaz_particle_emitter_2d_emit_n(topazEntity_t *, int count);
+void topaz_particle_emitter_2d_emit_n(
+    /// The emitter to emit from.
+    topazEntity_t * emitter, 
+
+    /// The number of particles to emit.
+    int count
+);
 
 
 /// Emits a particle with position tracking it global/root entity space.
@@ -169,7 +184,10 @@ void topaz_particle_emitter_2d_emit_n(topazEntity_t *, int count);
 /// Only the emitters position at the time of emission will be used
 /// for the particle.
 ///
-void topaz_particle_emitter_2d_emit_independent(topazEntity_t *);
+void topaz_particle_emitter_2d_emit_independent(
+    /// The emitter to emit from.
+    topazEntity_t * emitter
+);
 
 
 

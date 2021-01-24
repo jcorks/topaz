@@ -37,15 +37,9 @@ DEALINGS IN THE SOFTWARE.
 typedef struct topazAsset_t topazAsset_t;
 
 
-/*
 
-    FontRenderer
-    -----
-    An abstraction for generating image data 
-    for text characters.
-
-*/
-
+/// An abstraction for generating image data 
+/// for text characters.
 typedef struct topazFontRenderer_t topazFontRenderer_t;
 
 
@@ -55,12 +49,26 @@ typedef struct topazFontRenderer_t topazFontRenderer_t;
 
 /// Creates a new font renderer object
 ///
-topazFontRenderer_t * topaz_font_renderer_create(topaz_t *, topazSystem_Backend_t *, topazFontRendererAPI_t);
+topazFontRenderer_t * topaz_font_renderer_create(
+    /// The topaz context.
+    topaz_t * context, 
+
+
+    /// The backend to implement the backend's features.
+    topazSystem_Backend_t * backend, 
+
+    /// The raw API to implement the backend's features.
+    topazFontRendererAPI_t api
+);
+
 
 
 /// Destroys and cleans up a font renderer API
 ///
-void topaz_font_renderer_destroy(topazFontRenderer_t *);
+void topaz_font_renderer_destroy(
+    /// The font renderer to destroy
+    topazFontRenderer_t * fRenderer
+);
 
 
 
@@ -68,12 +76,19 @@ void topaz_font_renderer_destroy(topazFontRenderer_t *);
 
 /// Retrieves the backend for this font renderer object.
 ///
-topazSystem_Backend_t * topaz_font_renderer_get_backend(topazFontRenderer_t *);
+topazSystem_Backend_t * topaz_font_renderer_get_backend(
+    /// The font renderer to query.
+    topazFontRenderer_t * fRenderer
+);
 
 
 /// Returns the API for this font renderer.
 ///
-topazFontRendererAPI_t topaz_font_renderer_get_api(topazFontRenderer_t *);
+topazFontRendererAPI_t topaz_font_renderer_get_api(
+    /// The font renderer to query.
+    topazFontRenderer_t * fRenderer
+);
+
 
 
 
@@ -88,14 +103,13 @@ topazFontRendererAPI_t topaz_font_renderer_get_api(topazFontRenderer_t *);
 /// the topazAsset_t * will be freed.
 ///
 const topazAsset_t * topaz_font_renderer_image_ref(
-    topazFontRenderer_t *,
+    /// The font renderer to use.
+    topazFontRenderer_t * fRenderer,
 
     /// The codepoint for the character.
-    ///
     int charcode,
 
     /// The requested size in pixels.
-    ///
     int sizePixels
 );
 
@@ -103,8 +117,13 @@ const topazAsset_t * topaz_font_renderer_image_ref(
 /// the reference count for the character in question.
 ///
 void topaz_font_renderer_image_unref(
-    topazFontRenderer_t *,    
+    /// The font renderer to use.
+    topazFontRenderer_t * fRenderer,
+
+    /// The codepoint for the character.
     int charcode,
+
+    /// The requested size in pixels.
     int sizePixels
 );
 
@@ -112,8 +131,8 @@ void topaz_font_renderer_image_unref(
 
 typedef struct topazFontRenderer_Spacing_t topazFontRenderer_Spacing_t;
 
-
-
+/// Object that holds spacing information, allowing for more complex placement of 
+/// characters next to each other.
 struct topazFontRenderer_Spacing_t {
     /// The physical width of this characters visual. 
     /// It may differ from the generated glyph, which may need to 
@@ -146,9 +165,10 @@ struct topazFontRenderer_Spacing_t {
 
 
 
-/// Returns sizing in 
+/// Returns sizing information for a character.
 void topaz_font_renderer_query_spacing(
-    topazFontRenderer_t *,
+    /// The font renderer to use.
+    topazFontRenderer_t * fRenderer,
 
     /// The spacing information to populate.
     /// The xNextOrigin and yNextOrigin should be 
@@ -156,7 +176,7 @@ void topaz_font_renderer_query_spacing(
     /// as the output xNextOrigin and yNextOrigin are relative
     /// to the initial character.
     ///
-    topazFontRenderer_Spacing_t *,
+    topazFontRenderer_Spacing_t * spacing,
 
     /// Requested size of the font in pixels.
     ///

@@ -46,15 +46,27 @@ topazString_t * topaz_string_create();
 
 /// Creates a new string initialized with the contents of the given C-string 
 ///
-topazString_t * topaz_string_create_from_c_str(const char *, ...);
+topazString_t * topaz_string_create_from_c_str(
+    /// The format string.
+    const char * fmt, 
+
+    /// The variable args following the format.
+    ...
+);
 
 /// Creates a new string as a copy of the given string 
 ///
-topazString_t * topaz_string_clone(const topazString_t *);
+topazString_t * topaz_string_clone(
+    /// The string to clone.
+    const topazString_t * str
+);
 
 /// Destroys and frees a topaz string 
 ///
-void topaz_string_destroy(topazString_t *);
+void topaz_string_destroy(
+    /// The string to destroy.
+    topazString_t * str
+);
 
 
 
@@ -69,36 +81,72 @@ void topaz_string_destroy(topazString_t *);
 ///
 /// If your use case does not adhere to these, you should 
 /// allocate a new string instead.
-const topazString_t * topaz_string_temporary_from_c_str(const char *);
+const topazString_t * topaz_string_temporary_from_c_str(
+    /// The cstring to cast as a topaz string.
+    const char * cstr
+);
+
+
+/// A shorter form of topaz_string_temporary_from_c_str().
+///
 #define TOPAZ_STR_CAST(__s__) topaz_string_temporary_from_c_str(__s__)
 
 
 /// Sets the contents of the string A to the contents of string B
 ///
-void topaz_string_set(topazString_t * A, const topazString_t * B);
+void topaz_string_set(
+    /// The string to add to.
+    topazString_t * A, 
+
+    /// The string to copy from.
+    const topazString_t * B
+);
 
 /// Resets the contents of the string.
 ///
-void topaz_string_clear(topazString_t *);
+void topaz_string_clear(
+    /// The string to clear.
+    topazString_t * str
+);
 
 
 /// Adds the given C printf-formatted string and accompanying arguments 
 /// to the given string.
 ///
-void topaz_string_concat_printf(topazString_t *, const char * format, ...);
+void topaz_string_concat_printf(
+    /// The string to add to.
+    topazString_t * str, 
+
+    /// The format of the incoming variable arguments.
+    const char * format, 
+
+    /// The variable arguments, indicated by format.
+    ...
+);
 
 
 /// Adds the given string B to the end of the given string A.
 ///
-void topaz_string_concat(topazString_t *, const topazString_t *);
+void topaz_string_concat(
+    /// The string to add to.
+    topazString_t * str, 
+
+    /// The string to copy from.
+    const topazString_t * src
+);
 
 
 /// Returns a read-only copy of a portion of the given string 
 /// from and to denote character indices. The substring is valid until 
 /// the next call to this function with the same input string.
 const topazString_t * topaz_string_get_substr(
-    const topazString_t *, 
+    /// The string to read from.
+    const topazString_t * str, 
+
+    /// The start index.
     uint32_t from, 
+
+    /// The end index.
     uint32_t to
 );
 
@@ -107,84 +155,146 @@ const topazString_t * topaz_string_get_substr(
 /// Gets a read-only pointer to a c-string representation of the 
 /// string.
 ///
-const char * topaz_string_get_c_str(const topazString_t *);
+const char * topaz_string_get_c_str(
+    /// The string to query.
+    const topazString_t * str
+);
 
 /// Gets the number of characters within the string.
 ///
-uint32_t topaz_string_get_length(const topazString_t *);
+uint32_t topaz_string_get_length(
+    /// The string to query.
+    const topazString_t * str
+);
 
 /// Gets the character within the string that the given 
 /// 0-indexed position. If the position is invalid, 0 is returned.
 ///
-int topaz_string_get_char(const topazString_t *, uint32_t position);
+int topaz_string_get_char(
+    /// The string to query.
+    const topazString_t *, 
+
+    /// The position index within the string.
+    uint32_t position
+);
 
 /// Sets the character within the string at the given 
 /// 0-indexed position. If an invalid position, no action is taken
 ///
-void topaz_string_set_char(topazString_t *, uint32_t position, int value);
+void topaz_string_set_char(
+    /// The string to modify.
+    topazString_t *, 
+
+    /// The position within the string to modify
+    uint32_t position, 
+
+    /// The new value within the string.
+    int value
+);
 
 /// Adds a character to the end of the string
 ///
-void topaz_string_append_char(topazString_t *, int value);
+void topaz_string_append_char(
+    /// The string to append to.
+    topazString_t *, 
+
+    /// The value of the character to add to the string.
+    int value
+);
 
 
 /// Gets the byte length of the data representation 
 /// of this string. Depending on the context, this could 
 /// match the length of the string, or it could be wider.
 ///
-uint32_t topaz_string_get_byte_length(const topazString_t *);
+uint32_t topaz_string_get_byte_length(
+    /// the string to query.
+    const topazString_t * str
+);
 
 /// Gets the byte data pointer for this strings. Its length is equal to 
 /// topaz_string_get_byte_length()
 ///
-void * topaz_string_get_byte_data(const topazString_t *);
+void * topaz_string_get_byte_data(
+    /// the string to query.
+    const topazString_t * str
+);
 
 
-//////// Tests
 /// Returns whether substr is found within the given string 
 ///
-int topaz_string_test_contains(const topazString_t *, const topazString_t * substr);
+int topaz_string_test_contains(
+    /// The string to search through.
+    const topazString_t * str, 
+
+    /// The string to search for.
+    const topazString_t * substr
+);
 
 /// Returns wither 2 strings are equivalent 
 ///
-int topaz_string_test_eq(const topazString_t *, const topazString_t * other);
+int topaz_string_test_eq(
+    /// The string to test equivalence.
+    const topazString_t * str, 
+
+    /// The other string to test.
+    const topazString_t * other
+);
 
 /// Compares the 2 strings in a sort-ready fashion:
 /// Returns < 0 if a alphabetically comes before b
 /// Returns > 0 if a alphabetically comes after b
 /// Returns = 0 if a and b are equivalent
-int topaz_string_topaz_compare(const topazString_t * a, const topazString_t * b);
+int topaz_string_topaz_compare(
+    /// The first string to compare.
+    const topazString_t * a, 
+
+    /// The second string to compare.
+    const topazString_t * b
+);
 
 
 
 
 
-/////// Chain control
-/// 
 /// Chain functions can be used to 
 /// work on strings in a token-like fashion.
 /// Each token is referred to as a "link" in the chain.
-
 /// Resets the chain state of the string. Using topaz_string_chain_current()
 /// will return the first token according to the delimiters given.
 /// The first link is returned. If no such link exists, an empty 
 /// link is returned.
 ///
-const topazString_t * topaz_string_chain_start(topazString_t * t, const topazString_t * delimiters);
+const topazString_t * topaz_string_chain_start(
+    /// the string to start the chaining.
+    topazString_t * t, 
+    
+    /// The delimiters 
+    const topazString_t * delimiters
+);
 
 /// Returns the current link in the chain.
 /// If the end has been reached, this is an empty string.
 ///
-const topazString_t * topaz_string_chain_current(topazString_t * t);
+const topazString_t * topaz_string_chain_current(
+    /// The string to query.
+    topazString_t * t
+);
 
 /// Returns whether the last link in the chain has been reached.
 ///
-int topaz_string_chain_is_end(const topazString_t * t);
+int topaz_string_chain_is_end(
+    /// The string to query.
+    const topazString_t * t
+);
 
 /// Goes to the next token in the chain and returns that token.
 /// The new token is returned.
 /// 
-const topazString_t * topaz_string_chain_proceed(topazString_t * t);
+const topazString_t * topaz_string_chain_proceed(
+    /// The string to proceed in its chain.
+    topazString_t * t
+);
 
 #endif
 

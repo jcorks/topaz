@@ -38,70 +38,124 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/render2d.h>
 typedef struct topazTransform_t topazTransform_t;
 typedef struct topazAsset_t topazAsset_t;
-/*
 
-    Shape2D
-    -----
-
-    Can express basic 2D objects, such as images and shapes.
-
-*/
-
+/// Can express basic 2D objects, such as images and shapes.
+typedef struct topazShape2D_t topazShape2D_t;
 
 
 /// Creates a new shape2d object
 /// Use component_destroy to release.
 ///
-topazComponent_t * topaz_shape2d_create(topaz_t *);
+topazComponent_t * topaz_shape2d_create(
+    /// The topaz context.
+    topaz_t * context
+);
 
 /// Gets the color of the object.
 /// The default color is #000000 (black)
 ///
-topazColor_t topaz_shape2d_get_color(topazComponent_t *);
+topazColor_t topaz_shape2d_get_color(
+    /// The shape2d to query.
+    topazComponent_t * shape2d
+);
 
 /// Sets the color of the object.
 ///
-void topaz_shape2d_set_color(topazComponent_t *, topazColor_t);
+void topaz_shape2d_set_color(
+    /// The shape2d to modify.
+    topazComponent_t * shape2d, 
+
+    /// The color to use.
+    topazColor_t color
+);
 
 /// Gets the trasform for the object
 ///
-topazTransform_t * topaz_shape2d_get_node(topazComponent_t *);
+topazTransform_t * topaz_shape2d_get_node(
+    /// The shape2d to query.
+    topazComponent_t * shape2d
+);
 
 /// Gets the animation speed of the image. This is how quickly 
 /// the object will flip through image frames. The time is returned in seconds.
 ///
-float topaz_shape2d_get_anim_speed(topazComponent_t *);
+float topaz_shape2d_get_anim_speed(
+    /// The shape2d to query.
+    topazComponent_t * shape2d
+);
 
 /// Sets the animation speed of the image. The time is returned in seconds.
 /// The default is 1 / 60th of a second.
 ///
-void topaz_shape2d_set_anim_speed(topazComponent_t *, float);
+void topaz_shape2d_set_anim_speed(
+    /// The shape2d to modify
+    topazComponent_t * shape2d, 
+
+    /// The new speed to set.
+    float speed
+);
 
 /// Returns the center point of the shape2d from which local 
 /// transforms are applied. The default is 0, 0
 ///
-const topazVector_t * topaz_shape2d_get_center(topazComponent_t *);
+const topazVector_t * topaz_shape2d_get_center(
+    /// The shape2d to query.
+    topazComponent_t * shape2d
+);
 
 /// Sets the center point of the shape2d.
 ///
-void topaz_shape2d_set_center(topazComponent_t *, const topazVector_t *);
+void topaz_shape2d_set_center(
+    /// The shape2d to modify.
+    topazComponent_t * shape2d, 
+
+    /// The center position.
+    const topazVector_t * center
+);
 
 /// Forms the object into a triangle. The Shape2D origin is the top-left of the
 /// rectangle. Width and height are in pixels.
 ///
-void topaz_shape2d_form_rectangle(topazComponent_t *, float width, float height);
+void topaz_shape2d_form_rectangle(
+    /// The shape2d to modify.
+    topazComponent_t * shape2d, 
+
+    /// The width of the rectangle.
+    float width, 
+
+    /// The height of the rectangle.
+    float height
+);
 
 
 /// Forms the object into the shape and visual of an image.
 /// If the image has multiple frames, the image is drawn as an animation
 /// accoring to topaz_shape2d_get_anim_speed
 ///
-void topaz_shape2d_form_image(topazComponent_t *, topazAsset_t *);
+void topaz_shape2d_form_image(
+    /// The shape2d to modify.
+    topazComponent_t * shape2d, 
+
+    /// The image asset to use as the source.
+    topazAsset_t * asset
+);
 
 /// Same as topaz_shape2d_form_image, except a specific width/height 
 /// can be given. If so, the image will be rescaled to match this width/height.
 ///
-void topaz_shape2d_form_image_scaled(topazComponent_t *, topazAsset_t *, float width, float height);
+void topaz_shape2d_form_image_scaled(
+    /// The shape2d to modify.
+    topazComponent_t * shape2d, 
+
+    /// The image asset to use as the source.
+    topazAsset_t * asset, 
+
+    /// The custom width of the shape2d.
+    float width, 
+
+    /// The custom height of the shape2d.
+    float height
+);
 
 
 /// Forms the object into a specific frame of the given image asset.
@@ -109,11 +163,35 @@ void topaz_shape2d_form_image_scaled(topazComponent_t *, topazAsset_t *, float w
 /// in the image asset, the the frame index will be equal to frame modulo
 /// the total frame count.
 ///
-void topaz_shape2d_form_image_frame(topazComponent_t *, topazAsset_t *, uint32_t frame);
+void topaz_shape2d_form_image_frame(
+    /// The shape2d to modify.
+    topazComponent_t * shape2d, 
+
+    /// The image asset to use as source.
+    topazAsset_t * asset, 
+
+    /// The frame of the image asset to use.
+    uint32_t frame
+);
 
 /// Same as topaz_shape2d_form_image_frame, except with a forced width and 
 /// height, in pixels.
-void topaz_shape2d_form_image_frame_scaled(topazComponent_t *, topazAsset_t *, uint32_t frame, float forcedWidth, float forcedHeight);
+void topaz_shape2d_form_image_frame_scaled(
+    /// The shape2d to modify.
+    topazComponent_t * shape2d, 
+
+    /// The image asset to use as source.
+    topazAsset_t * asset, 
+
+    /// The frame of the image asset to use.
+    uint32_t frame, 
+
+    /// The custom width of the shape2d.
+    float forcedWidth, 
+
+    /// The custom height of the shape2d.
+    float forcedHeight
+);
 
 
 /// Forms the object into an estimated circle in triangles. numIterations
@@ -122,7 +200,16 @@ void topaz_shape2d_form_image_frame_scaled(topazComponent_t *, topazAsset_t *, u
 /// simple geometric objects of equal-length sides. For example, using numIterations 
 /// of 3 will yield an equalateral triangle.
 /// 
-void topaz_shape2d_form_radial(topazComponent_t *, float radius, uint32_t numIterations);
+void topaz_shape2d_form_radial(
+    /// The component to modify.
+    topazComponent_t * shape2d, 
+
+    /// The radius of the radial object.
+    float radius, 
+
+    /// The number of sides to shape.
+    uint32_t numIterations
+);
 
 
 /// Forms the object into a generic set of triangles. The given array 
@@ -131,23 +218,50 @@ void topaz_shape2d_form_radial(topazComponent_t *, float radius, uint32_t numIte
 /// If a non-multiple-of-three number of points is given,
 /// the remainder points are ignored.
 ///
-void topaz_shape2d_form_triangles(topazComponent_t *, const topazArray_t *);
+void topaz_shape2d_form_triangles(
+    /// The shape2d to modify.
+    topazComponent_t * shape2d, 
+
+    /// The source vertices of the shape2d
+    const topazArray_t * vertices
+);
 
 /// Forms a collection of line segments.
 /// If an odd number of points are given, the last point is ignored.
 /// The array should be the a collection of topazVector_t objects.
 ///
-void topaz_shape2d_form_lines(topazComponent_t *, const topazArray_t *);
+void topaz_shape2d_form_lines(
+    /// The shape2d to modify.
+    topazComponent_t * shape2d, 
+
+    /// The vertices for the lines.
+    const topazArray_t * vertices
+);
 
 
 /// Sets the parameter value. The value accepted is one of the appropriate 
 /// enum values within renderer.h
 ///
-void topaz_shape2d_set_parameter(topazComponent_t *, topazRender2D_Parameter, int);
+void topaz_shape2d_set_parameter(
+    /// The shape2d to modify
+    topazComponent_t * shape2d, 
+
+    /// The renderer parameter to edit.
+    topazRender2D_Parameter param, 
+
+    /// The new value of the parameter.
+    int value
+);
 
 /// Gets the parameter value.
 ///
-int topaz_shape2d_get_parameter(topazComponent_t *, topazRender2D_Parameter);
+int topaz_shape2d_get_parameter(
+    /// The shape2d to query.
+    topazComponent_t * shape2d, 
+
+    /// The parameter to query.
+    topazRender2D_Parameter param
+);
 
 
 

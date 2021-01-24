@@ -56,33 +56,33 @@ typedef struct topazConsoleDisplayAPI_t topazConsoleDisplayAPI_t;
 
 
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazConsoleDisplay_t. See <topaz/backends/ConsoleDisplay.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazConsoleDisplay_t. See <topaz/backends/ConsoleDisplay.h>
+//
 struct topazConsoleDisplayAPI_t {
-    /// Creates a console display
-    ///
+    // Creates a console display
+    //
     void *                  (*console_display_create)           (topazConsoleDisplay_t *, topaz_t *);
 
-    /// Destroys the console display
-    /// 
+    // Destroys the console display
+    // 
     void                    (*console_display_destroy)          (topazConsoleDisplay_t *, void *);
 
-    /// Proceeds to the next console line.
-    ///
+    // Proceeds to the next console line.
+    //
     void                    (*console_display_new_line)         (topazConsoleDisplay_t *, void *);
 
-    /// Adds a new line to the console display in the requested color.
-    ///
+    // Adds a new line to the console display in the requested color.
+    //
     void                    (*console_display_add_text)         (topazConsoleDisplay_t *, void *, const topazString_t *, const topazColor_t * reqColor);
 
 
-    /// Requests that the console display gets clear
-    ///
+    // Requests that the console display gets clear
+    //
     void                    (*console_display_clear)            (topazConsoleDisplay_t *, void *);
 
-    /// Requests that the console display be shown or hidden 
-    ///
+    // Requests that the console display be shown or hidden 
+    //
     void                    (*console_display_enable)           (topazConsoleDisplay_t *, void *, int);
 
 };

@@ -56,9 +56,9 @@ typedef struct topazFilesysAPI_t topazFilesysAPI_t;
 typedef struct topaz_t topaz_t;
 
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazFilesys_t. See <topaz/backends/filesys.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazFilesys_t. See <topaz/backends/filesys.h>
+//
 struct topazFilesysAPI_t {
     void *                  (*filesys_create)           (topazFilesys_t *, topaz_t *);
     void                    (*filesys_destroy)          (topazFilesys_t *, void *);

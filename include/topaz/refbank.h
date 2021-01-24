@@ -36,19 +36,16 @@ DEALINGS IN THE SOFTWARE.
 #include <stdint.h>
 #include <topaz/containers/table.h>
 
-///
-///    Refbank
-///    -----
 ///    A simple, generic reference counter
 ///
 ///    Refbank represents a generic, multi-instance reference counter.
-///    RefBank manages a number of accounts. Each account 
+///    Refbank manages a number of accounts. Each account 
 ///    signifies a set of references. Accounts are uniquely identified
-///    by the user supplied object T and are automatically created once Deposit() is called. 
-///    Each account has a reference balance associated with it. Once an
-///    account balance has reached 0 or less, the account is removed. If an AccountRemover is set
-///    , the AccountRemover callback will be run on the account before removal.
-///
+///    by the user supplied object T and are automatically created once
+///    topaz_refbank_deposit is called. Each account has a reference 
+///    balance associated with it. Once an account balance has reached 
+///    0 or less, the account is removed. If an AccountRemover is set,
+///    the AccountRemover callback will be run on the account before removal.
 ///
 typedef struct topazRefbank_t topazRefbank_t;
 
@@ -60,7 +57,10 @@ topazRefbank_t * topaz_refbank_create();
 
 /// Destroys a Refbank
 ///
-void topaz_refbank_destroy(topazRefbank_t *);
+void topaz_refbank_destroy(
+    /// The refbank to destroy.
+    topazRefbank_t * bank
+);
 
 
 
@@ -71,13 +71,26 @@ void topaz_refbank_destroy(topazRefbank_t *);
 /// 
 /// If a reference count deposite call would yeild a deposit greater than
 /// UINT32_MAX, the account is set to UINT32_MAX. (UINT32_MAX is defined in cstdint.h)
-/// @param account The object representing the reference to add counts to
-/// @param amount The reference count amount to add. The default is one.
-void topaz_refbank_deposit(topazRefbank_t *, const void * account, uint32_t amount);
+void topaz_refbank_deposit(
+    /// The refbank to deposit a reference to.
+    topazRefbank_t * bank, 
+
+    /// The object representing the reference to add counts to
+    const void * account, 
+
+    /// The reference count amount to add. The default is one.
+    uint32_t amount
+);
 
 /// Same as topaz_refbank_deposit, except it only enters one reference.
 ///
-void topaz_refbank_increment(topazRefbank_t *, const void * account);
+void topaz_refbank_increment(
+    /// The refbank to modify.
+    topazRefbank_t * bank, 
+
+    /// The account within the refbank to increment the count.
+    const void * account
+);
 
 
 
@@ -85,13 +98,26 @@ void topaz_refbank_increment(topazRefbank_t *, const void * account);
 ///
 /// If a reference withdrawl would result in a balance of 0 or lower, the 
 /// AccountRemover is called with the account and is removed.
-/// @param account The object representing the reference to remove counts from.
-/// @param amount The reference count amount to deduct. The default is one.
-void topaz_refbank_withdraw(topazRefbank_t *, const void * account, uint32_t amount);
+void topaz_refbank_withdraw(
+    /// The refbank to modify.
+    topazRefbank_t * bank, 
+
+    /// The object representing the reference to remove counts from.
+    const void * account, 
+
+    /// The reference count amount to deduct. The default is one.
+    uint32_t amount
+);
 
 /// Same as topaz_refbank_widthdraw, except only one reference is deducted
 ///
-void topaz_refbank_decrement(topazRefbank_t *, const void * account);
+void topaz_refbank_decrement(
+    /// The refbank to modify.
+    topazRefbank_t * bank, 
+
+    /// The object representing the reference to remove counts from.
+    const void * account
+);
 
 
 
@@ -101,22 +127,45 @@ void topaz_refbank_decrement(topazRefbank_t *, const void * account);
 /// Returns the number of reference counts accumulated in the account.
 ///
 /// If the count does not exist, 0 is returned.
-uint32_t topaz_refbank_balance(const topazRefbank_t *, const void * account);
+uint32_t topaz_refbank_balance(
+    /// The refbank to query
+    const topazRefbank_t *, 
+
+    /// The account to query.
+    const void * account
+);
 
 
 /// Removes all accounts and runs the AccountRemover on all
 /// accounts.
 /// 
-void topaz_refbank_remove_all(topazRefbank_t *);
+void topaz_refbank_remove_all(
+    /// The refbank to modify
+    topazRefbank_t * bank
+);
+
+/// Function to be called when a refbank's account reaches 0.
+typedef void (*topaz_refbank_account_remover)(
+    /// The refbank that triggered the event.
+    topazRefbank_t * bank, 
+
+    /// The account that triggered the event.
+    const void * account, 
+
+    /// The bound data to the callback.
+    void * userData
+);
+
 
 /// Sets the account remover callback.
 ///
 /// The lifetime of the source object should match the lifetime of this RefBank
 void topaz_refbank_set_account_remover(
-    topazRefbank_t *,
+    /// The refbank to modify.
+    topazRefbank_t * bank,
 
     /// Function to be called when the account has exhausted all references
-    void (*accountRemover)(topazRefbank_t * t, const void * account, void * userData), 
+    topaz_refbank_account_remover remover
 
     /// Data to be passed to the function
     void * data

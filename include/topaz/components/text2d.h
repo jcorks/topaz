@@ -40,27 +40,28 @@ typedef struct topazString_t topazString_t;
 typedef struct topaz_t topaz_t;
 typedef struct topazTransform_t topazTransform_t;
 
-/*
-
-    Text2D
-    -----
     
-    Produces simple 2D Text
-
-
-*/
-
+/// Component that, when attached, produces a simple 2D text visual.
+typedef struct topazText2D_t topazText2D_t;
 
 /// Creates a new text component with no text.
 ///
-topazComponent_t * topaz_text2d_create(topaz_t*);
+topazComponent_t * topaz_text2d_create(
+    /// The topaz context.
+    topaz_t * context
+);
 
 
 /// Sets the text content and font size to use.
 ///
 void topaz_text2d_set_text(
-    topazComponent_t *,
-    const topazString_t *,
+    /// The text2d to modify.
+    topazComponent_t * text2d,
+
+    /// The text to copy as source into the text2d.
+    const topazString_t * text,
+
+    /// The pixel size of the text to appear.
     int pixelSize
 );
 
@@ -68,63 +69,117 @@ void topaz_text2d_set_text(
 /// but uses the same spacing between all characters
 ///
 void topaz_text2d_set_text_monospace(
-    topazComponent_t *,
-    const topazString_t *,
+    /// The text2d to modify.
+    topazComponent_t * text2d,
+
+    /// The text to copy as source into the text2d.
+    const topazString_t * text,
+
+    /// The pixel size of the text to appear.
     int pixelSize
 );
 
 
 /// Gets the text being displayed by the component.
 ///
-const topazString_t * topaz_text2d_get_text(topazComponent_t *);
+const topazString_t * topaz_text2d_get_text(
+    /// The text2d to query.
+    topazComponent_t * text2d
+);
 
 /// Gets the width of the text without transformation.
 ///
-float topaz_text2d_get_extent_width(topazComponent_t *);
+float topaz_text2d_get_extent_width(
+    /// The text2d to query.
+    topazComponent_t * text2d
+);
 
 /// Gets the height of the text without transformation.
 ///
-float topaz_text2d_get_extent_height(topazComponent_t *);
+float topaz_text2d_get_extent_height(
+    /// The text2d to query.
+    topazComponent_t * text2d
+);
 
 /// Gets the x position of the character at the given index.
 /// This refers to its top-left.
 ///
-float topaz_text2d_get_char_x(topazComponent_t *, int charIndex);
+float topaz_text2d_get_char_x(
+    /// The text2d to query.
+    topazComponent_t * text2d,
+
+    /// The index of the character to query.
+    int charIndex
+);
 
 /// Gets the x position of the character at the given index.
 /// This refers to its top-left.
 ///
-float topaz_text2d_get_char_y(topazComponent_t *, int charIndex);
+float topaz_text2d_get_char_y(
+    /// The text2d to query.
+    topazComponent_t * text2d,
+
+    /// The index of the character to query.
+    int charIndex
+);
 
 
 /// Gest the node transform for the text
 ///
-topazTransform_t * topaz_text2d_get_node(topazComponent_t *);
+topazTransform_t * topaz_text2d_get_node(
+    /// The text2d to query.
+    topazComponent_t * text2d
+);
 
 /// Sets the color for certain characters.
 ///
 void topaz_text2d_set_color_section(
-    topazComponent_t *, 
+    /// The text2d to modify.
+    topazComponent_t * text2d, 
+
+    /// The start character index to set the color.
     int fromIndex,
+
+    /// The end character index to set the color.
     int toIndex,
-    topazColor_t
+
+    /// The color to set.
+    topazColor_t color
 );
 
 /// Sets the color for all characters.
 ///
 void topaz_text2d_set_color(
-    topazComponent_t *,
-    topazColor_t
+    /// The text2d to modify.
+    topazComponent_t * text2d,
+
+    /// The color to set.
+    topazColor_t color
 );
 
 /// Sets the parameter value. The value accepted is one of the appropriate 
 /// enum values within renderer.h
 ///
-void topaz_text2d_set_parameter(topazComponent_t *, topazRender2D_Parameter, int);
+void topaz_text2d_set_parameter(
+    /// The text2d to modify.
+    topazComponent_t * text2d, 
+
+    /// The parameter to set the value for.
+    topazRender2D_Parameter param, 
+
+    /// The value to set.
+    int value
+);
 
 /// Gets the parameter value.
 ///
-int topaz_text2d_get_parameter(topazComponent_t *, topazRender2D_Parameter);
+int topaz_text2d_get_parameter(
+    /// The text2d to query.
+    topazComponent_t * text2d, 
+
+    /// The parameter to query.
+    topazRender2D_Parameter param
+);
 
 
 

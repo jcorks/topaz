@@ -38,15 +38,12 @@ typedef struct topazRender2D_t topazRender2D_t;
 typedef struct topazRenderer_2D_t topazRenderer_2D_t;
 typedef struct topazRenderer_t topazRenderer_t;
 
-
-/*
-
-    Graphics
-    -----
-    The main graphics controller. It manages the context's renderer 
-    and attempts to make interaction with it more efficient.
-    
-*/
+/// The main graphics controller. It manages the context's renderer 
+/// and attempts to make interaction with it more efficient.
+/// Usually, its usage is implicit; a user will rarely need to 
+/// interact with the graphics controller. However, if advanced 
+/// features are needed, the graphics controller is part of the 
+/// main pathway to access lower-level graphics features.
 typedef struct topazGraphics_t topazGraphics_t;
 
 
@@ -57,37 +54,60 @@ typedef struct topazGraphics_t topazGraphics_t;
 /// topaz_t has a default instance that it generates for you. 
 /// See topaz_context_get_graphics();
 ///
-topazGraphics_t * topaz_graphics_create(topaz_t *);
+topazGraphics_t * topaz_graphics_create(
+    /// The context.
+    topaz_t * context
+);
 
 /// Destroys and frees a topaz input instance.
 ///
-void topaz_graphics_destroy(topazGraphics_t *);
+void topaz_graphics_destroy(
+    /// The graphics instance.
+    topazGraphics_t * graphics
+);
 
 
 
 /// Gets the backend rendering object for this topaz instance.
 ///
-topazRenderer_t * topaz_graphics_get_renderer(topazGraphics_t *);
+topazRenderer_t * topaz_graphics_get_renderer(
+    /// The graphics to query.
+    topazGraphics_t * graphics
+);
 
 
 /// Gets the backend 2d-specific rendering object for this topaz instance.
 ///
-topazRenderer_2D_t * topaz_graphics_get_renderer_2d(topazGraphics_t *);
+topazRenderer_2D_t * topaz_graphics_get_renderer_2d(
+    /// The graphics to query.
+    topazGraphics_t * graphics
+);
 
 
 /// Applies a render2d object to the renderer. This may not be immediate, but will 
 /// attempt to be grouped together to accelerate the rendering process
 ///
-void topaz_graphics_request_draw_2d(topazGraphics_t *, topazRender2D_t *);
+void topaz_graphics_request_draw_2d(
+    /// The graphics to access.
+    topazGraphics_t * graphics, 
+    /// The render2d to draw.
+    topazRender2D_t * r2d
+);
 
 /// Ensures that all graphics operations have finished and are pushed 
 /// to attached displays.
 ///
-void topaz_graphics_sync(topazGraphics_t *);
+void topaz_graphics_sync(
+    /// The graphics instance to sync.
+    topazGraphics_t * graphics
+);
 
 /// Clears the current display and resets any requested 2d drawn objects.
 /// 
-void topaz_graphics_reset_scene(topazGraphics_t *);
+void topaz_graphics_reset_scene(
+    /// The graphics instance to reset.
+    topazGraphics_t * graphics
+);
 
 //void topaz_graphics_draw_3d(topazRenderMesh_t *);
 

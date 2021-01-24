@@ -40,9 +40,20 @@ typedef struct topazScript_t topazScript_t;
 typedef struct topazSystem_Backend_t topazSystem_Backend_t;
 typedef struct topazConsoleDisplay_t topazConsoleDisplay_t;
 
+
+/// The console is an object that controls a 
+/// viewable text log and command interface. Consoles 
+/// are especially useful for debugging purposes while 
+/// within a running program.
 ///
-///    Console
-///    -----
+/// Main features include: posting different 
+/// kinds of "messages" (logs) to the console for viewing,
+/// inserting custom debugging commands,
+/// attaching to scripting instances for built-in 
+/// debugging (if available), and more.
+///
+/// The console is not enabled by default. Enabling it will 
+/// show the console using the preferred system backend for ConsoleDisplays.
 ///
 typedef struct topazConsole_t topazConsole_t;
 
@@ -81,59 +92,101 @@ enum topazConsole_MessageType_t {
 /// See topaz_context_get_console()
 /// Note that all the topazConsole_t instances use the same console display.
 ///
-topazConsole_t * topaz_console_create(topaz_t *);
+topazConsole_t * topaz_console_create(
+    /// The topaz context instance.
+    topaz_t * context
+);
 
 /// Destroys and frees a topaz console instance.
 ///
-void topaz_console_destroy(topazConsole_t *);
+void topaz_console_destroy(
+    /// The console to display.
+    topazConsole_t * console
+);
 
 
 
 
 /// Enables or disables the console. The default state is the console is disabled.
 ///
-void topaz_console_enable(topazConsole_t *, int enable);
+void topaz_console_enable(
+    /// The console to set the state of.
+    topazConsole_t * console, 
+
+    /// Whether to enable the console.
+    int enable
+);
 
 /// Prints a line to the console
 /// This is equivalent to topaz_console_print_type() with the 
 /// message type as topazConsole_MessageType_Normal
 ///
-void topaz_console_print(topazConsole_t *, const topazString_t *);
+void topaz_console_print(
+    /// The console to print to.
+    topazConsole_t * console, 
+
+    /// The text to print.
+    const topazString_t * message
+);
 
 /// Prints a line to the console
 /// The message type includes a specific color and header 
 /// strings to make it more clear what type the message is 
 /// once displayed.
 ///
-void topaz_console_print_message(topazConsole_t *, const topazString_t *, topazConsole_MessageType_t);
+void topaz_console_print_message(
+    /// The console to print to.
+    topazConsole_t * console, 
+
+    /// The text to print.
+    const topazString_t * message,
+
+    /// The type of the message.
+    topazConsole_MessageType_t type
+);
 
 /// Prints a color line to the console.
 ///
-void topaz_console_print_color(topazConsole_t *, const topazString_t *, const topazColor_t *);
+void topaz_console_print_color(
+    /// The console to print to.
+    topazConsole_t * console, 
+
+    /// The text to print.
+    const topazString_t * message,
+
+    /// The color to print it as.
+    const topazColor_t * color
+);
 
 /// Attaches a script context to the console.
 /// Once attached, debugging features will be available
 void topaz_console_attach_script(
-    topazConsole_t *,
-    topazScript_t *
+    /// The console to attach to.
+    topazConsole_t * console,
+
+    /// The scripting instance to attach.
+    topazScript_t * script
 );
 
 
-/// Runs a command
+/// Runs a command.
 /// Command syntax:
-/*
-    commandName[SEPARATOR]arg0[SEPARATOR]arg1[SEPARATOR]...
-*/
+///
+///     commandName[SEPARATOR]arg0[SEPARATOR]arg1[SEPARATOR]...
+///
 /// Where [SEPARATOR] can be any of the following symbols:
 /// ()[]{},.;:
 ///
-topazString_t * topaz_console_run(topazConsole_t *, const topazString_t *);
+topazString_t * topaz_console_run(
+    /// The console to run a command in.
+    topazConsole_t * console, 
+
+    /// The command to run.
+    const topazString_t * command
+);
 
 
 
-///
-///    ConsoleCommandContext
-///    -----
 ///
 ///    A command context is the basic means by which 
 ///    the console can understand commands. The command context 
@@ -149,7 +202,10 @@ typedef struct topazConsole_CommandContext_t topazConsole_CommandContext_t;
 /// Retrieves the default command context.
 /// This can be used to add commands to or aid in controlling the 
 /// context stack.
-topazConsole_CommandContext_t * topaz_console_get_default_command_context(topazConsole_t *);
+topazConsole_CommandContext_t * topaz_console_get_default_command_context(
+    /// The parent console of this context.
+    topazConsole_t * console
+);
 
 
 /// Creates a new console command context.
@@ -159,18 +215,30 @@ topazConsole_CommandContext_t * topaz_console_command_context_create();
 
 /// Destroys a console command context.
 ///
-void topaz_console_command_context_destroy(topazConsole_CommandContext_t *);
+void topaz_console_command_context_destroy(
+    /// The context to destroy.
+    topazConsole_CommandContext_t * context
+);
 
 
 /// Pushes a command context to the top of the stack. 
 /// All commands will be read from this context.
 ///
-void topaz_console_push_command_context(topazConsole_t *, topazConsole_CommandContext_t *);
+void topaz_console_push_command_context(
+    /// The console to push the command context to.
+    topazConsole_t * console, 
+
+    /// The context to become current.
+    topazConsole_CommandContext_t * context
+);
 
 /// Pops the top context.
 /// If the stack is empty, the default context is used. 
 ///
-void topaz_console_pop_command_context(topazConsole_t *);
+void topaz_console_pop_command_context(
+    /// The console to modify.
+    topazConsole_t * console
+);
 
 
 
@@ -182,9 +250,15 @@ void topaz_console_pop_command_context(topazConsole_t *);
 /// "args" array.
 ///
 typedef topazString_t * (*topaz_console_command_callback)(
-    topazConsole_t *, 
-    void *, 
+    /// The console receiving the command.
+    topazConsole_t * console, 
+    /// The data bound to the callback.
+    void * callbackData, 
+
+    /// A read-only array of arguments. Each member is a topazString_t *
     const topazArray_t * args,
+
+    /// The full, uncomidified string entered by the user.
     const topazString_t * fullCommand
 );
 
@@ -195,9 +269,16 @@ typedef topazString_t * (*topaz_console_command_callback)(
 /// string.
 ///
 void topaz_console_command_context_add_command(
-    topazConsole_CommandContext_t *, 
-    const topazString_t            * command,
-    topaz_console_command_callback  callback,
+    /// The context to add a command to.
+    topazConsole_CommandContext_t * context, 
+
+    /// The command string itself.
+    const topazString_t * command,
+
+    /// The callback to be called if a user enters this command
+    topaz_console_command_callback callback,
+
+    /// The data to bind to this callback.
     void * data
 );
 
@@ -206,15 +287,24 @@ void topaz_console_command_context_add_command(
 /// if an unrecognized command is given to the context.
 ///
 void topaz_console_command_context_set_default_handler(
-    topazConsole_CommandContext_t *,
-    topaz_console_command_callback handler;
+    /// The context to modify.
+    topazConsole_CommandContext_t * context,
+
+    /// The default handler to call.
+    topaz_console_command_callback handler,
+
+    /// The data to bind to the callback.
+    void * callbackData
 
 );
 
 /// Sets the header prompt text to show within the console.
 ///
 void topaz_console_command_context_set_prompt(
-    topazConsole_CommandContext_t *,
+    /// The context to modify.
+    topazConsole_CommandContext_t * context,
+
+    /// The string prompt.
     const topazString_t * header
 );
 

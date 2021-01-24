@@ -50,75 +50,75 @@ typedef struct topazFontRenderer_Spacing_t topazFontRenderer_Spacing_t;
 */
 typedef struct topazFontRendererAPI_t topazFontRendererAPI_t;
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazFontRenderer_t. See <topaz/backends/FontRenderer.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazFontRenderer_t. See <topaz/backends/FontRenderer.h>
+//
 struct topazFontRendererAPI_t {
     void * (*font_renderer_create) (topazFontRenderer_t *, topaz_t *);
     void   (*font_renderer_destroy) (topazFontRenderer_t *, void *);
 
 
-    /// Returns a new RGBA pixel buffer. It should be free()d after done
-    ///
+    // Returns a new RGBA pixel buffer. It should be free()d after done
+    //
     uint8_t * (*font_renderer_render)(
-        /// renderer instance 
-        ///
+        // renderer instance 
+        //
         topazFontRenderer_t *, 
 
-        /// Renderer userdata
-        ///
+        // Renderer userdata
+        //
         void *,
 
-        /// Character
-        ///
+        // Character
+        //
         int charcode, 
 
-        /// Size request for the character in pixels.
-        ///
+        // Size request for the character in pixels.
+        //
         int sizeRequest,
 
-        /// The output size of the RGBA pixel buffer.
+        // The output size of the RGBA pixel buffer.
         uint32_t * w,
 
-        /// The output 
+        // The output 
         uint32_t * h
     );
 
 
 
     void (*font_renderer_query_spacing) (
-        /// renderer instance 
-        ///
+        // renderer instance 
+        //
         topazFontRenderer_t *, 
 
-        /// Renderer userdata
-        ///
+        // Renderer userdata
+        //
         void *,
 
-        /// The spacing information to populate.
-        /// The xNextOrigin and yNextOrigin should be 
-        /// zero'd when starting a new string of characters,
-        /// as the output xNextOrigin and yNextOrigin are relative
-        /// to the initial character.
-        ///
+        // The spacing information to populate.
+        // The xNextOrigin and yNextOrigin should be 
+        // zero'd when starting a new string of characters,
+        // as the output xNextOrigin and yNextOrigin are relative
+        // to the initial character.
+        //
         topazFontRenderer_Spacing_t *,
 
-        /// Requested size of the font in pixels.
-        ///
+        // Requested size of the font in pixels.
+        //
         int sizePixels, 
 
-        /// The previous character in the string. If none,
-        /// should be 0.
-        ///
+        // The previous character in the string. If none,
+        // should be 0.
+        //
         int prevchar,
 
-        /// The current character to request spacing info for.
-        ///
+        // The current character to request spacing info for.
+        //
         int thischar,
 
-        /// The previous character in the string. If none,
-        /// should be 0.
-        ///
+        // The previous character in the string. If none,
+        // should be 0.
+        //
         int nextchar
 
     );

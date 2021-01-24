@@ -36,9 +36,6 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/matrix.h>
 #include <topaz/transform.h>
 ///
-///
-///    Spatial
-///    -----
 ///    A hierarchical transform object.
 /// 
 ///    Allows for chaining transformation information including
@@ -57,18 +54,27 @@ topazSpatial_t * topaz_spatial_create();
 
 /// Destroys a spatial object
 ///
-void topaz_spatial_destroy(topazSpatial_t *);
+void topaz_spatial_destroy(
+    /// Spatial instance to destroy.
+    topazSpatial_t * spatial
+);
 
 
 /// Resets the spatial back to the default state
 ///
-void topaz_spatial_reset(topazSpatial_t *);
+void topaz_spatial_reset(
+    /// Spatial instance to modify.
+    topazSpatial_t * spatial
+);
 
 
 /// Gets the transform for this spatial object alone.
 /// Modifications to it affect the global transform calculations
 ///
-topazTransform_t * topaz_spatial_get_node(topazSpatial_t *);
+topazTransform_t * topaz_spatial_get_node(
+    /// Spatial instance to query.
+    topazSpatial_t * spatial
+);
 
 
 
@@ -78,32 +84,73 @@ topazTransform_t * topaz_spatial_get_node(topazSpatial_t *);
 /// child parent transforms. If changes have been queued for children 
 /// transforms or this one, those changes are applied.
 ///
-const topazMatrix_t * topaz_spatial_get_global_transform(topazSpatial_t *);
+const topazMatrix_t * topaz_spatial_get_global_transform(
+    /// Spatial instance to query.
+    topazSpatial_t * spatial
+);
 
 /// Swaps the built in transform for the given transform 
 /// pass nullptr to return the transform back to the default.
 ///
-void topaz_spatial_replace_transform(topazSpatial_t *, topazTransform_t *);
+void topaz_spatial_replace_transform(
+    /// Spatial to update.
+    topazSpatial_t * spatial, 
+
+    /// Transform to bind to the spatial. The lifetime of the transform 
+    /// should be at least as long as the spatials'
+    topazTransform_t * trans
+);
     
 /// Sets the given spatial object as a child of this one
 ///
-void topaz_spatial_set_as_parent(topazSpatial_t * child, topazSpatial_t * newParent);
+void topaz_spatial_set_as_parent(
+    /// The child in the operation.
+    topazSpatial_t * child, 
+
+    /// The parent in the operation.
+    topazSpatial_t * newParent
+);
     
 /// invalidates this transfrom manually, causing itself and children to update 
 /// upon next request for its transform.
 ///
-void topaz_spatial_invalidate(topazSpatial_t *);
+void topaz_spatial_invalidate(
+    /// The spatial to invalidate and mark for updating.
+    topazSpatial_t * spatial
+);
 
 /// Checks for an update to the spatial object.
 ///
-void topaz_spatial_check_update(topazSpatial_t *);
+void topaz_spatial_check_update(
+    /// The spatial to update if applicable.
+    topazSpatial_t * spatial
+);
 
-//Returns a 16-float array that signifies the internal transform array.
-//This is intended for quick renderer upload. This will always
-//reflect the global transform
+
 typedef struct topazRenderer_Buffer_t topazRenderer_Buffer_t;
-void topaz_spatial_update_model_transforms(topazSpatial_t *, topazRenderer_Buffer_t * id);
+
+/// Returns a 16-float array that signifies the internal transform array.
+/// This is intended for quick renderer upload. This will always
+/// reflect the global transform
+void topaz_spatial_update_model_transforms(
+    /// The spatial to query.
+    topazSpatial_t * spatial, 
+
+    /// The renderer buffer to populate.
+    topazRenderer_Buffer_t * id
+);
 	
+
+/// Callback for when a spatial update is pushed through.
+///
+typedef void (*topaz_spatial_update_callback)(
+    /// Spatial that received the callback
+    topazSpatial_t * spatial, 
+
+    /// User data bound to the callback
+    void * userData
+);
+
 
 /// Function called when the spatial object 
 /// changes it transform in 3D space. This can be triggered 
@@ -112,22 +159,23 @@ void topaz_spatial_update_model_transforms(topazSpatial_t *, topazRenderer_Buffe
 /// be used to remove it in the future.
 ///
 uint32_t topaz_spatial_add_update_callback(
-    topazSpatial_t *, 
+    /// The spatial to add a callback to.
+    topazSpatial_t * spatial, 
 
-    /// Callback
-    /// 
-    void(*callback)(topazSpatial_t *, void *), 
-
+    /// Callback to add.
+    topaz_spatial_update_callback cb, 
 
     /// User data for the callback
-    ///
     void * userData
 );
 
 /// Removes the specified callback 
 ///
 void topaz_spatial_remove_update_callback(
-    topazSpatial_t *, 
+    /// The spatial to modify.
+    topazSpatial_t * spatial, 
+
+    /// The callback ID to remove.
     uint32_t id
 );
 

@@ -35,15 +35,9 @@ DEALINGS IN THE SOFTWARE.
 
 #include <stdint.h>
 typedef struct topazArray_t topazArray_t;
-/*
 
-    Bin
-    -----
-
-    Tags a pointer with a unique value ID. Mostly useful for internal 
-    implementations of ID systems where validation is needed.
-
-*/
+/// Tags a pointer with a unique value ID. Mostly useful for internal 
+/// implementations of ID systems where validation is needed.
 typedef struct topazBin_t topazBin_t;
 
 /// Creates a new bin to add objects to.
@@ -52,31 +46,61 @@ topazBin_t * topaz_bin_create();
 
 /// Destroys the bin.
 ///
-void topaz_bin_destroy(topazBin_t *);
+void topaz_bin_destroy(
+    /// The bin to destroy.
+    topazBin_t * bin
+);
 
 /// Adds an object to the bin, its ID tag is returned.
 /// The object must not be NULL.
 ///
-uint32_t topaz_bin_add(topazBin_t *, void *);
+uint32_t topaz_bin_add(
+    /// The bin to add to.
+    topazBin_t * bin, 
+
+    /// The pointer to add to the bin.
+    void * object
+);
 
 /// Returns whether the bin contains the given value.
 ///
-int topaz_bin_contains(const topazBin_t *, uint32_t);
+int topaz_bin_contains(
+    /// The bin to query.
+    const topazBin_t * bin, 
+
+    /// The ID to query.
+    uint32_t id
+);
 
 /// Returns the object matched with the ID tag. If none exists
 /// NULL is returned.
 ///
-void * topaz_bin_fetch(const topazBin_t *, uint32_t);
+void * topaz_bin_fetch(
+    /// The bin to query.
+    const topazBin_t * bin, 
+
+    /// The object ID to query.
+    uint32_t id
+);
 
 /// Removes an object from the bin.
 ///
-void topaz_bin_remove(topazBin_t *, uint32_t);
+void topaz_bin_remove(
+    /// The bin to remove objects from.
+    topazBin_t * bin, 
+
+    /// The object ID to remove.
+    uint32_t id
+);
 
 /// Returns an array of void * containing all 
 /// objects within the bin. Its a new array and must be destroyed by 
 /// the user.
 ///
-topazArray_t * topaz_bin_get_all(const topazBin_t *);
+topazArray_t * topaz_bin_get_all(
+    /// The bin to query.
+    const topazBin_t * bin
+);
 
 
 #endif

@@ -40,18 +40,18 @@ typedef struct topaz_t topaz_t;
 
 
 ///
-///    Mesh
-///    -----
+/// 3D object defined by triangle primitives.
 ///
-///    3D object defined by triangle primitives.
-///    A Mesh contains 2 components: the Mesh itself and a series of MeshObject s.
-///    The Mesh itself provides the base data: vertex positions, normals,
-///    UVs, you name it. A MeshObject contains the actual application of that source data, expressing what
-///    vertices to use, the material to render the vertices with, etc.
-///    Using the Mesh - MeshObject reloationship aptly can allow for flexible
-///    control over performance vs. memory cost.
+/// A mesh contains 2 components: the mesh itself and a series of objects.
+/// The Mesh itself provides the base data: vertex positions, normals,
+/// UVs, you name it. A MeshObject contains the actual application of that source data, expressing what
+/// vertices to use, the material to render the vertices with, etc.
+/// Using the Mesh - MeshObject reloationship aptly can allow for flexible
+/// control over performance vs. memory cost.
 ///
-///
+/// An object is a collection of faces 
+/// specified with indices to vertices. For mesh objects, these will be 
+/// indices in groups of 3.
 ///
 ///
 typedef struct topazMesh_t topazMesh_t;
@@ -85,38 +85,58 @@ enum topazMesh_VertexAttribute {
 
 /// Creates a new, empty mesh.
 ///
-topazMesh_t * topaz_mesh_create(topaz_t *);
+topazMesh_t * topaz_mesh_create(
+    /// The topaz context.
+    topaz_t * context
+);
 
 /// Creates a new mesh instance of a mesh as an exact copy.
 /// This clones the vertex data as well.
 ///
-topazMesh_t * topaz_mesh_clone(const topazMesh_t *);
+topazMesh_t * topaz_mesh_clone(
+    /// The source mesh.
+    const topazMesh_t * mesh
+);
 
 /// Creates a nice instance of a mesh, but shares the vertex data 
 /// with the source instance. Any edits to the vertex data will 
 /// be reflected in all meshes that share the same vertex data.
 ///
-topazMesh_t * topaz_mesh_clone_shared(const topazMesh_t *);
+topazMesh_t * topaz_mesh_clone_shared(
+    /// The mesh to share (which also owns the vertices)
+    const topazMesh_t * mesh
+);
 
 /// Returns source mesh instance that the vertex data belongs to
 /// If the mesh was created in a non-shared way, the instance returned 
 /// will match the object itself.
 ///
-topazMesh_t * topaz_mesh_get_shared_source(topazMesh_t *);
+topazMesh_t * topaz_mesh_get_shared_source(
+    /// The mesh to query.
+    topazMesh_t * mesh
+);
 
-
-
-/////////////// Vertex modification
 
 
 /// Returns the number of vertices that the mesh contains.
 ///
-void topaz_mesh_set_vertex_count(topazMesh_t *, uint32_t);
+void topaz_mesh_set_vertex_count(
+    /// The mesh to modify
+    topazMesh_t * mesh, 
+    /// The new vertex count
+    uint32_t newCount
+);
 
 /// Sets the raw vertices for the mesh. This also sets the vertex count.
 /// The array type is topazRenderer_3D_Vertex_t
 ///
-void topaz_mesh_define_vertices(topazMesh_t *, const topazArray_t *);
+void topaz_mesh_define_vertices(
+    /// The mesh to modify.
+    topazMesh_t * mesh, 
+
+    /// The new vertices to be copied into the mesh.
+    const topazArray_t * vertices
+);
 
 
 /// Gets data from a specific vertex. If the 
@@ -125,8 +145,13 @@ void topaz_mesh_define_vertices(topazMesh_t *, const topazArray_t *);
 /// with the same mesh.
 ///
 const float * topaz_mesh_get_vertex(
-    const topazMesh_t *, 
-    topazMesh_VertexAttribute, 
+    /// The mesh to query.
+    const topazMesh_t * mesh, 
+
+    /// Which vertex attribute to retrieve.
+    topazMesh_VertexAttribute attribute, 
+
+    /// The vertex index.
     uint32_t index
 );
 
@@ -134,23 +159,26 @@ const float * topaz_mesh_get_vertex(
 /// vertex doesnt exist, nothing happens
 ///
 void topaz_mesh_set_vertex(
-    topazMesh_t *,
-    topazMesh_VertexAttribute, 
+    /// The mesh to modify.
+    topazMesh_t * mesh,
+
+    /// The attribute to modify
+    topazMesh_VertexAttribute attribute, 
+
+    /// The vertex index to modify.
     uint32_t index,
-    const float *
+
+    /// The raw data to copy.
+    const float * data
 );
 
 /// Returns the number of vertex within this mesh.
 ///
-uint32_t topaz_mesh_get_vertex_count(const topazMesh_t *);
+uint32_t topaz_mesh_get_vertex_count(
+    /// The mesh to query.
+    const topazMesh_t * mesh
+);
 
-
-
-//////////// Object control
-
-/// An object is a collection of faces 
-/// specified with indices to vertices. For mesh objects, these will be 
-/// indices in groups of 3.
 
 
 
@@ -158,34 +186,61 @@ uint32_t topaz_mesh_get_vertex_count(const topazMesh_t *);
 /// and its index is returned. This index can be used with topaz_mesh_get_object 
 /// to modify and read from.
 ///
-uint32_t topaz_mesh_add_object(topazMesh_t *);
+uint32_t topaz_mesh_add_object(
+    /// The mesh to add an object to.
+    topazMesh_t * mesh
+);
 
 /// Gets the array of face indices for the corresponding index.
 ///
-topazArray_t * topaz_mesh_get_object(topazMesh_t *, uint32_t index);
+topazArray_t * topaz_mesh_get_object(
+    /// The mesh to retrieve an object from.
+    topazMesh_t * mesh, 
+
+    /// The object index.
+    uint32_t index
+);
 
 /// Removes the object specified. No action is taken if the index 
 /// doesn't exist.
 ///
-void topaz_mesh_remove_object(topazMesh_t *, uint32_t);
+void topaz_mesh_remove_object(
+    /// The mesh to remove an object from.
+    topazMesh_t * mesh, 
+
+    /// The index of the object to remove.
+    uint32_t index
+);
 
 /// Gets the number of objects that the mesh object holds.
 ///
-uint32_t topaz_mesh_get_object_count(const topazMesh_t *);
+uint32_t topaz_mesh_get_object_count(
+    /// The mesh to query.
+    const topazMesh_t * mesh
+);
 
-/// Returns the raw buffer for all vertices. See renderer.h
+/// Returns the raw buffer for all vertices.
 ///
-topazRenderer_Buffer_t * topaz_mesh_get_vertex_data(topazMesh_t *);
+topazRenderer_Buffer_t * topaz_mesh_get_vertex_data(
+    /// The mesh to query.
+    topazMesh_t * mesh
+);
 
 
 
 /// Creates a new basic cube mesh.
 ///
-topazMesh_t * topaz_mesh_create_cube(topaz_t *);
+topazMesh_t * topaz_mesh_create_cube(
+    /// The topaz context.
+    topaz_t * context
+);
 
 /// Creates a new basic square mesh.
 ///
-topazMesh_t * topaz_mesh_create_square(topaz_t *);
+topazMesh_t * topaz_mesh_create_square(
+    /// The topaz context.
+    topaz_t * context
+);
 
 
 

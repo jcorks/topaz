@@ -53,9 +53,9 @@ typedef struct topazAudioManager_t topazAudioManager_t;
 typedef struct topazAudioManagerAPI_t topazAudioManagerAPI_t;
 
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazAudioManager_t. See <topaz/backends/AudioManager.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazAudioManager_t. See <topaz/backends/AudioManager.h>
+//
 struct topazAudioManagerAPI_t {
     void *    (*audio_manager_create)           (topazAudioManager_t *, topaz_t *);
     void      (*audio_manager_destroy)          (topazAudioManager_t *, void *);

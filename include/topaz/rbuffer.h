@@ -39,15 +39,11 @@ DEALINGS IN THE SOFTWARE.
 
 
 ///
-///    Rbuffer
-///    -----
-///
 ///    Rbuffer ("Read Buffer") handles input data. Once instantiated
 ///    with a target, the Rbuffer can then easily read and process binary data.
 ///    Rbuffers are the most effective for unpacking data, especially data
 ///    that is packed in accordance to OutBuffer routines, as all
 ///    OutBuffer writing functions mirror the reading functions of Rbuffer.
-///
 ///
 typedef struct topazRbuffer_t topazRbuffer_t;
 
@@ -57,39 +53,77 @@ topazRbuffer_t * topaz_rbuffer_create();
 
 /// Destroys an input buffer 
 ///
-void topaz_rbuffer_destroy(topazRbuffer_t *);
+void topaz_rbuffer_destroy(
+    /// The Rbuffer to destroy.
+    topazRbuffer_t * r
+);
 
 
 ///  Opens a raw buffer to read from.
 ///
-void topaz_rbuffer_open(topazRbuffer_t *, const uint8_t *, uint64_t size);
+void topaz_rbuffer_open(
+    /// The Rbuffer to modify. Any prior Rbuffer information 
+    /// is cleared.
+    topazRbuffer_t * r, 
+
+    /// The data buffer of raw bytes to read from.
+    /// The data is copied into the rbuffer.
+    const uint8_t * data, 
+
+    /// Number of bytes of the data buffer to read validly.
+    uint64_t size
+);
 
 
-/// Returns the next nBytes as a c string.
+/// Returns the next nBytes as a topazString.
 /// The string is valid until the next call to this function with this buffer.
 ///
-const topazString_t * topaz_rbuffer_read_string(topazRbuffer_t *, uint64_t nBytes);
+const topazString_t * topaz_rbuffer_read_string(
+    /// The rbuffer to read from.
+    topazRbuffer_t * r, 
+
+    /// The number of bytes to read.
+    uint64_t nBytes
+);
 
 /// Returns the next n bytes.
 /// 
 /// If there are less than numBytes remaining,
 /// the remaining bytes are returned.
 /// The array is valid until the next call to this function with this buffer.
-const topazArray_t * topaz_rbuffer_read_bytes(topazRbuffer_t *, uint64_t numBytes);
+const topazArray_t * topaz_rbuffer_read_bytes(
+    /// The rbuffer to read from.
+    topazRbuffer_t * r, 
+
+    /// Byte count to read.
+    uint64_t numBytes
+);
 
 
 /// Returns a pointer to raw data 
 /// of length numBytes. If there isnt enough space to service 
 /// numBytes, NULL is returned.
 ///
-const void * topaz_rbuffer_get_buffer(topazRbuffer_t *, uint64_t numBytes);
+const void * topaz_rbuffer_get_buffer(
+    /// The rbuffer to query.
+    topazRbuffer_t * r, 
+
+    /// The number of bytes to read validly.
+    uint64_t numBytes
+);
 
 
 /// Similar to topaz_rbuffer_get_buffer, but 
 /// in the case that numBytes exceeds size, an 
 /// empty buffer is returned rather than NULL.
 ///
-const void * topaz_rbuffer_get_buffer_nnull(topazRbuffer_t *, uint64_t numBytes);
+const void * topaz_rbuffer_get_buffer_nnull(
+    /// The rbuffer to query.
+    topazRbuffer_t * r, 
+
+    /// The number of bytes to read validly.
+    uint64_t numBytes
+);
 
 
 
@@ -98,27 +132,46 @@ const void * topaz_rbuffer_get_buffer_nnull(topazRbuffer_t *, uint64_t numBytes)
 ///
 /// Note: If used with user objects, be aware that this only performs a shallow copy
 /// If not enough bytes are left to acoomodate the data object, the contents are undefined.
-#define topaz_rbuffer_read(__B__, __T__) (*(T*)topaz_rbuffer_get_buffer_nnull(__B__, sizeof(__T__))) 
+///
+/// __B__ is the buffer.
+/// __T__ is the type.
+///
+#define topaz_rbuffer_read(__B__,__T__) (*(T*)topaz_rbuffer_get_buffer_nnull(__B__, sizeof(__T__))) 
 
 
 /// Set the buffer position byte.
 ///
 /// If this operation were to go beyond the last valid index,
 /// it will move to the very last index.
-void topaz_rbuffer_go_to_byte(topazRbuffer_t *, uint64_t nBytes);
+void topaz_rbuffer_go_to_byte(
+    /// The rbuffer to seek within.
+    topazRbuffer_t * r, 
+
+    /// The position in bytes to seet to.
+    uint64_t byte
+);
 
 
 /// returns the size of the buffer in bytes.
 ///
-uint64_t topaz_rbuffer_get_size(const topazRbuffer_t *);
+uint64_t topaz_rbuffer_get_size(
+    /// The rbuffer to query.
+    const topazRbuffer_t * r
+);
 
 /// Returns the number of bytes left in the buffer.
 ///
-uint64_t topaz_rbuffer_get_bytes_left(const topazRbuffer_t *);
+uint64_t topaz_rbuffer_get_bytes_left(
+    /// The rbuffer to query.
+    const topazRbuffer_t * r
+);
 
 /// Returns whether or not all data has been read.
 ///
-int topaz_rbuffer_is_empty(const topazRbuffer_t *);
+int topaz_rbuffer_is_empty(
+    /// The rbuffer to query. 
+    const topazRbuffer_t * r
+);
 
 
 #endif

@@ -55,9 +55,9 @@ typedef struct topaz_t topaz_t;
 typedef struct topazInputManagerAPI_t topazInputManagerAPI_t;
 
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazInputManager_t. See <topaz/backends/input_manager.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazInputManager_t. See <topaz/backends/input_manager.h>
+//
 struct topazInputManagerAPI_t {
     void *                  (*input_manager_create)           (topazInputManager_t *, topaz_t *);
     void                    (*input_manager_destroy)          (topazInputManager_t *, void *);

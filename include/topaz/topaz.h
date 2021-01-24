@@ -49,10 +49,13 @@ typedef struct topazFontRenderer_t topazFontRenderer_t;
 
 
 ///
-///    Topaz   
-///    -----
+/// The context instance for the toolkit. 
+/// Most data within the topaz project is contextualized
+/// under some a topaz instance at some level, so it is 
+/// often that a topaz context is needed.
 ///
-///    The context instance for the toolkit. 
+/// Contexts must be created and destroyed, and are not 
+/// automatically created.
 ///
 typedef struct topaz_t topaz_t;
 
@@ -64,7 +67,10 @@ topaz_t * topaz_context_create();
 
 /// Creates a new topaz context with the given topazSystem_t configuration.
 ///
-topaz_t * topaz_context_create_from_system(topazSystem_t *);
+topaz_t * topaz_context_create_from_system(
+    /// The pre-configured system instance to use.
+    topazSystem_t * system
+);
 
 
  
@@ -90,57 +96,99 @@ void topaz_context_destroy();
 /// Once run is initiated, all drawing to the screen and logic updating
 /// is automated. While running, it is also possible to utilize the
 /// debugging features such as the console and Entity debugger.
-int topaz_context_run(topaz_t *);
+int topaz_context_run(
+    /// The context to run.
+    topaz_t * context
+);
     
     
 /// Pauses the Engine execution loop.
 ///
 /// Once in a paused state, only critical objects (managers marked with pausable == false),
 /// will be updated.
-void topaz_context_pause(topaz_t *);
+void topaz_context_pause(
+    /// The context to pause.
+    topaz_t * context
+);
+
 
     
 /// Immediately pauses the execution loop.
 ///
 /// Like Pause() but disrupts the engine immediately rather than safely waiting 
 /// until the next iteration. Most useful for debugging purposes.
-void topaz_context_break(topaz_t *);
+void topaz_context_break(
+    /// The context to break.
+    topaz_t * context
+);
 
 
 
 ///  resumes from a paused or broken state.
 ///
-void topaz_context_resume(topaz_t *);    
+void topaz_context_resume(
+    /// The context to resume.
+    topaz_t * context
+);
+
     
 /// Updates the main engine.
 ///
 /// Does not include frame throttling
-void topaz_context_iterate(topaz_t *); 
+void topaz_context_iterate(
+    /// The context to iterate.
+    topaz_t * context
+);
+
 
 
 /// Performs a stepping operation for the entire engine. This is normally
 /// called through topaz_context_iterate(), which is called by topaz_context_run().
 ///
-void topaz_context_step(topaz_t *);
+void topaz_context_step(
+    /// The context to step.
+    topaz_t * context
+);
 
 
 /// Performs a drawing operation for the entire engine. This is normally
 /// called through topaz_context_iterate(), which is called by topaz_context_run().
 ///
-void topaz_context_draw(topaz_t *);
+void topaz_context_draw(
+    /// The context to draw.
+    topaz_t * context
+);
 
 ///  returns whether the engine is in a paused or broken state.
 ///
-int topaz_context_is_paused(const topaz_t *);
+int topaz_context_is_paused(
+    /// The context to query.
+    const topaz_t * context
+);
+
 
 /// Returns the toplevel Entity. 
 ///
 /// From here, you can 
 /// set the Entity that holds the toplevel of the project. 
 /// By default there is none.
-topazEntity_t *topaz_context_get_root(const topaz_t *);
+topazEntity_t *topaz_context_get_root(
+    /// The context to query.
+    const topaz_t * context
+);
 
-void topaz_context_set_root(topaz_t *, topazEntity_t *);
+
+/// Sets the root entity for the context.
+/// From this entity, all other entities will be updated.
+/// topaz handles entities in a hierarchical structure,
+/// so the root must be populated and managed.
+void topaz_context_set_root(
+    /// The context to modify.
+    topaz_t * context, 
+
+    /// The new root to use.
+    topazEntity_t * newRoot
+);
 
 
 /// Attaches a management-type entity.
@@ -152,40 +200,73 @@ void topaz_context_set_root(topaz_t *, topazEntity_t *);
 /// the pre_manager* calls ensure that these managers are stepped/drawn BEFORE 
 /// the normal entity tree. 
 ///
-void topaz_context_attach_pre_manager(topaz_t *, topazEntity_t * id);
+void topaz_context_attach_pre_manager(
+    /// The context to modify.
+    topaz_t * topaz, 
+
+    /// The entity to become a manager.
+    topazEntity_t * entity
+);
 
 /// Same as topaz_context_attach_pre_manager, but the when the pause 
 /// state is entered, these managers are unaffected.
 ///
-void topaz_context_attach_pre_manager_unpausable(topaz_t *, topazEntity_t * id);
+void topaz_context_attach_pre_manager_unpausable(
+    /// The context to modify.
+    topaz_t * topaz, 
 
+    /// The entity to become a manager.
+    topazEntity_t * entity
+);
 /// Same as topaz_context_attach_pre_manager, but the manager is updated 
 /// AFTER the main entity tree.
 ///
-void topaz_context_attach_post_manager(topaz_t *, topazEntity_t * id);
+void topaz_context_attach_post_manager(
+    /// The context to modify.
+    topaz_t * topaz, 
+
+    /// The entity to become a manager.
+    topazEntity_t * entity
+);
 
 /// Same as topaz_context_attach_post_manager, but the manager is updated 
 /// even when the paused state is entered
 ///
-void topaz_context_attach_post_manager_unpausable(topaz_t *, topazEntity_t * id);
+void topaz_context_attach_post_manager_unpausable(
+    /// The context to modify.
+    topaz_t * topaz, 
+
+    /// The entity to become a manager.
+    topazEntity_t * entity
+);
 
 
-/// Ends the Engine execution loop.
+
+/// Ends the context execution loop.
 ///
-void topaz_context_quit(topaz_t *);
+void topaz_context_quit(
+    /// The context to quit.
+    topaz_t * context
+);
 
 /// Sleeps until the time required for the target frames-per-second is reached.
-///
-/// @param FPS  The target FPS; useful for loops.
-///
 /// The actual resolution is machine-dependent, but it tends to be millisecond resolution.
+/// This will pause the main thread.
 ///
-void topaz_context_wait(topaz_t *, int FPS);
+void topaz_context_wait(
+    /// The context to wait with.
+    topaz_t * context, 
+    /// The target updates per second.
+    int FPS
+);
 
 
 /// Gets the number of milliseconds since creating this context.
 ///
-uint64_t topaz_context_get_time(topaz_t *);
+uint64_t topaz_context_get_time(
+    /// The context to query.
+    topaz_t * context
+);
 
 
 /// Retrieves the specified parameter.
@@ -195,16 +276,34 @@ uint64_t topaz_context_get_time(topaz_t *);
 ///     "version-micro"     - micro version
 ///     "version-minor"     - minor version 
 ///     "version-major"     - major version 
-const topazString_t * topaz_context_get_parameter(const topaz_t *, const topazString_t *);
+const topazString_t * topaz_context_get_parameter(
+    /// The context to query.
+    const topaz_t * context, 
+
+    /// The paramter to retrieve a value from.
+    const topazString_t * paramName
+);
 
 /// Sets a parameter. Some parameters are read-only. In such a case, 
 /// 0 is returned.
-int topaz_context_set_parameter(const topaz_t *, const topazString_t *, const topazString_t *);
+int topaz_context_set_parameter(
+    /// The context to modify.
+    const topaz_t * context,
+
+    /// The parameter to set.
+    const topazString_t * paramName, 
+
+    /// The new value of the parameter.
+    const topazString_t * value
+);
 
 /// Retrieves an array of all parameter names known.
 /// The array should be freed when done.
 ///
-topazArray_t * topaz_context_get_parameter_names(const topaz_t *);
+topazArray_t * topaz_context_get_parameter_names(
+    /// The context to query.
+    const topaz_t * context
+);
 
 
 
@@ -212,11 +311,18 @@ topazArray_t * topaz_context_get_parameter_names(const topaz_t *);
 
 /// Creates a new, standard filesys instance.
 ///
-topazFilesys_t * topaz_context_filesys_create(topaz_t *);
+topazFilesys_t * topaz_context_filesys_create(
+    /// The relevant context.
+    topaz_t * context
+);
 
 /// Gets the font renderer for the topaz instance.
 ///
-topazFontRenderer_t * topaz_context_get_font_renderer(topaz_t *);
+topazFontRenderer_t * topaz_context_get_font_renderer(
+    /// The relevant context.
+    topaz_t * context
+);
+
 
 
 
@@ -224,27 +330,45 @@ topazFontRenderer_t * topaz_context_get_font_renderer(topaz_t *);
 
 /// Retrieves the standard input instance.
 ///
-topazInput_t * topaz_context_get_input(topaz_t *);
+topazInput_t * topaz_context_get_input(
+    /// The relevant context.
+    topaz_t * context
+);
 
 /// Retrieves the standard view manager instance.
 ///
-topazViewManager_t * topaz_context_get_view_manager(topaz_t *);
+topazViewManager_t * topaz_context_get_view_manager(
+    /// The relevant context.
+    topaz_t * context
+);
 
 /// Retrieves the standard script manager
 ///
-topazScriptManager_t * topaz_context_get_script_manager(topaz_t *);
+topazScriptManager_t * topaz_context_get_script_manager(
+    /// The relevant context.
+    topaz_t * context
+);
 
 /// Retrieves the standard resources instance.
 ///
-topazResources_t * topaz_context_get_resources(topaz_t *);
+topazResources_t * topaz_context_get_resources(
+    /// The relevant context.
+    topaz_t * context
+);
 
 /// Gets the console for the topaz instance
 ///
-topazConsole_t * topaz_context_get_console(topaz_t *);
+topazConsole_t * topaz_context_get_console(
+    /// The relevant context.
+    topaz_t * context
+);
 
 
-/// 
-topazGraphics_t * topaz_context_get_graphics(topaz_t *);
+/// Gets the graphics instance for the topaz context.
+topazGraphics_t * topaz_context_get_graphics(
+    /// The relevant context.
+    topaz_t * context
+);
 
 
 

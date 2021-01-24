@@ -34,23 +34,17 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/component.h>
 
-/*
+/// Adds a state machine mechanism to the entity.
+/// Each StateControl instance is effectively a dynamic state machine.  
+/// After desgnating what states exist within the machine using
+/// topaz_state_control_add(), the machine can be run using topaz_state_control_execute(). 
+/// Using each state's on_step, it will iterate till halted or its state altered.
+typedef struct topazStateControl_t topazStateControl_t;
 
-    StateControl
-    -----
-    Adds a state machine mechanism to the entity.
-   
-    Each StateControl instance is effectively a dynamic state machine.  
-    After desgnating what states exist within the machine using
-    topaz_state_control_add(), the machine can be run using topaz_state_control_execute(). 
-    Using each state's on_step, it will iterate till halted or its state altered.
 
-*/
 
 
 typedef struct topazStateControl_Loop_t topazStateControl_Loop_t;
-
-
 /// Designates execution instructions for a state.
 /// During each state, different logic is designated to run to control
 /// what happens during this state and when the state should be altered.
@@ -83,40 +77,73 @@ struct topazStateControl_Loop_t {
 /// Creates a new state control component.
 /// Use component_destroy to release.
 ///
-topazComponent_t * topaz_state_control_create(topaz_t *);
+topazComponent_t * topaz_state_control_create(
+    /// The topaz context
+    topaz_t * context
+);
 
 
 /// Sets up a new valid state.
 /// If an existing state fo the same name exists, it is updated.
 ///
-void topaz_state_control_add(topazComponent_t *, const topazString_t * stateName, topazStateControl_Loop_t);
+void topaz_state_control_add(
+    /// The state control to modify.
+    topazComponent_t * control, 
+
+    /// The name of the new state.
+    const topazString_t * stateName, 
+
+    /// The data for the state loop.
+    topazStateControl_Loop_t
+);
 
 
 /// Removes the state.
 /// No action is taken if the tag does not refer to a valid state.
 ///
-void topaz_state_control_remove(topazComponent_t *, const topazString_t * stateName);
+void topaz_state_control_remove(
+    /// The component to modify.
+    topazComponent_t * control, 
+    
+    /// The name of the state to remove.
+    const topazString_t * stateName
+);
 
 /// Begins the state machine execution loop from the given state.
 /// If begin state does not refer to a valid state, no action is taken.
 /// If done in the middle of a state loop function, any queued 
 /// function calls are cancelled.
 ///
-void topaz_state_control_execute(topazComponent_t *, const topazString_t *);
+void topaz_state_control_execute(
+    /// The state control to modify.
+    topazComponent_t * control, 
+
+    /// The state to change to.
+    const topazString_t * stateName
+);
 
 /// Stops all current execution.
 /// If done during a state loop, all remaining state loop functions 
 /// that would have executed are cancelled.
 ///
-void topaz_state_control_halt(topazComponent_t *);
+void topaz_state_control_halt(
+    /// The state control to halt.
+    topazComponent_t * control
+);
 
 /// Returns whether or not the machine is in a halted state.
 ///
-int topaz_state_control_is_halted(const topazComponent_t *);
+int topaz_state_control_is_halted(
+    /// The state control to query.
+    const topazComponent_t * control
+);
 
 /// Returns the current state tag. If no execution state is active, the empty string is returned.
 ///
-const topazString_t * topaz_state_control_get_current(const topazComponent_t *);
+const topazString_t * topaz_state_control_get_current(
+    /// The state control to query.
+    const topazComponent_t * control
+);
 
 
 

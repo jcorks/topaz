@@ -59,9 +59,9 @@ typedef struct topazDisplayAPI_t topazDisplayAPI_t;
 
 typedef struct topazRenderer_Framebuffer_t topazRenderer_Framebuffer_t;
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazDisplay_t. See <topaz/backends/Display.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazDisplay_t. See <topaz/backends/Display.h>
+//
 struct topazDisplayAPI_t {
     void *                  (*display_create)           (topazDisplay_t *, topaz_t *);
     void                    (*display_destroy)          (topazDisplay_t *, void *);
@@ -101,9 +101,9 @@ struct topazDisplayAPI_t {
 
 
 
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the lifedisplay of the Display
-    ///
+    // User-given data. This is expected to data needed to persist
+    // throughout the lifedisplay of the Display
+    //
     void * implementationData;
 
 

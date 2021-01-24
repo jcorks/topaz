@@ -123,7 +123,7 @@ int topaz_wbuffer_get_size(const topazWbuffer_t * t) {
     return topaz_array_get_size(t->data);
 }
 
-void topaz_wbuffer_clear(const topazWbuffer_t * t) {
+void topaz_wbuffer_clear(topazWbuffer_t * t) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazWbuffer_t pointer cannot be NULL.");
     #endif

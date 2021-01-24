@@ -38,24 +38,36 @@ typedef struct topaz_t topaz_t;
 typedef struct topazIOX_t topazIOX_t;
 
 
-/*
-    Resources
-    -----
-    Manages assets
-*/
+/// Manages assets and acts as a repository for them.
+///
+/// Many projects require thats some external data be 
+/// loaded in during the running of the program. The Resources 
+/// module provides a means to accomplish this.
+/// Using standardized pathing and built-in IO translators,
+/// this module will translate data for you.
+///
+/// Often in projects, the same asset will be used in multiple parts within 
+/// the program. This module will resuse assets already loaded to provide a quick,
+/// transparent way to quickly access assets.
 typedef struct topazResources_t topazResources_t;
 
 
 
 /// Creates a new resources instance. This is normally not necessary to call, as 
 /// topaz_t has a default resources instance that it generates for you. 
-/// See topaz_get_resources();
+/// See <a href="./topaz_t.html#topaz_context_get_resources">topaz_context_get_resources()</a>
 ///
-topazResources_t * topaz_resources_create(topaz_t *);
+topazResources_t * topaz_resources_create(
+    /// The topaz context.
+    topaz_t * context
+);
 
 /// Destroys and frees a resources instance
 ///
-void topaz_resources_destroy(topazResources_t *);
+void topaz_resources_destroy(
+    /// The resource instance to destroy.
+    topazResources_t * res
+);
 
 
 
@@ -67,14 +79,28 @@ void topaz_resources_destroy(topazResources_t *);
 /// the directory of the binary.
 /// If successful, returns TRUE.
 ///
-int topaz_resources_set_path(topazResources_t *, const topazString_t *);
+int topaz_resources_set_path(
+    /// The resource instance to modify.
+    topazResources_t * res, 
 
+    /// The system path. The path itself is system dependent based on the 
+    /// associated filesystem.
+    const topazString_t * path
+);
 
-const topazString_t * topaz_resources_get_path(const topazResources_t *);
+/// Returns the current resource path.
+///
+const topazString_t * topaz_resources_get_path(
+    /// The resource instance to query.
+    const topazResources_t * res
+);
 
 /// Queries the filesystem for all assets within the asset directory.
 ///
-void topaz_resources_query_asset_paths(topazResources_t *);
+void topaz_resources_query_asset_paths(
+    /// The resource instance to query.
+    topazResources_t * res
+);
 
 /// Returns a read-only list of filesystem paths of resources within the current path
 /// 
@@ -108,9 +134,13 @@ const topazArray_t * topaz_resources_get_asset_paths(topazResources_t *);
 /// data is unavailable, NULL is returned.
 ///
 topazAsset_t * topaz_resources_load_asset(
-    topazResources_t *,
+    /// The resource instance to load with.
+    topazResources_t * res,
+    /// The extension / filetype to attempt to read with.
     const topazString_t * fileType,
+    /// The path to the asset.
     const topazString_t * path,
+    /// The unique name to give to the asset.
     const topazString_t * name
 );
 
@@ -119,9 +149,16 @@ topazAsset_t * topaz_resources_load_asset(
 /// given relative to the resources path.
 ///
 int topaz_resources_write_asset(
-    topazResources_t *,
-    topazAsset_t *,
+    /// The resource instance to write with.
+    topazResources_t * res,
+
+    /// The asset to write.
+    topazAsset_t * asset,
+
+    /// The type to write the asset as.
     const topazString_t * fileType,
+
+    /// The output path to write to. This is system-dependent based on the filesystem backend.
     const topazString_t * outputPath
 );
 
@@ -135,8 +172,11 @@ int topaz_resources_write_asset(
 /// can then be used directly to load data. See asset.h
 /// 
 topazAsset_t * topaz_resources_fetch_asset(
-    topazResources_t *,
-    topazAsset_Type ,
+    /// The resource instance to fetch with/
+    topazResources_t * res,
+    /// The asset type.
+    topazAsset_Type type,
+    /// The unique name of the asset.
     const topazString_t * name
 );
 
@@ -145,21 +185,30 @@ topazAsset_t * topaz_resources_fetch_asset(
 /// See iox.h
 ///
 topazIOX_t * topaz_resources_get_translator(
-    topazResources_t *,
+    /// The resource instance to query.
+    topazResources_t * res,
+
+    /// The type of the file to request.
     const topazString_t * fileExtension
 );
 
 
 void topaz_resources_remove_asset(
-    topazResources_t *,
+    /// The resource instance to remove from.
+    topazResources_t * res,
+
+    /// The name of the asset to search and remove.
     const topazString_t * name
 );
 
 /// Returns whether a particular extension is supported.
 ///
 int topaz_resources_is_extension_supported(
-    const topazResources_t *, 
-    const topazString_t *
+    /// The resource instance to query.
+    const topazResources_t * res, 
+
+    /// The name of the file extension / type to request.
+    const topazString_t * name
 );
 
 
@@ -169,9 +218,11 @@ int topaz_resources_is_extension_supported(
 /// new extension, a new backend handler will have to be made. See system.h.
 ///
 void topaz_resources_add_translator(
-    topazResources_t *, 
-    const topazString_t * ioxBackendName
-    
+    /// The resource instance to modify
+    topazResources_t * res, 
+
+    /// The IO translater registered with the topaz context system.
+    const topazString_t * ioxBackendName    
 );
 
 

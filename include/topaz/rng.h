@@ -36,10 +36,10 @@ DEALINGS IN THE SOFTWARE.
 #include <stdint.h>
 
 ///
-///    RNG
-///    -----
-///
-///    Instanced random number generator
+/// Instanced random number generator.
+/// With the same seed, the number sequence is 
+/// guaranteed to match. This RNG is insufficient for 
+/// security purposes.
 ///
 typedef struct topazRNG_t topazRNG_t;
 
@@ -51,22 +51,39 @@ topazRNG_t * topaz_rng_create();
 
 /// Destroys a random number generator
 ///
-void topaz_rng_destroy(topazRNG_t * t);
+void topaz_rng_destroy(
+    /// The RNG to destroy.
+    topazRNG_t * rng
+);
 
 
 
 /// Sets the seed for the random number generator.
 /// 
-void topaz_rng_set_seed(topazRNG_t * t, uint64_t);
+void topaz_rng_set_seed(
+    /// The RNG to modify.
+    topazRNG_t * rng, 
+
+    /// The seed to set.
+    uint64_t seed
+);
 
 
 /// Gets the next random integer from the RNG
+/// The range is [0, 0xffffffff].
 ///
-int topaz_rng_next_int(topazRNG_t *);
+int topaz_rng_next_int(
+    /// The RNG to pull from.
+    topazRNG_t * rng    
+);
 
-/// Gets the next random value from the RNG
+/// Gets the next random value from the RNG.
+/// The range is [0, 1].
 ///
-float topaz_rng_next_value(topazRNG_t *);
+float topaz_rng_next_value(
+    /// The RNG to pull from.
+    topazRNG_t * rng
+);
 
 
 

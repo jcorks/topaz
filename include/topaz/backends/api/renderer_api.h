@@ -67,9 +67,9 @@ typedef struct topazRendererAPI_t    topazRendererAPI_t;
 */
 typedef struct topazRenderer_TextureAPI_t    topazRenderer_TextureAPI_t;
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazRenderer_t. See <topaz/backends/renderer_texture.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazRenderer_t. See <topaz/backends/renderer_texture.h>
+//
 struct topazRenderer_TextureAPI_t {
 
 
@@ -94,9 +94,9 @@ struct topazRenderer_TextureAPI_t {
 */
 typedef struct topazRenderer_ProgramAPI_t    topazRenderer_ProgramAPI_t;
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazRenderer_t. See <topaz/backends/renderer_program.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazRenderer_t. See <topaz/backends/renderer_program.h>
+//
 struct topazRenderer_ProgramAPI_t {
 
 
@@ -134,9 +134,9 @@ struct topazRenderer_ProgramAPI_t {
 */
 typedef struct topazRenderer_2DAPI_t    topazRenderer_2DAPI_t;
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazRenderer_t. See <topaz/backends/renderer_2d.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazRenderer_t. See <topaz/backends/renderer_2d.h>
+//
 struct topazRenderer_2DAPI_t {
 
 
@@ -202,9 +202,9 @@ struct topazRenderer_2DAPI_t {
 */
 typedef struct topazRenderer_LightAPI_t    topazRenderer_LightAPI_t;
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazRenderer_t. See <topaz/backends/renderer_light.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazRenderer_t. See <topaz/backends/renderer_light.h>
+//
 struct topazRenderer_LightAPI_t {
 
 
@@ -240,9 +240,9 @@ struct topazRenderer_LightAPI_t {
 */
 typedef struct topazRenderer_BufferAPI_t    topazRenderer_BufferAPI_t;
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazRenderer_t. See <topaz/backends/renderer_buffer.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazRenderer_t. See <topaz/backends/renderer_buffer.h>
+//
 struct topazRenderer_BufferAPI_t {
 
 
@@ -271,9 +271,9 @@ struct topazRenderer_BufferAPI_t {
 */
 typedef struct topazRenderer_FramebufferAPI_t    topazRenderer_FramebufferAPI_t;
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazRenderer_t. See <topaz/backends/renderer_buffer.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazRenderer_t. See <topaz/backends/renderer_buffer.h>
+//
 struct topazRenderer_FramebufferAPI_t {
 
 
@@ -297,9 +297,9 @@ struct topazRenderer_FramebufferAPI_t {
 
 
 
-/// Each function is an implementation-facing copy of 
-/// the user-side API for topazRenderer_t. See <topaz/backends/Renderer.h>
-///
+// Each function is an implementation-facing copy of 
+// the user-side API for topazRenderer_t. See <topaz/backends/Renderer.h>
+//
 typedef struct topazRenderer_CoreAPI topazRenderer_CoreAPI;
 
 struct topazRenderer_CoreAPI_t {
@@ -335,46 +335,46 @@ struct topazRenderer_CoreAPI_t {
 
 
 
-/// composite struct composed of all the subAPIs that 
-/// together for the renderer.
-///
+// composite struct composed of all the subAPIs that 
+// together for the renderer.
+//
 struct topazRendererAPI_t {
-    /// API for the renderer direct functions    
-    ///
+    // API for the renderer direct functions    
+    //
     topazRenderer_CoreAPI_t core;
 
-    /// API for renderer buffers, which provide renderer 
-    /// storage.
-    ///
+    // API for renderer buffers, which provide renderer 
+    // storage.
+    //
     topazRenderer_BufferAPI_t buffer;
 
-    /// API for renderer programs, which provide a way to 
-    /// generate dynamic renderer programs such as shaders.
-    ///
+    // API for renderer programs, which provide a way to 
+    // generate dynamic renderer programs such as shaders.
+    //
     topazRenderer_ProgramAPI_t program;
 
-    /// API for renderer textures, which provide image data.
-    /// 
+    // API for renderer textures, which provide image data.
+    // 
     topazRenderer_TextureAPI_t texture;
 
-    /// API for the 2d renderer, which provides operations optimized 
-    /// for 2d geometry (small batch, dynamic visuals)
-    ///
+    // API for the 2d renderer, which provides operations optimized 
+    // for 2d geometry (small batch, dynamic visuals)
+    //
     topazRenderer_2DAPI_t twod;
 
-    /// API for the light renderer, which provides lighting control 
-    /// for 3d scenes.
-    ///
+    // API for the light renderer, which provides lighting control 
+    // for 3d scenes.
+    //
     topazRenderer_LightAPI_t light;
 
-    /// API for the renderer framebuffer, which is the target of rendering 
-    /// operations.
-    ///
+    // API for the renderer framebuffer, which is the target of rendering 
+    // operations.
+    //
     topazRenderer_FramebufferAPI_t fb;
 
-    /// User-given data. This is expected to data needed to persist
-    /// throughout the liferenderer of the Renderer
-    ///
+    // User-given data. This is expected to data needed to persist
+    // throughout the liferenderer of the Renderer
+    //
     void * implementationData;
 };
 

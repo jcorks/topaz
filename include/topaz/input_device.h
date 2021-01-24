@@ -36,16 +36,10 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/vector.h>
 #include <topaz/containers/string.h>
 
-/*
-
-    InputDevice
-    -----
-    
-    Input devices are devies that the user interacts with via
-    buttons (boolean input) or axes (ranged / discrete input)
-
-
-*/
+///
+/// Input devices are devices that the user interacts with via
+/// buttons (boolean input) or axes (ranged / discrete input)
+///
 typedef struct topazInputDevice_t topazInputDevice_t;
 
 
@@ -67,9 +61,9 @@ enum topazInputDevice_Class {
 };
 
 
+typedef struct topazInputDevice_Event_t topazInputDevice_Event_t;
 /// A single input event state.
 ///
-typedef struct topazInputDevice_Event_t topazInputDevice_Event_t;
 struct topazInputDevice_Event_t {
     /// input mapping. UserInput enums for ones below the count, else unmarked ints that are system-dependent
     ///
@@ -89,11 +83,17 @@ struct topazInputDevice_Event_t {
 
 /// Creates a new input device
 ///
-topazInputDevice_t * topaz_input_device_create(topazInputDevice_Class);
+topazInputDevice_t * topaz_input_device_create(
+    /// The device class of the new device.
+    topazInputDevice_Class cls;
+);
 
 /// Destroys an input device.
 ///
-void topaz_input_device_destroy(topazInputDevice_t *);
+void topaz_input_device_destroy(
+    /// The device to destroy.
+    topazInputDevice_t * device
+);
 
 
 
@@ -101,29 +101,60 @@ void topaz_input_device_destroy(topazInputDevice_t *);
 
 
 /// Adds a state change event for the given input within
-/// this device
-void topaz_input_device_push_event(topazInputDevice_t *, const topazInputDevice_Event_t *);
+/// this device. For devices managed by the system, events 
+/// are regularly pushed to devices as events coem from the 
+/// system. This function can be called for any device to 
+/// add events, real or otherwise.
+void topaz_input_device_push_event(
+    /// The device to add an event to.
+    topazInputDevice_t * device, 
+
+    /// The event to add.
+    const topazInputDevice_Event_t * event
+);
 
 
-/// Gets the next state change for a device input
+/// Gets the next state change for an input device.
+/// The next event in waiting is consumed.
 ///
-int topaz_input_device_pop_event(topazInputDevice_t *, topazInputDevice_Event_t *);
+int topaz_input_device_pop_event(
+    /// The input device to retrieve an event from.
+    topazInputDevice_t * device, 
+    
+    /// A pointer to an event, which will be populated with event data.
+    topazInputDevice_Event_t * event
+);
 
 
 /// Returns the device type
 ///
-topazInputDevice_Class topaz_input_device_get_type(const topazInputDevice_t *);
+topazInputDevice_Class topaz_input_device_get_type(
+    /// The device to query.
+    const topazInputDevice_t * device
+);
 
 
 /// Returns the number of button events pending
 ///
-int topaz_input_device_get_event_count(const topazInputDevice_t *);
+int topaz_input_device_get_event_count(
+    /// The device to query.
+    const topazInputDevice_t * device
+);
 
 /// Sets a dead zone for the specified input.
 /// If a deadzone is specified, inputs below this value are ignored
 /// and the new minimum is marked as this deadzone value and is renormalized.    
 ///   
-void topaz_input_device_set_deadzone(topazInputDevice_t *, int id, float);
+void topaz_input_device_set_deadzone(
+    /// The device to modify.
+    topazInputDevice_t * device, 
+
+    /// The input ID to apply the deadzone to. 
+    int id, 
+
+    /// The new deadzone.
+    float newDeadzone
+);
 
 
 

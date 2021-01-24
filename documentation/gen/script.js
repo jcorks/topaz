@@ -23,14 +23,14 @@ symbolTable.setSymbolExtractor(/(\S+)\s*\(/, symbolTable.type.FUNCTION);
 symbolTable.setSymbolExtractor(/struct\s(.+)\s/, symbolTable.type.OPEN_STRUCTURE); 
 symbolTable.setSymbolExtractor(/struct\s(.+)\s/, symbolTable.type.CLASS); 
 symbolTable.setSymbolExtractor(/enum\s(\S+)\s/, symbolTable.type.ENUMERATOR); 
-symbolTable.setSymbolExtractor(/(\S+)\s*\S*,/, symbolTable.type.ENUM_VALUE); 
-symbolTable.setSymbolExtractor(/\s*([^\(\*\s,;]*)\s*(?:\)\(|$|\,|\;)/, symbolTable.type.VARIABLE); 
+symbolTable.setSymbolExtractor(/^\s*(\S+)\s*\S*/, symbolTable.type.ENUM_VALUE); 
+symbolTable.setSymbolExtractor(/\s*([^\(\*\s,;]*)\s*(?:\)\(|=|$|\,|\;)/, symbolTable.type.VARIABLE); 
 symbolTable.setSymbolExtractor(/\s*\(\*(\S+)\s*\)/, symbolTable.type.FUNCTION_POINTER); 
 symbolTable.setSymbolExtractor(/\s*#define\s*(\S*)/, symbolTable.type.MACRO);
 
 symbolTable.setReturnObjectExtractor(/^\s*(.*)\s\S*\s*\(/, symbolTable.type.FUNCTION);
 symbolTable.setReturnObjectExtractor(/^\s*((?:const\s*|\s*)[^\s*]*(?:\s*\*)*)/, symbolTable.type.VARIABLE);
-symbolTable.setReturnObjectExtractor(/\s*(\S*)\s*\(\*/, symbolTable.type.FUNCTION_POINTER);
+symbolTable.setReturnObjectExtractor(/\s*typedef\s*(\S*|\S*\s*\*)\s*\(/, symbolTable.type.FUNCTION_POINTER);
 
 symbolTable.setObjectExtractor(/\s*(?:const)?\s*(\S*)\s*/)
 
@@ -82,30 +82,30 @@ var data2doc = function(filename) {
                 const type = symbolTable.guessType(doclineContent);
                 symbolName = symbolTable.getSymbolName(type, doclineContent);
                 const returnObject = symbolTable.getReturnObject(type, doclineContent);
-
-                symbolTable.add(
-                    filename,
-                    symbolName,
-                    type,
-                    treeStack.length ? treeStack[treeStack.length-1] : '',
-                    currentDesc,
-                    returnObject,
-                    doclineContent
-                );
-
-                // add to navlist
-                if (type == symbolTable.type.CLASS) {
-                    navlistContent += doc.createElement(
-                        doc.createElement(
-                            symbolName,
-                            'div',
-                            'class="navlist-item"'
-                        ),
-                        'a',
-                        'href="'+symbolName+'.html"'
+                if (!symbolTable.getSymbol(symbolName)) {
+                    symbolTable.add(
+                        filename,
+                        symbolName,
+                        type,
+                        treeStack.length ? treeStack[treeStack.length-1] : '',
+                        currentDesc,
+                        returnObject,
+                        doclineContent
                     );
-                }
 
+                    // add to navlist
+                    if (type == symbolTable.type.CLASS) {
+                        navlistContent += doc.createElement(
+                            doc.createElement(
+                                symbolName,
+                                'div',
+                                'class="navlist-item"'
+                            ),
+                            'a',
+                            'href="'+symbolName+'.html"'
+                        );
+                    }
+                }
                 if (!treeStack.length) {
                     treeStack.push(symbolName);
                 }
@@ -170,10 +170,9 @@ var linkObject = function(doc, objectString) {
 
 }
 
-//for(var n = 0; n < files.length; ++n) {
-
-for(var n = 0; n <= 6; n++) {
+for(var n = 0; n < files.length; ++n) {
     var content = '';
+    var mainClass = '';
     const symbols = symbolTable.getFileEntities(files[n]);
     if (!symbols.length) continue;
 
@@ -273,6 +272,7 @@ for(var n = 0; n <= 6; n++) {
 
           case symbolTable.type.CLASS:
             typename = 'Class';
+            if (mainClass == '') mainClass = symbols[i].name;
             block = doc.createElement(
                 symbols[i].name + '',    
                 'h1',
@@ -284,19 +284,18 @@ for(var n = 0; n <= 6; n++) {
                 'pre'
             );
 
-
-            block += doc.createElement(
-                "<b>Relevant elements:</b></br></br>",
+            var publicMemList = '';
+            var hasPublicMems = false;
+            publicMemList += doc.createElement(
+                "<b>Public members:</b></br></br>",
                 'div'
             );
-
-
             // list all quick symbols
-            doc.addContent('<div>\n');
+            publicMemList += '<div>\n';
             for(var m = 0; m < symbols[i].children.length; ++m) {
                 if (symbolTable.getChildSymbol(symbols[i], m).type == symbolTable.type.VARIABLE) {
                     // for structs treated as classes
-                    block += 
+                    publicMemList += 
                     doc.createElement(
                         linkObject(doc, symbolTable.getChildSymbol(symbols[i], m).returns) + ' ' + symbols[i].children[m],
                         'div'
@@ -305,6 +304,26 @@ for(var n = 0; n <= 6; n++) {
                         symbolTable.getChildSymbol(symbols[i], m).desc,
                         'pre'
                     );
+                    hasPublicMems = true;
+                } else {
+                }
+            }
+            publicMemList += '</div>\n';
+            if (hasPublicMems) {
+                block += publicMemList;
+            }
+
+
+
+
+            block += doc.createElement(
+                "<b>Related elements:</b></br></br>",
+                'div'
+            );
+            // list all quick symbols
+            doc.addContent('<div>\n');
+            for(var m = 0; m < symbols[i].children.length; ++m) {
+                if (symbolTable.getChildSymbol(symbols[i], m).type == symbolTable.type.VARIABLE) {
                 } else {
                     block += 
                     doc.createElement(
@@ -318,7 +337,6 @@ for(var n = 0; n <= 6; n++) {
                 }
             }
             doc.addContent('</div>\n');
-
 
             
             break;
@@ -457,8 +475,8 @@ for(var n = 0; n <= 6; n++) {
         )
     );
 
-    doc.write('../'+symbols[0].name+'.html');
-    topaz.log(symbols[0].name+'.html');
+    doc.write('../'+mainClass+'.html');
+    topaz.log(mainClass+'.html');
 }
 
 

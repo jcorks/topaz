@@ -37,25 +37,42 @@ typedef struct topazSystem_t topazSystem_t;
 typedef struct topazScript_t topazScript_t;
 
 
-/*
-
-    Script Manager
-    -----
-    Creates script contexts and links these contexts with 
-    functions and references to native topaz primitives. Which 
-    primitives linked is based on a permissions mask
-
-*/
+/// Creates script contexts and links these contexts with 
+/// functions and references to native topaz primitives. Which 
+/// primitives linked is based on a permissions mask
 typedef struct topazScriptManager_t topazScriptManager_t;
 
 
 
+/// Permissions for a script instance. (Bitmask) 
+/// Scripts allow effectively arbitrary code to be externally run
+/// within the running program. Thus, for security, the script VM can 
+/// be denied access to symbols that could modify the system.
+/// Importance of this is on a case-by-case basis and depends on the 
+/// backend implementation, but it is highlighly advised to 
+/// carefully choose the permission level according to your use
+/// instead of using the catch-all permission.
+typedef enum topazScriptManager_Permission_t topazScriptManager_Permission_t;
 
-typedef enum {
+enum topazScriptManager_Permission_t {
+    /// Basic permissions that exclude all other features.
     topazScriptManager_Permission_Basic = 0,
+
+    /// Adds permissions to access the filesystem backend.
+    /// Namely allows the reading and writing of arbitrary files.
     topazScriptManager_Permission_FullFilesystem = 1,
+
+    /// Adds permissions to access the resource tree.
+    /// Namely adds reading and writing assets through the resource 
+    /// API.
     topazScriptManager_Permission_Resources = 2,
+
+    /// Adds permissions to read / interact with input.
+    /// Namely, a program can log / read from any input device that topaz recognizes 
+    /// and may modify the input queue of a device as recognized by topaz.
     topazScriptManager_Permission_Input = 4,
+
+    /// Adds permissions for all the other features.
     topazScriptManager_Permission_All = 0xffffffff
 } topazScriptManager_Permission_t;
 
@@ -66,16 +83,25 @@ typedef enum {
 /// topaz_t has a default instance that it generates for you. 
 /// See topaz_context_get_script_manager();
 ///
-topazScriptManager_t * topaz_script_manager_create(topaz_t *);
+topazScriptManager_t * topaz_script_manager_create(
+    /// The topaz context.
+    topaz_t * context
+);
 
 /// Destroys and frees a topaz script manager instance.
 ///
-void topaz_script_manager_destroy(topazScriptManager_t *);
+void topaz_script_manager_destroy(
+    /// The script manager to destroy.
+    topazScriptManager_t * manager
+);
 
 
 /// Creates and bootstraps a script context.
 topazScript_t * topaz_script_manager_create_context(
-    topazScriptManager_t *,
+    /// The script manager to use to create the script instance.
+    topazScriptManager_t * manager,
+
+    /// The permission bitmask to use.
     topazScriptManager_Permission_t permissions
 );
 
