@@ -74,7 +74,7 @@ enum topazScriptManager_Permission_t {
 
     /// Adds permissions for all the other features.
     topazScriptManager_Permission_All = 0xffffffff
-} topazScriptManager_Permission_t;
+};
 
 
 

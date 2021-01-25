@@ -156,7 +156,7 @@ void topaz_matrix_scale(
     float y, 
 
     /// The z scale modifier.
-    float z, 
+    float z
 );
 
     

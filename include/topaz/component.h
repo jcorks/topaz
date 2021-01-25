@@ -111,7 +111,7 @@ topazComponent_t * topaz_component_create_with_attributes(
     /// Helps uniquely identify the component
     const topazString_t * tagName, 
     /// The topaz context.
-    topaz_t * context
+    topaz_t * context,
     /// The attributes to define the component with.     
     const topazComponent_Attributes_t * attribs
 );

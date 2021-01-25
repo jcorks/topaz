@@ -50,7 +50,7 @@ enum topazScheduler_Mode {
     /// The scheduler will measure intervals in update frames.
     /// Every step of the component increments the frame.
     topazScheduler_Mode_Frame
-}
+};
 
 
 /// Creates a new state control component.
@@ -58,7 +58,10 @@ enum topazScheduler_Mode {
 ///
 topazComponent_t * topaz_scheduler_create(
     /// The topaz context.
-    topaz_t * context
+    topaz_t * context,
+
+    /// The mode for the scheduler.
+    topazScheduler_Mode mode
 );
 
 

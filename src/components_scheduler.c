@@ -29,7 +29,7 @@ DEALINGS IN THE SOFTWARE.
 */
 
 #include <topaz/compat.h>
-#include <topaz/components/state_control.h>
+#include <topaz/components/scheduler.h>
 #include <topaz/containers/string.h>
 #include <topaz/containers/array.h>
 #include <topaz/topaz.h>
@@ -88,7 +88,7 @@ typedef struct {
     int isTime;
 
     /// only used for frames.
-    uint64_t frameSource;
+    uint64_t frameSrc;
 
     topazArray_t * names;
 } Scheduler;
@@ -288,7 +288,7 @@ void topaz_scheduler_resume(topazComponent_t * c) {
 }
 
 uint64_t topaz_scheduler_get_task_interval_remaining(
-    topazComponent_t * scheduler,
+    topazComponent_t * c,
     const topazString_t * name
 ) {
     Scheduler * s = scheduler__retrieve(c);
@@ -301,6 +301,6 @@ uint64_t topaz_scheduler_get_task_interval_remaining(
             return nextEnd < timeNow ? 0 : timeNow - nextEnd;
         }
     }
-
+    return 0;
 }
 

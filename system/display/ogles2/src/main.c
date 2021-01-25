@@ -394,10 +394,10 @@ void topaz_system_display_ogles2__backend(
     api->display_get_y = topaz_glfw_get_y;
     api->display_set_name = topaz_glfw_set_name;
 
-    api->display_add_resize_callback = (void (*)(topazDisplay_t *, void *, void(*)(int w, int h, void *), void *)) api_nothing;
-    api->display_remove_resize_callback = (void (*)(topazDisplay_t *, void *, void(*)(int w, int h, void *))) api_nothing;
-    api->display_add_close_callback = (void (*)(topazDisplay_t *, void *, void(*)(void *), void *)) api_nothing;
-    api->display_remove_close_callback = (void (*)(topazDisplay_t *, void *, void(*)(void *))) api_nothing;
+    api->display_add_resize_callback = (void (*)(topazDisplay_t *, void *, topaz_display_callback, void *)) api_nothing;
+    api->display_remove_resize_callback = (void (*)(topazDisplay_t *, void *, topaz_display_callback)) api_nothing;
+    api->display_add_close_callback = (void (*)(topazDisplay_t *, void *, topaz_display_callback, void *)) api_nothing;
+    api->display_remove_close_callback = (void (*)(topazDisplay_t *, void *, topaz_display_callback)) api_nothing;
 
     api->display_is_capable = topaz_glfw_is_capable;
     api->display_update = topaz_glfw_update;

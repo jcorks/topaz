@@ -168,7 +168,7 @@ topazScript_t * topaz_script_create(
     topazSystem_Backend_t * backend, 
 
     /// The raw API to implement the backend's features.
-    topazScriptAPI_t api
+    const topazScriptAPI_t * api
 );
 
 

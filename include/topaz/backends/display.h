@@ -54,6 +54,14 @@ typedef struct topazDisplay_t topazDisplay_t;
 
 
 
+/// Callback for responding to display events,
+typedef void (*topaz_display_callback)(
+    /// The display responding to the event.
+    topazDisplay_t * display,
+    /// The data bound to the callback.
+    void * data
+);
+
 
 
 
@@ -364,6 +372,7 @@ void topaz_display_set_name(
     /// The new displayName
     const topazString_t * name
 );
+
 
 
 /// Adds an additional callback function to be be called after

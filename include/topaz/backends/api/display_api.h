@@ -84,10 +84,10 @@ struct topazDisplayAPI_t {
     int  (*display_get_x)               (topazDisplay_t *, void *);
     int  (*display_get_y)               (topazDisplay_t *, void *);
     void (*display_set_name)            (topazDisplay_t *, void *, const topazString_t *);
-    void (*display_add_resize_callback)     (topazDisplay_t *, void *, void(*)(int w, int h, void *), void *);
-    void (*display_remove_resize_callback)  (topazDisplay_t *, void *, void(*)(int w, int h, void *));
-    void (*display_add_close_callback)      (topazDisplay_t *, void *, void(*)(void *), void *);
-    void (*display_remove_close_callback)   (topazDisplay_t *, void *, void(*)(void *));
+    void (*display_add_resize_callback)     (topazDisplay_t *, void *, topaz_display_callback, void *);
+    void (*display_remove_resize_callback)  (topazDisplay_t *, void *, topaz_display_callback);
+    void (*display_add_close_callback)      (topazDisplay_t *, void *, topaz_display_callback, void *);
+    void (*display_remove_close_callback)   (topazDisplay_t *, void *, topaz_display_callback);
     int  (*display_is_capable)              (topazDisplay_t *, void *, topazDisplay_Capability); 
     void (*display_update)                  (topazDisplay_t *, void *, topazRenderer_Framebuffer_t *);    
     const topazArray_t * (*display_supported_framebuffers)  (topazDisplay_t *, void *);

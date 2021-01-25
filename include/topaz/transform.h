@@ -166,7 +166,7 @@ typedef void (*topaz_transform_callback)(
 
     /// The data bound to the callback.
     void * callbackData
-)
+);
 
 
 

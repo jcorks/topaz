@@ -304,7 +304,7 @@ void topaz_input_set_deadzone(
     int padID, 
 
     /// The input key to set a deadzone. Mostly useful for pad axes inputs
-    int input, 
+    int inputButton, 
 
     /// The deadzone amount. If an input value's absolute value is 
     /// below this amount, then the input will be ignored.

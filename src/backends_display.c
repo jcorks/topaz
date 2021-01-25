@@ -184,19 +184,19 @@ void topaz_display_set_name(topazDisplay_t * t, const topazString_t * s) {
     t->api.display_set_name(t, t->apiData, s);
 }
 
-void topaz_display_add_resize_callback(topazDisplay_t * t, void(*cb)(int w, int h, void *), void * cbData) {
+void topaz_display_add_resize_callback(topazDisplay_t * t, topaz_display_callback cb, void * cbData) {
     t->api.display_add_resize_callback(t, t->apiData, cb, cbData);
 }
 
-void topaz_display_remove_resize_callback(topazDisplay_t * t, void(*cb)(int w, int h, void *)) {
+void topaz_display_remove_resize_callback(topazDisplay_t * t, topaz_display_callback cb) {
     t->api.display_remove_resize_callback(t, t->apiData, cb);
 }
 
-void topaz_display_add_close_callback(topazDisplay_t * t, void(*cb)(void *), void * data) {
+void topaz_display_add_close_callback(topazDisplay_t * t, topaz_display_callback cb, void * data) {
     t->api.display_add_close_callback(t, t->apiData, cb, data);
 }
 
-void topaz_display_remove_close_callback(topazDisplay_t * t, void(*cb)(void *)) {
+void topaz_display_remove_close_callback(topazDisplay_t * t, topaz_display_callback cb) {
     t->api.display_remove_close_callback(t, t->apiData, cb);
 }
 

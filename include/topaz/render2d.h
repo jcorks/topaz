@@ -133,7 +133,7 @@ int topaz_render2d_get_parameter(
 ///
 int topaz_render2d_get_absolute(
     /// The render2d to query.
-    const topazRender2D_t * r2d, 
+    const topazRender2D_t * r2d
 );
 
 /// Sets whether drawing calculations from the node should be interpreted as absolute 

@@ -165,7 +165,7 @@ void topaz_refbank_set_account_remover(
     topazRefbank_t * bank,
 
     /// Function to be called when the account has exhausted all references
-    topaz_refbank_account_remover remover
+    topaz_refbank_account_remover remover,
 
     /// Data to be passed to the function
     void * data
