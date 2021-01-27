@@ -1,0 +1,15 @@
+Meson building
+--------------
+
+1.  Copy / make a meson_options.txt. The look to see 
+    if theres an existing meson_options.txt for you platform.
+    The defaults in each should be decent for most systems
+
+2.  Modify the meson_options.txt to use the backends you want.
+
+
+3.  Run the following to build the defaults:
+
+  meson output
+  cd ./output
+  meson compile

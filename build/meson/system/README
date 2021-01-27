@@ -1,0 +1,57 @@
+Within this directory, you may find some default 
+implementations of backends for common systems.
+
+Each directory represents a compliant library/environment
+that is required to build with this backend. 
+
+Each directory is in the following format:
+
+[backend_name]/[environment_name]/
+    |-meson.build 
+    |-compat_test.c [optional]
+    |-src/
+        |-[files].c/h
+        |-backend.h
+
+
+Meson is the build system of choice for Topaz. The meson.build 
+file is meant to handle the logic of adding auxiliary files, libraries,
+include directories, and possible system tests to allow the build 
+system to integrate the implementation into the library/binary.
+
+TODO: full documentation on how to interact with the build 
+      and organize data per directory (Meson interaction 
+      is still in flux)
+
+
+
+
+      
+backend.h will always exist within src and contains a single
+function. This is the public-facing api and it creates a 
+single instance of the backend in question. It is of the 
+format:
+
+
+
+    #ifndef H_TOPAZDC__[backend_name][environment_name]__INCLUDED
+    #define H_TOPAZDC__[backend_name][environment_name]__INCLUDED
+
+    void topaz_system_[backend_name]_[environment_name]__backend(
+        topazSystem_t *          system, 
+        topazSystem_Backend_t *  backend, 
+        topaz[backend_name]API_t * api
+    );
+
+    #endif
+
+
+The function implementation should fulfill 2 requirements:
+1) Using topaz_system_backend_bind() to assign information 
+   to the backend. This includes text attributes, versioning 
+   information, and update controls 
+
+2) Populate the API reference with functions specific to 
+   that API that allow interfacing with some system-specific 
+   feature / library / hardware / etc.
+

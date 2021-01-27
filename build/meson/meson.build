@@ -8,7 +8,7 @@ message('Host OS: ' + host_machine.system())
 # This is the root of all includes.
 # includes are namespaced properly
 
-mainIncdir = include_directories('include')
+mainIncdir = include_directories('../../include')
 
 
 # base source files. 
@@ -138,7 +138,7 @@ conf.set('config_handler_calls',    handlerInternalSource)
 conf.set('config_handler_includes', handlerInternalInclude)
 
 configure_file(
-    input  : 'config/config-base.c',
+    input  : '../../config/config-base.c',
     output : 'topaz_config__system_backends',
     configuration : conf
 )
@@ -154,10 +154,22 @@ endforeach
 message(outputStr)
 
 
+
+
+
+
+# modify sources
+srcsReal=[]
+foreach s : src
+    srcsReal += '../../'+s
+endforeach
+
+
+
 # build the base library
 lib = library(
     'topaz',
-    src,
+    srcsReal,
     include_directories : mainIncdir,
     c_args : compile_args,
     link_args : compile_args,
@@ -168,14 +180,14 @@ lib = library(
 if get_option('IncludeTests') == true
     message('Making output test executable..')
     test_sources = [
-        'tests/main.c',
-        'tests/test.c',
-        'tests/test_array.c',
-        'tests/test_entity.c',
-        'tests/test_string.c',
-        'tests/test_table.c',
-        'tests/test_bin.c',
-        'tests/test_object2d.c'
+        '../../tests/main.c',
+        '../../tests/test.c',
+        '../../tests/test_array.c',
+        '../../tests/test_entity.c',
+        '../../tests/test_string.c',
+        '../../tests/test_table.c',
+        '../../tests/test_bin.c',
+        '../../tests/test_object2d.c'
     ]
 
 
@@ -183,7 +195,7 @@ if get_option('IncludeTests') == true
 
     executable(
         'topaz_test',
-        src + test_sources,
+        srcsReal + test_sources,
         include_directories : mainIncdir,
         dependencies : baselibs,
         c_args : compile_args,
@@ -195,9 +207,9 @@ endif
 # todo: replace with link_lib!
 executable(
     'rectangles',
-    src + [
-        'examples/1-Rectangles/main.c', 
-        'examples/1-Rectangles/rectangle.c'
+    srcsReal + [
+        '../../examples/1-Rectangles/main.c', 
+        '../../examples/1-Rectangles/rectangle.c'
     ],
     include_directories : mainIncdir,
     dependencies : baselibs,
@@ -207,8 +219,8 @@ executable(
 
 executable(
     'scripts',
-    src + [
-        'examples/10-Scripts/main.c'
+    srcsReal + [
+        '../../examples/10-Scripts/main.c'
     ],
     include_directories : mainIncdir,
     dependencies : baselibs,
