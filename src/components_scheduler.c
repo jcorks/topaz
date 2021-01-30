@@ -160,7 +160,7 @@ static void scheduler__on_step(topazComponent_t * c, Scheduler * s) {
     for(i = 0; i < topaz_array_get_size(s->tasks); ++i) {
         Task * t = topaz_array_at(s->tasks, Task *, i);
         
-        if (t->stamp + t->interval + t->intervalDelay >= timeNow) {
+        if (timeNow >= t->stamp + t->interval + t->intervalDelay) {
             t->cb(c, t->cbData);
             t->stamp = timeNow;
             t->intervalDelay = 0;
@@ -174,7 +174,14 @@ static void scheduler__on_destroy(topazComponent_t * c, Scheduler * s) {
     for(i = 0; i < topaz_array_get_size(s->tasks); ++i) {
         scheduler__task_destroy(topaz_array_at(s->tasks, Task*, i));
     }
+    uint32_t len = topaz_array_get_size(s->names);
+    for(i = 0; i < len; ++i) {
+        topaz_string_destroy(topaz_array_at(s->names, topazString_t *, i));
+    }
+
     topaz_array_destroy(s->tasks);
+    topaz_array_destroy(s->names);
+
     free(s);
 }
 
@@ -254,9 +261,9 @@ const topazString_t * topaz_scheduler_start_task_simple(
 
     topazString_t * tag = topaz_string_create_from_c_str("_SCHTASK%d", id++);
     topaz_scheduler_start_task(c, tag, interval, 0, callback, callbackData);
-    topaz_string_destroy(tag);
 
     Task * task = scheduler__task_get(s, tag);
+    topaz_string_destroy(tag);
 
     if (!task) return TOPAZ_STR_CAST("");
     return task->name;
@@ -287,6 +294,29 @@ void topaz_scheduler_resume(topazComponent_t * c) {
     s->pauseStartAt = 0;
 }
 
+const topazArray_t * topaz_scheduler_get_tasks(topazComponent_t * c) {
+    Scheduler * s = scheduler__retrieve(c);
+    if (s->needsNameUpdate) {
+        uint32_t i;
+        uint32_t len = topaz_array_get_size(s->names);
+        for(i = 0; i < len; ++i) {
+            topaz_string_destroy(topaz_array_at(s->names, topazString_t *, i));
+        }
+        topaz_array_set_size(s->names, 0);
+
+        len = topaz_array_get_size(s->tasks);
+        for(i = 0; i < len; ++i) {
+            topazString_t * name = topaz_string_clone(topaz_array_at(s->tasks, Task *, i)->name);
+            topaz_array_push(s->names, name);
+        }
+        s->needsNameUpdate = 0;
+    }
+
+    return s->tasks;
+
+}
+
+
 uint64_t topaz_scheduler_get_task_interval_remaining(
     topazComponent_t * c,
     const topazString_t * name
@@ -298,7 +328,7 @@ uint64_t topaz_scheduler_get_task_interval_remaining(
         if (topaz_string_test_eq(t->name, name)) {
             uint64_t nextEnd = (t->stamp + t->interval + t->intervalDelay);
             uint64_t timeNow = s->isTime ? topaz_context_get_time(s->ctx) : s->frameSrc;
-            return nextEnd < timeNow ? 0 : timeNow - nextEnd;
+            return nextEnd < timeNow ? 0 : nextEnd - timeNow;
         }
     }
     return 0;

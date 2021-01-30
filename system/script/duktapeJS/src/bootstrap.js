@@ -38,6 +38,10 @@ topaz = {
     topazRenderer_TextureFilterHint_None : 1,
 
 
+    topazScheduler_Mode_Time : 0,
+    topazScheduler_Mode_Frame : 1,
+
+
     objectToString : function(obj, levelSrc) {
         var checked = [];
         var levelG = levelSrc ? levelSrc : 10;
@@ -790,6 +794,72 @@ topaz = {
         
 
     },
+
+
+
+    scheduler : function(type, implPre) {
+        var ctx = this;
+        var impl;
+
+        if (implPre) 
+            impl = implPre;
+        else {
+
+            impl = topaz_scheduler__create(type);
+        }
+        impl.__ctx = this;
+
+        
+        // initialize with component properties
+        const componentInit = topaz.component.bind(this);;
+        componentInit(undefined, impl);
+        
+
+        this.startTask = function(taskName, interval, idelay, cb) {
+            topaz_scheduler__start_task(impl, taskName, interval, idelay, cb);
+        }
+
+        this.startTaskSimple = function(interval, cb) {
+            return topaz_scheduler__start_task_simple(impl, interval, cb);
+        }
+
+
+        this.endTask = function(name) {
+            topaz_scheduler__end_task(impl, name);
+        }
+
+        this.pause = function(name) {
+            topaz_scheduler__pause(impl, name);
+        }
+
+        this.resume = function(name) {
+            topaz_scheduler__resume(impl, name);
+        }
+
+        this.getTaskIntervalRemaining = function(name) {
+            return topaz_scheduler__get_task_interval_remaining(impl, name);
+        }
+
+        Object.defineProperty(
+            this,
+            'tasks', {
+                get : function() {
+                    var out = [];
+                    const len = topaz_scheduler__get_task_count(impl);
+                    for(var i = 0; i < len; ++i) {
+                        out.push(topaz_schedluer__get_task(impl, i));
+                    }
+                    return out;
+                },
+            }
+        );
+
+        
+
+        
+
+    },
+
 
     component : function(defineProps, implPre) {
         //if (implPre)
