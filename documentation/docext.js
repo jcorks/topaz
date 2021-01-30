@@ -23,5 +23,22 @@ var docext_on_input = function() {
 }
 
 
+var docext_generate_banner = function() {
+    const el = document.getElementById('navbar');
+    for(var i = 0; i < doclinks.length; ++i) {
+        const element = document.createElement('a');
+        //element.className = 'navitem';
+        //element.href = doclinks[i]+'.html';
+        //element.innerHTML = "<div>"+doclinks[i]+"</div>";
+        element.innerHTML = '<a href="'+doclinks[i]+'.html"><div class="navitem">'+doclinks[i]+'</div></a>';
+
+        el.prepend(element);
+    }
+
+}
+
+
 // populate defaults
 docext_on_input();
+
+docext_generate_banner();

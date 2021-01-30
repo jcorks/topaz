@@ -19,7 +19,8 @@ var symbolTable = (function(){
         ENUM_VALUE : 5,
         VARIABLE : 6, 
         FUNCTION_POINTER : 7,
-        MACRO : 8
+        MACRO : 8,
+        DOCPAGE : 9
     }
 
     const typeToString = function(type) {
@@ -34,6 +35,7 @@ var symbolTable = (function(){
           case types.VARIABLE:       return "Variable/Parameter";
           case types.FUNCTION_POINTER:      return "Function Pointer";
           case types.MACRO:          return "Macro";
+          case types.DOCPAGE:        return "Documentation Page";
         }
     }
     

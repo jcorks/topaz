@@ -1,4 +1,5 @@
 </body>
 <script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
 <script src="docext.js"></script>
 </html>

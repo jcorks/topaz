@@ -10,15 +10,16 @@ topaz.log(topaz.resources.assetPaths);
 
 
 // c hints 
+symbolTable.setTypeHint('DOCPAGE',         symbolTable.type.DOCPAGE);
 symbolTable.setTypeHint('#define',         symbolTable.type.MACRO);
 symbolTable.setTypeHint('typedef struct ', symbolTable.type.CLASS);
 symbolTable.setTypeHint('enum',            symbolTable.type.ENUMERATOR);
 symbolTable.setTypeHint('typedef',         symbolTable.type.FUNCTION_POINTER);
-symbolTable.setTypeHint('(',              symbolTable.type.FUNCTION, '(*');
+symbolTable.setTypeHint('(',               symbolTable.type.FUNCTION, '(*');
 symbolTable.setTypeHint(' {',              symbolTable.type.OPEN_STRUCTURE);
-symbolTable.setTypeHint('',               symbolTable.type.VARIABLE);
+symbolTable.setTypeHint('',                symbolTable.type.VARIABLE);
 
-
+symbolTable.setSymbolExtractor(/DOCPAGE\s(.+)/, symbolTable.type.DOCPAGE); 
 symbolTable.setSymbolExtractor(/(\S+)\s*\(/, symbolTable.type.FUNCTION); 
 symbolTable.setSymbolExtractor(/struct\s(.+)\s/, symbolTable.type.OPEN_STRUCTURE); 
 symbolTable.setSymbolExtractor(/struct\s(.+)\s/, symbolTable.type.CLASS); 
@@ -173,7 +174,9 @@ for(var n = 0; n < files.length; ++n) {
         }
     }
 
+    // add the searchable symbols here. Skip doc pages, they should not be searchable
     for(var i = 0; i < symbols.length; ++i) {
+        if (symbols[i].type == symbolTable.type.DOCPAGE) continue;
         searchIndex[symbols[i].name] = {
             'mainClass' : mainClass
         };
@@ -184,7 +187,7 @@ for(var n = 0; n < files.length; ++n) {
 // returns a file link to the given symbolName
 // assumes that the search index is populated.
 var generateLink = function(symbolName) {
-    if (symbolName == searchIndex[symbolName].mainClass) {
+    if (!searchIndex[symbolName] || symbolName == searchIndex[symbolName].mainClass) {
         return symbolName+'.html';
     } else {
         return searchIndex[symbolName].mainClass+'.html#'+symbolName;
@@ -198,12 +201,15 @@ for(var n = 0; n < files.length; ++n) {
     if (!symbols.length) continue;
 
     for(var i = 0; i < symbols.length; ++i) {
-        const link = generateLink(symbols[i].name);
-        searchIndex[symbols[i].name]['link'] = link;
+        const entry = searchIndex[symbols[i].name];
+        if (entry) {
+            const link = generateLink(symbols[i].name);
+            entry['link'] = link;
+        }
     }
 }
 
-// create database
+// create database for searching in a page
 (function(){
     var searchIndexText = 'var searchIndex = ' + JSON.stringify(searchIndex);
     const filename = "../searchindex_db.js"
@@ -217,6 +223,20 @@ for(var n = 0; n < files.length; ++n) {
     topaz.resources.writeAsset(asset, 'txt', filename);
 })();
 
+
+// Generate banner links from doc pages
+var docpages = [];
+for(var n = 0; n < files.length; ++n) {
+    const symbols = symbolTable.getFileEntities(files[n]);
+    if (!symbols.length) continue;
+
+    for(var i = 0; i < symbols.length; ++i) {
+        if (symbols[i].type == symbolTable.type.DOCPAGE) {
+            docpages.push(symbols[i].name);    
+        }
+    }
+}
+writeTextFile("const doclinks = "+JSON.stringify(docpages), "../doclinks_db.js");
 
 
 
@@ -319,6 +339,19 @@ for(var n = 0; n < files.length; ++n) {
             }
             break;
 
+          case symbolTable.type.DOCPAGE:
+            typename = 'Docpage';
+            if (mainClass == '') mainClass = symbols[i].name;
+            block = doc.createElement(
+                symbols[i].name + '',    
+                'h1',
+                'id="'+symbols[i].name+'"'
+            );
+            block += doc.createElement(
+                symbols[i].desc + '',    
+                'pre'
+            );
+            break;
 
           case symbolTable.type.CLASS:
             typename = 'Class';
@@ -512,9 +545,19 @@ for(var n = 0; n < files.length; ++n) {
 
     doc.addContent(
         doc.createElement(
-            '(navbar)',
+            doc.createElement(
+                '',
+                'img',
+                'src="logoreduced.png"'+
+                'class="navlogo"'              
+            ) + doc.createElement(
+                '',
+                'div',
+                'class="navbar"'+
+                'id="navbar"'
+            ),
             'div',
-            'class="navbar"'
+            'class="navarea"'           
         ) + doc.createElement(
             doc.createElement(
                 navsearch + doc.createElement(
@@ -533,14 +576,13 @@ for(var n = 0; n < files.length; ++n) {
             'div'
         )
     );
-    
     if (mainClass != '') {
         doc.write('../'+generateLink(mainClass));
         topaz.log(generateLink(mainClass));
     }
 }
 
-
+topaz.quit();
 
 
 
