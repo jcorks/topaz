@@ -853,12 +853,66 @@ topaz = {
                 },
             }
         );
+    },
+
+
+    stateControl : function(implPre) {
+        var ctx = this;
+        var impl;
+
+        if (implPre) 
+            impl = implPre;
+        else {
+
+            impl = topaz_state_control__create();
+        }
+        impl.__ctx = this;
 
         
-
+        // initialize with component properties
+        const componentInit = topaz.component.bind(this);;
+        componentInit(undefined, impl);
         
+
+        this.add = function(name, state) {
+            topaz_state_control__add(impl, name, state.onStep, state.onDraw, state.onInit);
+        }
+
+        this.remove = function(name) {
+            topaz_state_control__remove(impl, name);
+        }
+
+        this.execute = function(name) {
+            topaz_state_control__execute(impl, name);
+        }
+
+        this.halt = function(name) {
+            topaz_state_control__halt(impl, name)
+        }
+
+
+        Object.defineProperty(
+            this,
+            'isHalted', {
+                get : function() {
+                    return topaz_state_control__is_halted(impl);
+                },
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            'state', {
+                get : function() {
+                    return topaz_state_control__get_current(impl);
+                },
+            }
+        );
+
+
 
     },
+
 
 
     component : function(defineProps, implPre) {
