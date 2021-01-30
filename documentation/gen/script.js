@@ -93,18 +93,6 @@ var data2doc = function(filename) {
                         doclineContent
                     );
 
-                    // add to navlist
-                    if (type == symbolTable.type.CLASS) {
-                        navlistContent += doc.createElement(
-                            doc.createElement(
-                                symbolName,
-                                'div',
-                                'class="navlist-item"'
-                            ),
-                            'a',
-                            'href="'+symbolName+'.html"'
-                        );
-                    }
                 }
                 if (!treeStack.length) {
                     treeStack.push(symbolName);
@@ -169,6 +157,68 @@ var linkObject = function(doc, objectString) {
     }
 
 }
+
+
+// next generate search index 
+var searchIndex = {};
+for(var n = 0; n < files.length; ++n) {
+    const symbols = symbolTable.getFileEntities(files[n]);
+    if (!symbols.length) continue;
+
+    var mainClass = '';
+    for(var i = 0; i < symbols.length; ++i) {
+        if (symbols[i].type == symbolTable.type.CLASS) {
+            mainClass = symbols[i].name;
+            break;
+        }
+    }
+
+    for(var i = 0; i < symbols.length; ++i) {
+        searchIndex[symbols[i].name] = {
+            'mainClass' : mainClass
+        };
+    }
+}
+
+
+// returns a file link to the given symbolName
+// assumes that the search index is populated.
+var generateLink = function(symbolName) {
+    if (symbolName == searchIndex[symbolName].mainClass) {
+        return symbolName+'.html';
+    } else {
+        return searchIndex[symbolName].mainClass+'.html#'+symbolName;
+    }
+}
+
+
+// table links
+for(var n = 0; n < files.length; ++n) {
+    const symbols = symbolTable.getFileEntities(files[n]);
+    if (!symbols.length) continue;
+
+    for(var i = 0; i < symbols.length; ++i) {
+        const link = generateLink(symbols[i].name);
+        searchIndex[symbols[i].name]['link'] = link;
+    }
+}
+
+// create database
+(function(){
+    var searchIndexText = 'var searchIndex = ' + JSON.stringify(searchIndex);
+    const filename = "../searchindex_db.js"
+
+    const asset = topaz.resources.fetchAsset(topaz.resources.assetType_Data, filename);
+    var bytes = [];
+    for(var i = 0; i < searchIndexText.length; ++i) {
+        bytes.push(searchIndexText.charCodeAt(i));
+    }
+    asset.bytes = bytes;
+    topaz.resources.writeAsset(asset, 'txt', filename);
+})();
+
+
+
 
 for(var n = 0; n < files.length; ++n) {
     var content = '';
@@ -330,7 +380,7 @@ for(var n = 0; n < files.length; ++n) {
                         doc.createElement(
                             symbols[i].children[m],
                             'a',
-                            'href="'+symbols[i].name+'.html#'+symbols[i].children[m]+'"'
+                            'href="'+generateLink(symbols[i].children[m])+'"'
                         ),
                         'div'
                     );
@@ -447,7 +497,12 @@ for(var n = 0; n < files.length; ++n) {
         doc.createElement(
             '',
             'input',
-            'class="navsearch-input"'
+            'class="navsearch-input"'+
+            'id="searchbar"'+
+            'type="search"'+
+            'onchange="docext_on_input()"' +
+            'oninput="docext_on_input()"'
+
         ),
         'div'
     );
@@ -462,7 +517,11 @@ for(var n = 0; n < files.length; ++n) {
             'class="navbar"'
         ) + doc.createElement(
             doc.createElement(
-                navsearch + navlistContent,
+                navsearch + doc.createElement(
+                    '',
+                    'div',
+                    'id="searchresults"'
+                ),
                 'div',
                 'class="navlist"'
             ) + 
@@ -474,9 +533,11 @@ for(var n = 0; n < files.length; ++n) {
             'div'
         )
     );
-
-    doc.write('../'+mainClass+'.html');
-    topaz.log(mainClass+'.html');
+    
+    if (mainClass != '') {
+        doc.write('../'+generateLink(mainClass));
+        topaz.log(generateLink(mainClass));
+    }
 }
 
 
