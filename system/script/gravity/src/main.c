@@ -83,7 +83,7 @@ static void report_error(
     PLOG(g->topaz, topaz_string_create_from_c_str("Gravity VM error: %s\n", desc));
 }
 
-void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
+static void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
     TopazGravity * g = calloc(1, sizeof(TopazGravity));
     g->script = script;
     g->topaz  = topaz;
@@ -103,7 +103,7 @@ void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
 
 
 
-void topaz_gravity_destroy(topazScript_t * s, void * data) {
+static void topaz_gravity_destroy(topazScript_t * s, void * data) {
     TopazGravity * g = data;
     gravity_vm_free(g->vm);
     gravity_core_free();
@@ -207,7 +207,7 @@ static bool topaz_gravity_native_function(
     return TRUE;
 }
 
-int topaz_gravity_map_native_function(
+static int topaz_gravity_map_native_function(
     topazScript_t * s, 
     void * data, 
     const topazString_t * name, 
@@ -240,7 +240,7 @@ int topaz_gravity_map_native_function(
     return TRUE;
 }
 
-void topaz_gravity_run(
+static void topaz_gravity_run(
     topazScript_t * script, 
     void * data, 
     
@@ -278,7 +278,7 @@ void topaz_gravity_run(
 }
 
 
-topazScript_Object_t * topaz_gravity_expression(
+static topazScript_Object_t * topaz_gravity_expression(
     topazScript_t * script, 
     void * data,     
     const topazString_t * scriptData
@@ -316,7 +316,7 @@ topazScript_Object_t * topaz_gravity_expression(
     return out;
 }
 
-void topaz_gravity_bootstrap(
+static void topaz_gravity_bootstrap(
     topazScript_t * script, 
     void * data
 ) {
@@ -325,6 +325,34 @@ void topaz_gravity_bootstrap(
     #include "bootstrap_bytes"
     topaz_string_set(g->bootstrap, TOPAZ_STR_CAST((char*)bootstrap_bytes));    
 }
+
+
+
+
+
+typedef struct {
+    // reference to the instance in question.
+    // 
+    gravity_value_t value;
+
+    // any set native data.
+    void * nativeData;
+
+    // whether this object originated from a 
+    // topaz_gravity_object_reference_create call 
+    int isNativelySourced;
+} TopazGravityObject;
+
+static void * topaz_gravity_object_reference_create(
+    topazScript_Object_t * obj, 
+    void * fromRefData
+) {
+    TopazGravityObject * out = calloc(1, sizeof(TopazGravityObject));
+    // Custom every object is a "TopazObject" instance
+    // "a" -> array object (if appplicable
+    out->
+}
+
 
 
 
@@ -374,7 +402,7 @@ void topaz_system_script_gravity__backend(
         TOPAZ__VERSION__MICRO
     );
 
-    /*
+    
     api->objectAPI.object_reference_create = topaz_gravity_object_reference_create;
     api->objectAPI.object_reference_create_from_reference = topaz_gravity_object_reference_create_from_reference;
     api->objectAPI.object_reference_destroy = topaz_gravity_object_reference_destroy;
@@ -389,7 +417,7 @@ void topaz_system_script_gravity__backend(
     api->objectAPI.object_reference_map_get_property = topaz_gravity_object_reference_map_get_property;
     api->objectAPI.object_reference_to_string = topaz_gravity_object_reference_to_string;
     api->objectAPI.object_reference_extendable_add_property = topaz_gravity_object_reference_extendable_add_property;
-    */
+    
 
     api->script_create = topaz_gravity_create;
     api->script_destroy = topaz_gravity_destroy;
