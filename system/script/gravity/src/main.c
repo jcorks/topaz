@@ -57,6 +57,9 @@ typedef struct {
     gravity_class_t    * topazClass;
     gravity_class_t    * topazMeta;
 
+    gravity_instance_t * topazReftable_inst;
+    gravity_value_t topazReftable;
+
     topazTable_t * files;
     uint32_t fileIDPool;
     topazString_t * bootstrap;
@@ -93,6 +96,11 @@ static void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
 
     g->topazClass = gravity_class_new_pair(NULL, "topaz_", NULL, 0, 0);
     g->topazMeta = gravity_class_get_meta(g->topazClass);
+    g->topazReftable_inst = gravity_instance_new(g->vm, gravity_class_map);
+    g->topazReftable = gravity_value_from_object(g->topazReftable);
+    gravity_class_bind(g->topazMeta, "t_", g->topazReftable);
+    
+    
     g->files = topaz_table_create_hash_topaz_string();
     g->bootstrap = topaz_string_create();
 
@@ -341,16 +349,52 @@ typedef struct {
     // whether this object originated from a 
     // topaz_gravity_object_reference_create call 
     int isNativelySourced;
+    
+    // the object's reference count
+    int refCount;
+    
 } TopazGravityObject;
+
+// holds a reference to the object in question 
+static void topaz_gravity_lock_ref(TopazGravity * g, TopazGravityObject * o) {
+    gravity_closure_t * storeat = gravity_class_lookup_closure(gravity_class_map, "storeat");
+    char ploc[64];
+    sprintf(ploc, "%p", o);
+    gravity_value_t args[] = {
+        // map
+        g->topazReftable,
+
+        // key
+        VALUE_FROM_CSTRING(g->vm, ploc),
+
+        // value
+        o->value
+    }
+    gravity_vm_runclosure(
+        g->vm, 
+        storeat, 
+        VALUE_FROM_NULL,
+        args,
+        3
+    );
+}
+
+
+static TopazGravityObject * topaz_gravity_object_get_native(gravity_value_t v) {
+    // not instanted, so object cannot be tracked
+    if (!VALUE_ISA_INSTANCE(v)) return NULL;
+}
 
 static void * topaz_gravity_object_reference_create(
     topazScript_Object_t * obj, 
     void * fromRefData
 ) {
-    TopazGravityObject * out = calloc(1, sizeof(TopazGravityObject));
-    // Custom every object is a "TopazObject" instance
-    // "a" -> array object (if appplicable
-    out->
+    if (!fromRefData) {
+        TopazGravityObject * out = calloc(1, sizeof(TopazGravityObject));
+        // Custom every object is a "
+        // "a" -> array object (if appplicable
+        
+    }
 }
 
 
