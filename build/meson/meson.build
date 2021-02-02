@@ -69,7 +69,7 @@ cc = meson.get_compiler('c')
 # TODO: fix up please!
 baselibs = []
 baselibs += cc.find_library('m', required : true)
-if host_machine.system() == 'windows' or host_machine.system().contains('mingw') == false
+if host_machine.system() == 'windows' or host_machine.system().contains('mingw') == true
     baselibs += cc.find_library('shlwapi')    
 endif
 

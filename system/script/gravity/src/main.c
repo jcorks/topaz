@@ -52,7 +52,6 @@ DEALINGS IN THE SOFTWARE.
 typedef struct {
     topazScript_t * script;
     topaz_t * topaz;
-    gravity_compiler_t * compiler;
     gravity_delegate_t   delegate;
     gravity_vm       * vm;
     gravity_class_t    * topazClass;
@@ -60,6 +59,7 @@ typedef struct {
 
     topazTable_t * files;
     uint32_t fileIDPool;
+    topazString_t * bootstrap;
 } TopazGravity;
 
 static void PLOG(topaz_t * t, topazString_t * str) {
@@ -89,12 +89,14 @@ void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
     g->topaz  = topaz;
     g->delegate.error_callback = report_error;
     g->delegate.xdata = g;
-    g->compiler = gravity_compiler_create(&g->delegate);
     g->vm = gravity_vm_new(&g->delegate);
 
-    g->topazClass = gravity_class_new_pair(NULL, "topaz", NULL, 0, 0);
+    g->topazClass = gravity_class_new_pair(NULL, "topaz_", NULL, 0, 0);
     g->topazMeta = gravity_class_get_meta(g->topazClass);
     g->files = topaz_table_create_hash_topaz_string();
+    g->bootstrap = topaz_string_create();
+
+    gravity_vm_setvalue(g->vm, "topaz_", VALUE_FROM_OBJECT(g->topazClass));
     g->fileIDPool = 1;
     return g;
 }
@@ -103,7 +105,6 @@ void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
 
 void topaz_gravity_destroy(topazScript_t * s, void * data) {
     TopazGravity * g = data;
-    gravity_compiler_free(g->compiler);
     gravity_vm_free(g->vm);
     gravity_core_free();
 }
@@ -113,6 +114,7 @@ void topaz_gravity_destroy(topazScript_t * s, void * data) {
 typedef struct {
     topaz_script_native_function func;
     void * userData;
+    TopazGravity * g;
 } TopazGravityFunctionData;
 
 
@@ -129,7 +131,7 @@ static topazScript_Object_t * topaz_gravity_value_to_script_object(
     } else if (val.isa == gravity_class_float) {
         return topaz_script_object_from_number(script, VALUE_AS_FLOAT(val));
     } else if (val.isa == gravity_class_string) {
-        return topaz_script_object_from_string(script, topaz_string_create_from_c_str("%s", VALUE_AS_STRING(val)));
+        return topaz_script_object_from_string(script, topaz_string_create_from_c_str("%s", VALUE_AS_CSTRING(val)));
     } else {
         assert("!under construction");
     }      
@@ -142,6 +144,7 @@ static gravity_value_t topaz_script_object_to_gravity_value(
     gravity_vm * vm,
     topazScript_Object_t * obj
 ) {
+    if (!obj) return VALUE_FROM_NULL;
     switch(topaz_script_object_get_type(obj)) {
       case topazScript_Object_Type_Undefined:
         return VALUE_FROM_NULL;
@@ -176,7 +179,7 @@ static bool topaz_gravity_native_function(
     void * userData
 ) {
     TopazGravityFunctionData * fdata = userData;
-    TopazGravity * g  = fdata->userData;
+    TopazGravity * g  = fdata->g;
     topazArray_t * argsT = topaz_array_create(sizeof(topazScript_Object_t *));
     uint32_t i;
     uint32_t len = nargs;
@@ -199,7 +202,8 @@ static bool topaz_gravity_native_function(
         topaz_script_object_to_gravity_value(g->vm, retval),
         rindex
     );
-    topaz_script_object_destroy(retval);
+    if (retval)
+        topaz_script_object_destroy(retval);
     return TRUE;
 }
 
@@ -211,20 +215,27 @@ int topaz_gravity_map_native_function(
     void * userData    
 ) {
 
-
+    TopazGravity * g = data;
     TopazGravityFunctionData * fdata = calloc(1, sizeof(TopazGravityFunctionData));
     fdata->func = func;
     fdata->userData = userData;
-
+    fdata->g = g;
     gravity_function_t *  gfunc = gravity_function_new_internal(
         NULL, 
         NULL, 
         topaz_gravity_native_function,
         0
     );
+    
     gfunc->internalData = fdata;
 
+    gravity_closure_t * cl = gravity_closure_new(NULL, gfunc);
 
+    gravity_class_bind(
+        g->topazMeta, 
+        topaz_string_get_c_str(name), 
+        VALUE_FROM_OBJECT(cl)
+    );
 
     return TRUE;
 }
@@ -242,14 +253,22 @@ void topaz_gravity_run(
         fileid = g->fileIDPool++;
         topaz_table_insert(g->files, sourceName, (void*)fileid);
     }
+
+    gravity_compiler_t * c = gravity_compiler_create(&g->delegate);
+
+    topazString_t * srcFull = topaz_string_clone(g->bootstrap);
+    topaz_string_concat(srcFull, scriptData);
     gravity_closure_t * cl = gravity_compiler_run(
-        g->compiler,
-        topaz_string_get_c_str(scriptData),
-        topaz_string_get_length(scriptData),
+        c,
+        topaz_string_get_c_str(srcFull),
+        topaz_string_get_length(srcFull),
         fileid,
         1,
         1
     );
+    gravity_compiler_transfer(c, g->vm);
+    gravity_compiler_free(c);
+    topaz_string_destroy(srcFull);
 
     if (!cl) {
         return;
@@ -265,14 +284,19 @@ topazScript_Object_t * topaz_gravity_expression(
     const topazString_t * scriptData
 ) {
     TopazGravity * g = data;
+    gravity_compiler_t * c = gravity_compiler_create(&g->delegate);
     gravity_closure_t * cl = gravity_compiler_run(
-        g->compiler,
+        c,
         topaz_string_get_c_str(scriptData),
         topaz_string_get_length(scriptData),
         0,
         1,
         1
     );
+    gravity_compiler_transfer(c, g->vm);
+    gravity_compiler_free(c);
+
+
 
     if (!cl) {
         return topaz_script_object_undefined(g->script);
@@ -297,7 +321,9 @@ void topaz_gravity_bootstrap(
     void * data
 ) {
     TopazGravity * g = data;
-    
+
+    #include "bootstrap_bytes"
+    topaz_string_set(g->bootstrap, TOPAZ_STR_CAST((char*)bootstrap_bytes));    
 }
 
 

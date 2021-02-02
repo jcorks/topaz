@@ -696,8 +696,10 @@ void * topaz_script_object_get_api_data(topazScript_Object_t * o) {
 
 void topaz_script_enable_debugging(topazScript_t * s) {
     if (!s->debugEnabled) {
-        s->debugEnabled = 1;
-        s->api.script_debug_start(s, s->implementationData);
+        if (s->api.script_debug_start) {
+            s->debugEnabled = 1;
+            s->api.script_debug_start(s, s->implementationData);
+        }
     }
 }
 
