@@ -169,6 +169,7 @@ typedef struct {
 } DebugNotification;
 
 
+
 // assumes object to receive prop is already at the top of the stack
 // ideally sets the property as a read-only value
 static void topaz_duk_set_private_prop(duk_context * js, const char * pName, void * val) {
@@ -322,6 +323,45 @@ static void topaz_duk_object_push_to_top_from_tag(TOPAZDUKObjectTag * tag) {
 
 
 
+// fetches/creates an ObjectTag for a given object
+static void * topaz_duk_object_wrap(void * ctxSrc) {
+    TOPAZDUK * ctx = ctxSrc;
+    #ifdef TOPAZDC_DEBUG
+        int stackSize = duk_get_top(ctx->js);
+    #endif
+
+    TOPAZDUKObjectTag * tag = topaz_duk_object_get_tag_from_top(ctx->js);
+
+    if (!tag) {
+        // create a new tag and bind that tag to this object using a hidden prop
+        tag = topaz_duk_object_set_tag(ctx);   
+
+        tag->ctx = ctx;
+
+ 
+
+        // Sets the standard finalizer function.
+        duk_push_c_function(ctx->js, topaz_duk_object_finalizer, 1);
+        duk_set_finalizer(ctx->js, -2);
+    }
+
+    if (tag->refCount == 0) { 
+        // make sure that a reference to this object exists outside of the pure 
+        // js context. This allows the C context to keep the object around.
+        // in the case that the C tag has persisted when vulnerable to garbage collection,
+        // the ref count might be 0 despite the tag existing before. THats why this check 
+        // is for tag->ref == 0 rather than just creation
+        topaz_duk_object_keep_reference(ctxSrc, tag);
+    }
+
+
+
+    #ifdef TOPAZDC_DEBUG 
+        assert(duk_get_top(ctx->js) == stackSize);
+    #endif
+
+    return tag;
+} 
 
 
 
@@ -352,7 +392,7 @@ static topazScript_Object_t * topaz_duk_stack_object_to_tso(TOPAZDUK * ctx, int 
         break;
 
       case DUK_TYPE_OBJECT: {
-        o = topaz_script_object_from_reference(ctx->script, ctx);
+        o = topaz_script_object_wrapper(ctx->script, topaz_duk_object_wrap(ctx));        
         break;
       }
 
@@ -865,45 +905,6 @@ void topaz_duk_bootstrap(topazScript_t * script, void * n) {
 
 
 
-// assumes the object is at the top
-static void * topaz_duk_object_reference_create(topazScript_Object_t * o, void * ctxSrc) {
-    TOPAZDUK * ctx = ctxSrc;
-    #ifdef TOPAZDC_DEBUG
-        int stackSize = duk_get_top(ctx->js);
-    #endif
-
-    TOPAZDUKObjectTag * tag = topaz_duk_object_get_tag_from_top(ctx->js);
-
-    if (!tag) {
-        // create a new tag and bind that tag to this object using a hidden prop
-        tag = topaz_duk_object_set_tag(ctx);   
-
-        tag->ctx = ctx;
-
- 
-
-        // Sets the standard finalizer function.
-        duk_push_c_function(ctx->js, topaz_duk_object_finalizer, 1);
-        duk_set_finalizer(ctx->js, -2);
-    }
-
-    if (tag->refCount == 0) { 
-        // make sure that a reference to this object exists outside of the pure 
-        // js context. This allows the C context to keep the object around.
-        // in the case that the C tag has persisted when vulnerable to garbage collection,
-        // the ref count might be 0 despite the tag existing before. THats why this check 
-        // is for tag->ref == 0 rather than just creation
-        topaz_duk_object_keep_reference(ctxSrc, tag);
-    }
-
-
-
-    #ifdef TOPAZDC_DEBUG 
-        assert(duk_get_top(ctx->js) == stackSize);
-    #endif
-
-    return tag;
-} 
  
  
 static void * topaz_duk_object_reference_create_from_reference(topazScript_Object_t * o, void * ctxSrc, topazScript_Object_t * from, void * fromData) {
@@ -912,7 +913,7 @@ static void * topaz_duk_object_reference_create_from_reference(topazScript_Objec
         int stackSize = duk_get_top(ctx->js);
     #endif
     topaz_duk_object_push_to_top_from_tag(fromData);
-    void * outTag = topaz_duk_object_reference_create(o, ctxSrc);
+    void * outTag = topaz_duk_object_wrap(ctxSrc);
 
     duk_pop(ctx->js);
     #ifdef TOPAZDC_DEBUG 
@@ -1832,7 +1833,6 @@ void topaz_system_script_duktapeJS__backend(
     );
 
 
-    api->objectAPI.object_reference_create = topaz_duk_object_reference_create;
     api->objectAPI.object_reference_create_from_reference = topaz_duk_object_reference_create_from_reference;
     api->objectAPI.object_reference_destroy = topaz_duk_object_reference_destroy;
     api->objectAPI.object_reference_get_feature_mask = topaz_duk_object_reference_get_feature_mask;

@@ -411,22 +411,6 @@ topazScript_Object_t * topaz_script_object_from_object(
 
 
 
-/// Creates a new object that acts as a "wrapper" to an object managed by the 
-/// script implementation. This is recommended for objects that are more than simple
-/// values, such as arrays or maps, which may vary a lot between scripting languages.
-/// This is called / used by the script implementation to create wrappers for you.
-/// If you are looking to create a new empty object, see 
-/// topaz_script_create_empty_object().
-///
-topazScript_Object_t * topaz_script_object_from_reference(
-    /// The script to create from.
-    topazScript_t * script,
-
-    /// The userdata to generate a reference from.
-    void * userdata
-);
-
-
 /// Destroys the object. In the case the object was external, the object 
 /// may still exist in the scripting context, but this particular object will 
 /// be unavailable.

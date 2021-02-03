@@ -53,6 +53,31 @@ typedef struct topazScript_DebugState_t topazScript_DebugState_t;
 
 
 
+
+
+/// Can be used by the script implementation 
+/// to Creates a new object that acts as a "wrapper" to an object managed by the 
+/// script implementation. This is recommended for objects that are more than simple
+/// values, such as arrays or maps, which may vary a lot between scripting languages.
+/// This is called / used by the script implementation to create wrappers for you.
+/// If you are looking to create a new empty object, see 
+/// topaz_script_create_empty_object().
+///
+topazScript_Object_t * topaz_script_object_wrapper(
+    /// The script to create from.
+    topazScript_t * script,
+
+    /// The userdata to bind to the reference.
+    /// Similar to the return value for object_reference_create_from_reference,
+    /// as this is the data that gets passed to all of the object api.
+    void * userdata
+);
+
+
+
+
+
+
 // For objects that exist and are managed independently of the native context,
 // the implementation can create "wrapper" objects with externally-defined 
 // functions to facilitate script language / context-specific behaviour through 
@@ -63,22 +88,18 @@ typedef struct topazScript_DebugState_t topazScript_DebugState_t;
 //
 typedef struct topazScript_Object_ReferenceAPI_t topazScript_Object_ReferenceAPI_t;
 struct topazScript_Object_ReferenceAPI_t {
-    // Called when the object is first starting up. 
-    // The return value is used as the data argument for all object_reference calls.
-    // fromRefData is the data argument given from script_object_from_reference which is populated if this creation is 
-    // derived from a topaz_script_object_from_reference constructor.
-    //
-    //
-    void * (*object_reference_create)(topazScript_Object_t *, void * fromRefData);
 
     // Similar to object_reference_create, but its a new reference 
     // that points to the same location as an existing reference.
-    // fromRefData is the data argument given from script_object_from_reference
+    // scriptData is the script implementation data
     // from is the topazScript_Object_t * reference that points to the object that this new reference should point to
-    // fromData is the original fromRefData that was passed to object_reference_create to create "from"
+    // fromData is the script object data bound to it
     void * (*object_reference_create_from_reference)(topazScript_Object_t *, void * fromRefData, topazScript_Object_t * from, void * fromData);
 
     // Called when the object reference is no longer needed by the native context.
+    // The destroy function already unrefs references for you by decrementing the 
+    // reference count. Note that even though the GC no longer needs it, 
+    // it could still be valid from the POV of the script VM.
     //
     void (*object_reference_destroy)(topazScript_Object_t *, void *);
 

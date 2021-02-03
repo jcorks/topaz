@@ -75,10 +75,6 @@ struct topazScript_Object_t {
 
     // passed to all external api calls.
     void * apiData;
-
-    // user data argument from reference creation function
-    void * sourceAPIData;
-
     // the context (and object pool) that currently owns this
     topazScript_t * context;
 
@@ -424,10 +420,14 @@ topazScript_Object_t * topaz_script_object_from_object(topazScript_t * s, topazS
     topazScript_Object_t * out = object_pool_fetch(s);
     out->type = topazScript_Object_Type_Reference;
     out->api = &s->api.objectAPI;
-    out->sourceAPIData = o->sourceAPIData;
 
-    if (out->api->object_reference_create)
-        out->apiData = out->api->object_reference_create_from_reference(out, out->sourceAPIData, o, o->apiData);
+    if (out->api->object_reference_create_from_reference)
+        out->apiData = out->api->object_reference_create_from_reference(
+            out, 
+            s->implementationData, 
+            o, 
+            o->apiData
+        );
 
     if (out->api->object_reference_ref)
         out->api->object_reference_ref(out, out->apiData);
@@ -435,16 +435,14 @@ topazScript_Object_t * topaz_script_object_from_object(topazScript_t * s, topazS
 
 }
 
-topazScript_Object_t * topaz_script_object_from_reference(
+topazScript_Object_t * topaz_script_object_wrapper(
     topazScript_t * s,
     void * userData
 ) {
     topazScript_Object_t * o = object_pool_fetch(s);
     o->type = topazScript_Object_Type_Reference;
     o->api = &s->api.objectAPI;
-    o->sourceAPIData = userData;
-    if (o->api->object_reference_create)
-        o->apiData = o->api->object_reference_create(o, userData);
+    o->apiData = userData;
 
     if (o->api->object_reference_ref)
         o->api->object_reference_ref(o, o->apiData);
