@@ -59,7 +59,7 @@ typedef struct {
 
     // holds references in the VM so that instances 
     // do not get sweeped
-    gravity_instance_t * topazReftable_inst;
+    gravity_map_t * topazReftable_inst;
     gravity_value_t topazReftable;
 
     // maps gravity_instance_t -> TopazGravityObject
@@ -79,7 +79,7 @@ typedef struct {
     gravity_value_t value;
 
     // referring object;
-    topazScript_Object * object;
+    topazScript_Object_t * object;
 
     // any set native data.
     void * nativeData;
@@ -103,58 +103,54 @@ typedef struct {
 
 // holds a reference to the object in question 
 static void topaz_gravity_lock_ref(TopazGravityObject * o) {
-    gravity_closure_t * storeat = gravity_class_lookup_closure(gravity_class_map, "storeat");
+    gravity_closure_t * storeat = gravity_class_lookup_closure(gravity_class_map, VALUE_FROM_CSTRING(o->ctx->vm, "storeat"));
     char ploc[64];
     sprintf(ploc, "%p", o);
     gravity_value_t args[] = {
-        // map
-        g->topazReftable,
-
         // key
-        VALUE_FROM_CSTRING(o->g->vm, ploc),
+        VALUE_FROM_CSTRING(o->ctx->vm, ploc),
 
         // value
         o->value
-    }
+    };
     gravity_vm_runclosure(
-        o->g->vm, 
+        o->ctx->vm, 
         storeat, 
-        VALUE_FROM_NULL,
+        o->ctx->topazReftable,
         args,
-        3
+        2
     );
 }
 
 // releases the object from the VM
 static void topaz_gravity_unlock_ref(TopazGravityObject * o) {
-    gravity_closure_t * remove = gravity_class_lookup_closure(gravity_class_map, "remove");
+    gravity_closure_t * remove = gravity_class_lookup_closure(gravity_class_map, VALUE_FROM_CSTRING(o->ctx->vm, "remove"));
     char ploc[64];
     sprintf(ploc, "%p", o);
     gravity_value_t args[] = {
-        // map
-        g->topazReftable,
-
         // key
-        VALUE_FROM_CSTRING(o->g->vm, ploc)
-    }
+        VALUE_FROM_CSTRING(o->ctx->vm, ploc)
+    };
     gravity_vm_runclosure(
-        o->g->vm, 
+        o->ctx->vm, 
         remove, 
-        VALUE_FROM_NULL,
+        o->ctx->topazReftable,
         args,
-        2
+        1
     );
 }
 
 
 
 static uint32_t topaz_gravity_object_gc(gravity_vm * vm, gravity_object_t * obj) {
-    TopazGravityObject * g = topaz_table_lookup(g->ownedRefs, VALUE_AS_INSTANCE(v), g);        
+    TopazGravity * ctx = gravity_vm_getdata(vm);
+    TopazGravityObject * g = topaz_table_find(ctx->ownedRefs, obj);        
     if (g->cleanupFunc)
-        g->cleanupFunc(g->ctx->script, NULL, g->cleanupData);
+        g->cleanupFunc(ctx->script, NULL, g->cleanupData);
 
-    topaz_table_remove(g->ownedRefs, VALUE_AS_INSTANCE(v));
+    topaz_table_remove(ctx->ownedRefs, obj);
     free(g);   
+    return 0;
 }
 
 // Asserts that the given value has a TopazGravityObject 
@@ -162,19 +158,19 @@ static uint32_t topaz_gravity_object_gc(gravity_vm * vm, gravity_object_t * obj)
 // assigning one is nor possible, NULL is returned
 static TopazGravityObject * topaz_gravity_object_get_tag(TopazGravity * g, gravity_value_t v) {
     // not instanted, so object cannot be tracked
-    if (!VALUE_ISA_INSTANCE(v)) return NULL;
+    if (!OBJECT_IS_VALID(VALUE_AS_OBJECT(v))) return NULL;
 
-    TopazGravityObject * g = topaz_table_find(g->ownedRefs, VALUE_AS_INSTANCE(v));
-    if (!g) {
-        g = calloc(1, sizeof(TopazGravityObject));
-        g->value = v;
-        g->ctx = g;
-        topaz_table_insert(g->ownedRefs, VALUE_AS_INSTANCE(v), g);        
+    TopazGravityObject * o = topaz_table_find(g->ownedRefs, VALUE_AS_OBJECT(v));
+    if (!o) {
+        o = calloc(1, sizeof(TopazGravityObject));
+        o->value = v;
+        o->ctx = g;
+        topaz_table_insert(g->ownedRefs, VALUE_AS_OBJECT(v), g);        
         VALUE_AS_INSTANCE(v)->gc.free = topaz_gravity_object_gc;
         // notice that the refcount is 0 and that the value has not 
         // be locked to prevent GC.
     }
-    return g;
+    return o;
 }
 
 
@@ -206,14 +202,15 @@ static void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
     g->delegate.error_callback = report_error;
     g->delegate.xdata = g;
     g->vm = gravity_vm_new(&g->delegate);
+    gravity_vm_setdata(g->vm, g);
 
     g->topazClass = gravity_class_new_pair(NULL, "topaz_", NULL, 0, 0);
     g->topazMeta = gravity_class_get_meta(g->topazClass);
-    g->topazReftable_inst = gravity_instance_new(g->vm, gravity_class_map);
-    g->topazReftable = gravity_value_from_object(g->topazReftable);
+    g->topazReftable_inst = gravity_map_new(g->vm, 0);
+    g->topazReftable = gravity_value_from_object(g->topazReftable_inst);
     gravity_class_bind(g->topazMeta, "t_", g->topazReftable);
 
-    g->ownedRefs = topaz_table_create();    
+    g->ownedRefs = topaz_table_create_hash_pointer();    
     
     g->files = topaz_table_create_hash_topaz_string();
     g->bootstrap = topaz_string_create();
@@ -243,22 +240,21 @@ typedef struct {
 
 static topazScript_Object_t * topaz_gravity_value_to_script_object(
     TopazGravity * g,
-    topazScript_t * script,
     gravity_value_t val
 ) {
     if (val.isa == gravity_class_null) {
-        return topaz_script_object_undefined(script);
+        return topaz_script_object_undefined(g->script);
     } else if (val.isa == gravity_class_int ||
                val.isa == gravity_class_bool) {
-        return topaz_script_object_from_int(script, VALUE_AS_INT(val));
+        return topaz_script_object_from_int(g->script, VALUE_AS_INT(val));
     } else if (val.isa == gravity_class_float) {
-        return topaz_script_object_from_number(script, VALUE_AS_FLOAT(val));
+        return topaz_script_object_from_number(g->script, VALUE_AS_FLOAT(val));
     } else if (val.isa == gravity_class_string) {
-        return topaz_script_object_from_string(script, topaz_string_create_from_c_str("%s", VALUE_AS_CSTRING(val)));
+        return topaz_script_object_from_string(g->script, topaz_string_create_from_c_str("%s", VALUE_AS_CSTRING(val)));
     } else {
-        return topaz_script_object_wrapper(script, topaz_gravity_object_get_tag(g, val));
+        return topaz_script_object_wrapper(g->script, topaz_gravity_object_get_tag(g, val));
     }      
-    return topaz_script_object_undefined(script);
+    return topaz_script_object_undefined(g->script);
 }
 
 
@@ -282,7 +278,7 @@ static gravity_value_t topaz_script_object_to_gravity_value(
         return VALUE_FROM_CSTRING(vm, topaz_string_get_c_str(topaz_script_object_as_string(obj)));
 
       default:
-        return topaz_gravity_object_get_tag(obj)->value;
+        return ((TopazGravityObject*)topaz_script_object_get_api_data(obj))->value;
     }
 
     return VALUE_FROM_NULL;
@@ -307,7 +303,7 @@ static bool topaz_gravity_native_function(
     uint32_t i;
     uint32_t len = nargs;
     for(i = 1; i < len; ++i) {
-        topazScript_Object_t * o = topaz_gravity_value_to_script_object(g->script, args[i]);
+        topazScript_Object_t * o = topaz_gravity_value_to_script_object(g, args[i]);
         topaz_array_push(argsT, o);
     }
     topazScript_Object_t * retval = fdata->func(
@@ -329,6 +325,7 @@ static bool topaz_gravity_native_function(
         topaz_script_object_destroy(retval);
     return TRUE;
 }
+
 
 static int topaz_gravity_map_native_function(
     topazScript_t * s, 
@@ -434,7 +431,7 @@ static topazScript_Object_t * topaz_gravity_expression(
     );
 
     gravity_value_t v = gravity_vm_result(g->vm);
-    topazScript_Object_t * out = topaz_gravity_value_to_script_object(g->script, v);
+    topazScript_Object_t * out = topaz_gravity_value_to_script_object(g, v);
     gravity_value_dump(g->vm, v, NULL, 0);
     return out;
 }
@@ -464,32 +461,28 @@ static void * topaz_gravity_object_reference_create_from_reference(
 ) {
     TopazGravity * g = scriptData;
     TopazGravityObject * fromObj = fromData;
-
-    assert(VALUE_ISA_INSTANCE(fromObj->value));
-    gravity_instance_t * copy = gravity_instance_clone(g->vm, VALUE_AS_INSTANCE(fromObj->value));
-    TopazGravityObject * out = topaz_gravity_object_get_tag(g, VALUE_FROM_INSTANCE(copy));    
-    out->object = obj;
+    return fromObj;
 }
 
 static void topaz_gravity_object_reference_destroy(topazScript_Object_t * obj, void * data) {
     // GC should take care of it when needed.
-    TopazGravityObject * obj = data;
-    obj->data = NULL;    
+    TopazGravityObject * o = data;
+    o->object = NULL;    
 }
 
 static int topaz_gravity_object_reference_get_feature_mask(topazScript_Object_t * obj, void * data) {
-    TopazGravityObject * obj = data;
+    TopazGravityObject * o = data;
     int out = 0;
-    out |= (VALUE_ISA_CLOSURE(obj->value)) ? topazScript_Object_Feature_Callable : 0;
-    out |= (VALUE_ISA_LIST(obj->value))    ? topazScript_Object_Feature_Array : 0;
-    out |= (VALUE_ISA_MAP(obj->value))    ? topazScript_Object_Feature_Map : 0;
+    out |= (VALUE_ISA_CLOSURE(o->value)) ? topazScript_Object_Feature_Callable : 0;
+    out |= (VALUE_ISA_LIST(o->value))    ? topazScript_Object_Feature_Array : 0;
+    out |= (VALUE_ISA_MAP(o->value))    ? topazScript_Object_Feature_Map : 0;
+    out |= (OBJECT_IS_VALID(VALUE_AS_OBJECT(o->value))) ? topazScript_Object_Feature_Extendable : 0;
 
-    // TODO: extendable!
     return out;
 }
 
 void * topaz_gravity_object_reference_get_native_data(
-    topazScript_Object_t * obj, 
+    topazScript_Object_t * o, 
     int * tag, 
     void * data
 ) {
@@ -542,27 +535,27 @@ static topazScript_Object_t * topaz_gravity_object_reference_call(
 ) {
     TopazGravityObject * o = data;
     TopazGravity * g = o->ctx;
-    if (VALUE_ISA_CLOSURE(data->value)) {
+    if (VALUE_ISA_CLOSURE(o->value)) {
         uint32_t i;
         uint32_t len = topaz_array_get_size(args);
 
-        gravity_value_t * args = calloc(sizeof(gravity_value_t), argLen+1); 
+        gravity_value_t * argsV = calloc(sizeof(gravity_value_t), len+1); 
         for(i = 1; i <= len; ++i) {
-            args[i] = topaz_script_object_to_gravity_value(
+            argsV[i] = topaz_script_object_to_gravity_value(
                 g->vm, 
                 topaz_array_at(args, topazScript_Object_t *, i)
             );
         }
 
         gravity_vm_runclosure(
-            o->g->vm, 
-            VALUE_AS_CLOSURE(data->value), 
+            o->ctx->vm, 
+            VALUE_AS_CLOSURE(o->value), 
             VALUE_FROM_NULL,
-            args,
-            argLen+1
+            argsV,
+            len+1
         );
 
-        return topaz_gravity_value_to_script_object(gravity_vm_result(g->vm));
+        return topaz_gravity_value_to_script_object(o->ctx, gravity_vm_result(g->vm));
 
     } else {
         return topaz_script_object_undefined(g->script);
@@ -580,22 +573,20 @@ static topazScript_Object_t * topaz_gravity_object_reference_array_get_nth(
     TopazGravityObject * o = data;
     TopazGravity * g = o->ctx;
     if (VALUE_ISA_LIST(o->value)) {
-        gravity_closure_t * loadat = gravity_class_lookup_closure(gravity_class_list, "loadat");
+        gravity_closure_t * loadat = gravity_class_lookup_closure(gravity_class_list, VALUE_FROM_CSTRING(o->ctx->vm, "loadat"));
         gravity_value_t args[] = {
-            // list
-            o->value,
 
             // key
-            VALUE_FROM_INT(i),
+            VALUE_FROM_INT(i)
         };
         gravity_vm_runclosure(
             g->vm, 
             loadat, 
-            VALUE_FROM_NULL,
+            o->value,
             args,
-            2
+            1
         );
-        return topaz_gravity_value_to_script_object(gravity_vm_result(g->vm));
+        return topaz_gravity_value_to_script_object(o->ctx, gravity_vm_result(g->vm));
     } else {
         return topaz_script_object_undefined(g->script);
     }
@@ -609,21 +600,17 @@ static int topaz_gravity_object_reference_array_get_count(
     TopazGravityObject * o = data;
     TopazGravity * g = o->ctx;
     if (VALUE_ISA_LIST(o->value)) {
-        gravity_closure_t * ct = gravity_class_lookup_closure(gravity_class_list, "count");
-        gravity_value_t args[] = {
-            // list
-            o->value
-        };
+        gravity_closure_t * ct = gravity_class_lookup_closure(gravity_class_list, VALUE_FROM_CSTRING(o->ctx->vm, "count"));
         gravity_vm_runclosure(
             g->vm, 
             ct, 
-            VALUE_FROM_NULL,
-            args,
-            1
+            o->value,
+            NULL,
+            0
         );
-        return topaz_gravity_value_to_script_object(gravity_vm_result(g->vm));
+        return VALUE_AS_INT(gravity_vm_result(g->vm));
     } else {
-        return topaz_script_object_undefined(g->script);
+        return 0;
     }
 }
 
@@ -636,37 +623,34 @@ static topazScript_Object_t * topaz_gravity_object_reference_map_get_property(
     TopazGravityObject * o = data;
     TopazGravity * g = o->ctx;
     if (VALUE_ISA_MAP(o->value)) {
-        gravity_closure_t * loadat = gravity_class_lookup_closure(gravity_class_map, "loadat");
+        gravity_closure_t * loadat = gravity_class_lookup_closure(gravity_class_map, VALUE_FROM_CSTRING(o->ctx->vm, "loadat"));
         gravity_value_t args[] = {
-            // list
-            o->value,
-
             // key
-            VALUE_FROM_INT(i),
+            VALUE_FROM_CSTRING(g->vm, topaz_string_get_c_str(prop)),
         };
         gravity_vm_runclosure(
             g->vm, 
             loadat, 
-            VALUE_FROM_NULL,
+            o->value,
             args,
-            2
+            1
         );
-        return topaz_gravity_value_to_script_object(gravity_vm_result(g->vm));
+        return topaz_gravity_value_to_script_object(g, gravity_vm_result(g->vm));
     } else {
         return topaz_script_object_undefined(g->script);
     }
 }
 
-topazScript_Object_t * topaz_gravity_script_create_empty_object(
+topazScript_Object_t * topaz_gravity_create_empty_object(
     topazScript_t * script, 
     void * data, 
     topaz_script_native_function func, 
     void * funcData
 ) {
     TopazGravity * g = data;
-    gravity_map_t * mapOut = gravity_map_new(g->value);
-    topazScript_Object_t * out = topaz_gravity_value_to_script_object(g->vm, VALUE_FROM_OBJECT(mapOut));
-    TopazScriptObject * o = topaz_script_object_get_api_data(out);
+    gravity_map_t * mapOut = gravity_map_new(g->vm, 0);
+    topazScript_Object_t * out = topaz_gravity_value_to_script_object(g, VALUE_FROM_OBJECT(mapOut));
+    TopazGravityObject * o = topaz_script_object_get_api_data(out);
 
     o->cleanupFunc = func;
     o->cleanupData = data;
@@ -681,12 +665,73 @@ static void topaz_gravity_object_reference_extendable_add_property(
     void * userData
 ) {
     
-    TopazGravityObject * o = data;
+    TopazGravityObject * o = userData;
     TopazGravity * g = o->ctx;
     
-    // we will create a set/get property function.
-    gravity_function_t * f = gravtiy_function_new_special(
 
+    if (!OBJECT_IS_VALID(VALUE_AS_OBJECT(o->value))) return;
+
+
+
+    // First, create setter-getter function
+    
+    TopazGravityFunctionData * fdataGet = calloc(1, sizeof(TopazGravityFunctionData));
+    fdataGet->func = onGet;
+    //fdataGet->userData = userData;
+    fdataGet->g = g;
+    gravity_function_t * getterfunc = gravity_function_new_internal(
+        NULL, 
+        NULL, 
+        topaz_gravity_native_function,
+        0
+    );
+    getterfunc->internalData = fdataGet;    
+    gravity_closure_t * getter = gravity_closure_new(NULL, getterfunc);
+
+
+    TopazGravityFunctionData * fdataSet = calloc(1, sizeof(TopazGravityFunctionData));
+    fdataSet->func = onGet;
+    //fdataSet->userData = userData;
+    fdataSet->g = g;
+    gravity_function_t * setterfunc = gravity_function_new_internal(
+        NULL, 
+        NULL, 
+        topaz_gravity_native_function,
+        0
+    );
+    setterfunc->internalData = fdataSet;    
+    gravity_closure_t * setter = gravity_closure_new(NULL, setterfunc);
+
+    
+    // we will create a set/get property function.
+    gravity_function_t * f = gravity_function_new_special(
+        g->vm, 
+        NULL,
+        GRAVITY_COMPUTED_INDEX,
+        getter,
+        setter
+    );
+    gravity_closure_t * setget = gravity_closure_new(NULL, f);
+
+    
+    // then: bind to instance.
+    gravity_closure_t * bind = gravity_class_lookup_closure(gravity_class_object, VALUE_FROM_CSTRING(o->ctx->vm, "bind"));
+
+    gravity_value_t args[] = {
+
+        // key
+        VALUE_FROM_CSTRING(g->vm, topaz_string_get_c_str(propName)),
+        
+        // closure
+        VALUE_FROM_OBJECT(setget)
+    };
+    
+    gravity_vm_runclosure(
+        o->ctx->vm, 
+        bind, 
+        o->value,
+        args,
+        2
     );
 }
 
@@ -757,7 +802,7 @@ void topaz_system_script_gravity__backend(
     api->objectAPI.object_reference_array_get_count = topaz_gravity_object_reference_array_get_count;
     api->objectAPI.object_reference_map_get_property = topaz_gravity_object_reference_map_get_property;
     //api->objectAPI.object_reference_to_string = topaz_gravity_object_reference_to_string;
-    //api->objectAPI.object_reference_extendable_add_property = topaz_gravity_object_reference_extendable_add_property;
+    api->objectAPI.object_reference_extendable_add_property = topaz_gravity_object_reference_extendable_add_property;
     
 
     api->script_create = topaz_gravity_create;
