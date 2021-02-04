@@ -4,7 +4,7 @@
 TSO_SCRIPT_API_FN(object2d_api__create) {
     topazComponent_t * component = topaz_object2d_create(((topazScriptManager_t*)context)->ctx);
     // creates new object and sets native pointer
-    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__OBJECT2D, NULL);
+    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__OBJECT2D, NULL, NULL);
     return object;
 }
 
@@ -320,7 +320,7 @@ TSO_SCRIPT_API_FN(object2d_api__get_last_collided) {
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL);
+    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
     return object;
 }
 

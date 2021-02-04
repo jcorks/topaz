@@ -157,18 +157,6 @@ struct topazScript_Object_ReferenceAPI_t {
     //
     void (*object_reference_to_string)(topazScript_Object_t *, topazString_t * s, void *);
 
-    // Adds a controlled value property to the object reference.
-    // If its just a single static value, its probably better to just do it within the 
-    // script context itself.
-    //
-    void (*object_reference_extendable_add_property)(
-        topazScript_Object_t *, 
-        const topazString_t * propName,
-        topaz_script_native_function onSet,
-        topaz_script_native_function onGet,
-        void *
-        );
-
 
 };
 

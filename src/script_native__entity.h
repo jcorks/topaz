@@ -66,7 +66,7 @@ static void topaz_script_entity__on_draw(topazEntity_t * e, TopazScriptEntity * 
 TSO_SCRIPT_API_FN(entity_api__create) {
     topazEntity_t * entity = topaz_entity_create(((topazScriptManager_t*)context)->ctx);
     // creates new object and sets native pointer
-    TSO_OBJECT_NEW(entity, TSO_OBJECT_TYPE__ENTITY, NULL);
+    TSO_OBJECT_NEW(entity, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
 
 
 
@@ -100,7 +100,7 @@ TSO_SCRIPT_API_FN(entity_api__null) {
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL);
+    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
     return object;
 
 }
@@ -139,7 +139,7 @@ TSO_SCRIPT_API_FN(entity_api__get_nth_child) {
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(child);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(child, TSO_OBJECT_TYPE__ENTITY, NULL);
+    TSO_OBJECT_NEW(child, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
     return object;
 
 }
@@ -303,7 +303,7 @@ TSO_SCRIPT_API_FN(entity_api__get_parent) {
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL);
+    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
     return object;
 
 }
@@ -318,7 +318,7 @@ TSO_SCRIPT_API_FN(entity_api__query) {
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL);
+    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
     return object;
 
 }
@@ -333,7 +333,7 @@ TSO_SCRIPT_API_FN(entity_api__search) {
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL);
+    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
     return object;
 
 }

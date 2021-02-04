@@ -54,7 +54,7 @@ TSO_SCRIPT_API_FN(component_api__create) {
     TSO_ARG_0;
     topazComponent_t * component = topaz_component_create(topaz_script_object_as_string(arg0), ((topazScriptManager_t*)context)->ctx);
     // creates new object and sets native pointer
-    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT, NULL);
+    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT, NULL, NULL);
 
 
 
@@ -166,14 +166,14 @@ TSO_SCRIPT_API_FN(component_api__get_host) {
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL);
+    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
     return object;
 }
 
 
 TSO_SCRIPT_API_FN(component_api__null) {
     topazComponent_t * out = topaz_component_null();
-    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__COMPONENT, NULL);
+    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__COMPONENT, NULL, NULL);
     return object;
 }
 
@@ -247,7 +247,7 @@ static int component_api_callback(topazComponent_t * c, void * data, topazEntity
         if (sourceObject) {
             a[1] = sourceObject;
         } else {
-            TSO_OBJECT_NEW(source, TSO_OBJECT_TYPE__ENTITY, NULL);
+            TSO_OBJECT_NEW(source, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
             a[1] = object;
         }    
         topaz_script_object_reference_call(
@@ -492,7 +492,7 @@ TSO_SCRIPT_API_FN(entity_api__get_nth_component) {
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(component);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT, NULL);
+    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT, NULL, NULL);
     return object;
 }
 
@@ -511,7 +511,7 @@ TSO_SCRIPT_API_FN(entity_api__query_component) {
     topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(component);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT, NULL);
+    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT, NULL, NULL);
     return object;
 }
 

@@ -668,17 +668,7 @@ topazScript_Object_t * topaz_script_object_reference_array_get_nth(topazScript_O
 }
 
 
-void topaz_script_object_reference_extendable_add_property(
-    topazScript_Object_t * o,
-    const topazString_t * propName,
-    topaz_script_native_function onSet,
-    topaz_script_native_function onGet
-) {
-    if (o->type == topazScript_Object_Type_Reference) {
-        if (o->api->object_reference_extendable_add_property)
-            o->api->object_reference_extendable_add_property(o, propName, onSet, onGet, o->apiData);
-    }       
-}
+
 
 void * topaz_script_object_get_api_data(topazScript_Object_t * o) {
     return o->apiData;

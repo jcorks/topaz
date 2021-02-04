@@ -941,7 +941,7 @@ static int topaz_duk_object_reference_get_feature_mask(topazScript_Object_t * o,
     #endif
 
     topaz_duk_object_push_to_top_from_tag(t);
-    int out = topazScript_Object_Feature_Extendable; // all objects in js can have properties
+    int out = 0; // all objects in js can have properties
     if (duk_is_callable(ctx, -1)) {
         out |= topazScript_Object_Feature_Callable;
     }
@@ -1129,60 +1129,6 @@ void topaz_duk_object_reference_to_string(
         assert(duk_get_top(tag->ctx->js) == stackSize);
     #endif
 }
-
-void topaz_duk_object_reference_extendable_add_property(
-    topazScript_Object_t * object, 
-    const topazString_t * propName,
-    topaz_script_native_function onSet,
-    topaz_script_native_function onGet,
-    void * tagSrc
-) {
-    TOPAZDUKObjectTag * tag = tagSrc;
-    int hasWhich = 0;
-
-    #ifdef TOPAZDC_DEBUG
-        int stackSize = duk_get_top(tag->ctx->js);
-    #endif
-
-    #ifdef DEBUG
-        assert(onSet || onGet);
-    #endif
-
-    topaz_duk_object_push_to_top_from_tag(tag);
-
-    duk_push_string(tag->ctx->js, topaz_string_get_c_str(propName));
-
-    if (onGet) {
-
-        duk_push_c_function(tag->ctx->js, topaz_duk_get_internal, 0);
-        topaz_duk_set_private_prop(tag->ctx->js, "___tz",   tag);
-        topaz_duk_set_private_prop(tag->ctx->js, "___tzfn", (void*) onGet);
-        hasWhich |= DUK_DEFPROP_HAVE_GETTER;
-
-    }
-
-
-    if (onSet) {
-        duk_push_c_function(tag->ctx->js, topaz_duk_set_internal, 1);
-        // we need to set a prop to this tag 
-        topaz_duk_set_private_prop(tag->ctx->js, "___tz",   tag);
-        topaz_duk_set_private_prop(tag->ctx->js, "___tzfn", (void*) onSet);
-        hasWhich |= DUK_DEFPROP_HAVE_SETTER;
-    }
-
-    
-    duk_def_prop(
-        tag->ctx->js, 
-        -4,
-        hasWhich
-    );
-    
-    duk_pop(tag->ctx->js);
-    #ifdef TOPAZDC_DEBUG 
-        assert(duk_get_top(tag->ctx->js) == stackSize);
-    #endif
-}
-
 
 
 // SUPPORT TRANS WRITES
@@ -1845,7 +1791,6 @@ void topaz_system_script_duktapeJS__backend(
     api->objectAPI.object_reference_array_get_count = topaz_duk_object_reference_array_get_count;
     api->objectAPI.object_reference_map_get_property = topaz_duk_object_reference_map_get_property;
     api->objectAPI.object_reference_to_string = topaz_duk_object_reference_to_string;
-    api->objectAPI.object_reference_extendable_add_property = topaz_duk_object_reference_extendable_add_property;
 
     api->script_create = topaz_duk_create;
     api->script_destroy = topaz_duk_destroy;

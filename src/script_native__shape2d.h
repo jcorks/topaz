@@ -4,7 +4,7 @@
 TSO_SCRIPT_API_FN(shape2d_api__create) {
     topazComponent_t * component = topaz_shape2d_create(((topazScriptManager_t*)context)->ctx);
     // creates new object and sets native pointer
-    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__SHAPE2D, NULL);
+    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__SHAPE2D, NULL, NULL);
     return object;
 }
 

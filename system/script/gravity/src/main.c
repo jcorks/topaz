@@ -165,7 +165,7 @@ static TopazGravityObject * topaz_gravity_object_get_tag(TopazGravity * g, gravi
         o = calloc(1, sizeof(TopazGravityObject));
         o->value = v;
         o->ctx = g;
-        topaz_table_insert(g->ownedRefs, VALUE_AS_OBJECT(v), g);        
+        topaz_table_insert(g->ownedRefs, VALUE_AS_OBJECT(v), o);        
         VALUE_AS_INSTANCE(v)->gc.free = topaz_gravity_object_gc;
         // notice that the refcount is 0 and that the value has not 
         // be locked to prevent GC.
@@ -476,8 +476,6 @@ static int topaz_gravity_object_reference_get_feature_mask(topazScript_Object_t 
     out |= (VALUE_ISA_CLOSURE(o->value)) ? topazScript_Object_Feature_Callable : 0;
     out |= (VALUE_ISA_LIST(o->value))    ? topazScript_Object_Feature_Array : 0;
     out |= (VALUE_ISA_MAP(o->value))    ? topazScript_Object_Feature_Map : 0;
-    out |= (OBJECT_IS_VALID(VALUE_AS_OBJECT(o->value))) ? topazScript_Object_Feature_Extendable : 0;
-
     return out;
 }
 
@@ -539,8 +537,8 @@ static topazScript_Object_t * topaz_gravity_object_reference_call(
         uint32_t i;
         uint32_t len = topaz_array_get_size(args);
 
-        gravity_value_t * argsV = calloc(sizeof(gravity_value_t), len+1); 
-        for(i = 1; i <= len; ++i) {
+        gravity_value_t * argsV = calloc(sizeof(gravity_value_t), len); 
+        for(i = 0; i < len; ++i) {
             argsV[i] = topaz_script_object_to_gravity_value(
                 g->vm, 
                 topaz_array_at(args, topazScript_Object_t *, i)
@@ -550,9 +548,9 @@ static topazScript_Object_t * topaz_gravity_object_reference_call(
         gravity_vm_runclosure(
             o->ctx->vm, 
             VALUE_AS_CLOSURE(o->value), 
-            VALUE_FROM_NULL,
+            VALUE_AS_CLOSURE(o->value)->context ? VALUE_FROM_OBJECT(VALUE_AS_CLOSURE(o->value)->context) : VALUE_FROM_NULL,
             argsV,
-            len+1
+            len
         );
 
         return topaz_gravity_value_to_script_object(o->ctx, gravity_vm_result(g->vm));
@@ -657,87 +655,6 @@ topazScript_Object_t * topaz_gravity_create_empty_object(
     return out;
 }
 
-static void topaz_gravity_object_reference_extendable_add_property(
-    topazScript_Object_t * obj, 
-    const topazString_t * propName,
-    topaz_script_native_function onSet,
-    topaz_script_native_function onGet,
-    void * userData
-) {
-    
-    TopazGravityObject * o = userData;
-    TopazGravity * g = o->ctx;
-    
-
-    if (!OBJECT_IS_VALID(VALUE_AS_OBJECT(o->value))) return;
-
-
-
-    // First, create setter-getter function
-    
-    TopazGravityFunctionData * fdataGet = calloc(1, sizeof(TopazGravityFunctionData));
-    fdataGet->func = onGet;
-    //fdataGet->userData = userData;
-    fdataGet->g = g;
-    gravity_function_t * getterfunc = gravity_function_new_internal(
-        NULL, 
-        NULL, 
-        topaz_gravity_native_function,
-        0
-    );
-    getterfunc->internalData = fdataGet;    
-    gravity_closure_t * getter = gravity_closure_new(NULL, getterfunc);
-
-
-    TopazGravityFunctionData * fdataSet = calloc(1, sizeof(TopazGravityFunctionData));
-    fdataSet->func = onGet;
-    //fdataSet->userData = userData;
-    fdataSet->g = g;
-    gravity_function_t * setterfunc = gravity_function_new_internal(
-        NULL, 
-        NULL, 
-        topaz_gravity_native_function,
-        0
-    );
-    setterfunc->internalData = fdataSet;    
-    gravity_closure_t * setter = gravity_closure_new(NULL, setterfunc);
-
-    
-    // we will create a set/get property function.
-    gravity_function_t * f = gravity_function_new_special(
-        g->vm, 
-        NULL,
-        GRAVITY_COMPUTED_INDEX,
-        getter,
-        setter
-    );
-    gravity_closure_t * setget = gravity_closure_new(NULL, f);
-
-    
-    // then: bind to instance.
-    gravity_closure_t * bind = gravity_class_lookup_closure(gravity_class_object, VALUE_FROM_CSTRING(o->ctx->vm, "bind"));
-
-    gravity_value_t args[] = {
-
-        // key
-        VALUE_FROM_CSTRING(g->vm, topaz_string_get_c_str(propName)),
-        
-        // closure
-        VALUE_FROM_OBJECT(setget)
-    };
-    
-    gravity_vm_runclosure(
-        o->ctx->vm, 
-        bind, 
-        o->value,
-        args,
-        2
-    );
-}
-
-
-
-
 
 
 
@@ -802,7 +719,6 @@ void topaz_system_script_gravity__backend(
     api->objectAPI.object_reference_array_get_count = topaz_gravity_object_reference_array_get_count;
     api->objectAPI.object_reference_map_get_property = topaz_gravity_object_reference_map_get_property;
     //api->objectAPI.object_reference_to_string = topaz_gravity_object_reference_to_string;
-    api->objectAPI.object_reference_extendable_add_property = topaz_gravity_object_reference_extendable_add_property;
     
 
     api->script_create = topaz_gravity_create;

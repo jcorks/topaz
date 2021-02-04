@@ -933,6 +933,9 @@ static bool object_clone (gravity_vm *vm, gravity_value_t *args, uint16_t nargs,
 }
 
 
+
+
+
 //static bool object_methods (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rindex, void * nu) {
 //    #pragma unused(vm, nargs)
 //    gravity_class_t *c = gravity_value_getclass(GET_VALUE(0));
@@ -3295,6 +3298,7 @@ void gravity_core_init (void) {
     gravity_class_bind(gravity_class_object, "unbind", NEW_CLOSURE_VALUE(object_unbind));
     gravity_class_bind(gravity_class_object, GRAVITY_INTERNAL_EXEC_NAME, NEW_CLOSURE_VALUE(object_exec));
     gravity_class_bind(gravity_class_object, "clone", NEW_CLOSURE_VALUE(object_clone));
+
 
     // INTROSPECTION support added to OBJECT CLASS
     gravity_class_bind(gravity_class_object, "class", VALUE_FROM_OBJECT(computed_property_create(NULL, NEW_FUNCTION(object_class), NULL)));

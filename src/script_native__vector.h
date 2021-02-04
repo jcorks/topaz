@@ -50,6 +50,15 @@ TSO_SCRIPT_API_FN(vector_api__z_get) {
 }
 
 
+static topazScript_Object_t * vector_api__cleanup(
+    topazScript_t * script, 
+    const topazArray_t * args, 
+    void * userData
+) {
+    free(userData);
+    TSO_NO_RETURN;
+}
+
 
 
 
@@ -69,27 +78,13 @@ TSO_SCRIPT_API_FN(vector_api__create) {
     }
 
     // creates new object and sets native pointer
-    TSO_OBJECT_NEW(ptr, TSO_OBJECT_ID__VECTOR, NULL);
+    TSO_OBJECT_NEW(ptr, TSO_OBJECT_ID__VECTOR, vector_api__cleanup, ptr);
 
-    // uses implicit names to add ref
-    TSO_PROP_ADD("x", vector_api__x_set, vector_api__x_get);
-    TSO_PROP_ADD("y", vector_api__y_set, vector_api__y_get);
-    TSO_PROP_ADD("z", vector_api__z_set, vector_api__z_get);
 
     TSO_OBJECT_KEEP;
     return object;
 }
 
-TSO_SCRIPT_API_FN(vector_api__destroy) {
-    TSO_ASSERT_ARG_COUNT(1);
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-
-    free(native);
-
-    TSO_OBJECT_UNKEEP;
-    TSO_NO_RETURN;
-}
 
 
 
@@ -353,7 +348,6 @@ TSO_SCRIPT_API_FN(vector_api__rotate_z) {
 
 static void add_refs__vector_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz_vector__create", vector_api__create);
-    TS_MAP_NATIVE_FN("topaz_vector__destroy", vector_api__destroy);
 
     // member functions
     TS_MAP_NATIVE_FN("topaz_vector__get_length", vector_api__get_length);
@@ -375,5 +369,15 @@ static void add_refs__vector_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_vector__rotate_x", vector_api__rotate_x);
     TS_MAP_NATIVE_FN("topaz_vector__rotate_y", vector_api__rotate_y);
     TS_MAP_NATIVE_FN("topaz_vector__rotate_z", vector_api__rotate_z);
+    
+    TS_MAP_NATIVE_FN("topaz_vector__set_x", vector_api__x_set);
+    TS_MAP_NATIVE_FN("topaz_vector__get_x", vector_api__x_get);
+    TS_MAP_NATIVE_FN("topaz_vector__set_y", vector_api__y_set);
+    TS_MAP_NATIVE_FN("topaz_vector__get_y", vector_api__y_get);
+    TS_MAP_NATIVE_FN("topaz_vector__set_z", vector_api__z_set);
+    TS_MAP_NATIVE_FN("topaz_vector__get_z", vector_api__z_get);
+    
+ 
+    
 
 }

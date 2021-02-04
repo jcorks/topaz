@@ -92,11 +92,6 @@ enum topazScript_Object_Feature_t {
     /// 
     topazScript_Object_Feature_Map = 4,
 
-    /// The object can have manageable setters / getters for properties
-    /// and can have member functions added to it using the 
-    /// topaz_script_object_reference_extendable_* family of functions.
-    topazScript_Object_Feature_Extendable = 8,
-
 };
 
 
@@ -578,31 +573,6 @@ topazScript_Object_t * topaz_script_object_reference_array_get_nth(
     /// The nth reference to get.
     int n
 );
-
-/// Adds a named value property to this object. defaultValue is 
-/// the value that the property should have at first.
-/// Both function's first argument will be the source object
-/// onSet will be called any time the property is edited within the 
-/// script, it will have one addt argument which is the new value to set
-/// to but the function's return value will be ignored.
-/// onGet will be called to retrieve the value in question. It will have no arguments,
-/// but its return value will be used as its value in the script context.
-/// onSet can be NULL. In this case, a default handler is used which does nothing.
-/// This can be used to represent a read-only value.
-///
-void topaz_script_object_reference_extendable_add_property(
-    /// The object to add a property to.
-    topazScript_Object_t * object,
-    /// The new property name.
-    const topazString_t * propName,
-    /// The function to call when setting the property. The incoming property is passed as an argument.
-    topaz_script_native_function onSet,
-    /// The function to call when getting the property. The return value is the value to get.
-    topaz_script_native_function onGet
-);
-
-
-
 
 
 

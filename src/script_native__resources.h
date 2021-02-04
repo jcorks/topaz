@@ -45,7 +45,7 @@ TSO_SCRIPT_API_FN(resources_api__load_asset) {
       default:;
     }
 
-    TSO_OBJECT_NEW(asset, type, NULL);
+    TSO_OBJECT_NEW(asset, type, NULL, NULL);
     return object;
 
 }
@@ -75,7 +75,7 @@ TSO_SCRIPT_API_FN(resources_api__fetch_asset) {
       default:;
     }
 
-    TSO_OBJECT_NEW(asset, type, NULL);
+    TSO_OBJECT_NEW(asset, type, NULL, NULL);
     return object;
 }
 
@@ -88,7 +88,7 @@ TSO_SCRIPT_API_FN(resources_api__write_asset) {
     TSO_ARG_1;
     TSO_ARG_2;
 
-    TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_TYPE__ASSET);  
+    TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_TYPE__ASSET);           
 
     topazResources_t * r = topaz_context_get_resources(((topazScriptManager_t*)context)->ctx);
     return topaz_script_object_from_int(

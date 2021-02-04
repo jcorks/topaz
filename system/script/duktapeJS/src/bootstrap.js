@@ -1497,9 +1497,6 @@ topaz = {
 
 
         Object.defineProperty(this, 'length', {get : function(){return topaz_vector__get_length(impl)}});
-        Object.defineProperty(this, 'x', {get : function(){return impl.x;}, set : function(v){impl.x = v;}});
-        Object.defineProperty(this, 'y', {get : function(){return impl.y;}, set : function(v){impl.y = v;}});
-        Object.defineProperty(this, 'z', {get : function(){return impl.z;}, set : function(v){impl.z = v;}});
 
         this.getDistance = function(other) {
             return topaz_vector__get_distance(impl, other.impl);
@@ -1571,6 +1568,11 @@ topaz = {
             topaz_vector__destroy(impl);
             impl = {};
         }
+        
+        Object.defineProperty(this, 'x', {get : function(){return topaz_vector__get_x(impl);}, set : function(v){topaz_vector__set_x(impl, v);}});
+        Object.defineProperty(this, 'y', {get : function(){return topaz_vector__get_y(impl);}, set : function(v){topaz_vector__set_y(impl, v);}});
+        Object.defineProperty(this, 'z', {get : function(){return topaz_vector__get_z(impl);}, set : function(v){topaz_vector__set_z(impl, v);}});
+
 
         this.impl = impl;
     }

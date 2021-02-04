@@ -24,16 +24,13 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 #define TSO_SCRIPT_API_FN(__name__) static topazScript_Object_t * __name__(topazScript_t * script, const topazArray_t * args, void * context)
 
 
-// macro for adding a property.
-// requires:
-// - TSO_OBJECT_NEW to be called within the same scope
-#define TSO_PROP_ADD(__s__, __os__, __og__) topaz_script_object_reference_extendable_add_property(object, TOPAZ_STR_CAST(__s__), __os__, __og__)
 
 // Creates a new object to be modified in the current scope.
 // __native__ is the variable to that contains the native object 
 // __tag__ is the unique ID tag for this type of object. this is varified unpon functions calls.
 // __remover__ is the native function to call when the object reference is destroyed in the script context.
-#define TSO_OBJECT_NEW(__native__, __tag__, __remover__) topazScript_Object_t * object = topaz_script_create_empty_object(script, __remover__, NULL); topaz_script_object_reference_set_native_data(object, __native__, __tag__); topaz_table_insert(((topazScriptManager_t*)context)->lookupRefs, __native__, topaz_script_object_from_object(script, object));
+// __removerData__ the data to bind to the cleanup
+#define TSO_OBJECT_NEW(__native__, __tag__, __remover__, __removerData__) topazScript_Object_t * object = topaz_script_create_empty_object(script, __remover__, __removerData__); topaz_script_object_reference_set_native_data(object, __native__, __tag__); topaz_table_insert(((topazScriptManager_t*)context)->lookupRefs, __native__, topaz_script_object_from_object(script, object));
 
 // Removes the object created with TSO_OBJECT_CREATE
 // __native__ is the original object

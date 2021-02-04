@@ -7,7 +7,7 @@ TSO_SCRIPT_API_FN(state_control_api__create) {
     );
 
     // creates new object and sets native pointer
-    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__STATECONTROL, NULL);
+    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__STATECONTROL, NULL, NULL);
     return object;
 }
 
