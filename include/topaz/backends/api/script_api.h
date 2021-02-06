@@ -55,26 +55,38 @@ typedef struct topazScript_DebugState_t topazScript_DebugState_t;
 
 
 
-/// Can be used by the script implementation 
-/// to Creates a new object that acts as a "wrapper" to an object managed by the 
-/// script implementation. This is recommended for objects that are more than simple
-/// values, such as arrays or maps, which may vary a lot between scripting languages.
-/// This is called / used by the script implementation to create wrappers for you.
-/// If you are looking to create a new empty object, see 
-/// topaz_script_create_empty_object().
-///
+// Can be used by the script implementation 
+// to Creates a new object that acts as a "wrapper" to an object managed by the 
+// script implementation. This is recommended for objects that are more than simple
+// values, such as arrays or maps, which may vary a lot between scripting languages.
+// This is called / used by the script implementation to create wrappers for you.
+// If you are looking to create a new empty object, see 
+// topaz_script_create_empty_object().
+//
 topazScript_Object_t * topaz_script_object_wrapper(
-    /// The script to create from.
+    // The script to create from.
     topazScript_t * script,
 
-    /// The userdata to bind to the reference.
-    /// Similar to the return value for object_reference_create_from_reference,
-    /// as this is the data that gets passed to all of the object api.
+    // The userdata to bind to the reference.
+    // Similar to the return value for object_reference_create_from_reference,
+    // as this is the data that gets passed to all of the object api.
     void * userdata
 );
 
 
+// Utility function that can be used to register sources 
+// by the implementation without using the topaz_script_run 
+// function. 
+void topaz_script_register_source(
+    // Script instance to modify
+    topazScript_t * s, 
 
+    // The name/path of the source file
+    const topazString_t * sourceName,
+
+    // data.
+    const topazString_t * scriptData
+);
 
 
 

@@ -41,6 +41,8 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/topaz.h>
 #include <topaz/containers/table.h>
 #include <topaz/backends/script.h>
+#include <topaz/modules/resources.h>
+#include <topaz/assets/data.h>
 #include "backend.h"
 
 #include <stdio.h>
@@ -258,11 +260,57 @@ static bool topaz_gravity_debug_pause(
     return TRUE;
 }
 
+static const char * topaz_gravity_loadfile_callback(
+    const char * file, 
+    size_t * len,
+    uint32_t * fileid,
+    void *xdata, 
+    bool *is_static
+) {
+    TopazGravity * g = xdata;
+
+    topazAsset_t * f = topaz_resources_load_asset(
+        topaz_context_get_resources(g->topaz),
+        TOPAZ_STR_CAST("txt"),
+        TOPAZ_STR_CAST(file),
+        TOPAZ_STR_CAST(file)
+    );
+
+    if (!f) {
+        *len = 0;
+        *is_static = TRUE;
+        topazString_t * out = topaz_string_create_from_c_str(
+            "Cant include unknown file %s", file
+        );
+        PLOG(g->topaz, out);
+
+        return "";
+    }
+
+    const topazString_t * src = topaz_data_get_as_string(f);
+    topaz_script_register_source(
+        g->script,
+        TOPAZ_STR_CAST(file),
+        src
+    );
+
+    char * out = strdup(topaz_string_get_c_str(src));
+    *fileid = g->fileIDPool++;
+    *len = strlen(out);
+    *is_static = 0;
+
+    
+
+    topaz_table_insert_by_uint(g->files, *fileid, topaz_string_create_from_c_str("%s", file));
+    return out;
+}
+
 static void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
     TopazGravity * g = calloc(1, sizeof(TopazGravity));
     g->script = script;
     g->topaz  = topaz;
     g->delegate.error_callback = report_error;
+    g->delegate.loadfile_callback = topaz_gravity_loadfile_callback;
     g->delegate.xdata = g;
     g->vm = gravity_vm_new(&g->delegate);
     gravity_vm_setdata(g->vm, g);
@@ -529,7 +577,25 @@ static void topaz_gravity_bootstrap(
     TopazGravity * g = data;
 
     #include "bootstrap_bytes"
-    topaz_string_set(g->bootstrap, TOPAZ_STR_CAST((char*)bootstrap_bytes));    
+    //topaz_string_set(g->bootstrap, TOPAZ_STR_CAST((char*)bootstrap_bytes));    
+
+
+
+    topazAsset_t * asset = topaz_resources_fetch_asset(
+        topaz_context_get_resources(g->topaz),
+        topazAsset_Type_Data,
+        TOPAZ_STR_CAST("@topaz.core")
+    );
+
+    topaz_data_set(
+        asset, 
+        TOPAZ_ARRAY_CAST(
+            (void*)bootstrap_bytes, 
+            uint8_t, 
+            strlen((char*)bootstrap_bytes)
+        )
+    );
+
 }
 
 

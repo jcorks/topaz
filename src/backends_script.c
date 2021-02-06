@@ -177,7 +177,7 @@ void topaz_script_run_once(
 }
 
 
-void topaz_script_run(
+void topaz_script_register_source(
     topazScript_t * s, 
     const topazString_t * sourceName,
     const topazString_t * scriptData
@@ -220,6 +220,15 @@ void topaz_script_run(
         topaz_table_insert(s->sources, sourceName, source);
 
     }
+}
+
+
+void topaz_script_run(
+    topazScript_t * s, 
+    const topazString_t * sourceName,
+    const topazString_t * scriptData
+) {
+    topaz_script_register_source(s, sourceName, scriptData);
 
     s->api.script_run(
         s, s->implementationData,
