@@ -50,7 +50,8 @@ typedef struct {
         double      d;  //    tag is DOUBLE_TAG
         int64_t     n;  //    tag is INT_TAG
     };
-    uint32_t    lineno;     //  debug info
+    uint32_t    line_no;     //  debug info
+    uint32_t    fileid;
 } inst_t;
 
 typedef struct ircode_t ircode_t;
@@ -76,19 +77,19 @@ void        ircode_unsetlabel_check (ircode_t *code);
 uint32_t    ircode_getlabel_true (ircode_t *code);
 uint32_t    ircode_getlabel_false (ircode_t *code);
 uint32_t    ircode_getlabel_check (ircode_t *code);
-void		ircode_marklabel (ircode_t *code, uint32_t nlabel, uint32_t lineno);
+void		ircode_marklabel (ircode_t *code, uint32_t nlabel, uint32_t lineno, int fileid);
 
 void        inst_setskip (inst_t *inst);
 uint8_t     opcode_numop (opcode_t op);
 
-void		ircode_pragma (ircode_t *code, optag_t tag, uint32_t value, uint32_t lineno);
-void		ircode_add (ircode_t *code, opcode_t op, uint32_t p1, uint32_t p2, uint32_t p3, uint32_t lineno);
-void		ircode_add_tag (ircode_t *code, opcode_t op, uint32_t p1, uint32_t p2, uint32_t p3, optag_t tag, uint32_t lineno);
-void		ircode_add_array (ircode_t *code, opcode_t op, uint32_t p1, uint32_t p2, uint32_t p3, uint32_r r, uint32_t lineno);
-void		ircode_add_double (ircode_t *code, double d, uint32_t lineno);
-void		ircode_add_int (ircode_t *code, int64_t n, uint32_t lineno);
-void		ircode_add_constant (ircode_t *code, uint32_t index, uint32_t lineno);
-void		ircode_add_skip (ircode_t *code, uint32_t lineno);
+void		ircode_pragma (ircode_t *code, optag_t tag, uint32_t value, uint32_t lineno, int fileid);
+void		ircode_add (ircode_t *code, opcode_t op, uint32_t p1, uint32_t p2, uint32_t p3, uint32_t lineno, int fileid);
+void		ircode_add_tag (ircode_t *code, opcode_t op, uint32_t p1, uint32_t p2, uint32_t p3, optag_t tag, uint32_t lineno, int fileid);
+void		ircode_add_array (ircode_t *code, opcode_t op, uint32_t p1, uint32_t p2, uint32_t p3, uint32_r r, uint32_t lineno, int fileid);
+void		ircode_add_double (ircode_t *code, double d, uint32_t lineno, int fileid);
+void		ircode_add_int (ircode_t *code, int64_t n, uint32_t lineno, int fileid);
+void		ircode_add_constant (ircode_t *code, uint32_t index, uint32_t lineno, int fileid);
+void		ircode_add_skip (ircode_t *code, uint32_t lineno, int fileid);
 void        ircode_set_index (uint32_t index, ircode_t *code, opcode_t op, uint32_t p1, uint32_t p2, uint32_t p3);
 void        ircode_add_check (ircode_t *code);
 

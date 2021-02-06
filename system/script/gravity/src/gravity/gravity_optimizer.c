@@ -206,7 +206,8 @@ static void finalize_function (gravity_function_t *f, bool add_debug) {
         }
 
         // add debug information
-        if (add_debug) lineno[j] = inst->lineno;
+        if (add_debug) lineno[j] = inst->line_no;
+        f->fileid = inst->fileid;
         
         // store encoded instruction
         bytecode[j++] = op;

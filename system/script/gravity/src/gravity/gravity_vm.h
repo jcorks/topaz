@@ -52,6 +52,7 @@ GRAVITY_API bool                gravity_vm_isaborted (gravity_vm *vm);
 GRAVITY_API void                gravity_vm_setaborted (gravity_vm *vm);
 GRAVITY_API gravity_closure_t   *gravity_vm_getclosure (gravity_vm *vm);
 
+
 GRAVITY_API void                gravity_gray_value (gravity_vm* vm, gravity_value_t v);
 GRAVITY_API void                gravity_gray_object (gravity_vm* vm, gravity_object_t *obj);
 GRAVITY_API void                gravity_gc_start (gravity_vm* vm);
@@ -84,6 +85,9 @@ GRAVITY_API char                *gravity_vm_anonymous (gravity_vm *vm);
 GRAVITY_API bool                gravity_isopt_class (gravity_class_t *c);
 GRAVITY_API void                gravity_opt_register (gravity_vm *vm);
 GRAVITY_API void                gravity_opt_free (void);
+
+int                 gravity_vm_get_callstack(gravity_vm * vm, int ** lineno, int ** fileid, gravity_closure_t **);
+
 
 #ifdef __cplusplus
 }

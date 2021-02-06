@@ -50,7 +50,7 @@ typedef struct codegen_t codegen_t;
 #define GET_VM()                        ((codegen_t *)self->data)->vm
 
 #define IS_LAST_LOOP(n1,n2)             (n1+1==n2)
-#define LINE_NUMBER(__node)             ((node) ? ((gnode_t*)__node)->token.lineno : 0)
+#define LINE_NUMBER(__node)             ((node) ? ((gnode_t*)__node)->token.lineno : 0), ((node) ? ((gnode_t*)__node)->token.fileid : 0)
 
 #if 0
 #define CODEGEN_COUNT_REGISTERS(_n)                     uint32_t _n = ircode_register_count(code)

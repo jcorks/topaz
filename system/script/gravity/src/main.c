@@ -68,6 +68,8 @@ typedef struct {
     topazTable_t * files;
     uint32_t fileIDPool;
     topazString_t * bootstrap;
+    int paused;
+    topazScript_DebugState_t debugState;
 } TopazGravity;
 
 
@@ -174,6 +176,33 @@ static TopazGravityObject * topaz_gravity_object_get_tag(TopazGravity * g, gravi
 }
 
 
+static void clear_debug_state(topazScript_DebugState_t * s) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(s->callstack);
+    for(i = 0; i < len; ++i) {
+        topazScript_CallstackFrame_t * frame = &topaz_array_at(s->callstack, topazScript_CallstackFrame_t, i);
+        topaz_string_destroy((topazString_t*)frame->filename);
+        topaz_string_destroy((topazString_t*)frame->functionName);
+        topaz_string_destroy((topazString_t*)frame->entityName);
+    }
+    topaz_array_set_size(s->callstack, 0);
+}
+
+static void debug_state_add_frame(topazScript_DebugState_t * s,
+    int lineNumber,
+    const char * filename,
+    const char * functionName
+) {
+    topazScript_CallstackFrame_t frame;
+    frame.lineNumber   = lineNumber;
+    frame.filename     = topaz_string_create_from_c_str("%s", filename);
+    frame.functionName = topaz_string_create_from_c_str("%s", functionName);
+    frame.entityName   = topaz_string_create();
+
+    topaz_array_push(s->callstack, frame);
+}
+
+
 static void PLOG(topaz_t * t, topazString_t * str) {
     topaz_console_print_message(
         topaz_context_get_console(t),
@@ -183,6 +212,20 @@ static void PLOG(topaz_t * t, topazString_t * str) {
     topaz_string_destroy(str);
 }
 
+static const char * get_file_name_from_id(TopazGravity * g, int id) {
+    return topaz_table_find_by_uint(
+        g->files, 
+        id
+    ) ? 
+        topaz_string_get_c_str(
+            topaz_table_find_by_uint(
+                g->files, 
+                id
+            )
+        ) 
+    : 
+        "???";
+}
 
 static void report_error(
     gravity_vm *  vm,
@@ -194,12 +237,25 @@ static void report_error(
     TopazGravity * g  = data;
     topazString_t * out = topaz_string_create_from_c_str(
         "Scripting error(%s, line %d, col %d):\n%s\n", 
-        topaz_table_find_by_uint(g->files, error_desc.fileid) ? topaz_string_get_c_str(topaz_table_find_by_uint(g->files, error_desc.fileid)) : "???",
+        get_file_name_from_id(g, error_desc.fileid),
         error_desc.lineno,
         error_desc.colno,
         desc
     );
     PLOG(g->topaz, out);
+}
+
+
+static bool topaz_gravity_debug_pause(
+    gravity_vm * vm,
+    gravity_value_t * args,
+    uint16_t nargs,
+    uint32_t rindex,
+    void * userData
+) {
+    TopazGravity * g = userData;
+    topaz_script_debug_send_command(g->script, topazScript_DebugCommand_Pause, TOPAZ_STR_CAST(""));
+    return TRUE;
 }
 
 static void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
@@ -217,10 +273,28 @@ static void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
     g->topazReftable = gravity_value_from_object(g->topazReftable_inst);
     gravity_class_bind(g->topazMeta, "t_", g->topazReftable);
 
-    g->ownedRefs = topaz_table_create_hash_pointer();    
-    
+    g->ownedRefs = topaz_table_create_hash_pointer();        
     g->files = topaz_table_create_hash_pointer();
     g->bootstrap = topaz_string_create();
+    g->debugState.callstack = topaz_array_create(sizeof(topazScript_CallstackFrame_t));
+
+
+    gravity_function_t * pausefunc = gravity_function_new_internal(
+        NULL, 
+        NULL, 
+        topaz_gravity_debug_pause,
+        0
+    );
+    pausefunc->internalData = g;
+
+    gravity_closure_t * pausecl = gravity_closure_new(NULL, pausefunc);
+
+    gravity_class_bind(
+        g->topazMeta, 
+        "pause", 
+        VALUE_FROM_OBJECT(pausecl)
+    );
+
 
     gravity_vm_setvalue(g->vm, "topaz_", VALUE_FROM_OBJECT(g->topazClass));
 
@@ -333,6 +407,7 @@ static bool topaz_gravity_native_function(
         topaz_script_object_destroy(retval);
     return TRUE;
 }
+
 
 
 static int topaz_gravity_map_native_function(
@@ -470,7 +545,6 @@ static void * topaz_gravity_object_reference_create_from_reference(
     topazScript_Object_t * from, 
     void * fromData 
 ) {
-    TopazGravity * g = scriptData;
     TopazGravityObject * fromObj = fromData;
     return fromObj;
 }
@@ -682,9 +756,19 @@ void topaz_gravity_debug_send_command(
     TopazGravity * g = data;
     switch(cmd) {
       case topazScript_DebugCommand_Pause:
+        if (g->paused) return;
+        g->paused = 1;
+        topaz_context_pause(g->topaz);
+        topaz_script_notify_command(g->script, cmd, topaz_string_create());
+        while(g->paused) {
+            topaz_context_iterate(g->topaz);
+        }
         break;    
 
       case topazScript_DebugCommand_Resume:
+        topaz_context_resume(g->topaz);
+        g->paused = 0;
+        topaz_script_notify_command(g->script, cmd, topaz_string_create());
         break;    
 
       case topazScript_DebugCommand_StepInto:
@@ -717,6 +801,7 @@ void topaz_gravity_debug_send_command(
 
         topaz_script_object_destroy(topaz_script_expression(scr, command));
         topaz_string_destroy(str);
+        topaz_script_notify_command(g->script, cmd, topaz_string_create());
         
         break;
       }
@@ -731,8 +816,34 @@ void topaz_gravity_debug_send_command(
 
 const topazScript_DebugState_t * topaz_gravity_debug_get_state(topazScript_t * scr, void * data) {
     TopazGravity * g = data;
-    static topazScriptAPI_t v = {};
-    return &v;
+    clear_debug_state(&(g->debugState));
+
+
+    int * lineno;
+    int * fileid;
+    gravity_closure_t * closures;
+    uint32_t count = gravity_vm_get_callstack(
+        g->vm,
+        &lineno,
+        &fileid,
+        &closures
+    );
+
+    if (count) {
+        int i;
+        for(i = count-1; i >= 0; --i) {
+            debug_state_add_frame(
+                &(g->debugState),
+                lineno[i],
+                get_file_name_from_id(g, fileid[i]),
+                closures[i].f->identifier
+            );
+        }
+        free(lineno);
+        free(fileid);
+        free(closures);
+    }
+    return &g->debugState;
 }
 
 

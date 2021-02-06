@@ -107,12 +107,12 @@ static void gravity_callframe_dump (gravity_fiber_t *fiber) {
     }
 }
 
-static uint32_t gravity_vm_lineno (gravity_vm *vm) {
+static uint32_t gravity_vm_lineno_nth(gravity_vm *vm, int index) {
     // get current fiber
     gravity_fiber_t *fiber = vm->fiber;
     
     // get current call frame
-    gravity_callframe_t *frame = (fiber->nframes) ? &fiber->frames[fiber->nframes-1] : NULL;
+    gravity_callframe_t *frame = (fiber->nframes) ? &fiber->frames[index] : NULL;
     if (!frame) return 0;
     
     // get current executing function
@@ -131,6 +131,57 @@ static uint32_t gravity_vm_lineno (gravity_vm *vm) {
     }
     
     return 0;
+}
+
+static int gravity_vm_fileid_nth(gravity_vm *vm, int index) {
+    // get current fiber
+    gravity_fiber_t *fiber = vm->fiber;
+    
+    // get current call frame
+    gravity_callframe_t *frame = (fiber->nframes) ? &fiber->frames[index] : NULL;
+    if (!frame) return 0;
+    
+    // get current executing function
+    gravity_function_t *func = (frame->closure) ? frame->closure->f : NULL;
+    if (!func) return 0;
+    
+    // sanity check about function type and included debug information
+    if (func->tag == EXEC_TYPE_NATIVE && func->lineno) {
+        return func->fileid;
+    }
+    
+    return 0;
+}
+
+
+static uint32_t gravity_vm_lineno (gravity_vm *vm) {
+    gravity_fiber_t *fiber = vm->fiber;
+    return gravity_vm_lineno_nth(vm, fiber->nframes-1);
+}
+
+
+
+int gravity_vm_get_callstack(
+    gravity_vm * vm,
+    int ** lineno,
+    int ** fileid,
+    gravity_closure_t ** closures
+) {
+    int i;
+    int count;
+    gravity_fiber_t *fiber = vm->fiber;
+
+    if (!fiber->nframes) return 0;
+
+    *lineno = malloc(fiber->nframes * sizeof(int));
+    *fileid = malloc(fiber->nframes * sizeof(int));
+    *closures = malloc(fiber->nframes * sizeof(gravity_closure_t));
+    for(i = 0; i < fiber->nframes; ++i) {
+        (*lineno)[i] = gravity_vm_lineno_nth(vm, i);
+        (*fileid)[i] = gravity_vm_fileid_nth(vm, i);
+        (*closures)[i] = *(fiber->frames[i].closure);
+    }
+    return fiber->nframes;
 }
 
 

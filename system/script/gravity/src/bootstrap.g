@@ -476,33 +476,17 @@ class Entity {
 
 
 class Debug {
+    // Can be used to allow global access to a local reference 
+    // for debugging purposes.
     var refs;
-    var ctx;
-    func init(cl) {
-        refs = [:];
-        
-        // paused first time.
+
+    func init() {
+        refs = [:];        
     }
 
-    
-    func resume() {
-        Topaz.log('Execution halted.');
-        ctx.call();
-    }
-    
-
-    // attempts to stop the calling routine at the given 
-    // time.
-    func pause() {
-        // yield this coroutine
-        Fiber.yield();
-    }
-    
-    // adds a reference to be retrieved at runtime
-    func addRef(name, ref) {
-        refs[name] = ref;
-    }
-    
+    // Prints detailed info for 
+    // the evaluation of an expression 
+    //   
     func expression(cl) {
         var result = cl();
         
@@ -523,6 +507,10 @@ class Debug {
             Topaz.log(str);
         }
         Topaz.log('|   }');
+    }
+
+    func pause() {
+        topaz_.pause();
     }
 }
 

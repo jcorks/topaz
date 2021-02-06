@@ -261,6 +261,7 @@ typedef struct {
     uint16_t                ntemps;         // number of temporary values used
     uint16_t                nupvalues;      // number of up values (if any)
     gravity_exec_type       tag;            // can be EXEC_TYPE_NATIVE (default), EXEC_TYPE_INTERNAL, EXEC_TYPE_BRIDGED or EXEC_TYPE_SPECIAL
+    int                     fileid;
     union {
         // tag == EXEC_TYPE_NATIVE
         struct {
