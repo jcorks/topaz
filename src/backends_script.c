@@ -709,6 +709,7 @@ void topaz_script_debug_send_command(
         }
     } else {
         switch(command) {
+          case topazScript_DebugCommand_ScopedEval:
           case topazScript_DebugCommand_Pause:
             return s->api.script_debug_send_command(s, s->implementationData, command, argument);
 

@@ -15,7 +15,8 @@ extern var topaz_;
         the closure needs to either be bound manually with .bind or 
         an explicit binding with .apply
         
-        
+    -   obj.load(arg) where arg is a closure WILL change the scope context to that 
+        closure, so watch out.
         
 
 */
@@ -470,30 +471,62 @@ class Entity {
 }
 
 
+
+
+
+
 class Debug {
-    static var refs;
-    static func start(cl) {
-        refs = Map();
-        var f = Fiber.create({cl()});
+    var refs;
+    var ctx;
+    func init(cl) {
+        refs = [:];
+        
+        // paused first time.
+    }
+
+    
+    func resume() {
         Topaz.log('Execution halted.');
+        ctx.call();
     }
     
+
     // attempts to stop the calling routine at the given 
     // time.
-    static func stop() {
+    func pause() {
         // yield this coroutine
         Fiber.yield();
     }
     
-    
-    static func addRef(ref, name) {
-    
+    // adds a reference to be retrieved at runtime
+    func addRef(name, ref) {
+        refs[name] = ref;
     }
+    
+    func expression(cl) {
+        var result = cl();
+        
+        
+        Topaz.log(    '| - Result:  \(result)');
+        
+        if (result is Object) {
+            Topaz.log("| - Methods: " + result.methods());
+            Topaz.log("| - Props {");
 
+        }
+        
+        var props = result.properties();
+        for(var i in 0..<props.count) {
+            var str = '|       \(props[i]) : '; 
+            str += '' + result.load(props[i]);
+
+            Topaz.log(str);
+        }
+        Topaz.log('|   }');
+    }
 }
 
-
-
-
+var debug = Debug();
+topaz_.t_['debug'] = debug;
 
 

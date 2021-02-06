@@ -178,7 +178,7 @@ static void PLOG(topaz_t * t, topazString_t * str) {
     topaz_console_print_message(
         topaz_context_get_console(t),
         str,
-        topazConsole_MessageType_Warning
+        topazConsole_MessageType_Error
     );
     topaz_string_destroy(str);
 }
@@ -192,7 +192,14 @@ static void report_error(
     void *        data
 ) {
     TopazGravity * g  = data;
-    PLOG(g->topaz, topaz_string_create_from_c_str("Gravity VM error: %s\n", desc));
+    topazString_t * out = topaz_string_create_from_c_str(
+        "Scripting error(%s, line %d, col %d):\n%s\n", 
+        topaz_table_find_by_uint(g->files, error_desc.fileid) ? topaz_string_get_c_str(topaz_table_find_by_uint(g->files, error_desc.fileid)) : "???",
+        error_desc.lineno,
+        error_desc.colno,
+        desc
+    );
+    PLOG(g->topaz, out);
 }
 
 static void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
@@ -212,10 +219,11 @@ static void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
 
     g->ownedRefs = topaz_table_create_hash_pointer();    
     
-    g->files = topaz_table_create_hash_topaz_string();
+    g->files = topaz_table_create_hash_pointer();
     g->bootstrap = topaz_string_create();
 
     gravity_vm_setvalue(g->vm, "topaz_", VALUE_FROM_OBJECT(g->topazClass));
+
     g->fileIDPool = 1;
     return g;
 }
@@ -368,11 +376,8 @@ static void topaz_gravity_run(
     const topazString_t * scriptData
 ) {
     TopazGravity * g = data;
-    uint32_t fileid = (uint32_t)topaz_table_find(g->files, sourceName);
-    if (!fileid) {
-        fileid = g->fileIDPool++;
-        topaz_table_insert(g->files, sourceName, (void*)fileid);
-    }
+    uint32_t fileid = g->fileIDPool++;
+    topaz_table_insert_by_uint(g->files, fileid, topaz_string_clone(sourceName));
 
     gravity_compiler_t * c = gravity_compiler_create(&g->delegate);
 
@@ -404,11 +409,19 @@ static topazScript_Object_t * topaz_gravity_expression(
     const topazString_t * scriptData
 ) {
     TopazGravity * g = data;
+    
+    topazString_t * commandPlus = topaz_string_create_from_c_str(
+        "extern var topaz_; var debug = topaz_.t_['debug']; debug.expression({return("
+    );
+    topaz_string_concat(commandPlus, scriptData);
+    topaz_string_concat(commandPlus, TOPAZ_STR_CAST(")});"));
+    
+    
     gravity_compiler_t * c = gravity_compiler_create(&g->delegate);
     gravity_closure_t * cl = gravity_compiler_run(
         c,
-        topaz_string_get_c_str(scriptData),
-        topaz_string_get_length(scriptData),
+        topaz_string_get_c_str(commandPlus),
+        topaz_string_get_length(commandPlus),
         0,
         1,
         1
@@ -425,14 +438,12 @@ static topazScript_Object_t * topaz_gravity_expression(
     gravity_vm_runclosure(
         g->vm, 
         cl,
-        VALUE_FROM_OBJECT(cl),
+        VALUE_FROM_NULL,
         NULL,
         0
     );
 
-    gravity_value_t v = gravity_vm_result(g->vm);
-    topazScript_Object_t * out = topaz_gravity_value_to_script_object(g, v);
-    gravity_value_dump(g->vm, v, NULL, 0);
+    topazScript_Object_t * out = topaz_script_object_from_string(script, TOPAZ_STR_CAST(""));
     return out;
 }
 
@@ -651,12 +662,78 @@ topazScript_Object_t * topaz_gravity_create_empty_object(
     TopazGravityObject * o = topaz_script_object_get_api_data(out);
 
     o->cleanupFunc = func;
-    o->cleanupData = data;
+    o->cleanupData = funcData;
     return out;
 }
 
 
+static void topaz_gravity_debug_start(topazScript_t * scr, void * data) {
+    // nothing needed, always.. ready...? for now.
+}
 
+
+
+void topaz_gravity_debug_send_command(
+    topazScript_t * scr, 
+    void * data, 
+    int cmd, 
+    const topazString_t * arg
+) {
+    TopazGravity * g = data;
+    switch(cmd) {
+      case topazScript_DebugCommand_Pause:
+        break;    
+
+      case topazScript_DebugCommand_Resume:
+        break;    
+
+      case topazScript_DebugCommand_StepInto:
+        break;
+
+      case topazScript_DebugCommand_StepOver:
+        break;
+
+      case topazScript_DebugCommand_AddBreakpoint: {
+        break;
+      }
+
+      case topazScript_DebugCommand_RemoveBreakpoint: {
+        break;
+      }
+
+      case topazScript_DebugCommand_ScopedEval: {
+        topazString_t * str = topaz_string_clone(arg);
+        const topazString_t * number = topaz_string_chain_start(str, TOPAZ_STR_CAST(":"));
+        int scope = atoi(topaz_string_get_c_str(number));
+
+        const topazString_t * command = topaz_string_get_substr(
+            str, 
+            topaz_string_get_length(number)+1, // skip the :
+            topaz_string_get_length(str)-1
+        );
+
+
+        // we ignore the scope because only know the "VM Debug" scope :(
+
+        topaz_script_object_destroy(topaz_script_expression(scr, command));
+        topaz_string_destroy(str);
+        
+        break;
+      }
+      default:;
+    }
+}
+
+
+
+
+
+
+const topazScript_DebugState_t * topaz_gravity_debug_get_state(topazScript_t * scr, void * data) {
+    TopazGravity * g = data;
+    static topazScriptAPI_t v = {};
+    return &v;
+}
 
 
 
@@ -731,9 +808,9 @@ void topaz_system_script_gravity__backend(
     api->script_bootstrap = topaz_gravity_bootstrap;
 
 
-    //api->script_debug_start = topaz_gravity_debug_start;
-    //api->script_debug_send_command = topaz_gravity_debug_send_command;
-    //api->script_debug_get_state = topaz_gravity_debug_get_state;
+    api->script_debug_start = topaz_gravity_debug_start;
+    api->script_debug_send_command = topaz_gravity_debug_send_command;
+    api->script_debug_get_state = topaz_gravity_debug_get_state;
 }
 
 
