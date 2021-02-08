@@ -838,16 +838,20 @@ void topaz_gravity_debug_send_command(
         break;    
 
       case topazScript_DebugCommand_StepInto:
+        PLOG(g->topaz, topaz_string_create_from_c_str("This debugger does not currently support stepping."));
         break;
 
       case topazScript_DebugCommand_StepOver:
+        PLOG(g->topaz, topaz_string_create_from_c_str("This debugger does not currently support stepping."));
         break;
 
       case topazScript_DebugCommand_AddBreakpoint: {
+        PLOG(g->topaz, topaz_string_create_from_c_str("This debugger does not currently support in-source breakpoints. Use debug.stop() to halt mid-execution."));
         break;
       }
 
       case topazScript_DebugCommand_RemoveBreakpoint: {
+        PLOG(g->topaz, topaz_string_create_from_c_str("This debugger does not currently support in-source breakpoints. Use debug.stop() to halt mid-execution."));
         break;
       }
 

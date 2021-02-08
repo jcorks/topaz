@@ -6,7 +6,7 @@ TSO_SCRIPT_API_FN(data_api__set) {
     TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__IMAGE);   
+    TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__DATA);   
 
 
     if (!(topaz_script_object_reference_get_feature_mask(arg1) & topazScript_Object_Feature_Array)) {

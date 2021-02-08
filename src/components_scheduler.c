@@ -206,7 +206,7 @@ topazComponent_t * topaz_scheduler_create(topaz_t * t, topazScheduler_Mode mode)
     data->MAGIC_ID = MAGIC_ID__SCHEDULER;
     #endif
 
-    data->tasks = topaz_array_create(sizeof(Scheduler));
+    data->tasks = topaz_array_create(sizeof(Task*));
     data->ctx = t;
     data->isTime = mode == topazScheduler_Mode_Time;
 

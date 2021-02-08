@@ -7,12 +7,6 @@ int main() {
     topaz_t * ctx = topaz_context_create();
     topaz_view_manager_create_main_default(topaz_context_get_view_manager(ctx), TOPAZ_STR_CAST("Scripting"));
 
-    // make the center 0, 0
-    topazDisplay_t * disp = topaz_view_manager_get_main(topaz_context_get_view_manager(ctx));
-    topazEntity_t * cam = topaz_display_get_render_camera(disp);
-    topaz_camera_set_render_resolution(cam, 320, 240);
-    topazVector_t p = {160, -120, 0};
-    *topaz_entity_position(topaz_display_get_2d_camera(disp)) = p;
 
 
     // Creates a script instance. The permissions can 
@@ -42,7 +36,7 @@ int main() {
 
     // extract the script data
     topazFilesys_t * filesystem = topaz_context_filesys_create(ctx);
-    topazRbuffer_t * scriptFile = topaz_filesys_read(filesystem, TOPAZ_STR_CAST("script.js"));
+    topazRbuffer_t * scriptFile = topaz_filesys_read(filesystem, TOPAZ_STR_CAST("script"));
     const topazString_t * scriptText  = topaz_rbuffer_read_string(
         scriptFile,
         topaz_rbuffer_get_size(scriptFile)
@@ -50,7 +44,7 @@ int main() {
           
     topaz_script_run(
         script,
-        TOPAZ_STR_CAST("script.js"),
+        TOPAZ_STR_CAST("script"),
         scriptText
     );   
 

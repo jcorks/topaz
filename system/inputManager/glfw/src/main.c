@@ -212,6 +212,29 @@ static void topaz_glfw_im_key_callback(
     }
 }
 
+static void topaz_glfw_im_cursor_callback(
+    GLFWwindow* window, 
+    double xpos,    
+    double ypos
+) {
+    GLFWIM * im = topaz_table_find(glfww2im, window);
+    topazInputDevice_Event_t ev;
+    ev.id = topazPointer_X;
+    ev.state = xpos;
+    ev.utf8 = 0;
+    topaz_array_push(im->queuedPointerEvents, ev);        
+
+
+    ev.id = topazPointer_Y;
+    ev.state = ypos;
+    ev.utf8 = 0;
+    topaz_array_push(im->queuedPointerEvents, ev);        
+
+}
+
+
+
+
 
 
 static intptr_t api_nothing(){return 0;}
@@ -260,6 +283,25 @@ static int topaz_glfw_im_handle_events(topazInputManager_t * imSrc, void * userD
         hasEvents = TRUE;
     } 
     topaz_array_set_size(im->queuedKeyboardEvents, 0);
+
+
+
+    len = topaz_array_get_size(im->queuedPointerEvents);
+    for(i = 0; i < len; ++i) {
+        topaz_input_device_push_event(
+            im->mouse, 
+            &topaz_array_at(
+                im->queuedPointerEvents,
+                topazInputDevice_Event_t,
+                i
+            )
+        );
+        hasEvents = TRUE;
+    } 
+    topaz_array_set_size(im->queuedPointerEvents, 0);
+
+
+
     return hasEvents;
 }
 
@@ -269,6 +311,7 @@ static void topaz_glfw_im_set_focus(topazInputManager_t * imSrc, void * userData
     if (im->ctx) {
         topaz_table_remove(glfww2im, im->ctx);                  
         glfwSetKeyCallback(im->ctx, NULL);
+        glfwSetCursorPosCallback(im->ctx, NULL);
         im->ctx = NULL;
         im->focus = NULL;
     }
@@ -280,6 +323,7 @@ static void topaz_glfw_im_set_focus(topazInputManager_t * imSrc, void * userData
         im->ctx = topaz_display_get_system_handle(disp);
         topaz_table_insert(glfww2im, im->ctx, im);    
         glfwSetKeyCallback(im->ctx, topaz_glfw_im_key_callback);
+        glfwSetCursorPosCallback(im->ctx, topaz_glfw_im_cursor_callback);
 
         
     }

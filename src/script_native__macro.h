@@ -64,13 +64,13 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 
 // Retrieves argN as a native object of the given type.
 // If it is not the given type, an error is "thrown".
-#define TSO_NATIVIZE(__type__, __assertTag__) int tag__;__type__ native = topaz_script_object_reference_get_native_data(arg0, &tag__); if (!(tag__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
-#define TSO_NATIVIZE_1(__type__, __assertTag__) int tag1__;__type__ native1 = topaz_script_object_reference_get_native_data(arg1, &tag1__); if (!(tag1__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
-#define TSO_NATIVIZE_2(__type__, __assertTag__) int tag2__;__type__ native2 = topaz_script_object_reference_get_native_data(arg2, &tag2__); if (!(tag2__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
-#define TSO_NATIVIZE_3(__type__, __assertTag__) int tag3__;__type__ native3 = topaz_script_object_reference_get_native_data(arg3, &tag3__); if (!(tag3__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
-#define TSO_NATIVIZE_4(__type__, __assertTag__) int tag4__;__type__ native4 = topaz_script_object_reference_get_native_data(arg3, &tag3__); if (!(tag4__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
-#define TSO_NATIVIZE_5(__type__, __assertTag__) int tag5__;__type__ native5 = topaz_script_object_reference_get_native_data(arg3, &tag3__); if (!(tag5__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
-#define TSO_NATIVIZE_6(__type__, __assertTag__) int tag6__;__type__ native6 = topaz_script_object_reference_get_native_data(arg3, &tag3__); if (!(tag6__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
+#define TSO_NATIVIZE(__type__, __assertTag__) int tag__;__type__ native = topaz_script_object_reference_get_native_data(arg0, &tag__); if (!native || !(tag__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
+#define TSO_NATIVIZE_1(__type__, __assertTag__) int tag1__;__type__ native1 = topaz_script_object_reference_get_native_data(arg1, &tag1__); if (!native1 || !(tag1__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
+#define TSO_NATIVIZE_2(__type__, __assertTag__) int tag2__;__type__ native2 = topaz_script_object_reference_get_native_data(arg2, &tag2__); if (!native2 || !(tag2__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
+#define TSO_NATIVIZE_3(__type__, __assertTag__) int tag3__;__type__ native3 = topaz_script_object_reference_get_native_data(arg3, &tag3__); if (!native3 || !(tag3__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
+#define TSO_NATIVIZE_4(__type__, __assertTag__) int tag4__;__type__ native4 = topaz_script_object_reference_get_native_data(arg3, &tag3__); if (!native4 || !(tag4__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
+#define TSO_NATIVIZE_5(__type__, __assertTag__) int tag5__;__type__ native5 = topaz_script_object_reference_get_native_data(arg3, &tag3__); if (!native5 || !(tag5__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
+#define TSO_NATIVIZE_6(__type__, __assertTag__) int tag6__;__type__ native6 = topaz_script_object_reference_get_native_data(arg3, &tag3__); if (!native6 || !(tag6__ & __assertTag__)) {script_error(script, "Native object type mismatch."); return topaz_script_object_undefined(script);}
 
 // Default return value.
 #define TSO_NO_RETURN return NULL;
@@ -82,18 +82,19 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 
 typedef enum {
     TSO_OBJECT_ID__COLOR = 1,
-    TSO_OBJECT_ID__VECTOR = 2,
-    TSO_OBJECT_ID__INPUTLISTENER = 3,
-    TSO_OBJECT_ID__UNICODELISTENER = 4,
-    TSO_OBJECT_ID__RBUFFER = 5,
-    TSO_OBJECT_ID__WBUFFER = 6,
-    TSO_OBJECT_ID__SHAPE2D = 7,
-    TSO_OBJECT_ID__OBJECT2D = 8,
-    TSO_OBJECT_ID__TEXT2D = 9,
-    TSO_OBJECT_ID__SCHEDULER = 10,
-    TSO_OBJECT_ID__STATECONTROL = 11,
-    TSO_OBJECT_ID__DATA = 12,
-    TSO_OBJECT_ID__IMAGE = 13,
+    TSO_OBJECT_ID__VECTOR,
+    TSO_OBJECT_ID__INPUTLISTENER,
+    TSO_OBJECT_ID__UNICODELISTENER ,
+    TSO_OBJECT_ID__RBUFFER,
+    TSO_OBJECT_ID__WBUFFER,
+    TSO_OBJECT_ID__COMPONENTCUSTOM,
+    TSO_OBJECT_ID__SHAPE2D,
+    TSO_OBJECT_ID__OBJECT2D,
+    TSO_OBJECT_ID__TEXT2D,
+    TSO_OBJECT_ID__SCHEDULER,
+    TSO_OBJECT_ID__STATECONTROL,
+    TSO_OBJECT_ID__DATA,
+    TSO_OBJECT_ID__IMAGE,
 
 
 

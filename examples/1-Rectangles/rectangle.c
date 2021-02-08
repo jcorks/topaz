@@ -70,39 +70,6 @@ topazEntity_t * rectangle_create(topaz_t * ctx) {
     topaz_entity_add_component(e, shape);
 
 
-    /*
-    topazAsset_t * rawdata = topaz_data_create_empty(ctx);  
-    const char * str = "Testing testing!";
-    topaz_data_set(rawdata, TOPAZ_ARRAY_CAST((void*)str, uint8_t, strlen(str)));
-
-    topaz_resources_write_asset(
-        topaz_context_get_resources(ctx),
-        rawdata,
-        TOPAZ_STR_CAST("txt"),
-        TOPAZ_STR_CAST("TEST.txt")
-    );
-    */
-
-    topaz_resources_query_asset_paths(
-        topaz_context_get_resources(ctx)
-    );
-
-    const topazArray_t * arr = topaz_resources_get_asset_paths(
-        topaz_context_get_resources(ctx)
-    );
-
-    uint32_t i;
-    uint32_t len = topaz_array_get_size(arr);
-    for(i = 0; i < len; ++i) {
-        printf("%s\n", topaz_string_get_c_str(topaz_array_at(arr, topazString_t *, i)));
-        fflush(stdout);
-    }
-
-
-
-
-
-
     return e;
 }
 
