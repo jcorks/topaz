@@ -748,6 +748,10 @@ class Component {
         set {topaz_.topaz_component__set_tag(impl_, value);}
     }
 
+    var host {
+        get {return topaz_.topaz_component__get_host(impl_);}
+    }
+
     
     static var Null {
         get {
@@ -784,7 +788,6 @@ class Component {
 
 
     func installHook(name, handler) {
-        handler.bind(self);
         return topaz_.topaz_component__install_hook(impl_, name, func(c, e){handler(c.api_, e.api_)});
     }
 

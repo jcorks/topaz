@@ -1,0 +1,136 @@
+// All examples will start by including "@topaz.core", which is a 
+// built-in package for topaz symbols and classes.
+#include "@topaz.core"
+
+
+// In the previous example, we defined our own entity and 
+// used a built-in component, Shape2D, to provide our entity 
+// the ability to show 2D shapes on the screen
+//
+// In this example, we will explore the concept of components more
+// by making our own.
+//
+// 
+// 
+
+// Here, we're going to make a component and and entity 
+// that could serve as part of a game. In this game,
+// people (a 'Person' entity) can give each other fruit, 
+// so a component was made to facilitate holding the fruit
+// ('FruitBasket'). 
+//
+// Why use a component instead of just a simple variable
+// for this purpose?
+//
+// A few reasons:
+// - On a basic level, a simple variable may work, but for 
+//   further development and consistent behavior,
+//   it makes sense to have a separate class wrap the 
+//   conceptual behavior regarding health. Consider things 
+//   like max capacity, what happens when fruit equals 0, and 
+//   other things. While you could still manage these within 
+//   the entity, having it be a standard separate class 
+//   increases readability and maintainability, especially with 
+//   functions to interact with it.
+//
+// - Someone familiar with object oriented programming may ask:
+//   why not just use a normal class? That would most certainly be 
+//   a valid approach! However, components have 2 significant 
+//   uses 1) Components are essentially event systems;
+//   they can be extended to support custom events which other objects 
+//   can subscribe to. 2) like Entities, they can be updated every 
+//   frame with onStep() and onDraw() functions.
+//
+class FruitBasket : Component {
+    private var max;
+    private var amount;
+    
+    func getFruitLeft() {
+        return amount;
+    }
+    
+    func isEmpty() {
+        return amount == 0;
+    }
+    
+    func isFull() {
+        return amount == max;
+    }
+    
+    func start() {
+        amount = 5;
+        max    = 10;
+
+        installEvent('onAddFruit');
+        installEvent('onRemoveFruit');
+    }
+    
+    func removeFruit() {
+        if (amount > 0) {
+            amount-=1;
+            emitEvent('onRemoveFruit');
+        }
+    }
+
+    func addFruit(from) {
+        if (amount < max) {
+            amount+=1;
+            emitEvent('onRemoveFruit', from);
+        }
+    }
+}
+
+
+class Person : Entity {
+    var basket;
+    var myName;
+        
+        
+    func start() {
+        basket = FruitBasket();
+        
+        basket.installHook(
+            'onAddFruit', 
+            func(component, other) {
+                Topaz.log('I, \(myName), have gained fruit, thanks to \(other.myName)! \(basket.getFruitLeft()) total.');
+            }
+        );
+
+        basket.installHook(
+            'onAddFruit', 
+            func(component, other) {
+                Topaz.log('I, \(myName), have lost fruit. \(basket.getFruitLeft()) total.');
+            }
+        );
+
+        
+        addComponent(basket);            
+    }
+    
+    func giveFruitTo(other, amount) {
+        for(var i in 0..<amount) {
+            if (other.basket.isFull()) return;
+            if (basket.isEmpty()) return;
+
+            basket.removeFruit();
+            other.basket.addFruit(other);
+
+        }
+    }
+}
+
+
+
+func main() {
+    var throcky = Person();
+    var alex = Person();
+    
+    throcky.myName = 'Throckmorton';
+    alex.myName = 'Alex';
+    
+    
+    throcky.giveFruitTo(alex, 2);
+    alex.giveFruitTo(throcky, 5);
+    
+}
+
