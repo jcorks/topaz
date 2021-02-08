@@ -212,8 +212,8 @@ endif
 executable(
     'rectangles',
     srcsReal + [
-        '../../examples/1-Rectangles/main.c', 
-        '../../examples/1-Rectangles/rectangle.c'
+        '../../examples/c/1-Rectangles/main.c', 
+        '../../examples/c/1-Rectangles/rectangle.c'
     ],
     include_directories : mainIncdir,
     dependencies : baselibs,
@@ -224,7 +224,7 @@ executable(
 executable(
     'scripts',
     srcsReal + [
-        '../../examples/10-Scripts/main.c'
+        '../../examples/c/10-Scripts/main.c'
     ],
     include_directories : mainIncdir,
     dependencies : baselibs,

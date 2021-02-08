@@ -1,0 +1,42 @@
+The contents of this directory is dedicated to base topaz examples 
+written using the scripting backend built into topaz.
+
+Specifically, the examples have been rewritten in gravity.
+
+
+Gravity is a small, Swift-like language with a small 
+footprint, decent performance, object-oriented syntax, 
+and a lot of flexibility.
+
+More info on the language and its operation can be found 
+here: https://marcobambini.github.io/gravity/
+
+
+Pros:
+ - Good object-oriented functionality
+ - Familiar C* feel
+ - Closures / functions as first class objects 
+ - Class integration with topaz 
+
+Cons:
+ - Limited debugger support (no source-based breakpoints, breaking needs to be done in-source, no scoped eval)
+ - Some limitations for source tracing when an error occurs 
+ - Limited language documentation
+
+
+
+
+The C example for using scripts (examples/c/10-Scripts/)  
+can be used for all the example directories. The binary will need 
+to be copied to any directory to run the example.
+
+the "script" file is the default file that the driver will look for 
+and run.
+
+
+Each "script" file contains extensive comments and info regarding 
+how to use both topaz and how to navigate the scripting interface. The 
+info for each example builds off the previous, so reading in order, 
+starting with 1-Entity, can serve as a manual.
+
+

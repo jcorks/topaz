@@ -2,6 +2,9 @@
 #include <topaz/modules/view_manager.h>
 #include <topaz/all.h>
 
+
+
+
 int main() {
     // Create the context and window
     topaz_t * ctx = topaz_context_create();
