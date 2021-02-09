@@ -1,0 +1,239 @@
+// All examples will start by including "@topaz.core", which is a 
+// built-in package for topaz symbols and classes.
+#include "@topaz.core"
+
+// So far, we've examined the nature of entities and 
+// components. There is one more major source of functionality
+// within topaz: modules. Modules are collections of 
+// tools that allow for interactions with system-oriented 
+// behaviors. This example focuses on the Input module 
+// within topaz. 
+//
+// This example demonstrates the 2 main methods to get
+// input information: Polling and Event Listening.
+//
+//
+//
+// This class demonstrates how to use polling. Polling 
+// is the most basic and straightforward way to use input,
+// functions such as getState() return the currently recorded 
+// input state for a particular input. Every frame that topaz 
+// updates, the Input module will check for any incoming 
+// events for input devices and save their info. As such,
+// polling does not request from the device directly, but rather 
+// from what topaz last recorded. As such, polling is pretty
+// quick.
+//
+// To demonstrate the effect of input, this example entity 
+// will use a blue rectangle to show itself onscreen and will 
+// respond to the arrow keys and right-click + dragging.
+class Input_Poll : Entity {
+    func start() {
+        // Since we are making the shape once and not modifying it,
+        // theres no need to keep the component around.
+        var visual = Shape2D();
+
+        // Set it to blue and make it 20x20
+        visual.color = Color('blue');
+        visual.formRectangle(20, 20);
+
+        // As shorthand for .addComponent(), you 
+        // can set an entity's components by setting 
+        // the "components" properties equal to a List 
+        // of the component variables. It tends to be 
+        // visually more compact while still very readable.
+        components = [visual];
+    }
+
+    func onStep() {
+        // For the polling method, the accuracy is dependent 
+        // on how often input is re-polled. For both convenience
+        // and accuracy, it is common to just re-poll for input 
+        // every frame.
+        //
+        // Input.getState() returns a number representing the 
+        // state of the input. Usually 0 means inactive, and 
+        // above 0 means its active. For buttons, this is 
+        // just 0.0 vs 1.0. 
+        //
+        // Here we check the individual key values for the arrows.
+        // If the key state is non-zero, we modify the 
+        // position vector by adding "1" to it in the direction 
+        // that corresponds to the arrow.
+        if (Input.getState(Key.topaz_up)) {
+            position = position + Vector(0, -1);
+        }
+        if (Input.getState(Key.topaz_down)) {
+            position = position + Vector(0, 1);
+        }
+        if (Input.getState(Key.topaz_left)) {
+            position = position + Vector(-1, 0);
+        }
+        if (Input.getState(Key.topaz_right)) {
+            position = position + Vector(1, 0);
+        }
+
+
+        // The left/right/middle button can be polled using 
+        // the Key.topazPointer_* inputs.
+        // All inputs for the mouse+keyboard can use the getState() function.
+        if (Input.getState(Key.topazPointer_1)) {
+            // To poll position position, getState can be used. However,
+            // due to the commonality of this operation, the position 
+            // can be polled by just accessing Input.mouse, which is a 
+            // positional vector. 
+            position = Input.mouse;
+        }
+    }
+}
+
+
+
+
+
+
+// This class demonstrates the usage of event listening.
+// While polling is a pretty convenient way to respond to 
+// input, it has a few issues:
+//  - For best use, it requires re-polling as often as possible. 
+//    However, in reality, inputs do not happen every frame;
+//    in general its inefficient to poll every frame since only 
+//    a handful of those frames will have input state changes.
+//
+//  - It is easy from a design perspective to write hard-to-read 
+//    code when doing complex logic involving multiple polling states.
+//
+// Event listening for inputs provides a solution for these problems
+// The idea is to tell the Input module to only run certain 
+// functions when an event is detected, that way our code
+// doesnt have to poll unnecessarily.
+// 
+// One of the initial differences you'll likely notice is that 
+// in general event listening requires a bit more code to get 
+// set up properly.
+//
+// To contrast it with the previous entity, this one 
+// is a red square controlled with W, A, S, D + left click.
+class Input_Listener : Entity {
+    // This will hold the state of whether the event 
+    // listener
+    private var clicking;
+
+    func start() {
+
+        // Same story as above!
+        var visual = Shape2D();
+
+        // Here, we're using RGB hex notation to define our color!
+        visual.color = Color('#ff0000');
+        visual.formRectangle(20, 20);
+        components = [visual];
+
+
+
+        // Set initial state of clicking to false.
+        clicking = false;
+
+
+        // This adds an event listener for the keyboard.
+        // All add listener functions expect a Map object;
+        // the map is searched for specific keys:
+        // 'onActive', 'onPress', 'onRelease', and 'onUpdate'.
+        // If any are populated, a closure or function is meant 
+        // to be mapped as the value; this function will be 
+        // called in response to input events when they occur.
+        //
+        // This listener is mapped to the onActive event, which 
+        // is every frame that an input is non-zero. This is 
+        // convenient for when buttons are held.
+        Input.addKeyboardListener(
+            [
+                // Here is the onActive key/value pair.
+                // The funcion mapped takes 2 arguments: the map itself 
+                // we passed in, and the input id that is active.
+                'onActive' : func(map, key) {
+                    switch(key) {
+                      case Key.topaz_w:
+                        position = position + Vector(0, -1);
+                        break;
+                      case Key.topaz_s:
+                        position = position + Vector(0, 1);
+                        break;
+                      case Key.topaz_a:
+                        position = position + Vector(-1, 0);
+                        break;
+                      case Key.topaz_d:
+                        position = position + Vector(1, 0);
+                        break;
+                    }
+                }
+            ]
+        );
+
+        // Similar to adding a keyboard listener, pointer 
+        // listeners will respond only to mouse events.
+        Input.addPointerListener(
+            [
+                // The onUpdate event respondes to any time the 
+                // device sends a new event to topaz.
+                'onUpdate' : func(map, input, value) {
+                    // The clicking state will by set here to detect when to apply the 
+                    // x / y position change
+                    if (input == Key.topazPointer_0) {
+                        clicking = value > 0;
+                    }
+
+
+                    // If the clicking state is active, then we check to 
+                    // see if the event we're receiving is an X / Y update 
+                    // event for the pointer. If it is, replace the component 
+                    // in question with the raw value.
+                    if (clicking) {
+                        switch(input) {
+                          case Key.topazPointer_X:
+                            position = Vector(value, position.y);
+                            break;
+
+                          case Key.topazPointer_Y:
+                            position = Vector(position.x, value);
+                            break;
+                        }
+                    }                    
+                }
+            ]
+        );
+    }
+
+    
+
+}
+
+
+
+
+
+func main() {
+    // Since our example is going to use multiple entities,
+    // it is helpful to establish a basic "entity tree".
+    // Here, our root is an empty object whose job is purely
+    // to manage the input example entities we defined above.
+    var manager = Entity();
+
+
+    // Next, we'll instantiate those entities 
+    // we defined, wrap them in a List, and modify
+    // the "children" property, populating the tree.
+    //
+    // Alternatively, the following could be rewritten as:
+    //    manager.attach(Input_Poll());
+    //    manager.attach(Input_Listener());
+    manager.children = [
+        Input_Poll(), 
+        Input_Listener()
+    ];
+
+
+    // Finally, insert the base of the tree into topaz itself.
+    Topaz.root = manager;
+
+}

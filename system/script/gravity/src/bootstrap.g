@@ -140,7 +140,7 @@ class Vector {
         if (x_ is String) {
             impl_ = topaz_.topaz_vector__create(x_);                    
         } else {
-            if (z_ == null) {
+            if (z_ == undefined) {
                 impl_ = topaz_.topaz_vector__create(x_, y_, 0);                                    
             } else {
                 impl_ = topaz_.topaz_vector__create(x_, y_, z_);
@@ -373,18 +373,18 @@ class Color {
 }
 
 
-
+enum AssetType {
+    None,
+    Image,
+    Audio,
+    Model,
+    Particle,
+    Data,
+    Actor,
+    Count
+};
 class Asset {
-    enum Type {
-        None,
-        Image,
-        Audio,
-        Model,
-        Particle,
-        Data,
-        Actor,
-        Count
-    };
+
 
     var impl_;
     var name {
@@ -749,7 +749,7 @@ class Component {
     }
 
     var host {
-        get {return topaz_.topaz_component__get_host(impl_);}
+        get {return topaz_.topaz_component__get_host(impl_).api_;}
     }
 
     
@@ -762,7 +762,7 @@ class Component {
     }
 
     func emitEvent(evName, entSource) {
-        if (entSource == null) {
+        if (entSource == undefined) {
             topaz_.topaz_component__emit_event_anonymous(impl_, evName);
         } else {
             topaz_.topaz_component__emit_event(impl_, evName, entSource.impl_);
@@ -788,7 +788,9 @@ class Component {
 
 
     func installHook(name, handler) {
-        return topaz_.topaz_component__install_hook(impl_, name, func(c, e){handler(c.api_, e.api_)});
+        return topaz_.topaz_component__install_hook(impl_, name, func(c, e){
+            handler(c.api_, e.api_);
+        });
     }
 
     func uninstallHook(id) {
@@ -875,359 +877,359 @@ class Image : Asset{
 }
 
 
+enum Key {
+    /// Not an input.
+    topazNotAnInput = 0,
+    /// The 0 key.
+    topaz_0= 1,
+    /// The 1 key.
+    topaz_1= 2,
+    /// The 2 key.
+    topaz_2= 3, 
+    /// The 3 key.
+    topaz_3= 4,
+    /// The 4 key.
+    topaz_4= 5,
+    /// The 5 key.
+    topaz_5= 6,
+    /// The 6 key.
+    topaz_6= 7,
+    /// The 7 key.
+    topaz_7= 8,
+    /// The 8 key.
+    topaz_8= 9,
+    /// The 9 key.
+    topaz_9= 10,
+    /// The a key.
+    topaz_a= 11,
+    /// The b key.
+    topaz_b= 12, 
+    /// The c key.
+    topaz_c= 13, 
+    /// The d key.
+    topaz_d= 14, 
+    /// The e key.
+    topaz_e= 15, 
+    /// The f key.
+    topaz_f= 16, 
+    /// The g key.
+    topaz_g= 17, 
+    /// The h key.
+    topaz_h= 18, 
+    /// The i key.
+    topaz_i= 19, 
+    /// The j key.
+    topaz_j= 20,  
+    /// The k key.
+    topaz_k= 21, 
+    /// The l key.
+    topaz_l= 22, 
+    /// The m key.
+    topaz_m= 23, 
+    /// The n key.
+    topaz_n= 24, 
+    /// The o key.
+    topaz_o= 25, 
+    /// The p key.
+    topaz_p= 26, 
+    /// The q key.
+    topaz_q= 27, 
+    /// The r key.
+    topaz_r= 28, 
+    /// The s key.
+    topaz_s= 29, 
+    /// The t key.
+    topaz_t= 30, 
+    /// The u key.
+    topaz_u= 31, 
+    /// The v key.
+    topaz_v= 32, 
+    /// The w key.
+    topaz_w= 33, 
+    /// The x key.
+    topaz_x= 34, 
+    /// The y key.
+    topaz_y= 35, 
+    /// The z key.
+    topaz_z= 36, 
+    /// The lshift key.
+    topaz_lshift= 37, 
+    /// The rshift key.
+    topaz_rshift= 38, 
+    /// The lctrl key.
+    topaz_lctrl= 39,  
+    /// The rctrl key.
+    topaz_rctrl= 40,  
+    /// The lalt key.
+    topaz_lalt= 41,   
+    /// The ralt key.
+    topaz_ralt= 42,   
+    /// The tab key.
+    topaz_tab= 43,    
+    /// The F1 key.
+    topaz_F1= 44,     
+    /// The F2 key.
+    topaz_F2= 45,     
+    /// The F3 key.
+    topaz_F3= 46,     
+    /// The F4 key.
+    topaz_F4= 47,     
+    /// The F5 key.
+    topaz_F5= 48,     
+    /// The F6 key.
+    topaz_F6= 49,     
+    /// The F7 key.
+    topaz_F7= 50,     
+    /// The F8 key.
+    topaz_F8= 51,     
+    /// The F9 key.
+    topaz_F9= 52,     
+    /// The F10 key.
+    topaz_F10= 53,    
+    /// The F11 key.
+    topaz_F11= 54,    
+    /// The F12 key.
+    topaz_F12= 55,    
+    /// The up key.
+    topaz_up= 100,     
+    /// The down key.
+    topaz_down= 101,   
+    /// The left key.
+    topaz_left= 102,   
+    /// The right key.
+    topaz_right= 103,  
+    /// The minus key.
+    topaz_minus= 104,  
+    /// The equal key.
+    topaz_equal= 105,  
+    /// The backspace key.
+    topaz_backspace= 106,  
+    /// The grave key.
+    topaz_grave= 107,  
+    /// The esc key.
+    topaz_esc= 108,    
+    /// The home key.
+    topaz_home= 109,   
+    /// The pageUp key.
+    topaz_pageUp= 110, 
+    /// The pageDown key.
+    topaz_pageDown= 111,  
+    /// The end key.
+    topaz_end= 112,    
+    /// The backslash key.
+    topaz_backslash= 113, 
+    /// The lbracket key.
+    topaz_lbracket= 114, 
+    /// The rbracket key.
+    topaz_rbracket= 115, 
+    /// The semicolon key.
+    topaz_semicolon= 116, 
+    /// The apostrophe key.
+    topaz_apostrophe= 117, 
+    /// The frontslash key.
+    topaz_frontslash= 118, 
+    /// The enter key.
+    topaz_enter= 119, 
+    /// The delete key.
+    topaz_delete= 120, 
+    /// The numpad0 key.
+    topaz_numpad0= 121, 
+    /// The numpad1 key.
+    topaz_numpad1= 122, 
+    /// The numpad2 key.
+    topaz_numpad2= 123, 
+    /// The numpad3 key.
+    topaz_numpad3= 124, 
+    /// The numpad4 key.
+    topaz_numpad4= 125, 
+    /// The numpad5 key.
+    topaz_numpad5= 126, 
+    /// The numpad6 key.
+    topaz_numpad6= 127, 
+    /// The numpad7 key.
+    topaz_numpad7= 128, 
+    /// The numpad8 key.
+    topaz_numpad8= 129, 
+    /// The numpad9 key.
+    topaz_numpad9= 130, 
+    /// The prtscr key.
+    topaz_prtscr= 131, 
+    /// The lsuper key.
+    topaz_lsuper= 132, 
+    /// The rsuper key.
+    topaz_rsuper= 133, 
+    /// The space key.
+    topaz_space= 134,  
+    /// The insert key.
+    topaz_insert= 135, 
+    /// The comma key.
+    topaz_comma= 136, 
+    /// The period key.
+    topaz_period= 137 , 
+    /// The world1 key.
+    topaz_world1= 138, 
+    /// The world2 key.
+    topaz_world2= 139, 
+    /// The world3 key.
+    topaz_world3= 140, 
+    /// The world4 key.
+    topaz_world4= 141,  
+    /// The world5 key.
+    topaz_world5= 142,  
+    /// The world6 key.
+    topaz_world6= 143, 
+    /// The world7 key.
+    topaz_world7= 144,  
+    /// The world8 key.
+    topaz_world8= 145,  
+    /// The world9 key.
+    topaz_world9= 146,  
 
+    /// The 0th pointer button.
+    topazPointer_0= 256, 
+    /// The 1st pointer button.
+    topazPointer_1= 257, 
+    /// The 2nd pointer button.
+    topazPointer_2= 258, 
+
+    /// The pointer x axis.
+    topazPointer_X= 259, 
+    /// The pointer y axis.
+    topazPointer_Y= 260, 
+    /// The pointer wheel axis.
+    topazPointer_Wheel= 261, 
+
+    /// The a pad input.
+    topazPad_a= 300,     
+    /// The b pad input.
+    topazPad_b= 301,     
+    /// The c pad input.
+    topazPad_c= 302,     
+    /// The x pad input.
+    topazPad_x= 303,     
+    /// The y pad input.
+    topazPad_y= 304,     
+    /// The r pad input.
+    topazPad_r= 305,     
+    /// The l pad input.
+    topazPad_l= 306,     
+    /// The r2 pad input.
+    topazPad_r2= 307,    
+    /// The l2 pad input.
+    topazPad_l2= 308,    
+    /// The r3 pad input.
+    topazPad_r3= 309,    
+    /// The l3 pad input.
+    topazPad_l3= 310,    
+    /// The start pad input.
+    topazPad_start= 311,    
+    /// The select pad input.
+    topazPad_select= 312,
+    /// The b13 pad input.
+    topazPad_b13= 313,
+    /// The b14 pad input.
+    topazPad_b14= 314,
+    /// The b15 pad input.
+    topazPad_b15= 315,
+    /// The b16 pad input.
+    topazPad_b16= 316,
+    /// The b17 pad input.
+    topazPad_b17= 317,
+    /// The b18 pad input.
+    topazPad_b18= 318,
+    /// The b19 pad input.
+    topazPad_b19= 319,
+    /// The b20 pad input.
+    topazPad_b20= 320,
+    /// The b21 pad input.
+    topazPad_b21= 321,
+    /// The b22 pad input.
+    topazPad_b22= 322,
+    /// The b23 pad input.
+    topazPad_b23= 323,
+    /// The b24 pad input.
+    topazPad_b24= 324,
+    /// The b25 pad input.
+    topazPad_b25= 325,
+    /// The b26 pad input.
+    topazPad_b26= 326,
+    /// The b27 pad input.
+    topazPad_b27= 327,
+    /// The b28 pad input.
+    topazPad_b28= 328,
+    /// The b29 pad input.
+    topazPad_b29= 329,
+    /// The b30 pad input.
+    topazPad_b30= 330,
+    /// The b31 pad input.
+    topazPad_b31= 331,
+    /// The b32 pad input.
+    topazPad_b32= 332,
+
+    /// The axisX pad input.
+    topazPad_axisX= 400, 
+    /// The axisY pad input.
+    topazPad_axisY= 401, 
+    /// The axisZ pad input.
+    topazPad_axisZ= 402, 
+    /// The axisX2 pad input.
+    topazPad_axisX2= 403,
+    /// The axisY2 pad input.
+    topazPad_axisY2= 404,
+    /// The axisZ2 pad input.
+    topazPad_axisZ2= 405,
+    /// The axisX3 pad input.
+    topazPad_axisX3= 406,
+    /// The axisY3 pad input.
+    topazPad_axisY3= 407,
+    /// The axisZ3 pad input.
+    topazPad_axisZ3= 408,
+    /// The axisX4 pad input.
+    topazPad_axisX4= 409,
+    /// The axisY4 pad input.
+    topazPad_axisY4= 410,
+    /// The axisZ4 pad input.
+    topazPad_axisZ4= 411,
+    /// The axisX5 pad input.
+    topazPad_axisX5= 412,
+    /// The axisY5 pad input.
+    topazPad_axisY5= 413,
+    /// The axisZ5 pad input.
+    topazPad_axisZ5= 414,
+    /// The axisX6 pad input.
+    topazPad_axisX6= 415,
+    /// The axisY6 pad input.
+    topazPad_axisY6= 416,
+    /// The axisZ6 pad input.
+    topazPad_axisZ6= 417,
+
+    /// The axisR pad input.
+    topazPad_axisR= 450,   
+    /// The axisL pad input.
+    topazPad_axisL= 451,    
+    /// The axisR2 pad input.
+    topazPad_axisR2= 452,    
+    /// The axisL2 pad input.
+    topazPad_axisL2= 453,    
+    /// The axisR3 pad input.
+    topazPad_axisR3= 454,    
+    /// The axisL3 pad input.
+    topazPad_axisL3= 455,    
+    /// The axisR4 pad input.
+    topazPad_axisR4= 456,    
+    /// The axisL4 pad input.
+    topazPad_axisL4= 457,    
+
+    /// The options pad input.
+    topazPad_options= 511,
+
+    /// Number of built-in inputs.
+    topazInput_Count= 512
+};
 
 
 class Input {
-    enum Key {
-        /// Not an input.
-        topazNotAnInput = 0,
-        /// The 0 key.
-        topaz_0= 1,
-        /// The 1 key.
-        topaz_1= 2,
-        /// The 2 key.
-        topaz_2= 3, 
-        /// The 3 key.
-        topaz_3= 4,
-        /// The 4 key.
-        topaz_4= 5,
-        /// The 5 key.
-        topaz_5= 6,
-        /// The 6 key.
-        topaz_6= 7,
-        /// The 7 key.
-        topaz_7= 8,
-        /// The 8 key.
-        topaz_8= 9,
-        /// The 9 key.
-        topaz_9= 10,
-        /// The a key.
-        topaz_a= 11,
-        /// The b key.
-        topaz_b= 12, 
-        /// The c key.
-        topaz_c= 13, 
-        /// The d key.
-        topaz_d= 14, 
-        /// The e key.
-        topaz_e= 15, 
-        /// The f key.
-        topaz_f= 16, 
-        /// The g key.
-        topaz_g= 17, 
-        /// The h key.
-        topaz_h= 18, 
-        /// The i key.
-        topaz_i= 19, 
-        /// The j key.
-        topaz_j= 20,  
-        /// The k key.
-        topaz_k= 21, 
-        /// The l key.
-        topaz_l= 22, 
-        /// The m key.
-        topaz_m= 23, 
-        /// The n key.
-        topaz_n= 24, 
-        /// The o key.
-        topaz_o= 25, 
-        /// The p key.
-        topaz_p= 26, 
-        /// The q key.
-        topaz_q= 27, 
-        /// The r key.
-        topaz_r= 28, 
-        /// The s key.
-        topaz_s= 29, 
-        /// The t key.
-        topaz_t= 30, 
-        /// The u key.
-        topaz_u= 31, 
-        /// The v key.
-        topaz_v= 32, 
-        /// The w key.
-        topaz_w= 33, 
-        /// The x key.
-        topaz_x= 34, 
-        /// The y key.
-        topaz_y= 35, 
-        /// The z key.
-        topaz_z= 36, 
-        /// The lshift key.
-        topaz_lshift= 37, 
-        /// The rshift key.
-        topaz_rshift= 38, 
-        /// The lctrl key.
-        topaz_lctrl= 39,  
-        /// The rctrl key.
-        topaz_rctrl= 40,  
-        /// The lalt key.
-        topaz_lalt= 41,   
-        /// The ralt key.
-        topaz_ralt= 42,   
-        /// The tab key.
-        topaz_tab= 43,    
-        /// The F1 key.
-        topaz_F1= 44,     
-        /// The F2 key.
-        topaz_F2= 45,     
-        /// The F3 key.
-        topaz_F3= 46,     
-        /// The F4 key.
-        topaz_F4= 47,     
-        /// The F5 key.
-        topaz_F5= 48,     
-        /// The F6 key.
-        topaz_F6= 49,     
-        /// The F7 key.
-        topaz_F7= 50,     
-        /// The F8 key.
-        topaz_F8= 51,     
-        /// The F9 key.
-        topaz_F9= 52,     
-        /// The F10 key.
-        topaz_F10= 53,    
-        /// The F11 key.
-        topaz_F11= 54,    
-        /// The F12 key.
-        topaz_F12= 55,    
-        /// The up key.
-        topaz_up= 100,     
-        /// The down key.
-        topaz_down= 101,   
-        /// The left key.
-        topaz_left= 102,   
-        /// The right key.
-        topaz_right= 103,  
-        /// The minus key.
-        topaz_minus= 104,  
-        /// The equal key.
-        topaz_equal= 105,  
-        /// The backspace key.
-        topaz_backspace= 106,  
-        /// The grave key.
-        topaz_grave= 107,  
-        /// The esc key.
-        topaz_esc= 108,    
-        /// The home key.
-        topaz_home= 109,   
-        /// The pageUp key.
-        topaz_pageUp= 110, 
-        /// The pageDown key.
-        topaz_pageDown= 111,  
-        /// The end key.
-        topaz_end= 112,    
-        /// The backslash key.
-        topaz_backslash= 113, 
-        /// The lbracket key.
-        topaz_lbracket= 114, 
-        /// The rbracket key.
-        topaz_rbracket= 115, 
-        /// The semicolon key.
-        topaz_semicolon= 116, 
-        /// The apostrophe key.
-        topaz_apostrophe= 117, 
-        /// The frontslash key.
-        topaz_frontslash= 118, 
-        /// The enter key.
-        topaz_enter= 119, 
-        /// The delete key.
-        topaz_delete= 120, 
-        /// The numpad0 key.
-        topaz_numpad0= 121, 
-        /// The numpad1 key.
-        topaz_numpad1= 122, 
-        /// The numpad2 key.
-        topaz_numpad2= 123, 
-        /// The numpad3 key.
-        topaz_numpad3= 124, 
-        /// The numpad4 key.
-        topaz_numpad4= 125, 
-        /// The numpad5 key.
-        topaz_numpad5= 126, 
-        /// The numpad6 key.
-        topaz_numpad6= 127, 
-        /// The numpad7 key.
-        topaz_numpad7= 128, 
-        /// The numpad8 key.
-        topaz_numpad8= 129, 
-        /// The numpad9 key.
-        topaz_numpad9= 130, 
-        /// The prtscr key.
-        topaz_prtscr= 131, 
-        /// The lsuper key.
-        topaz_lsuper= 132, 
-        /// The rsuper key.
-        topaz_rsuper= 133, 
-        /// The space key.
-        topaz_space= 134,  
-        /// The insert key.
-        topaz_insert= 135, 
-        /// The comma key.
-        topaz_comma= 136, 
-        /// The period key.
-        topaz_period= 137 , 
-        /// The world1 key.
-        topaz_world1= 138, 
-        /// The world2 key.
-        topaz_world2= 139, 
-        /// The world3 key.
-        topaz_world3= 140, 
-        /// The world4 key.
-        topaz_world4= 141,  
-        /// The world5 key.
-        topaz_world5= 142,  
-        /// The world6 key.
-        topaz_world6= 143, 
-        /// The world7 key.
-        topaz_world7= 144,  
-        /// The world8 key.
-        topaz_world8= 145,  
-        /// The world9 key.
-        topaz_world9= 146,  
 
-        /// The 0th pointer button.
-        topazPointer_0= 256, 
-        /// The 1st pointer button.
-        topazPointer_1= 257, 
-        /// The 2nd pointer button.
-        topazPointer_2= 258, 
-
-        /// The pointer x axis.
-        topazPointer_X= 259, 
-        /// The pointer y axis.
-        topazPointer_Y= 260, 
-        /// The pointer wheel axis.
-        topazPointer_Wheel= 261, 
-
-        /// The a pad input.
-        topazPad_a= 300,     
-        /// The b pad input.
-        topazPad_b= 301,     
-        /// The c pad input.
-        topazPad_c= 302,     
-        /// The x pad input.
-        topazPad_x= 303,     
-        /// The y pad input.
-        topazPad_y= 304,     
-        /// The r pad input.
-        topazPad_r= 305,     
-        /// The l pad input.
-        topazPad_l= 306,     
-        /// The r2 pad input.
-        topazPad_r2= 307,    
-        /// The l2 pad input.
-        topazPad_l2= 308,    
-        /// The r3 pad input.
-        topazPad_r3= 309,    
-        /// The l3 pad input.
-        topazPad_l3= 310,    
-        /// The start pad input.
-        topazPad_start= 311,    
-        /// The select pad input.
-        topazPad_select= 312,
-        /// The b13 pad input.
-        topazPad_b13= 313,
-        /// The b14 pad input.
-        topazPad_b14= 314,
-        /// The b15 pad input.
-        topazPad_b15= 315,
-        /// The b16 pad input.
-        topazPad_b16= 316,
-        /// The b17 pad input.
-        topazPad_b17= 317,
-        /// The b18 pad input.
-        topazPad_b18= 318,
-        /// The b19 pad input.
-        topazPad_b19= 319,
-        /// The b20 pad input.
-        topazPad_b20= 320,
-        /// The b21 pad input.
-        topazPad_b21= 321,
-        /// The b22 pad input.
-        topazPad_b22= 322,
-        /// The b23 pad input.
-        topazPad_b23= 323,
-        /// The b24 pad input.
-        topazPad_b24= 324,
-        /// The b25 pad input.
-        topazPad_b25= 325,
-        /// The b26 pad input.
-        topazPad_b26= 326,
-        /// The b27 pad input.
-        topazPad_b27= 327,
-        /// The b28 pad input.
-        topazPad_b28= 328,
-        /// The b29 pad input.
-        topazPad_b29= 329,
-        /// The b30 pad input.
-        topazPad_b30= 330,
-        /// The b31 pad input.
-        topazPad_b31= 331,
-        /// The b32 pad input.
-        topazPad_b32= 332,
-
-        /// The axisX pad input.
-        topazPad_axisX= 400, 
-        /// The axisY pad input.
-        topazPad_axisY= 401, 
-        /// The axisZ pad input.
-        topazPad_axisZ= 402, 
-        /// The axisX2 pad input.
-        topazPad_axisX2= 403,
-        /// The axisY2 pad input.
-        topazPad_axisY2= 404,
-        /// The axisZ2 pad input.
-        topazPad_axisZ2= 405,
-        /// The axisX3 pad input.
-        topazPad_axisX3= 406,
-        /// The axisY3 pad input.
-        topazPad_axisY3= 407,
-        /// The axisZ3 pad input.
-        topazPad_axisZ3= 408,
-        /// The axisX4 pad input.
-        topazPad_axisX4= 409,
-        /// The axisY4 pad input.
-        topazPad_axisY4= 410,
-        /// The axisZ4 pad input.
-        topazPad_axisZ4= 411,
-        /// The axisX5 pad input.
-        topazPad_axisX5= 412,
-        /// The axisY5 pad input.
-        topazPad_axisY5= 413,
-        /// The axisZ5 pad input.
-        topazPad_axisZ5= 414,
-        /// The axisX6 pad input.
-        topazPad_axisX6= 415,
-        /// The axisY6 pad input.
-        topazPad_axisY6= 416,
-        /// The axisZ6 pad input.
-        topazPad_axisZ6= 417,
-
-        /// The axisR pad input.
-        topazPad_axisR= 450,   
-        /// The axisL pad input.
-        topazPad_axisL= 451,    
-        /// The axisR2 pad input.
-        topazPad_axisR2= 452,    
-        /// The axisL2 pad input.
-        topazPad_axisL2= 453,    
-        /// The axisR3 pad input.
-        topazPad_axisR3= 454,    
-        /// The axisL3 pad input.
-        topazPad_axisL3= 455,    
-        /// The axisR4 pad input.
-        topazPad_axisR4= 456,    
-        /// The axisL4 pad input.
-        topazPad_axisL4= 457,    
-
-        /// The options pad input.
-        topazPad_options= 511,
-
-        /// Number of built-in inputs.
-        topazInput_Count= 512
-    };
 
 
     static func addKeyboardListener(l) {
@@ -1235,15 +1237,15 @@ class Input {
     }
 
     static func addPadListener(l) {
-        topaz_.topaz_input__add_keyboard_listener(l);
+        topaz_.topaz_input__add_pad_listener(l);
     }
 
     static func addPointerListener(l) {
-        topaz_.topaz_input__add_keyboard_listener(l);
+        topaz_.topaz_input__add_pointer_listener(l);
     }
 
     static func addMappedListener(l) {
-        topaz_.topaz_input__add_keyboard_listener(l);
+        topaz_.topaz_input__add_mapped_listener(l);
     }
 
 
@@ -1302,10 +1304,7 @@ class Input {
     }
 }
 
-
-
-class Object2D : Component {
-    enum Group {
+    enum ObjectGroup {
         /// Group A.
         A,
 
@@ -1384,6 +1383,9 @@ class Object2D : Component {
         /// Group Z.
         Z,
     };
+
+class Object2D : Component {
+
 
 
 
@@ -1593,13 +1595,13 @@ class Resources {
 
 
 
-
+enum SchedulerMode {
+    Time,
+    Frame,
+};
 
 class Scheduler : Component {
-    enum Mode {
-        Time,
-        Frame,
-    };
+
     
 
     func init(type) {
@@ -1653,32 +1655,32 @@ class Scheduler : Component {
     }
 }
 
+enum Parameter2D {
+    /// The transparency rule for the 2D object.
+    /// Default is topazRenderer_AlphaRule_Allow
+    ///
+    AlphaRule,
 
+    /// The transparency rule for the 2D object.
+    /// Default is topazRenderer_AlphaRule_Allow
+    ///
+    DepthTest,
+
+    /// The currently set etch rule, which determines how the 
+    /// etch rules is applied when rendering this 2d object.
+    /// Default is topazRenderer_EtchRule_Out
+    ///
+    EtchRule,
+
+    /// The texturing hint for the 2D object.
+    /// Default is topazRenderer_TextureFilterHint_Linear
+    ///
+    TextureFilterHint
+};
 
 class Shape2D : Component {
     
-    enum Parameter {
-        /// The transparency rule for the 2D object.
-        /// Default is topazRenderer_AlphaRule_Allow
-        ///
-        AlphaRule,
 
-        /// The transparency rule for the 2D object.
-        /// Default is topazRenderer_AlphaRule_Allow
-        ///
-        DepthTest,
-
-        /// The currently set etch rule, which determines how the 
-        /// etch rules is applied when rendering this 2d object.
-        /// Default is topazRenderer_EtchRule_Out
-        ///
-        EtchRule,
-
-        /// The texturing hint for the 2D object.
-        /// Default is topazRenderer_TextureFilterHint_Linear
-        ///
-        TextureFilterHint
-    };
 
 
 
@@ -1793,28 +1795,6 @@ class Text2D : Component {
     private var sizeState;
     private var textState;
 
-    enum Parameter {
-        /// The transparency rule for the 2D object.
-        /// Default is topazRenderer_AlphaRule_Allow
-        ///
-        AlphaRule,
-
-        /// The transparency rule for the 2D object.
-        /// Default is topazRenderer_AlphaRule_Allow
-        ///
-        DepthTest,
-
-        /// The currently set etch rule, which determines how the 
-        /// etch rules is applied when rendering this 2d object.
-        /// Default is topazRenderer_EtchRule_Out
-        ///
-        EtchRule,
-
-        /// The texturing hint for the 2D object.
-        /// Default is topazRenderer_TextureFilterHint_Linear
-        ///
-        TextureFilterHint
-    };
 
 
 
@@ -1938,7 +1918,7 @@ class Text2D : Component {
 
 
     func String() {
-        return 'Component::Text2D\n  text:\"' + text +'\"\n  pos:' + position + '\n  rotation:' + rotation + '\n  scale:' + scale;
+        return 'Component::Text2D\n  text:' + text +'\n  pos:' + position + '\n  rotation:' + rotation + '\n  scale:' + scale;
     }
 
     
@@ -2001,12 +1981,12 @@ class Debug {
     //   
     func expression(cl) {
         var result = cl();
-        var out =  '| - Result:  \(result)';    
+        var out =  '| - Result:  \(result)\n';    
         
         
         if (result is Object) {
-            out += "| - Methods: " + result.methods();
-            out += "| - Props {";
+            out += "| - Methods: " + result.methods() + "\n";
+            out += "| - Props {\n";
 
         }
         
@@ -2015,9 +1995,9 @@ class Debug {
             var str = '|       \(props[i]) : '; 
             str += '' + result.load(props[i]);
 
-            out += str;
+            out += str + '\n';
         }
-        out += '|   }';
+        out += '|   }\n';
         Topaz.log(out);
         return out;
     }

@@ -233,6 +233,33 @@ static void topaz_glfw_im_cursor_callback(
 }
 
 
+static void topaz_glfw_im_cursor_button_callback(
+    GLFWwindow * window,
+    int button, 
+    int action,
+    int mods
+) {
+
+    GLFWIM * im = topaz_table_find(glfww2im, window);
+    topazInputDevice_Event_t ev;
+    ev.id = topazNotAnInput;
+
+    switch(button) {
+      case GLFW_MOUSE_BUTTON_LEFT:   ev.id = topazPointer_0; break;
+      case GLFW_MOUSE_BUTTON_RIGHT:  ev.id = topazPointer_1; break;
+      case GLFW_MOUSE_BUTTON_MIDDLE: ev.id = topazPointer_2; break;
+      default:;
+      // TODO: use non-standard inputs here.
+    }
+    if (ev.id != topazNotAnInput) {
+        ev.state = action == GLFW_PRESS ? 1 : 0;
+        ev.utf8 = 0;
+        topaz_array_push(im->queuedPointerEvents, ev);        
+    }
+}
+
+
+
 
 
 
@@ -324,6 +351,7 @@ static void topaz_glfw_im_set_focus(topazInputManager_t * imSrc, void * userData
         topaz_table_insert(glfww2im, im->ctx, im);    
         glfwSetKeyCallback(im->ctx, topaz_glfw_im_key_callback);
         glfwSetCursorPosCallback(im->ctx, topaz_glfw_im_cursor_callback);
+        glfwSetMouseButtonCallback(im->ctx, topaz_glfw_im_cursor_button_callback);
 
         
     }

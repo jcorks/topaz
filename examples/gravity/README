@@ -13,7 +13,7 @@ here: https://marcobambini.github.io/gravity/
 
 
 Pros:
- - Good object-oriented functionality
+ - Good object-oriented functionality with class awareness.
  - Familiar C* feel
  - Closures / functions as first class objects 
  - Class integration with topaz 

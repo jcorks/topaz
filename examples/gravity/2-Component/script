@@ -39,81 +39,116 @@
 //   uses 1) Components are essentially event systems;
 //   they can be extended to support custom events which other objects 
 //   can subscribe to. 2) like Entities, they can be updated every 
-//   frame with onStep() and onDraw() functions.
+//   frame with onStep() and onDraw() functions. 
+//   It's up to you when to choose to write a new entity, component, or plain class.
+//
+//
 //
 class FruitBasket : Component {
-    private var max;
+
+    // Current amount of fruit in the basket
+    // An outside instance should not be able to touch 
+    // this variable.
     private var amount;
-    
+
+    // Function to get the current amount of fruit left.
     func getFruitLeft() {
         return amount;
     }
-    
+    // Simple way an outside instance can ask whether the 
+    // basket contains fruit.
     func isEmpty() {
         return amount == 0;
     }
     
-    func isFull() {
-        return amount == max;
-    }
-    
-    func start() {
-        amount = 5;
-        max    = 10;
 
+    
+    // As with the Entity, a Component will look for the "start()" 
+    // function when first created to initialize data. 
+    func start() {
+        // We start the basket with a decent amount of fruit.
+        amount = 5;
+
+        // Here is where things get interesting:
+        // Any component can extend its functionality by adding 
+        // its own "events". An event is usually a response to 
+        // some action: when an event is emitted, any instance 
+        // subscribed to the event will receive a notification 
+        // that the event was emitted.
+        //
+        // installEvent registers a new event for the component 
+        // to be recognized.
+        //
+        // Here we want to track 2 events: adding fruit and 
+        // removing fruit. Having "amount" be private is important 
+        // since otherwise the amount could change without 
+        // properly capturing the event.
         installEvent('onAddFruit');
         installEvent('onRemoveFruit');
     }
     
+    // Function called when taking a fruit from the basket.
+    // It will only "work" if theres fruit in the basket, 
+    // which is checked.
     func removeFruit() {
         if (amount > 0) {
             amount-=1;
+
+            // emitEvent() notifies the component that the event is occurring.
             emitEvent('onRemoveFruit');
         }
     }
 
-    func addFruit(from) {
-        if (amount < max) {
-            amount+=1;
-            emitEvent('onRemoveFruit', from);
-        }
+    // Adds a fruit to the basket from someone.
+    func addFruitFrom(from) {
+        amount+=1;
+
+        // emitEvent() also supports a second argument: a source entity.
+        // If theres an entity involved in the event, this argument 
+        // can optionally be passed to be referred to in the notification.
+        emitEvent('onAddFruit', from);
     }
 }
 
 
+
+
+// Now that we have defined a FruitBasket, we can define a Person 
+// to hold the basket. Every person has a name and a basket of 
+// their own.
 class Person : Entity {
+    // The basket owned by the person.
     var basket;
+    // The person's own name.
     var myName;
         
         
     func start() {
+        // Like always, using the class name followed by parantheses is how 
+        // one instantiates a class.
         basket = FruitBasket();
-        
-        basket.installHook(
-            'onAddFruit', 
-            func(component, other) {
-                Topaz.log('I, \(myName), have gained fruit, thanks to \(other.myName)! \(basket.getFruitLeft()) total.');
-            }
-        );
 
-        basket.installHook(
-            'onAddFruit', 
-            func(component, other) {
-                Topaz.log('I, \(myName), have lost fruit. \(basket.getFruitLeft()) total.');
-            }
-        );
-
-        
+        // And since it is a component, we want to make sure to attach it 
+        // so that the component gets updated.
         addComponent(basket);            
     }
     
+
+    // convenience function to remove fruit from 
+    // a persons own basket to give to another.
+    // The transaction is cancelled if the giver runs 
+    // out of fruit.
     func giveFruitTo(other, amount) {
         for(var i in 0..<amount) {
-            if (other.basket.isFull()) return;
+            // Oh no! out of fruit
             if (basket.isEmpty()) return;
 
+            // Remove from this person's basket....
             basket.removeFruit();
-            other.basket.addFruit(other);
+
+            // ... and give to another person. The argument is 
+            // who gave the fruit
+            other.basket.addFruitFrom(self);
 
         }
     }
@@ -122,15 +157,59 @@ class Person : Entity {
 
 
 func main() {
+    // Lets create our people involved
     var throcky = Person();
-    var alex = Person();
+    var alex    = Person();
     
+    // And assign names to them!
     throcky.myName = 'Throckmorton';
-    alex.myName = 'Alex';
+    alex.myName    = 'Alex';
     
+
+    // Up until now, we have registered the onAddFruit and onRemoveFruit 
+    // events with the FruitBasket, but now we will actually add behavior 
+    // to resond to the event. installHook() is the most convenient way 
+    // to do this: it adds a custom closure or function to run when 
+    // the specified event is detected.
+    // The first argument is always the component that is emitting the event.
+    alex.basket.installHook(
+        // The name of the event to respond to.
+        'onRemoveFruit', 
+
+        // The closure to run.
+        func(basket) {
+
+            // Often for debugging, its useful to use Topaz.log(), which 
+            // will print a string to the system console.
+            Topaz.log('\(basket.host.myName) removed a fruit from their basket. \(basket.getFruitLeft()) left.');
+        }
+    );
+
+
+    // Now lets add a hook for onAddFruit. Notice 
+    // that the closure we pass has a second argument. 
+    // In the case that we pass an entity to the emitEvent,
+    // a second argument will be populated with the entity in question.
+    // This can help identify the nature of the event when applicable.
+    alex.basket.installHook(
+        'onAddFruit', 
+        func(basket, other) {
+            Topaz.log('\(basket.host.myName) gained fruit, thanks to \(other.myName)! \(basket.getFruitLeft()) total.');
+        }
+    );
+
+
     
+    // Now lets exchange some fruit. Because of our hooks above,
+    // this will print various statements to the console.
     throcky.giveFruitTo(alex, 2);
     alex.giveFruitTo(throcky, 5);
-    
+
+    // Notice how there was no need to populate Topaz.root.
+    // Making an entity part of the main entity tree allows 
+    // frame-based behavior, such as onStep and onDraw, to be 
+    // managed by topaz. There may be times where you dont 
+    // need to attach entities for the lifetime of the 
+    // program.
 }
 

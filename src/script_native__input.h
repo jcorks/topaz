@@ -62,22 +62,24 @@ static void script_input_on_release(topazInput_t * i, int input, void * data) {
     topaz_script_object_destroy(arg);
 }
 
-static void script_input_on_change(topazInput_t * i, int input, void * data) {
+static void script_input_on_update(topazInput_t * i, int input, float value, void * data) {
     ScriptInputListener * l = data;
-    topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(l->obj, TOPAZ_STR_CAST("onChange"));
-    topazScript_Object_t * arg = topaz_script_object_from_int(l->script, input);
-    topazScript_Object_t * args[2] = {
+    topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(l->obj, TOPAZ_STR_CAST("onUpdate"));
+    topazScript_Object_t * args[3] = {
         l->obj,
-        arg
+        topaz_script_object_from_int(l->script, input),
+        topaz_script_object_from_number(l->script, value),
     };
+
 
     topaz_script_object_destroy(
         topaz_script_object_reference_call(
             fn, 
-            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 2)
+            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 3)
         )
     );
-    topaz_script_object_destroy(arg);
+    topaz_script_object_destroy(args[1]);
+    topaz_script_object_destroy(args[2]);
 }
 
 static void script_input_on_new_unicode(topazInput_t * i, int input, void * data) {
@@ -137,7 +139,7 @@ TSO_SCRIPT_API_FN(input_api__add_keyboard_listener) {
     listener.on_press = script_input_on_press;
     listener.on_active = script_input_on_active;
     listener.on_release = script_input_on_release;
-    listener.on_change = script_input_on_change;
+    listener.on_update = script_input_on_update;
     listener.userData = ldata;
     topaz_input_add_keyboard_listener(
         input,
@@ -162,7 +164,7 @@ TSO_SCRIPT_API_FN(input_api__add_pointer_listener) {
     listener.on_press = script_input_on_press;
     listener.on_active = script_input_on_active;
     listener.on_release = script_input_on_release;
-    listener.on_change = script_input_on_change;
+    listener.on_update = script_input_on_update;
     listener.userData = ldata;
     topaz_input_add_pointer_listener(
         input,
@@ -187,7 +189,7 @@ TSO_SCRIPT_API_FN(input_api__add_pad_listener) {
     listener.on_press = script_input_on_press;
     listener.on_active = script_input_on_active;
     listener.on_release = script_input_on_release;
-    listener.on_change = script_input_on_change;
+    listener.on_update = script_input_on_update;
     listener.userData = ldata;
     topaz_input_add_pad_listener(
         input,
@@ -213,7 +215,7 @@ TSO_SCRIPT_API_FN(input_api__add_mapped_listener) {
     listener.on_press = script_input_on_press;
     listener.on_active = script_input_on_active;
     listener.on_release = script_input_on_release;
-    listener.on_change = script_input_on_change;
+    listener.on_update = script_input_on_update;
     listener.userData = ldata;
     topaz_input_add_mapped_listener(
         input,
@@ -240,7 +242,7 @@ TSO_SCRIPT_API_FN(input_api__remove_listener) {
     listener.on_press = script_input_on_press;
     listener.on_active = script_input_on_active;
     listener.on_release = script_input_on_release;
-    listener.on_change = script_input_on_change;
+    listener.on_update = script_input_on_update;
     listener.userData = ldata;
     topaz_input_remove_listener(input, &listener);
 
@@ -469,9 +471,9 @@ static void add_refs__input_api(topazScript_t * script, topazScriptManager_t * c
 
     TS_MAP_NATIVE_FN("topaz_input__mouse_x", input_api__mouse_x);
     TS_MAP_NATIVE_FN("topaz_input__mouse_y", input_api__mouse_y);
-    TS_MAP_NATIVE_FN("topaz_input__delta_x", input_api__mouse_delta_x);
-    TS_MAP_NATIVE_FN("topaz_input__delta_y", input_api__mouse_delta_y);
-    TS_MAP_NATIVE_FN("topaz_input__mouse_wheel", input_api__mouse_wheel);
+    TS_MAP_NATIVE_FN("topaz_input__mouse_delta_x", input_api__mouse_delta_x);
+    TS_MAP_NATIVE_FN("topaz_input__mouse_delta_y", input_api__mouse_delta_y);
+    TS_MAP_NATIVE_FN("topaz_input__mouse_wheel", input_api__mouse_wheel); 
 
 }
 

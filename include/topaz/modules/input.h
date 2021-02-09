@@ -118,9 +118,10 @@ struct topazInput_Listener_t {
     ///
     topaz_input_button_event_callback on_release;
 
-    /// Function called when the value of the input state has changed at all.
+    /// Function called when the device posts a new event for this 
+    /// input. The value may or may not be changed.
     ///
-    topaz_input_button_event_callback on_change;
+    topaz_input_button_value_callback on_update;
 
     /// Data argument as last parameter for listener functions.
     ///
