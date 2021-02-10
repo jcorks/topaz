@@ -9,7 +9,7 @@
 //
 // As a review, entities are the basic building blocks within 
 // a topaz program. They are updated every frame once the engine is started 
-// and can contain their own properties.
+// and can contain their own properties and components.
 //
 // Typically, entities will be extended in 2 ways:
 //  - Populating an update function such as onStep or onDraw, which will 
@@ -55,7 +55,7 @@ class Rectangle : Entity {
 
 
         // The color of any Shape2D can be assigned directly. 
-        // The string can be a common color name, or a #RRGGBBAA 
+        // The string can be a common color name, or a #RRGGBB/AA 
         // formatted hex string.
         visual.color = Color("purple");
 
@@ -76,6 +76,9 @@ class Rectangle : Entity {
         // position, rotation, and scale.
         // Here, we add 0.001, 0.002, and 0.003 degrees to the x, y, and z 
         // rotation respectively every frame. 
+        //
+        // The position, rotation, and scale properties are vector objects,
+        // so to update them, you actually replace them with new vectors.
         rotation = rotation + Vector(0.0001, 0.0002, 0.0003);
     }
 }
@@ -88,7 +91,7 @@ class Rectangle : Entity {
 // We can use this to instantiate our rectangle
 func main() {
 
-    // This creates the class we've defined.
+    // This instantiates the class we've defined.
     var entity = Rectangle();    
 
 
@@ -103,7 +106,7 @@ func main() {
     // Even though we've created the our rectangle entity,
     // creating the entity on its own doesnt do much.
     // Much like when we created the component, 
-    // the engine still needs to be aware of it.
+    // topaz still needs to be aware of what to do with it.
     //
     // Topaz manages entities in the form of a tree, so     
     // entities naturally can have children entities 

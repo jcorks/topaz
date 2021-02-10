@@ -1,0 +1,212 @@
+// In the previous example, we defined our own entity and 
+// used a built-in component, Shape2D, to provide our entity 
+// the ability to show 2D shapes on the screen
+//
+// In this example, we will explore the concept of components more
+// by making our own.
+//
+// 
+// 
+
+// Here, we're going to make a component and an entity 
+// that could serve as part of a game. In this game,
+// people (a 'Person' entity) can give each other fruit, 
+// so a component was made to facilitate holding the fruit
+// ('FruitBasket'). 
+//
+// Why use a component instead of just a simple variable
+// for this purpose?
+//
+// A few reasons:
+// - On a basic level, a simple variable may work, but for 
+//   further development and consistent behavior,
+//   it makes sense to have a separate class wrap the 
+//   conceptual behavior regarding health. Consider things 
+//   like max capacity, what happens when fruit equals 0, and 
+//   other things. While you could still manage these within 
+//   the entity, having it be a standard separate class 
+//   increases readability and maintainability, especially with 
+//   functions to interact with it.
+//
+// - Someone familiar with object oriented programming may ask:
+//   why not just use a normal class? That would most certainly be 
+//   a valid approach! However, components have 2 significant 
+//   uses 1) Components are essentially event systems;
+//   they can be extended to support custom events which other objects 
+//   can subscribe to. 2) like Entities, they can be updated every 
+//   frame with onStep() and onDraw() functions. 
+//   It's up to you when to choose to write a new entity, component,
+//   or a simple plain object.
+//
+//
+//
+var FruitBasket = {
+    // Like entities, components have props.
+    props : {
+        // Current amount of fruit in the basket.
+        // We start the basket with a decent amount of fruit.
+        amount : 5
+    },
+
+    onReady : function(props) {
+        // For convenience and since we'll be referring to the 
+        // component property within props, we can set a local 
+        // const reference to the component.
+        const $ = props.component;
+
+        // Function to get the current amount of fruit left.
+        $.getFruitLeft = function() {
+            return props.amount;
+        }
+
+        // Simple way an outside instance can ask whether the 
+        // basket contains fruit.
+        $.isEmpty = function() {
+            return props.amount == 0;
+        }
+
+
+        // Here is where things get interesting:
+        // Any component can extend its functionality by adding 
+        // its own "events". An event is usually a response to 
+        // some action: when an event is emitted, any instance 
+        // subscribed to the event will receive a notification 
+        // that the event was emitted.
+        //
+        // installEvent registers a new event for the component 
+        // to be recognized.
+        //
+        // Here we want to track 2 events: adding fruit and 
+        // removing fruit. 
+        $.installEvent('onAddFruit');
+        $.installEvent('onRemoveFruit');
+
+
+        // Function called when taking a fruit from the basket.
+        // It will only "work" if theres fruit in the basket, 
+        // which is checked.
+        $.removeFruit = function() {
+            if (props.amount > 0) {
+                props.amount--;
+
+                // emitEvent() notifies the component that the event is occurring.
+                $.emitEvent('onRemoveFruit');
+            }
+        },
+
+        // Adds a fruit to the basket from someone.
+        $.addFruitFrom = function(from) {
+            props.amount++;
+
+            // emitEvent() also supports a second argument: a source entity.
+            // If theres an entity involved in the event, this argument 
+            // can optionally be passed to be referred to in the notification.
+            $.emitEvent('onAddFruit', from);
+        }
+
+
+
+    }
+}
+
+
+// Now that we have defined a FruitBasket, we can define a Person 
+// to hold the basket. Every person has a name and a basket of 
+// their own.
+var Person = {
+    props : {
+        // The basket owned by the person.
+        basket : undefined,
+
+        // The person's own name.
+        myName : ''
+    },
+
+    onReady : function(props) {
+        const $ = props.entity;
+
+        // Like always, using the class name followed by parantheses is how 
+        // one instantiates a class.
+        props.basket = new topaz.component(FruitBasket);
+
+        // And since it is a component, we want to make sure to attach it 
+        // so that the component gets updated.
+        $.addComponent(props.basket);
+
+        // convenience function to remove fruit from 
+        // a persons own basket to give to another.
+        // The transaction is cancelled if the giver runs 
+        // out of fruit.
+        $.giveFruitTo = function(other, amount) {
+            for(var i = 0; i < amount; ++i) {
+                // Oh no! out of fruit, so abort
+                if (props.basket.isEmpty()) return;
+
+                // Remove from this person's basket....
+                props.basket.removeFruit();
+
+                // ... and give to another person. The argument is 
+                // who gave the fruit
+                other.props.basket.addFruitFrom($);
+            }
+        }
+    }
+
+}
+
+
+
+
+
+
+// Lets create our people involved
+var throcky = new topaz.entity(Person);
+var alex    = new topaz.entity(Person);
+
+// And assign names to them!
+throcky.props.myName = 'Throckmorton';
+   alex.props.myName = 'Alex';
+
+
+// Up until now, we have registered the onAddFruit and onRemoveFruit 
+// events with the FruitBasket, but now we will actually add behavior 
+// to resond to the event. installHook() is the most convenient way 
+// to do this: it adds a custom closure or function to run when 
+// the specified event is detected.
+// The first argument is always the component that is emitting the event.
+alex.props.basket.installHook(
+    // The name of the event to respond to.
+    'onRemoveFruit',
+
+    // The closure to run.
+    function(basket) {
+
+        // Often for debugging, its useful to use topaz.log(), which 
+        // will print a string to the system console.
+        topaz.log(basket.host.props.myName + ' removed a fruit from their basket. ' + basket.getFruitLeft() + ' left.');
+    }
+);
+
+// Now lets add a hook for onAddFruit. Notice 
+// that the closure we pass has a second argument. 
+// In the case that we pass an entity to the emitEvent,
+// a second argument will be populated with the entity in question.
+// This can help identify the nature of the event when applicable.
+alex.props.basket.installHook(
+    'onAddFruit',
+    function(basket, other) {
+        topaz.log(basket.host.props.myName + ' gained fruit, thanks to ' + other.props.myName +'! ' + basket.getFruitLeft() + ' total.');
+    }
+);
+
+// Now lets exchange some fruit. Because of our hooks above,
+// this will print various statements to the console.
+throcky.giveFruitTo(alex, 2);
+alex.giveFruitTo(throcky, 5);
+
+// Notice how there was no need to populate Topaz.root.
+// Making an entity part of the main entity tree allows 
+// frame-based behavior, such as onStep and onDraw, to be 
+// managed by topaz. There may be times where you dont 
+// need to attach entities for the lifetime of the 
+// program.

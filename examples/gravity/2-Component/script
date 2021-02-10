@@ -13,7 +13,7 @@
 // 
 // 
 
-// Here, we're going to make a component and and entity 
+// Here, we're going to make a component and an entity 
 // that could serve as part of a game. In this game,
 // people (a 'Person' entity) can give each other fruit, 
 // so a component was made to facilitate holding the fruit

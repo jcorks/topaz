@@ -124,6 +124,8 @@ typedef struct {
     // theyre queued until ALL intermediate steps are finished, allowing 
     // the script context to rely on the debug state properly. 
     topazArray_t * debugQueuedNotifications;
+
+    int debugOneOff;
 } TOPAZDUK;
 
 
@@ -1213,13 +1215,20 @@ static const char * dvalue_to_string(duk_dvalue * dv) {
 }
 
 static void topaz_duk_trans_received(duk_trans_dvalue_ctx * ctxT, duk_dvalue * dv) {
-
     //printf("dvalue received: %s\n", &bufferSrc[0]);
     TOPAZDUK * ctx = ctxT->userData;
+    if (!ctx->debugOneOff) {
+        // always skip the very first pause notif.
+        if (!strcmp(dvalue_to_string(dv), "EOM")) {
+            ctx->debugOneOff = 1;
+        }
+        return;
+    }
     char * cpy = strdup(dvalue_to_string(dv));
     topaz_array_push(ctx->pendingMessages, cpy);
     #ifdef TOPAZDC_DEBUG
-        //printf("RECEIVED DEBUG MSG: %s\n", cpy);
+        printf("RECEIVED DEBUG MSG: %s\n", cpy);
+        fflush(stdout);
     #endif
 }
 

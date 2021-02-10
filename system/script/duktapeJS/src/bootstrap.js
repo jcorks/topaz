@@ -951,7 +951,7 @@ topaz = {
                 ctx.props[keys[i]] = props.props[keys[i]];
             }
             ctx.events = props.events;
-
+            if (!ctx.events) ctx.events = {};
             
 
 
@@ -964,7 +964,7 @@ topaz = {
             impl.onDestroy = props.onDestroy ? function(e){props.onDestroy(e.__ctx.props);} : undefined;
 
             
-            var keys = Object.keys(props.events);
+            var keys = Object.keys(ctx.events);
             for(var i = 0; i < keys.length; ++i) {
                 topaz_component__install_event(
                     impl, 
@@ -973,7 +973,7 @@ topaz = {
                         return function(c) {
                             fn(ctx.props);
                         }
-                    })(props.events[keys[i]])
+                    })(ctx.events[keys[i]])
                 );
             }
 
@@ -1025,7 +1025,8 @@ topaz = {
 
         this.installEvent = function(event, callback) {
             topaz_component__install_event(impl, event, function(component, entity) {
-                callback(component.__ctx, entity.__ctx);
+                if (callback)
+                    callback(component.__ctx, entity.__ctx);
             });
         }
 
