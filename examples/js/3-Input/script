@@ -1,0 +1,246 @@
+
+
+// So far, we've examined the nature of entities and 
+// components. There is one more major source of functionality
+// within topaz: modules. Modules are collections of 
+// tools that allow for interactions with system-oriented 
+// behaviors. This example focuses on the Input module 
+// within topaz. 
+//
+// This example demonstrates the 2 main methods to get
+// input information: Polling and Event Listening.
+//
+//
+//
+// This prefab demonstrates how to use polling. Polling 
+// is the most basic and straightforward way to use input,
+// functions such as getState() return the currently recorded 
+// input state for a particular input. Every frame that topaz 
+// updates, the Input module will check for any incoming 
+// events for input devices and save their info. As such,
+// polling does not request from the device directly, but rather 
+// from what topaz last recorded. As such, polling is pretty
+// quick.
+//
+// To demonstrate the effect of input, this example entity 
+// will use a blue rectangle to show itself onscreen and will 
+// respond to the arrow keys and right-click + dragging.
+var Input_Poll = {
+    // We won't be using any persistent props, so the 
+    // props object will be empty.
+    props : {},
+
+    onReady : function(props) {
+        // Since we are making the shape once and not modifying it,
+        // theres no need to keep the component around.
+        const visual = new topaz.shape2d();
+
+        // Set it to blue and make it 20x20
+        visual.color = new topaz.color('blue');
+        visual.formRectangle(20, 20);
+
+        // As shorthand for .addComponent(), you 
+        // can set an entity's components by setting 
+        // the "components" property equal to an array
+        // of the component references. It tends to be 
+        // visually more compact while still very readable.
+        props.entity.components = [visual];
+
+    },
+
+    onStep : function(props) {
+        // Since this function will be referring to entity 
+        // properties a lot, we continue to use "$" as shorthand 
+        // for "this entity/component".
+        const $ = props.entity;
+
+        // For the polling method, the accuracy is dependent 
+        // on how often input is re-polled. For both convenience
+        // and accuracy, it is common to just re-poll for input 
+        // every frame.
+        //
+        // topaz.input.getState() returns a number representing the 
+        // state of the input. Usually 0 means inactive, and 
+        // above 0 means its active. For buttons, this is 
+        // just 0.0 vs 1.0. 
+        //
+        // Here we check the individual key values for the arrows.
+        // If the key state is non-zero, we modify the 
+        // position vector by adding "1" to it in the direction 
+        // that corresponds to the arrow.
+
+        if (topaz.input.getState(topaz.input.topazKey_up)) {
+            // The add() function for vectors allows the creation 
+            // of a new vector by summing the x, y, and z components
+            // of the source vector and argument vector.
+            $.position = $.position.add(new topaz.vector(0, -1));            
+        }
+
+        if (topaz.input.getState(topaz.input.topazKey_down)) {
+            $.position = $.position.add(new topaz.vector(0, 1));            
+        }
+
+        if (topaz.input.getState(topaz.input.topazKey_left)) {
+            $.position = $.position.add(new topaz.vector(-1, 0));            
+        }
+
+
+        if (topaz.input.getState(topaz.input.topazKey_right)) {
+            $.position = $.position.add(new topaz.vector(1, 0));            
+        }
+
+        // The left/right/middle button can be polled using 
+        // the topaz.input.topazPointer_* inputs.
+        // All inputs for the mouse+keyboard can use the getState() function.
+        if (topaz.input.getState(topaz.input.topazPointer_1)) {
+            // To poll position position, getState can be used. However,
+            // due to the commonality of this operation, the position 
+            // can be polled by just accessing topaz.input.mouseX / Y.
+            $.position = new topaz.vector(
+                topaz.input.mouseX,
+                topaz.input.mouseY
+            );
+        }
+    }
+}
+
+
+
+// This prefab demonstrates the usage of event listening.
+// While polling is a pretty convenient way to respond to 
+// input, it has a few issues:
+//  - For best use, it requires re-polling as often as possible. 
+//    However, in reality, inputs do not happen every frame;
+//    in general its inefficient to poll every frame since only 
+//    a handful of those frames will have input state changes.
+//
+//  - It is easy from a design perspective to write hard-to-read 
+//    code when doing complex logic involving multiple polling states.
+//
+// Event listening for inputs provides a solution for these problems
+// The idea is to tell the Input module to only run certain 
+// functions when an event is detected, that way our code
+// doesnt have to poll unnecessarily.
+// 
+// One of the initial differences you'll likely notice is that 
+// in general event listening requires a bit more code to get 
+// set up properly.
+//
+// To contrast it with the previous entity, this one 
+// is a red square controlled with W, A, S, D + left click.
+var Input_List = {
+    props : {
+        // This will hold the state of whether the event 
+        // listener detected a clicking state. When its pressed,
+        // its updated to 1, but when released its updated to 0.
+        clicking : false
+    },
+
+    onReady : function(props) {
+        // Same story as the first prefab!
+        const $ = props.entity;
+        const visual = new topaz.shape2d();
+
+        // Here, we're using RGB hex notation to define our color.
+        visual.color = new topaz.color('#ff0000');
+        visual.formRectangle(20, 20);
+
+        $.components = [visual];
+
+
+
+        // This adds an event listener for the keyboard.
+        // All add listener functions expect an object;
+        // the object is searched for specific keys:
+        // 'onActive', 'onPress', 'onRelease', and 'onUpdate'.
+        // If any are populated, a function is meant 
+        // to be mapped as the value; this function will be 
+        // called in response to input events when they occur.
+        //
+        // This listener is mapped to the onActive event, which 
+        // is every frame that an input is non-zero. This is 
+        // convenient for when buttons are held.
+        topaz.input.addKeyboardListener({
+
+            // Here is the onActive property.
+            // The funcion mapped takes 2 arguments: the map itself 
+            // we passed in, and the input id that is active.
+            onActive : function(map, key) {
+                switch(key) {
+                  case topaz.input.topazKey_w:
+                    $.position = $.position.add(new topaz.vector(0, -1));            
+                    break;
+
+                  case topaz.input.topazKey_s:
+                    $.position = $.position.add(new topaz.vector(0, 1));            
+                    break;
+
+                  case topaz.input.topazKey_a:
+                    $.position = $.position.add(new topaz.vector(-1, 0));            
+                    break;
+
+                  case topaz.input.topazKey_d:
+                    $.position = $.position.add(new topaz.vector(1, 0));            
+                    break;
+                }
+            }
+        });
+
+        // Similar to adding a keyboard listener, pointer 
+        // listeners will respond only to mouse events.
+        topaz.input.addPointerListener({
+
+            // The onUpdate event respondes to any time the 
+            // device sends a new event to topaz.
+            'onUpdate' : function(map, input, value) {
+
+                // The clicking state will by set here to detect when to apply the 
+                // x / y position change
+                if (input == topaz.input.topazPointer_0) {
+                    props.clicking = value > 0;
+                }
+
+                // If the clicking state is active, then we check to 
+                // see if the event we're receiving is an X / Y update 
+                // event for the pointer. If it is, replace the component 
+                // in question with the raw value.
+                if (props.clicking) {
+                    switch(input) {
+                      case topaz.input.topazPointer_X:
+                        $.position = new topaz.vector(value, $.position.y);
+                        break;
+
+                      case topaz.input.topazPointer_Y:
+                        $.position = new topaz.vector($.position.x, value);
+                        break;
+
+                    }
+                }
+            }
+        })
+    }
+
+}
+
+
+// Since our example is going to use multiple entities,
+// it is helpful to establish a basic "entity tree".
+// Here, our root is an empty object whose job is purely
+// to manage the input example entities we defined above.
+var manager = new topaz.entity();
+
+
+// Next, we'll instantiate those entities 
+// we defined, wrap them in a List, and modify
+// the "children" property, populating the tree.
+//
+// Alternatively, the following could be rewritten as:
+//    manager.attach(new topaz.entity(Input_Poll));
+//    manager.attach(new topaz.entity(Input_List));
+manager.children = [
+    new topaz.entity(Input_Poll),
+    new topaz.entity(Input_List)
+];
+
+// Finally, insert the base of the tree into topaz itself.
+topaz.root = manager;

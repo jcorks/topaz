@@ -39,7 +39,7 @@ class Input_Poll : Entity {
 
         // As shorthand for .addComponent(), you 
         // can set an entity's components by setting 
-        // the "components" properties equal to a List 
+        // the "components" property equal to a List 
         // of the component variables. It tends to be 
         // visually more compact while still very readable.
         components = [visual];
@@ -116,7 +116,8 @@ class Input_Poll : Entity {
 // is a red square controlled with W, A, S, D + left click.
 class Input_Listener : Entity {
     // This will hold the state of whether the event 
-    // listener
+    // listener detected a clicking state. When its pressed,
+    // its updated to 1, but when released its updated to 0.
     private var clicking;
 
     func start() {
@@ -124,7 +125,7 @@ class Input_Listener : Entity {
         // Same story as above!
         var visual = Shape2D();
 
-        // Here, we're using RGB hex notation to define our color!
+        // Here, we're using RGB hex notation to define our color.
         visual.color = Color('#ff0000');
         visual.formRectangle(20, 20);
         components = [visual];

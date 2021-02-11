@@ -506,6 +506,16 @@ topaz = {
                     children.push(topaz_entity__get_nth_child(impl, i).__ctx);
                 }
                 return children;
+            },
+
+            set : function(c) {
+                while(topaz_entity__get_child_count(impl)) {
+                    topaz_entity__detach(topaz_entity__get_nth_child(impl, 0));
+                }
+
+                for(var i = 0; i < c.length; ++i) {
+                    topaz_entity__attach(impl, c[i].impl);
+                }
             }
         });
 
@@ -522,11 +532,18 @@ topaz = {
             topaz_entity__detach(impl);
         }
 
-        this.getParent = function() {
-            var f = topaz_entity__get_parent(impl);
-            if (f.__ctx) return f.ctx;
-            return new topaz.entity(undefined, f);
-        }
+
+        Object.defineProperty(this, 'parent', {
+            get : function() {
+                var f = topaz_entity__get_parent(impl);
+                if (f.__ctx) return f.ctx;
+                return new topaz.entity(undefined, f);
+            }, 
+            set : function(v){
+                topaz_entity_attach(v.impl, impl);
+            }
+        });
+
 
 
         this.query = function(name) {
@@ -666,15 +683,36 @@ topaz = {
             topaz_entity__add_component_after(impl, c.impl);
         }
 
-        this.getComponentCount = function() {
-            return topaz_entity__get_component_count(impl);
-        }
 
-        this.getComponent = function(index) {
-            var f = topaz_entity__get_nth_component(impl, index);
-            if (f.__ctx) return f.__ctx;
-            return new topaz.component(undefined, f);
-        }
+
+        Object.defineProperty(
+            this,
+            'components', {
+                get : function()  {
+                    const len = topaz_entity__get_component_count(impl);
+                    var out = [];
+                    for(var i = 0; i < len; ++i) {
+                        var f = topaz_entity__get_nth_component(impl, index);
+                        if (f.__ctx) {
+                            out.push(f.__ctx);
+                        } else { 
+                            out.push(topaz.component(undefined, f));
+                        }
+                    }
+                    return out;
+                },
+                set : function(c) {
+                    while(topaz_entity__get_component_count(impl)) {
+                        topaz_entity__remove_component(topaz_component__get_tag(topaz_entity__get_nth_component(impl, 0)));
+                    }
+    
+                    for(var i = 0; i < c.length; ++i) {
+                        topaz_entity__add_component(impl, c[i].impl);
+                    }
+                }
+            }
+        );
+
 
         this.queryComponent = function(tag) {
             var f = topaz_entity__query_component(impl, tag);
@@ -1569,14 +1607,30 @@ topaz = {
             topaz_vector__destroy(impl);
             impl = {};
         }
-        
+
+        this.add = function(b) {
+            return new topaz.vector(this.x + b.x, this.y + b.y, this.z + b.z);
+        }
+        this.subtract = function(b) {
+            return new topaz.vector(this.x - b.x, this.y - b.y, this.z - b.z);
+        }
+        this.multiply = function(b) {
+            return new topaz.vector(this.x * b.x, this.y * b.y, this.z * b.z);
+        }
+        this.divide = function(b) {
+            return new topaz.vector(this.x / b.x, this.y / b.y, this.z / b.z);
+        }
+
+
         Object.defineProperty(this, 'x', {get : function(){return topaz_vector__get_x(impl);}, set : function(v){topaz_vector__set_x(impl, v);}});
         Object.defineProperty(this, 'y', {get : function(){return topaz_vector__get_y(impl);}, set : function(v){topaz_vector__set_y(impl, v);}});
         Object.defineProperty(this, 'z', {get : function(){return topaz_vector__get_z(impl);}, set : function(v){topaz_vector__set_z(impl, v);}});
 
 
         this.impl = impl;
-    }
+    },
+
+
 }
 
 Object.defineProperty(topaz, 'isPaused', {get : function(){return topaz__is_paused();}});
