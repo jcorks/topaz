@@ -33,10 +33,10 @@ class Rectangle : Entity {
 
 
     // Every custom entity class can have an optional 
-    // "start" function. This can be used to initialize 
+    // "onReady" function. This can be used to initialize 
     // the instance. In our case we will use it to 
     // set up the visual
-    func start() {
+    func onReady() {
 
         // Shape2D is the basic component for drawing 2D shapes.
         // It can be formed into any shape, but we will stick with 

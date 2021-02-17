@@ -409,7 +409,6 @@ class Entity {
         impl_ = topaz_.topaz_entity__create();
         impl_.api_ = self;
 
-        start();
 
         topaz_.topaz_entity__set_on_step(impl_, onStep_wrapper);
         topaz_.topaz_entity__set_on_draw(impl_, onDraw_wrapper);
@@ -418,6 +417,9 @@ class Entity {
         topaz_.topaz_entity__set_on_remove(impl_, onRemove_wrapper);
         topaz_.topaz_entity__set_on_attach(impl_, onAttach_wrapper);
         topaz_.topaz_entity__set_on_detach(impl_, onDetach_wrapper);
+
+        onReady();
+
     }
 
     func onStep_wrapper(ref) {
@@ -453,7 +455,7 @@ class Entity {
     func onRemove(){};
 
     
-    func start() {
+    func onReady() {
     
     }
 
@@ -694,7 +696,7 @@ class Component {
         topaz_.topaz_component__set_on_destroy(impl_, onDestroy_wrapper);
         topaz_.topaz_component__set_on_attach(impl_, onAttach_wrapper);
         topaz_.topaz_component__set_on_detach(impl_, onDetach_wrapper);
-        start();
+        onReady();
     }
 
     func onStep_wrapper(ref) {
@@ -714,7 +716,7 @@ class Component {
     }
 
 
-    func start(){};
+    func onReady(){};
     func onDraw(){};
     func onStep(){};
     func onAttach(){};

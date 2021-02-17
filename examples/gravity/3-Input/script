@@ -28,7 +28,7 @@
 // will use a blue rectangle to show itself onscreen and will 
 // respond to the arrow keys and right-click + dragging.
 class Input_Poll : Entity {
-    func start() {
+    func onReady() {
         // Since we are making the shape once and not modifying it,
         // theres no need to keep the component around.
         var visual = Shape2D();
@@ -120,7 +120,7 @@ class Input_Listener : Entity {
     // its updated to 1, but when released its updated to 0.
     private var clicking;
 
-    func start() {
+    func onReady() {
 
         // Same story as above!
         var visual = Shape2D();

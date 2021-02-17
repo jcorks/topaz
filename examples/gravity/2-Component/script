@@ -65,7 +65,7 @@ class FruitBasket : Component {
     
     // As with the Entity, a Component will look for the "start()" 
     // function when first created to initialize data. 
-    func start() {
+    func onReady() {
         // We start the basket with a decent amount of fruit.
         amount = 5;
 
@@ -123,7 +123,7 @@ class Person : Entity {
     var myName;
         
         
-    func start() {
+    func onReady() {
         // Like always, using the class name followed by parantheses is how 
         // one instantiates a class.
         basket = FruitBasket();

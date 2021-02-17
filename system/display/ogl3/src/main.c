@@ -317,7 +317,8 @@ static void topaz_glfw_update(topazDisplay_t * dispSrc, void * api, topazRendere
 
 
     render_to_screen(d, ((GLuint*)topaz_renderer_framebuffer_get_handle(fb))[1]);
-    glfwSwapBuffers(d->window);
+    glFinish();
+    //glfwSwapBuffers(d->window);
 };
 
 static const topazArray_t * topaz_glfw_supported_framebuffers(topazDisplay_t * dispSrc, void * api) {

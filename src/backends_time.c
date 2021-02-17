@@ -67,7 +67,7 @@ topazTimeAPI_t topaz_time_get_api(topazTime_t * t) {
 
 
 
-void topaz_time_sleep_ms(topazTime_t * t, uint64_t ms) {
+void topaz_time_sleep_ms(topazTime_t * t, double ms) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
@@ -76,7 +76,7 @@ void topaz_time_sleep_ms(topazTime_t * t, uint64_t ms) {
 }
 
 
-uint64_t topaz_time_ms_since_startup(topazTime_t * t) {
+double topaz_time_ms_since_startup(topazTime_t * t) {
     #ifdef TOPAZDC_DEBUG
         assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif

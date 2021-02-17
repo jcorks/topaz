@@ -76,8 +76,8 @@ struct topaz_t {
 
     topazTime_t * timeRef;
     topazFontRenderer_t * fontRendererRef;
-    uint64_t frameEnd;
-    uint64_t frameStart;
+    double frameEnd;
+    double frameStart;
     
     int quit;
     int paused;
@@ -414,14 +414,14 @@ void topaz_context_quit(topaz_t * t) {
 }
 
 void topaz_context_wait(topaz_t * t, int FPS) {
+    double frameDuration = 1000.0 / ((float)FPS);
     t->frameEnd = topaz_context_get_time(t);
-    uint64_t realEnd = t->frameEnd;
 
+    double goal = t->frameStart + frameDuration;
     
-    // TODO: swap to just sleep for the time difference directly?
-    while (realEnd - t->frameStart < 1000.0 / ((float)FPS)) {
-        topaz_time_sleep_ms(t->timeRef, 1);
-        realEnd = topaz_context_get_time(t);
+
+    if(t->frameEnd < goal) {
+        topaz_time_sleep_ms(t->timeRef, goal - t->frameEnd);
     }
 
     t->frameStart = topaz_context_get_time(t);

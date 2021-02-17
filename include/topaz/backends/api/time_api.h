@@ -60,8 +60,8 @@ struct topazTimeAPI_t {
     void *                  (*time_create)           (topazTime_t *, topaz_t *);
     void                    (*time_destroy)          (topazTime_t *, void *);
 
-    void                    (*time_sleep_ms)         (topazTime_t *, void *, uint64_t);
-    uint64_t                (*time_ms_since_startup) (topazTime_t *, void *);
+    void                    (*time_sleep_ms)         (topazTime_t *, void *, double);
+    double                  (*time_ms_since_startup) (topazTime_t *, void *);
 
 
 };

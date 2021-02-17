@@ -99,14 +99,14 @@ void topaz_time_sleep_ms(
     topazTime_t * t, 
 
     /// The time amount to sleep.
-    uint64_t ms
+    double ms
 );
 
 
 /// Returns the number of milliseconds that have passed since 
 /// the creation of this time instance.
 ///
-uint64_t topaz_time_ms_since_startup(
+double topaz_time_ms_since_startup(
     /// The time instance to query.
     topazTime_t * t
 );

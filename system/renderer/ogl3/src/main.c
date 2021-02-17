@@ -178,6 +178,7 @@ void topaz_system_renderer_ogl3__backend(
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
         glfwWindowHint(GLFW_VISIBLE, 0);
+        glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE);
 
         glfwWindowHint(GLFW_RED_BITS, 8);
         glfwWindowHint(GLFW_GREEN_BITS, 8);
