@@ -1,6 +1,10 @@
 #ifndef H_TOPAZDC__IOX__TPNG_TINFL
 #define H_TOPAZDC__IOX__TPNG_TINFL
 
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 
@@ -146,4 +150,5 @@ struct tinfl_decompressor_tag
 
 #ifdef __cplusplus
 }
+#endif
 #endif

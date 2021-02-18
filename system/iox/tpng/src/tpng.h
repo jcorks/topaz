@@ -28,10 +28,13 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifdef TOPAZ_PN
+#ifndef TPNG_H_INCLUDED
+#define TPNG_H_INCLUDED
+
+#include <stdint.h>
 
 // Returns a raw data buffer containing 
-// 32-bit RGBA.
+// 32-bit RGBA. Must be freed.
 uint8_t * tpng_get_rgba(
     const uint8_t * rawData,
     uint32_t        rawSize,
@@ -39,3 +42,6 @@ uint8_t * tpng_get_rgba(
     uint32_t * w, 
     uint32_t * h 
 );
+
+
+#endif

@@ -25,7 +25,11 @@
  **************************************************************************/
 
 #include "tinfl.h"
-
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 // topaz addition: import of macros from miniz
 #define TINFL_MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define TINFL_MAX(a, b) (((a) > (b)) ? (a) : (b))
