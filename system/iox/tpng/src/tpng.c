@@ -484,7 +484,7 @@ static void tpng_process_chunk(tpng_image_t * image, tpng_chunk_t * chunk) {
     } else if (!strcmp(chunk->type, "IDAT")) {
         memcpy(image->idata+image->idataLength, chunk->data, chunk->length);         
         image->idataLength += chunk->length;
-    } else if (strcmp(chunk->type, "IEND")) {
+    } else if (!strcmp(chunk->type, "IEND")) {
         // compression mode is the current and only accepted type.
         if (image->compression != 0) return;
 
@@ -496,7 +496,7 @@ static void tpng_process_chunk(tpng_image_t * image, tpng_chunk_t * chunk) {
             image->idata, 
             image->idataLength, 
             &rawUncompLen, 
-            0 // no zlib header
+            1 // actually contains zlib header
         );
         tpng_iter_t * iter = tpng_iter_create(rawUncomp, rawUncompLen);
         TPNG_BEGIN(iter);        
