@@ -45,6 +45,9 @@ int main() {
         }
         printf("|\n");
     }
+
+    free(rawData);
+    free(rgba);
     return 0;
     
 }
