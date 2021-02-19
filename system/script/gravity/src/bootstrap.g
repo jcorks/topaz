@@ -1556,6 +1556,7 @@ class Resources {
 
     static func loadAsset(a, b, c) {
         var out = Asset();
+        if (c == '') c = b;
         out.impl_ = topaz_.topaz_resources__load_asset(a, b, c);
         return out;
     }
@@ -1771,6 +1772,10 @@ class Shape2D : Component {
 
     func formRectangle(w, h) {
         topaz_.topaz_shape2d__form_rectangle(impl_, w, h);
+    }
+    
+    func formImage(img) {
+        topaz_.topaz_shape2d__form_image(impl_, img.impl_);
     }
 
     func formRadial(rad, sid) {

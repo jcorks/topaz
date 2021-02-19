@@ -34,12 +34,11 @@ DEALINGS IN THE SOFTWARE.
 #include "backend.h"
 #include <topaz/compat.h>
 #include <topaz/containers/array.h>
-#include <topaz/assets/data.h>
+#include <topaz/assets/image.h>
 #include <stdlib.h>
 #include <string.h>
+#include "tpng.h"
 
-
-static int tpng_set(topazAsset_t * image, const topazArray_t * raw);
 
 static void * tpng_create (
     topazIOX_t * d, 
@@ -48,7 +47,7 @@ static void * tpng_create (
     topazAsset_Type * atype,    
     uint64_t * recommendedBufferSize
 ) {
-    *atype = topazAsset_Type_Data;
+    *atype = topazAsset_Type_Image;
     topazString_t * str;
 
     str = topaz_string_create_from_c_str("png");  topaz_array_push(extensions, str);
@@ -59,8 +58,10 @@ static void tpng_destroy(topazIOX_t * d, void * notUsed) {}
 
 static void * tpng_stream_start(topazIOX_t * d, void * notUsed, topazAsset_t * asset) {
     topazArray_t * bytes = topaz_array_create(sizeof(uint8_t));
-    if (topaz_asset_get_type(asset) == topazAsset_Type_Data) {
-        topaz_data_set(asset, bytes);
+    if (topaz_asset_get_type(asset) == topazAsset_Type_Image) {
+        // clear image
+        while(topaz_image_get_frame_count(asset))
+              topaz_image_remove_frame(asset, 0);
     }
     return bytes;
 }
@@ -121,7 +122,24 @@ static int tpng_stream_finish(
     void * arraySrc
 ) {
     if (topaz_asset_get_type(asset) == topazAsset_Type_Image) {
-        tpng_set(asset, arraySrc);
+        uint32_t w;
+        uint32_t h;
+        uint8_t * rgba = tpng_get_rgba(
+            topaz_array_get_data(arraySrc),
+            topaz_array_get_size(arraySrc),
+            &w,
+            &h
+        );
+
+
+        // add new frame if valid.
+        if (rgba && w && h) {
+            topaz_image_resize(asset, w, h);
+            topaz_image_add_frame(asset);
+            topaz_image_frame_set_data(topaz_image_get_frame(asset, 0), rgba);       
+        }
+
+        free(rgba);
     }
     topaz_array_destroy(arraySrc);
     return 1;
@@ -151,7 +169,7 @@ void topaz_system_iox_tpng__backend(
         TOPAZ_STR_CAST("Johnathan Corkery, 2020"),
 
         // desc 
-        TOPAZ_STR_CAST("Reduced PNG decoder/encoder"),
+        TOPAZ_STR_CAST("Reduced PNG decoder/encoder, using TINFL for zlib deflating"),
 
 
 
