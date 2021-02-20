@@ -320,6 +320,7 @@ static void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
     g->topazReftable_inst = gravity_map_new(g->vm, 0);
     g->topazReftable = gravity_value_from_object(g->topazReftable_inst);
     gravity_class_bind(g->topazMeta, "t_", g->topazReftable);
+    gravity_vm_setvalue(g->vm, "_topazrefmap", g->topazReftable);
 
     g->ownedRefs = topaz_table_create_hash_pointer();        
     g->files = topaz_table_create_hash_pointer();
