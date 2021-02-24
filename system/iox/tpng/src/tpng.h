@@ -1,20 +1,14 @@
-/*
-Copyright (c) 2020, Johnathan Corkery. (jcorkery@umich.edu)
-All rights reserved.
-
-This file is part of the topaz project (https://github.com/jcorks/topaz)
-topaz was released under the MIT License, as detailed below.
-
-
- * tPNG's implementation contains code from TINFL, released under the license as follows:
-
+/**************************************************************************
+ *
+ * tPNG:
+ * tPNG is part of the topaz project. (https://github.com/jcorks/topaz)
+ * 2021, Johnathan Corkery
+ *
+ *
  * TINFL:
  * Copyright 2013-2014 RAD Game Tools and Valve Software
  * Copyright 2010-2014 Rich Geldreich and Tenacious Software LLC
  * All Rights Reserved.
-
-
-
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +29,6 @@ topaz was released under the MIT License, as detailed below.
  * THE SOFTWARE.
  *
  **************************************************************************/
-
 
 #ifdef __cplusplus
 extern "C" {

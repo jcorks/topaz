@@ -107,10 +107,11 @@ option(
     'ScriptBackend',
     type : 'combo',
 
-    value : 'duktapeJS',
+    value : 'gravity',
     choices : [
         'noScript',
-        'duktapeJS'
+        'duktapeJS',
+        'gravity'
     ]
 )
 
@@ -129,14 +130,16 @@ option(
 option(
     'IOTranslators',
     type : 'array',
-
-    choices : [
-        'rawdata'
+    value : [
+        'rawdata',
+        'tpng'
     ],
 
-    value : [
-        'rawdata'
+    choices : [
+        'rawdata',
+        'tpng'
     ]
+
 )
 
 
