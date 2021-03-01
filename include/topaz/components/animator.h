@@ -45,13 +45,12 @@ DEALINGS IN THE SOFTWARE.
 typedef enum topazAnimator_Function topazAnimator_Function;
 
 enum topazAnimator_Function {
+    topazAnimator_Function_None,
     topazAnimator_Function_Linear,
     topazAnimator_Function_Square,
     topazAnimator_Function_Log,
-    topazAnimator_Function_Random,
-    topazAnimator_Function_Random,
-
-}
+    topazAnimator_Function_Random
+};
 
 
 
@@ -244,7 +243,13 @@ float topaz_animator_get_speed(
     topazComponent_t * animator
 );
 
+void topaz_animator_pause(
+    topazComponent_t * animator
+);
 
+void topaz_animator_resume(
+    topazComponent_t * animator
+);
 
 
 
@@ -259,8 +264,10 @@ const topazString_t * topaz_animator_to_animation_string(
 /// the existing keyframes and replaces them with the 
 /// the keyframes from the compiled string.
 void topaz_animator_set_from_animation_string(
-    /// The
-    topazComponent_t * animator, 
+    /// The animator the modify
+    topazComponent_t * animator,
+
+    /// The animator string to set from. 
     const topazString_t * animationString
 );
 
@@ -268,17 +275,42 @@ void topaz_animator_set_from_animation_string(
 
 
 
+/// Returns the vector animated based on the keyframes 
+/// and the given progress within the animation. Progress is 
+/// 0 to 1 but looped.
+topazVector_t topaz_animator_vector_at(
+    /// The animator to query.
+    topazAnimator_t * animator, 
 
-topazVector_t topaz_animator_vector_at(topazPath_t *, float progress);
+    /// The progress along the animation.
+    float progress
+);
 
-float topaz_animator_at(topazPath_t *, float progress);
+/// Returns the float animated based on the keyframes 
+/// and the given progress within the animation. Progress is 
+/// 0 to 1 but looped.
+float topaz_animator_at(
+    /// The animator to query.
+    topazAnimator_t * animator, 
+
+    /// The progress along the animation.
+    float progress
+);
 
 
 
+/// Returns the current vector value within the animation 
+///
+const topazVector_t * topaz_animator_current_vector(
+    /// The animator to query.
+    topazComponent_t * animator
+);
 
-const topazVector_t * topaz_animator_current_vector(topazComponent_t *);
-
-float topaz_animator_current(topazComponent_t *);
+/// Returns the value within the animation.
+float topaz_animator_current(
+    /// The animator to query.
+    topazComponent_t * animator
+);
 
 
 
