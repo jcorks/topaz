@@ -33,12 +33,8 @@ DEALINGS IN THE SOFTWARE.
 #define H_TOPAZDC__ANIMATOR__INCLUDED
 
 #include <topaz/containers/string.h>
-
-
-
-
-
-
+#include <topaz/component.h>
+#include <topaz/vector.h>
 
 
 
@@ -55,11 +51,10 @@ enum topazAnimator_Function {
 
 
 
-#include <topaz/component.h>
-#include <topaz/vector.h>
+
 /// Creates a new animator instance.
 /// Recognized events:
-/// "on-path-end" - when the path is finished
+/// "on-anim-end" - when the animation is finished
 topazComponent_t * topaz_animator_create(
     /// The topaz context to create the component under.
     topaz_t * context
@@ -79,8 +74,7 @@ void topaz_animator_add_keyframe(
     float value, 
 
     /// The traveling function that describes how 
-    /// this keyframe's value should be reached. If this 
-    /// keyframe is the first, this is ignored.
+    /// the next keyframe's value should be reached. 
     topazAnimator_Function lerp, 
 
     /// The offset from the end of the last keyframe.
@@ -100,9 +94,9 @@ void topaz_animator_add_vector_keyframe(
     /// reached, the animator will take on this value.
     const topazVector_t * value, 
 
+
     /// The traveling function that describes how 
-    /// this keyframe's value should be reached. If this 
-    /// keyframe is the first, this is ignored.
+    /// the next keyframe's value should be reached. 
     topazAnimator_Function lerp, 
 
     /// The offset from the end of the last keyframe.
@@ -132,6 +126,8 @@ void topaz_animator_add_animation(
 
 /// The values for each keyframe are averaged and 
 /// set back into this animator.
+/// This may create additional keyframes to 
+/// facilitate
 void topaz_animator_blend(
     /// The animator to modify.
     topazComponent_t * animator,
@@ -163,7 +159,9 @@ void topaz_animator_add_from_string(
 
 /// Gets the length of the animation. This is the total accumulative
 /// keyframe offsets within the animation. The animation length 
-/// is meant to convey  
+/// is meant to convey how long the animation is in a time-agnostic way.
+/// The length of the animation is not necessarily how long in seconds 
+/// or frames the animation is.
 float topaz_animator_get_length(
     /// The animator to query.
     topazComponent_t * animator
@@ -171,7 +169,8 @@ float topaz_animator_get_length(
 
 /// Skip to a part of the animation. The value must be between or 
 /// equal to 0 and the value of topaz_animator_get_length()
-/// The value is modulated 
+/// The value is modulo the length of the animation. Note that 
+/// this is in keyframe units.
 void topaz_animator_skip_to(
     /// The animator to skip within.
     topazComponent_t * animator, 
@@ -201,14 +200,15 @@ void topaz_animator_set_duration_seconds(
 void topaz_animator_set_duration_frames(
     /// The animator to query.
     topazComponent_t * animator, 
-
+    /// the number of frames.
+    int frames
 );
 
 /// Gets the duration of the animation in either frames or seconds.
 float topaz_animator_get_duration(
     /// The animator to query.
     topazComponent_t * animator
-)
+);
 
 /// Sets whether the animator is looped.
 /// When its looped, the animator will start over 
@@ -235,7 +235,7 @@ void topaz_animator_set_speed(
     topazComponent_t * animator, 
     /// The rate of the animator animation. 
     float speed
-)
+);
 
 /// Gets the speed of the animation.
 float topaz_animator_get_speed(
@@ -243,11 +243,16 @@ float topaz_animator_get_speed(
     topazComponent_t * animator
 );
 
+/// Pauses the animation.
 void topaz_animator_pause(
+    /// The animator to pause.
     topazComponent_t * animator
 );
 
+
+/// Pauses resumes the animation.
 void topaz_animator_resume(
+    /// The animator to resume.
     topazComponent_t * animator
 );
 
@@ -255,15 +260,15 @@ void topaz_animator_resume(
 
 /// Compiles the current animator's keyframes into a string 
 ///
-const topazString_t * topaz_animator_to_animation_string(
+const topazString_t * topaz_animator_to_string(
     /// The animator to query.
     topazComponent_t * animator
-)
+);
 
 /// Sets the animation from a string. This removes all 
 /// the existing keyframes and replaces them with the 
 /// the keyframes from the compiled string.
-void topaz_animator_set_from_animation_string(
+void topaz_animator_set_from_string(
     /// The animator the modify
     topazComponent_t * animator,
 
@@ -280,7 +285,7 @@ void topaz_animator_set_from_animation_string(
 /// 0 to 1 but looped.
 topazVector_t topaz_animator_vector_at(
     /// The animator to query.
-    topazAnimator_t * animator, 
+    topazComponent_t * animator, 
 
     /// The progress along the animation.
     float progress
@@ -291,7 +296,7 @@ topazVector_t topaz_animator_vector_at(
 /// 0 to 1 but looped.
 float topaz_animator_at(
     /// The animator to query.
-    topazAnimator_t * animator, 
+    topazComponent_t * animator, 
 
     /// The progress along the animation.
     float progress
@@ -316,7 +321,7 @@ float topaz_animator_current(
 
 
 
-
+#endif
 
 
 

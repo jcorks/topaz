@@ -1971,6 +1971,142 @@ class StateControl : Component {
     
 }
 
+enum AnimatorFunction {
+    None,
+    Linear,
+    Square,
+    Log,
+    Random
+};
+
+
+
+class Animator : Component {
+
+    func init() {
+        impl_ = topaz_.topaz_animator__create();
+    }
+
+    func addKeyframe(value, fn, offset) {
+        topaz_.topaz_animator__add_keyframe(impl_, value, fn, offset);
+    }
+
+    func addVectorKeyframe(value, fn, offset) {
+        topaz_.topaz_animator__add_vector_keyframe(impl_, value, fn, offset);
+    }
+    
+    func clear() {
+        topaz_.topaz_animator__clear(impl_);
+    }
+
+    func addAnimation(other) {
+        topaz_.topaz_animator__add_animation(impl_, other.impl_);
+    }
+
+    func blend(other) {
+        topaz_.topaz_animator__blend(impl_, other.impl_);
+    }
+
+    func smooth() {
+        topaz_.topaz_animator__other(impl_);
+    }
+
+    func addFromString(str) {
+        topaz_.topaz_animator__add_from_string(impl_, str);
+    }
+
+    var length {
+        get {
+            return topaz_.topaz_animator__get_length(impl_);
+        }
+    }
+
+    var durationFrames {
+        get {
+            return topaz_.topaz_animator__get_duration(impl_);
+        }
+        set {
+            topaz_.topaz_animator__set_duration_frames(impl_, value);
+        }
+    }
+
+
+    var durationSeconds {
+        get {
+            return topaz_.topaz_animator__get_duration(impl_);
+        }
+        set {
+            topaz_.topaz_animator__set_duration_seconds(impl_, value);
+        }
+    }
+
+    var duration {
+        get {
+            return topaz_.topaz_animator__get_duration(impl_);
+        }
+    }
+
+    var looped {
+        get {
+            return topaz_.topaz_animator__get_looped(impl_);
+        }
+        set {
+            topaz_.topaz_animator__set_looped(impl_, value);
+        }
+    }
+
+    var speed {
+        get {
+            return topaz_.topaz_animator__get_speed(impl_);
+        }
+        set {
+            topaz_.topaz_animator__set_speed(impl_, value);
+        }
+    }
+
+    func resume() {
+        topaz_.topaz_animator__resume(impl_);
+    }
+    func pause() {
+        topaz_.topaz_animator__pause(impl_);
+    }
+
+    var string {
+        set {
+            return topaz_.topaz_animator__to_string(impl_);
+        }
+
+        get {
+            topaz_.topaz_animator__set_from_string(impl_, value);
+        }
+    }
+
+    func vectorAt(val) {
+        var out = Vector();
+        out.impl_ = topaz_.topaz_animator__vector_at(impl_, val);
+        return out;
+    }
+
+    func at(val) {
+        return topaz_.topaz_animator__at(impl_, val);
+    }
+
+    var vector {
+        get {
+            return topaz_.topaz_animator__current_vector(impl_);
+        }
+    }
+
+    var value {
+        get {
+            return topaz_.topaz_animator__current(impl_);
+        }
+    }
+
+
+
+}
+
 
 
 
