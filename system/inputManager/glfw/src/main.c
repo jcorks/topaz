@@ -241,8 +241,11 @@ static void topaz_glfw_im_cursor_button_callback(
 ) {
 
     GLFWIM * im = topaz_table_find(glfww2im, window);
+    if (!im) return;
+    
     topazInputDevice_Event_t ev;
     ev.id = topazNotAnInput;
+    
 
     switch(button) {
       case GLFW_MOUSE_BUTTON_LEFT:   ev.id = topazPointer_0; break;
