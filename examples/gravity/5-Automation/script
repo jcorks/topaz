@@ -1,0 +1,121 @@
+// All examples will start by including "@topaz.core", which is a 
+// built-in package for topaz symbols and classes.
+#include "@topaz.core"
+
+
+
+class Rectangle : Entity {
+    private var visual;
+    private var anim;
+
+    func onReady() {
+
+        visual = Shape2D();
+
+
+        visual.formRectangle(30, 30);
+        visual.center = Vector(15, 15);
+        addComponent(visual);
+
+
+
+        anim = Automation();
+        addComponent(anim);
+        anim.installHook('on-anim-end', func(){Topaz.log('Animation reset!')});
+        anim.durationSeconds = 4;
+        anim.looped = false;
+
+
+
+        Input.addKeyboardListener(
+            [
+                'onPress' : func(map, key) {
+                    switch(key) {
+                      case Key.topaz_space:
+                        anim.speed = anim.speed + 0.25;
+                        break;
+
+                      case Key.topaz_backspace:
+                        if (anim.speed > 0)
+                            anim.speed = anim.speed - 0.25;
+                        else 
+                            anim.speed = 0;
+                        break;
+
+                    }
+                }
+            ]
+        );
+
+    }
+
+
+    func onStep() {
+        position = Vector(100+anim.value, position.y);
+    }
+
+
+}
+
+
+class RectangleLinear : Rectangle {
+    func onReady() {
+        // initialize Rectangle
+        super.onReady();
+
+        visual.color = Color("purple");
+        anim.addKeyframe(0,   AutomationFunction.None,   0);
+        anim.addKeyframe(200, AutomationFunction.Linear, 0.5);
+        anim.addKeyframe(0,   AutomationFunction.Linear, 1);
+
+        position = Vector(100, 100);
+    }
+}
+
+class RectangleSquare : Rectangle {
+    func onReady() {
+        // initialize Rectangle
+        super.onReady();
+
+        visual.color = Color("blue");
+        anim.addKeyframe(0,   AutomationFunction.None,   0);
+        anim.addKeyframe(200, AutomationFunction.Square, 0.5);
+        anim.addKeyframe(0,   AutomationFunction.Square, 1);
+
+        position = Vector(100, 100);
+    }
+}
+
+class RectangleRoot : Rectangle {
+    func onReady() {
+        // initialize Rectangle
+        super.onReady();
+
+        visual.color = Color("red");
+        anim.addKeyframe(0,   AutomationFunction.None,       0);
+        anim.addKeyframe(200, AutomationFunction.SquareRoot, 0.5);
+        anim.addKeyframe(0,   AutomationFunction.SquareRoot, 1);
+
+        position = Vector(100, 100);
+    }
+}
+
+
+func main() {
+    // This instantiates the class we've defined.
+    var entity = Entity();    
+
+
+
+    var child1 = RectangleLinear();
+    child1.position = Vector(100, 100);
+
+    var child2 = RectangleSquare();
+    child2.position = Vector(100, 200);
+
+    var child3 = RectangleRoot();
+    child3.position = Vector(100, 300);
+
+    Topaz.root = entity;
+    entity.children = [child1, child2, child3];
+}

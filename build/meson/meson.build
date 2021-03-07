@@ -35,7 +35,7 @@ src = [
     'src/components_state_control.c',
     'src/components_object2d.c',
     'src/components_text2d.c',
-    'src/components_animator.c',
+    'src/components_automation.c',
     'src/containers_array.c',
     'src/containers_bin.c',
     'src/containers_string.c',

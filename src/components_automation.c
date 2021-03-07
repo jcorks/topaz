@@ -28,7 +28,7 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
-#include <topaz/components/animator.h>
+#include <topaz/components/automation.h>
 #include <topaz/topaz.h>
 #include <string.h>
 #include <math.h>
@@ -36,7 +36,7 @@ DEALINGS IN THE SOFTWARE.
 
 #ifdef TOPAZDC_DEBUG
 #include <assert.h>
-static char * MAGIC_ID__ANIMATOR = "t0p4zan1m4t0r";
+static char * MAGIC_ID__AUTOMATION = "t0p4zan1m4t0r";
 #endif
 
 
@@ -45,9 +45,9 @@ typedef struct {
     topazVector_t value;
 
     // The function to reach this 
-    topazAnimator_Function func;
+    topazAutomation_Function func;
 
-    // the offset in the animation when this keyframe starts
+    // the offset in the automation when this keyframe starts
     float when;
 } TAKeyframe;
 
@@ -55,22 +55,22 @@ typedef struct {
     // all keyframes
     topazArray_t * keyframes;
 
-    // index of current keyframe in animation
-    // the animation is always between current keyframe and next
+    // index of current keyframe in automation
+    // the automation is always between current keyframe and next
     uint32_t currentKeyframe;
 
-    // progress along the animation.
+    // progress along the automation.
     // in keyframe units
     float progress;
 
-    // amount of frames or seconds before the animation is over 
+    // amount of frames or seconds before the automation is over 
     // Used to scale the
     float limitReal;
 
     // whether the limit is in seconds or frames. 1 if seconds;
     int limitSeconds;
 
-    // whether to loop. still will emit the end animation signal
+    // whether to loop. still will emit the end automation signal
     int looped;
 
     // whether paused
@@ -91,48 +91,65 @@ typedef struct {
     #ifdef TOPAZDC_DEBUG
         char * MAGIC_ID;
     #endif
-} TopazAnimator;
-
-static topazVector_t anim_interpolate(float at, topazAnimator_Function func, topazVector_t from, topazVector_t to) {
+} TopazAutomation;
+#include <stdio.h>
+static topazVector_t anim_interpolate(float at, topazAutomation_Function func, topazVector_t from, topazVector_t to) {
     topazVector_t out;
     float f;
     switch(func) {
-      case topazAnimator_Function_None:
+      case topazAutomation_Function_None:
         return to;
 
-      case topazAnimator_Function_Linear:
+      case topazAutomation_Function_Linear:
         f = 1-at;
         out.x = at*to.x + f*from.x;
         out.y = at*to.y + f*from.y;
         out.z = at*to.z + f*from.z;
         return out;
 
-      case topazAnimator_Function_Square:
+      case topazAutomation_Function_Square:
         f = at*at;
-        out.x = at*to.x + (1-f)*from.x;
-        out.y = at*to.y + (1-f)*from.y;
-        out.z = at*to.z + (1-f)*from.z;
+        out.x = f*to.x + (1-f)*from.x;
+        out.y = f*to.y + (1-f)*from.y;
+        out.z = f*to.z + (1-f)*from.z;
         return out;
 
-      case topazAnimator_Function_Log:
-        f = log(at);
-        out.x = at*to.x + (1-f)*from.x;
-        out.y = at*to.y + (1-f)*from.y;
-        out.z = at*to.z + (1-f)*from.z;
+      case topazAutomation_Function_Cube:
+        f = at*at*at;
+        out.x = f*to.x + (1-f)*from.x;
+        out.y = f*to.y + (1-f)*from.y;
+        out.z = f*to.z + (1-f)*from.z;
         return out;
 
-      case topazAnimator_Function_Random:
+      case topazAutomation_Function_SquareRoot:
+        f = sqrt(at);
+        out.x = f*to.x + (1-f)*from.x;
+        out.y = f*to.y + (1-f)*from.y;
+        out.z = f*to.z + (1-f)*from.z;
+        return out;
+
+      case topazAutomation_Function_CubeRoot:
+        f = pow(at, 1/3.0);
+        out.x = f*to.x + (1-f)*from.x;
+        out.y = f*to.y + (1-f)*from.y;
+        out.z = f*to.z + (1-f)*from.z;
+        return out;
+
+
+      case topazAutomation_Function_Random:
         out.x = (rand() / (1.0+rand())) * (to.x - from.x) + from.x;
         out.y = (rand() / (1.0+rand())) * (to.y - from.y) + from.y;
         out.z = (rand() / (1.0+rand())) * (to.z - from.z) + from.z;
         return out;
+
+
 
       default:
         return to;
     }
 }
 
-// gets the value within the animation at the given animation time
+// gets the value within the automation at the given automation time
 static topazVector_t animate_at(float at, TAKeyframe * frames, uint32_t len) {
     if (at < frames->when) return frames->value;
     uint32_t i;
@@ -150,23 +167,23 @@ static topazVector_t animate_at(float at, TAKeyframe * frames, uint32_t len) {
     return frames->value;
 }
 
-static TopazAnimator * animator__retrieve(topazComponent_t * c) {
-    TopazAnimator * s = topaz_component_get_attributes(c)->userData;
+static TopazAutomation * automation__retrieve(topazComponent_t * c) {
+    TopazAutomation * s = topaz_component_get_attributes(c)->userData;
     #ifdef TOPAZDC_DEBUG
-        assert(s && "TopazAnimator instance is missing or instance invalid.");
-        assert(s->MAGIC_ID == MAGIC_ID__ANIMATOR);
+        assert(s && "TopazAutomation instance is missing or instance invalid.");
+        assert(s->MAGIC_ID == MAGIC_ID__AUTOMATION);
     #endif
     return s;
 }
 
 
-static void animator__on_destroy(topazComponent_t * animator, TopazAnimator * a) {
+static void automation__on_destroy(topazComponent_t * automation, TopazAutomation * a) {
     topaz_array_destroy(a->keyframes);
     topaz_string_destroy(a->animStr);
     free(a);
 }
 
-static void animator__on_step(topazComponent_t * animator, TopazAnimator * a) {
+static void automation__on_step(topazComponent_t * automation, TopazAutomation * a) {
     if (a->paused) {
         if (a->limitSeconds) {
             a->lastFrame = topaz_context_get_time(a->ctx);
@@ -180,16 +197,22 @@ static void animator__on_step(topazComponent_t * animator, TopazAnimator * a) {
         a->currentValue.x = 0;
         a->currentValue.y = 0;
         a->currentValue.z = 0;
+        if (a->limitSeconds) {
+            a->lastFrame = topaz_context_get_time(a->ctx);
+        }
         return;
     }
 
-    float length = topaz_animator_get_length(animator);
+    float length = topaz_automation_get_length(automation);
     // if not looped, simply stop
     if (!a->looped) {
         if (a->progress >= length) {
             a->currentValue = topaz_array_at(a->keyframes, TAKeyframe, topaz_array_get_size(a->keyframes)-1).value;
+            if (a->limitSeconds) {
+                a->lastFrame = topaz_context_get_time(a->ctx);
+            }
+            return;
         }
-        return;
     }
 
 
@@ -202,80 +225,88 @@ static void animator__on_step(topazComponent_t * animator, TopazAnimator * a) {
     } else {
         keyframeOffset = (1.0 / a->limitReal)  * length;
     }
-
+    keyframeOffset *= a->speed;
     // handle overstepping
-    int needsEmit = 0;
-    if (a->progress + keyframeOffset >= length) {
-        needsEmit = 1;
-        if (a->looped)
-            a->currentKeyframe = 0;
-    } 
 
     // apply offset
-    a->progress = fmod(a->progress + keyframeOffset, length);
+    int needsEmit = 0;
+    if (a->progress + keyframeOffset > length) {
+        needsEmit = 1;
+        if (a->looped) {
+            a->progress = fmod(a->progress + keyframeOffset, length);
+            a->currentKeyframe = 0;
+        } else
+            a->progress = length;
+    } else {
+        a->progress += keyframeOffset;
+    }
 
 
     // find new keyframe and value corresponding to offset.
     uint32_t len = topaz_array_get_size(a->keyframes);
     TAKeyframe * frames = topaz_array_get_data(a->keyframes);
-    for(; a->currentKeyframe < len-1; ++(a->currentKeyframe)) {
-        if (frames[a->currentKeyframe].when >= a->progress) {
-            frames = frames+a->currentKeyframe;
-            a->currentValue = anim_interpolate(
-                (a->progress - frames->when) / (frames[1].when - frames->when),
-                frames[1].func, 
-                frames->value,
-                frames[1].value
-            );
-            break;
-        }
+    while(a->currentKeyframe < len-1 && a->progress >= frames[a->currentKeyframe+1].when) {
+        a->currentKeyframe++;        
+    }
+
+    frames = frames+a->currentKeyframe;
+    a->currentValue = anim_interpolate(
+        (a->progress - frames->when) / (frames[1].when - frames->when),
+        frames[1].func, 
+        frames->value,
+        frames[1].value
+    );
+    if (a->limitSeconds) {
+        a->lastFrame = topaz_context_get_time(a->ctx);
     }
 
     // now it is safe to notify.
     if (needsEmit)
-        topaz_component_emit_event(animator, TOPAZ_STR_CAST("on-anim-end"), NULL, NULL);
+        topaz_component_emit_event(automation, TOPAZ_STR_CAST("on-anim-end"), topaz_component_get_host(automation), NULL);
+
 
 }
 
 
-topazComponent_t * topaz_animator_create(
+topazComponent_t * topaz_automation_create(
     /// The topaz context to create the component under.
     topaz_t * context
 
 ) {
-    TopazAnimator * data = calloc(1, sizeof(TopazAnimator));
+    TopazAutomation * data = calloc(1, sizeof(TopazAutomation));
     data->ctx = context;
     #ifdef TOPAZDC_DEBUG
-    data->MAGIC_ID = MAGIC_ID__ANIMATOR;
+    data->MAGIC_ID = MAGIC_ID__AUTOMATION;
     #endif
 
     data->keyframes = topaz_array_create(sizeof(TAKeyframe));
     data->currentKeyframe = 0;
     data->animStr = topaz_string_create();
-
+    data->speed = 1.0;
+    
     // create base component and assign attribs
     topazComponent_Attributes_t attribs;
     memset(&attribs, 0, sizeof(topazComponent_Attributes_t));
 
-    attribs.on_step     = (topaz_component_attribute_callback) animator__on_step;
-    attribs.on_destroy  = (topaz_component_attribute_callback) animator__on_destroy;
+    attribs.on_step     = (topaz_component_attribute_callback) automation__on_step;
+    attribs.on_destroy  = (topaz_component_attribute_callback) automation__on_destroy;
 
     attribs.userData = data;
-    topazComponent_t * out = topaz_component_create_with_attributes(TOPAZ_STR_CAST("Animator"), context, &attribs);
-    topaz_component_install_event(out, TOPAZ_STR_CAST("on-anim-ent"), NULL, NULL);
+    topazComponent_t * out = topaz_component_create_with_attributes(TOPAZ_STR_CAST("Automation"), context, &attribs);
+    topaz_component_install_event(out, TOPAZ_STR_CAST("on-anim-end"), NULL, NULL);
     return out;
 
 }
 
 
 
-void topaz_animator_add_keyframe(
-    topazComponent_t * animator, 
+void topaz_automation_add_keyframe(
+    topazComponent_t * automation, 
     float value, 
-    topazAnimator_Function lerp, 
-    float animationOffset
+    topazAutomation_Function lerp, 
+    float automationOffset
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
+    TopazAutomation * a = automation__retrieve(automation);
     TAKeyframe frame;
     frame.value.x = value;
     frame.value.y = 0;
@@ -283,50 +314,50 @@ void topaz_animator_add_keyframe(
     frame.func = lerp;
     uint32_t kSize = topaz_array_get_size(a->keyframes);
     if (kSize) {
-        frame.when = topaz_array_at(a->keyframes, TAKeyframe, kSize-1).when + animationOffset;
+        frame.when = topaz_array_at(a->keyframes, TAKeyframe, kSize-1).when + automationOffset;
         // for consistency when mixing single / vector contexts
         frame.value.y = topaz_array_at(a->keyframes, TAKeyframe, kSize-1).value.y;
         frame.value.z = topaz_array_at(a->keyframes, TAKeyframe, kSize-1).value.z;
     } else {
-        frame.when = animationOffset;
+        frame.when = automationOffset;
     }
 
     topaz_array_push(a->keyframes, frame);
 }
 
-void topaz_animator_add_vector_keyframe(
-    topazComponent_t * animator, 
+void topaz_automation_add_vector_keyframe(
+    topazComponent_t * automation, 
     const topazVector_t * value, 
-    topazAnimator_Function lerp, 
-    float animationOffset
+    topazAutomation_Function lerp, 
+    float automationOffset
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
+    TopazAutomation * a = automation__retrieve(automation);
     TAKeyframe frame;
     frame.value = *value;
     frame.func = lerp;
     uint32_t kSize = topaz_array_get_size(a->keyframes);
     if (kSize) {
-        frame.when = topaz_array_at(a->keyframes, TAKeyframe, kSize-1).when + animationOffset;
+        frame.when = topaz_array_at(a->keyframes, TAKeyframe, kSize-1).when + automationOffset;
     } else {
-        frame.when = animationOffset;
+        frame.when = automationOffset;
     }
 
     topaz_array_push(a->keyframes, frame);
 }
 
-void topaz_animator_clear(
-    topazComponent_t * animator
+void topaz_automation_clear(
+    topazComponent_t * automation
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
+    TopazAutomation * a = automation__retrieve(automation);
     topaz_array_set_size(a->keyframes, 0);
 }
 
-void topaz_animator_add_animation(
-    topazComponent_t * animator,
+void topaz_automation_add_automation(
+    topazComponent_t * automation,
     topazComponent_t * other
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
-    TopazAnimator * aOther = animator__retrieve(other);
+    TopazAutomation * a = automation__retrieve(automation);
+    TopazAutomation * aOther = automation__retrieve(other);
 
     uint32_t i;
     uint32_t len = topaz_array_get_size(aOther->keyframes);
@@ -342,12 +373,12 @@ void topaz_animator_add_animation(
     }
 }
 
-void topaz_animator_blend(
-    topazComponent_t * animator,
+void topaz_automation_blend(
+    topazComponent_t * automation,
     topazComponent_t * other
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
-    TopazAnimator * aOther = animator__retrieve(other);
+    TopazAutomation * a = automation__retrieve(automation);
+    TopazAutomation * aOther = automation__retrieve(other);
 
 
     uint32_t i, n;
@@ -402,10 +433,10 @@ void topaz_animator_blend(
 }
 
 
-void topaz_animator_smooth(
-    topazComponent_t * animator
+void topaz_automation_smooth(
+    topazComponent_t * automation
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
+    TopazAutomation * a = automation__retrieve(automation);
     uint32_t len = topaz_array_get_size(a->keyframes);
     TAKeyframe * frames = topaz_array_get_data(a->keyframes);
 
@@ -427,36 +458,36 @@ void topaz_animator_smooth(
     }
 }
 
-void topaz_animator_add_from_string(
-    topazComponent_t * animator,
+void topaz_automation_add_from_string(
+    topazComponent_t * automation,
     const topazString_t * other
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
-    topazComponent_t * temp = topaz_animator_create(a->ctx);
-    topaz_animator_set_from_string(temp, other);
-    topaz_animator_add_animation(animator, temp);
+    TopazAutomation * a = automation__retrieve(automation);
+    topazComponent_t * temp = topaz_automation_create(a->ctx);
+    topaz_automation_set_from_string(temp, other);
+    topaz_automation_add_automation(automation, temp);
     topaz_component_destroy(temp);
 }
 
 
-float topaz_animator_get_length(
-    /// The animator to query.
-    topazComponent_t * animator
+float topaz_automation_get_length(
+    /// The automation to query.
+    topazComponent_t * automation
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
+    TopazAutomation * a = automation__retrieve(automation);
     uint32_t len = topaz_array_get_size(a->keyframes);
     if (!len) return 0;
     return topaz_array_at(a->keyframes, TAKeyframe, topaz_array_get_size(a->keyframes)-1).when;
 }
 
-void topaz_animator_skip_to(
-    /// The animator to skip within.
-    topazComponent_t * animator, 
+void topaz_automation_skip_to(
+    /// The automation to skip within.
+    topazComponent_t * automation, 
     /// The value to skip to.
     float value
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
-    float length = topaz_animator_get_length(animator);
+    TopazAutomation * a = automation__retrieve(automation);
+    float length = topaz_automation_get_length(automation);
     uint32_t len = topaz_array_get_size(a->keyframes);
     TAKeyframe * frames = topaz_array_get_data(a->keyframes);
     value = fmod(value, length);
@@ -466,153 +497,153 @@ void topaz_animator_skip_to(
         if (value >= frames->when) {
             a->currentKeyframe = i;
             a->progress = value;
-            a->currentValue = topaz_animator_vector_at(animator, value);
+            a->currentValue = topaz_automation_vector_at(automation, value);
             return;
         }
     }
 
 }
 
-void topaz_animator_set_duration_seconds(
-    /// The animator to modify.
-    topazComponent_t * animator, 
+void topaz_automation_set_duration_seconds(
+    /// The automation to modify.
+    topazComponent_t * automation, 
 
     /// The actual real duration.
     float seconds
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
+    TopazAutomation * a = automation__retrieve(automation);
     a->limitReal = seconds;
     a->limitSeconds = 1;
 }
-void topaz_animator_set_duration_frames(
-    /// The animator to query.
-    topazComponent_t * animator, 
+void topaz_automation_set_duration_frames(
+    /// The automation to query.
+    topazComponent_t * automation, 
     /// the number of frames
     int frames
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
+    TopazAutomation * a = automation__retrieve(automation);
     a->limitReal = frames;
     a->limitSeconds = 0;
 }
 
-float topaz_animator_get_duration(
-    /// The animator to query.
-    topazComponent_t * animator
+float topaz_automation_get_duration(
+    /// The automation to query.
+    topazComponent_t * automation
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
+    TopazAutomation * a = automation__retrieve(automation);
     return a->limitReal;
 }
 
-void topaz_animator_set_looped(
-    /// The animator to modify.
-    topazComponent_t * animator, 
+void topaz_automation_set_looped(
+    /// The automation to modify.
+    topazComponent_t * automation, 
 
-    // Whether to loop the animator.
+    // Whether to loop the automation.
     int loop
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
+    TopazAutomation * a = automation__retrieve(automation);
     a->looped = 1;
 }
 
-int topaz_animator_get_looped(
-    /// The animator to query.
-    topazComponent_t * animator
+int topaz_automation_get_looped(
+    /// The automation to query.
+    topazComponent_t * automation
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
+    TopazAutomation * a = automation__retrieve(automation);
     return a->looped;
 }
 
 
-void topaz_animator_set_speed(
-    /// The animator to modify.
-    topazComponent_t * animator, 
-    /// The rate of the animator animation. 
+void topaz_automation_set_speed(
+    /// The automation to modify.
+    topazComponent_t * automation, 
+    /// The rate of the automation automation. 
     float speed
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
+    TopazAutomation * a = automation__retrieve(automation);
     a->speed = speed;
 
 }
 
-float topaz_animator_get_speed(
-    /// The animator to query.
-    topazComponent_t * animator
+float topaz_automation_get_speed(
+    /// The automation to query.
+    topazComponent_t * automation
 ) {
-    TopazAnimator * a = animator__retrieve(animator);   
+    TopazAutomation * a = automation__retrieve(automation);   
     return a->speed;
 }
 
 
-void topaz_animator_pause(
-    /// The animator to pause.
-    topazComponent_t * animator
+void topaz_automation_pause(
+    /// The automation to pause.
+    topazComponent_t * automation
 ) {
-    TopazAnimator * a = animator__retrieve(animator);   
+    TopazAutomation * a = automation__retrieve(automation);   
     a->paused = 1;
 }
 
 
-void topaz_animator_resume(
-    /// The animator to resume.
-    topazComponent_t * animator
+void topaz_automation_resume(
+    /// The automation to resume.
+    topazComponent_t * automation
 ) {
-    TopazAnimator * a = animator__retrieve(animator);   
+    TopazAutomation * a = automation__retrieve(automation);   
     a->paused = 1;
 }
 
-topazVector_t topaz_animator_vector_at(
-    /// The animator to query.
-    topazComponent_t * animator, 
+topazVector_t topaz_automation_vector_at(
+    /// The automation to query.
+    topazComponent_t * automation, 
 
-    /// The progress along the animation.
+    /// The progress along the automation.
     float progress
 ) {
-    TopazAnimator * a = animator__retrieve(animator);   
+    TopazAutomation * a = automation__retrieve(automation);   
     return animate_at(
-        fmod(progress, 1)*topaz_animator_get_length(animator),
+        fmod(progress, 1)*topaz_automation_get_length(automation),
         topaz_array_get_data(a->keyframes),
         topaz_array_get_size(a->keyframes)
     );
 }
 
-float topaz_animator_at(
-    /// The animator to query.
-    topazComponent_t * animator, 
+float topaz_automation_at(
+    /// The automation to query.
+    topazComponent_t * automation, 
 
-    /// The progress along the animation.
+    /// The progress along the automation.
     float progress
 ) {
-    TopazAnimator * a = animator__retrieve(animator);   
+    TopazAutomation * a = automation__retrieve(automation);   
     return animate_at(
-        fmod(progress, 1)*topaz_animator_get_length(animator),
+        fmod(progress, 1)*topaz_automation_get_length(automation),
         topaz_array_get_data(a->keyframes),
         topaz_array_get_size(a->keyframes)
     ).x;
 }
 
 
-const topazVector_t * topaz_animator_current_vector(
-    /// The animator to query.
-    topazComponent_t * animator
+const topazVector_t * topaz_automation_current_vector(
+    /// The automation to query.
+    topazComponent_t * automation
 ) {
-    TopazAnimator * a = animator__retrieve(animator);   
+    TopazAutomation * a = automation__retrieve(automation);   
     return &a->currentValue;
 }
 
-float topaz_animator_current(
-    /// The animator to query.
-    topazComponent_t * animator
+float topaz_automation_current(
+    /// The automation to query.
+    topazComponent_t * automation
 ) {
-    TopazAnimator * a = animator__retrieve(animator);   
+    TopazAutomation * a = automation__retrieve(automation);   
     return a->currentValue.x;
 }
 
 
 
-const topazString_t * topaz_animator_to_string(
-    topazComponent_t * animator
+const topazString_t * topaz_automation_to_string(
+    topazComponent_t * automation
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
+    TopazAutomation * a = automation__retrieve(automation);
     topaz_string_clear(a->animStr);
 
     uint32_t len = topaz_array_get_size(a->keyframes);
@@ -634,15 +665,15 @@ const topazString_t * topaz_animator_to_string(
 
 
 
-void topaz_animator_set_from_string(
-    topazComponent_t * animator,
-    const topazString_t * animationString
+void topaz_automation_set_from_string(
+    topazComponent_t * automation,
+    const topazString_t * automationString
 ) {
-    TopazAnimator * a = animator__retrieve(animator);
+    TopazAutomation * a = automation__retrieve(automation);
     topaz_string_clear(a->animStr);
     topaz_array_set_size(a->keyframes, 0);
 
-    topazString_t * src = topaz_string_clone(animationString);
+    topazString_t * src = topaz_string_clone(automationString);
     topaz_string_chain_start(src, TOPAZ_STR_CAST(","));
     while(!topaz_string_chain_is_end(src)) {
         TAKeyframe keyframe;
