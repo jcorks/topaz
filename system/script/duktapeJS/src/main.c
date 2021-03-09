@@ -1419,6 +1419,7 @@ static void topaz_duk_push_notify(TOPAZDUK * ctx) {
             topaz_array_at(ctx->debugQueuedNotifications, DebugNotification, i).command,            
             topaz_array_at(ctx->debugQueuedNotifications, DebugNotification, i).result  
         );
+        topaz_string_destroy(topaz_array_at(ctx->debugQueuedNotifications, DebugNotification, i).result);
     }
     topaz_array_set_size(ctx->debugQueuedNotifications, 0);
     #ifdef TOPAZDC_DEBUG
@@ -1606,7 +1607,14 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
                 //printf("Received %d messages.\n", messagesLen);
                 fflush(stdout);
             }
+            
         }
+        // clear strings
+        int i;
+        for(i = 0; i < messagesLen; ++i) {
+            free(messages[i]);
+        }
+        topaz_array_destroy(messagesSrc);
     
     }
     if (!block) return; // still receiving messages

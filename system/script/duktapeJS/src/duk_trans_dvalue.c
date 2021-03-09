@@ -1178,6 +1178,7 @@ duk_size_t duk_trans_dvalue_write_cb(void *udata, const char *buffer, duk_size_t
 			} else {
 				break;
 			}
+			duk_dvalue_free(dv);
 		}
 	}
 

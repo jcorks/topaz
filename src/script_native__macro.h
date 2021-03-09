@@ -30,23 +30,24 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 // __tag__ is the unique ID tag for this type of object. this is varified unpon functions calls.
 // __remover__ is the native function to call when the object reference is destroyed in the script context.
 // __removerData__ the data to bind to the cleanup
-#define TSO_OBJECT_NEW(__native__, __tag__, __remover__, __removerData__) topazScript_Object_t * object = topaz_script_create_empty_object(script, __remover__, __removerData__); topaz_script_object_reference_set_native_data(object, __native__, __tag__); topaz_table_insert(((topazScriptManager_t*)context)->lookupRefs, __native__, topaz_script_object_from_object(script, object));
+#define TSO_OBJECT_NEW_VALUE(__native__, __tag__, __remover__, __removerData__) topazScript_Object_t * object = topaz_script_create_empty_object(script, __remover__, __removerData__); topaz_script_object_reference_set_native_data(object, __native__, __tag__);
 
-// Removes the object created with TSO_OBJECT_CREATE
-// __native__ is the original object
-#define TSO_OBJECT_DESTROY(__native__) topazScript_Object_t * o__ = topaz_table_find(((topazScriptManager_t*)context)->lookupRefs, __native__); if (o__) topaz_script_object_destroy(o__); 
 
-#define TSO_OBJECT_FETCH_NATIVE(__native__) topaz_table_find(((topazScriptManager_t*)context)->lookupRefs, __native__);
+
+
+// Fetches a pre-existing object ref keyed by its native pointer.
+#define TSO_OBJECT_FETCH_KEPT_NATIVE(__native__) topaz_table_find(((topazScriptManager_t*)context)->lookupRefs, __native__);
 
 
 // Creates an object from a different context and returns its object and native ref.
 #define TSO_OBJECT_INSTANTIATE(__nativecreate__, __native__) script_create_native_object(script, __nativecreate__, (void**)&__native__, context);
 
-// Tells the scripting engine to prevent garbage collection on this newly created objectobject.
-#define TSO_OBJECT_KEEP topaz_script_object_reference_ref(object);
+// Tells the scripting engine to prevent garbage collection on this newly created object.
+// The object kept is the one created by TSO_OBJECT_NEW_VALUE
+#define TSO_OBJECT_KEEP_REF(__native__) topaz_script_object_reference_ref(object); topaz_table_insert(((topazScriptManager_t*)context)->lookupRefs, __native__, topaz_script_object_from_object(script, object));
 
 // Tells the scripting engine that it can garbage collect arg0 if desired.
-#define TSO_OBJECT_UNKEEP topaz_script_object_reference_unref(arg0);
+#define TSO_OBJECT_UNKEEP_REF(__obj__, __native__) topaz_script_object_reference_unref(__obj__); topazScript_Object_t * o__ = topaz_table_find(((topazScriptManager_t*)context)->lookupRefs, __native__); if (o__) topaz_script_object_destroy(o__); 
 
 
 // Ensures that, past this point, AT LEAST the given number of args is 

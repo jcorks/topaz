@@ -10,7 +10,8 @@ TSO_SCRIPT_API_FN(scheduler_api__create) {
     );
 
     // creates new object and sets native pointer
-    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__SCHEDULER, NULL, NULL);
+    TSO_OBJECT_NEW_VALUE(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__SCHEDULER, NULL, NULL);
+    TSO_OBJECT_KEEP_REF(component);
     return object;
 }
 

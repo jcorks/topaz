@@ -412,16 +412,19 @@ void topaz_context_attach_post_manager_unpausable(topaz_t * t, topazEntity_t * i
 void topaz_context_quit(topaz_t * t) {
     t->quit = TRUE;
 }
-
+#include <time.h>
 void topaz_context_wait(topaz_t * t, int FPS) {
     double frameDuration = 1000.0 / ((float)FPS);
     t->frameEnd = topaz_context_get_time(t);
 
     double goal = t->frameStart + frameDuration;
-    
 
-    if(t->frameEnd < goal) {
-        topaz_time_sleep_ms(t->timeRef, goal - t->frameEnd);
+    int rounds = 0;
+    while(t->frameEnd < goal) {
+        rounds++;
+        int ms = ceil((goal - t->frameEnd)/2.0);
+        topaz_time_sleep_ms(t->timeRef, ms);
+        t->frameEnd = topaz_context_get_time(t);
     }
 
     t->frameStart = topaz_context_get_time(t);

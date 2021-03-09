@@ -84,7 +84,7 @@ static double topaz_time_posix__ms_since_startup(topazTime_t * t, void * userDat
 }
 
 static void topaz_time_posix__sleep_ms(topazTime_t * t, void * userData, double ms) {
-    usleep(ms * 100);
+    usleep(ms * 1000);
 }
 
 

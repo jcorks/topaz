@@ -53,7 +53,7 @@ TSO_SCRIPT_API_FN(topaz_api__is_paused) {
 TSO_SCRIPT_API_FN(topaz_api__get_root) {
     topazScriptManager_t * mgr = context;
     topazEntity_t * e = topaz_context_get_root(mgr->ctx);
-    TSO_OBJECT_NEW(e, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
+    TSO_OBJECT_NEW_VALUE(e, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
     return object;
 }
 

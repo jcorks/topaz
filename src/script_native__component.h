@@ -37,7 +37,7 @@ static void topaz_script_component__on_destroy(topazComponent_t * e, TopazCompon
     topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
     topaz_script_object_reference_unref(scr->self);
     void * context = scr->manager;
-    TSO_OBJECT_DESTROY(scr);
+    TSO_OBJECT_UNKEEP_REF(scr->self, e);
     free(scr);
 }
 
@@ -67,8 +67,8 @@ TSO_SCRIPT_API_FN(component_api__create) {
     TSO_ARG_0;
     topazComponent_t * component = topaz_component_create(topaz_script_object_as_string(arg0), ((topazScriptManager_t*)context)->ctx);
     // creates new object and sets native pointer
-    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__COMPONENTCUSTOM, NULL, NULL);
-
+    TSO_OBJECT_NEW_VALUE(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__COMPONENTCUSTOM, NULL, NULL);
+    TSO_OBJECT_KEEP_REF(component);
 
 
     topazComponent_Attributes_t attribs;
@@ -176,17 +176,17 @@ TSO_SCRIPT_API_FN(component_api__get_host) {
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     topazEntity_t * out = topaz_component_get_host(native);
     if (!out) out = topaz_entity_null();
-    topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(out);
+    topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(out);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
+    TSO_OBJECT_NEW_VALUE(out, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
     return object;
 }
 
 
 TSO_SCRIPT_API_FN(component_api__null) {
     topazComponent_t * out = topaz_component_null();
-    TSO_OBJECT_NEW(out, TSO_OBJECT_TYPE__COMPONENT, NULL, NULL);
+    TSO_OBJECT_NEW_VALUE(out, TSO_OBJECT_TYPE__COMPONENT, NULL, NULL);
     return object;
 }
 
@@ -249,18 +249,18 @@ static int component_api_callback(topazComponent_t * c, void * data, topazEntity
     void * context = handler->manager;
     
     topazScript_Object_t * a[2];
-    a[0] = TSO_OBJECT_FETCH_NATIVE(c);
+    a[0] = TSO_OBJECT_FETCH_KEPT_NATIVE(c);
 
     #ifdef TOPAZDC_DEBUG
         assert(a[0] && "Base component responding to emission of event should always have a corresponding cached script object. This is indicative of engine error");
     #endif
 
     if (source) {
-        topazScript_Object_t * sourceObject = TSO_OBJECT_FETCH_NATIVE(source);
+        topazScript_Object_t * sourceObject = TSO_OBJECT_FETCH_KEPT_NATIVE(source);
         if (sourceObject) {
             a[1] = sourceObject;
         } else {
-            TSO_OBJECT_NEW(source, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
+            TSO_OBJECT_NEW_VALUE(source, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
             a[1] = object;
         }    
         topaz_script_object_reference_call(
@@ -584,10 +584,10 @@ TSO_SCRIPT_API_FN(entity_api__get_nth_component) {
     } else {
         component = topaz_array_at(topaz_entity_get_components(native), topazComponent_t *, index);
     }
-    topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(component);
+    topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(component);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT, NULL, NULL);
+    TSO_OBJECT_NEW_VALUE(component, TSO_OBJECT_TYPE__COMPONENT, NULL, NULL);
     return object;
 }
 
@@ -603,10 +603,10 @@ TSO_SCRIPT_API_FN(entity_api__query_component) {
     topazComponent_t * component = topaz_entity_query_component(native, str);
     if (!component) component = topaz_component_null();
 
-    topazScript_Object_t * a = TSO_OBJECT_FETCH_NATIVE(component);
+    topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(component);
     if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW(component, TSO_OBJECT_TYPE__COMPONENT, NULL, NULL);
+    TSO_OBJECT_NEW_VALUE(component, TSO_OBJECT_TYPE__COMPONENT, NULL, NULL);
     return object;
 }
 

@@ -78,10 +78,9 @@ TSO_SCRIPT_API_FN(vector_api__create) {
     }
 
     // creates new object and sets native pointer
-    TSO_OBJECT_NEW(ptr, TSO_OBJECT_ID__VECTOR, vector_api__cleanup, ptr);
+    TSO_OBJECT_NEW_VALUE(ptr, TSO_OBJECT_ID__VECTOR, vector_api__cleanup, ptr);
 
 
-    TSO_OBJECT_KEEP;
     return object;
 }
 

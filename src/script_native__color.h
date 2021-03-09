@@ -183,10 +183,8 @@ TSO_SCRIPT_API_FN(color_api__create) {
     topazColor_t * colorPtr = calloc(1, sizeof(topazColor_t));
 
     // creates new object and sets native pointer
-    TSO_OBJECT_NEW(colorPtr, TSO_OBJECT_ID__COLOR, color_api__cleanup, colorPtr);
+    TSO_OBJECT_NEW_VALUE(colorPtr, TSO_OBJECT_ID__COLOR, color_api__cleanup, colorPtr);
 
-
-    TSO_OBJECT_KEEP;
     return object;
 }
 

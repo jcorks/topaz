@@ -45,7 +45,7 @@ TSO_SCRIPT_API_FN(resources_api__load_asset) {
       default:;
     }
 
-    TSO_OBJECT_NEW(asset, type, NULL, NULL);
+    TSO_OBJECT_NEW_VALUE(asset, type, NULL, NULL);
     return object;
 
 }
@@ -75,7 +75,7 @@ TSO_SCRIPT_API_FN(resources_api__fetch_asset) {
       default:;
     }
 
-    TSO_OBJECT_NEW(asset, type, NULL, NULL);
+    TSO_OBJECT_NEW_VALUE(asset, type, NULL, NULL);
     return object;
 }
 

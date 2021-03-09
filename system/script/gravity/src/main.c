@@ -287,7 +287,7 @@ static const char * topaz_gravity_loadfile_callback(
         return "";
     }
 
-    const topazString_t * src = topaz_data_get_as_string(f);
+    topazString_t * src = topaz_data_get_as_string(f);
     topaz_script_register_source(
         g->script,
         TOPAZ_STR_CAST(file),
@@ -298,7 +298,7 @@ static const char * topaz_gravity_loadfile_callback(
     *fileid = g->fileIDPool++;
     *len = strlen(out);
     *is_static = 0;
-
+    topaz_string_destroy(src);
     
 
     topaz_table_insert_by_uint(g->files, *fileid, topaz_string_create_from_c_str("%s", file));
@@ -348,6 +348,9 @@ static void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
     gravity_vm_setvalue(g->vm, "topaz_", VALUE_FROM_OBJECT(g->topazClass));
 
     g->fileIDPool = 1;
+    topazArray_t * instances = topaz_system_backend_get_user_data(topaz_script_get_backend(script));
+    topaz_array_push(instances, g);
+
     return g;
 }
 
@@ -355,6 +358,15 @@ static void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
 
 static void topaz_gravity_destroy(topazScript_t * s, void * data) {
     TopazGravity * g = data;
+    topazArray_t * instances = topaz_system_backend_get_user_data(topaz_script_get_backend(s));
+    uint32_t len = topaz_array_get_size(instances);
+    uint32_t i;
+    for(i = 0; i < len; ++i) {
+        if (topaz_array_at(instances, TopazGravity *, i) == g) {
+            topaz_array_remove(instances, i);
+            break;
+        }
+    }
     gravity_vm_free(g->vm);
     gravity_core_free();
 }
@@ -704,6 +716,7 @@ static topazScript_Object_t * topaz_gravity_object_reference_call(
             argsV,
             len
         );
+        free(argsV);
 
         return topaz_gravity_value_to_script_object(o->ctx, gravity_vm_result(g->vm));
 
@@ -918,13 +931,26 @@ const topazScript_DebugState_t * topaz_gravity_debug_get_state(topazScript_t * s
 }
 
 
+static void topaz_gravity_gc(
+    /// The backend to be updated.
+    topazSystem_Backend_t * backend,
 
+    // The data bound to the callback.
+    void * callbackData
+) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(callbackData);
+    for(i = 0; i < len; ++i) {
+        gravity_gc_start(topaz_array_at(callbackData, TopazGravity*, i)->vm);
+    }
+}
 
 void topaz_system_script_gravity__backend(
     topazSystem_t *          system, 
     topazSystem_Backend_t *  backend, 
     topazScriptAPI_t      *  api
 ) {
+    topazArray_t * allContexts = topaz_array_create(sizeof(TopazGravity*));
     topaz_system_backend_bind(
         backend,
         // name
@@ -945,7 +971,7 @@ void topaz_system_script_gravity__backend(
         NULL,
         
         // on step late 
-        NULL,
+        topaz_gravity_gc,
         
         // on draw 
         NULL,
@@ -956,7 +982,7 @@ void topaz_system_script_gravity__backend(
 
 
         // backend callback user data
-        NULL,
+        allContexts,
 
 
         // API version 
