@@ -85,9 +85,10 @@ option(
     'TimeBackend',
     type : 'combo',
 
-    value : 'posix',
+    value : 'winapi',
     choices : [
         'noTime',
+        'winapi',
         'posix'
     ]
 )

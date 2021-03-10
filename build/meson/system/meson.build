@@ -54,12 +54,15 @@ foreach handler : handlers
         if depCompiled.found() == false
             depCompiled = dependency(dep.get('alternateName'), required:false, static:local__dep_static)
             if depCompiled.found() == false
-                message(''+local__name+':'+local__type+' supported? NO (missing dependency: ' + dep.get('name') + ')')
-                error('Requested backend cannot be used.')
-                break
+                depCompiled = meson.get_compiler('c').find_library(dep.get('name'))
+                if depCompiled.found() == false
+                    message(''+local__name+':'+local__type+' supported? NO (missing dependency: ' + dep.get('name') + ')')
+                    error('Requested backend cannot be used.')
+                    break
+                endif
             endif
         endif
-        message('Requested dependency: ' + depCompiled.type_name() + ' : ' + depCompiled.version())
+        message('Requested dependency: ' + depCompiled.type_name())
         local__dependenciesCompiled += depCompiled
     endforeach
 

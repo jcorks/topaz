@@ -86,6 +86,7 @@ option(
     value : 'posix',
     choices : [
         'noTime',
+        'winapi',
         'posix'
     ]
 )

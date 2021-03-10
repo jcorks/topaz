@@ -419,10 +419,8 @@ void topaz_context_wait(topaz_t * t, int FPS) {
 
     double goal = t->frameStart + frameDuration;
 
-    int rounds = 0;
     while(t->frameEnd < goal) {
-        rounds++;
-        int ms = ceil((goal - t->frameEnd)/2.0);
+        int ms = (goal - t->frameEnd) / 2.0;
         topaz_time_sleep_ms(t->timeRef, ms);
         t->frameEnd = topaz_context_get_time(t);
     }
