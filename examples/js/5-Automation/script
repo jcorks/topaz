@@ -1,0 +1,105 @@
+var Rectangle = {
+
+    props : {
+
+        visual : undefined,
+        anim : undefined,
+    },
+
+
+    onReady : function(props) {
+
+        topaz.input.addKeyboardListener({
+            onPress : function(map, key) {
+                switch(key) {
+                  case topaz.input.topazKey_space:
+                    props.anim.speed += 0.25;
+                    break;
+
+                  case topaz.input.topazKey_backspace:
+                    if (props.anim.speed > 0) {
+                        props.anim.speed -= 0.25;
+                    } else {
+                        props.anum.speed = 0;
+                    }
+                    break;
+                }
+            }
+        });
+
+
+        props.visual = new topaz.shape2d();
+        props.visual.formRectangle(30, 30);
+        props.visual.center = new topaz.vector(15, 15);
+
+
+        props.anim = new topaz.automation();
+        props.anim.installHook('on-anim-end', function(){
+            topaz.log('Animation reset!');
+        });
+        props.anim.durationSeconds = 4;
+        props.anim.looped = false;
+        props.entity.addComponent(props.anim);
+
+
+        props.entity.addComponent(props.visual);
+    },
+
+    onStep : function(props) {
+
+        const r = props.entity.position;
+        props.entity.position = new topaz.vector(100+props.anim.value, r.y);
+    }
+}
+
+
+var RectangleLinear = {
+    inherits : Rectangle,
+    props : {},
+    onReady : function(props) {
+        props.visual.color = new topaz.color('purple');
+        props.anim.addKeyframe(0,   topaz.topazAutomation_Function_None, 0);
+        props.anim.addKeyframe(200, topaz.topazAutomation_Function_Linear, 0.5);
+        props.anim.addKeyframe(0,   topaz.topazAutomation_Function_Linear, 1);
+
+        props.entity.position = new topaz.vector(100, 100);
+    }
+};
+
+var RectangleSquare = {
+    inherits : Rectangle,
+    props : {},
+    onReady : function(props) {
+        props.visual.color = new topaz.color('blue');
+        props.anim.addKeyframe(0,   topaz.topazAutomation_Function_None,   0);
+        props.anim.addKeyframe(200, topaz.topazAutomation_Function_Square, 0.5);
+        props.anim.addKeyframe(0,   topaz.topazAutomation_Function_Square, 1);
+
+        props.entity.position = new topaz.vector(100, 200);
+    }
+};
+
+var RectangleRoot = {
+    inherits : Rectangle,
+    props : {},
+    onReady : function(props) {
+        props.visual.color = new topaz.color('red');
+        props.anim.addKeyframe(0,   topaz.topazAutomation_Function_None,       0);
+        props.anim.addKeyframe(200, topaz.topazAutomation_Function_SquareRoot, 0.5);
+        props.anim.addKeyframe(0,   topaz.topazAutomation_Function_SquareRoot, 1);
+
+
+        props.entity.position = new topaz.vector(100, 300);
+    }
+};
+
+
+
+(function(){
+    const root = new topaz.entity();
+    root.attach(new topaz.entity(RectangleLinear));
+    root.attach(new topaz.entity(RectangleSquare));
+    root.attach(new topaz.entity(RectangleRoot));
+
+    topaz.root = root;
+})();

@@ -2024,9 +2024,6 @@ class Automation : Component {
     }
 
     var durationFrames {
-        get {
-            return topaz_.topaz_automation__get_duration(impl_);
-        }
         set {
             topaz_.topaz_automation__set_duration_frames(impl_, value);
         }
@@ -2034,9 +2031,6 @@ class Automation : Component {
 
 
     var durationSeconds {
-        get {
-            return topaz_.topaz_automation__get_duration(impl_);
-        }
         set {
             topaz_.topaz_automation__set_duration_seconds(impl_, value);
         }

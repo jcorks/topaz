@@ -1419,7 +1419,7 @@ static void topaz_duk_push_notify(TOPAZDUK * ctx) {
             topaz_array_at(ctx->debugQueuedNotifications, DebugNotification, i).command,            
             topaz_array_at(ctx->debugQueuedNotifications, DebugNotification, i).result  
         );
-        topaz_string_destroy(topaz_array_at(ctx->debugQueuedNotifications, DebugNotification, i).result);
+        //topaz_string_destroy(topaz_array_at(ctx->debugQueuedNotifications, DebugNotification, i).result);
     }
     topaz_array_set_size(ctx->debugQueuedNotifications, 0);
     #ifdef TOPAZDC_DEBUG
