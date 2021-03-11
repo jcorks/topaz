@@ -16,13 +16,13 @@ TSO_SCRIPT_API_FN(text2d_api__get_text) {
     return topaz_script_object_from_string(script, topaz_text2d_get_text(native));
 }
 
-TSO_SCRIPT_API_FN(text2d_api__set_text) {
+TSO_SCRIPT_API_FN(text2d_api__set_font) {
     TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);   
-    topaz_text2d_set_text(
+    topaz_text2d_set_font(
         native, 
         topaz_script_object_as_string(arg1),
         topaz_script_object_as_int(arg2)
@@ -30,16 +30,14 @@ TSO_SCRIPT_API_FN(text2d_api__set_text) {
     TSO_NO_RETURN;
 }
 
-TSO_SCRIPT_API_FN(text2d_api__set_text_monospace) {
-    TSO_ASSERT_ARG_COUNT(3);
+TSO_SCRIPT_API_FN(text2d_api__set_text) {
+    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_ARG_2;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);   
-    topaz_text2d_set_text_monospace(
+    topaz_text2d_set_text(
         native, 
-        topaz_script_object_as_string(arg1),
-        topaz_script_object_as_int(arg2)
+        topaz_script_object_as_string(arg1)
     );
     TSO_NO_RETURN;
 }
@@ -204,7 +202,7 @@ static void add_refs__text2d_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_text2d__create", text2d_api__create);
     TS_MAP_NATIVE_FN("topaz_text2d__get_text", text2d_api__get_text);
     TS_MAP_NATIVE_FN("topaz_text2d__set_text", text2d_api__set_text);
-    TS_MAP_NATIVE_FN("topaz_text2d__set_text_monospace", text2d_api__set_text_monospace);
+    TS_MAP_NATIVE_FN("topaz_text2d__set_font", text2d_api__set_font);
 
     TS_MAP_NATIVE_FN("topaz_text2d__get_parameter", text2d_api__get_parameter);
     TS_MAP_NATIVE_FN("topaz_text2d__set_parameter", text2d_api__set_parameter);

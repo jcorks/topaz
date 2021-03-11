@@ -67,6 +67,7 @@ typedef struct {
     topazString_t * text;
     topazSpatial_t * spatial;
     int currentSize;
+    topazString_t * fontName;
 
     float width;
     float height;
@@ -146,7 +147,7 @@ topazComponent_t * topaz_text2d_create(topaz_t * t) {
     data->attribs.alphaRule = topazRenderer_AlphaRule_Allow;
     data->attribs.etchRule  = topazRenderer_EtchRule_NoEtching;
     data->attribs.textureFilter = topazRenderer_TextureFilterHint_Linear;
-
+    data->fontName = topaz_string_create();
     // create base component and assign attribs
     topazComponent_Attributes_t attribs;
     memset(&attribs, 0, sizeof(topazComponent_Attributes_t));
@@ -218,35 +219,37 @@ int topaz_text2d_get_parameter(
 }
 
 
-
-
-void topaz_text2d_set_text(
-    topazComponent_t * c,
-    const topazString_t * str,
-    int pixelSize
-) {
-    Text2D * t = text2d__retrieve(c);
+static text2d_update(Text2D * t, const topazString_t * str, const topazString_t * fontName, int pixelSize) {
     uint32_t i;
     uint32_t len;
 
-
-    // get context
-    topazFontRenderer_t * fontRenderer = topaz_context_get_font_renderer(t->ctx);
     topazFontRenderer_Spacing_t spacing = {};
     float originX = 0;
     float originY = 0;
-    
-   
-    // first, unref all current glphs
-    len = topaz_string_get_length(t->text);
-    for(i = 0; i < len; ++i) {
-        topaz_font_renderer_image_unref(
-            fontRenderer,
-            topaz_string_get_char(t->text, i),
-            t->currentSize
-        );
-    }
 
+
+    // get context
+    topazFontRenderer_t * fontRenderer = topaz_font_manager_get_renderer(topaz_context_get_font_manager(t->ctx), t->fontName);
+
+    
+    
+    if (fontRenderer) {   
+        // first, unref all current glphs
+        len = topaz_string_get_length(t->text);
+        for(i = 0; i < len; ++i) {
+            topaz_font_renderer_image_unref(
+                fontRenderer,
+                topaz_string_get_char(t->text, i),
+                t->currentSize
+            );
+        }
+    }
+    
+    if (!topaz_string_test_eq(t->fontName, fontName)) {
+        topaz_string_set(t->fontName, fontName);
+        fontRenderer = topaz_font_manager_get_renderer(topaz_context_get_font_manager(t->ctx), t->fontName);        
+    }
+    
     // update source data
     t->currentSize = pixelSize;
     topaz_string_set(t->text, str);
@@ -375,16 +378,35 @@ void topaz_text2d_set_text(
 
 }
 
-
-/// Sets the text content and font size to use,
-/// but uses the same spacing between all characters
-///
-void topaz_text2d_set_text_monospace(
+void topaz_text2d_set_font(
     topazComponent_t * c,
-    const topazString_t * str,
+    const topazString_t * fontName,
     int pixelSize
 ) {
+    Text2D * t = text2d__retrieve(c);
+    text2d_update(
+        t,
+        t->text,
+        fontName,
+        pixelSize
+    );
 }
+
+
+void topaz_text2d_set_text(
+    topazComponent_t * c,
+    const topazString_t * str
+) {
+    Text2D * t = text2d__retrieve(c);
+    text2d_update(
+        t, 
+        str
+        t->fontName,
+        t->currentSize
+    );
+}
+
+
 
 /// Gets the text being displayed by the component.
 ///

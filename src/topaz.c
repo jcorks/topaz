@@ -31,7 +31,6 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/compat.h>
 #include <topaz/topaz.h>
 #include <topaz/backends/time.h>
-#include <topaz/backends/font_renderer.h>
 #include <topaz/backends/filesys.h>
 #include <topaz/modules/graphics.h>
 #include <topaz/modules/script_manager.h>
@@ -39,6 +38,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/modules/view_manager.h>
 #include <topaz/modules/resources.h>
 #include <topaz/modules/console.h>
+#include <topaz/modules/font_manager.h>
 #include <topaz/containers/table.h>
 #include <topaz/system.h>
 #include <topaz/entity.h>
@@ -73,9 +73,9 @@ struct topaz_t {
     topazGraphics_t * graphics;
     topazScriptManager_t * script;
     topazConsole_t * console;
+    topazFontManager_t * fontManager;
 
     topazTime_t * timeRef;
-    topazFontRenderer_t * fontRendererRef;
     double frameEnd;
     double frameStart;
     
@@ -110,11 +110,7 @@ topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
         out->timeRef = topaz_time_create(out, ref, api);
     }
 
-    {
-        topazFontRendererAPI_t api;
-        topazSystem_Backend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("fontRenderer"), &api);
-        out->fontRendererRef = topaz_font_renderer_create(out, ref, api);
-    }
+
 
 
 
@@ -144,7 +140,7 @@ topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
     out->script = topaz_script_manager_create(out);
     out->graphics = topaz_graphics_create(out);
     out->console = topaz_console_create(out);
-
+    out->fontManager = topaz_font_manager_create(out);
     // creating
 
 
@@ -488,8 +484,8 @@ topazViewManager_t * topaz_context_get_view_manager(topaz_t * t) {
     return t->viewManager;
 }
 
-topazFontRenderer_t * topaz_context_get_font_renderer(topaz_t * t) {
-    return t->fontRendererRef;
+topazFontRenderer_t * topaz_context_get_font_manager(topaz_t * t) {
+    return t->fontManager;
 }
 
 topazResources_t * topaz_context_get_resources(topaz_t * t) {

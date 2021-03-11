@@ -1798,46 +1798,30 @@ class Shape2D : Component {
 
 
 class Text2D : Component {
-    private var monospaceState;    
     private var sizeState;
-    private var textState;
+    private var fontState;
 
 
 
 
     func init() {
         impl_ = topaz_.topaz_text2d__create();
-        monospaceState = false;
         sizeState = 12;
-        textState = '';
-
+        fontState = '';
         
     }
 
-    private func applyState() {
-        if (monospaceState) {
-            topaz_.topaz_text2d__set_text_monospace(impl_, textState, sizeState);
-        } else {
-            topaz_.topaz_text2d__set_text(impl_, textState, sizeState);
-        }
-
+    private func applyFont() {
+        topaz_.topaz_text2d__set_font(impl_, fontState, sizeState);
     }
 
-    var monospace {
-        get { return monospaceState; }
-        set { 
-            monospaceState = value;
-            applyState();
-        }
-    }
 
     var text {
         get {
-            return textState;
+            return topaz_.topaz_text2d__get_text(impl_);
         }
         set {
-            textState = value;
-            applyState();
+            topaz_.topaz_text2d__set_text(impl_, value);
         }
     }
 
@@ -1847,9 +1831,20 @@ class Text2D : Component {
         }
         set {
             sizeState = value;
-            applyState();
+            applyFont();
         }
     }
+
+    var font {
+        get {
+            return fontState;
+        }
+        set {
+            fontState = value;
+            applyFont();
+        }
+    }
+
 
     func getParameter(p) {
         return topaz_.topaz_shape2d__get_parameter(impl_, p);

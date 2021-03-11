@@ -836,16 +836,14 @@ topaz = {
         topaz.text2d.prototype,
         'text', {
             get : function() {return topaz_text2d__get_text(this.impl);},
+            set : function(v) {topaz_text2d__set_text(this.impl, v);}
         }
     );
 
-    topaz.text2d.prototype.setText = function(text, c) {
-        topaz_text2d__set_text(this.impl, text, c);
+    topaz.text2d.prototype.setFont = function(text, f, c) {
+        topaz_text2d__set_text(this.impl, f, c);
     }
-    topaz.text2d.prototype.setTextMonospace = function(text, c) {
-        topaz_text2d__set_text_monospace(this.impl, text, c);
-    }
-
+    
 
     topaz.text2d.prototype.setColor = function(c) {
         topaz_text2d__set_color(this.impl, c.impl);

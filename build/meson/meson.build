@@ -51,6 +51,7 @@ src = [
     'src/modules_view_manager.c',
     'src/modules_graphics.c',
     'src/modules_script_manager.c',
+    'src/modules_font_manager.c',
     'src/modules_console.c',
     'src/rbuffer.c',
     'src/refbank.c',

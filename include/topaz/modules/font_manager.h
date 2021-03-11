@@ -32,54 +32,99 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__FONTMANAGER__INCLUDED
 #define H_TOPAZDC__FONTMANAGER__INCLUDED
 
+typedef struct topazString_t topazString_t;
+typedef struct topaz_t topaz_t;
+typedef struct topazAsset_t topazAsset;
+typedef struct topazFontRenderer_t topazFontRenderer_t;
 
+
+
+/// Font managers are responsible for 
+/// controlling interactions with topaz and multiple, distinct fonts.
+///
 typedef struct topazFontManager_t topazFontManager_t;
 
 
 
 
 
-/// Creates a new graphics instance. This is normally not necessary to call, as 
-/// topaz_t has a default instance that it generates for you. 
-/// See topaz_context_get_graphics();
+/// Creates a new font manager. 
 ///
 topazFontManager_t * topaz_font_manager_create(
     /// The context.
     topaz_t * context
 );
 
-/// Destroys and frees a topaz input instance.
+/// Destroys and frees a topaz font manager instance.
 ///
 void topaz_font_manager_destroy(
-    /// The graphics instance.
-    topazFontManager_t * graphics
+    /// The font manager to destroy.
+    topazFontManager_t * fontManager
 );
 
 
-
-void topaz_font_manager_register(
-    topazFontManager_t * f,
-    const topazString_t * fontName,
+/// Adds a new font to be registered with the font manager 
+/// by name. The name for the font is the unique name of the 
+/// asset. In most circumstances, this name is one used 
+/// to refer to the font from topaz's point of view.
+///
+void topaz_font_manager_register_font(
+    /// The font manager to register the new font with
+    topazFontManager_t * fontManager,
+    
+    /// The asset that contains the raw font data, specific 
+    /// to the backend. The asset type needs to be 
+    /// a raw data asset.
     topazAsset_t * dataAsset
 );
 
-void
 
+/// Returns the font renderer for the specific font requested.
+/// The font name should be the original font data asset's name.
+/// If no such renderer exists, NULL is returned.
 topazFontRenderer_t * topaz_font_manager_get_renderer(
-    topazFontManager_t * f,
+    /// The font manager to query.
+    topazFontManager_t * fontManager,
+    
+    /// The name of the font to get the renderer for.
     const topazString_t * fontName
 );
 
+
+/// Returns the first available font renderer 
+/// that the manager is aware of.
 topazFontRenderer_t * topaz_font_manager_get_renderer_any(
-    topazFontManager_t * f
+    /// The font manager to query.
+    topazFontManager_t * fontManager
 );
 
-topazFontRenderer_t * topaz_font_manager_preload_glyphs(
+
+/// Convenience function to get tell the font renderer 
+/// to transfer characters glyphs into textures ahead of time
+/// for the requested font, size, and characters.
+/// This can speed up processing time when first displaying characters.
+void topaz_font_manager_preload_glyphs(
+    /// The font manager to work with.
     topazFontManager_t * f,
+    
+    /// The name of the font to preload.
     topazString_t * fontName,
-    const topaz
+    
+    /// The size of the font to preload.
+    int sizeRequest,
+    
+    /// A string of characters to preload.
+    const topazString_t * characters
 );
 
+/// Removes the font from the manager by name.
+topazFontRenderer_t * topaz_font_manager_unregister_font(
+    /// The font manager to modify.
+    topazFontManager_t * fontManager,
+    
+    /// The name of the font to remove.
+    const topazString_t * fontName
+);
 
 
 

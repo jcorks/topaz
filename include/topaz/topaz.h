@@ -44,7 +44,7 @@ typedef struct topazResources_t topazResources_t;
 typedef struct topazConsole_t topazConsole_t;
 typedef struct topazArray_t topazArray_t;
 typedef struct topazString_t topazString_t;
-typedef struct topazFontRenderer_t topazFontRenderer_t;
+typedef struct topazFontManager_t topazFontManager_t;
 
 
 
@@ -316,9 +316,9 @@ topazFilesys_t * topaz_context_filesys_create(
     topaz_t * context
 );
 
-/// Gets the font renderer for the topaz instance.
+/// Gets the font manager for the topaz instance.
 ///
-topazFontRenderer_t * topaz_context_get_font_renderer(
+topazFontManager_t * topaz_context_get_font_manager(
     /// The relevant context.
     topaz_t * context
 );

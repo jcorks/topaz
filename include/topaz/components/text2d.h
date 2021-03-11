@@ -52,29 +52,28 @@ topazComponent_t * topaz_text2d_create(
 );
 
 
-/// Sets the text content and font size to use.
+/// Sets the text content for the text2d object.
 ///
 void topaz_text2d_set_text(
     /// The text2d to modify.
     topazComponent_t * text2d,
 
     /// The text to copy as source into the text2d.
-    const topazString_t * text,
+    const topazString_t * text
 
-    /// The pixel size of the text to appear.
-    int pixelSize
 );
 
-/// Sets the text content and font size to use,
-/// but uses the same spacing between all characters
-///
-void topaz_text2d_set_text_monospace(
-    /// The text2d to modify.
-    topazComponent_t * text2d,
 
-    /// The text to copy as source into the text2d.
-    const topazString_t * text,
-
+/// Sets the font for the text 
+void topaz_text2d_set_font(
+    /// The text2d to modify
+    topazComponent_t * c,
+    
+    /// The name of the font to use. Should match the registered 
+    /// font name through topaz's font manager. See 
+    /// topaz_font_manager_register_font().
+    const topazString_t * fontName,
+    
     /// The pixel size of the text to appear.
     int pixelSize
 );
