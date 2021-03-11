@@ -36,6 +36,7 @@ topazFontRenderer_t * topaz_font_renderer_create(
         assert(out->api.font_renderer_destroy);
         assert(out->api.font_renderer_query_spacing);
         assert(out->api.font_renderer_render);
+        assert(out->api.font_renderer_set_font_data);
     #endif
 
     out->implementationData = out->api.font_renderer_create(out, t);
@@ -75,7 +76,23 @@ void topaz_font_renderer_destroy(topazFontRenderer_t * r) {
 
 
 
+void topaz_font_renderer_set_font_data(
+    /// The font renderer to send data to.
+    topazFontRenderer_t * r,
 
+    /// The raw bytes to send to the font renderer.
+    uint8_t * srcData,
+
+    /// The number of raw bytes being sent to the font renderer.
+    uint32_t size
+) {
+    r->api.font_renderer_set_font_data(
+        r,
+        r->implementationData,
+        srcData,
+        size
+    );
+}
 
 
 

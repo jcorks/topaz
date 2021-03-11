@@ -127,7 +127,20 @@ void topaz_font_renderer_image_unref(
     int sizePixels
 );
 
+/// Sets the font renderer's font data.
+/// This corresponds to the data that the font renderer understands
+/// which is backend-dependent. For most cases, this is 
+/// raw data from an external source, i.e. a file.
+void topaz_font_renderer_set_font_data(
+    /// The font renderer to send data to.
+    topazFontRenderer_t * fRenderer,
 
+    /// The raw bytes to send to the font renderer.
+    uint8_t * srcData,
+
+    /// The number of raw bytes being sent to the font renderer.
+    uint32_t size
+);
 
 typedef struct topazFontRenderer_Spacing_t topazFontRenderer_Spacing_t;
 

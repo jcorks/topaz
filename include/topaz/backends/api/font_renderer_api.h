@@ -57,6 +57,22 @@ struct topazFontRendererAPI_t {
     void * (*font_renderer_create) (topazFontRenderer_t *, topaz_t *);
     void   (*font_renderer_destroy) (topazFontRenderer_t *, void *);
 
+    // Gives raw data to the font renderer, usually
+    // specific to the renderer.
+    void (*font_renderer_set_font_data)(
+        // Renderer instance
+        topazFontRenderer_t * renderer, 
+
+        // Renderer userdata
+        void *, 
+
+        // Raw bytes to send to the font renderer,
+        // usually directly from a file.
+        const uint8_t * srcBytes, 
+
+        // number of bytes
+        uint32_t
+    );
 
     // Returns a new RGBA pixel buffer. It should be free()d after done
     //

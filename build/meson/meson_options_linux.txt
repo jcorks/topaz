@@ -95,9 +95,10 @@ option(
     'FontRendererBackend',
     type : 'combo',
 
-    value : 'noFontRenderer',
+    value : 'freetype',
     choices : [
-        'noFontRenderer'
+        'noFontRenderer',
+        'freetype'
     ]
 )
 

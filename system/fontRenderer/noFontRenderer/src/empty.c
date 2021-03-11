@@ -1405,7 +1405,7 @@ void topaz_system_fontRenderer_noFontRenderer__backend(
 
     api->font_renderer_create = (void * (*) (topazFontRenderer_t *, topaz_t *))api_nothing;
     api->font_renderer_destroy = (void   (*) (topazFontRenderer_t *, void *)) api_nothing;
-
+    api->font_renderer_set_font_data = (void (*)(topazFontRenderer_t *, void *, const uint8_t *, uint32_t)) api_nothing;
     api->font_renderer_render = no_font_render;
     api->font_renderer_query_spacing = no_query_spacing;
 
