@@ -97,7 +97,8 @@ typedef enum {
     TSO_OBJECT_ID__AUTOMATION,
     TSO_OBJECT_ID__DATA,
     TSO_OBJECT_ID__IMAGE,
-
+    TSO_OBJECT_ID__PARTICLE,
+    TSO_OBJECT_ID__PARTICLE_EMITTER_2D,
 
 
     /// All types are above and including the 25th bit .

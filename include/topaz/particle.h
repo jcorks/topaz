@@ -31,110 +31,150 @@ DEALINGS IN THE SOFTWARE.
 #ifndef H_TOPAZDC__PARTICLE__INCLUDED
 #define H_TOPAZDC__PARTICLE__INCLUDED
 
+#include <topaz/render2d.h>
+
 typedef struct topazEntity_t topazEntity_t;
+typedef struct topazString_t topazString_t;
+typedef struct topaz_t topaz_t;
 
 /// The specification of a particle. This is used as a roadmap to 
 /// generate a real particle instance using topaz_particle_emitter_2d_emit()
 ///
 typedef struct topazParticle_t topazParticle_t;
 
-
-typedef struct topazParticle_Range_t topazParticle_Range_t;
-/// Represents a particle attribute's range. This defines 
-/// how the values start and change over time.
-///
-///
-///
-struct topazParticle_Range_t {
-    /// The minimum value for the attribute to start.
-    ///
-    float startMin;
-
-    /// The maximum value for the attribute to start.
-    ///
-    float startMax;
-
-    /// The minimum change of the value for the attribut per frame.
-    ///
-    float deltaMin;
-
-    /// The maximum change of the value for the attribut per frame.
-    ///
-    float deltaMax;
-
-    /// The minimum amount of random noise to be added to the attribute. 
-    ///
-    float noiseMin;
-
-    /// The minimum amount of random noise to be added to the attribute. 
-    ///
-    float noiseMax;
-};
-
-/// The specification of a particle. This is used as a roadmap to 
-/// generate a real particle instance using topaz_particle_emitter_2d_emit()
-///
-typedef struct topazParticle_t topazParticle_t;
-struct topazParticle_t {
+typedef enum topazParticle_Property topazParticle_Property;
+enum topazParticle_Property {
     /// Duration of the particle, in frames.
+    /// The transform function is not used; noise min/max is treated as a minimum / maximum spread.
     ///
-    topazParticle_Range_t duration;
-
+    topazParticle_Property__Duration,
     /// The x-direction scale of the particle
     ///
-    topazParticle_Range_t xScale;
-
+    topazParticle_Property__ScaleX,
     /// The y-direction scale of the particle
     ///
-    topazParticle_Range_t yScale;
-
+    topazParticle_Property__ScaleY,
     /// The multiplier scale of the particle, applied to both x and y
     ///
-    topazParticle_Range_t scaleMultiplier;
-
+    topazParticle_Property__ScaleMultiplier,
     /// The z-rotation of the particle
     ///
-    topazParticle_Range_t rotation;
-
+    topazParticle_Property__Rotation,
     /// The direction that the particle will travel in degrees
     ///
-    topazParticle_Range_t direction;
-
-    /// The speed that the particle will travel in particles-per-frame.
+    topazParticle_Property__Direction,
+    /// The x speed that the particle will travel in pixels-per-frame.
     ///
-    topazParticle_Range_t speed;
-
-
+    topazParticle_Property__SpeedX,
+    /// The y speed that the particle will travel in pixels-per-frame.
+    ///
+    topazParticle_Property__SpeedY,
     /// The red value to color the particle. From 0 to 1, clamped
     /// 
-    topazParticle_Range_t red;
-
-
+    topazParticle_Property__Red,
     /// The green value to color the particle. From 0 to 1, clamped
-    /// 
-    topazParticle_Range_t green;
-
-
+    ///
+    topazParticle_Property__Green,
     /// The blue value to color the particle. From 0 to 1, clamped
     /// 
-    topazParticle_Range_t blue;
-
-
+    topazParticle_Property__Blue,
     /// The alpha value to color the particle. From 0 to 1, clamped
     /// 
-    topazParticle_Range_t alpha;
-
-
-
-    /// Optional image
-    topazAsset_t * image;
-
-    /// Whether the particle is translucent
-    int translucent;
-
-    /// Whether the particle is filtered.
-    int filtered;
+    topazParticle_Property__Alpha
 };
+
+
+
+/// Creates a new particle specification.
+///
+topazParticle_t * topaz_particle_create();
+
+
+/// Destroys the particle.
+void topaz_particle_destroy(
+    /// The particle to destroy.
+    topazParticle_t * part
+);
+
+/// Sets the particle specification from a string.
+/// This string is assumed to have come from a
+/// topaz_particle_to_string() call.
+void topaz_particle_set_from_string(
+    /// The particle to modify.
+    topazParticle_t * part, 
+
+    /// The string to read from.
+    const topazString_t * str
+);
+
+/// Returns a read-only string representation of the particle's
+/// state, allowing for saving / loading the state of the particle.
+const topazString_t * topaz_particle_to_string(
+    /// The particle to query.
+    topazParticle_t * part
+);
+
+/// Modifies a render parameter. See topazRender2d_Parameter.
+///
+void topaz_particle_set_param(
+    /// The particle to modify
+    topazParticle_t * part,
+    /// The parameter to modify
+    topazRender2D_Parameter p,
+    /// The value of the parameter.
+    int value
+);
+
+
+/// Sets the image
+void topaz_particle_set_image(
+    /// The particle to modify.
+    topazParticle_t * part,
+
+    /// The name of the asset image to set.
+    const topazString_t * image
+);
+
+
+/// The minimum value for the attribute to start.
+///
+void topaz_particle_set_noise_min(
+    /// The particle to modify.
+    topazParticle_t * part,
+    /// The property to modify.
+    topazParticle_Property prop,
+    float value
+);
+/// The maximum value for the attribute to start.
+///
+void topaz_particle_set_noise_max(
+    /// The particle to modify.
+    topazParticle_t * part,
+    /// The property to modify.
+    topazParticle_Property prop,
+    float value
+);
+
+/// Sets how the particle property modifies its value over 
+/// its duration. animString is expected to be output from
+/// topaz_automation_to_string() which will describe 
+/// how the value changes from the start of its life to the end.
+void topaz_particle_set_function(
+    /// The particle to modify.
+    topazParticle_t * part,
+    /// The property to modify.
+    topazParticle_Property prop,
+    /// The automation state string.
+    const topazString_t * animString
+);
+
+
+
+
+
+
+
+
 
 
 /// Creates a new particle emitter entity.
@@ -158,19 +198,20 @@ void topaz_particle_emitter_2d_set_particle(
 );
 
 
-/// Emits a particle with position tracking from the emitter.
-/// That is, when the emitter moves, the particles will move with it
-/// This method is more efficient for drawing large numbers of particles
+/// Emits a particle with position tracking it global/root entity space.
+/// That is, when the emitter moves, the particle will not move with it.
+/// Only the emitters position at the time of emission will be used
+/// for the particle.
 ///
-void topaz_particle_emitter_2d_emit(
-    /// The emitter to emit from.
-    topazEntity_t * emitter
+void topaz_particle_emitter_2d_set_independent(
+    topazEntity_t * emitter,
+    int i
 );
 
 /// Same as topaz_particle_emitter_2d_emit, except will be emitted count 
 /// number of times
 ///
-void topaz_particle_emitter_2d_emit_n(
+void topaz_particle_emitter_2d_emit(
     /// The emitter to emit from.
     topazEntity_t * emitter, 
 
@@ -179,15 +220,6 @@ void topaz_particle_emitter_2d_emit_n(
 );
 
 
-/// Emits a particle with position tracking it global/root entity space.
-/// That is, when the emitter moves, the particle will not move with it.
-/// Only the emitters position at the time of emission will be used
-/// for the particle.
-///
-void topaz_particle_emitter_2d_emit_independent(
-    /// The emitter to emit from.
-    topazEntity_t * emitter
-);
 
 
 

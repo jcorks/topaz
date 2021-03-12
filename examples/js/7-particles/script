@@ -1,0 +1,76 @@
+
+
+var Emitter = {
+    props : {
+        emitter : undefined
+
+    },
+
+    onReady : function(props) {
+        var a = new topaz.automation();
+        a.addKeyframe(0, topaz.topazAutomation_Function_SquareRoot, 0);
+        a.addKeyframe(0.5, topaz.topazAutomation_Function_SquareRoot, 0.5);
+        a.addKeyframe(1, topaz.topazAutomation_Function_SquareRoot, 1);
+        var ramp01 = a.string;
+        a.clear();
+        a.addKeyframe(1, topaz.topazAutomation_Function_None, 0);
+        a.addKeyframe(1, topaz.topazAutomation_Function_None, 1);
+        var stable1 = a.string;
+        a.clear();
+        a.addKeyframe(0, topaz.topazAutomation_Function_Linear, 0);
+        a.addKeyframe(360, topaz.topazAutomation_Function_Linear, 1);
+        var ramp360 = a.string;
+        a.addKeyframe(1,   topaz.topazAutomation_Function_SquareRoot, 0);
+        a.addKeyframe(0.5, topaz.topazAutomation_Function_SquareRoot, 0.5);
+        a.addKeyframe(0,   topaz.topazAutomation_Function_SquareRoot, 0.5);
+        var ramp01 = a.string;
+
+        topaz.resources.loadAsset('png', 'base.png', 'example');
+
+
+        var particle = new topaz.particle();
+        particle.image = 'example';
+
+        particle.setParam(topaz.topazRender2D_Parameter_AlphaRule, topaz.topazRenderer_AlphaRule_Allow);
+        particle.setParam(topaz.topazRender2D_Parameter_EtchRule, topaz.topazRenderer_EtchRule_NoEtching);
+        particle.setParam(topaz.topazRender2D_Parameter_DepthTest, topaz.topazRenderer_DepthTest_None);
+        particle.setParam(topaz.topazRender2D_Parameter_TextureFilterHint, topaz.topazRenderer_TextureFilterHint_Linear);
+
+        particle.setFunction(topaz.topazParticle_Property_ScaleX, ramp01);
+        particle.setFunction(topaz.topazParticle_Property_ScaleY, ramp01);
+        particle.setFunction(topaz.topazParticle_Property_SpeedX, ramp01);
+        particle.setFunction(topaz.topazParticle_Property_SpeedY, ramp01);
+        particle.setFunction(topaz.topazParticle_Property_ScaleMultiplier, stable1);
+        particle.setFunction(topaz.topazParticle_Property_Direction, ramp360);
+        particle.setFunction(topaz.topazParticle_Property_Rotation, ramp360);
+        particle.setFunction(topaz.topazParticle_Property_Red,   stable1);
+        particle.setFunction(topaz.topazParticle_Property_Green, stable1);
+        particle.setFunction(topaz.topazParticle_Property_Blue,  stable1);
+        particle.setFunction(topaz.topazParticle_Property_Alpha, ramp01);
+
+        particle.setNoiseMin(topaz.topazParticle_Property_SpeedX, 0.4);
+        particle.setNoiseMax(topaz.topazParticle_Property_SpeedX, 5);
+        particle.setNoiseMin(topaz.topazParticle_Property_SpeedY, 0.4);
+        particle.setNoiseMax(topaz.topazParticle_Property_SpeedY, 5);
+
+
+        particle.setNoiseMin(topaz.topazParticle_Property_Duration, 1);
+        particle.setNoiseMin(topaz.topazParticle_Property_Duration, 100);
+
+
+
+        props.emitter = new topaz.particleEmitter2D();        
+        props.emitter.position = new topaz.vector(200, 200);
+        props.emitter.particle = particle;
+    },
+
+    onStep(props) {
+        props.emitter.emit(1);
+    }
+
+}
+
+
+var v = new topaz.entity(Emitter);
+
+topaz.root = v;

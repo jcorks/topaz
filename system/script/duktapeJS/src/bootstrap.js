@@ -16,6 +16,11 @@ topaz = {
     import : topaz_script__import,
     log : topaz__log,
 
+    topazRender2D_Parameter_AlphaRule : 0,
+    topazRender2D_Parameter_DepthTest : 1,
+    topazRender2D_Parameter_EtchRule : 2,
+    topazRender2D_Parameter_TextureFilterHint : 3,
+
     topazRenderer_EtchRule_NoEtching : 0,
     topazRenderer_EtchRule_Define : 1,
     topazRenderer_EtchRule_Undefine : 2,
@@ -27,7 +32,7 @@ topaz = {
     topazRenderer_DepthTest_Greater : 2,
     topazRenderer_DepthTest_GEQ : 3,
     topazRenderer_DepthTest_Equal : 4,
-    topazRenderer_DepthTest_Nonde : 5,
+    topazRenderer_DepthTest_None : 5,
 
     topazRenderer_AlphaRule_Allow : 0,
     topazRenderer_AlphaRule_Opaque : 1,
@@ -48,6 +53,21 @@ topaz = {
     topazAutomation_Function_SquareRoot : 4,
     topazAutomation_Function_CubeRoot : 5,
     topazAutomation_Function_Random : 6,
+
+
+    topazParticle_Property_Duration : 0,
+    topazParticle_Property_ScaleX : 1,
+    topazParticle_Property_ScaleY : 2,
+    topazParticle_Property_ScaleMultiplier : 3,
+    topazParticle_Property_Rotation : 4,
+    topazParticle_Property_Direction : 5,
+    topazParticle_Property_SpeedX : 6,
+    topazParticle_Property_SpeedY : 7,
+    topazParticle_Property_Red : 8,
+    topazParticle_Property_Green : 9,
+    topazParticle_Property_Blue : 10,
+    topazParticle_Property_Alpha : 11,
+
 
     objectToString : function(obj, levelSrc) {
         var checked = [];
@@ -501,6 +521,105 @@ topaz = {
 
     },
 
+
+
+    object2d : function(implPre) {
+        var impl;
+        this.uniqueID = topaz.uniqueObjectPool++;
+        if (implPre) 
+            impl = implPre;
+        else {
+            impl = topaz_object2d__create();
+        }
+        impl.__ctx = this;
+        this.impl = impl;
+
+    },
+    shape2d : function(implPre) {
+        var impl;
+        this.uniqueID = topaz.uniqueObjectPool++;
+        if (implPre) 
+            impl = implPre;
+        else {
+            impl = topaz_shape2d__create();
+        }
+        impl.__ctx = this;
+        this.impl = impl;
+
+    },
+    text2d : function(implPre) {
+        var impl;
+        this.uniqueID = topaz.uniqueObjectPool++;
+        if (implPre) 
+            impl = implPre;
+        else {
+            impl = topaz_text2d__create();
+        }
+        impl.__ctx = this;
+        this.impl = impl;
+
+    },
+    automation : function(implPre) {
+        var impl;
+        this.uniqueID = topaz.uniqueObjectPool++;
+        if (implPre) 
+            impl = implPre;
+        else {
+            impl = topaz_automation__create();
+        }
+        impl.__ctx = this;
+        this.impl = impl;
+    },
+
+
+    color : function(name, implPre) {
+        var impl;
+        this.uniqueID = topaz.uniqueObjectPool++;
+        if (implPre)
+            impl = implPre;
+        else 
+            impl = topaz_color__create();
+
+        this.impl = impl;
+        if (name)
+            this.setFromString(name);
+
+    },
+
+
+    vector : function(x, y, z, implPre) {
+        var impl; 
+        if (implPre)
+            impl = implPre;
+        else 
+            impl = topaz_vector__create(x, y, z);
+
+
+
+        this.impl = impl;
+    },
+
+    particle : function(implPre) {
+        var impl; 
+        if (implPre)
+            impl = implPre;
+        else 
+            impl = topaz_particle__create();
+
+        this.impl = impl;
+    },
+
+    particleEmitter2D : function(implPre) {
+        var impl; 
+        if (implPre)
+            impl = implPre;
+        else 
+            impl = topaz_particle_emitter_2d__create();
+
+        this.impl = impl;
+
+    },
+
     _componentAddSymbols : function(obj) {
         
         obj.destroy = function() {
@@ -629,86 +748,296 @@ topaz = {
 
     },
 
-    object2d : function(implPre) {
-        var impl;
-        this.uniqueID = topaz.uniqueObjectPool++;
-        if (implPre) 
-            impl = implPre;
-        else {
-            impl = topaz_object2d__create();
+    _entityAddSymbols : function(obj) {
+
+        Object.defineProperty(obj, 'isValid', {get : function(){return topaz_entity__is_valid(this.impl);}}); 
+        
+        obj.remove = function() {
+            topaz_entity__remove(this.impl);
+            topaz.deadEntityPool.push(this);
         }
-        impl.__ctx = this;
-        this.impl = impl;
-
-    },
-    shape2d : function(implPre) {
-        var impl;
-        this.uniqueID = topaz.uniqueObjectPool++;
-        if (implPre) 
-            impl = implPre;
-        else {
-            impl = topaz_shape2d__create();
+    
+    
+        Object.defineProperty(obj, 'childCount', {get : function(){return topaz_entity__get_child_count(this.impl);}});
+    
+        obj.nthChild = function(n) {
+            var f = topaz_entity__get_nth_child(this.impl, n);
+            if (f.__ctx) return f.__ctx;
+            return new topaz.entity(undefined, f);
         }
-        impl.__ctx = this;
-        this.impl = impl;
-
-    },
-    text2d : function(implPre) {
-        var impl;
-        this.uniqueID = topaz.uniqueObjectPool++;
-        if (implPre) 
-            impl = implPre;
-        else {
-            impl = topaz_text2d__create();
+    
+        
+        Object.defineProperty(obj, 'children', {
+            get : function(){
+                var children = [];
+                const len = topaz_entity__get_child_count(this.impl);
+                for(var i = 0; i < len; ++i) {
+                    children.push(topaz_entity__get_nth_child(this.impl, i).__ctx);
+                }
+                return children;
+            },
+    
+            set : function(c) {
+                while(topaz_entity__get_child_count(this.impl)) {
+                    topaz_entity__detach(topaz_entity__get_nth_child(this.impl, 0));
+                }
+    
+                for(var i = 0; i < c.length; ++i) {
+                    topaz_entity__attach(this.impl, c[i].impl);
+                }
+            }
+        });
+    
+    
+    
+        obj.step = function() {topaz_entity__step(n);}
+        obj.draw = function() {topaz_entity__draw(n);}
+        
+        obj.attach = function(other) {
+            topaz_entity__attach(this.impl, other.impl);
         }
-        impl.__ctx = this;
-        this.impl = impl;
-
-    },
-    automation : function(implPre) {
-        var impl;
-        this.uniqueID = topaz.uniqueObjectPool++;
-        if (implPre) 
-            impl = implPre;
-        else {
-            impl = topaz_automation__create();
+    
+        obj.detach = function() {
+            topaz_entity__detach(this.impl);
         }
-        impl.__ctx = this;
-        this.impl = impl;
-    },
-
-
-    color : function(name, implPre) {
-        var impl;
-        this.uniqueID = topaz.uniqueObjectPool++;
-        if (implPre)
-            impl = implPre;
-        else 
-            impl = topaz_color__create();
-
-        this.impl = impl;
-        if (name)
-            this.setFromString(name);
-
-    },
-
-
-    vector : function(x, y, z, implPre) {
-        var impl; 
-        if (implPre)
-            impl = implPre;
-        else 
-            impl = topaz_vector__create(x, y, z);
-
-
-
-        this.impl = impl;
-    },
+    
+    
+        Object.defineProperty(obj, 'parent', {
+            get : function() {
+                var f = topaz_entity__get_parent(this.impl);
+                if (f.__ctx) return f.ctx;
+                return new topaz.entity(undefined, f);
+            }, 
+            set : function(v){
+                topaz_entity_attach(v.impl, this.impl);
+            }
+        });
+    
+    
+    
+        obj.query = function(name) {
+            var f = topaz_entity__query(this.impl, name);
+            if (f.__ctx) return f.ctx;
+            return new topaz.entity(undefined, f);
+        }
+    
+    
+        obj.search = function(name) {
+            var f = topaz_entity__search(this.impl, name);
+            if (f.__ctx) return f.ctx;
+            return new topaz.entity(undefined, f);
+        }
+    
+    
+    
+        Object.defineProperty(obj, 'priority', {
+            get : function() {return topaz_entity__get_priority(this.impl);}, 
+            set : function(v){topaz_entity__set_priority(this.impl, v);}
+        });
+    
+    
+        obj.setPriorityLast = function() {
+            topaz_entity__set_priority_last(this.impl);
+        }
+    
+        obj.setPriorityFirst = function() {
+            topaz_entity__set_priority_first(this.impl);
+        }
+    
+        obj.define = function(props) {
+    
+            this.props = {};
+            // REALLY simple inheritence
+            if (props.inherits) {
+                this.define(props.inherits);
+            }
+    
+            // todo: shallow copy
+            if (props.props) {
+                var keys = Object.keys(props.props);
+                for(var i = 0; i < keys.length; ++i) {
+                    this.props[keys[i]] = props.props[keys[i]];
+                }
+            }
+    
+            this.props.entity = this;
+            this.name = props.name;
+            if (props.onStep) topaz_entity__set_on_step(this.impl, function(e){props.onStep(e.__ctx.props)});
+            if (props.onDraw) topaz_entity__set_on_draw(this.impl, function(e){props.onDraw(e.__ctx.props)});
+            if (props.onPreStep) topaz_entity__set_on_pre_step(this.impl, function(e){props.onPreStep(e.__ctx.props)});
+            if (props.onPreDraw) topaz_entity__set_on_pre_draw(this.impl, function(e){props.onPreDraw(e.__ctx.props)});
+            if (props.onAttach) topaz_entity__set_on_attach(this.impl, function(e){props.onAttach(e.__ctx.props)});
+            if (props.onDetach) topaz_entity__set_on_detach(this.impl, function(e){props.onDetach(e.__ctx.props)});
+            if (props.onRemove) topaz_entity__set_on_remove(this.impl, function(e){props.onRemove(e.__ctx.props)});
+            if (props.onReady) {
+                props.onReady(this.props);
+            }
+        }
+    
+    
+    
+        Object.defineProperty(
+            obj,
+            'rotation', {
+                get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_rotation(this.impl));},
+                set : function(v) {topaz_entity__set_rotation(this.impl, v.impl);}
+            }
+        );
+    
+        Object.defineProperty(
+            obj,
+            'position', {
+                get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_position(this.impl));},
+                set : function(v) {topaz_entity__set_position(this.impl, v.impl);}
+            }
+        );
+    
+        Object.defineProperty(
+            obj,
+            'scale', {
+                get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_scale(this.impl));},
+                set : function(v) {topaz_entity__set_scale(this.impl, v.impl);}
+            }
+        );
+    
+        Object.defineProperty(
+            obj,
+            'globalPosition', {
+                get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_global_position(this.impl));}
+            }
+        );
+    
+    
+        Object.defineProperty(
+            obj,
+            'isStepping', {
+                get : function() {return topaz_entity__is_stepping(this.impl);}
+            }
+        );
+    
+        Object.defineProperty(
+            obj,
+            'isDrawing', {
+                get : function() {return topaz_entity__is_drawing(this.impl);}
+            }
+        );
+    
+    
+        Object.defineProperty(
+            obj,
+            'stepping', {
+                get : function()  {return topaz_entity__get_stepping(this.impl);},
+                set : function(v) {return topaz_entity__set_stepping(this.impl, v);}
+            }
+        );
+    
+    
+    
+        Object.defineProperty(
+            obj,
+            'drawing', {
+                get : function()  {return topaz_entity__get_drawing(this.impl);},
+                set : function(v) {return topaz_entity__set_drawing(this.impl, v);}
+            }
+        );
+    
+        Object.defineProperty(
+            obj,
+            'name', {
+                get : function()  {return topaz_entity__get_name(this.impl);},
+                set : function(v) {return topaz_entity__set_name(this.impl, v);}
+            }
+        );
+    
+        obj.addComponent = function(c) {
+            topaz_entity__add_component(this.impl, c.impl);
+        }
+    
+        obj.addComponentAfter = function(c) {
+            topaz_entity__add_component_after(this.impl, c.impl);
+        }
+    
+    
+    
+        Object.defineProperty(
+            obj,
+            'components', {
+                get : function()  {
+                    const len = topaz_entity__get_component_count(this.impl);
+                    var out = [];
+                    for(var i = 0; i < len; ++i) {
+                        var f = topaz_entity__get_nth_component(this.impl, index);
+                        if (f.__ctx) {
+                            out.push(f.__ctx);
+                        } else { 
+                            out.push(topaz.component(undefined, f));
+                        }
+                    }
+                    return out;
+                },
+                set : function(c) {
+                    while(topaz_entity__get_component_count(this.impl)) {
+                        topaz_entity__remove_component(topaz_component__get_tag(topaz_entity__get_nth_component(this.impl, 0)));
+                    }
+    
+                    for(var i = 0; i < c.length; ++i) {
+                        topaz_entity__add_component(this.impl, c[i].impl);
+                    }
+                }
+            }
+        );
+    
+    
+        obj.queryComponent = function(tag) {
+            var f = topaz_entity__query_component(this.impl, tag);
+            if (f.__ctx) return f.__ctx;
+            return new topaz.component(undefined, f);
+        }
+    
+        obj.removeComponent = function(tag) {
+            return topaz_entity__remove_component(this.impl, tag);
+        }
+    
+    }
 
 
 };
 
 (function(){
+
+    /// particle emitter
+    Object.defineProperty(topaz.particleEmitter2D.prototype, 'particle', {set : function(v){topaz_particle_emitter_2d__set_particle(this.impl, v);}});
+    Object.defineProperty(topaz.particleEmitter2D.prototype, 'independent', {set : function(v){topaz_particle_emitter_2d__set_independent(this.impl, v);}});
+
+    topaz.particleEmitter2D.prototype.emit = function(c) {
+        topaz_particle_emitter_2d__emit(this.impl, c);
+    }
+
+
+
+    /// particle 
+    topaz.particle.prototype.setParam = function(param, val) {
+        topaz_particle__set_param(this.impl, param, val);
+    }
+    topaz.particle.prototype.setNoiseMin = function(p, val) {
+        topaz_particle__set_noise_min(this.impl, p, val);
+    }
+    topaz.particle.prototype.setNoiseMax = function(p, val) {
+        topaz_particle__set_noise_max(this.impl, p, val);
+    }
+    topaz.particle.prototype.setFunction = function(p, val) {
+        topaz_particle__set_function(this.impl, p, val);
+    }
+
+    Object.defineProperty(topaz.particle.prototype, 'string', {get : function(){return topaz_particle__to_string(this.impl)}, set : function(v){topaz_particle__set_from_string(this.impl, v);}})
+    Object.defineProperty(topaz.particle.prototype, 'image',  {set : function(v){return topaz_particle__set_image(this.impl, v)}});
+
+
+
+
+
+
+
     /// color 
 
     topaz.color.prototype.setFromString = function(str) {
@@ -1299,256 +1628,7 @@ topaz = {
 
 
     /// topaz.entity.
-
-
-    Object.defineProperty(topaz.entity.prototype, 'isValid', {get : function(){return topaz_entity__is_valid(this.impl);}}); 
-        
-    topaz.entity.prototype.remove = function() {
-        topaz_entity__remove(this.impl);
-        topaz.deadEntityPool.push(this);
-    }
-
-
-    Object.defineProperty(topaz.entity.prototype, 'childCount', {get : function(){return topaz_entity__get_child_count(this.impl);}});
-
-    topaz.entity.prototype.nthChild = function(n) {
-        var f = topaz_entity__get_nth_child(this.impl, n);
-        if (f.__ctx) return f.__ctx;
-        return new topaz.entity(undefined, f);
-    }
-
-    
-    Object.defineProperty(topaz.entity.prototype, 'children', {
-        get : function(){
-            var children = [];
-            const len = topaz_entity__get_child_count(this.impl);
-            for(var i = 0; i < len; ++i) {
-                children.push(topaz_entity__get_nth_child(this.impl, i).__ctx);
-            }
-            return children;
-        },
-
-        set : function(c) {
-            while(topaz_entity__get_child_count(this.impl)) {
-                topaz_entity__detach(topaz_entity__get_nth_child(this.impl, 0));
-            }
-
-            for(var i = 0; i < c.length; ++i) {
-                topaz_entity__attach(this.impl, c[i].impl);
-            }
-        }
-    });
-
-
-
-    topaz.entity.prototype.step = function() {topaz_entity__step(n);}
-    topaz.entity.prototype.draw = function() {topaz_entity__draw(n);}
-    
-    topaz.entity.prototype.attach = function(other) {
-        topaz_entity__attach(this.impl, other.impl);
-    }
-
-    topaz.entity.prototype.detach = function() {
-        topaz_entity__detach(this.impl);
-    }
-
-
-    Object.defineProperty(topaz.entity.prototype, 'parent', {
-        get : function() {
-            var f = topaz_entity__get_parent(this.impl);
-            if (f.__ctx) return f.ctx;
-            return new topaz.entity(undefined, f);
-        }, 
-        set : function(v){
-            topaz_entity_attach(v.impl, this.impl);
-        }
-    });
-
-
-
-    topaz.entity.prototype.query = function(name) {
-        var f = topaz_entity__query(this.impl, name);
-        if (f.__ctx) return f.ctx;
-        return new topaz.entity(undefined, f);
-    }
-
-
-    topaz.entity.prototype.search = function(name) {
-        var f = topaz_entity__search(this.impl, name);
-        if (f.__ctx) return f.ctx;
-        return new topaz.entity(undefined, f);
-    }
-
-
-
-    Object.defineProperty(topaz.entity.prototype, 'priority', {
-        get : function() {return topaz_entity__get_priority(this.impl);}, 
-        set : function(v){topaz_entity__set_priority(this.impl, v);}
-    });
-
-
-    topaz.entity.prototype.setPriorityLast = function() {
-        topaz_entity__set_priority_last(this.impl);
-    }
-
-    topaz.entity.prototype.setPriorityFirst = function() {
-        topaz_entity__set_priority_first(this.impl);
-    }
-
-    topaz.entity.prototype.define = function(props) {
-
-        this.props = {};
-        // REALLY simple inheritence
-        if (props.inherits) {
-            this.define(props.inherits);
-        }
-
-        // todo: shallow copy
-        if (props.props) {
-            var keys = Object.keys(props.props);
-            for(var i = 0; i < keys.length; ++i) {
-                this.props[keys[i]] = props.props[keys[i]];
-            }
-        }
-
-        this.props.entity = this;
-        this.name = props.name;
-        if (props.onStep) topaz_entity__set_on_step(this.impl, function(e){props.onStep(e.__ctx.props)});
-        if (props.onDraw) topaz_entity__set_on_draw(this.impl, function(e){props.onDraw(e.__ctx.props)});
-        if (props.onPreStep) topaz_entity__set_on_pre_step(this.impl, function(e){props.onPreStep(e.__ctx.props)});
-        if (props.onPreDraw) topaz_entity__set_on_pre_draw(this.impl, function(e){props.onPreDraw(e.__ctx.props)});
-        if (props.onAttach) topaz_entity__set_on_attach(this.impl, function(e){props.onAttach(e.__ctx.props)});
-        if (props.onDetach) topaz_entity__set_on_detach(this.impl, function(e){props.onDetach(e.__ctx.props)});
-        if (props.onRemove) topaz_entity__set_on_remove(this.impl, function(e){props.onRemove(e.__ctx.props)});
-        if (props.onReady) {
-            props.onReady(this.props);
-        }
-    }
-
-
-
-    Object.defineProperty(
-        topaz.entity.prototype,
-        'rotation', {
-            get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_rotation(this.impl));},
-            set : function(v) {topaz_entity__set_rotation(this.impl, v.impl);}
-        }
-    );
-
-    Object.defineProperty(
-        topaz.entity.prototype,
-        'position', {
-            get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_position(this.impl));},
-            set : function(v) {topaz_entity__set_position(this.impl, v.impl);}
-        }
-    );
-
-    Object.defineProperty(
-        topaz.entity.prototype,
-        'scale', {
-            get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_scale(this.impl));},
-            set : function(v) {topaz_entity__set_scale(this.impl, v.impl);}
-        }
-    );
-
-    Object.defineProperty(
-        topaz.entity.prototype,
-        'globalPosition', {
-            get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_global_position(this.impl));}
-        }
-    );
-
-
-    Object.defineProperty(
-        topaz.entity.prototype,
-        'isStepping', {
-            get : function() {return topaz_entity__is_stepping(this.impl);}
-        }
-    );
-
-    Object.defineProperty(
-        topaz.entity.prototype,
-        'isDrawing', {
-            get : function() {return topaz_entity__is_drawing(this.impl);}
-        }
-    );
-
-
-    Object.defineProperty(
-        topaz.entity.prototype,
-        'stepping', {
-            get : function()  {return topaz_entity__get_stepping(this.impl);},
-            set : function(v) {return topaz_entity__set_stepping(this.impl, v);}
-        }
-    );
-
-
-
-    Object.defineProperty(
-        topaz.entity.prototype,
-        'drawing', {
-            get : function()  {return topaz_entity__get_drawing(this.impl);},
-            set : function(v) {return topaz_entity__set_drawing(this.impl, v);}
-        }
-    );
-
-    Object.defineProperty(
-        topaz.entity.prototype,
-        'name', {
-            get : function()  {return topaz_entity__get_name(this.impl);},
-            set : function(v) {return topaz_entity__set_name(this.impl, v);}
-        }
-    );
-
-    topaz.entity.prototype.addComponent = function(c) {
-        topaz_entity__add_component(this.impl, c.impl);
-    }
-
-    topaz.entity.prototype.addComponentAfter = function(c) {
-        topaz_entity__add_component_after(this.impl, c.impl);
-    }
-
-
-
-    Object.defineProperty(
-        topaz.entity.prototype,
-        'components', {
-            get : function()  {
-                const len = topaz_entity__get_component_count(this.impl);
-                var out = [];
-                for(var i = 0; i < len; ++i) {
-                    var f = topaz_entity__get_nth_component(this.impl, index);
-                    if (f.__ctx) {
-                        out.push(f.__ctx);
-                    } else { 
-                        out.push(topaz.component(undefined, f));
-                    }
-                }
-                return out;
-            },
-            set : function(c) {
-                while(topaz_entity__get_component_count(this.impl)) {
-                    topaz_entity__remove_component(topaz_component__get_tag(topaz_entity__get_nth_component(this.impl, 0)));
-                }
-
-                for(var i = 0; i < c.length; ++i) {
-                    topaz_entity__add_component(this.impl, c[i].impl);
-                }
-            }
-        }
-    );
-
-
-    topaz.entity.prototype.queryComponent = function(tag) {
-        var f = topaz_entity__query_component(this.impl, tag);
-        if (f.__ctx) return f.__ctx;
-        return new topaz.component(undefined, f);
-    }
-
-    topaz.entity.prototype.removeComponent = function(tag) {
-        return topaz_entity__remove_component(this.impl, tag);
-    }
-
+    topaz._entityAddSymbols(topaz.entity.prototype);
 
 
 

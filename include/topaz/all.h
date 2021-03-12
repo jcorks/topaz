@@ -67,6 +67,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/modules/input.h>
 #include <topaz/modules/view_manager.h>
 #include <topaz/modules/script_manager.h>
+#include <topaz/modules/font_manager.h>
 #include <topaz/modules/graphics.h>
 #include <topaz/modules/console.h>
 #include <topaz/modules/resources.h>
