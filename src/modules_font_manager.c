@@ -2,6 +2,10 @@
 #include <topaz/backends/font_renderer.h>
 #include <topaz/containers/string.h>
 #include <topaz/containers/table.h>
+#include <topaz/containers/array.h>
+#include <topaz/modules/resources.h>
+#include <topaz/assets/data.h>
+#include <topaz/asset.h>
 #include <topaz/system.h>
 #include <topaz/topaz.h>
 #include <stdlib.h>
@@ -19,10 +23,10 @@ struct topazFontManager_t {
 };
 
 topazFontManager_t * topaz_font_manager_create(
-    topaz_t * context
+    topaz_t * ctx
 ) {
     topazFontManager_t * out = calloc(1, sizeof(topazFontManager_t));
-    out->ctx = context;
+    out->ctx = ctx;
     out->registered = topaz_table_create_hash_topaz_string();    
     
     
@@ -41,8 +45,8 @@ void topaz_font_manager_destroy(
 ) {
     topazTableIter_t * iter = topaz_table_iter_create();
     for(topaz_table_iter_start(iter, fontManager->registered);
-        !topaz_table_iter_is_end(iter, fontManager->registered);
-        topaz_table_iter_proceed(iter, fontManager->registered)) {
+        !topaz_table_iter_is_end(iter);
+        topaz_table_iter_proceed(iter)) {
         
         topaz_font_renderer_destroy(
             topaz_table_iter_get_value(iter)
@@ -56,35 +60,42 @@ void topaz_font_manager_destroy(
 
 void topaz_font_manager_register_font(
     topazFontManager_t * fontManager,
-    topazAsset_t * dataAsset
+    const topazString_t * fontName
 ) {
     topazFontRenderer_t * f = topaz_table_find(
         fontManager->registered, 
-        topaz_asset_get_name(
-            dataAsset        
-        )
+        fontName
     );
     if (f) {
-        topaz_font_manager_unregister(
+        topaz_font_manager_unregister_font(
             fontManager, 
-            topaz_asset_get_name(
-                dataAsset        
-            )
+            fontName
         );
     }
-    
+
+    topazAsset_t * asset = topaz_resources_fetch_asset(
+        topaz_context_get_resources(fontManager->ctx),
+        topazAsset_Type_Data,
+        fontName
+    );
+
 
     f = topaz_font_renderer_create(
         fontManager->ctx,
         fontManager->frBackend,
         fontManager->frAPI
     );    
+    if (!f) return;
+
+    topaz_font_renderer_set_font_data(
+        f,
+        topaz_array_get_data(topaz_data_get_as_bytes(asset)),
+        topaz_array_get_size(topaz_data_get_as_bytes(asset))
+    );
     
     topaz_table_insert(
         fontManager->registered,
-        topaz_asset_get_name(
-            dataAsset        
-        ),
+        fontName,
         f
     );
 }
@@ -110,7 +121,7 @@ topazFontRenderer_t * topaz_font_manager_get_renderer_any(
     if (topaz_table_is_empty(fontManager->registered)) return NULL;
     topazTableIter_t * t = topaz_table_iter_create();
     topaz_table_iter_start(t, fontManager->registered);
-    topazFontRenderer_t * f = topaz_table_iter_get_value(r);
+    topazFontRenderer_t * f = topaz_table_iter_get_value(t);
     topaz_table_iter_destroy(t);
     return f;
 }
@@ -121,7 +132,7 @@ void topaz_font_manager_preload_glyphs(
     topazFontManager_t * fontManager,
     
     /// The name of the font to preload.
-    topazString_t * fontName,
+    const topazString_t * fontName,
     
     /// The size of the font to preload.
     int sizeRequest,
@@ -139,7 +150,7 @@ void topaz_font_manager_preload_glyphs(
     for(i = 0; i < len; ++i) {
         topaz_font_renderer_image_ref(
             r,
-            topaz_string_get_char(characters),
+            topaz_string_get_char(characters, i),
             sizeRequest            
         );
     }

@@ -34,7 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 typedef struct topazString_t topazString_t;
 typedef struct topaz_t topaz_t;
-typedef struct topazAsset_t topazAsset;
+typedef struct topazAsset_t topazAsset_t;
 typedef struct topazFontRenderer_t topazFontRenderer_t;
 
 
@@ -65,17 +65,18 @@ void topaz_font_manager_destroy(
 
 /// Adds a new font to be registered with the font manager 
 /// by name. The name for the font is the unique name of the 
-/// asset. In most circumstances, this name is one used 
+/// asset loaded within the topaz instance's resource instance. 
+/// In most circumstances, this name is one used 
 /// to refer to the font from topaz's point of view.
 ///
 void topaz_font_manager_register_font(
     /// The font manager to register the new font with
     topazFontManager_t * fontManager,
     
-    /// The asset that contains the raw font data, specific 
+    /// The name of the asset that contains the raw font data, specific 
     /// to the backend. The asset type needs to be 
     /// a raw data asset.
-    topazAsset_t * dataAsset
+    const topazString_t * dataAsset
 );
 
 
@@ -108,7 +109,7 @@ void topaz_font_manager_preload_glyphs(
     topazFontManager_t * f,
     
     /// The name of the font to preload.
-    topazString_t * fontName,
+    const topazString_t * fontName,
     
     /// The size of the font to preload.
     int sizeRequest,
@@ -118,7 +119,7 @@ void topaz_font_manager_preload_glyphs(
 );
 
 /// Removes the font from the manager by name.
-topazFontRenderer_t * topaz_font_manager_unregister_font(
+void topaz_font_manager_unregister_font(
     /// The font manager to modify.
     topazFontManager_t * fontManager,
     

@@ -1595,7 +1595,19 @@ class Resources {
     }    
 }
 
+class FontManager {
+    static func registerFont(a) {
+        topaz_.topaz_font_manager__register_font(a);
+    }
 
+    static func preloadGlyphs(a, b, c) {
+        topaz_.topaz_font_manager__preload_glyphs(a, b, c);
+    }
+
+    static func unregisterFont(a) {
+        topaz_.topaz_font_manager__unregister(a);
+    }
+}
 
 
 enum SchedulerMode {
@@ -1894,10 +1906,10 @@ class Text2D : Component {
 
 
     var extentWidth {
-        get {topaz_.topaz_text2d__get_extent_width(impl_);}
+        get {return topaz_.topaz_text2d__get_extent_width(impl_);}
     }
     var extentHeight {
-        get {topaz_.topaz_text2d__get_extent_height(impl_);}
+        get {return topaz_.topaz_text2d__get_extent_height(impl_);}
     }
 
     func getCharX(i) {

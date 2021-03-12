@@ -39,6 +39,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/version.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 typedef struct {
     FT_Library lib;
@@ -112,6 +113,17 @@ static uint8_t * topaz_freetype_render(
         return NULL;
     }
 
+    // handle basic space cases.
+    if (isspace(charcode)) {
+        *w = 1;
+        *h = 1;
+        uint8_t * out = malloc(sizeof(uint8_t)*4);
+        out[0] = 0;
+        out[1] = 0;
+        out[2] = 0;
+        out[3] = 0;
+        return out;
+    }
 
     FT_GlyphSlot glyphSrc = ft->face->glyph;
 
@@ -193,8 +205,19 @@ static void topaz_freetype_get_spacing(
          (status = FT_Load_Char(ft->face, thischar, FT_LOAD_RENDER))) {
         return;
     }
-    
+
     FT_GlyphSlot glyphSrc = ft->face->glyph;
+    if (thischar == '\n') {
+        spacing->xOffset = 0;
+        spacing->yOffset = 0;
+        spacing->yNextOrigin += ft->face->height/64.f;
+        spacing->xNextOrigin = 0;
+        spacing->width = 0;
+        spacing->height = 0;        
+        return;
+    }
+    
+
     spacing->width = glyphSrc->bitmap.width;
     spacing->height = glyphSrc->bitmap.rows;
 
@@ -207,13 +230,16 @@ static void topaz_freetype_get_spacing(
             FT_KERNING_DEFAULT,
             &kernResult
         );
-        spacing->xNextOrigin += kernResult.x;
+        spacing->xOffset = kernResult.x;
+        spacing->yOffset = kernResult.y;
+    } else {
+        spacing->xOffset = 0;
+        spacing->yOffset = 0;
     }
-    spacing->xNextOrigin += glyphSrc->advance.x/64;
-    int glyphU = glyphSrc->metrics.horiBearingY/64;
-    int glyphL = glyphSrc->bitmap.rows - glyphSrc->metrics.horiBearingY/64;
+    spacing->xNextOrigin += glyphSrc->advance.x/64.f;
+    spacing->yNextOrigin += glyphSrc->advance.y/64.f;
 
-    spacing->yNextOrigin    = (thischar == '\n' ? glyphU+glyphL : 0);
+    spacing->yOffset = -glyphSrc->metrics.horiBearingY/64.f;
 
 }
 

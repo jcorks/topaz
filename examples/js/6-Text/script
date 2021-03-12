@@ -1,0 +1,42 @@
+var StringVisual = {
+    props : {
+        visual : undefined,
+        bg : undefined
+    },
+
+    onReady : function(props) {
+        props.visual = new topaz.text2d();
+
+        props.visual.setFont('MyFont', 40);
+        props.visual.text = 'Hello world!\nThis is text.';
+
+
+        props.bg = new topaz.shape2d();
+        props.bg.formRectangle(
+            props.visual.extentWidth,
+            props.visual.extentHeight
+        );
+        props.bg.color = new topaz.color('purple');
+
+        props.entity.addComponent(props.bg);
+        props.entity.addComponent(props.visual);
+
+    }
+}
+
+
+
+topaz.resources.loadAsset(
+    "", // asset extension,
+    "PublicSans-Regular.ttf",
+    "MyFont"
+);
+
+
+topaz.fontManager.registerFont('MyFont');
+
+var ent = new topaz.entity(StringVisual);
+ent.position = new topaz.vector(200, 200);
+topaz.root = ent;
+
+

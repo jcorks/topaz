@@ -346,6 +346,21 @@ topaz = {
             return topaz_resources__is_extension_supported(ext);
         }
     },
+
+    fontManager : {
+        registerFont : function(n) {
+            topaz_font_manager__register_font(n);
+        },
+
+        preloadGlyphs : function(a, c, b) {
+            topaz_font_manager__preload_glyphs(a, c, b);
+        },
+
+        unregisterFont : function(n) {
+            topaz_font_manager__unregister_font(n);
+        },
+
+    },
     _assetSetCommonSymbols : function(obj) {
 
         Object.defineProperty(
@@ -840,8 +855,8 @@ topaz = {
         }
     );
 
-    topaz.text2d.prototype.setFont = function(text, f, c) {
-        topaz_text2d__set_text(this.impl, f, c);
+    topaz.text2d.prototype.setFont = function(f, c) {
+        topaz_text2d__set_font(this.impl, f, c);
     }
     
 

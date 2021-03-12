@@ -484,7 +484,7 @@ topazViewManager_t * topaz_context_get_view_manager(topaz_t * t) {
     return t->viewManager;
 }
 
-topazFontRenderer_t * topaz_context_get_font_manager(topaz_t * t) {
+topazFontManager_t * topaz_context_get_font_manager(topaz_t * t) {
     return t->fontManager;
 }
 
