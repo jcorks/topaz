@@ -294,6 +294,7 @@ void topaz_matrix_scale(topazMatrix_t * m, float x, float y, float z) {
     scaleScratch.data[0] = x;
     scaleScratch.data[5] = y;
     scaleScratch.data[10] = z;
+    scaleScratch.data[15] = 1;
     *m = topaz_matrix_multiply(m, &scaleScratch);
 }
 

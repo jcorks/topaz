@@ -232,6 +232,8 @@ struct ActiveParticle {
     ActiveParticle * next;
     // previous in chain.
     ActiveParticle * prev;
+    
+    topazRender2D_t * visual;
 };
 
 typedef struct {
@@ -241,8 +243,6 @@ typedef struct {
     float propsMinNoise[PROP_COUNT];    
     float propsMaxNoise[PROP_COUNT];    
 
-    // object for rendering all particles. 
-    topazRender2D_t  * renderBrush;
 
     // all active particles, linked list
     // If NULL, no active particles
@@ -253,6 +253,14 @@ typedef struct {
 
     // context;
     topaz_t * ctx;
+    
+    // all parameters for render2d within emitter
+    topazRender2D_Parameter params[PARAM_COUNT];
+    
+    // render2d instances.
+    topazArray_t * brushPool;
+    
+    topazRenderer_Texture_t * tex;
 } TopazEmitter;
 
 
@@ -268,6 +276,8 @@ static void update_active_particle(TopazEmitter * e, ActiveParticle * p) {
         if (p->prev) p->prev->next = p->next;
         else         e->active = p->next;
         if (p->next) p->next->prev = p->prev;
+        
+        topaz_array_push(e->brushPool, p->visual);
         free(p);
         return;
     }
@@ -299,7 +309,7 @@ static void render_active_particle(TopazEmitter * e, ActiveParticle * p) {
 
     float rotation =  get_prop_value(e, topazParticle_Property__Rotation,p->at);
 
-    topazTransform_t * transform = topaz_spatial_get_node(topaz_render2d_get_spatial(e->renderBrush));
+    topazTransform_t * transform = topaz_spatial_get_node(topaz_render2d_get_spatial(p->visual));
 
     topazVector_t scale = {
         scaleX * scaleMult,
@@ -317,23 +327,23 @@ static void render_active_particle(TopazEmitter * e, ActiveParticle * p) {
     *topaz_transform_rotation(transform) = rotationV;
 
     topazRenderer_2D_Vertex_t v[6] = {
-        {-0.5, -0.5,   red, green, blue, alpha,  0, 0},
-        {-0.5,  0.5,   red, green, blue, alpha,  0, 1},
-        { 0.5,  0.5,   red, green, blue, alpha,  1, 1},
+        {-5, -5,   red, green, blue, alpha,  0, 0},
+        {-5,  5,   red, green, blue, alpha,  0, 1},
+        { 5,  5,   red, green, blue, alpha,  1, 1},
 
-        { 0.5,  0.5,   red, green, blue, alpha,  0, 0},
-        {-0.5, -0.5,   red, green, blue, alpha,  1, 1},
-        { 0.5, -0.5,   red, green, blue, alpha,  1, 0}
+        {-5, -5,   red, green, blue, alpha,  0, 0},
+        { 5,  5,   red, green, blue, alpha,  1, 1},
+        { 5, -5,   red, green, blue, alpha,  1, 0}
     };
 
     topaz_render2d_set_vertices(
-        e->renderBrush,
+        p->visual,
         TOPAZ_ARRAY_CAST(v, topazRenderer_2D_Vertex_t, 6)
     );
 
     topaz_graphics_request_draw_2d(
         topaz_context_get_graphics(e->ctx),
-        e->renderBrush
+        p->visual
     );
 
 }
@@ -375,8 +385,7 @@ topazEntity_t * topaz_particle_emitter_2d_create(
         data->propsActive[i] = topaz_automation_create(context);
     }
     data->rng = topaz_rng_create();
-    data->renderBrush = topaz_render2d_create(topaz_graphics_get_renderer_2d(topaz_context_get_graphics(context)), NULL);
-
+    data->brushPool = topaz_array_create(sizeof(topazRender2D_t*));
     // create base component and assign attribs
     topazEntity_Attributes_t attribs;
     memset(&attribs, 0, sizeof(topazEntity_Attributes_t));
@@ -414,24 +423,20 @@ void topaz_particle_emitter_2d_set_particle(
         p->image
     );
 
+    int i;
+    for(i = 0; i < PARAM_COUNT; ++i) {
+        emitter->params[i] = p->params[i]; 
+    }
+
+
     topazImage_Frame_t * f = topaz_image_get_frame(image, 0);
-    if (!f) {
-        topaz_render2d_set_texture(
-            emitter->renderBrush,
-            topaz_image_frame_get_texture(f)
-        );
+    if (f) {
+        emitter->tex = topaz_image_frame_get_texture(f);
     }
 
 
     // copy params
-    int i;
-    for(i = 0; i < PARAM_COUNT; ++i) {
-        topaz_render2d_set_parameter(
-            emitter->renderBrush,
-            i,
-            p->params[i]
-        );
-    }
+
 
     for(i = 0; i < PROP_COUNT; ++i) {
         topaz_automation_set_from_string(emitter->propsActive[i], p->props[i].anim);
@@ -447,13 +452,41 @@ static void particle_emit(
 ) {
     
     ActiveParticle * p = calloc(1, sizeof(ActiveParticle));
+
+    uint32_t len = topaz_array_get_size(emitter->brushPool);
+    if (len) {
+        p->visual = topaz_array_at(emitter->brushPool, topazRender2D_t *, len-1);
+        topaz_array_set_size(emitter->brushPool, len-1);
+    } else {
+        p->visual = topaz_render2d_create(topaz_graphics_get_renderer_2d(topaz_context_get_graphics(emitter->ctx)), NULL);
+    }
+
+
+    if (emitter->tex) {    
+        topaz_render2d_set_texture(
+            p->visual,
+            emitter->tex
+        );
+    }
+
+    int i;
+    for(i = 0; i < PARAM_COUNT; ++i) {
+        topaz_render2d_set_parameter(
+            p->visual,
+            i,
+            emitter->params[i]
+        );
+    }
+    
     p->duration = emitter->propsMinNoise[topazParticle_Property__Duration] + topaz_rng_next_value(emitter->rng)*(emitter->propsMaxNoise[topazParticle_Property__Duration] - emitter->propsMinNoise[topazParticle_Property__Duration]);    
-    p->position = *topaz_entity_get_position(e);
+    p->position = topaz_entity_get_global_position(e);
+    p->life = p->duration;
     if (!emitter->active) {
         emitter->active = p;
     } else {
-        emitter->active->next = p;
-        p->prev = emitter->active->next;
+        p->next = emitter->active;
+        emitter->active->prev = p;
+        emitter->active = p;
     }
 }
 

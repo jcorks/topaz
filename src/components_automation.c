@@ -151,6 +151,10 @@ static topazVector_t anim_interpolate(float at, topazAutomation_Function func, t
 
 // gets the value within the automation at the given automation time
 static topazVector_t animate_at(float at, TAKeyframe * frames, uint32_t len) {
+    if (!len) {
+        topazVector_t out = {};
+        return out;
+    }
     if (at < frames->when) return frames->value;
     uint32_t i;
     for(i = 0; i < len-1; ++i, frames++) {

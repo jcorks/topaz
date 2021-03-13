@@ -20,11 +20,18 @@ var Emitter = {
         a.addKeyframe(0, topaz.topazAutomation_Function_Linear, 0);
         a.addKeyframe(360, topaz.topazAutomation_Function_Linear, 1);
         var ramp360 = a.string;
+        a.clear();
         a.addKeyframe(1,   topaz.topazAutomation_Function_SquareRoot, 0);
         a.addKeyframe(0.5, topaz.topazAutomation_Function_SquareRoot, 0.5);
-        a.addKeyframe(0,   topaz.topazAutomation_Function_SquareRoot, 0.5);
-        var ramp01 = a.string;
-
+        a.addKeyframe(0,   topaz.topazAutomation_Function_SquareRoot, 1);
+        var ramp10 = a.string;
+        a.clear();
+        a.addKeyframe(10,   topaz.topazAutomation_Function_SquareRoot, 0);
+        a.addKeyframe(5, topaz.topazAutomation_Function_SquareRoot, 0.5);
+        a.addKeyframe(0,   topaz.topazAutomation_Function_SquareRoot, 1);
+        var ramp100 = a.string;
+        
+        
         topaz.resources.loadAsset('png', 'base.png', 'example');
 
 
@@ -38,33 +45,47 @@ var Emitter = {
 
         particle.setFunction(topaz.topazParticle_Property_ScaleX, ramp01);
         particle.setFunction(topaz.topazParticle_Property_ScaleY, ramp01);
-        particle.setFunction(topaz.topazParticle_Property_SpeedX, ramp01);
-        particle.setFunction(topaz.topazParticle_Property_SpeedY, ramp01);
+        particle.setFunction(topaz.topazParticle_Property_SpeedX, ramp100);
+        particle.setFunction(topaz.topazParticle_Property_SpeedY, ramp100);
         particle.setFunction(topaz.topazParticle_Property_ScaleMultiplier, stable1);
         particle.setFunction(topaz.topazParticle_Property_Direction, ramp360);
-        particle.setFunction(topaz.topazParticle_Property_Rotation, ramp360);
+        //particle.setFunction(topaz.topazParticle_Property_Rotation, ramp01);
         particle.setFunction(topaz.topazParticle_Property_Red,   stable1);
         particle.setFunction(topaz.topazParticle_Property_Green, stable1);
         particle.setFunction(topaz.topazParticle_Property_Blue,  stable1);
-        particle.setFunction(topaz.topazParticle_Property_Alpha, ramp01);
+        particle.setFunction(topaz.topazParticle_Property_Alpha, ramp10);
 
-        particle.setNoiseMin(topaz.topazParticle_Property_SpeedX, 0.4);
-        particle.setNoiseMax(topaz.topazParticle_Property_SpeedX, 5);
-        particle.setNoiseMin(topaz.topazParticle_Property_SpeedY, 0.4);
-        particle.setNoiseMax(topaz.topazParticle_Property_SpeedY, 5);
+        //particle.setNoiseMin(topaz.topazParticle_Property_SpeedX, 0.4);
+        //particle.setNoiseMax(topaz.topazParticle_Property_SpeedX, 5);
+        //particle.setNoiseMin(topaz.topazParticle_Property_SpeedY, 0.4);
+        //particle.setNoiseMax(topaz.topazParticle_Property_SpeedY, 5);
+
+        particle.setNoiseMin(topaz.topazParticle_Property_ScaleMultiplier, 10);
+        particle.setNoiseMax(topaz.topazParticle_Property_ScaleMultiplier, 14);
 
 
         particle.setNoiseMin(topaz.topazParticle_Property_Duration, 1);
         particle.setNoiseMin(topaz.topazParticle_Property_Duration, 100);
 
+        particle.setNoiseMin(topaz.topazParticle_Property_Direction, 0);
+        particle.setNoiseMin(topaz.topazParticle_Property_Direction, 356);
+
+
+
+        particle.setNoiseMin(topaz.topazParticle_Property_Red, 0);
+        particle.setNoiseMax(topaz.topazParticle_Property_Red, 1);
+
 
 
         props.emitter = new topaz.particleEmitter2D();        
-        props.emitter.position = new topaz.vector(200, 200);
+        // FIXME
+        //props.emitter.position = new topaz.vector(200, 200);
         props.emitter.particle = particle;
+        
+        props.entity.attach(props.emitter);
     },
 
-    onStep(props) {
+    onStep : function(props) {
         props.emitter.emit(1);
     }
 
@@ -72,5 +93,5 @@ var Emitter = {
 
 
 var v = new topaz.entity(Emitter);
-
+v.position = new topaz.vector(200, 200);
 topaz.root = v;

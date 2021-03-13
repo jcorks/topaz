@@ -682,6 +682,14 @@ topaz = {
             }
         );
 
+        Object.defineProperty(
+            obj,
+            'drawing', {
+                get : function() {return topaz_component__get_drawing(this.impl);},
+                set : function(v){topaz_component__set_drawing(this.impl, v);}
+            }
+        );
+
 
         Object.defineProperty(
             obj,
@@ -1006,7 +1014,7 @@ topaz = {
 (function(){
 
     /// particle emitter
-    Object.defineProperty(topaz.particleEmitter2D.prototype, 'particle', {set : function(v){topaz_particle_emitter_2d__set_particle(this.impl, v);}});
+    Object.defineProperty(topaz.particleEmitter2D.prototype, 'particle', {set : function(v){topaz_particle_emitter_2d__set_particle(this.impl, v.impl);}});
     Object.defineProperty(topaz.particleEmitter2D.prototype, 'independent', {set : function(v){topaz_particle_emitter_2d__set_independent(this.impl, v);}});
 
     topaz.particleEmitter2D.prototype.emit = function(c) {

@@ -49,7 +49,7 @@ static void tt800_twist(topazRNG_t * rng) {
     }
 
     for(; i < TT800_SEED_COUNT; ++i) {
-        state[i] = (state[i+(TT800_SEED_COUNT - TT800_END)]) ^
+        state[i] = (state[i+(TT800_END - TT800_SEED_COUNT)]) ^
                    (state[i] >> 1) ^
                    (tt800_a[state[i]%2]);
     }
