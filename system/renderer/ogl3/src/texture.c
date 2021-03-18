@@ -439,7 +439,7 @@ void atlas_read(GLTexAtlas * a, int x, int y, int w, int h, uint8_t * target) {
 static int atlas_request_region(GLTexAtlas * a, topazGL3_Texture_t * t) {
 
     // do we need to resize height?
-    if (a->height+t->h >= < a->maxLength) { 
+    if (a->height+t->h >= a->maxLength) { 
         a->height += ATLAS_RESIZE_AMT;
         if (a->height > a->maxLength)
             a->height = a->maxLength;
