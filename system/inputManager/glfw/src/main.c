@@ -212,6 +212,16 @@ static void topaz_glfw_im_key_callback(
     }
 }
 
+static void topaz_glfw_im_unicode_callback(GLFWwindow* window, unsigned int cpoint) {
+    GLFWIM * im = topaz_table_find(glfww2im, window);
+    topazInputDevice_Event_t ev;
+    ev.id = 0;
+    ev.state = 1;
+    ev.utf8 = cpoint;
+    topaz_array_push(im->queuedKeyboardEvents, ev);        
+}
+
+
 static void topaz_glfw_im_cursor_callback(
     GLFWwindow* window, 
     double xpos,    
@@ -355,7 +365,7 @@ static void topaz_glfw_im_set_focus(topazInputManager_t * imSrc, void * userData
         glfwSetKeyCallback(im->ctx, topaz_glfw_im_key_callback);
         glfwSetCursorPosCallback(im->ctx, topaz_glfw_im_cursor_callback);
         glfwSetMouseButtonCallback(im->ctx, topaz_glfw_im_cursor_button_callback);
-
+        glfwSetCharCallback(im->ctx, topaz_glfw_im_unicode_callback);
         
     }
 }

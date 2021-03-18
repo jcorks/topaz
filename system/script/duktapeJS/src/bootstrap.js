@@ -813,11 +813,11 @@ topaz = {
         Object.defineProperty(obj, 'parent', {
             get : function() {
                 var f = topaz_entity__get_parent(this.impl);
-                if (f.__ctx) return f.ctx;
+                if (f.__ctx) return f.__ctx;
                 return new topaz.entity(undefined, f);
             }, 
             set : function(v){
-                topaz_entity_attach(v.impl, this.impl);
+                topaz_entity__attach(v.impl, this.impl);
             }
         });
     
@@ -852,12 +852,12 @@ topaz = {
             topaz_entity__set_priority_first(this.impl);
         }
     
-        obj.define = function(props) {
+        obj.define = function(props, prevProps) {
     
-            this.props = {};
+            this.props = prevProps == undefined ? {} : prevProps;
             // REALLY simple inheritence
             if (props.inherits) {
-                this.define(props.inherits);
+                this.define(props.inherits, this.props);
             }
     
             // todo: shallow copy

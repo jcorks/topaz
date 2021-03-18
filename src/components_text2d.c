@@ -280,6 +280,10 @@ static void text2d_update(Text2D * t, const topazString_t * str, const topazStri
         topaz_render2d_set_vertices(r, TOPAZ_ARRAY_CAST(vtx_base, topazRenderer_2D_Vertex_t, 6));
         topaz_array_push(t->glyphs, r);
     }
+    
+    if (!fontRenderer) {
+        return;
+    }
 
 
 
@@ -308,7 +312,6 @@ static void text2d_update(Text2D * t, const topazString_t * str, const topazStri
             topaz_string_get_char(t->text, i),
             i >= len ? 0 : topaz_string_get_char(t->text, i+1)
         );
-        
 
         // top left
         p->x = originX+spacing.xOffset;

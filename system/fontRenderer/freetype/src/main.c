@@ -48,7 +48,7 @@ typedef struct {
 } TopazFreetype;
 
 void * topaz_freetype_renderer_create(topazFontRenderer_t * r, topaz_t * t) {
-    TopazFreetype * ft = calloc(sizeof(FT_Library), 1);
+    TopazFreetype * ft = calloc(sizeof(TopazFreetype), 1);
     if (FT_Init_FreeType(&ft->lib)) {
         free(ft);
         return NULL;
@@ -210,7 +210,7 @@ static void topaz_freetype_get_spacing(
     if (thischar == '\n') {
         spacing->xOffset = 0;
         spacing->yOffset = 0;
-        spacing->yNextOrigin += ft->face->height/64.f;
+        spacing->yNextOrigin += ft->face->size->metrics.height/64.f;
         spacing->xNextOrigin = 0;
         spacing->width = 0;
         spacing->height = 0;        

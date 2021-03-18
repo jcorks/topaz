@@ -231,7 +231,7 @@ topazImage_Frame_t * topaz_image_add_frame(topazAsset_t * a) {
     TopazImage * img = image__retrieve(a);
     topazImage_Frame_t * frame = calloc(sizeof(topazImage_Frame_t), 1);
     frame->img = img;
-    frame->object = topaz_renderer_texture_create(topaz_graphics_get_renderer(topaz_context_get_graphics(img->ctx)), img->width, img->height, default_texture_data);
+    frame->object = topaz_renderer_texture_create(topaz_graphics_get_renderer(topaz_context_get_graphics(img->ctx)), img->width, img->height, NULL);
     topaz_array_push(img->frames, frame);
     return frame;
 }

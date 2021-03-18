@@ -226,15 +226,18 @@ topazES2_Texture_t * topaz_es2_texture_create(
         }
 
         // update the atlas at the owned position
-        atlas_write(
-            a,
-            out->x,
-            out->y,
-            out->w,
-            out->h,
-            rawData
-        );
-
+        if (rawData) {
+            atlas_write(
+                a,
+                out->x,
+                out->y,
+                out->w,
+                out->h,
+                rawData
+            );
+        }
+        
+        
         topaz_array_push(a->textures, out);
         out->src = a;
         return out;
@@ -435,7 +438,7 @@ void atlas_read(GLTexAtlas * a, int x, int y, int w, int h, uint8_t * target) {
 static int atlas_request_region(GLTexAtlas * a, topazES2_Texture_t * t) {
 
     // do we need to resize height?
-    if (a->height < a->maxLength) { 
+    if (a->height+t->h >= a->maxLength) { 
         a->height += ATLAS_RESIZE_AMT;
         if (a->height > a->maxLength)
             a->height = a->maxLength;
