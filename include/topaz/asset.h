@@ -69,7 +69,7 @@ enum topazAsset_Type {
 
     /// The asset is an audio waveform.
     ///
-    topazAsset_Type_Audio,
+    topazAsset_Type_Sound,
 
     /// The asset is a 3D model with assets.
     ///

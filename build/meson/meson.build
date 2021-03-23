@@ -17,6 +17,7 @@ src = [
     'src/asset.c',
     'src/assets_image.c',
     'src/assets_data.c',
+    'src/assets_sound.c',
     'src/backends_audio_manager.c',
     'src/backends_console_display.c',
     'src/backends_display.c',
