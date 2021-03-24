@@ -50,6 +50,45 @@ TSO_SCRIPT_API_FN(resources_api__load_asset) {
 
 }
 
+TSO_SCRIPT_API_FN(resources_api__load_asset_data) {
+    TSO_ASSERT_ARG_COUNT(3);
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+
+    topazResources_t * r = topaz_context_get_resources(((topazScriptManager_t*)context)->ctx);
+
+
+    topazArray_t * arr = topaz_array_create(sizeof(uint8_t));
+    uint32_t size = topaz_script_object_reference_array_get_count(arg1);
+    uint32_t i;
+    uint8_t d;
+    for(i = 0; i < size; ++i) {
+        d = topaz_script_object_as_int(topaz_script_object_reference_array_get_nth(arg1, i));
+        topaz_array_push(arr, d);
+    }
+    topazAsset_t * asset = topaz_resources_load_asset_data(
+        r,
+        topaz_script_object_as_string(arg0),
+        arr,
+        topaz_script_object_as_string(arg2)
+    );
+    topaz_array_destroy(arr);
+
+    if (!asset)
+        TSO_NO_RETURN;
+
+    int type = TSO_OBJECT_TYPE__ASSET;
+    switch(topaz_asset_get_type(asset)) {
+      case topazAsset_Type_Image: type |= TSO_OBJECT_ID__IMAGE; break;
+      case topazAsset_Type_Data:  type |= TSO_OBJECT_ID__DATA; break;
+      default:;
+    }
+
+    TSO_OBJECT_NEW_VALUE(asset, type, NULL, NULL);
+    return object;
+
+}
 
 
 
@@ -173,6 +212,7 @@ static void add_refs__resources_api(topazScript_t * script, topazScriptManager_t
     TS_MAP_NATIVE_FN("topaz_resources__get_path", resources_api__get_path);
     TS_MAP_NATIVE_FN("topaz_resources__fetch_asset", resources_api__fetch_asset);
     TS_MAP_NATIVE_FN("topaz_resources__load_asset", resources_api__load_asset);
+    TS_MAP_NATIVE_FN("topaz_resources__load_asset_data", resources_api__load_asset_data);
     TS_MAP_NATIVE_FN("topaz_resources__write_asset", resources_api__write_asset);
     TS_MAP_NATIVE_FN("topaz_resources__remove_asset", resources_api__remove_asset);
     TS_MAP_NATIVE_FN("topaz_resources__is_extension_supported", resources_api__is_extension_supported);

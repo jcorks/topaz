@@ -144,6 +144,51 @@ topazAsset_t * topaz_resources_load_asset(
 }
 
 
+
+
+topazAsset_t * topaz_resources_load_asset_data(
+    topazResources_t * r,
+    const topazString_t * extension,
+    const topazArray_t * data,
+    const topazString_t * name
+) {
+
+    topazAsset_t * asset = topaz_table_find(
+        r->name2asset,
+        name
+    );
+
+    
+    // already loaded! return
+    if (asset) return asset;
+
+
+    // invalid extension if not created, return NULL'
+    topazIOX_t * dec = topaz_table_find(r->ioxs, extension);
+    if (!dec) return NULL;
+
+    // Create a new asset of the type
+    asset = topaz_resources_fetch_asset(r, topaz_iox_get_asset_type(dec), name);
+
+    // could fail if the type is unsupported. Shouldnt happen though.
+    if (!asset) return NULL;
+
+    // load in data into asset
+    if (!topaz_iox_load(
+        dec,
+        asset,
+        topaz_array_get_data(data),
+        topaz_array_get_size(data)
+    )) {
+        topaz_asset_destroy(asset);
+        topaz_table_remove(r->name2asset, name);
+        return NULL;
+    }
+
+    return asset;
+}
+
+
 int topaz_resources_write_asset(
     topazResources_t * r,
     topazAsset_t * asset,

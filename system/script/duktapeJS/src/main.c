@@ -1227,8 +1227,8 @@ static void topaz_duk_trans_received(duk_trans_dvalue_ctx * ctxT, duk_dvalue * d
     char * cpy = strdup(dvalue_to_string(dv));
     topaz_array_push(ctx->pendingMessages, cpy);
     #ifdef TOPAZDC_DEBUG
-        printf("RECEIVED DEBUG MSG: %s\n", cpy);
-        fflush(stdout);
+        //printf("RECEIVED DEBUG MSG: %s\n", cpy);
+        //fflush(stdout);
     #endif
 }
 

@@ -69,6 +69,7 @@ struct topazFilesysAPI_t {
     const topazString_t *   (*filesys_get_path)         (topazFilesys_t *, void *);
           topazString_t *   (*filesys_get_child_path)   (topazFilesys_t *, void *, const topazString_t *);
     const topazArray_t *    (*filesys_split_path)       (topazFilesys_t *, void *, const topazString_t *);
+    const topazString_t *   (*filesys_join_path)        (topazFilesys_t *, void *, const topazArray_t *);
 
 
     int                     (*filesys_go_to_child)      (topazFilesys_t *, void *, const topazString_t *);

@@ -89,6 +89,33 @@ void topaz_script_register_source(
 );
 
 
+// Utility function that applies the currently pushed path 
+// as the "root" path for a given relative path.
+// This is for importing relative paths on the filesystem.
+const topazString_t * topaz_script_apply_import_path(
+    // The script instance to pull import information from.
+    topazScript_t * s,
+
+    // The usercode relative path
+    const topazString_t * path
+);
+
+
+// Given a path to a file, keeps the directory portion of the path 
+void topaz_script_push_import_path(
+    // The script instance to push the path to.
+    topazScript_t * s,
+
+    // the path to push.
+    const topazString_t * path
+);
+
+// Pops the current directory.
+void topaz_script_pop_import_path(
+    topazScript_t * s
+);
+
+
 
 // For objects that exist and are managed independently of the native context,
 // the implementation can create "wrapper" objects with externally-defined 

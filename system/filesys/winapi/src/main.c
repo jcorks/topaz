@@ -320,8 +320,8 @@ static int topaz_filesys_winapi__is_child(topazFilesys_t * fsys, void * userData
     return FALSE;
 }
 const topazArray_t * topaz_filesys_winapi__split_path(topazFilesys_t * fsys, void * userData, const topazString_t * path) {
-    char separator;
-    separator = '\\';
+    char separator = '\\';
+    char separator2 = '/';
 
     static topazArray_t * arr = 0;
     if (!arr) arr = topaz_array_create(sizeof(topazString_t *));    
@@ -337,7 +337,8 @@ const topazArray_t * topaz_filesys_winapi__split_path(topazFilesys_t * fsys, voi
     len = topaz_string_get_length(path);
     for(i = 0; i < len; ++i) {
         int c = topaz_string_get_char(path, i);
-        if (c == separator) {
+        if (c == separator ||
+            c == separator2) {
             if (topaz_string_get_length(str)) {
                 topaz_array_push(arr, str);
                 str = topaz_string_create();
@@ -354,6 +355,25 @@ const topazArray_t * topaz_filesys_winapi__split_path(topazFilesys_t * fsys, voi
 
 
     return arr;
+}
+
+
+const topazString_t * topaz_filesys_winapi__join_path(topazFilesys_t * fsys, void * userData, const topazArray_t * arr) {
+    const char * separator = "\\";
+    static topazString_t * out = 0;
+
+    if (!out) out = topaz_string_create();
+    topaz_string_clear(out);
+
+    uint32_t len = topaz_array_get_size(arr);
+    uint32_t i;
+    for(i = 0; i < len; ++i) {
+        topaz_string_concat(out, topaz_array_at(arr, topazString_t *, i));
+        if (i < len-1)
+            topaz_string_concat(out, TOPAZ_STR_CAST(separator));
+    }
+
+    return out;
 }
 
 
@@ -422,6 +442,7 @@ void topaz_system_filesys_winapi__backend(
     api->filesys_is_node = topaz_filesys_winapi__is_node;
     api->filesys_is_child = topaz_filesys_winapi__is_child;
     api->filesys_split_path = topaz_filesys_winapi__split_path;
+    api->filesys_join_path = topaz_filesys_winapi__join_path;
 
 
 }

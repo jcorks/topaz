@@ -3,6 +3,7 @@
 #include <topaz/containers/string.h>
 #include <topaz/containers/table.h>
 #include <topaz/containers/bin.h>
+#include <topaz/backends/filesys.h>
 #include <topaz/topaz.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,6 +51,10 @@ struct topazScript_t {
 
     // [source name] -> GArray[line] -> topazString_t *
     topazTable_t * sources;
+
+    topazArray_t * importPathStack;
+    topazString_t * importPath;
+    topazFilesys_t * importFS;
     
 };
 
@@ -94,6 +99,9 @@ topazScript_t * topaz_script_create(topaz_t * t, topazSystem_Backend_t * b, cons
     out->debugCBs = topaz_bin_create();
     out->ctx = t;
     out->sources = topaz_table_create_hash_topaz_string();
+    out->importPathStack = topaz_array_create(sizeof(topazArray_t *));
+    out->importPath = topaz_string_create();
+    out->importFS = topaz_context_filesys_create(t);
     #ifdef TOPAZDC_DEBUG
         assert(api->script_create);
         assert(api->script_destroy);
@@ -802,4 +810,80 @@ void topaz_script_notify_command(topazScript_t * s, int cmd, topazString_t * str
     topaz_array_destroy(arr);
     topaz_string_destroy(str);
 }
+
+
+const topazString_t * topaz_script_apply_import_path(
+    topazScript_t * s,
+    const topazString_t * path
+) {
+    topaz_string_clear(s->importPath);
+    if (!topaz_array_get_size(s->importPathStack)) return s->importPath;
+
+    topazArray_t * all = topaz_array_create(sizeof(topazString_t *));
+    topazArray_t * prev = topaz_array_at(s->importPathStack, topazArray_t *, topaz_array_get_size(s->importPathStack)-1);
+
+    const topazArray_t * a = topaz_filesys_split_path(
+        s->importFS,
+        path
+    );
+
+
+    topaz_array_push_n(
+        all,
+        topaz_array_get_data(prev),
+        topaz_array_get_size(prev)
+    );
+    topaz_array_push_n(
+        all,
+        topaz_array_get_data(a),
+        topaz_array_get_size(a)
+    );
+
+    topaz_string_concat(s->importPath, topaz_filesys_join_path(
+        s->importFS,
+        all
+    ));
+
+    topaz_array_destroy(all);
+    return s->importPath;
+}
+
+
+// Given a path to a file, keeps the directory portion of the path 
+void topaz_script_push_import_path(
+    topazScript_t * s,
+    const topazString_t * path
+) {
+    topazArray_t * arr = topaz_array_create(sizeof(topazString_t *));
+    const topazArray_t * split = topaz_filesys_split_path(
+        s->importFS,
+        path
+    );
+    uint32_t i;
+    if (topaz_array_get_size(split)) {
+        for(i = 0; i < topaz_array_get_size(split)-1; ++i) {
+            topazString_t * str = topaz_string_clone(
+                topaz_array_at(split, topazString_t *, i)
+            );
+            topaz_array_push(arr, str);
+        }
+    }
+    topaz_array_push(s->importPathStack, arr);
+}
+
+// Pops the current directory.
+void topaz_script_pop_import_path(
+    topazScript_t * s
+) {
+    if (!topaz_array_get_size(s->importPathStack)) return;
+    topazArray_t * arr = topaz_array_at(s->importPathStack, topazArray_t *, topaz_array_get_size(s->importPathStack)-1);
+    uint32_t i;
+    for(i = 0; i < topaz_array_get_size(arr); ++i) {
+        topaz_string_destroy(topaz_array_at(arr, topazString_t *, i));
+    }
+    topaz_array_destroy(arr);
+    topaz_array_set_size(s->importPathStack, topaz_array_get_size(s->importPathStack)-1);
+}
+
+
 

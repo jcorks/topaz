@@ -863,7 +863,9 @@ void topaz_console_print_message(topazConsole_t * c, const topazString_t * str, 
 }
 
 
-
+void topaz_console_add_text_color(topazConsole_t * c, const topazString_t * str, const topazColor_t * color) {
+    topaz_console_display_add_text(c->display, str, color);
+}
 
 void topaz_console_print_color(topazConsole_t * c, const topazString_t * str, const topazColor_t * color) {
     topaz_console_display_add_text(c->display, str, color);

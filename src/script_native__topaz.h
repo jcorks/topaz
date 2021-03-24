@@ -138,11 +138,27 @@ TSO_SCRIPT_API_FN(topaz_api__get_version_minor) {
 
 
 TSO_SCRIPT_API_FN(topaz_api__log) {
-    TSO_ASSERT_ARG_COUNT(1);
-    TSO_ARG_0;
-    topazScriptManager_t * mgr = context;
-    topazConsole_t * c = topaz_context_get_console(mgr->ctx);
-    topaz_console_print(c, topaz_script_object_as_string(arg0));
+    int newline = TRUE;
+    switch(topaz_array_get_size(args)) {
+      case 0: break;
+      case 2: {
+          TSO_ARG_1;
+          newline = topaz_script_object_as_int(arg1);
+      }
+
+      case 1: {
+        TSO_ARG_0;
+        topazScriptManager_t * mgr = context;
+        topazConsole_t * c = topaz_context_get_console(mgr->ctx);
+        if (newline) 
+            topaz_console_print(c, topaz_script_object_as_string(arg0));
+        else {
+            topazColor_t col;
+            col.r = col.g = col.a = col.b = 255;
+            topaz_console_add_text_color(c, topaz_script_object_as_string(arg0), &col);        
+        }
+      }
+    }
     TSO_NO_RETURN;
 }
 

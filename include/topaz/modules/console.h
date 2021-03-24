@@ -158,6 +158,21 @@ void topaz_console_print_color(
     const topazColor_t * color
 );
 
+
+/// Adds a colored text to the console.
+///
+void topaz_console_add_text_color(
+    /// The console to print to.
+    topazConsole_t * console, 
+
+    /// The text to print.
+    const topazString_t * message,
+
+    /// The color to print it as.
+    const topazColor_t * color
+);
+
+
 /// Attaches a script context to the console.
 /// Once attached, debugging features will be available
 void topaz_console_attach_script(

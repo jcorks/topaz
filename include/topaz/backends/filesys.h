@@ -173,6 +173,17 @@ const topazArray_t * topaz_filesys_split_path(
 );
 
 
+/// Given an array of tokens, returns a single read-only 
+/// path consistent of those tokens, valid until the next calling of this 
+/// function.
+const topazString_t * topaz_filesys_join_path(
+    /// The filesystem to use.
+    topazFilesys_t * filesystem,
+
+    /// An array of topazString_t *. 
+    const topazArray_t * pathTokens
+);
+
 /// Change to the specified child node.
 /// The nodeName must match the name of a child node. On some systems 
 /// partial paths may be supported, but these are non-standard.

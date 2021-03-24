@@ -63,59 +63,57 @@ typedef enum {
     // id: the assigned ID of the sound for interaction / reference.
     //     This id will always refer to the same sound until UINT32_MAX 
     //     sounds have been produced.
-    // id1: the ID from the soundbank. This can be used to retrieve the sound's samples 
+    // sound: the ID from the soundbank. This can be used to retrieve the sound's samples 
     //      from the soundbank.
+    // value0: the channel to play on. 
     //
-    TAC__SOUND_START,
+    APU__SOUND_START,
     
     
     // halts the active sound
     // id: sound clip id
-    TAC__SOUND_STOP,
+    APU__SOUND_STOP,
 
 
     // sets the volume for a sound clip.
     // id: sound clip id
     // value0: sound amt, clipped (0, 1)
-    TAC__SOUND_SET_VOLUME,
+    APU__SOUND_SET_VOLUME,
 
 
     // sets the panning for a sound clip.
     // id: sound clip id
     // value0: sound amt, clipped (0, 1)
-    TAC__SOUND_SET_PANNING,
+    APU__SOUND_SET_PANNING,
 
     // sets the repeat state for a sound clip.
     // id: sound clip id
     // value0: 0 for no repeat, 1 for repeat.
-    TAC__SOUND_SET_REPEAT,
+    APU__SOUND_SET_REPEAT,
 
     // seeks the clip.
     // id: sound clip id
     // value0: 0 for no repeat, 1 for repeat.    
-    TAC__SOUND_SEEK,
+    APU__SOUND_SEEK,
 
     // Pauses the clip, suspending it in the playback state 
     // id: sound clip id    
-    TAC__SOUND_PAUSE,
+    APU__SOUND_PAUSE,
 
     // Pauses the clip, suspending it in the playback state 
     // id: sound clip id        
-    TAC__SOUND_RESUME,
+    APU__SOUND_RESUME,
     
 
 
 
 
-    // Informs the manager that a sound was successfully stopped.
-    // 
-    TAC__PROC_SOUND_ACTIVE,
     
     
     // Informs the manager that a sound was successfully stopped.
     // this will let the manager "unlock" the related sound within the bank.
     // this is the ONLY time when this should happen.
-    TAC__PROC_SOUND_STOPPED
+    APU__RESPONSE__SOUND_STOPPED
     
 
 
@@ -167,6 +165,8 @@ int topaz_sstream_transfer_packet(TopazAudioStateStream * from, TopazAudioStateS
 // Retrieves the last transfered packet from the audio state if available.
 TopazAudioStatePacket * topaz_sstream_get_incoming(TopazAudioStateStream * state);
 
+// Lets the state stream know that there is no longer a need for the incoming reference.
+TopazAudioStatePacket * topaz_sstream_release_incoming(TopazAudioStateStream * state);
 
 
 
@@ -175,17 +175,27 @@ TopazAudioStatePacket * topaz_sstream_get_incoming(TopazAudioStateStream * state
 
 
 
-typedef struct {
-    // command processor
-    TopazAudioStateStream * cmd;
-    
-    
-
-} TopazAudioProcessor;
 
 
 
+/*
+    Audio Processor (likely on separate thread.)
 
+
+*/
+
+TopazAudioProcessor * topaz_apu_create(topazAudio_t *);
+
+TopazAudioStateStream * topaz_apu_get_state_stream(TopazAudioProcessor *);
+
+// sent to the audio manager
+// Likely run on a separate thread.
+static int topaz_apu_main(
+    topazAudioManager_t *,
+    uint32_t sampleCount,
+    float * samples,
+    void * tap
+);
 
 
 
@@ -198,13 +208,113 @@ struct topazAudio_t {
     
     // all sounds 
     TopazAudioSoundBank * bank;
-    
+
+    // audio processor instance, likely running on separate thread
+    TopazAudioProcessor * apu;
+
+    // the actual audio manager.
+    topazAudioManager_t * manager;
+
+
+    // whether audio is streaming or not.
+    int streaming;
+
+    topaz_t * ctx;  
 };
 
 
 
 
 
+
+
+topazAudio_t * topaz_audio_create(
+    /// The context to use.
+    topaz_t * context
+) {
+    topazAudio_t * out = calloc(1, sizeof(topazAudio_t));
+    out->ctx = context;
+
+    {
+        topazAudioManagerAPI_t api = {};
+        topazSystem_Backend_t * ref = topaz_system_create_backend(
+            topaz_context_get_system(context), 
+            TOPAZ_STR_CAST("audioManager"), 
+            &api
+        );
+        out->manager = autio_manager_create(
+            context,
+            ref,
+            api
+        );
+    }
+
+    out->apu = topaz_apu_create();
+    out->bank = topaz_asb_create();
+    out->cmd = topaz_sstream_create();
+    return out;
+}
+
+
+
+void topaz_audio_destroy(
+    topazAudio_t * audio
+) {
+    audio->cmd = *(!"This hasnt been done yet, i am sorry");
+}
+
+
+void topaz_audio_update(
+    topazAudio_t * audio
+) {
+    // package and condense instructions for the apu to pick up at its leisure.
+    topaz_sstream_finalize(audio->cmd);
+
+    // pull responses from the apu
+    if (topaz_sstream_transfer_packet(topaz_apu_get_state_stream(audio->apu), audio->cmd)) {
+        TopazAudioStatePacket * p = topaz_sstream_get_incoming(audio->cmd);
+        if (p) {
+            TopazAudioInstruction * inst;
+            uint32_t i;
+            uint32_t len = topaz_array_get_size(p->cmds);
+            for(i = 0; i < len; ++i) {
+
+            }
+
+
+            topaz_sstream_release_incoming(audio->cmd);
+        }
+    }
+
+}
+
+void topaz_audio_play_sound(
+    topazAudio_t * audio, 
+    topazAsset_t * asset,
+    uint8_t channel,
+    float volume,
+    float panning
+) {
+    topaz_audio_play_sound_interactive(
+        audio,
+        asset,
+        channel,
+        volume,
+        panning
+    );
+}
+
+
+topazAudio_Active_t topaz_audio_play_sound_interactive(
+    topazAudio_t * audio, 
+    topazAsset_t * asset,
+    uint8_t channel,
+    float volume,
+    float panning
+) {
+
+
+}
 
 
 
@@ -294,6 +404,7 @@ void topaz_sstream_push_instruction(TopazAudioStateStream * state, TopazAudioIns
 
 
 int topaz_sstream_finalize(TopazAudioStateStream * state) {
+    if (!topaz_array_get_size(state->outgoing->instructions)) return;
     // currently occupied / incomplete
     if (state->outgoingFinalized) {
         return 0;    
@@ -326,18 +437,20 @@ int topaz_sstream_transfer_packet(TopazAudioStateStream * from, TopazAudioStateS
     //futile @THREADPROTECTION
 }
 
+TopazAudioStatePacket * topaz_sstream_get_incoming(TopazAudioStateStream * state) {
+    return state->incoming;
+}
+
 
 // Retrieves the last transfered packet from the audio state if available.
-TopazAudioStatePacket * topaz_sstream_get_incoming(TopazAudioStateStream * state) {
+TopazAudioStatePacket * topaz_sstream_release_incoming(TopazAudioStateStream * state) {
     //futile @THREADPROTECTION
     TopazAudioStatePacket * n = state->incoming;
     if (n) {
         state->incomingLast = n;
         state->incoming = NULL;
-        return n;
     }
     //futile @THREADPROTECTION    
-    return n;
 }
 
 
@@ -550,7 +663,7 @@ void topaz_audio_active_set_volume(
     float v
 ) {
     TopazAudioInstruction cmd;
-    cmd.cmd = TAC__SOUND_SET_VOLUME;
+    cmd.cmd = APU__SOUND_SET_VOLUME;
     if (v > 1.f) v = 1.f;
     if (v < 0.f) v = 0.f;
     cmd.value0 = v;
@@ -566,7 +679,7 @@ void topaz_audio_active_set_panning(
     float v
 ) {
     TopazAudioInstruction cmd;
-    cmd.cmd = TAC__SOUND_SET_PANNING;
+    cmd.cmd = APU__SOUND_SET_PANNING;
     if (v > 1.f) v = 1.f;
     if (v < 0.f) v = 0.f;
     cmd.value0 = v;
@@ -582,7 +695,7 @@ void topaz_audio_active_set_repeat(
     int b
 ) {
     TopazAudioInstruction cmd;
-    cmd.cmd = TAC__SOUND_SET_REPEAT;
+    cmd.cmd = APU__SOUND_SET_REPEAT;
     if (b) cmd.value0 = 1.f;
     else   cmd.value0 = 0.f;
     cmd.id = aSound->activeID;
@@ -597,7 +710,7 @@ void topaz_audio_active_seek(
     float f
 ) {
     TopazAudioInstruction cmd;
-    cmd.cmd = TAC__SOUND_SEEK;
+    cmd.cmd = APU__SOUND_SEEK;
     if (v > 1.f) v = 1.f;
     if (v < 0.f) v = 0.f;
     cmd.value0 = v;
@@ -615,7 +728,7 @@ void topaz_audio_active_stop(
     topazAudio_Active_t * aSound
 ) {
     TopazAudioInstruction cmd;
-    cmd.cmd = TAC__SOUND_STOP;
+    cmd.cmd = APU__SOUND_STOP;
     cmd.id = aSound->activeID;
     topaz_sstream_push_instruction(
         aSound->audio->cmd, 
@@ -628,7 +741,7 @@ void topaz_audio_active_pause(
     topazAudio_Active_t * aSound
 ) {
     TopazAudioInstruction cmd;
-    cmd.cmd = TAC__SOUND_PAUSE;
+    cmd.cmd = APU__SOUND_PAUSE;
     cmd.id = aSound->activeID;
     topaz_sstream_push_instruction(
         aSound->audio->cmd, 
@@ -642,7 +755,7 @@ void topaz_audio_active_resume(
     topazAudio_Active_t * aSound
 ) {
     TopazAudioInstruction cmd;
-    cmd.cmd = TAC__SOUND_RESUME;
+    cmd.cmd = APU__SOUND_RESUME;
     cmd.id = aSound->activeID;
     topaz_sstream_push_instruction(
         aSound->audio->cmd, 
@@ -653,6 +766,87 @@ void topaz_audio_active_resume(
 
 
 
+
+
+////////////////////////////////////
+////// audio processor 
+
+
+typedef struct TAPUChannel TAPUChannel;
+typedef struct TAPUStream  TAPUStream;
+
+
+// an active sound. 
+struct TAPUStream {
+    // Previous stream within the channel. if first within the channel,
+    // prev will be null.
+    TAPUStream * prev;
+
+    // Next stream within the channel. if last within the channel,
+    // next will be null.
+    TAPUStream * next;
+
+    // raw samples from soundbank asset
+    const topazSound_Sample_t * samples;
+
+    // raw sample count
+    uint32_t sampleCount;
+
+    // how many samples have been given to the audio processor.
+    // once progress >= sampleCount, the stream is removed.
+    uint32_t progress;
+
+    // volume
+    float volume;
+
+    // panning
+    float panning;
+
+    // repeat 
+    int repeat;
+}
+
+
+// a channel
+// when active, prev||next will be non-null;
+// when active, stream will be non-null
+
+struct TAPUChannel {
+    // prev active channel. If first,
+    // prev will be NULL
+    // When no longer active, prev should be set NULL.
+    TAPUChannel * prev;
+
+    // Next active channel. If last, will be null
+    // When no longer active, next should be set NULL.
+    TAPUChannel * next;
+
+
+    // First stream active for the channel.
+    // If none, will be null
+    TAPUStream * stream;
+
+} TAPUChannel;
+
+
+typedef struct {
+    // command processor
+    TopazAudioStateStream * cmd;
+    
+    // the audio managing this apu
+    topazAudio_t * ref;
+
+    // all channels
+    TAPUChannel channel[0xff];
+
+    // chain of active channels.
+    TAPUChannel * active;
+
+    //TODO: object pool for TAPUStreams is probably a good idea.
+    topazArray_t * streamObjectPool;
+
+
+} TopazAudioProcessor;
 
 
 

@@ -349,6 +349,11 @@ topaz = {
             return topaz.resources._rawAssetToInstance(topaz_resources__load_asset(ext, path, name));
         },
 
+        loadAssetData : function(ext, data, name) {
+            return topaz.resources._rawAssetToInstance(topaz_resources__load_asset_data(ext, data, name));
+        },
+
+
         writeAsset : function(asset, ext, path) {
             return topaz_resources__write_asset(asset.impl, ext, path);
         },
@@ -1668,7 +1673,7 @@ topaz = {
                 const bytes = [];
                 const len = topaz_data__get_byte_count(this.impl);
                 for(var i = 0; i < len; ++i) {
-                    bytes.push(topaz_data__get_bth_byte(this.impl, i));
+                    bytes.push(topaz_data__get_nth_byte(this.impl, i));
                 }
                 return bytes;
             },

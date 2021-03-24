@@ -39,6 +39,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/modules/resources.h>
 #include <topaz/modules/console.h>
 #include <topaz/modules/font_manager.h>
+#include <topaz/modules/audio.h>
 #include <topaz/containers/table.h>
 #include <topaz/system.h>
 #include <topaz/entity.h>
@@ -185,6 +186,7 @@ void topaz_context_destroy(topaz_t * t) {
 
     topaz_input_destroy(t->input);
     topaz_view_manager_destroy(t->viewManager);
+    topaz_audio_manager_destroy(t->audioManager);
     topaz_resources_destroy(t->resources);
     topaz_graphics_destroy(t->graphics);
 
@@ -367,6 +369,7 @@ void topaz_context_draw(topaz_t * t) {
 void topaz_context_iterate(topaz_t * t) {
     topaz_context_step(t);
     topaz_context_draw(t);
+    topaz_audio_update(t->audioManager);
     topaz_view_manager_update_view(t->viewManager);
     topaz_graphics_reset_scene(t->graphics);
 }

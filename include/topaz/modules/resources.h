@@ -144,6 +144,21 @@ topazAsset_t * topaz_resources_load_asset(
     const topazString_t * name
 );
 
+/// Equivalent to topaz_resources_load_asset, except instead of reading 
+/// from the filsystem, raw byte data is read instead.
+///
+topazAsset_t * topaz_resources_load_asset_data(
+    /// The resource instance to load with.
+    topazResources_t * res,
+    /// The extension / filetype to attempt to read with.
+    const topazString_t * fileType,
+    /// The raw data for the asset. Read as if contiguous bytes.
+    const topazArray_t * data,
+    /// The unique name to give to the asset.
+    const topazString_t * name
+);
+
+
 
 /// Writes an asset to the filesystem at the outputpath 
 /// given relative to the resources path.

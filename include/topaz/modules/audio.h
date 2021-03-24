@@ -55,21 +55,6 @@ typedef struct topazAudio_Active_t topazAudio_Active_t;
 
 
 
-/// The function to be called to perform the logic for the effect.
-///
-/// The data values are expected to be output as [-1, 1] in
-/// an interleaved channel format. If outside of these bounds,
-/// the data will be clamped to that range.
-typedef void (*topaz_audio_channel_effect)(
-    /// A section of the stream data 
-    float * data, 
-    /// The number of float values in this section
-    uint32_t numValues, 
-    /// User data supplied when adding the effect.
-    void * userData
-);
-
-
 
 /// Creates a new auto instance. Normally not necessary; the topaz 
 /// context has an audio instance of its own.
@@ -86,16 +71,24 @@ void topaz_audio_destroy(
 );
 
 
+/// Updates the audio engine. This is normally done for you 
+///
+void topaz_audio_update(
+    /// The audio instance to update.
+    topazAudio_t * audio
+);
 
 
-/// Queues audio for immediate playback
-void topaz_audio_play_audio(
+
+
+/// Queues sound for immediate playback
+void topaz_audio_play_sound(
     /// The audio module to play.
     topazAudio_t * audio, 
     /// The sound to play.
     topazAsset_t * asset,
     /// The channel to send the audio block to play on.
-    uint8_t effectChannel,
+    uint8_t channel,
     /// The volume the sound should play at.
     float volume,
     /// The panning for the sound. 0.f is all the way to the left, 1.f is all the way to the right.
@@ -103,47 +96,22 @@ void topaz_audio_play_audio(
 );
 
 
-/// Queues audio for immediate playback, but returns 
+/// Queues sound for immediate playback, but returns 
 /// an object that can be used to interact with the 
 /// active clip.
-topazAudio_Active_t topaz_audio_play_audio_interactive(
+topazAudio_Active_t topaz_audio_play_sound_interactive(
     /// The audio module to play.
     topazAudio_t * audio, 
     /// The sound to play.
     topazAsset_t * asset,
     /// The channel to send the audio block to play on.
-    uint8_t effectChannel,
+    uint8_t channel,
     /// The volume the sound should play at.
     float volume,
     /// The panning for the sound. 0.f is all the way to the left, 1.f is all the way to the right.
     float panning
 );
 
-
-/// Registers an audio effect instance with an associated
-/// effect channel. All further samples that play on the given channel
-/// will have this effect applied. The ID for this audio channel is returned.
-///
-int topaz_audio_channel_add_effect(
-    /// The audio module to modify.
-    topazAudio_t * audio,
-    /// The channel to add to.
-    uint8_t channel,
-    /// Effect to add to the channel.
-    topaz_audio_channel_effect effect, 
-    /// The user data passed to the effect function.
-    void * userdata
-);
-
-/// Unregisters an AudioEffect instance.
-void topaz_audio_channel_remove_effect(
-    /// The audio module to modify.
-    topazAudio_t * audio,
-    /// The channel to to modify.
-    uint8_t channel,
-    /// The effect ID from the effect adding.
-    int effectID
-);
 
 
 /// Removes all effects from a channel.
