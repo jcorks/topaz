@@ -45,6 +45,7 @@ typedef struct topazConsole_t topazConsole_t;
 typedef struct topazArray_t topazArray_t;
 typedef struct topazString_t topazString_t;
 typedef struct topazFontManager_t topazFontManager_t;
+typedef struct topazAudio_t topazAudio_t;
 
 
 
@@ -366,6 +367,12 @@ topazConsole_t * topaz_context_get_console(
 
 /// Gets the graphics instance for the topaz context.
 topazGraphics_t * topaz_context_get_graphics(
+    /// The relevant context.
+    topaz_t * context
+);
+
+/// Gets the audio instance.
+topazAudio_t * topaz_context_get_audio(
     /// The relevant context.
     topaz_t * context
 );

@@ -34,9 +34,10 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/containers/string.h>
 #include <topaz/containers/array.h>
+#include <stdint.h>
 typedef struct topaz_t topaz_t;
 typedef struct topazAudioManager_t topazAudioManager_t;
-
+typedef struct topazAsset_t topazAsset_t;
 
 /// Module that handles all audio related functionality.
 typedef struct topazAudio_t topazAudio_t;
@@ -99,7 +100,7 @@ void topaz_audio_play_sound(
 /// Queues sound for immediate playback, but returns 
 /// an object that can be used to interact with the 
 /// active clip.
-topazAudio_Active_t topaz_audio_play_sound_interactive(
+topazAudio_Active_t * topaz_audio_play_sound_interactive(
     /// The audio module to play.
     topazAudio_t * audio, 
     /// The sound to play.
@@ -114,25 +115,12 @@ topazAudio_Active_t topaz_audio_play_sound_interactive(
 
 
 
-/// Removes all effects from a channel.
-void topaz_audio_channel_reset(
+/// Stops all sounds currently playing on a channel.
+void topaz_audio_channel_halt(
     /// The audio module to modify.
     topazAudio_t * audio,
     /// The channel to to modify.
-    uint8_t channel,
-);
-
-/// Keeps the stream active for the given channel.
-/// By default, channels will only be active if there are samples playing through it 
-/// This is normally fine, execpt this means effects will stop once no samples are 
-/// being processed through a channel. For something like reverberation, this 
-/// would cut off meaningful information from being output. Keeping the channel 
-/// awake sacrifices performance for making more quality.
-void topaz_audio_channel_keep_awake(
-    /// The audio module to modify.
-    topazAudio_t * audio,
-    /// The channel to to modify.
-    uint8_t channel,
+    uint8_t channel
 );
 
 
@@ -154,7 +142,7 @@ void topaz_audio_channel_set_volume(
 /// 0.f denotes all the way to the left and 1.f all the way to the right.
 /// The values are clipped if they are beyond these bounds.
 ///
-void topaz_audio_channel_set_volume(
+void topaz_audio_channel_set_panning(
     /// The audio module to modify.
     topazAudio_t * audio,
     /// The channel to to modify.

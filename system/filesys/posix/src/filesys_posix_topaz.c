@@ -374,6 +374,24 @@ const topazArray_t * topaz_filesys_posix__split_path(topazFilesys_t * fsys, void
 }
 
 
+const topazString_t * topaz_filesys_posix__join_path(topazFilesys_t * fsys, void * userData, const topazArray_t * arr) {
+    const char * separator = "/";
+    static topazString_t * out = 0;
+
+    if (!out) out = topaz_string_create();
+    topaz_string_clear(out);
+
+    uint32_t len = topaz_array_get_size(arr);
+    uint32_t i;
+    for(i = 0; i < len; ++i) {
+        topaz_string_concat(out, topaz_array_at(arr, topazString_t *, i));
+        if (i < len-1)
+            topaz_string_concat(out, TOPAZ_STR_CAST(separator));
+    }
+
+    return out;
+}
+
 
 void topaz_system_filesys_posix__backend(
     topazSystem_t *         system, 
@@ -439,6 +457,7 @@ void topaz_system_filesys_posix__backend(
     api->filesys_is_node = topaz_filesys_posix__is_node;
     api->filesys_is_child = topaz_filesys_posix__is_child;
     api->filesys_split_path = topaz_filesys_posix__split_path;
+    api->filesys_join_path = topaz_filesys_posix__join_path;
 
 
 }

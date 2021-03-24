@@ -75,6 +75,7 @@ struct topaz_t {
     topazScriptManager_t * script;
     topazConsole_t * console;
     topazFontManager_t * fontManager;
+    topazAudio_t * audio;
 
     topazTime_t * timeRef;
     double frameEnd;
@@ -142,6 +143,7 @@ topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
     out->graphics = topaz_graphics_create(out);
     out->console = topaz_console_create(out);
     out->fontManager = topaz_font_manager_create(out);
+    out->audio = topaz_audio_create(out);
     // creating
 
 
@@ -186,7 +188,7 @@ void topaz_context_destroy(topaz_t * t) {
 
     topaz_input_destroy(t->input);
     topaz_view_manager_destroy(t->viewManager);
-    topaz_audio_manager_destroy(t->audioManager);
+    topaz_audio_destroy(t->audio);
     topaz_resources_destroy(t->resources);
     topaz_graphics_destroy(t->graphics);
 
@@ -369,7 +371,7 @@ void topaz_context_draw(topaz_t * t) {
 void topaz_context_iterate(topaz_t * t) {
     topaz_context_step(t);
     topaz_context_draw(t);
-    topaz_audio_update(t->audioManager);
+    topaz_audio_update(t->audio);
     topaz_view_manager_update_view(t->viewManager);
     topaz_graphics_reset_scene(t->graphics);
 }
@@ -499,6 +501,9 @@ topazGraphics_t * topaz_context_get_graphics(topaz_t * t) {
     return t->graphics;
 }
 
+topazAudio_t * topaz_context_get_audio(topaz_t * t) {
+    return t->audio;
+}
 topazScriptManager_t  * topaz_context_get_script_manager(topaz_t * t) {
     return t->script;
 

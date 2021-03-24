@@ -54,6 +54,7 @@ src = [
     'src/modules_script_manager.c',
     'src/modules_font_manager.c',
     'src/modules_console.c',
+    'src/modules_audio.c',
     'src/particle.c',
     'src/rbuffer.c',
     'src/refbank.c',

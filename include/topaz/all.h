@@ -40,6 +40,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/assets/image.h>
 #include <topaz/assets/data.h>
+#include <topaz/assets/sound.h>
 
 
 #include <topaz/backends/audio_manager.h>
@@ -71,6 +72,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/modules/graphics.h>
 #include <topaz/modules/console.h>
 #include <topaz/modules/resources.h>
+#include <topaz/modules/audio.h>
 
 #include <topaz/asset.h>
 #include <topaz/camera.h>
