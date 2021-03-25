@@ -117,6 +117,7 @@ typedef void (*topaz_audio_manager_stream_callback)(
 /// bring the backend to a usable state. Returns whether or 
 /// not the connection was successfully made. Else,
 /// it is recommended to try again.
+/// NOTE: the callback may be run on another thread.
 int topaz_audio_manager_connect(
     /// The audio manager to modify.
     topazAudioManager_t * audioMan,

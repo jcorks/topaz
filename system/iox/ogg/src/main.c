@@ -176,14 +176,14 @@ static int ogg_stream_finish(
         int section = 0;
         uint8_t * block = malloc(TOPAZOGGBUFFERSIZE);     
         
-        topazArray_t * samples = topaz_array_create(sizeof(int8_t));
+        topazArray_t * samples = topaz_array_create(sizeof(uint8_t));
                
         while(1) {
             int size = ov_read(
                 &oggFile,
                 block,
                 TOPAZOGGBUFFERSIZE,
-                0, 2, 1, &section // matches sound format.
+                0, 2, 0, &section // matches sound format.
             );
             if (!size) {
                 break;

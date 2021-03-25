@@ -1,3 +1,33 @@
+/*
+Copyright (c) 2020, Johnathan Corkery. (jcorkery@umich.edu)
+All rights reserved.
+
+This file is part of the topaz project (https://github.com/jcorks/topaz)
+topaz was released under the MIT License, as detailed below.
+
+
+
+Permission is hereby granted, free of charge, to any person obtaining a copy 
+of this software and associated documentation files (the "Software"), to deal 
+in the Software without restriction, including without limitation the rights 
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+copies of the Software, and to permit persons to whom the Software is furnished 
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall
+be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+DEALINGS IN THE SOFTWARE.
+
+
+*/
+
 #include <topaz/modules/audio.h>
 #include <topaz/modules/resources.h>
 #include <topaz/containers/table.h>
@@ -385,13 +415,13 @@ topazAudio_Active_t * topaz_audio_play_sound_interactive(
     inst.cmd = APU__SOUND_SET_VOLUME;
     inst.value0 = volume;
     if (inst.value0 < 0) inst.value0 = 0;
-    if (inst.value0 < 1) inst.value0 = 1;
+    if (inst.value0 > 1) inst.value0 = 1;
     topaz_sstream_push_instruction(audio->cmd, inst);
     
     inst.cmd = APU__SOUND_SET_PANNING;
-    inst.value0 = volume;
+    inst.value0 = panning;
     if (inst.value0 < 0) inst.value0 = 0;
-    if (inst.value0 < 1) inst.value0 = 1;
+    if (inst.value0 > 1) inst.value0 = 1;
     topaz_sstream_push_instruction(audio->cmd, inst);
     return out;
 }
@@ -1035,7 +1065,7 @@ TopazAudioProcessor * topaz_apu_create(topazAudio_t * audio) {
     uint32_t i;
     for(i = 0; i < 0xff; ++i) {
         apu->channel[i].volume = 1.0;
-        apu->channel[i].panning = 1.0;
+        apu->channel[i].panning = 0.5;
         
     }
     return apu;
@@ -1093,7 +1123,6 @@ static void topaz_apu_process_commands(TopazAudioProcessor * apu) {
                     TAPUChannel * channel = apu->channel+((int)inst->value0);
                     TAPUStream * str = topaz_apu_stream_new(apu, inst->id);
                     topazArray_t * samples = topaz_asb_get_samples(apu->audio->soundbank, inst->sound);
-
                     str->bankID = inst->sound;
                     if (samples) {
                         str->samples = topaz_array_get_data(samples);
@@ -1109,9 +1138,9 @@ static void topaz_apu_process_commands(TopazAudioProcessor * apu) {
                     // channel is already active
                     if (channel->stream) {
                         str->next = channel->stream;
-                        str->prev = channel->stream->prev;
+                        str->prev = NULL;
                         channel->stream->prev = str;
-
+                        channel->stream = str;
                     // channel wasnt active. Set stream linked list state 
                     // also, add channel to stream list.
                     } else {
@@ -1122,9 +1151,9 @@ static void topaz_apu_process_commands(TopazAudioProcessor * apu) {
                         // channels already active, add to list
                         if (apu->active) {
                             channel->next = apu->active;
-                            channel->prev = apu->active->prev;
+                            channel->prev = NULL;
                             apu->active->prev = channel;
-
+                            apu->active = channel;
                         // only active channel
                         } else {
                             channel->next = NULL;
@@ -1264,10 +1293,12 @@ static void topaz_apu_write_buffer(TopazAudioProcessor * apu, float * samplesRaw
         float rightPanChannel = panning_to_multiplier_r(channel->panning);
 
         while(stream) {
-            if (stream->progress < stream->sampleCount) {
+            if (stream->progress < stream->sampleCount && stream->pause == 0) {
                 float leftPan  = panning_to_multiplier_l(stream->panning)*leftPanChannel;
                 float rightPan = panning_to_multiplier_r(stream->panning)*rightPanChannel;
                 float volume = channel->volume * stream->volume;
+            
+
             
                 const topazSound_Sample_t * streamSamples = stream->samples + stream->progress;
                 samples = (FloatSample*)samplesRaw;
@@ -1346,7 +1377,14 @@ static void topaz_apu_write_buffer(TopazAudioProcessor * apu, float * samplesRaw
                 samples->r = (samples->r / highest)*2.f - 1.f;
                 samples++;
             }
-        } 
+        } else {
+            samples = (FloatSample*)samplesRaw;
+            for(i = 0; i < sampleCount; ++i) {
+                samples->l = (samples->l)*2.f - 1.f;
+                samples->r = (samples->r)*2.f - 1.f;
+                samples++;
+            }
+        }
     }
 }
 
