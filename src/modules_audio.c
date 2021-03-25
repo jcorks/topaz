@@ -539,7 +539,7 @@ void topaz_sstream_push_instruction(TopazAudioStateStream * state, TopazAudioIns
 
 
 int topaz_sstream_finalize(TopazAudioStateStream * state) {
-    if (!topaz_array_get_size(state->outgoing->instructions)) return 1;
+    if (!(state->outgoing && topaz_array_get_size(state->outgoing->instructions))) return 1;
     // currently occupied / incomplete
     if (state->outgoingFinalized) {
         return 0;    
@@ -565,7 +565,8 @@ int topaz_sstream_transfer_packet(TopazAudioStateStream * from, TopazAudioStateS
         TopazAudioStatePacket * old = to->incomingLast;
         to->incomingLast = to->incoming;                   
         to->incoming = p;
-        topaz_sstream_destroy_packet(old);
+        if (old)
+            topaz_sstream_destroy_packet(old);
         return 1;
     }
     return 0;
@@ -1031,6 +1032,12 @@ TopazAudioProcessor * topaz_apu_create(topazAudio_t * audio) {
     apu->audio = audio;
     apu->streamObjectPool = topaz_array_create(sizeof(TAPUStream *));
     apu->streamObjectTable = topaz_table_create_hash_pointer();
+    uint32_t i;
+    for(i = 0; i < 0xff; ++i) {
+        apu->channel[i].volume = 1.0;
+        apu->channel[i].panning = 1.0;
+        
+    }
     return apu;
 }
 
@@ -1239,9 +1246,9 @@ typedef struct {
     float r;
 } FloatSample;
 static void topaz_apu_write_buffer(TopazAudioProcessor * apu, float * samplesRaw, uint32_t sampleCount) {
-    uint32_t i, n;
+    uint32_t i;
     FloatSample * samples = (FloatSample*)samplesRaw;
-    for(i = 0; i < sampleCount; ++n) {
+    for(i = 0; i < sampleCount; ++i) {
         samples->l = 0;
         samples->r = 0;
         samples++;
@@ -1270,12 +1277,13 @@ static void topaz_apu_write_buffer(TopazAudioProcessor * apu, float * samplesRaw
                     samples++;
                     streamSamples++;
                 }
+                stream->progress += i;
                 needsLimiting = 1;
             }
             TAPUStream * next = stream->next;
 
             
-            // handle sample finished: remove from channel's chain
+            // handle stream finished: remove from channel's chain
             if (stream->progress >= stream->sampleCount) {
                 if (channel->stream == stream) {
                     channel->stream = stream->next;
@@ -1331,12 +1339,14 @@ static void topaz_apu_write_buffer(TopazAudioProcessor * apu, float * samplesRaw
             if (samples->r > highest) highest = samples->r;  
             samples++;
         }
-        samples = (FloatSample*)samplesRaw;
-        for(i = 0; i < sampleCount; ++i) {
-            samples->l = (samples->l / highest)*2.f - 1.f;
-            samples->r = (samples->r / highest)*2.f - 1.f;
-            samples++;
-        }
+        if (highest > 1.f) {
+            samples = (FloatSample*)samplesRaw;
+            for(i = 0; i < sampleCount; ++i) {
+                samples->l = (samples->l / highest)*2.f - 1.f;
+                samples->r = (samples->r / highest)*2.f - 1.f;
+                samples++;
+            }
+        } 
     }
 }
 

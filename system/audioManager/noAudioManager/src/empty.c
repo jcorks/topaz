@@ -34,13 +34,41 @@ DEALINGS IN THE SOFTWARE.
 #include "backend.h"
 #include <topaz/version.h>
 #include <topaz/system.h>
+#include <stdlib.h>
 
+typedef void (*AudioStreamHandler)(topazAudioManager_t *, uint32_t, float *, void *);
 
-
-
-
+static AudioStreamHandler h = NULL;
+static void * hData;
 
 static intptr_t api_nothing(){return 0;}
+
+static int dummy_connect(
+    topazAudioManager_t * nu0, 
+    void * nu, 
+    AudioStreamHandler handler, 
+    void * data
+) {
+    h = handler;
+    hData = data;
+    return 1;
+}
+
+
+static  void update_dummy (
+    /// The backend to be updated.
+    topazSystem_Backend_t * backend,
+
+    // The data bound to the callback.
+    void * callbackData
+) {
+    if (h) {
+        float * samples = malloc(sizeof(float)*1024);
+        h(NULL, 512, samples, hData);
+        free(samples);
+    }
+}
+
 
 void topaz_system_audioManager_noAudioManager__backend(
     topazSystem_t *          system, 
@@ -68,7 +96,7 @@ void topaz_system_audioManager_noAudioManager__backend(
         NULL,
         
         // on step late 
-        NULL,
+        update_dummy,
         
         // on draw 
         NULL,
@@ -91,7 +119,7 @@ void topaz_system_audioManager_noAudioManager__backend(
 
     api->audio_manager_create          = (void * (*)(topazAudioManager_t *, topaz_t *)) api_nothing;
     api->audio_manager_destroy         = (void (*)(topazAudioManager_t *, void *)) api_nothing;
-    api->audio_manager_connect         = (int  (*)(topazAudioManager_t *, void *, void (*audioStreamHandler)(topazAudioManager_t *, uint32_t, float *, void *), void *)) api_nothing;
+    api->audio_manager_connect         = dummy_connect;
     api->audio_manager_set_sample_rate = (void (*)(topazAudioManager_t *, void *, uint32_t)) api_nothing;
     api->audio_manager_get_sample_rate = (uint32_t (*)(topazAudioManager_t *, void *)) api_nothing;
     api->audio_manager_is_underrun     = (int (*)(topazAudioManager_t *, void *)) api_nothing;

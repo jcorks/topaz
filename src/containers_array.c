@@ -159,7 +159,7 @@ void topaz_array_push_n(topazArray_t * t, const void * elements, uint32_t count)
         assert(t && "topazArray_t pointer cannot be NULL.");
     #endif
     while(t->size + count > t->allocSize) {
-        t->allocSize += t->allocSize*array_presize_amt;
+        t->allocSize += t->allocSize*array_presize_amt+1;
         t->data = realloc(t->data, t->allocSize*t->sizeofType);
     }
     memcpy(

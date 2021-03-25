@@ -88,7 +88,7 @@ topazAsset_t * topaz_sound_create(topaz_t * t, const topazString_t * name) {
 
     return topaz_asset_create(
         t,
-        topazAsset_Type_Data,
+        topazAsset_Type_Sound,
         name, 
         &attribs
     );
