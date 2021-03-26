@@ -45,14 +45,6 @@ typedef struct topazAudio_t topazAudio_t;
 
 
 
-/// Allows for interaction with a playing sound.
-///
-/// An Active instance represents a soundclip of audio that is currently
-/// undergoing playback. As such, you can use it to modify how the
-/// corresponding audio is playing. Because typical playback systems are done on
-/// separate threads, the reflection of changes caused by the calling of
-/// these functions is not immediately guaranteed.
-typedef struct topazAudio_Active_t topazAudio_Active_t;
 
 
 
@@ -82,36 +74,26 @@ void topaz_audio_update(
 
 
 
-/// Queues sound for immediate playback
-void topaz_audio_play_sound(
+/// Queues sound for immediate playback and returns 
+/// a playback ID that can be used to interact with the 
+/// sound.
+///
+/// A playback ID represents a sound of audio that is currently
+/// undergoing playback. As such, you can use it to modify how the
+/// corresponding audio is playing. Because typical playback systems are done on
+/// separate threads, the reflection of changes caused by the calling of
+/// these functions is not immediately guaranteed.
+///
+uint32_t topaz_audio_play_sound(
     /// The audio module to play.
     topazAudio_t * audio, 
     /// The sound to play.
     topazAsset_t * asset,
     /// The channel to send the audio block to play on.
-    uint8_t channel,
-    /// The volume the sound should play at.
-    float volume,
-    /// The panning for the sound. 0.f is all the way to the left, 1.f is all the way to the right.
-    float panning
+    uint8_t channel
 );
 
 
-/// Queues sound for immediate playback, but returns 
-/// an object that can be used to interact with the 
-/// active clip.
-topazAudio_Active_t * topaz_audio_play_sound_interactive(
-    /// The audio module to play.
-    topazAudio_t * audio, 
-    /// The sound to play.
-    topazAsset_t * asset,
-    /// The channel to send the audio block to play on.
-    uint8_t channel,
-    /// The volume the sound should play at.
-    float volume,
-    /// The panning for the sound. 0.f is all the way to the left, 1.f is all the way to the right.
-    float panning
-);
 
 
 
@@ -164,27 +146,23 @@ topazAudioManager_t * topaz_audio_get_manager(
    
    
    
-/// Signals to the audio module that this active 
-/// sound is no longer going to be used by user code.
-/// This must be called when the active sound is no longer 
-/// needed. After this call, the
-void topaz_audio_active_destroy(
-    topazAudio_Active_t * aSound
-);
-   
 /// Sets the volume of the ActiveSound.
-void topaz_audio_active_set_volume(
+void topaz_audio_playback_set_volume(
+    /// The audio instance.
+    topazAudio_t * audio, 
     /// The active sound to modify.
-    topazAudio_Active_t * aSound, 
+    uint32_t id,
     /// The new volume to use. The value is clamped to the range 0.f and 1.f.
     float v
 );
 
 /// Sets the panning.
 ///
-void topaz_audio_active_set_panning(
+void topaz_audio_playback_set_panning(
+    /// The audio instance.
+    topazAudio_t * audio, 
     /// The active sound to modify.
-    topazAudio_Active_t * aSound, 
+    uint32_t id,
     /// The new panning. The value is clamped to the range 0.f and 1.f.
     float v
 );
@@ -192,9 +170,11 @@ void topaz_audio_active_set_panning(
 /// Sets whether the sound should be replayed once it finishes.
 ///
 /// The default is not to repeat.
-void topaz_audio_active_set_repeat(
+void topaz_audio_playback_set_repeat(
+    /// The audio instance.
+    topazAudio_t * audio, 
     /// The active sound to modify.
-    topazAudio_Active_t * aSound, 
+    uint32_t id,
     /// If true, the sound will repeat. If false, the sound will not repeat.
     int b
 );
@@ -204,32 +184,40 @@ void topaz_audio_active_set_repeat(
 /// f is interpreted as a fraction of the progress of the sound,
 /// where 0 is the beginning of the sound and 1 is the end of the sound.
 /// The value is clamped to this range.
-void topaz_audio_active_seek(
+void topaz_audio_playback_seek(
+    /// The audio instance.
+    topazAudio_t * audio, 
     /// The active sound to modify.
-    topazAudio_Active_t * aSound, 
+    uint32_t id,
     /// The place in the sound to continue playback from.
     float f
 );
 
 ///  Halts the sound.
 ///
-void topaz_audio_active_stop(
+void topaz_audio_playback_stop(
+    /// The audio instance.
+    topazAudio_t * audio, 
     /// The active sound to modify.
-    topazAudio_Active_t * aSound
+    uint32_t id
 );
 
 /// Pauses the sound if it was playing.
 ///
-void topaz_audio_active_pause(
+void topaz_audio_playback_pause(
+    /// The audio instance.
+    topazAudio_t * audio, 
     /// The active sound to modify.
-    topazAudio_Active_t * aSound
+    uint32_t id
 );
 
 /// Resumes the sound's playback if it was Pause()ed.
 ///
-void topaz_audio_active_resume(
+void topaz_audio_playback_resume(
+    /// The audio instance.
+    topazAudio_t * audio, 
     /// The active sound to modify.
-    topazAudio_Active_t * aSound
+    uint32_t id
 );
 
 

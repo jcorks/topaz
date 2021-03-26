@@ -130,7 +130,53 @@ class Topaz {
 
 
 
+class AudioPlaybackSound {
+    var impl_;
+    
+    func init(id) {
+        impl_ = id;
+    }   
+    
+    var volume {
+        set {
+            topaz_.topaz_audio__playback_set_volume(impl_, value);
+        }
+    }
 
+    var panning {
+        set {
+            topaz_.topaz_audio__playback_set_panning(impl_, value);
+        }
+    }
+
+    var repeatSound {
+        set {
+            topaz_.topaz_audio__playback_set_repeat(impl_, value);
+        }
+    }
+
+    var paused {
+        set {
+            if (value)
+                topaz_.topaz_audio__playback_pause(impl_);
+            else 
+                topaz_.topaz_audio__playback_resume(impl_);
+        }
+    }
+    
+    
+    var seek {
+        set {
+            topaz_.topaz_audio__playback_seek(impl_, value);            
+        }
+    }
+
+    func stop() {
+        topaz_.topaz_audio__playback_stop(impl_);
+    }
+
+
+}
 
 class Vector {
     // effectively private.
@@ -376,7 +422,7 @@ class Color {
 enum AssetType {
     None,
     Image,
-    Audio,
+    Sound,
     Model,
     Particle,
     Data,
@@ -830,6 +876,36 @@ class Data : Asset{
 
 }
 
+
+class Sound : Asset{
+    var sampleCount {
+        get {
+            return topaz_.topaz_sound__get_sample_count(impl_);        
+        }
+    }
+
+    var samples {
+        get {
+            var out = [];
+            var len = topaz_.topaz_sound__get_sample_count(impl_);
+            for(var i in 0..<len) {
+                out.push(topaz_.topaz_sound__get_nth_sample_left(impl_, i));
+                out.push(topaz_.topaz_sound__get_nth_sample_right(impl_, i));
+            }
+            return out;
+        }
+        
+        set {
+            topaz_.topaz_sound__set_samples(impl_, value);        
+        }
+    }
+
+    func String() {
+        return 'Sound asset (' + topaz_.topaz_sound__get_sample_count(impl_) + ' samples)';
+    }    
+
+
+}
 
 class Image : Asset{
     var height {
@@ -1306,6 +1382,28 @@ class Input {
     }
 }
 
+
+
+
+class Audio {
+    static func playSound(asset, channel) {
+        return AudioPlaybackSound(topaz_.topaz_audio__play_sound(asset.impl_, channel == undefined ? 0 : channel));
+    }
+    
+    static func channelHalt(channel) {
+        topaz_.topaz_audio__channel_halt(channel);
+    }
+    
+    static func channelSetVolume(channel, volume) {
+        topaz_.topaz_audio__channel_set_volume(channel, volume);
+    }
+    
+    static func channelSetPanning(channel, panning) {
+        topaz_.topaz_audio__channel_set_panning(channel, panning);
+    }
+
+}
+
     enum ObjectGroup {
         /// Group A.
         A,
@@ -1560,6 +1658,14 @@ class Resources {
         out.impl_ = topaz_.topaz_resources__load_asset(a, b, c);
         return out;
     }
+
+    static func loadAssetData(a, b, c) {
+        var out = Asset();
+        if (c == '') c = b;
+        out.impl_ = topaz_.topaz_resources__load_asset_data(a, b, c);
+        return out;
+    }
+
 
     static func fetchAsset(a, b) {
         var out = Asset();
@@ -2155,5 +2261,6 @@ class Debug {
 
 var debug = Debug();
 topaz_.t_['debug'] = debug;
+
 
 

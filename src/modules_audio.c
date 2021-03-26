@@ -286,9 +286,6 @@ struct topazAudio_t {
 
 
 
-// internal for creating active stream references.
-static topazAudio_Active_t * topaz_audio_active_create(TopazAudioStateStream *, uint32_t id);
-
 
 
 
@@ -377,30 +374,13 @@ void topaz_audio_update(
 
 }
 
-void topaz_audio_play_sound(
-    topazAudio_t * audio, 
-    topazAsset_t * asset,
-    uint8_t channel,
-    float volume,
-    float panning
-) {
-    topazAudio_Active_t * out = topaz_audio_play_sound_interactive(
-        audio,
-        asset,
-        channel,
-        volume,
-        panning
-    );
-    topaz_audio_active_destroy(out);
-}
 
 
-topazAudio_Active_t * topaz_audio_play_sound_interactive(
+
+uint32_t topaz_audio_play_sound(
     topazAudio_t * audio, 
     topazAsset_t * asset,
-    uint8_t channel,
-    float volume,
-    float panning
+    uint8_t channel
 ) {
 
     TopazAudioInstruction inst;
@@ -409,21 +389,17 @@ topazAudio_Active_t * topaz_audio_play_sound_interactive(
     inst.id = ++audio->aspool;
     inst.value0 = channel;
     topaz_sstream_push_instruction(audio->cmd, inst);
-    topazAudio_Active_t * out = topaz_audio_active_create(audio->cmd, inst.id);
     
     
     inst.cmd = APU__SOUND_SET_VOLUME;
-    inst.value0 = volume;
-    if (inst.value0 < 0) inst.value0 = 0;
-    if (inst.value0 > 1) inst.value0 = 1;
+    inst.value0 = 1;
     topaz_sstream_push_instruction(audio->cmd, inst);
     
     inst.cmd = APU__SOUND_SET_PANNING;
-    inst.value0 = panning;
-    if (inst.value0 < 0) inst.value0 = 0;
-    if (inst.value0 > 1) inst.value0 = 1;
+    inst.value0 = 0.5;
     topaz_sstream_push_instruction(audio->cmd, inst);
-    return out;
+
+    return inst.id;
 }
 
 
@@ -808,31 +784,12 @@ void topaz_asb_clean(TopazAudioSoundBank * bank) {
 ///////////////// active sound 
 
 
-struct topazAudio_Active_t {
-    TopazAudioStateStream * cmd;
-    uint32_t activeID;
-};
-
-topazAudio_Active_t * topaz_audio_active_create(TopazAudioStateStream * cmd, uint32_t id) {
-    topazAudio_Active_t * out = calloc(1, sizeof(topazAudio_Active_t));
-    out->cmd = cmd;
-    out->activeID = id;
-    return out;
-}
 
 
-void topaz_audio_active_destroy(
-    topazAudio_Active_t * aSound
-) {
-    // the active sound has no bearing on the actual active sound,
-    // it is only for interacting with the sound on the server.
-    // If the sound was already removed by the server, the command will 
-    // simply be ignored.
-    free(aSound);
-}
    
-void topaz_audio_active_set_volume(
-    topazAudio_Active_t * aSound, 
+void topaz_audio_playback_set_volume(
+    topazAudio_t * audio, 
+    uint32_t id,
     float v
 ) {
     TopazAudioInstruction cmd;
@@ -840,15 +797,16 @@ void topaz_audio_active_set_volume(
     if (v > 1.f) v = 1.f;
     if (v < 0.f) v = 0.f;
     cmd.value0 = v;
-    cmd.id = aSound->activeID;
+    cmd.id = id;
     topaz_sstream_push_instruction(
-        aSound->cmd, 
+        audio->cmd, 
         cmd
     );
 }
 
-void topaz_audio_active_set_panning(
-    topazAudio_Active_t * aSound, 
+void topaz_audio_playback_set_panning(
+    topazAudio_t * audio, 
+    uint32_t id,
     float v
 ) {
     TopazAudioInstruction cmd;
@@ -856,30 +814,32 @@ void topaz_audio_active_set_panning(
     if (v > 1.f) v = 1.f;
     if (v < 0.f) v = 0.f;
     cmd.value0 = v;
-    cmd.id = aSound->activeID;
+    cmd.id = id;
     topaz_sstream_push_instruction(
-        aSound->cmd, 
+        audio->cmd, 
         cmd
     );
 }
 
-void topaz_audio_active_set_repeat(
-    topazAudio_Active_t * aSound, 
+void topaz_audio_playback_set_repeat(
+    topazAudio_t * audio, 
+    uint32_t id,
     int b
 ) {
     TopazAudioInstruction cmd;
     cmd.cmd = APU__SOUND_SET_REPEAT;
     if (b) cmd.value0 = 1.f;
     else   cmd.value0 = 0.f;
-    cmd.id = aSound->activeID;
+    cmd.id = id;
     topaz_sstream_push_instruction(
-        aSound->cmd, 
+        audio->cmd, 
         cmd
     );
 }
 
-void topaz_audio_active_seek(
-    topazAudio_Active_t * aSound, 
+void topaz_audio_playback_seek(
+    topazAudio_t * audio, 
+    uint32_t id,
     float v
 ) {
     TopazAudioInstruction cmd;
@@ -887,9 +847,9 @@ void topaz_audio_active_seek(
     if (v > 1.f) v = 1.f;
     if (v < 0.f) v = 0.f;
     cmd.value0 = v;
-    cmd.id = aSound->activeID;
+    cmd.id = id;
     topaz_sstream_push_instruction(
-        aSound->cmd, 
+        audio->cmd, 
         cmd
     );
 
@@ -897,15 +857,16 @@ void topaz_audio_active_seek(
 
 ///  Halts the sound.
 ///
-void topaz_audio_active_stop(
-    topazAudio_Active_t * aSound
+void topaz_audio_playback_stop(
+    topazAudio_t * audio, 
+    uint32_t id
 ) {
     TopazAudioInstruction cmd;
     cmd.cmd = APU__SOUND_SET_REPEAT;
-    cmd.id = aSound->activeID;
+    cmd.id = id;
     cmd.value0 = 0;
     topaz_sstream_push_instruction(
-        aSound->cmd, 
+        audio->cmd, 
         cmd
     );
     
@@ -913,34 +874,36 @@ void topaz_audio_active_stop(
     cmd.cmd = APU__SOUND_SEEK;
     cmd.value0 = 1;
     topaz_sstream_push_instruction(
-        aSound->cmd, 
+        audio->cmd, 
         cmd
     );
 }
 /// Pauses the sound if it was playing.
 ///
-void topaz_audio_active_pause(
-    topazAudio_Active_t * aSound
+void topaz_audio_playback_pause(
+    topazAudio_t * audio, 
+    uint32_t id
 ) {
     TopazAudioInstruction cmd;
     cmd.cmd = APU__SOUND_PAUSE;
-    cmd.id = aSound->activeID;
+    cmd.id = id;
     topaz_sstream_push_instruction(
-        aSound->cmd, 
+        audio->cmd, 
         cmd
     );
 }
 
 /// Resumes the sound's playback if it was Pause()ed.
 ///
-void topaz_audio_active_resume(
-    topazAudio_Active_t * aSound
+void topaz_audio_playback_resume(
+    topazAudio_t * audio, 
+    uint32_t id
 ) {
     TopazAudioInstruction cmd;
     cmd.cmd = APU__SOUND_RESUME;
-    cmd.id = aSound->activeID;
+    cmd.id = id;
     topaz_sstream_push_instruction(
-        aSound->cmd, 
+        audio->cmd, 
         cmd
     );
 
@@ -1316,20 +1279,27 @@ static void topaz_apu_write_buffer(TopazAudioProcessor * apu, float * samplesRaw
             
             // handle stream finished: remove from channel's chain
             if (stream->progress >= stream->sampleCount) {
-                if (channel->stream == stream) {
-                    channel->stream = stream->next;
+                // simply reset progress back to 0.
+                if (stream->repeat) {
+                    stream->progress = 0;
+
+                // otherwise, cleanup and remove.
+                } else {
+                    if (channel->stream == stream) {
+                        channel->stream = stream->next;
+                    }
+                    
+                    if (stream->prev) {
+                        stream->prev->next = stream->next;
+                    }
+                    
+                    if (stream->next) {
+                        stream->next->prev = stream->prev;
+                    }
+                    
+                    // notifies the audio instance, adds the stream to the object pool
+                    topaz_apu_stream_retire(apu, stream);
                 }
-                
-                if (stream->prev) {
-                    stream->prev->next = stream->next;
-                }
-                
-                if (stream->next) {
-                    stream->next->prev = stream->prev;
-                }
-                
-                // notifies the audio instance, adds the stream to the object pool
-                topaz_apu_stream_retire(apu, stream);
             }
             
             stream = next;

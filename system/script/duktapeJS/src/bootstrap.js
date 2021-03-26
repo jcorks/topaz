@@ -323,11 +323,30 @@ topaz = {
         topazPad_options: 511,
         topazInput_Count: 512
     },
+    
+    audio : {
+        playSound : function(asset, channel) {
+            return new topaz.audioPlaybackSound(topaz_audio__play_sound(asset.impl, channel == undefined ? 0 : channel));
+        },
+        
+        channelHalt : function(channel) {
+            topaz_audio__channel_halt(channel);
+        },
+        
+        channelSetVolume : function(channel, volume) {
+            topaz_audio__channel_set_volume(channel, volume);
+        },
+
+        channelSetPanning : function(channel, panning) {
+            topaz_audio__channel_set_panning(channel, panning);
+        }
+
+    },
 
     resources : {
         assetType_None : 0,
         assetType_Image : 1,
-        assetType_Audio : 2,
+        assetType_Sound : 2,
         assetType_Model : 3,
         assetType_Particle : 4,
         assetType_Data : 5,
@@ -336,6 +355,7 @@ topaz = {
             switch(topaz_asset__get_type(impl)) {
               case topaz.resources.assetType_Image: return new topaz.image(impl); break;
               case topaz.resources.assetType_Data:  return new topaz.data (impl); break;
+              case topaz.resources.assetType_Sound:  return new topaz.sound(impl); break;
             }
             return new topaz.asset(impl);
 
@@ -433,6 +453,22 @@ topaz = {
         this.impl = impl;
 
     },
+
+    sound : function(implPre) {
+        var impl;
+
+        if (implPre)
+            impl = implPre;
+        else {
+            throw new Error("Sound asset cannot be make without a LL asset instance.");
+        }
+        impl.__ctx = this;
+        this.uniqueID = topaz.uniqueObjectPool++;
+        this.impl = impl;
+
+    },
+
+
 
     entityNull : function() {return new topaz_entity__null();},
     entity : function(defineProps, implPre) {
@@ -602,6 +638,13 @@ topaz = {
 
 
         this.impl = impl;
+    },
+    
+    audioPlaybackSound : function(implPre) {
+        this.impl = implPre;
+        if (!this.impl) {
+            this.impl = 0; // not a real sound, probably.
+        }
     },
 
     particle : function(implPre) {
@@ -1645,6 +1688,34 @@ topaz = {
 
 
 
+    // topaz.sound 
+    Object.defineProperty(
+        topaz.sound.prototype,
+        'sampleCount', {
+            get : function()  { return topaz_sound__get_sample_count(this.impl);}
+        }
+    );
+
+    Object.defineProperty(
+        topaz.sound.prototype,
+        'samples', {
+            get : function()  { 
+                var out = [];
+                const len = this.sampleCount;
+                for(var i = 0; i < len; ++i) {
+                    out.push(topaz_sound__get_nth_sample_left(this.impl, i));
+                    out.push(topaz_sound__get_nth_sample_right(this.impl, i));
+                }
+                return out;
+            },
+            
+            
+            set : function(v) {
+                topaz_sound__set_samples(this.impl, v);
+            }
+        }
+    );
+    topaz._assetSetCommonSymbols(topaz.sound.prototype);
 
 
 
@@ -1736,6 +1807,53 @@ topaz = {
     }
     topaz._assetSetCommonSymbols(topaz.image.prototype);
 
+
+
+    // audioPlaybackSound 
+    
+    Object.defineProperty(
+        topaz.audioPlaybackSound.prototype,
+        'volume', {
+            set : function(v)  { topaz_audio__playback_set_volume(this.impl, v);}
+        }
+    );
+    Object.defineProperty(
+        topaz.audioPlaybackSound.prototype,
+        'panning', {
+            set : function(v)  { topaz_audio__playback_set_panning(this.impl, v);}
+        }
+    );
+    Object.defineProperty(
+        topaz.audioPlaybackSound.prototype,
+        'repeat', {
+            set : function(v)  { topaz_audio__playback_set_repeat(this.impl, v);}
+        }
+    );
+    Object.defineProperty(
+        topaz.audioPlaybackSound.prototype,
+        'paused', {
+            set : function(v)  { 
+                if (v)
+                    topaz_audio__playback_pause(this.impl);
+                else
+                    topaz_audio__playback_resume(this.impl);
+            }
+        }
+    );
+
+    Object.defineProperty(
+        topaz.audioPlaybackSound.prototype,
+        'seek', {
+            set : function(v)  { 
+                topaz_audio__playback_seek(this.impl, v);
+            }
+        }
+    );
+    
+    
+    topaz.audioPlaybackSound.prototype.stop = function() {
+        topaz_audio__playback_stop(this.impl);
+    }
 
 
 

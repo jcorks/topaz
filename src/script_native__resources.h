@@ -40,8 +40,9 @@ TSO_SCRIPT_API_FN(resources_api__load_asset) {
 
     int type = TSO_OBJECT_TYPE__ASSET;
     switch(topaz_asset_get_type(asset)) {
-      case topazAsset_Type_Image: type |= TSO_OBJECT_ID__IMAGE; break;
-      case topazAsset_Type_Data:  type |= TSO_OBJECT_ID__DATA; break;
+      case topazAsset_Type_Image:  type |= TSO_OBJECT_ID__IMAGE; break;
+      case topazAsset_Type_Data:   type |= TSO_OBJECT_ID__DATA; break;
+      case topazAsset_Type_Sound:  type |= TSO_OBJECT_ID__SOUND; break;
       default:;
     }
 
@@ -80,8 +81,9 @@ TSO_SCRIPT_API_FN(resources_api__load_asset_data) {
 
     int type = TSO_OBJECT_TYPE__ASSET;
     switch(topaz_asset_get_type(asset)) {
-      case topazAsset_Type_Image: type |= TSO_OBJECT_ID__IMAGE; break;
-      case topazAsset_Type_Data:  type |= TSO_OBJECT_ID__DATA; break;
+      case topazAsset_Type_Image:  type |= TSO_OBJECT_ID__IMAGE; break;
+      case topazAsset_Type_Data:   type |= TSO_OBJECT_ID__DATA; break;
+      case topazAsset_Type_Sound:  type |= TSO_OBJECT_ID__SOUND; break;
       default:;
     }
 
@@ -109,8 +111,9 @@ TSO_SCRIPT_API_FN(resources_api__fetch_asset) {
 
     int type = TSO_OBJECT_TYPE__ASSET;
     switch(topaz_asset_get_type(asset)) {
-      case topazAsset_Type_Image: type |= TSO_OBJECT_ID__IMAGE; break;
-      case topazAsset_Type_Data:  type |= TSO_OBJECT_ID__DATA; break;
+      case topazAsset_Type_Image:  type |= TSO_OBJECT_ID__IMAGE; break;
+      case topazAsset_Type_Data:   type |= TSO_OBJECT_ID__DATA; break;
+      case topazAsset_Type_Sound:  type |= TSO_OBJECT_ID__SOUND; break;
       default:;
     }
 

@@ -222,14 +222,14 @@ TSO_SCRIPT_API_FN(shape2d_api__form_triangles) {
     if (topaz_script_object_reference_get_feature_mask(arg1) & topazScript_Object_Feature_Array) {
         uint32_t len = topaz_script_object_reference_array_get_count(arg1);
         uint32_t i;
-        topazVector_t * v = calloc(len, sizeof(topazVector_t));
+        topazVector_t * v = calloc(len/2, sizeof(topazVector_t));
         for(i = 0; i < len; i+=2) {
             v[i/2].x = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i));
-            v[i/2].y = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i));
+            v[i/2].y = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i+1));
         }
         topaz_shape2d_form_triangles(
             native,
-            TOPAZ_ARRAY_CAST(v, topazVector_t, len)
+            TOPAZ_ARRAY_CAST(v, topazVector_t, len/2)
         );
         free(v);
     }
@@ -245,14 +245,14 @@ TSO_SCRIPT_API_FN(shape2d_api__form_lines) {
     if (topaz_script_object_reference_get_feature_mask(arg1) & topazScript_Object_Feature_Array) {
         uint32_t len = topaz_script_object_reference_array_get_count(arg1);
         uint32_t i;
-        topazVector_t * v = calloc(len, sizeof(topazVector_t));
+        topazVector_t * v = calloc(len/2, sizeof(topazVector_t));
         for(i = 0; i < len; i+=2) {
             v[i/2].x = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i));
             v[i/2].y = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i+1));
         }
         topaz_shape2d_form_lines(
             native,
-            TOPAZ_ARRAY_CAST(v, topazVector_t, len)
+            TOPAZ_ARRAY_CAST(v, topazVector_t, len/2)
         );
         free(v);
     }
