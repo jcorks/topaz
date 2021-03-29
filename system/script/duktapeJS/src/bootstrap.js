@@ -352,6 +352,7 @@ topaz = {
         assetType_Data : 5,
         assetType_Actor : 6,
         _rawAssetToInstance : function(impl) {
+            if (!impl) return undefined;
             switch(topaz_asset__get_type(impl)) {
               case topaz.resources.assetType_Image: return new topaz.image(impl); break;
               case topaz.resources.assetType_Data:  return new topaz.data (impl); break;

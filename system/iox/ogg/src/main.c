@@ -201,7 +201,7 @@ static int ogg_stream_finish(
             topaz_array_get_size(samples)/sizeof(topazSound_Sample_t)
         );
         free(block);
-
+        topaz_array_destroy(samples);
     }
     topaz_array_destroy(arraySrc);
     return 1;
