@@ -95,16 +95,6 @@ const topazString_t * topaz_resources_get_path(
     const topazResources_t * res
 );
 
-/// Queries the filesystem for all assets within the asset directory.
-///
-void topaz_resources_query_asset_paths(
-    /// The resource instance to query.
-    topazResources_t * res
-);
-
-/// Returns a read-only list of filesystem paths of resources within the current path
-/// 
-const topazArray_t * topaz_resources_get_asset_paths(topazResources_t *);
 
 
 

@@ -21,7 +21,7 @@ src = [
     'src/backends_audio_manager.c',
     'src/backends_console_display.c',
     'src/backends_display.c',
-    'src/backends_filesys.c',
+    'src/backends_filesystem.c',
     'src/backends_font_renderer.c',
     'src/backends_input_manager.c',
     'src/backends_renderer.c',
@@ -128,7 +128,7 @@ handlerPreferredInputManager   = 'inputManager/'   + get_option('InputManagerBac
 handlerPreferredRenderer       = 'renderer/'       + get_option('RendererBackend')
 handlerPreferredDisplay        = 'display/'        + get_option('DisplayBackend')
 handlerPreferredTime           = 'time/'           + get_option('TimeBackend')
-handlerPreferredFilesys        = 'filesys/'        + get_option('FilesystemBackend')
+handlerPreferredFilesystem     = 'filesystem/'     + get_option('FilesystemBackend')
 handlerPreferredScript         = 'script/'         + get_option('ScriptBackend')
 handlerPreferredConsoleDisplay = 'consoleDisplay/' + get_option('ConsoleDisplayBackend')
 handlerPreferredFontRenderer   = 'fontRenderer/'   + get_option('FontRendererBackend')

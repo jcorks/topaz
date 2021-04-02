@@ -1,7 +1,7 @@
 # Required changes to build to incorporate into file executable
 handlers += {
     'name' : 'posix',
-    'type' : 'filesys',
-    'sources' : ['system/filesys/posix/src/filesys_posix_topaz.c'],
+    'type' : 'filesystem',
+    'sources' : ['system/filesystem/posix/src/posix.c'],
     'shouldTest' : true
 }

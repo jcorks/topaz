@@ -100,6 +100,7 @@ typedef enum {
     TSO_OBJECT_ID__SOUND,
     TSO_OBJECT_ID__PARTICLE,
     TSO_OBJECT_ID__PARTICLE_EMITTER_2D,
+    TSO_OBJECT_ID__FILESYSTEM_PATH,
 
 
     /// All types are above and including the 25th bit .

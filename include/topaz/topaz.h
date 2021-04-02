@@ -37,7 +37,7 @@ typedef struct topazSystem_t topazSystem_t;
 typedef struct topazGraphics_t topazGraphics_t;
 typedef struct topazScriptManager_t topazScriptManager_t;
 typedef struct topazEntity_t topazEntity_t;
-typedef struct topazFilesys_t topazFilesys_t;
+typedef struct topazFilesystem_t topazFilesystem_t;
 typedef struct topazInput_t topazInput_t;
 typedef struct topazViewManager_t topazViewManager_t;
 typedef struct topazResources_t topazResources_t;
@@ -312,7 +312,7 @@ topazArray_t * topaz_context_get_parameter_names(
 
 /// Creates a new, standard filesys instance.
 ///
-topazFilesys_t * topaz_context_filesys_create(
+topazFilesystem_t * topaz_context_get_filesystem(
     /// The relevant context.
     topaz_t * context
 );

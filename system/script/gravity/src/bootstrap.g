@@ -1716,10 +1716,64 @@ class FontManager {
 }
 
 
+
+class FilesystemPath {
+    var impl_;
+    
+    func init(id) {
+        impl_ = id;
+    }   
+    
+    var string {
+        get {
+            return topaz_.topaz_filesystem_path__as_string(impl_);
+        }
+    }
+    
+    var parent {
+        get {
+            return FilesystemPath(topaz_.topaz_filesystem_path__get_parent(impl_));
+        }
+    }
+    
+    var children {
+        get {
+            var out = [];
+            var len = topaz_.topaz_filesystem_path__get_child_count(impl_);
+            for(var i in 0..<len) {
+                out.push(FilesystemPath(topaz_.topaz_filesystem_path__get_nth_child(impl_, i)));
+            }
+            return out;
+        }
+    }
+}
+
+enum FilesystemDefaultNode {
+    Resources,
+    Topaz,
+    UserData
+}
+
+class Filesystem {
+    static func getPath(n) {
+        return FilesystemPath(topaz_.topaz_filesystem__get_path(n));
+    }
+    
+    static func getPathFromString(pth, str) {
+        if (pth) {
+            return FilesystemPath(topaz_.topaz_filesystem__get_path_form_string(pth, str));
+        } else {
+            return FilesystemPath(topaz_.topaz_filesystem__get_path_form_string(str));        
+        }
+    }
+    
+}
+
+
 enum SchedulerMode {
     Time,
     Frame,
-};
+}
 
 class Scheduler : Component {
 
@@ -2261,6 +2315,3 @@ class Debug {
 
 var debug = Debug();
 topaz_.t_['debug'] = debug;
-
-
-

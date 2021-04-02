@@ -41,15 +41,15 @@ DEALINGS IN THE SOFTWARE.
 static intptr_t api_nothing(){return 0;}
 
 
-void topaz_system_filesys_noFilesys__backend(
+void topaz_system_filesystem_noFilesystem__backend(
     topazSystem_t *         system, 
     topazSystem_Backend_t * backend, 
-    topazFilesys_t *, void *     api
+    topazFilesystemAPI_t *     api
 ) {
     topaz_system_backend_bind(
         backend,
         // name
-        TOPAZ_STR_CAST("NoFilesys"),
+        TOPAZ_STR_CAST("NoFilesystem"),
 
         // version 
         TOPAZ_STR_CAST("1.0"),
@@ -86,19 +86,47 @@ void topaz_system_filesys_noFilesys__backend(
         TOPAZ__VERSION__MINOR,
         TOPAZ__VERSION__MICRO
     );
-    api->filesys_create = (void * (*)(topazFilesys_t *, topaz_t *))api_nothing;
-    api->filesys_destroy = (void (*)(topazFilesys_t *, void *))api_nothing;
-    api->filesys_query = (const topazArray_t * (*)(topazFilesys_t *, void *))api_nothing;
-    api->filesys_set_path = (int (*)(topazFilesys_t *, void *, const topazString_t *))api_nothing;
-    api->filesys_get_path = (const topazString_t * (*)(topazFilesys_t *, void *))api_nothing;
-    api->filesys_go_to_child = (int (*)(topazFilesys_t *, void *, const topazString_t *))api_nothing;
-    api->filesys_go_to_parent = (int (*)(topazFilesys_t *, void *))api_nothing;
-    api->filesys_create_node = (int (*)(topazFilesys_t *, void *, const topazString_t *))api_nothing;
-    api->filesys_read = (topazRbuffer_t * (*)(topazFilesys_t *, void *, const topazString_t *))api_nothing;
-    api->filesys_write = (int (*)(topazFilesys_t *, void *, const topazString_t *, const topazWbuffer_t *))api_nothing;
-    api->filesys_is_node = (int (*)(topazFilesys_t *, void *, const topazString_t *))api_nothing;
-    api->filesys_is_child = (int (*)(topazFilesys_t *, void *, const topazString_t *))api_nothing;
-
+    api->filesystem_create = (void * (*)(
+        topazFilesystem_t *,
+        topaz_t *,
+        topazString_t * defaultResourcesPath,
+        topazString_t * defaultTopazPath,
+        topazString_t * defaultUserDataPath
+    )) api_nothing;
+    api->filesystem_destroy = (void (*)(
+        topazFilesystem_t *,
+        void *
+    ))api_nothing;
+    api->filesystem_read = (void * (*)(topazFilesystem_t *, void *, const topazString_t * fullpath, uint32_t * size))api_nothing;
+    api->filesystem_write = (int (*)(
+        topazFilesystem_t *, 
+        void *, 
+        const topazString_t * fullpathBase, 
+        const topazString_t * name,
+        
+        // raw bytes
+        const uint8_t * data, 
+        
+        // byte count
+        uint32_t size
+    ))api_nothing;
+    api->filesystem_path_parent = (topazString_t * (*)(
+        topazFilesystem_t *,
+        void *,
+        topazString_t * path
+    ))api_nothing;
+    api->filesystem_path_get_children = (void (*)(
+        topazFilesystem_t *,
+        void *,
+        const topazString_t * path,
+        topazArray_t * children
+    ))api_nothing;
+    api->filesystem_path_validate = (int (*)(
+        topazFilesystem_t *,
+        void *,
+        const topazString_t * from, // may be null. If so, assume path is full.
+        topazString_t * path
+    ))api_nothing;
 }
 
 

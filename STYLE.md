@@ -78,11 +78,11 @@ typedef enum topazExampleClass_Enum topazExampleClass_Enum
 enum topazExampleClass_Enum {
     /// Value A contains this description.
     ///
-    topazExampleClas_Enum_ValueA,
+    topazExampleClass_Enum_ValueA,
 
     /// Value B contains this description.
     ///
-    topazExampleClas_Enum_ValueB
+    topazExampleClass_Enum_ValueB
 }
 
 

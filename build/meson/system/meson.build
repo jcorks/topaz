@@ -18,7 +18,7 @@ handlers = []
 
 subdir(handlerPreferredAudioManager)
 subdir(handlerPreferredDisplay)
-subdir(handlerPreferredFilesys)
+subdir(handlerPreferredFilesystem)
 subdir(handlerPreferredInputManager)
 subdir(handlerPreferredRenderer)
 subdir(handlerPreferredTime)

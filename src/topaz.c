@@ -31,7 +31,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/compat.h>
 #include <topaz/topaz.h>
 #include <topaz/backends/time.h>
-#include <topaz/backends/filesys.h>
+#include <topaz/backends/filesystem.h>
 #include <topaz/modules/graphics.h>
 #include <topaz/modules/script_manager.h>
 #include <topaz/modules/input.h>
@@ -77,6 +77,7 @@ struct topaz_t {
     topazFontManager_t * fontManager;
     topazAudio_t * audio;
 
+    topazFilesystem_t * fsRef;
     topazTime_t * timeRef;
     double frameEnd;
     double frameStart;
@@ -110,6 +111,11 @@ topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
         topazTimeAPI_t api = {};
         topazSystem_Backend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("time"), &api);
         out->timeRef = topaz_time_create(out, ref, api);
+    }
+    {
+        topazFilesystemAPI_t api = {};
+        topazSystem_Backend_t * ref = topaz_system_create_backend(out->system, TOPAZ_STR_CAST("filesystem"), &api);
+        out->fsRef = topaz_filesystem_create(out, ref, api);
     }
 
 
@@ -166,6 +172,7 @@ topazSystem_t * topaz_context_get_system(const topaz_t * t) {
 
 void topaz_context_destroy(topaz_t * t) {
     topaz_time_destroy(t->timeRef);
+    topaz_filesystem_destroy(t->fsRef);
     
 
 
@@ -207,7 +214,7 @@ topaz_t * topaz_context_create_empty() {
     topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("inputManager"), TOPAZ_STR_CAST("noInputManager"));
     topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("display"),      TOPAZ_STR_CAST("noDisplay"));
     topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("time"),         TOPAZ_STR_CAST("noTime"));
-    topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("filesys"),      TOPAZ_STR_CAST("noFilesys"));
+    topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("filesystem"),   TOPAZ_STR_CAST("noFilesystem"));
     return topaz_context_create(sys);
 }
 
@@ -470,14 +477,8 @@ uint64_t topaz_context_get_time(topaz_t * t) {
     return topaz_time_ms_since_startup(t->timeRef);
 }
 
-topazFilesys_t * topaz_context_filesys_create(topaz_t * t) {
-    topazFilesysAPI_t api = {};
-    topazSystem_Backend_t * backend = topaz_system_create_backend(
-        t->system,
-        TOPAZ_STR_CAST("filesys"),
-        &api
-    );
-    return topaz_filesys_create(t, backend, api);
+topazFilesystem_t * topaz_context_get_filesystem(topaz_t * t) {
+    return t->fsRef;
 }
 
 

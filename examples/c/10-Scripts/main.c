@@ -38,8 +38,19 @@ int main() {
 
 
     // extract the script data
-    topazFilesys_t * filesystem = topaz_context_filesys_create(ctx);
-    topazRbuffer_t * scriptFile = topaz_filesys_read(filesystem, TOPAZ_STR_CAST("script"));
+    topazFilesystem_t * fs = topaz_context_get_filesystem(ctx);
+    const topazFilesystem_Path_t * path = topaz_filesystem_get_path_from_string(
+        fs, 
+        topaz_filesystem_get_path(fs, topazFilesystem_DefaultNode_Resources),
+        TOPAZ_STR_CAST("script")    
+    );
+    if (!path) {
+        return 1;
+    }
+    topazRbuffer_t * scriptFile = topaz_filesystem_path_read(path);
+    if (!scriptFile) {
+        return 2;
+    }
     const topazString_t * scriptText  = topaz_rbuffer_read_string(
         scriptFile,
         topaz_rbuffer_get_size(scriptFile)

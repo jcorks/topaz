@@ -28,15 +28,15 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
-#include <topaz/backends/filesys.h>
+#include <topaz/backends/filesystem.h>
 
-#ifndef H_TOPAZDC__FILESYS_winapi__INCLUDED
-#define H_TOPAZDC__FILESYS_winapi__INCLUDED
+#ifndef H_TOPAZDC__FILESYS_POSIX__INCLUDED
+#define H_TOPAZDC__FILESYS_POSIX__INCLUDED
 
-void topaz_system_filesys_winapi__backend(
+void topaz_system_filesystem_posix__backend(
     topazSystem_t *         system, 
     topazSystem_Backend_t * backend, 
-    topazFilesysAPI_t *     api
+    topazFilesystemAPI_t *     api
 );
 
 #endif

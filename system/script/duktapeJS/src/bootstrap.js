@@ -94,6 +94,40 @@ topaz = {
         return helper(obj, 0) + '\n';
     },
     deadEntityPool : [],
+    filesystem : {
+        defaultNode : {
+            resources : 0,
+            topaz : 1,
+            userData : 2
+        },
+        
+        getPath : function(n) {
+            return new topaz.filesystem.path(topaz_filesystem__get_path(n));
+        },
+        
+        getPathFromString : function(pth, str) {
+            if (pth) {
+                return new topaz.filesystem.path(topaz_filesystem__get_path_from_string(pth, str));            
+            } else {
+                return new topaz.filesystem.path(topaz_filesystem__get_path_from_string(str));                        
+            }
+        },
+        
+        
+        path : function(implPre) {
+            var impl;
+            this.uniqueID = topaz.uniqueObjectPool++;
+            if (implPre) 
+                impl = implPre;
+            else {
+                throw new Error("path object cannot be make without a LL instance.");
+            }
+            impl.__ctx = this;
+            this.impl = impl;          
+        }
+
+        
+    },
     input : {
         addKeyboardListener : function(obj) {
             topaz_input__add_keyboard_listener(obj);
@@ -1718,6 +1752,41 @@ topaz = {
     );
     topaz._assetSetCommonSymbols(topaz.sound.prototype);
 
+
+
+    // filesystem.path
+    Object.defineProperty(
+        topaz.filesystem.path.prototype,
+        'string', {
+            get : function()  { return topaz_filesystem_path__as_string(this.impl);}
+        }
+    );
+
+    Object.defineProperty(
+        topaz.filesystem.path.prototype,
+        'parent', {
+            get : function()  { return new topaz.filesystem.path(topaz_filesystem_path__get_parent(this.impl));}
+        }
+    );
+
+
+    Object.defineProperty(
+        topaz.filesystem.path.prototype,
+        'children', {
+            get : function()  {
+                var out = [];
+                const len = topaz_filesystem_path__get_child_count(this.impl);
+                for(i = 0; i < len; ++i) {
+                    var p = new topaz.filesystem.path(topaz_filesystem_path__get_nth_child(this.impl, i));
+                    if (p != undefined) {
+                        out.push(p);
+                    }                
+                }
+                
+                return out;
+            }
+        }
+    );
 
 
 

@@ -77,7 +77,7 @@ BackendHandler * system_get_backend(topazSystem_t * s, const topazString_t * nam
     if (topaz_string_test_eq(name, TOPAZ_STR_CAST("renderer"))) return &s->renderer;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("inputManager"))) return &s->inputManager;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("audioManager"))) return &s->audioManager;
-    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("filesys")))return &s->filesystem;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("filesystem")))return &s->filesystem;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("time"))) return &s->time;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("fontRenderer"))) return &s->fontRenderer;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return &s->display;
@@ -91,7 +91,7 @@ static topazTable_t * backend_type_to_table(const topazString_t * name) {
     if (topaz_string_test_eq(name, TOPAZ_STR_CAST("renderer"))) return renderers;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("inputManager"))) return inputManagers;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("audioManager"))) return audioManagers;
-    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("filesys"))) return filesystems;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("filesystem"))) return filesystems;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("time"))) return times;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("fontRenderer"))) return fontRenderers;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return displays;
@@ -126,7 +126,7 @@ static BackendHandler * get_backend_default(const topazString_t * name) {
     if (topaz_string_test_eq(name, TOPAZ_STR_CAST("renderer"))) return &default_renderer;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("inputManager"))) return &default_inputManager;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("audioManager"))) return &default_audioManager;
-    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("filesys"))) return &default_filesystem;
+    else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("filesystem"))) return &default_filesystem;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("time"))) return &default_time;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("fontRenderer"))) return &default_fontRenderer;
     else if (topaz_string_test_eq(name, TOPAZ_STR_CAST("display"))) return &default_display;

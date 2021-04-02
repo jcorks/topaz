@@ -1,10 +1,12 @@
 #include <topaz/compat.h>
-#include <topaz/backends/filesys.h>
+#include <topaz/backends/filesystem.h>
 #include <topaz/backends/iox.h>
 #include <topaz/modules/resources.h>
 #include <topaz/containers/array.h>
 #include <topaz/containers/table.h>
 #include <topaz/topaz.h>
+#include <topaz/rbuffer.h>
+#include <topaz/wbuffer.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,11 +24,10 @@
 
 struct topazResources_t {   
     topaz_t * ctx;
-    topazFilesys_t * fs;
     topazTable_t * name2asset;
 
     topazTable_t * ioxs; //extension -> iox
-    topazArray_t * fsAssets;
+    const topazFilesystem_Path_t * path;
 };
 
 
@@ -35,7 +36,6 @@ struct topazResources_t {
 topazResources_t * topaz_resources_create(topaz_t * ctx) {
     topazResources_t * out = calloc(1, sizeof(topazResources_t));
     out->ctx = ctx;
-    out->fs = topaz_context_filesys_create(ctx);
     out->name2asset = topaz_table_create_hash_topaz_string();
 
     // create all ioxs 
@@ -50,8 +50,8 @@ topazResources_t * topaz_resources_create(topaz_t * ctx) {
     topaz_array_destroy(ioxNames);
 
 
-    out->fsAssets = topaz_array_create(sizeof(topazString_t*));
-    
+    topazFilesystem_t * fs = topaz_context_get_filesystem(ctx);
+    out->path = topaz_filesystem_get_path(fs, topazFilesystem_DefaultNode_Resources);    
     return out;
 }
 
@@ -74,17 +74,19 @@ void topaz_resources_destroy(topazResources_t * r) {
         topaz_asset_destroy(topaz_table_iter_get_value(iter));
     }
     topaz_table_destroy(r->name2asset);
-    topaz_filesys_destroy(r->fs);
     free(r);
 
 }
 
 int topaz_resources_set_path(topazResources_t * r, const topazString_t * path) {
-    return topaz_filesys_set_path(r->fs, path);
+    topazFilesystem_t * fs = topaz_context_get_filesystem(r->ctx);
+    const topazFilesystem_Path_t * p = topaz_filesystem_get_path_from_string(fs, NULL, path);
+    if (p) r->path = p;
+    return p!=NULL;
 }
 
 const topazString_t * topaz_resources_get_path(const topazResources_t * r) {
-    return topaz_filesys_get_path(r->fs);
+    return topaz_filesystem_path_as_string(r->path);
 }
 
 
@@ -116,12 +118,13 @@ topazAsset_t * topaz_resources_load_asset(
     if (!asset) return NULL;
 
     // at this point, we want a data buffer 
-
-    topazRbuffer_t * data = topaz_filesys_read(r->fs, path);
+    topazFilesystem_t * fs = topaz_context_get_filesystem(r->ctx);
+    const topazFilesystem_Path_t * p = topaz_filesystem_get_path_from_string(fs, r->path, path);
+    topazRbuffer_t * data = topaz_filesystem_path_read(p);
+    
 
     // check to see if read failed.
-    if (topaz_rbuffer_is_empty(data)) {
-        topaz_rbuffer_destroy(data);
+    if (!data) {
         topaz_asset_destroy(asset);
         topaz_table_remove(r->name2asset, name);
         return NULL;
@@ -221,9 +224,8 @@ int topaz_resources_write_asset(
     topaz_wbuffer_write_buffer(data, rawdata, rawdataSize);
     
 
-
-    int success = topaz_filesys_write(
-        r->fs, 
+    int success = topaz_filesystem_path_write(
+        r->path, 
         name,
         data
     );
@@ -335,57 +337,4 @@ void topaz_resources_add_translator(
     }
 }
 
-
-void topaz_resources_query_asset_paths(topazResources_t * p) {
-
-    uint32_t i;
-    uint32_t len = topaz_array_get_size(p->fsAssets);
-    for(i = 0; i < len; ++i) {
-        topaz_string_destroy(topaz_array_at(p->fsAssets, topazString_t *, i));
-    }
-    topaz_array_set_size(p->fsAssets, 0);
-
-
-    topazString_t * cwd = topaz_string_clone(topaz_filesys_get_path(p->fs));
-    topazArray_t * dirs = topaz_array_create(sizeof(topazString_t *));
-    topazString_t * iter = topaz_string_clone(cwd);
-    topazTable_t * visited = topaz_table_create_hash_topaz_string();
-    topaz_array_push(dirs, iter);
-
-
-
-    while(topaz_array_get_size(dirs)) {
-        topazString_t * s = topaz_array_at(dirs, topazString_t *, topaz_array_get_size(dirs)-1);
-        topaz_array_set_size(dirs,  topaz_array_get_size(dirs)-1);
-        topaz_filesys_set_path(p->fs, s);
-
-
-        const topazArray_t * subs = topaz_filesys_query(p->fs);
-        len = topaz_array_get_size(subs);
-        for(i = 0; i < len; ++i) {
-            iter = topaz_string_clone(topaz_filesys_get_child_path(p->fs, topaz_array_at(subs, topazString_t *, i)));
-            if (topaz_table_find(visited, iter)) {
-                topaz_string_destroy(iter);
-                continue;
-            }
-
-            if (topaz_filesys_is_node(p->fs, topaz_array_at(subs, topazString_t *, i))) {
-                topaz_table_insert(visited, iter, (void*)1);
-                topaz_array_push(dirs, iter);
-            } else {
-                topaz_array_push(p->fsAssets, iter);
-            }
-        }
-
-
-        topaz_string_destroy(s);
-    }
-    topaz_table_destroy(visited);
-
-    topaz_filesys_set_path(p->fs, cwd);
-}
-
-const topazArray_t * topaz_resources_get_asset_paths(topazResources_t * p) {
-    return p->fsAssets;
-}
 

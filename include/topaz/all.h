@@ -45,7 +45,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/backends/audio_manager.h>
 #include <topaz/backends/display.h>
-#include <topaz/backends/filesys.h>
+#include <topaz/backends/filesystem.h>
 #include <topaz/backends/input_manager.h>
 #include <topaz/backends/renderer.h>
 #include <topaz/backends/script.h>

@@ -176,37 +176,6 @@ TSO_SCRIPT_API_FN(resources_api__is_extension_supported) {
 
 
 
-TSO_SCRIPT_API_FN(resources_api__asset_path_count) {
-
-    topazResources_t * r = topaz_context_get_resources(((topazScriptManager_t*)context)->ctx);
-    return topaz_script_object_from_int(
-        script,
-        topaz_array_get_size(topaz_resources_get_asset_paths(r))
-    );
-}
-
-TSO_SCRIPT_API_FN(resources_api__nth_asset_path) {
-    topazResources_t * r = topaz_context_get_resources(((topazScriptManager_t*)context)->ctx);
-    TSO_ASSERT_ARG_COUNT(1);
-    TSO_ARG_0;
-
-    int index = topaz_script_object_as_int(arg0);
-    uint32_t size = topaz_array_get_size(topaz_resources_get_asset_paths(r));
-
-    if (index < 0 || index >= size) TSO_NO_RETURN;
-
-    return topaz_script_object_from_string(
-        script,
-        topaz_array_at(topaz_resources_get_asset_paths(r), topazString_t *, index)
-    );
-}
-
-
-TSO_SCRIPT_API_FN(resources_api__query_asset_paths) {
-    topazResources_t * r = topaz_context_get_resources(((topazScriptManager_t*)context)->ctx);
-    topaz_resources_query_asset_paths(r);
-    TSO_NO_RETURN;
-}
 
 
 
@@ -219,7 +188,4 @@ static void add_refs__resources_api(topazScript_t * script, topazScriptManager_t
     TS_MAP_NATIVE_FN("topaz_resources__write_asset", resources_api__write_asset);
     TS_MAP_NATIVE_FN("topaz_resources__remove_asset", resources_api__remove_asset);
     TS_MAP_NATIVE_FN("topaz_resources__is_extension_supported", resources_api__is_extension_supported);
-    TS_MAP_NATIVE_FN("topaz_resources__asset_path_count", resources_api__asset_path_count);
-    TS_MAP_NATIVE_FN("topaz_resources__nth_asset_path", resources_api__nth_asset_path);
-    TS_MAP_NATIVE_FN("topaz_resources__query_asset_paths", resources_api__query_asset_paths);
 }

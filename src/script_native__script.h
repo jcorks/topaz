@@ -22,12 +22,12 @@ TSO_SCRIPT_API_FN(script_api__import) {
     if (!src) {
         const topazString_t * a = topaz_script_apply_import_path(script, topaz_script_object_as_string(arg0));
         // if the raw path fails, use the relative interpreter path
-        src = topaz_resources_load_asset(
+        src = a ? topaz_resources_load_asset(
             r,
             TOPAZ_STR_CAST("txt"),
             a,
             topaz_script_object_as_string(arg0)
-        );
+        ) : NULL;
         if (src) {
             topaz_script_push_import_path(script, a);
         }

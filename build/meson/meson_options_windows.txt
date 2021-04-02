@@ -74,7 +74,7 @@ option(
 
     value : 'winapi',
     choices : [
-        'noFilesys',
+        'noFilesystem',
         'posix',
         'winapi'
     ]
@@ -134,12 +134,14 @@ option(
     type : 'array',
     value : [
         'rawdata',
-        'tpng'
+        'tpng',
+        'ogg'
     ],
 
     choices : [
         'rawdata',
-        'tpng'
+        'tpng',
+        'ogg'
     ]
 
 )
