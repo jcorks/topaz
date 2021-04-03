@@ -120,8 +120,15 @@ topazAsset_t * topaz_resources_load_asset(
     // at this point, we want a data buffer 
     topazFilesystem_t * fs = topaz_context_get_filesystem(r->ctx);
     const topazFilesystem_Path_t * p = topaz_filesystem_get_path_from_string(fs, r->path, path);
-    topazRbuffer_t * data = topaz_filesystem_path_read(p);
+    if (!p) {
+        p = topaz_filesystem_get_path_from_string(fs, NULL, path);
+    }
+
     
+    topazRbuffer_t * data = NULL;
+    if (p) {
+        data = topaz_filesystem_path_read(p);
+    }
 
     // check to see if read failed.
     if (!data) {

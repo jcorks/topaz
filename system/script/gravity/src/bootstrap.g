@@ -1678,7 +1678,7 @@ class Resources {
     }
 
     static func removeAsset(a) {
-        topaz_.topaz_resources__remove_asset(a.impl_);
+        topaz_.topaz_resources__remove_asset(a.name);
     }
 
     static func isExtensionSupported(a) {

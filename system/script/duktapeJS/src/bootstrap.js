@@ -107,7 +107,7 @@ topaz = {
         
         getPathFromString : function(pth, str) {
             if (pth) {
-                return new topaz.filesystem.path(topaz_filesystem__get_path_from_string(pth, str));            
+                return new topaz.filesystem.path(topaz_filesystem__get_path_from_string(pth.impl, str));            
             } else {
                 return new topaz.filesystem.path(topaz_filesystem__get_path_from_string(str));                        
             }
@@ -413,14 +413,11 @@ topaz = {
             return topaz_resources__write_asset(asset.impl, ext, path);
         },
 
-        removeAsset : function(asset) {
-            topaz_resources__remove_asset(asset.impl);
-            asset.impl = undefined;
+        removeAsset : function(name) {
+            topaz_resources__remove_asset(name);
         },
 
-        queryAssetPaths : function() {
-            topaz_resources__query_asset_paths();
-        },
+        
 
         isExtensionSupported : function(ext) {
             return topaz_resources__is_extension_supported(ext);
@@ -446,16 +443,16 @@ topaz = {
         Object.defineProperty(
             obj,
             'type', {
-                get : function()  { return topaz_asset__get_type(impl);},
-                set : function(v) {        topaz_asset__get_type(impl, v);}
+                get : function()  { return topaz_asset__get_type(this.impl);},
+                set : function(v) {        topaz_asset__set_type(this.impl, v);}
             }
         );
 
         Object.defineProperty(
             obj,
             'name', {
-                get : function()  { return topaz_asset__get_type(impl);},
-                set : function(v) {        topaz_asset__get_type(impl, v);}
+                get : function()  { return topaz_asset__get_name(this.impl);},
+                set : function(v) {        topaz_asset__set_name(this.impl, v);}
             }
         );
     },

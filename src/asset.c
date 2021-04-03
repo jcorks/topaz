@@ -42,6 +42,7 @@ struct topazAsset_t {
     topaz_t * ctx;
     topazAsset_Attributes_t attribs;
     topazString_t * name;
+    topazString_t * fsPath;
     topazAsset_Type type;
     void * userdata;
 };
@@ -59,6 +60,7 @@ topazAsset_t * topaz_asset_create(
     out->attribs = *attribs;
     out->type = type;
     out->name = topaz_string_clone(name);
+    out->fsPath = topaz_string_create();
     out->ctx = ctx;
 
     if (attribs->on_create) out->attribs.on_create(out, attribs->userData);
@@ -77,7 +79,9 @@ const topazAsset_Attributes_t * topaz_asset_get_attributes(const topazAsset_t * 
 
 
 
-
+void topaz_asset_set_path(topazAsset_t * a, const topazString_t * str) {
+    topaz_string_set(a->fsPath, str);
+}
 
 const topazString_t * topaz_asset_get_name(const topazAsset_t * a) {
     return a->name;
@@ -86,3 +90,8 @@ const topazString_t * topaz_asset_get_name(const topazAsset_t * a) {
 topazAsset_Type topaz_asset_get_type(const topazAsset_t * a) {
     return a->type;
 }
+
+const topazString_t * topaz_asset_get_path(const topazAsset_t * a) {
+    return a->fsPath;
+}
+

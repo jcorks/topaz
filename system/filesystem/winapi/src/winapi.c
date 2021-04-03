@@ -42,6 +42,7 @@ DEALINGS IN THE SOFTWARE.
 #include <direct.h> // _getcwd
 #include <stdio.h>
 #include "backend.h"
+#include <topaz/containers/array.h>
 
 
 
@@ -80,7 +81,9 @@ void * topaz_filesystem_winapi__create(
 static char * winapi_realpath(const char * s) {
     char * buffer = malloc(MAX_PATH+1);
     GetFullPathNameA(s, MAX_PATH, buffer, NULL);
-    return buffer;
+    if (PathFileExistsA(buffer)) return buffer;
+    free(buffer);
+    return NULL;
 }
 
 #define READCHUNK 4096
@@ -154,7 +157,7 @@ static topazString_t * topaz_filesystem_winapi__path_parent(
     topazString_t * path
 ) {  
     char * cpy = strdup(topaz_string_get_c_str(path));  
-    PathCchRemoveFileSpecA(cpy, strlen(cpy));
+    PathRemoveFileSpecA(cpy);
     topazString_t * out = topaz_string_create_from_c_str(cpy);
     free(cpy);
     return out;
@@ -187,8 +190,7 @@ static void topaz_filesystem_winapi__path_get_children(
 
     
     topazString_t * str;
-    topazString_t * pathFull = topaz_string_create();
-    int isFile;
+    topazString_t * fullPath;
 
     do {
         if (!strcmp(ls.cFileName, ".") ||
