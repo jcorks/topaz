@@ -1,0 +1,108 @@
+// This example shows how to make, load, and work with packages.
+//
+// Normally in a robust content system, package management 
+// is essential. In topaz, packages are pre-made bundles of 
+// assets laid out in text-transferrable data (JSON). Binary assets 
+// are rolled out into Base64 text, and scripting assets may be 
+// optionally loaded upon resolving by user code.
+// This makes packages very ideal for smaller, self-contained 
+// extensions of functionality.
+//
+// Packages are made by first using topaz.package.makePackage(),
+// which takes a directory package relative to teh default resources directory.
+//
+// This script does just that, building a package from the directory ./examplePackage,
+// which contains all the info and raw assets that will be bundled.
+//
+// makePackage() looks for one specific file, setup_package.json, which 
+// holds all the info needed to produce the package.
+//
+// setup_package.json holds the following properties:
+/*
+    "name" : string 
+        Contains the name of the package, which is how topaz and user 
+        code must refer to the package.
+
+    "outputName" : string 
+        The output file that should be produced in the package directory 
+        containing the built package. If not specified, the default output 
+        name is "package.json"
+
+
+    "Version" : {
+        "major" : number,
+        "minor" : number,
+        "micro" : number,
+        "build" : string
+    }
+        The version of the package. This is used to track different available
+        features of packages and allows for automatic package checking when 
+        working with multiple dependencies. "major" and "minor" are the 
+        only parts used by topaz when reading; "micro" and "build" are for humans.
+
+
+    "debug" : boolean
+        An optional property. When true, all assets will use absolute filesystem 
+        paths instead of packing in binary into the package. This makes it 
+        much easier to debug package assets, since you would not need to rebuild the 
+        package every time.
+
+    "depends" : [
+        {
+            "name" : string,
+            "version" : {
+                "major" : number,
+                "minor" : number
+            }
+        }
+    ]
+        An array of package dependencies. When resolving packages, each package's depends 
+        array is checked. Each member within the array contains both the name of a
+        dependency and version information. If a package has dependencies, 
+        resolution of the package will not be allowed if the dependency does 
+        not exist and is not of the minimum version listed in the depends. 
+        NOTE: dependencies will always be resolved before dependees.
+
+
+    "assets" : [
+        {
+            "assetName" : string
+            "assetType" : string
+            "assetFile" : string 
+            "autorun"   : boolean
+        }
+    ]
+
+        An array of assets that the package should contain.
+
+        "assetName" should contain the string of how topaz code should refer to this package.
+        once the package is resolved, using the resources module where an asset name is 
+        required, this name can be used to retrieve the asset in question.
+
+        "assetType" will either contain the topaz-recognized extension of the asset, i.e. png, 
+        or one of the following special assetTypes: 
+            "script"  - This will load a plain data asset, and will also mark the asset as elligible for autorunning.
+            "font"    - This will load a plain data asset as well as register the font for immediate use.
+
+        "assetFile" should contain the filesystem path to the asset itself. If relative, should be 
+        relative to the location of the setup_package.json.
+
+        "autorun" is a special flag for script assets which will allow 
+        the script to be run once the package successfully resolves.
+        
+    
+
+
+    Once makePackage() runs, the output package will be made in the 
+    directory of the setup_package.json.
+
+
+    To see how to use the package, visit usage-example.
+
+
+*/
+
+
+var status = topaz.package.makePackage('./examplePackage');
+topaz.log(status + '\n');
+topaz.quit();

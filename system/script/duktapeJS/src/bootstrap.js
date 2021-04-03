@@ -2077,3 +2077,472 @@ topaz.attachPreManager(
         }
     })
 );
+
+
+
+/////////////////////////////////
+///// EXTENSION: packages
+// NOTE: THIS IS A ROUGH DRAFT IMPLEMENTATION. It is an extension 
+// made purely in scripting so it is subject to change! if a format
+// or API does change, its symbols will be preserved in legacy.
+//
+//
+// Grants the ability to read, check, and resolve packages and dependency trees 
+// following the topaz package format.
+//
+// Topaz package format (Version 1)
+//
+// A topaz package is a JSON file written in the following format:
+//
+// 
+/*
+{
+    "name"          : "Package Name",
+    "version"      : {
+        "major" : "2",
+        "minor" : "0",
+        "micro" : "0",
+        "build" : "alpha"
+    },    
+    "formatVersion" : "1",
+    "depends"       : [
+        {
+            "name"     : "Other Package",
+            "minVersion" : {
+                "major" : "1",
+                "minor" : "3"
+            }
+        },
+        {
+            "name"     : "another Package",
+            "minVersion" : {
+                "major" : "0",
+                "minor" : "1"
+            }
+        }
+
+    ],
+
+
+    "assets" : [
+        {
+            "assetName" : "topazAssetName",
+            "assetType" : "script",
+            "assetBase64" : "AAAAA79a9d0ef0x...",
+            "autorun" : "true"
+        },
+        {
+            "assetName" : "topazAssetName2",
+            "assetType" : "png",
+            "assetBase64" : "AFBBA79a9d0ef0x...",
+        },
+        {
+            "assetName" : "topazAssetName4",
+            "assetType" : "font",
+            "assetPath" : "./mydata.ttf",
+        }
+
+    ]
+}
+*/
+
+// Some additional notes:
+// - Version requires major and minor. Micro and build are for humans,
+//   they are ignored by the reader.
+// - the "depends" property may be empty or missing.
+// - If true, autorun will run the script through the interpreter
+//   when resolve()ing packages. Note that the dependency tree is 
+//   taken into account for this: dependencies will always 
+//   have their autorun scripts run first.
+// - autorun scripts within the same package are run in order from 
+//   first marked to last marked.
+topaz.package = (function(){
+    var packages = [];
+    var packagesActive = [];
+    var packageDB = {}; // indexed by string.
+
+    const loadAsset = function(jsonAsset, ext) {
+        if (jsonAsset.assetBase64 != undefined) {
+            var out = [];
+            var pbuffer = Duktape.dec('base64', jsonAsset.assetBase64);
+
+            for(var i = 0; i < pbuffer.byteLength; ++i) {
+                out.push(pbuffer[i]);
+            }
+
+            var success = topaz.resources.loadAssetData(
+                ext,
+                out,
+                jsonAsset.assetName
+            );
+            if (success == undefined) {
+                throw new Error('Error loading ' + assetSrc.assetName + '!');
+            }
+
+        }
+        if (jsonAsset.assetPath != undefined) {
+            var success = topaz.resources.loadAsset(
+                ext,
+                jsonAsset.assetPath,
+                jsonAsset.assetName
+            );    
+            if (success == undefined) {
+                throw new Error('Error loading ' + jsonAsset.assetPath + '!');
+            }
+        }
+    }
+
+    // can throw, watch out
+    const makePackageFromJSON = function(json) {
+
+        if (json.formatVersion != 1) {
+            throw new Error('Package version unrecognized (' + json.formatVersion + ')');
+        }
+
+
+        var pkg = {};
+        pkg.name = json.name;
+        pkg.version = json.version;
+        pkg.assets = []; // strings of asset names
+        pkg.depends = json.depends;
+        if (!pkg.depends) {
+            pkg.depends = [];
+        }
+        // not a valid array, tolerate it.
+        if (pkg.depends.length == undefined) {
+            pkg.depends = [];
+        }
+        pkg.autorun = []; // strings of asset names
+        pkg.resolved = false;
+
+        for(var i = 0; i < json.assets.length; ++i) {
+            const assetSrc = json.assets[i];
+            switch(assetSrc.assetType) {
+              case 'script':
+                if (assetSrc.autorun == "true") {
+                    pkg.autorun.push(assetSrc.assetName);
+                }
+                loadAsset(assetSrc, '')
+                break;
+
+
+              case 'font':
+                loadAsset(assetSrc, '')
+                topaz.fontManager.registerFont(
+                    assetSrc.assetName
+                );
+
+              default:
+                loadAsset(assetSrc, assetSrc.assetType)
+                break;
+            }
+
+
+        }
+        return pkg;
+    };
+
+
+    return {
+        // Adds all assets for the package from a package file.
+        read : function(path) {
+            var asset = topaz.resources.loadAsset('', path, path);
+            if (!asset) {
+                topaz.log('Could not read package ' + path + '!');
+                return;
+            }
+            try {
+                const pkg = makePackageFromJSON(JSON.parse(asset.string));
+                packageDB[pkg.name] = pkg;
+                packages.push(pkg);
+            } catch(e) {
+                topaz.log(e);
+            }
+            topaz.resources.removeAsset(path);
+        },
+
+        // Adds all assets for the package from a package JSON string.
+        readData : function(jsonStr) {
+            try {
+                const pkg = makePackageFromJSON(JSON.parse(jsonStr));
+                packageDB[pkg.name] = pkg;
+                packages.push(pkg);
+            } catch(e) {
+                topaz.log(e);
+            }
+            topaz.resources.removeAsset(path);
+        },
+
+        // Verifies that package exists and has been resolved.
+        //
+        // In the case that only a packageName is given, the 
+        // ANY version of that package will be accepted.
+        // If a versionObject is given, it will either look for 
+        // the property "major" as in a major version number, or BOTH 
+        // "minor" and "major". If a resolved package matches the name 
+        // and version at or greater, this function will return true.
+        // If not, an error is thrown.
+        require : function(packageName, versionObject) {
+            const pkg = packageDB[packageName];
+            if (!pkg) {
+                throw new Error('Unknown package ' + packageName);                
+            }
+
+            if (!pkg.resolved) {
+                throw new Error('Package '+packageName+' has been pre-loaded but not resolved.');                
+            }
+
+
+            if (versionObject != undefined) {
+
+                if (versionObject.major != undefined) {
+                    if (versionObject.major > pkg.version.major) {
+                        throw new Error('Package '+packageName+' has major version ' + pkg.version.major + ', but version ' + versionObject.major + ' is required.');                
+                    }
+                }
+
+                if (versionObject.minor != undefined &&
+                    versionObject.major != undefined) {
+                     if (versionObject.major == pkg.version.major && 
+                         versionObject.minor >  pkg.version.minor) {
+                        throw new Error('Package '+packageName+' has version ' + pkg.version.major + '.' + pkg.version.minor + ', but version ' + versionObject.major + '.' + versionObject.minor + ' is required.');                                           
+                    }
+                }
+            }
+
+            return true;
+        },
+
+
+        // Has 2 functions:
+        // 1.) Ensure that all pre-requisite packages are read.
+        // 2.) Run, in order, any auto-run scripts
+        // 
+        // A package can only be resolved once. Resolving a package again 
+        // results in no action taken.
+        //
+        // Note that resolving a package will resolve its dependencies first for you.
+        resolve : function(packageName) {   
+            pkg = packageDB[packageName];
+            if (!pkg) {
+                topaz.log('No such package "' + packageName + '"');
+                return;
+            }
+            if (pkg.resolved) return true;
+            pkg.resolved = true;
+
+            // resolve dependencies first
+            for(var i = 0; i < pkg.depends.length; ++i) {
+                if (!this.resolve(pkg.depends[i].name)) {
+                    topaz.log('ERROR: Required package for ' + packageName + ' could not be resolved.');
+                    pkg.resolved = false;
+                    return false;                    
+                }
+
+                const dep = packageDB[pkg.depends[i].name];
+                const majorNeeded = parseInt(pkg.depends[i].version.major);
+                const minorNeeded = parseInt(pkg.depends[i].version.minor);
+
+                const majorHave = pauseInt(dep.version.major);
+                const minorHave = pauseInt(dep.version.minor);
+
+                if (
+                    (majorHave < majorNeeded) 
+                    ||
+                    (majorHave == majorNeeded &&
+                     minorHave <  minorNeeded)
+                ) {
+                    topaz.log('ERROR: Required package version for ' + dep.name + 'is ' + majorNeeded + '.' + minorNeeded + ', but found ' + majorHave + ',' + minorHave);
+                    pkg.resolved = false;
+                    return false;
+                } 
+            }
+            for(var i = 0; i < pkg.autorun.length; ++i) {
+                try {
+                    topaz.import(pkg.autorun[i]);
+                } catch (e) {
+                    topaz.log('Error while running script ' + pkg.autorun[i] + 'within package:');
+                    topaz.log(topaz.objectToString(e));
+                }
+            }
+
+            return true;
+        },
+
+
+        resolveAll : function() {
+            for(var i = 0; i < packages.length; ++i) {
+                if (!this.resolve(packages[i].name)) {
+                    return false;
+                }
+            }
+            return true;
+        },
+
+
+        getKnownPackages : function() {
+            return packages;
+        },
+
+
+        /*
+        Package Builder for formatVersion 1.
+
+        This program looks for "setup_package.json", which consists of a file 
+        familiar in format to a topaz package. However, instead of assetBase64,
+        there is a property per-asset of "assetFile" which denotes a path to 
+        a real file consisting of the raw data. The builder then reads each of these 
+        files, creates a base64 equivalent of the data, and, upon success, returns a 
+        package.json with the proper base64 of each asset.
+
+
+        If debug is true for the package, the all assetFile's will be changed to 
+        absolute assetPaths in the resultant package. This will make it quicker to debug
+        source files, since they will always point to the filesystem asset.
+        */
+        makePackage : function(path) {
+            var allPackages = [];
+            var output = (function() {
+                try {
+                    var mainPath = topaz.filesystem.getPathFromString(
+                        topaz.filesystem.getPath(topaz.filesystem.defaultNode.resources),
+                        path
+                    );
+                    if (mainPath == undefined) {
+                        return "No such path.";
+                    }
+                    topaz.resources.path = mainPath.string;
+        
+                    var indata = topaz.resources.loadAsset('', 'setup_package.json', 'setup_package.json');
+                    if (!(indata && indata.byteCount)) {
+                        return ('Input file "setup_package.json" is empty or could not be opened. Exiting');
+                    }
+                    allPackages.push(indata.name);
+                    var injson = JSON.parse(indata.string);    
+                    var outjson = {};
+                    outjson.formatVersion = 1;
+        
+                    outjson.name = injson.name;
+        
+                    var packageOutName = "package.json";
+                    if (injson.outputName != undefined) {
+                        packageOutName = injson.outputName;
+                    }
+                    if (outjson.name == undefined) {
+                        return ('setup_package.json: missing "name" property!');
+                    }
+                    outjson.version = injson.version;
+                    if (outjson.version == undefined) {
+                        return ('setup_package.json: missing "version" property!');
+                    }
+                    if (outjson.version.major == undefined) {
+                        return ('setup_package.json: missing "version.major" property!');
+                    }
+                    if (outjson.version.minor == undefined) {
+                        return ('setup_package.json: missing "version.major" property!');
+                    }
+                    if (outjson.version.micro == undefined) {
+                        topaz.log('WARNING setup_package.json: missing "version.micro" property');
+                    }
+                    if (outjson.version.build == undefined) {
+                        topaz.log('WARNING setup_package.json: missing "version.build" property');
+                    }
+        
+                    const debug = injson.debug == undefined ? false : injson.debug;
+        
+                    outjson.depends = [];
+                    if (injson.depends && injson.depends.length) {
+                        for(var i = 0; i < injson.depends.length; ++i) {
+                            outjson.depends.push(injson.depends[i]);
+                        }
+                    }
+        
+        
+        
+        
+                    outjson.assets = [];
+                    if (!(injson.assets && injson.assets.length)) {
+                        topaz.log('WARNING: setup_package.json specifies no assets!');
+                    }
+        
+        
+                    for(var i = 0; i < injson.assets.length; ++i) {
+                        var asset = {};
+                        asset.assetName = injson.assets[i].assetName;
+                        asset.assetType = injson.assets[i].assetType;
+                        if (injson.assets[i].autorun != undefined) {
+                            asset.autorun = injson.assets[i].autorun;
+                        }
+        
+        
+                        if (debug) {
+                            asset.assetPath = topaz.filesystem.getPathFromString(
+                                mainPath,
+                                injson.assets[i].assetFile
+                            ).string;
+        
+                            outjson.assets.push(asset);
+                            topaz.log(injson.assets[i].assetName + ' -> Added');
+        
+                        } else {
+                            const bufferIn = topaz.resources.loadAsset('', injson.assets[i].assetFile, injson.assets[i].assetName);
+                            if (!(bufferIn && bufferIn.byteCount)) {
+                                return ('setup_package.json: could not open asset ' + injson.assets[i].assetFile);
+                            }
+                            allPackages.push(bufferIn.name);
+                            topaz.log('Processing asset ' + injson.assets[i].assetName, false);
+                            topaz.log('.', false);
+        
+                            const byteCount = bufferIn.byteCount;
+                            const bytes = bufferIn.bytes;
+                            const partition = Math.floor(byteCount/5);
+        
+                            
+                            var plainBuffer = Uint8Array.allocPlain(byteCount);
+        
+                            for(var n = 0; n < byteCount; ++n) {
+                                if (partition && n%partition == 0)
+                                    topaz.log('.', false);
+                                plainBuffer[n] = bytes[n];
+                            }
+                            if (!partition) {
+                                topaz.log('.....', false);
+                            }
+                            topaz.log(' ', false);
+        
+        
+                            asset.assetBase64 = Duktape.enc('base64', plainBuffer);
+        
+                            outjson.assets.push(asset);
+                            topaz.log('OK (' + Math.ceil(byteCount/1024) + '.' + Math.floor(((byteCount%1024) / 1024.0)*100) + 'KB)');
+                        }
+                    }
+        
+        
+                    var output = JSON.stringify(outjson);
+                    var outputAsset = topaz.resources.fetchAsset(topaz.resources.assetType_Data, '__ASSET__39245s$');
+                    var outputData = [];
+                    topaz.log('Generating output buffer', false);
+                    const length = output.length;
+                    const partition = Math.floor(length / 5);
+                    for(var i = 0; i < length; ++i) {
+                        if (i%partition == 0) {
+                            topaz.log('.', false);
+                        }
+                        outputData.push(output.charCodeAt(i));
+                    }
+                    outputAsset.bytes = outputData;    
+                    topaz.resources.writeAsset(outputAsset, '', packageOutName);
+                    return packageOutName+' written (' + Math.ceil(length/1024) + '.' + Math.floor(((length%1024) / 1024.0)*100) + 'KB)';
+                } catch(e) {
+                    return "Errors occured:" + e;
+                }
+            })();
+            //cleanup
+            for(var i = 0; i < allPackages.length; ++i) {
+                topaz.resources.removeAsset(allPackages[i]);
+            }
+            return output;
+        }
+    }
+})();
