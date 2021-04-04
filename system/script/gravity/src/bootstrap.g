@@ -48,6 +48,17 @@ class Topaz {
         topaz_.topaz__draw();
     }
 
+    static func toBase64(f) {
+        return topaz_.topaz__to_base64(f);
+    }
+
+    static func fromBase64(f) {
+        var out = Data();
+        out.impl_ = topaz_.topaz__from_base64(f);
+        return out;
+    }
+
+
     static var isPaused {
         get {
             return topaz_.topaz__is_paused();
@@ -105,8 +116,9 @@ class Topaz {
     }
 
 
-    static func log(a) {
-        topaz_.topaz__log(''+a);
+    static func log(a, b) {
+        if (b == null) b = true;
+        topaz_.topaz__log(''+a, b);
     }    
 
 
@@ -860,6 +872,12 @@ class Data : Asset{
                 arr.push(topaz_.topaz_data__get_nth_byte(impl_, i));
             }
             return arr;
+        }
+    }
+
+    var byteCount {
+        get {
+            return topaz_.topaz_data__get_byte_count(impl_);
         }
     }
 
@@ -1653,24 +1671,75 @@ class Resources {
 
 
     static func loadAsset(a, b, c) {
-        var out = Asset();
         if (c == '') c = b;
-        out.impl_ = topaz_.topaz_resources__load_asset(a, b, c);
-        return out;
+        var impl = topaz_.topaz_resources__load_asset(a, b, c);
+        var out;
+        switch(topaz_.topaz_asset__get_type(impl)) {
+          case AssetType.Data:
+            out = Data();
+            out.impl_ = impl;
+            return out;
+
+          case AssetType.Image:
+            out = Image();
+            out.impl_ = impl;
+            return out;
+
+          case AssetType.Sound:
+            out = Sound();
+            out.impl_ = impl;
+            return out;
+
+        }
+        return null;
     }
 
     static func loadAssetData(a, b, c) {
-        var out = Asset();
         if (c == '') c = b;
-        out.impl_ = topaz_.topaz_resources__load_asset_data(a, b, c);
-        return out;
+        var impl = topaz_.topaz_resources__load_asset_data(a, b, c);
+        var out;
+        switch(topaz_.topaz_asset__get_type(impl)) {
+          case AssetType.Data:
+            out = Data();
+            out.impl_ = impl;
+            return out;
+
+          case AssetType.Image:
+            out = Image();
+            out.impl_ = impl;
+            return out;
+
+          case AssetType.Sound:
+            out = Sound();
+            out.impl_ = impl;
+            return out;
+
+        }
+        return null;
     }
 
 
     static func fetchAsset(a, b) {
-        var out = Asset();
-        out.impl_ = topaz_.topaz_resources__fetch_asset(a, b);
-        return out;
+        var impl = topaz_.topaz_resources__fetch_asset(a, b);
+        var out;
+        switch(topaz_.topaz_asset__get_type(impl)) {
+          case AssetType.Data:
+            out = Data();
+            out.impl_ = impl;
+            return out;
+
+          case AssetType.Image:
+            out = Image();
+            out.impl_ = impl;
+            return out;
+
+          case AssetType.Sound:
+            out = Sound();
+            out.impl_ = impl;
+            return out;
+
+        }
+        return null;
     }
     
     static func writeAsset(asset, name, ext) {
@@ -1678,7 +1747,7 @@ class Resources {
     }
 
     static func removeAsset(a) {
-        topaz_.topaz_resources__remove_asset(a.name);
+        topaz_.topaz_resources__remove_asset(a);
     }
 
     static func isExtensionSupported(a) {
@@ -1761,9 +1830,9 @@ class Filesystem {
     
     static func getPathFromString(pth, str) {
         if (pth) {
-            return FilesystemPath(topaz_.topaz_filesystem__get_path_form_string(pth, str));
+            return FilesystemPath(topaz_.topaz_filesystem__get_path_from_string(pth.impl_, str));
         } else {
-            return FilesystemPath(topaz_.topaz_filesystem__get_path_form_string(str));        
+            return FilesystemPath(topaz_.topaz_filesystem__get_path_from_string(str));        
         }
     }
     

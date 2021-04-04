@@ -41,6 +41,7 @@ typedef const char*         (*gravity_precode_callback) (void *xdata);
 typedef const char*			(*gravity_loadfile_callback) (const char *file, size_t *size, uint32_t *fileid, void *xdata, bool *is_static);
 typedef const char*         (*gravity_filename_callback) (uint32_t fileid, void *xdata);
 typedef const char**        (*gravity_optclass_callback) (void *xdata);
+typedef void                (*gravity_lineiter_callback) (gravity_vm *vm, int fileid, int stackframe, uint32_t lineno, void *xdata);
 
 typedef bool                (*gravity_bridge_initinstance) (gravity_vm *vm, void *xdata, gravity_value_t ctx, gravity_instance_t *instance, gravity_value_t args[], int16_t nargs);
 typedef bool                (*gravity_bridge_setvalue) (gravity_vm *vm, void *xdata, gravity_value_t target, const char *key, gravity_value_t value);
@@ -72,6 +73,7 @@ typedef struct {
     gravity_loadfile_callback   loadfile_callback;      // callback to give the opportunity to load a file from an import statement
     gravity_filename_callback   filename_callback;      // called while reporting an error in order to be able to convert a fileid to a real filename
     gravity_optclass_callback   optional_classes;       // optional classes to be exposed to the semantic checker as extern (to be later registered)
+    gravity_lineiter_callback   lineiter_callback;      // called when vm_exec current token line and/or file changes. Useful for debugging.
 
     // bridge
     gravity_bridge_initinstance bridge_initinstance;    // init class

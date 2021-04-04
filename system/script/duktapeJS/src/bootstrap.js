@@ -15,6 +15,8 @@ topaz = {
     wait : topaz__wait,
     import : topaz_script__import,
     log : topaz__log,
+    toBase64 : topaz__to_base64,
+    fromBase64 : topaz__from_base64,
 
     topazRender2D_Parameter_AlphaRule : 0,
     topazRender2D_Parameter_DepthTest : 1,
@@ -2270,7 +2272,6 @@ topaz.package = (function(){
             } catch(e) {
                 topaz.log(e);
             }
-            topaz.resources.removeAsset(path);
         },
 
         // Verifies that package exists and has been resolved.
@@ -2323,10 +2324,10 @@ topaz.package = (function(){
         //
         // Note that resolving a package will resolve its dependencies first for you.
         resolve : function(packageName) {   
-            pkg = packageDB[packageName];
+            var pkg = packageDB[packageName];
             if (!pkg) {
                 topaz.log('No such package "' + packageName + '"');
-                return;
+                return false;
             }
             if (pkg.resolved) return true;
             pkg.resolved = true;

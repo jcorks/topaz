@@ -2405,6 +2405,22 @@ static bool string_index (gravity_vm *vm, gravity_value_t *args, uint16_t nargs,
     }
 }
 
+static bool string_char_code_at(gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rindex, void * nu) {
+    #pragma unused(vm)
+
+    if (nargs != 2) {
+        RETURN_ERROR("String.charCodeAt() expects an Integer as an argument");
+    }
+
+    gravity_string_t *main_str = VALUE_AS_STRING(GET_VALUE(0));
+    int i = VALUE_AS_INT(GET_VALUE(1));
+    if (i < 0 || i >= main_str->len) {    
+        RETURN_VALUE(VALUE_FROM_NULL, rindex);
+    } else {
+        RETURN_VALUE(VALUE_FROM_INT(main_str->s[i]), rindex);
+    }
+}
+
 static bool string_contains (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rindex, void * nu) {
     #pragma unused(vm)
     
@@ -3465,6 +3481,7 @@ void gravity_core_init (void) {
     gravity_class_bind(gravity_class_string, "length", VALUE_FROM_OBJECT(closure));
     closure = computed_property_create(NULL, NEW_FUNCTION(string_bytes), NULL);
     gravity_class_bind(gravity_class_string, "bytes", VALUE_FROM_OBJECT(closure));
+    gravity_class_bind(gravity_class_string, "charCodeAt", NEW_CLOSURE_VALUE(string_char_code_at));
     gravity_class_bind(gravity_class_string, "index", NEW_CLOSURE_VALUE(string_index));
     gravity_class_bind(gravity_class_string, "contains", NEW_CLOSURE_VALUE(string_contains));
     gravity_class_bind(gravity_class_string, "replace", NEW_CLOSURE_VALUE(string_find_replace));

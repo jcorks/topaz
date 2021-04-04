@@ -72,6 +72,11 @@ typedef struct {
     topazString_t * bootstrap;
     int paused;
     topazScript_DebugState_t debugState;
+
+    int waitForNext;
+    int targetFrame;
+    int stepOver;
+    int lastFrame;
 } TopazGravity;
 
 
@@ -305,16 +310,45 @@ static const char * topaz_gravity_loadfile_callback(
     return out;
 }
 
+
+static void topaz_gravity_lineiter_callback(
+    gravity_vm * vm,
+    int nthFrame,
+    int fileid,
+    uint32_t line,
+    void * xdata
+) {
+    TopazGravity * g = xdata;
+    printf("%d %d %d\n", nthFrame, fileid, line);
+    fflush(stdout);
+    g->lastFrame = nthFrame;
+    if (g->waitForNext) {
+        if (g->stepOver) {
+            if (nthFrame <= g->targetFrame) {
+                g->waitForNext = 0;
+                topaz_script_debug_send_command(g->script, topazScript_DebugCommand_Pause, TOPAZ_STR_CAST("")); 
+            } else {
+                printf("     %d %d mismatch\n", nthFrame, g->targetFrame);
+            }
+        } else {
+            g->waitForNext = 0;
+            topaz_script_debug_send_command(g->script, topazScript_DebugCommand_Pause, TOPAZ_STR_CAST(""));
+        }
+    }
+}
+
+
 static void * topaz_gravity_create(topazScript_t * script, topaz_t * topaz) {
     TopazGravity * g = calloc(1, sizeof(TopazGravity));
     g->script = script;
     g->topaz  = topaz;
     g->delegate.error_callback = report_error;
     g->delegate.loadfile_callback = topaz_gravity_loadfile_callback;
+    g->delegate.lineiter_callback = topaz_gravity_lineiter_callback;
     g->delegate.xdata = g;
     g->vm = gravity_vm_new(&g->delegate);
     gravity_vm_setdata(g->vm, g);
-
+    g->targetFrame = -10;
     g->topazClass = gravity_class_new_pair(NULL, "topaz_", NULL, 0, 0);
     g->topazMeta = gravity_class_get_meta(g->topazClass);
     g->topazReftable_inst = gravity_map_new(g->vm, 0);
@@ -736,20 +770,8 @@ static topazScript_Object_t * topaz_gravity_object_reference_array_get_nth(
     TopazGravityObject * o = data;
     TopazGravity * g = o->ctx;
     if (VALUE_ISA_LIST(o->value)) {
-        gravity_closure_t * loadat = gravity_class_lookup_closure(gravity_class_list, VALUE_FROM_CSTRING(o->ctx->vm, "loadat"));
-        gravity_value_t args[] = {
-
-            // key
-            VALUE_FROM_INT(i)
-        };
-        gravity_vm_runclosure(
-            g->vm, 
-            loadat, 
-            o->value,
-            args,
-            1
-        );
-        return topaz_gravity_value_to_script_object(o->ctx, gravity_vm_result(g->vm));
+        if (i < 0 || i >= LIST_COUNT(o->value)) return topaz_script_object_undefined(g->script);
+        return topaz_gravity_value_to_script_object(o->ctx, LIST_VALUE_AT_INDEX(o->value, i));
     } else {
         return topaz_script_object_undefined(g->script);
     }
@@ -763,15 +785,7 @@ static int topaz_gravity_object_reference_array_get_count(
     TopazGravityObject * o = data;
     TopazGravity * g = o->ctx;
     if (VALUE_ISA_LIST(o->value)) {
-        gravity_closure_t * ct = gravity_class_lookup_closure(gravity_class_list, VALUE_FROM_CSTRING(o->ctx->vm, "count"));
-        gravity_vm_runclosure(
-            g->vm, 
-            ct, 
-            o->value,
-            NULL,
-            0
-        );
-        return VALUE_AS_INT(gravity_vm_result(g->vm));
+        return LIST_COUNT(o->value);
     } else {
         return 0;
     }
@@ -852,11 +866,18 @@ void topaz_gravity_debug_send_command(
         break;    
 
       case topazScript_DebugCommand_StepInto:
-        PLOG(g->topaz, topaz_string_create_from_c_str("This debugger does not currently support stepping."));
+        g->waitForNext = 1;
+        g->paused = 0;
+        g->stepOver = 0;
+        topaz_script_notify_command(g->script, topazScript_DebugCommand_Resume, topaz_string_create());
         break;
 
       case topazScript_DebugCommand_StepOver:
-        PLOG(g->topaz, topaz_string_create_from_c_str("This debugger does not currently support stepping."));
+        g->waitForNext = 1;
+        g->paused = 0;
+        g->stepOver = 1;
+        g->targetFrame = g->lastFrame;
+        topaz_script_notify_command(g->script, topazScript_DebugCommand_Resume, topaz_string_create());
         break;
 
       case topazScript_DebugCommand_AddBreakpoint: {

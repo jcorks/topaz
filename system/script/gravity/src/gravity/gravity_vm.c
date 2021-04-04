@@ -146,9 +146,7 @@ static int gravity_vm_fileid_nth(gravity_vm *vm, int index) {
     if (!func) return 0;
     
     // sanity check about function type and included debug information
-    if (func->tag == EXEC_TYPE_NATIVE && func->lineno) {
-        return func->fileid;
-    }
+    return func->fileid;
     
     return 0;
 }
@@ -423,6 +421,32 @@ bool gravity_isopt_class (gravity_class_t *c) {
     return (GRAVITY_ISMATH_CLASS(c)) || (GRAVITY_ISENV_CLASS(c) || (GRAVITY_ISJSON_CLASS(c)) || (GRAVITY_ISFILE_CLASS(c)));
 }
 
+static void gravity_check_lineiter(gravity_vm * vm, gravity_fiber_t * fiber, gravity_callframe_t * frame, gravity_function_t * func, uint32_t * LINENO, int * FILEID) {
+    uint32_t l = *LINENO;
+    int fi = *FILEID;
+    if (func) {
+        if (func->tag == EXEC_TYPE_NATIVE && func->lineno) {
+            uint32_t nindex = 0;
+            if (frame->ip > func->bytecode) {
+                // -1 because frame->ip points to the next instruction to execute
+                nindex = (uint32_t)(frame->ip - func->bytecode) - 1;
+            }
+            
+            l = func->lineno[nindex];
+        }
+        fi = func->fileid;
+    }
+    
+    if (l != *LINENO || fi != *FILEID) {
+        *LINENO = l;
+        *FILEID = fi; 
+        if (vm->delegate->lineiter_callback) {
+            vm->delegate->lineiter_callback(vm, fiber?fiber->nframes:0, fi, l, vm->delegate->xdata);
+        }
+    }
+}
+
+
 // MARK: - MAIN EXECUTION -
 
 static bool gravity_vm_exec (gravity_vm *vm) {
@@ -436,7 +460,10 @@ static bool gravity_vm_exec (gravity_vm *vm) {
     register uint32_t       *ip;                        // IP => instruction pointer
     register uint32_t       inst;                       // IR => instruction register
     register opcode_t       op;                         // OP => opcode register
-
+    #ifdef TOPAZDC_DEBUG
+        uint32_t LINENO = 0;
+        int FILEID = -1;
+    #endif
     // load current callframe
     LOAD_FRAME();
     DEBUG_CALL("Executing", func);
@@ -447,6 +474,10 @@ static bool gravity_vm_exec (gravity_vm *vm) {
     DEBUG_STACK();
 
     while (1) {
+        #ifdef TOPAZDC_DEBUG
+        // this will likely thrash performance :(
+            gravity_check_lineiter(vm, fiber, frame, func, &LINENO, &FILEID);
+        #endif
         INTERPRET_LOOP {
 
             // MARK: - OPCODES -
@@ -512,6 +543,11 @@ static bool gravity_vm_exec (gravity_vm *vm) {
                 // call closure (do not use a macro here because we want to handle both the bridged and special cases)
                 STORE_FRAME();
                 execute_load_function:
+                #ifdef TOPAZDC_DEBUG
+                // this will likely thrash performance :(
+                    gravity_check_lineiter(vm, fiber, frame, func, &LINENO, &FILEID);
+                #endif
+
                 switch(closure->f->tag) {
                     case EXEC_TYPE_NATIVE: {
                         // invalidate current_fiber because it does not need to be in sync in this case
@@ -1546,9 +1582,14 @@ static bool gravity_vm_exec (gravity_vm *vm) {
             }
         }
 
+
+
         // MARK: -
 
         INC_PC;
+
+
+
     };
 
     return true;

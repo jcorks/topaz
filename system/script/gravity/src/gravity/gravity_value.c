@@ -1505,6 +1505,9 @@ gravity_object_t *gravity_object_deserialize (gravity_vm *vm, json_value *entry)
 }
 #undef REPORT_JSON_ERROR
 
+
+
+
 const char *gravity_object_debug (gravity_object_t *obj, bool is_free) {
     if ((!obj) || (!OBJECT_IS_VALID(obj))) return "";
 
@@ -2213,6 +2216,48 @@ void gravity_list_blacken (gravity_vm *vm, gravity_list_t *list) {
     }
 }
 
+
+gravity_list_t *gravity_list_deserialize (gravity_vm *vm, json_value *json) {
+    uint32_t count = json->u.array.length;
+    gravity_list_t *map = gravity_list_new(vm, count);
+
+    DEBUG_DESERIALIZE("DESERIALIZE LIST: %p\n", map);
+
+    gravity_list_t *list = gravity_list_new (vm, count);
+    if (list) {
+        for (uint32_t k=0; k<count; ++k) {
+            json_value *jsonv = json->u.array.values[k];
+            gravity_value_t v;
+
+            // only literals allowed here
+            switch (jsonv->type) {
+                case json_integer: v = VALUE_FROM_INT((gravity_int_t)jsonv->u.integer); break;
+                case json_double: v = VALUE_FROM_FLOAT((gravity_float_t)jsonv->u.dbl); break;
+                case json_boolean: v = VALUE_FROM_BOOL(jsonv->u.boolean); break;
+                case json_string: v = VALUE_FROM_STRING(vm, jsonv->u.string.ptr, jsonv->u.string.length); break;
+                case json_array: {
+                    gravity_list_t *list = gravity_list_deserialize(vm, jsonv);
+                    v = list ? VALUE_FROM_OBJECT(list) : VALUE_FROM_NULL;
+                    break;
+                }
+                case json_object: {
+                    gravity_object_t *obj = gravity_object_deserialize(vm, jsonv);
+                    v = (obj) ? VALUE_FROM_OBJECT(obj) : VALUE_FROM_NULL;
+                    break;
+                }
+                default: goto abort_load;
+            }
+
+            marray_push(gravity_value_t, list->array, v);
+        }
+    }
+    return list;  
+abort_load:
+    // do not free map here because it is already garbage collected
+    return NULL;
+}
+
+
 // MARK: -
 gravity_map_t *gravity_map_new (gravity_vm *vm, uint32_t n) {
     gravity_map_t *map = (gravity_map_t *)mem_alloc(NULL, sizeof(gravity_map_t));
@@ -2243,6 +2288,7 @@ void gravity_map_insert (gravity_vm *vm, gravity_map_t *map, gravity_value_t key
     gravity_hash_insert(map->hash, key, value);
 }
 
+
 static gravity_map_t *gravity_map_deserialize (gravity_vm *vm, json_value *json) {
     uint32_t n = json->u.object.length;
     gravity_map_t *map = gravity_map_new(vm, n);
@@ -2267,14 +2313,17 @@ static gravity_map_t *gravity_map_deserialize (gravity_vm *vm, json_value *json)
                 value = VALUE_FROM_STRING(vm, jsonv->u.string.ptr, jsonv->u.string.length); break;
             case json_null:
                 value = VALUE_FROM_NULL; break;
+            case json_array: {
+                gravity_list_t *list = gravity_list_deserialize(vm, jsonv);
+                value = list ? VALUE_FROM_OBJECT(list) : VALUE_FROM_NULL;
+                break;
+            }
             case json_object: {
                 gravity_object_t *obj = gravity_object_deserialize(vm, jsonv);
                 value = (obj) ? VALUE_FROM_OBJECT(obj) : VALUE_FROM_NULL;
                 break;
             }
-            case json_array: {
-                
-            }
+
             default:
                 goto abort_load;
         }

@@ -61,6 +61,31 @@ topazString_t * topaz_string_clone(
     const topazString_t * str
 );
 
+/// Creates a new base64-encoded string from a raw byte buffer.
+/// This then can be used with topaz_string_decode_base64() to retrieve 
+/// a raw byte buffer once more.
+topazString_t * topaz_string_base64_from_bytes(
+    /// The raw byte buffer to encode into a base64 string.
+    const uint8_t * buffer,
+    /// The length of the buffer in bytes.
+    uint32_t size
+);
+
+/// Returns and allocates a new byte buffer 
+/// and its size iff the given string is 
+/// correctly formatted as base64.
+/// If the string is not correctly encoded,
+/// NULL is returned and the size set to 0.
+uint8_t * topaz_string_base64_to_bytes(
+    /// The string encoded into base64.
+    const topazString_t *,
+    /// The size of the buffer returned.
+    uint32_t * size
+);
+
+
+
+
 /// Destroys and frees a topaz string 
 ///
 void topaz_string_destroy(

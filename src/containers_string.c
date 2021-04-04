@@ -35,6 +35,7 @@ DEALINGS IN THE SOFTWARE.
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #ifdef TOPAZDC_DEBUG
 #include <assert.h>
@@ -243,6 +244,124 @@ int topaz_string_topaz_compare(const topazString_t * a, const topazString_t * b)
     return strcmp(a->cstr, b->cstr);
 }
 
+topazString_t * topaz_string_base64_from_bytes(
+    const uint8_t * buffer,
+    uint32_t size
+) {
+    topazString_t * out = topaz_string_create();
+    const char * key = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    uint32_t i, j;
+    int groupOfSix[4];
+    for(i = 0; i < size; i+=3) {
+        groupOfSix[0] = 
+        groupOfSix[1] = 
+        groupOfSix[2] = 
+        groupOfSix[3] = -1;
+
+        groupOfSix[0] = buffer[i] >> 2;
+        groupOfSix[1] = (buffer[i] & 0x03) << 4;
+        if (size > i + 1) {
+            groupOfSix[1] |= buffer[i+1] >> 4;
+            groupOfSix[2]  = (buffer[i+1] & 0x0f) << 2;
+        }
+        if (size > i + 2) {
+            groupOfSix[2] |= buffer[i+2] >> 6;
+            groupOfSix[3] = buffer[i+2] & 0x3f; 
+        }
+
+        for(j = 0; j < 4; ++j) {
+            if (groupOfSix[j] < 0) {
+                topaz_string_append_char(out, '=');
+            } else {
+                topaz_string_append_char(out, key[groupOfSix[j]]);
+            }
+        }
+    }
+    return out;
+}
+
+
+static char byteKey[] = {
+// 0 
+    ' ', ' ', ' ', ' ',    ' ', ' ', ' ', ' ', 
+    ' ', ' ', ' ', ' ',    ' ', ' ', ' ', ' ', 
+    ' ', ' ', ' ', ' ',    ' ', ' ', ' ', ' ', 
+    ' ', ' ', ' ', ' ',    ' ', ' ', ' ', ' ', 
+// 32
+    ' ', ' ', ' ', ' ',    ' ', ' ', ' ', ' ', 
+    ' ', ' ', ' ', 62 ,    ' ', ' ', ' ', 63 , 
+    52 , 53 , 54 , 55 ,    56 , 57 , 58 , 59 , 
+    60 , 61 , ' ', ' ',    ' ', ' ', ' ', ' ', 
+// 64
+    ' ',  0 ,  1 ,  2 ,     3 ,  4 ,  5 ,  6 , 
+     7 ,  8 ,  9 , 10 ,    11 , 12 , 13 , 14 , 
+    15 , 16 , 17 , 18 ,    19 , 20 , 21 , 22 , 
+    23 , 24 , 25 , ' ',    ' ', ' ', ' ', ' ', 
+
+// 96
+    ' ', 26 , 27 , 28 ,    29 , 30 , 31 , 32 , 
+    33 , 34 , 35 , 36 ,    37 , 38 , 39 , 40 , 
+    41 , 42 , 43 , 44 ,    45 , 46 , 47 , 48 , 
+    49 , 50 , 51, ' ',    ' ', ' ', ' ', ' ', 
+
+
+};
+
+uint8_t * topaz_string_base64_to_bytes(
+    const topazString_t * in,
+    uint32_t * size
+) {
+    uint32_t i;
+    uint32_t len = topaz_string_get_length(in);
+    uint8_t val;
+    if (!len) return NULL;
+
+    *size = 0;
+    uint8_t * out = malloc(len); // raw length is always bigger than real length;
+
+    while(len && topaz_string_get_char(in, len-1) == '=') len--;
+    int buffer = 0;
+    int chr;
+    int accumulatedBits = 0;
+    for(i = 0; i < len; ++i) {
+        chr = topaz_string_get_char(in, i);
+        if (isspace(chr)) continue;
+        // invalid string
+        if (!(isalnum(chr) || chr == '+' || chr == '/')) {
+            *size = 0;
+            free(out);
+            return NULL;
+        }
+
+        buffer <<= 6;
+        buffer |= byteKey[chr];
+        accumulatedBits += 6;
+        if (accumulatedBits == 24) {
+            val = (buffer & 0xff0000) >> 16;
+            out[(*size)++] = val;
+            val = (buffer & 0xff00) >> 8;
+            out[(*size)++] = val;
+            val = (buffer & 0xff);
+            out[(*size)++] = val;
+            buffer = 0;
+            accumulatedBits = 0;            
+        }
+    }
+
+    if (accumulatedBits == 12) {
+        buffer >>= 4;
+        val = buffer;
+        out[(*size)++] = val;
+    } else if (accumulatedBits == 18) {
+        buffer >>= 2;        
+        val = (buffer & 0xff00) >> 8;
+        out[(*size)++] = val;
+        val = (buffer & 0xff);
+        out[(*size)++] = val;
+    }
+
+    return out;
+}
 
 
 
