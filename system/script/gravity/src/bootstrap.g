@@ -3,10 +3,6 @@ extern var topaz_;
 /*
     Some maintenance notes for gravity:
     
-    -   Using class definitions within class definitions as public entities
-        i.e. using classes as namespaces will cause problems when referencing 
-        sibling classes. So "namespacing" is only recommended for one class 
-        at a time without special meta class bindings.
         
     -   "self" is the keyword for self-refrential 
 
@@ -18,7 +14,65 @@ extern var topaz_;
     -   obj.load(arg) where arg is a closure WILL change the scope context to that 
         closure, so watch out.
         
+    -   Nested classes are privately accessible to its owning class only.
+    
+    -   Namespaces can be implemented using Maps in conjunction with 
+        meta class objects. I.e.:
+        
+            class Interface_Implementation {
+                class InternalStuff {
+                    public var a;        
+                    
+                    func init() {
+                        a = 100;
+                    }       
+                }
 
+                func make() {
+                    return [
+                        "Test" : InternalStuff
+                    ];    
+                }
+            }
+
+            var Interface = Interface_Implementation().make();
+
+
+
+
+
+            func main() {
+                var test = Interface.Test();
+                Topaz.log(test.a);
+            }
+        
+
+*/
+
+
+/*
+var Topaz2;
+class __TopazImplementation {
+    
+    func make() {
+        return [
+            "run" : topaz_.topaz__run,
+            "pause" : topaz_.topaz__pause,
+            "resume" : topaz_.topaz__resume,
+            "iterate" : topaz_.topaz__iterate,
+            "step" : topaz_.topaz__step,
+            "draw" : topaz_.topaz__draw,
+            "toBase64" : topaz_.topaz__to_base64,
+            "fromBase64" : func(f) {
+                var out = Data();
+                out.impl_ = topaz_.topaz__from_base64(f);
+                return out;
+            },
+            
+        ]
+    }
+}
+Topaz2 = __TopazImplementation().make();
 */
 
 class Topaz {
@@ -2681,9 +2735,11 @@ class Debug {
     // Can be used to allow global access to a local reference 
     // for debugging purposes.
     var refs;
+    var pause;
 
     func init() {
-        refs = [:];        
+        refs = [:];  
+        pause = topaz_.pause;
     }
 
     // Prints detailed info for 
@@ -2712,9 +2768,6 @@ class Debug {
         return out;
     }
 
-    func pause() {
-        topaz_.pause();
-    }
 }
 
 var debug = Debug();
