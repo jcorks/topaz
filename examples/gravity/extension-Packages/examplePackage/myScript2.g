@@ -4,4 +4,4 @@
 
 var script2data = 42;
 
-topaz.log('Hello from myScript2.js!');
+Topaz.log('Hello from myScript2.g!');

@@ -117,8 +117,11 @@ class Topaz {
 
 
     static func log(a, b) {
-        if (b == null) b = true;
-        topaz_.topaz__log(''+a, b);
+        if (b == false) {
+            topaz_.topaz__log(''+a, false);
+        } else {
+            topaz_.topaz__log(''+a, true);
+        }
     }    
 
 
@@ -2338,6 +2341,338 @@ class Automation : Component {
 
 
 }
+
+class _PackageClass {
+    private var packages;
+    private var packageDB; // map name to package object
+
+    func init() {
+        packageDB=[:];
+        packages=[];
+    }
+
+    private func loadAsset(jsonAsset, ext) {
+        if (jsonAsset.assetBase64 != null) {
+            var out = Topaz.fromBase64(jsonAsset.assetBase64).bytes;
+            var success = Resources.loadAssetData(
+                ext,
+                out,
+                jsonAsset.assetName
+            );
+            if (success == null) {
+                Topaz.log("Error loading " + jsonAsset.assetName + "!");
+                return false;
+            }
+
+        }
+        if (jsonAsset.assetPath != null) {
+            var success = Resources.loadAsset(
+                ext,
+                jsonAsset.assetPath,
+                jsonAsset.assetName
+            );    
+            if (success == null) {
+                Topaz.log("Error loading " + jsonAsset.assetPath + "!");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // can throw, watch out
+    private func makePackageFromJSON(json) {
+
+        if (json.formatVersion != 1) {
+            Topaz.log("Package version unrecognized (" + json.formatVersion + ")");
+            return null;
+        }
+
+
+        var pkg = [:];
+        pkg.name = json.name;
+        pkg.version = json.version;
+        pkg.assets = []; // strings of asset names
+        pkg.depends = json.depends;
+        if (!pkg.depends) {
+            pkg.depends = [];
+        }
+        // not a valid array, tolerate it.
+        if (pkg.depends.count == null) {
+            pkg.depends = [];
+        }
+        pkg.resolved = false;
+
+        for(var i in 0..<json.assets.count) {
+            const assetSrc = json.assets[i];
+            switch(assetSrc.assetType) {
+              case "script":
+                loadAsset(assetSrc, "")
+                break;
+
+
+              case "font":
+                loadAsset(assetSrc, "")
+                FontManager.registerFont(
+                    assetSrc.assetName
+                );
+
+              default:
+                loadAsset(assetSrc, assetSrc.assetType)
+                break;
+            }
+
+
+        }
+        return pkg;
+    };
+
+
+
+
+
+    func read(path) {
+        var asset = Resources.loadAsset('', path, path);
+        if (!asset) {
+            Topaz.log("Could not read package");
+            return;
+        }
+
+        var pkg = makePackageFromJSON(JSON.parse(asset.string));
+        if (pkg) {
+            packageDB[pkg.name] = pkg;
+            packages.push(pkg);
+        } 
+        Resources.removeAsset(path);
+        if (pkg) return true;
+        return false;        
+    }
+
+    func readData(jsonStr) {
+        var pkg = makePackageFromJSON(JSON.parse(jsonStr));
+        if (pkg) {
+            packageDB[pkg.name] = pkg;
+            packages.push(pkg);
+        }
+    }
+
+
+    func require(packageName, versionObject) {
+        var pkg = packageDB[packageName];
+        if (!pkg) {
+            Topaz.log('Unknown package ' + packageName);                
+            return false;
+        }
+
+        if (!pkg.resolved) {
+            Topaz.log('Package '+packageName+' has been pre-loaded but not resolved.');                
+            return false;
+        }
+
+
+        if (versionObject != null) {
+
+            if (versionObject.major != null) {
+                if (versionObject.major > pkg.version.major) {
+                    Topaz.log('Package '+packageName+' has major version ' + pkg.version.major + ', but version ' + versionObject.major + ' is required.');                
+                    return false;
+                }
+            }
+
+            if (versionObject.minor != null &&
+                versionObject.major != null) {
+                    if (versionObject.major == pkg.version.major && 
+                        versionObject.minor >  pkg.version.minor) {
+                    Topaz.log('Package '+packageName+' has version ' + pkg.version.major + '.' + pkg.version.minor + ', but version ' + versionObject.major + '.' + versionObject.minor + ' is required.');                                           
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+    func resolve(packageName) {
+        var pkg = packageDB[packageName];
+        if (!pkg) {
+            Topaz.log("No such package '" + packageName + "'");
+            return false;
+        }
+
+        if (pkg.resolved) return true;
+        pkg.resolved = true;
+
+        for(var i in 0..<pkg.depends.count) {
+            if (!resolve(pkg.depends[i].name)) {
+                Topaz.log("Error: Required package for " + packageName + " could not be resolved");
+                pkg.resolved = false;
+                return false;
+            }
+
+            var dep = packageDB[pkg.depends[i].version.major];
+            var majorNeeded = Int(pkg.depends[i].version.major);
+            var minorNeeded = Int(pkg.depends[i].version.minor);
+
+            var majorHave = Int(dep.version.major);
+            var minorHave = Int(dep.version.minor);
+
+            if (
+                (majorHave < majorNeeded) 
+                ||
+                (majorHave == majorNeeded &&
+                 minorHave <  minorNeeded)
+            ) {
+                Topaz.log("ERROR: Required package version for " + dep.name + " is " + majorNeeded + "." + minorNeeded + ", but found " + majorHave + "," + minorHave);
+                pkg.resolved = false;
+                return false;
+            } 
+        }
+
+        return true;
+    }
+
+    func resolveAll() {
+        for(var i in 0..<packages.count) {
+            if (!resolve(packages[i].name)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    private func genPackage(allPackages, path) {
+        var mainPath = Filesystem.getPathFromString(
+            Filesystem.getPath(FilesystemDefaultNode.Resources),
+            path
+        );
+        if (mainPath == null) {
+            Topaz.log("No such path.");
+            return false;
+        }
+
+        Resources.path = mainPath.string;
+
+        var indata = Resources.loadAsset('', 'setup_package.json', 'setup_package.json');
+        if (!(indata != null && indata.byteCount)) {
+            return ("Input file 'setup_package.json' is empty or could not be opened. Exiting");
+        }
+        allPackages.push(indata.name);
+        var injson = JSON.parse(indata.string);    
+        var outjson = [:];
+        outjson.formatVersion = 1;
+        outjson.name = injson.name;
+        var packageOutName = "package.json";
+        if (injson.outputName != null) {
+            packageOutName = injson.outputName;
+        }
+        if (outjson.name == null) {
+            return ("setup_package.json: missing 'name' property!");
+        }
+        outjson.version = injson.version;
+        if (outjson.version == null) {
+            return ("setup_package.json: missing 'version' property!");
+        }
+
+
+        if (!outjson.version.hasKey("major")) {
+            return ("setup_package.json: missing 'version.major' property!");
+        }
+        if (!outjson.version.hasKey("minor")) {
+            return ("setup_package.json: missing 'version.major' property!");
+        }
+        if (!outjson.version.hasKey("micro")) {
+            Topaz.log("WARNING setup_package.json: missing 'version.micro' property");
+        }
+        if (!outjson.version.hasKey("build")) {
+            Topaz.log("WARNING setup_package.json: missing 'version.build' property");
+        }
+
+        var debug = injson.debug == null ? false : injson.debug;
+
+        outjson.depends = [];
+        if (injson.hasKey("depends") && injson.depends.count) {
+            for(var i in 0..<injson.depends.count) {
+                outjson.depends.push(injson.depends[i]);
+            }
+        }
+
+
+
+
+        outjson.assets = [];
+        if (!(injson.hasKey("assets") && injson.assets.count)) {
+            Topaz.log("WARNING: setup_package.json specifies no assets!");
+        }
+
+
+        for(var i in 0..<injson.assets.count) {
+            var asset = [:];
+            asset.assetName = injson.assets[i].assetName;
+            asset.assetType = injson.assets[i].assetType;
+
+
+            if (debug) {
+                asset.assetPath = Filesystem.getPathFromString(
+                    mainPath,
+                    injson.assets[i].assetFile
+                ).string;
+
+                outjson.assets.push(asset);
+                Topaz.log(injson.assets[i].assetName + " -> Added");
+
+            } else {
+                const bufferIn = Resources.loadAsset('', injson.assets[i].assetFile, injson.assets[i].assetName);
+                if (!(bufferIn != null && bufferIn.byteCount)) {
+                    return ('setup_package.json: could not open asset ' + injson.assets[i].assetFile);
+                }
+                allPackages.push(bufferIn.name);
+                Topaz.log("Processing asset " + injson.assets[i].assetName, false);
+                Topaz.log(".", false);
+
+                var byteCount = bufferIn.byteCount;
+                var bytes = bufferIn.bytes;
+                var partition = Math.floor(byteCount/5);
+
+                Topaz.log(".....", false);
+                Topaz.log(" ", false);
+
+                asset.assetBase64 = Topaz.toBase64(bytes);                
+                outjson.assets.push(asset);
+                Topaz.log("OK (" + Math.ceil(byteCount/1024) + "." + Math.floor(((byteCount%1024) / 1024.0)*100) + "KB)");
+            }
+        }
+
+
+        var output = JSON.stringify(outjson);
+        var outputAsset = Resources.fetchAsset(AssetType.Data, "__ASSET__39245s$");
+        var outputData = [];
+        Topaz.log("Generating output buffer", false);
+        var length = output.length;
+        var partition = Math.floor(length / 5);
+        for(var i in 0..<length) {
+            if (i%partition == 0) {
+                Topaz.log(".", false);
+            }
+            outputData.push(output.charCodeAt(i));
+        }
+        outputAsset.bytes = outputData;    
+        Resources.writeAsset(outputAsset, "", packageOutName);
+        Topaz.log(" written (" + Math.ceil(length/1024) + "." + Math.floor(((length%1024) / 1024.0)*100) + "KB)");
+        return true;
+    }
+
+    func makePackage(path) {
+        var allPackages = [];
+        var output = genPackage(allPackages, path);
+        //cleanup
+        for(var i in 0..<allPackages.count) {
+            Resources.removeAsset(allPackages[i]);
+        }
+        return output;
+    }
+}
+var Package = _PackageClass();
 
 
 

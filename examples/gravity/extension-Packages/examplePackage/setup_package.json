@@ -13,13 +13,12 @@
      {
        "assetName" : "ExampleScript1",
        "assetType" : "script",
-       "assetFile" : "myScript1.js",
-       "autorun"   : "true"
+       "assetFile" : "myScript1.g",
      },
      {
       "assetName" : "ExampleScript2",
       "assetType" : "script",
-      "assetFile" : "myScript2.js"
+      "assetFile" : "myScript2.g"
     },
     {
       "assetName" : "ExampleImage",

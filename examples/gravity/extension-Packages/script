@@ -69,7 +69,6 @@
             "assetName" : string
             "assetType" : string
             "assetFile" : string 
-            "autorun"   : boolean
         }
     ]
 
@@ -81,14 +80,12 @@
 
         "assetType" will either contain the topaz-recognized extension of the asset, i.e. png, 
         or one of the following special assetTypes: 
-            "script"  - This will load a plain data asset, and will also mark the asset as elligible for autorunning.
+            "script"  - This will load a plain data asset meant for #including. This is the same behavior as passing an empty string.
             "font"    - This will load a plain data asset as well as register the font for immediate use.
 
         "assetFile" should contain the filesystem path to the asset itself. If relative, should be 
         relative to the location of the setup_package.json.
 
-        "autorun" is a special flag for script assets which will allow 
-        the script to be run once the package successfully resolves.
         
     
 
@@ -106,6 +103,5 @@
 
 func main() {
     var status = Package.makePackage("./examplePackage");
-    Topaz.log(status + '\n');
     Topaz.quit();
 }

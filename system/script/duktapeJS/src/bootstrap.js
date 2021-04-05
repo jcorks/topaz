@@ -16,7 +16,9 @@ topaz = {
     import : topaz_script__import,
     log : topaz__log,
     toBase64 : topaz__to_base64,
-    fromBase64 : topaz__from_base64,
+    fromBase64 : function(f) {
+        return new topaz.data(topaz__from_base64(f));
+    },
 
     topazRender2D_Parameter_AlphaRule : 0,
     topazRender2D_Parameter_DepthTest : 1,
@@ -2165,13 +2167,7 @@ topaz.package = (function(){
 
     const loadAsset = function(jsonAsset, ext) {
         if (jsonAsset.assetBase64 != undefined) {
-            var out = [];
-            var pbuffer = Duktape.dec('base64', jsonAsset.assetBase64);
-
-            for(var i = 0; i < pbuffer.byteLength; ++i) {
-                out.push(pbuffer[i]);
-            }
-
+            var out = topaz.fromBase64(jsonAsset.assetBase64).bytes;
             var success = topaz.resources.loadAssetData(
                 ext,
                 out,
@@ -2498,22 +2494,11 @@ topaz.package = (function(){
                             const bytes = bufferIn.bytes;
                             const partition = Math.floor(byteCount/5);
         
-                            
-                            var plainBuffer = Uint8Array.allocPlain(byteCount);
-        
-                            for(var n = 0; n < byteCount; ++n) {
-                                if (partition && n%partition == 0)
-                                    topaz.log('.', false);
-                                plainBuffer[n] = bytes[n];
-                            }
-                            if (!partition) {
-                                topaz.log('.....', false);
-                            }
+                            topaz.log('.....', false);
                             topaz.log(' ', false);
         
         
-                            asset.assetBase64 = Duktape.enc('base64', plainBuffer);
-        
+                            asset.assetBase64 = topaz.toBase64(bytes);                        
                             outjson.assets.push(asset);
                             topaz.log('OK (' + Math.ceil(byteCount/1024) + '.' + Math.floor(((byteCount%1024) / 1024.0)*100) + 'KB)');
                         }

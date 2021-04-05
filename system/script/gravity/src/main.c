@@ -319,16 +319,12 @@ static void topaz_gravity_lineiter_callback(
     void * xdata
 ) {
     TopazGravity * g = xdata;
-    printf("%d %d %d\n", nthFrame, fileid, line);
-    fflush(stdout);
     g->lastFrame = nthFrame;
     if (g->waitForNext) {
         if (g->stepOver) {
             if (nthFrame <= g->targetFrame) {
                 g->waitForNext = 0;
                 topaz_script_debug_send_command(g->script, topazScript_DebugCommand_Pause, TOPAZ_STR_CAST("")); 
-            } else {
-                printf("     %d %d mismatch\n", nthFrame, g->targetFrame);
             }
         } else {
             g->waitForNext = 0;

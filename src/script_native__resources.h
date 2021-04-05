@@ -61,7 +61,7 @@ TSO_SCRIPT_API_FN(resources_api__load_asset_data) {
 
 
     topazArray_t * arr = topaz_array_create(sizeof(uint8_t));
-    uint32_t size = topaz_script_object_reference_array_get_count(arg1);
+    int size = topaz_script_object_reference_array_get_count(arg1);
     uint32_t i;
     uint8_t d;
     for(i = 0; i < size; ++i) {

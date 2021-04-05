@@ -3,7 +3,33 @@
 #include <topaz/all.h>
 
 
-
+static int run_script(topaz_t * ctx, topazScript_t * script, const topazString_t * name) {
+    // extract the script data
+    topazFilesystem_t * fs = topaz_context_get_filesystem(ctx);
+    const topazFilesystem_Path_t * path = topaz_filesystem_get_path_from_string(
+        fs, 
+        topaz_filesystem_get_path(fs, topazFilesystem_DefaultNode_Resources),
+        name    
+    );
+    if (!path) {
+        return 0;
+    }
+    topazRbuffer_t * scriptFile = topaz_filesystem_path_read(path);
+    if (!scriptFile) {
+        return 0;
+    }
+    const topazString_t * scriptText  = topaz_rbuffer_read_string(
+        scriptFile,
+        topaz_rbuffer_get_size(scriptFile)
+    );
+          
+    topaz_script_run(
+        script,
+        name,
+        scriptText
+    );
+    return 1;   
+}
 
 int main() {
     // Create the context and window
@@ -36,31 +62,10 @@ int main() {
     );
 
 
-
-    // extract the script data
-    topazFilesystem_t * fs = topaz_context_get_filesystem(ctx);
-    const topazFilesystem_Path_t * path = topaz_filesystem_get_path_from_string(
-        fs, 
-        topaz_filesystem_get_path(fs, topazFilesystem_DefaultNode_Resources),
-        TOPAZ_STR_CAST("script")    
-    );
-    if (!path) {
+    // Optional
+    run_script(ctx, script, TOPAZ_STR_CAST("preload"));
+    if (!run_script(ctx, script, TOPAZ_STR_CAST("script")))
         return 1;
-    }
-    topazRbuffer_t * scriptFile = topaz_filesystem_path_read(path);
-    if (!scriptFile) {
-        return 2;
-    }
-    const topazString_t * scriptText  = topaz_rbuffer_read_string(
-        scriptFile,
-        topaz_rbuffer_get_size(scriptFile)
-    );
-          
-    topaz_script_run(
-        script,
-        TOPAZ_STR_CAST("script"),
-        scriptText
-    );   
 
     topaz_context_run(ctx);
 }
