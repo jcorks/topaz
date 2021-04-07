@@ -9,14 +9,14 @@ var Rectangle = {
 
     onReady : function(props) {
 
-        topaz.input.addKeyboardListener({
+        Topaz.Input.addKeyboardListener({
             onPress : function(map, key) {
                 switch(key) {
-                  case topaz.input.topazKey_space:
+                  case Topaz.Input.topazKey_space:
                     props.anim.speed += 0.25;
                     break;
 
-                  case topaz.input.topazKey_backspace:
+                  case Topaz.Input.topazKey_backspace:
                     if (props.anim.speed > 0) {
                         props.anim.speed -= 0.25;
                     } else {
@@ -28,14 +28,14 @@ var Rectangle = {
         });
 
 
-        props.visual = new topaz.shape2d();
+        props.visual = new Topaz.Shape2D();
         props.visual.formRectangle(30, 30);
-        props.visual.center = new topaz.vector(15, 15);
+        props.visual.center = new Topaz.Vector(15, 15);
 
 
-        props.anim = new topaz.automation();
+        props.anim = new Topaz.Automation();
         props.anim.installHook('on-anim-end', function(){
-            topaz.log('Animation reset!');
+            Topaz.log('Animation reset!');
         });
         props.anim.durationSeconds = 4;
         props.anim.looped = false;
@@ -48,7 +48,7 @@ var Rectangle = {
     onStep : function(props) {
 
         const r = props.entity.position;
-        props.entity.position = new topaz.vector(100+props.anim.value, r.y);
+        props.entity.position = new Topaz.Vector(100+props.anim.value, r.y);
     }
 }
 
@@ -57,12 +57,12 @@ var RectangleLinear = {
     inherits : Rectangle,
     props : {},
     onReady : function(props) {
-        props.visual.color = new topaz.color('purple');
-        props.anim.addKeyframe(0,   topaz.topazAutomation_Function_None, 0);
-        props.anim.addKeyframe(200, topaz.topazAutomation_Function_Linear, 0.5);
-        props.anim.addKeyframe(0,   topaz.topazAutomation_Function_Linear, 1);
+        props.visual.color = new Topaz.Color('purple');
+        props.anim.addKeyframe(0,   Topaz.Automation.Function.none, 0);
+        props.anim.addKeyframe(200, Topaz.Automation.Function.linear, 0.5);
+        props.anim.addKeyframe(0,   Topaz.Automation.Function.linear, 1);
 
-        props.entity.position = new topaz.vector(100, 100);
+        props.entity.position = new Topaz.Vector(100, 100);
     }
 };
 
@@ -70,12 +70,12 @@ var RectangleSquare = {
     inherits : Rectangle,
     props : {},
     onReady : function(props) {
-        props.visual.color = new topaz.color('blue');
-        props.anim.addKeyframe(0,   topaz.topazAutomation_Function_None,   0);
-        props.anim.addKeyframe(200, topaz.topazAutomation_Function_Square, 0.5);
-        props.anim.addKeyframe(0,   topaz.topazAutomation_Function_Square, 1);
+        props.visual.color = new Topaz.Color('blue');
+        props.anim.addKeyframe(0,   Topaz.Automation.Function.none,   0);
+        props.anim.addKeyframe(200, Topaz.Automation.Function.square, 0.5);
+        props.anim.addKeyframe(0,   Topaz.Automation.Function.square, 1);
 
-        props.entity.position = new topaz.vector(100, 200);
+        props.entity.position = new Topaz.Vector(100, 200);
     }
 };
 
@@ -83,23 +83,23 @@ var RectangleRoot = {
     inherits : Rectangle,
     props : {},
     onReady : function(props) {
-        props.visual.color = new topaz.color('red');
-        props.anim.addKeyframe(0,   topaz.topazAutomation_Function_None,       0);
-        props.anim.addKeyframe(200, topaz.topazAutomation_Function_SquareRoot, 0.5);
-        props.anim.addKeyframe(0,   topaz.topazAutomation_Function_SquareRoot, 1);
+        props.visual.color = new Topaz.Color('red');
+        props.anim.addKeyframe(0,   Topaz.Automation.Function.none,       0);
+        props.anim.addKeyframe(200, Topaz.Automation.Function.squareRoot, 0.5);
+        props.anim.addKeyframe(0,   Topaz.Automation.Function.squareRoot, 1);
 
 
-        props.entity.position = new topaz.vector(100, 300);
+        props.entity.position = new Topaz.Vector(100, 300);
     }
 };
 
 
 
 (function(){
-    const root = new topaz.entity();
-    root.attach(new topaz.entity(RectangleLinear));
-    root.attach(new topaz.entity(RectangleSquare));
-    root.attach(new topaz.entity(RectangleRoot));
+    const root = new Topaz.Entity();
+    root.attach(new Topaz.Entity(RectangleLinear));
+    root.attach(new Topaz.Entity(RectangleSquare));
+    root.attach(new Topaz.Entity(RectangleRoot));
 
-    topaz.root = root;
+    Topaz.root = root;
 })();

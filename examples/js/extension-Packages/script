@@ -103,6 +103,6 @@
 */
 
 
-var status = topaz.package.makePackage('./examplePackage');
-topaz.log(status + '\n');
-topaz.quit();
+var status = Topaz.Package.makePackage('./examplePackage');
+Topaz.log(status + '\n');
+Topaz.quit();

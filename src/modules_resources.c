@@ -155,6 +155,25 @@ topazAsset_t * topaz_resources_load_asset(
 }
 
 
+topazAsset_t * topaz_resources_load_asset_base64(
+    topazResources_t * r,
+    const topazString_t * extension,
+    const topazString_t * data,
+    const topazString_t * name
+) {
+    uint32_t size = 0;
+    uint8_t * buffer = topaz_string_base64_to_bytes(data, &size);
+    if (!buffer) {
+        return NULL;
+    }
+    topazAsset_t * out = topaz_resources_load_asset_data(
+        r, 
+        extension, 
+        TOPAZ_ARRAY_CAST(buffer, uint8_t, size), 
+        name
+    );
+    return out;
+}
 
 
 topazAsset_t * topaz_resources_load_asset_data(

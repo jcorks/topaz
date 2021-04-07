@@ -1,5 +1,3 @@
-
-
 // So far, we've examined the nature of entities and 
 // components. There is one more major source of functionality
 // within topaz: modules. Modules are collections of 
@@ -33,10 +31,10 @@ var Input_Poll = {
     onReady : function(props) {
         // Since we are making the shape once and not modifying it,
         // theres no need to keep the component around.
-        const visual = new topaz.shape2d();
+        const visual = new Topaz.Shape2D();
 
         // Set it to blue and make it 20x20
-        visual.color = new topaz.color('blue');
+        visual.color = new Topaz.Color('blue');
         visual.formRectangle(20, 20);
 
         // As shorthand for .addComponent(), you 
@@ -59,7 +57,7 @@ var Input_Poll = {
         // and accuracy, it is common to just re-poll for input 
         // every frame.
         //
-        // topaz.input.getState() returns a number representing the 
+        // Topaz.Input.getState() returns a number representing the 
         // state of the input. Usually 0 means inactive, and 
         // above 0 means its active. For buttons, this is 
         // just 0.0 vs 1.0. 
@@ -69,41 +67,40 @@ var Input_Poll = {
         // position vector by adding "1" to it in the direction 
         // that corresponds to the arrow.
 
-        if (topaz.input.getState(topaz.input.topazKey_up)) {
+        if (Topaz.Input.getState(Topaz.Input.topazKey_up)) {
             // The add() function for vectors allows the creation 
             // of a new vector by summing the x, y, and z components
             // of the source vector and argument vector.
-            $.position = $.position.add(new topaz.vector(0, -1));            
+            $.position = $.position.add(new Topaz.Vector(0, -1));            
         }
 
-        if (topaz.input.getState(topaz.input.topazKey_down)) {
-            $.position = $.position.add(new topaz.vector(0, 1));            
+        if (Topaz.Input.getState(Topaz.Input.topazKey_down)) {
+            $.position = $.position.add(new Topaz.Vector(0, 1));            
         }
 
-        if (topaz.input.getState(topaz.input.topazKey_left)) {
-            $.position = $.position.add(new topaz.vector(-1, 0));            
+        if (Topaz.Input.getState(Topaz.Input.topazKey_left)) {
+            $.position = $.position.add(new Topaz.Vector(-1, 0));            
         }
 
 
-        if (topaz.input.getState(topaz.input.topazKey_right)) {
-            $.position = $.position.add(new topaz.vector(1, 0));            
+        if (Topaz.Input.getState(Topaz.Input.topazKey_right)) {
+            $.position = $.position.add(new Topaz.Vector(1, 0));            
         }
 
         // The left/right/middle button can be polled using 
-        // the topaz.input.topazPointer_* inputs.
+        // the Topaz.Input.topazPointer_* inputs.
         // All inputs for the mouse+keyboard can use the getState() function.
-        if (topaz.input.getState(topaz.input.topazPointer_1)) {
+        if (Topaz.Input.getState(Topaz.Input.topazPointer_1)) {
             // To poll position position, getState can be used. However,
             // due to the commonality of this operation, the position 
-            // can be polled by just accessing topaz.input.mouseX / Y.
-            $.position = new topaz.vector(
-                topaz.input.mouseX,
-                topaz.input.mouseY
+            // can be polled by just accessing Topaz.Input.mouseX / Y.
+            $.position = new Topaz.Vector(
+                Topaz.Input.mouseX,
+                Topaz.Input.mouseY
             );
         }
     }
 }
-
 
 
 // This prefab demonstrates the usage of event listening.
@@ -139,10 +136,10 @@ var Input_List = {
     onReady : function(props) {
         // Same story as the first prefab!
         const $ = props.entity;
-        const visual = new topaz.shape2d();
+        const visual = new Topaz.Shape2D();
 
         // Here, we're using RGB hex notation to define our color.
-        visual.color = new topaz.color('#ff0000');
+        visual.color = new Topaz.Color('#ff0000');
         visual.formRectangle(20, 20);
 
         $.components = [visual];
@@ -160,27 +157,27 @@ var Input_List = {
         // This listener is mapped to the onActive event, which 
         // is every frame that an input is non-zero. This is 
         // convenient for when buttons are held.
-        topaz.input.addKeyboardListener({
+        Topaz.Input.addKeyboardListener({
 
             // Here is the onActive property.
             // The funcion mapped takes 2 arguments: the map itself 
             // we passed in, and the input id that is active.
             onActive : function(map, key) {
                 switch(key) {
-                  case topaz.input.topazKey_w:
-                    $.position = $.position.add(new topaz.vector(0, -1));            
+                  case Topaz.Input.topazKey_w:
+                    $.position = $.position.add(new Topaz.Vector(0, -1));            
                     break;
 
-                  case topaz.input.topazKey_s:
-                    $.position = $.position.add(new topaz.vector(0, 1));            
+                  case Topaz.Input.topazKey_s:
+                    $.position = $.position.add(new Topaz.Vector(0, 1));            
                     break;
 
-                  case topaz.input.topazKey_a:
-                    $.position = $.position.add(new topaz.vector(-1, 0));            
+                  case Topaz.Input.topazKey_a:
+                    $.position = $.position.add(new Topaz.Vector(-1, 0));            
                     break;
 
-                  case topaz.input.topazKey_d:
-                    $.position = $.position.add(new topaz.vector(1, 0));            
+                  case Topaz.Input.topazKey_d:
+                    $.position = $.position.add(new Topaz.Vector(1, 0));            
                     break;
                 }
             }
@@ -188,7 +185,7 @@ var Input_List = {
 
         // Similar to adding a keyboard listener, pointer 
         // listeners will respond only to mouse events.
-        topaz.input.addPointerListener({
+        Topaz.Input.addPointerListener({
 
             // The onUpdate event respondes to any time the 
             // device sends a new event to topaz.
@@ -196,7 +193,7 @@ var Input_List = {
 
                 // The clicking state will by set here to detect when to apply the 
                 // x / y position change
-                if (input == topaz.input.topazPointer_0) {
+                if (input == Topaz.Input.topazPointer_0) {
                     props.clicking = value > 0;
                 }
 
@@ -206,12 +203,12 @@ var Input_List = {
                 // in question with the raw value.
                 if (props.clicking) {
                     switch(input) {
-                      case topaz.input.topazPointer_X:
-                        $.position = new topaz.vector(value, $.position.y);
+                      case Topaz.Input.topazPointer_X:
+                        $.position = new Topaz.Vector(value, $.position.y);
                         break;
 
-                      case topaz.input.topazPointer_Y:
-                        $.position = new topaz.vector($.position.x, value);
+                      case Topaz.Input.topazPointer_Y:
+                        $.position = new Topaz.Vector($.position.x, value);
                         break;
 
                     }
@@ -227,7 +224,7 @@ var Input_List = {
 // it is helpful to establish a basic "entity tree".
 // Here, our root is an empty object whose job is purely
 // to manage the input example entities we defined above.
-var manager = new topaz.entity();
+var manager = new Topaz.Entity();
 
 
 // Next, we'll instantiate those entities 
@@ -238,9 +235,9 @@ var manager = new topaz.entity();
 //    manager.attach(new topaz.entity(Input_Poll));
 //    manager.attach(new topaz.entity(Input_List));
 manager.children = [
-    new topaz.entity(Input_Poll),
-    new topaz.entity(Input_List)
+    new Topaz.Entity(Input_Poll),
+    new Topaz.Entity(Input_List)
 ];
 
 // Finally, insert the base of the tree into topaz itself.
-topaz.root = manager;
+Topaz.root = manager;

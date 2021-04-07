@@ -1,4 +1,4 @@
-topaz = {
+var Topaz = {
     uniqueObjectPool : 0,
     run : topaz__run,
     pause : topaz__pause,
@@ -17,60 +17,51 @@ topaz = {
     log : topaz__log,
     toBase64 : topaz__to_base64,
     fromBase64 : function(f) {
-        return new topaz.data(topaz__from_base64(f));
+        return new Topaz.Data(topaz__from_base64(f));
+    },
+    
+    Render2D : {
+        Parameter : {
+            alphaRule : 0,
+            depthTest : 1,
+            etchRule : 2,
+            textureFilterHint : 3
+        }    
+    },
+    
+    Renderer : {
+        EtchRule : {
+            noEtching : 0,
+            define : 1,
+            undefine : 2,
+            in : 3,
+            out : 4
+        },
+        
+        DepthTest : {
+            less : 0,
+            LEQ : 1,
+            greater : 2,
+            GEQ : 3,
+            equal : 4,
+            none : 5
+        },
+
+        AlphaRule : {
+            allow : 0,
+            opaque : 1,
+            translucent : 2,
+            invisible : 3,
+        },
+        
+        TextureFilterHint : {
+            linear : 0,
+            none : 1,
+        }
+
     },
 
-    topazRender2D_Parameter_AlphaRule : 0,
-    topazRender2D_Parameter_DepthTest : 1,
-    topazRender2D_Parameter_EtchRule : 2,
-    topazRender2D_Parameter_TextureFilterHint : 3,
 
-    topazRenderer_EtchRule_NoEtching : 0,
-    topazRenderer_EtchRule_Define : 1,
-    topazRenderer_EtchRule_Undefine : 2,
-    topazRenderer_EtchRule_In : 3,
-    topazRenderer_EtchRule_Out : 4,
-
-    topazRenderer_DepthTest_Less : 0,
-    topazRenderer_DepthTest_LEQ : 1,
-    topazRenderer_DepthTest_Greater : 2,
-    topazRenderer_DepthTest_GEQ : 3,
-    topazRenderer_DepthTest_Equal : 4,
-    topazRenderer_DepthTest_None : 5,
-
-    topazRenderer_AlphaRule_Allow : 0,
-    topazRenderer_AlphaRule_Opaque : 1,
-    topazRenderer_AlphaRule_Translucent : 2,
-    topazRenderer_AlphaRule_Invisible : 3,
-
-    topazRenderer_TextureFilterHint_Linear : 0,
-    topazRenderer_TextureFilterHint_None : 1,
-
-
-    topazScheduler_Mode_Time : 0,
-    topazScheduler_Mode_Frame : 1,
-
-    topazAutomation_Function_None : 0,
-    topazAutomation_Function_Linear : 1,
-    topazAutomation_Function_Square : 2,
-    topazAutomation_Function_Cube : 3,
-    topazAutomation_Function_SquareRoot : 4,
-    topazAutomation_Function_CubeRoot : 5,
-    topazAutomation_Function_Random : 6,
-
-
-    topazParticle_Property_Duration : 0,
-    topazParticle_Property_ScaleX : 1,
-    topazParticle_Property_ScaleY : 2,
-    topazParticle_Property_ScaleMultiplier : 3,
-    topazParticle_Property_Rotation : 4,
-    topazParticle_Property_Direction : 5,
-    topazParticle_Property_SpeedX : 6,
-    topazParticle_Property_SpeedY : 7,
-    topazParticle_Property_Red : 8,
-    topazParticle_Property_Green : 9,
-    topazParticle_Property_Blue : 10,
-    topazParticle_Property_Alpha : 11,
 
 
     objectToString : function(obj, levelSrc) {
@@ -98,29 +89,29 @@ topaz = {
         return helper(obj, 0) + '\n';
     },
     deadEntityPool : [],
-    filesystem : {
-        defaultNode : {
+    Filesystem : {
+        DefaultNode : {
             resources : 0,
             topaz : 1,
             userData : 2
         },
         
         getPath : function(n) {
-            return new topaz.filesystem.path(topaz_filesystem__get_path(n));
+            return new Topaz.Filesystem.path(topaz_filesystem__get_path(n));
         },
         
         getPathFromString : function(pth, str) {
             if (pth) {
-                return new topaz.filesystem.path(topaz_filesystem__get_path_from_string(pth.impl, str));            
+                return new Topaz.Filesystem.path(topaz_filesystem__get_path_from_string(pth.impl, str));            
             } else {
-                return new topaz.filesystem.path(topaz_filesystem__get_path_from_string(str));                        
+                return new Topaz.Filesystem.path(topaz_filesystem__get_path_from_string(str));                        
             }
         },
         
         
         path : function(implPre) {
             var impl;
-            this.uniqueID = topaz.uniqueObjectPool++;
+            this.uniqueID = Topaz.uniqueObjectPool++;
             if (implPre) 
                 impl = implPre;
             else {
@@ -132,7 +123,7 @@ topaz = {
 
         
     },
-    input : {
+    Input : {
         addKeyboardListener : function(obj) {
             topaz_input__add_keyboard_listener(obj);
         },
@@ -362,9 +353,16 @@ topaz = {
         topazInput_Count: 512
     },
     
-    audio : {
+    Audio : {
+        PlaybackSound : function(implPre) {
+            this.impl = implPre;
+            if (!this.impl) {
+                this.impl = 0; // not a real sound, probably.
+            }
+        },
+    
         playSound : function(asset, channel) {
-            return new topaz.audioPlaybackSound(topaz_audio__play_sound(asset.impl, channel == undefined ? 0 : channel));
+            return new Topaz.Audio.PlaybackSound(topaz_audio__play_sound(asset.impl, channel == undefined ? 0 : channel));
         },
         
         channelHalt : function(channel) {
@@ -381,35 +379,41 @@ topaz = {
 
     },
 
-    resources : {
-        assetType_None : 0,
-        assetType_Image : 1,
-        assetType_Sound : 2,
-        assetType_Model : 3,
-        assetType_Particle : 4,
-        assetType_Data : 5,
-        assetType_Actor : 6,
+    Resources : {
+        AssetType : {
+            none : 0,
+            image : 1,
+            sound : 2,
+            model : 3,
+            particle : 4,
+            data : 5,
+            actor : 6
+        },
+        
         _rawAssetToInstance : function(impl) {
             if (!impl) return undefined;
             switch(topaz_asset__get_type(impl)) {
-              case topaz.resources.assetType_Image: return new topaz.image(impl); break;
-              case topaz.resources.assetType_Data:  return new topaz.data (impl); break;
-              case topaz.resources.assetType_Sound:  return new topaz.sound(impl); break;
+              case Topaz.Resources.AssetType.image: return new Topaz.Image(impl); break;
+              case Topaz.Resources.AssetType.data:  return new Topaz.Data (impl); break;
+              case Topaz.Resources.AssetType.sound:  return new Topaz.Sound(impl); break;
             }
-            return new topaz.asset(impl);
+            return new Topaz.Asset(impl);
 
         },
 
         fetchAsset : function(type, name) {
-            return topaz.resources._rawAssetToInstance(topaz_resources__fetch_asset(type, name));
+            return Topaz.Resources._rawAssetToInstance(topaz_resources__fetch_asset(type, name));
         },
 
         loadAsset : function(ext, path, name) {
-            return topaz.resources._rawAssetToInstance(topaz_resources__load_asset(ext, path, name));
+            return Topaz.Resources._rawAssetToInstance(topaz_resources__load_asset(ext, path, name));
         },
 
         loadAssetData : function(ext, data, name) {
-            return topaz.resources._rawAssetToInstance(topaz_resources__load_asset_data(ext, data, name));
+            return Topaz.Resources._rawAssetToInstance(topaz_resources__load_asset_data(ext, data, name));
+        },
+        loadAssetBase64 : function(ext, b64, name) {
+            return Topaz.Resources._rawAssetToInstance(topaz_resources__load_asset_base64(ext, b64, name));
         },
 
 
@@ -428,7 +432,7 @@ topaz = {
         }
     },
 
-    fontManager : {
+    FontManager : {
         registerFont : function(n) {
             topaz_font_manager__register_font(n);
         },
@@ -461,7 +465,7 @@ topaz = {
         );
     },
 
-    image : function(implPre) {
+    Image : function(implPre) {
         var impl;
 
         if (implPre)
@@ -470,13 +474,13 @@ topaz = {
             throw new Error("Image asset cannot be make without a LL asset instance.");
         }
         impl.__ctx = this;
-        this.uniqueID = topaz.uniqueObjectPool++;
+        this.uniqueID = Topaz.uniqueObjectPool++;
         this.impl = impl;
 
 
     },
 
-    data : function(implPre) {
+    Data : function(implPre) {
         var impl;
 
         if (implPre)
@@ -485,12 +489,12 @@ topaz = {
             throw new Error("Data asset cannot be make without a LL asset instance.");
         }
         impl.__ctx = this;
-        this.uniqueID = topaz.uniqueObjectPool++;
+        this.uniqueID = Topaz.uniqueObjectPool++;
         this.impl = impl;
 
     },
 
-    sound : function(implPre) {
+    Sound : function(implPre) {
         var impl;
 
         if (implPre)
@@ -499,16 +503,15 @@ topaz = {
             throw new Error("Sound asset cannot be make without a LL asset instance.");
         }
         impl.__ctx = this;
-        this.uniqueID = topaz.uniqueObjectPool++;
+        this.uniqueID = Topaz.uniqueObjectPool++;
         this.impl = impl;
 
     },
 
 
 
-    entityNull : function() {return new topaz_entity__null();},
-    entity : function(defineProps, implPre) {
-        this.uniqueID = topaz.uniqueObjectPool++;
+    Entity : function(defineProps, implPre) {
+        this.uniqueID = Topaz.uniqueObjectPool++;
         var impl;
 
         if (implPre)
@@ -522,17 +525,16 @@ topaz = {
             this.define(defineProps);
         }
     
-        //topaz.log('REFERENCE CREATED:\n' + topaz.objectToString(this));
+        //Topaz.log('REFERENCE CREATED:\n' + Topaz.objectToString(this));
 
         
     },
-    componentNull : function() {return topaz_component__null();},
 
 
 
-    text2d : function(implPre) {
+    Text2D : function(implPre) {
         var impl;
-        this.uniqueID = topaz.uniqueObjectPool++;
+        this.uniqueID = Topaz.uniqueObjectPool++;
         if (implPre) 
             impl = implPre;
         else {
@@ -547,9 +549,9 @@ topaz = {
 
 
 
-    scheduler : function(type, implPre) {
+    Scheduler : function(type, implPre) {
         var impl;
-        this.uniqueID = topaz.uniqueObjectPool++;
+        this.uniqueID = Topaz.uniqueObjectPool++;
         if (implPre) 
             impl = implPre;
         else {
@@ -561,9 +563,9 @@ topaz = {
     },
 
 
-    stateControl : function(implPre) {
+    StateControl : function(implPre) {
         var impl;
-        this.uniqueID = topaz.uniqueObjectPool++;
+        this.uniqueID = Topaz.uniqueObjectPool++;
         if (implPre) 
             impl = implPre;
         else {
@@ -577,11 +579,11 @@ topaz = {
 
 
 
-    component : function(defineProps, implPre) {
+    Component : function(defineProps, implPre) {
         //if (implPre)
-            //topaz.log('REFERENCE CREATED:\n' + topaz.objectToString(this));
+            //Topaz.log('REFERENCE CREATED:\n' + Topaz.objectToString(this));
 
-        this.uniqueID = topaz.uniqueObjectPool++;
+        this.uniqueID = Topaz.uniqueObjectPool++;
         var impl;
 
         if (implPre) 
@@ -593,16 +595,16 @@ topaz = {
 
         this.impl = impl;
         if (defineProps) {
-            ctx.define(defineProps);
+            this.define(defineProps);
         }
 
     },
 
 
 
-    object2d : function(implPre) {
+    Object2D : function(implPre) {
         var impl;
-        this.uniqueID = topaz.uniqueObjectPool++;
+        this.uniqueID = Topaz.uniqueObjectPool++;
         if (implPre) 
             impl = implPre;
         else {
@@ -612,9 +614,9 @@ topaz = {
         this.impl = impl;
 
     },
-    shape2d : function(implPre) {
+    Shape2D : function(implPre) {
         var impl;
-        this.uniqueID = topaz.uniqueObjectPool++;
+        this.uniqueID = Topaz.uniqueObjectPool++;
         if (implPre) 
             impl = implPre;
         else {
@@ -624,21 +626,10 @@ topaz = {
         this.impl = impl;
 
     },
-    text2d : function(implPre) {
-        var impl;
-        this.uniqueID = topaz.uniqueObjectPool++;
-        if (implPre) 
-            impl = implPre;
-        else {
-            impl = topaz_text2d__create();
-        }
-        impl.__ctx = this;
-        this.impl = impl;
 
-    },
-    automation : function(implPre) {
+    Automation : function(implPre) {
         var impl;
-        this.uniqueID = topaz.uniqueObjectPool++;
+        this.uniqueID = Topaz.uniqueObjectPool++;
         if (implPre) 
             impl = implPre;
         else {
@@ -649,9 +640,9 @@ topaz = {
     },
 
 
-    color : function(name, implPre) {
+    Color : function(name, implPre) {
         var impl;
-        this.uniqueID = topaz.uniqueObjectPool++;
+        this.uniqueID = Topaz.uniqueObjectPool++;
         if (implPre)
             impl = implPre;
         else 
@@ -664,7 +655,7 @@ topaz = {
     },
 
 
-    vector : function(x, y, z, implPre) {
+    Vector : function(x, y, z, implPre) {
         var impl; 
         if (implPre)
             impl = implPre;
@@ -676,14 +667,8 @@ topaz = {
         this.impl = impl;
     },
     
-    audioPlaybackSound : function(implPre) {
-        this.impl = implPre;
-        if (!this.impl) {
-            this.impl = 0; // not a real sound, probably.
-        }
-    },
 
-    particle : function(implPre) {
+    Particle : function(implPre) {
         var impl; 
         if (implPre)
             impl = implPre;
@@ -693,7 +678,7 @@ topaz = {
         this.impl = impl;
     },
 
-    particleEmitter2D : function(implPre) {
+    ParticleEmitter2D : function(implPre) {
         var impl; 
         if (implPre)
             impl = implPre;
@@ -789,13 +774,13 @@ topaz = {
                 get : function() {
                     var f = topaz_component__get_host(this.impl);
                     if (f.__ctx) return f.__ctx;
-                    return new topaz.entity(undefined, f);
+                    return new Topaz.Entity(undefined, f);
                 }
             }
         );
 
-        obj.emitEvent = function(eventName, entity) {
-            topaz_component__emit_event(this.impl, eventName, entity ? entity.impl : topaz_entity__null());
+        obj.emitEvent = function(eventName, ent) {
+            topaz_component__emit_event(this.impl, eventName, ent ? ent.impl : topaz_entity__null());
         }
 
         obj.emitEventAnonymous = function(eventName) {
@@ -807,9 +792,9 @@ topaz = {
         }
 
         obj.installEvent = function(event, callback) {
-            topaz_component__install_event(this.impl, event, function(component, entity) {
+            topaz_component__install_event(this.impl, event, function(component, ent) {
                 if (callback)
-                    callback(component.__ctx, entity.__ctx);
+                    callback(Component.__ctx, ent.__ctx);
             });
         }
 
@@ -818,8 +803,8 @@ topaz = {
         }
 
         obj.installHook = function(event, callback) {
-            return topaz_component__install_hook(this.impl, event, function(component, entity) {
-                callback(component.__ctx, entity.__ctx);
+            return topaz_component__install_hook(this.impl, event, function(component, ent) {
+                callback(component.__ctx, ent.__ctx);
             });
         }
         obj.uninstallHook = function(event, id) {
@@ -827,8 +812,8 @@ topaz = {
         }
 
         obj.installHandler = function(event, callback) {
-            return topaz_component__install_handler(this.impl, event, function(component, entity) {
-                callback(component.__ctx, entity.__ctx);
+            return topaz_component__install_handler(this.impl, event, function(component, ent) {
+                callback(component.__ctx, ent.__ctx);
             });
         }
         obj.uninstallHandler = function(event, id) {
@@ -846,7 +831,7 @@ topaz = {
         
         obj.remove = function() {
             topaz_entity__remove(this.impl);
-            topaz.deadEntityPool.push(this);
+            Topaz.deadEntityPool.push(this);
         }
     
     
@@ -855,7 +840,7 @@ topaz = {
         obj.nthChild = function(n) {
             var f = topaz_entity__get_nth_child(this.impl, n);
             if (f.__ctx) return f.__ctx;
-            return new topaz.entity(undefined, f);
+            return new Topaz.Entity(undefined, f);
         }
     
         
@@ -898,7 +883,7 @@ topaz = {
             get : function() {
                 var f = topaz_entity__get_parent(this.impl);
                 if (f.__ctx) return f.__ctx;
-                return new topaz.entity(undefined, f);
+                return new Topaz.Entity(undefined, f);
             }, 
             set : function(v){
                 topaz_entity__attach(v.impl, this.impl);
@@ -910,14 +895,14 @@ topaz = {
         obj.query = function(name) {
             var f = topaz_entity__query(this.impl, name);
             if (f.__ctx) return f.ctx;
-            return new topaz.entity(undefined, f);
+            return new Topaz.Entity(undefined, f);
         }
     
     
         obj.search = function(name) {
             var f = topaz_entity__search(this.impl, name);
             if (f.__ctx) return f.ctx;
-            return new topaz.entity(undefined, f);
+            return new Topaz.Entity(undefined, f);
         }
     
     
@@ -971,7 +956,7 @@ topaz = {
         Object.defineProperty(
             obj,
             'rotation', {
-                get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_rotation(this.impl));},
+                get : function()  {return new Topaz.Vector(0, 0, 0, topaz_entity__get_rotation(this.impl));},
                 set : function(v) {topaz_entity__set_rotation(this.impl, v.impl);}
             }
         );
@@ -979,7 +964,7 @@ topaz = {
         Object.defineProperty(
             obj,
             'position', {
-                get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_position(this.impl));},
+                get : function()  {return new Topaz.Vector(0, 0, 0, topaz_entity__get_position(this.impl));},
                 set : function(v) {topaz_entity__set_position(this.impl, v.impl);}
             }
         );
@@ -987,7 +972,7 @@ topaz = {
         Object.defineProperty(
             obj,
             'scale', {
-                get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_scale(this.impl));},
+                get : function()  {return new Topaz.Vector(0, 0, 0, topaz_entity__get_scale(this.impl));},
                 set : function(v) {topaz_entity__set_scale(this.impl, v.impl);}
             }
         );
@@ -995,7 +980,7 @@ topaz = {
         Object.defineProperty(
             obj,
             'globalPosition', {
-                get : function()  {return new topaz.vector(0, 0, 0, topaz_entity__get_global_position(this.impl));}
+                get : function()  {return new Topaz.Vector(0, 0, 0, topaz_entity__get_global_position(this.impl));}
             }
         );
     
@@ -1062,7 +1047,7 @@ topaz = {
                         if (f.__ctx) {
                             out.push(f.__ctx);
                         } else { 
-                            out.push(topaz.component(undefined, f));
+                            out.push(Topaz.Component(undefined, f));
                         }
                     }
                     return out;
@@ -1083,7 +1068,7 @@ topaz = {
         obj.queryComponent = function(tag) {
             var f = topaz_entity__query_component(this.impl, tag);
             if (f.__ctx) return f.__ctx;
-            return new topaz.component(undefined, f);
+            return new Topaz.Component(undefined, f);
         }
     
         obj.removeComponent = function(tag) {
@@ -1098,31 +1083,49 @@ topaz = {
 (function(){
 
     /// particle emitter
-    Object.defineProperty(topaz.particleEmitter2D.prototype, 'particle', {set : function(v){topaz_particle_emitter_2d__set_particle(this.impl, v.impl);}});
-    Object.defineProperty(topaz.particleEmitter2D.prototype, 'independent', {set : function(v){topaz_particle_emitter_2d__set_independent(this.impl, v);}});
+    Object.defineProperty(Topaz.ParticleEmitter2D.prototype, 'particle', {set : function(v){topaz_particle_emitter_2d__set_particle(this.impl, v.impl);}});
+    Object.defineProperty(Topaz.ParticleEmitter2D.prototype, 'independent', {set : function(v){topaz_particle_emitter_2d__set_independent(this.impl, v);}});
 
-    topaz.particleEmitter2D.prototype.emit = function(c) {
+    Topaz.ParticleEmitter2D.prototype.emit = function(c) {
         topaz_particle_emitter_2d__emit(this.impl, c);
     }
+    Topaz._entityAddSymbols(Topaz.ParticleEmitter2D.prototype);
+
 
 
 
     /// particle 
-    topaz.particle.prototype.setParam = function(param, val) {
+    Topaz.Particle.prototype.setParam = function(param, val) {
         topaz_particle__set_param(this.impl, param, val);
     }
-    topaz.particle.prototype.setNoiseMin = function(p, val) {
+    Topaz.Particle.prototype.setNoiseMin = function(p, val) {
         topaz_particle__set_noise_min(this.impl, p, val);
     }
-    topaz.particle.prototype.setNoiseMax = function(p, val) {
+    Topaz.Particle.prototype.setNoiseMax = function(p, val) {
         topaz_particle__set_noise_max(this.impl, p, val);
     }
-    topaz.particle.prototype.setFunction = function(p, val) {
+    Topaz.Particle.prototype.setFunction = function(p, val) {
         topaz_particle__set_function(this.impl, p, val);
     }
+    
+    
+    Topaz.Particle.Property = {
+        duration : 0,
+        scaleX : 1,
+        scaleY : 2,
+        scaleMultiplier : 3,
+        rotation : 4,
+        direction : 5,
+        speedX : 6,
+        speedY : 7,
+        red : 8,
+        green : 9,
+        blue : 10,
+        alpha : 11,
+    };
 
-    Object.defineProperty(topaz.particle.prototype, 'string', {get : function(){return topaz_particle__to_string(this.impl)}, set : function(v){topaz_particle__set_from_string(this.impl, v);}})
-    Object.defineProperty(topaz.particle.prototype, 'image',  {set : function(v){return topaz_particle__set_image(this.impl, v)}});
+    Object.defineProperty(Topaz.Particle.prototype, 'string', {get : function(){return topaz_particle__to_string(this.impl)}, set : function(v){topaz_particle__set_from_string(this.impl, v);}})
+    Object.defineProperty(Topaz.Particle.prototype, 'image',  {set : function(v){return topaz_particle__set_image(this.impl, v)}});
 
 
 
@@ -1132,91 +1135,108 @@ topaz = {
 
     /// color 
 
-    topaz.color.prototype.setFromString = function(str) {
+    Topaz.Color.prototype.setFromString = function(str) {
         topaz_color__set_from_string(this.impl, str);
     }
 
-    topaz.color.prototype.getHex = function() {
+    Topaz.Color.prototype.getHex = function() {
         return topaz_color__to_hex_string(this.impl);
     }
 
-    topaz.color.prototype.remove = function() {
+    Topaz.Color.prototype.remove = function() {
         topaz_color__destroy(this.impl);
         this.impl = {};
     }
 
-    Object.defineProperty(topaz.color.prototype, 'r', {get : function(){return this.impl.r;}, set : function(v){this.impl.r = v;}});
-    Object.defineProperty(topaz.color.prototype, 'g', {get : function(){return this.impl.g;}, set : function(v){this.impl.g = v;}});
-    Object.defineProperty(topaz.color.prototype, 'b', {get : function(){return this.impl.b;}, set : function(v){this.impl.b = v;}});
-    Object.defineProperty(topaz.color.prototype, 'a', {get : function(){return this.impl.a;}, set : function(v){this.impl.a = v;}});
+    Object.defineProperty(Topaz.Color.prototype, 'r', {get : function(){return this.impl.r;}, set : function(v){this.impl.r = v;}});
+    Object.defineProperty(Topaz.Color.prototype, 'g', {get : function(){return this.impl.g;}, set : function(v){this.impl.g = v;}});
+    Object.defineProperty(Topaz.Color.prototype, 'b', {get : function(){return this.impl.b;}, set : function(v){this.impl.b = v;}});
+    Object.defineProperty(Topaz.Color.prototype, 'a', {get : function(){return this.impl.a;}, set : function(v){this.impl.a = v;}});
 
 
 
     /// automation
 
 
-    topaz.automation.prototype.addKeyframe = function(value, fn, offset) {
+    Topaz.Automation.prototype.addKeyframe = function(value, fn, offset) {
         topaz_automation__add_keyframe(this.impl, value, fn, offset);
     }
 
-    topaz.automation.prototype.addVectorKeyframe = function(value, fn, offset) {
+    Topaz.Automation.prototype.addVectorKeyframe = function(value, fn, offset) {
         topaz_automation__add_vector_keyframe(this.impl, value, fn, offset);
     }
 
-    topaz.automation.prototype.clear = function() {
+    Topaz.Automation.prototype.clear = function() {
         topaz_automation__clear(this.impl);
     }
 
-    topaz.automation.prototype.blend = function(other) {
+    Topaz.Automation.prototype.blend = function(other) {
         topaz_automation__blend(this.impl, other.impl);
     }
 
-    topaz.automation.prototype.smooth = function() {
+    Topaz.Automation.prototype.smooth = function() {
         topaz_automation__smooth(this.impl);
     }
 
-    topaz.automation.prototype.addFromString = function(str) {
+    Topaz.Automation.prototype.addFromString = function(str) {
         topaz_automation__add_from_string(this.impl, str);
     }
+    
+    
+
+
+
+
+    Topaz.Automation.Function = {
+        none : 0,
+        linear : 1,
+        square : 2,
+        cube : 3,
+        squareRoot : 4,
+        cubeRoot : 5,
+        random : 6    
+    };
+
+
 
 
     
 
     Object.defineProperty(
-        topaz.automation.prototype,
+        Topaz.Automation.prototype,
         'length', {
             get : function() {return topaz_automation__get_length(this.impl);},
         }
     );
     Object.defineProperty(
-        topaz.automation.prototype,
+        Topaz.Automation.prototype,
         'durationFrames', {
             set : function(v) {topaz_automation__set_duration_frames(this.impl, v);}
         }
     );
     Object.defineProperty(
-        topaz.automation.prototype,
+        Topaz.Automation.prototype,
         'durationSeconds', {
             set : function(v) {topaz_automation__set_duration_seconds(this.impl, v);}
         }
     );
 
     Object.defineProperty(
-        topaz.automation.prototype,
+        Topaz.Automation.prototype,
         'duration', {
             get : function() {return topaz_automation__get_duration(this.impl);},
         }
     );
 
     Object.defineProperty(
-        topaz.automation.prototype,
+        Topaz.Automation.prototype,
         'looped', {
             get : function() {return topaz_automation__get_looped(this.impl);},
             set : function(v) {return topaz_automation__set_looped(this.impl, v);},
         }
     );
     Object.defineProperty(
-        topaz.automation.prototype,
+        Topaz.Automation.prototype,
         'speed', {
             get : function() {return topaz_automation__get_speed(this.impl);},
             set : function(v) {return topaz_automation__set_speed(this.impl, v);},
@@ -1224,123 +1244,123 @@ topaz = {
     );
 
 
-    topaz.automation.prototype.resume = function() {
+    Topaz.Automation.prototype.resume = function() {
         topaz_automation__resume(this.impl);
     }
-    topaz.automation.prototype.pause = function() {
+    Topaz.Automation.prototype.pause = function() {
         topaz_automation__pause(this.impl);
     }
 
 
     Object.defineProperty(
-        topaz.automation.prototype,
+        Topaz.Automation.prototype,
         'string', {
             get : function() {return topaz_automation__to_string(this.impl);},
             set : function(v) {return topaz_automation__set_from_string(this.impl, v);},
         }
     );
 
-    topaz.automation.prototype.vectorAt = function(at) {
-        return new topaz.vector(0, 0, 0, topaz_automation__vector_at(this.impl, at));
+    Topaz.Automation.prototype.vectorAt = function(at) {
+        return new Topaz.Vector(0, 0, 0, topaz_automation__vector_at(this.impl, at));
     }
 
-    topaz.automation.prototype.at = function(a) {
+    Topaz.Automation.prototype.at = function(a) {
         return topaz_automation__at(this.impl, at);
     }
 
 
 
     Object.defineProperty(
-        topaz.automation.prototype,
+        Topaz.Automation.prototype,
         'vector', {
-            get : function() {return new topaz.vector(0, 0, 0, topaz_automation__current_vector(this.impl))},
+            get : function() {return new Topaz.Vector(0, 0, 0, topaz_automation__current_vector(this.impl))},
         }
     );
 
     Object.defineProperty(
-        topaz.automation.prototype,
+        Topaz.Automation.prototype,
         'value', {
             get : function() {return topaz_automation__current(this.impl);},
         }
     );
-    topaz._componentAddSymbols(topaz.automation.prototype);
+    Topaz._componentAddSymbols(Topaz.Automation.prototype);
 
 
     /// text2d
 
     Object.defineProperty(
-        topaz.text2d.prototype,
+        Topaz.Text2D.prototype,
         'text', {
             get : function() {return topaz_text2d__get_text(this.impl);},
             set : function(v) {topaz_text2d__set_text(this.impl, v);}
         }
     );
 
-    topaz.text2d.prototype.setFont = function(f, c) {
+    Topaz.Text2D.prototype.setFont = function(f, c) {
         topaz_text2d__set_font(this.impl, f, c);
     }
     
 
-    topaz.text2d.prototype.setColor = function(c) {
+    Topaz.Text2D.prototype.setColor = function(c) {
         topaz_text2d__set_color(this.impl, c.impl);
     }
 
-    topaz.text2d.prototype.setColorSection = function(from, to, c) {
+    Topaz.Text2D.prototype.setColorSection = function(from, to, c) {
         topaz_text2d__set_color_section(this.impl, from, to, c.impl);
     }
 
 
     Object.defineProperty(
-        topaz.text2d.prototype,
+        Topaz.Text2D.prototype,
         'extentWidth', {
             get : function() {return topaz_text2d__get_extent_width(this.impl);}
         }
     );
 
     Object.defineProperty(
-        topaz.text2d.prototype,
+        Topaz.Text2D.prototype,
         'extentHeight', {
             get : function() {return topaz_text2d__get_extent_height(this.impl);}
         }
     );
 
 
-    topaz.text2d.prototype.getCharX = function(i) {
+    Topaz.Text2D.prototype.getCharX = function(i) {
         return topaz_text2d__get_char_x(this.impl, i);
     }
 
-    topaz.text2d.prototype.getCharY = function(i) {
+    Topaz.Text2D.prototype.getCharY = function(i) {
         return topaz_text2d__get_char_y(this.impl, i);
     }
 
 
     Object.defineProperty(
-        topaz.text2d.prototype,
+        Topaz.Text2D.prototype,
         'position', {
-            get : function() {return new topaz.vector(0, 0, 0, topaz_text2d__get_position(this.impl));},
+            get : function() {return new Topaz.Vector(0, 0, 0, topaz_text2d__get_position(this.impl));},
             set : function(v){topaz_text2d__set_position(this.impl, v.impl);}
         }
     );
 
     Object.defineProperty(
-        topaz.text2d.prototype,
+        Topaz.Text2D.prototype,
         'rotation', {
-            get : function() {return new topaz.vector(0, 0, 0, topaz_text2d__get_rotation(this.impl));},
+            get : function() {return new Topaz.Vector(0, 0, 0, topaz_text2d__get_rotation(this.impl));},
             set : function(v){topaz_text2d__set_rotation(this.impl, v.impl);}
         }
     );
 
     Object.defineProperty(
-        topaz.text2d.prototype,
+        Topaz.Text2D.prototype,
         'scale', {
-            get : function() {return new topaz.vector(0, 0, 0, topaz_text2d__get_scale(this.impl));},
+            get : function() {return new Topaz.Vector(0, 0, 0, topaz_text2d__get_scale(this.impl));},
             set : function(v){topaz_text2d__set_scale(this.impl, v.impl);}
         }
     );
 
 
     Object.defineProperty(
-        topaz.text2d.prototype,
+        Topaz.Text2D.prototype,
         'alphaRule', {
             get : function() {return topaz_text2d__get_parameter(this.impl, 0)},
             set : function(v){topaz_text2d__set_parameter(this.impl, 0, v);}
@@ -1348,7 +1368,7 @@ topaz = {
     );
 
     Object.defineProperty(
-        topaz.text2d.prototype,
+        Topaz.Text2D.prototype,
         'depthTest', {
             get : function() {return topaz_text2d__get_parameter(this.impl, 1)},
             set : function(v){topaz_text2d__set_parameter(this.impl, 1, v);}
@@ -1356,7 +1376,7 @@ topaz = {
     );
 
     Object.defineProperty(
-        topaz.text2d.prototype,
+        Topaz.Text2D.prototype,
         'etchRule', {
             get : function() {return topaz_text2d__get_parameter(this.impl, 2)},
             set : function(v){topaz_text2d__set_parameter(this.impl, 2, v);}
@@ -1364,27 +1384,27 @@ topaz = {
     );
 
     Object.defineProperty(
-        topaz.text2d.prototype,
+        Topaz.Text2D.prototype,
         'textureFilter', {
             get : function() {return topaz_text2d__get_parameter(this.impl, 3)},
             set : function(v){topaz_text2d__set_parameter(this.impl, 3, v);}
         }
     );
-    topaz._componentAddSymbols(topaz.text2d.prototype);
+    Topaz._componentAddSymbols(Topaz.Text2D.prototype);
 
 
 
     /// shape2d
     Object.defineProperty(
-        topaz.shape2d.prototype,
+        Topaz.Shape2D.prototype,
         'color', {
-            get : function() {return new topaz.color('', topaz_shape2d__get_color(this.impl));},
+            get : function() {return new Topaz.Color('', topaz_shape2d__get_color(this.impl));},
             set : function(v){topaz_shape2d__set_color(this.impl, v.impl);}
         }
     );
 
     Object.defineProperty(
-        topaz.shape2d.prototype,
+        Topaz.Shape2D.prototype,
         'animSpeed', {
             get : function() {return topaz_shape2d__get_anim_speed(this.impl);},
             set : function(v){topaz_shape2d__set_anim_speed(this.impl, v);}
@@ -1392,51 +1412,51 @@ topaz = {
     );
 
     Object.defineProperty(
-        topaz.shape2d.prototype,
+        Topaz.Shape2D.prototype,
         'center', {
-            get : function() {return new topaz.vector(0, 0, 0, topaz_shape2d__get_center(this.impl));},
+            get : function() {return new Topaz.Vector(0, 0, 0, topaz_shape2d__get_center(this.impl));},
             set : function(v){topaz_shape2d__set_center(this.impl, v.impl);}
         }
     );
 
 
     Object.defineProperty(
-        topaz.shape2d.prototype,
+        Topaz.Shape2D.prototype,
         'position', {
-            get : function() {return new topaz.vector(0, 0, 0, topaz_shape2d__get_position(this.impl));},
+            get : function() {return new Topaz.Vector(0, 0, 0, topaz_shape2d__get_position(this.impl));},
             set : function(v){topaz_shape2d__set_position(this.impl, v.impl);}
         }
     );
 
     Object.defineProperty(
-        topaz.shape2d.prototype,
+        Topaz.Shape2D.prototype,
         'rotation', {
-            get : function() {return new topaz.vector(0, 0, 0, topaz_shape2d__get_rotation(this.impl));},
+            get : function() {return new Topaz.Vector(0, 0, 0, topaz_shape2d__get_rotation(this.impl));},
             set : function(v){topaz_shape2d__set_rotation(this.impl, v.impl);}
         }
     );
 
     Object.defineProperty(
-        topaz.shape2d.prototype,
+        Topaz.Shape2D.prototype,
         'scale', {
-            get : function() {return new topaz.vector(0, 0, 0, topaz_shape2d__get_scale(this.impl));},
+            get : function() {return new Topaz.Vector(0, 0, 0, topaz_shape2d__get_scale(this.impl));},
             set : function(v){topaz_shape2d__set_scale(this.impl, v.impl);}
         }
     );
 
 
-    topaz.shape2d.prototype.formRectangle = function(a, b) {
+    Topaz.Shape2D.prototype.formRectangle = function(a, b) {
         topaz_shape2d__form_rectangle(this.impl, a, b);
     }
 
-    topaz.shape2d.prototype.formRadial = function(a, b) {
+    Topaz.Shape2D.prototype.formRadial = function(a, b) {
         topaz_shape2d__form_radial(this.impl, a, b);
     }
 
 
     var lines;
     Object.defineProperty(
-        topaz.shape2d.prototype,
+        Topaz.Shape2D.prototype,
         'lines', {
             get : function() {return lines;},
             set : function(v){topaz_shape2d__form_lines(this.impl, v); lines = v;}
@@ -1446,7 +1466,7 @@ topaz = {
 
     var tris;
     Object.defineProperty(
-        topaz.shape2d.prototype,
+        Topaz.Shape2D.prototype,
         'triangles', {
             get : function() {return tris;},
             set : function(v){topaz_shape2d__form_triangles(this.impl, v); tris = v;}
@@ -1454,7 +1474,7 @@ topaz = {
     );
 
     Object.defineProperty(
-        topaz.shape2d.prototype,
+        Topaz.Shape2D.prototype,
         'alphaRule', {
             get : function() {return topaz_shape2d__get_parameter(this.impl, 0)},
             set : function(v){topaz_shape2d__set_parameter(this.impl, 0, v);}
@@ -1462,7 +1482,7 @@ topaz = {
     );
 
     Object.defineProperty(
-        topaz.shape2d.prototype,
+        Topaz.Shape2D.prototype,
         'depthTest', {
             get : function() {return topaz_shape2d__get_parameter(this.impl, 1)},
             set : function(v){topaz_shape2d__set_parameter(this.impl, 1, v);}
@@ -1470,7 +1490,7 @@ topaz = {
     );
 
     Object.defineProperty(
-        topaz.shape2d.prototype,
+        Topaz.Shape2D.prototype,
         'etchRule', {
             get : function() {return topaz_shape2d__get_parameter(this.impl, 2)},
             set : function(v){topaz_shape2d__set_parameter(this.impl, 2, v);}
@@ -1478,13 +1498,13 @@ topaz = {
     );
 
     Object.defineProperty(
-        topaz.shape2d.prototype,
+        Topaz.Shape2D.prototype,
         'textureFilter', {
             get : function() {return topaz_shape2d__get_parameter(this.impl, 3)},
             set : function(v){topaz_shape2d__set_parameter(this.impl, 3, v);}
         }
     );
-    topaz._componentAddSymbols(topaz.shape2d.prototype);
+    Topaz._componentAddSymbols(Topaz.Shape2D.prototype);
 
 
 
@@ -1492,25 +1512,54 @@ topaz = {
 
     /// object2d
 
-    topaz.object2d.prototype.addVelocity = function(a, b) {
+    Topaz.Object2D.prototype.addVelocity = function(a, b) {
         topaz_object2d__add_velocity(this.impl, a, b);
     }
 
-    topaz.object2d.prototype.addVelocityTowards = function(a, b, c) {
+    Topaz.Object2D.prototype.addVelocityTowards = function(a, b, c) {
         topaz_object2d__add_velocity_towards(this.impl, a, b, c);
     }
 
-    topaz.object2d.prototype.setVelocity = function(a, b) {
+    Topaz.Object2D.prototype.setVelocity = function(a, b) {
         topaz_object2d__set_velocity(this.impl, a, b);
     }
 
-    topaz.object2d.prototype.setVelocityTowards = function(a, b, c) {
+    Topaz.Object2D.prototype.setVelocityTowards = function(a, b, c) {
         topaz_object2d__set_velocity_towards(this.impl, a, b, c);
     }
+    
+    Topaz.Object2D.Group = {
+        A : 0,
+        B : 1,
+        C : 2,
+        D : 3,
+        E : 4,
+        F : 5,
+        G : 6,
+        H : 7,
+        I : 8,
+        J : 9,
+        K : 10,
+        L : 11,
+        M : 12,
+        N : 13,
+        O : 14,
+        P : 15,
+        Q : 16,
+        R : 17,
+        S : 18,
+        T : 19,
+        U : 20,
+        V : 21,
+        W : 22,
+        X : 23,
+        Y : 24,
+        Z : 25
+    };
 
     
     Object.defineProperty(
-        topaz.object2d.prototype,
+        Topaz.Object2D.prototype,
         'frictionX', {
             get : function() { return topaz_object2d__get_friction_x(this.impl);},
             set : function(v){ topaz_object2d__set_friction_x(this.impl, v);}
@@ -1518,7 +1567,7 @@ topaz = {
     );
 
     Object.defineProperty(
-        topaz.object2d.prototype,
+        Topaz.Object2D.prototype,
         'frictionY', {
             get : function() { return topaz_object2d__get_friction_y(this.impl);},
             set : function(v){ topaz_object2d__set_friction_y(this.impl, v);}
@@ -1526,7 +1575,7 @@ topaz = {
     );
 
     Object.defineProperty(
-        topaz.object2d.prototype,
+        Topaz.Object2D.prototype,
         'direction', {
             get : function() { return topaz_object2d__get_direction(this.impl);},
             set : function(v){
@@ -1540,11 +1589,11 @@ topaz = {
     );
 
 
-    topaz.object2d.prototype.halt = function() {topaz_object2d__halt(this.impl);}
-    topaz.object2d.prototype.resetMotion = function() {topaz_object2d__reset_motion(this.impl);}
+    Topaz.Object2D.prototype.halt = function() {topaz_object2d__halt(this.impl);}
+    Topaz.Object2D.prototype.resetMotion = function() {topaz_object2d__reset_motion(this.impl);}
 
     Object.defineProperty(
-        topaz.object2d.prototype,
+        Topaz.Object2D.prototype,
         'velocityX', {
             get : function() { return topaz_object2d__get_velocity_x(this.impl);},
             set : function(v){ topaz_object2d__set_velocity_x(this.impl, v);}
@@ -1553,7 +1602,7 @@ topaz = {
 
     
     Object.defineProperty(
-        topaz.object2d.prototype,
+        Topaz.Object2D.prototype,
         'velocityY', {
             get : function() { return topaz_object2d__get_velocity_y(this.impl);},
             set : function(v){ topaz_object2d__set_velocity_y(this.impl, v);}
@@ -1562,7 +1611,7 @@ topaz = {
 
 
     Object.defineProperty(
-        topaz.object2d.prototype,
+        Topaz.Object2D.prototype,
         'speed', {
             get : function() { return topaz_object2d__get_speed(this.impl);},
             set : function(v){ topaz_object2d__set_speed(this.impl, v);}
@@ -1570,14 +1619,14 @@ topaz = {
     );
 
     Object.defineProperty(
-        topaz.object2d.prototype,
+        Topaz.Object2D.prototype,
         'nextPosition', {
             get : function() { return topaz_object2d__get_next_position(this.impl);}
         }
     );
 
     Object.defineProperty(
-        topaz.object2d.prototype,
+        Topaz.Object2D.prototype,
         'group', {
             get : function() { return topaz_object2d__get_group(this.impl);},
             set : function(v){ topaz_object2d__set_group(this.impl, v);}
@@ -1585,13 +1634,13 @@ topaz = {
     );
 
 
-    topaz.object2d.prototype.setGroupInteraction = function(a, b, c) {
+    Topaz.Object2D.prototype.setGroupInteraction = function(a, b, c) {
         topaz_object2d__set_group_interaction(a, b, c);
     }
 
     var collider = [];
     Object.defineProperty(
-        topaz.object2d.prototype,
+        Topaz.Object2D.prototype,
         'collider', {
             get : function() { return collider; },
             set : function(v){ collider=v; topaz_object2d__set_collider(this.impl, v);}
@@ -1599,7 +1648,7 @@ topaz = {
     );
     
 
-    topaz.object2d.prototype.setColliderRadial = function(a, b) {
+    Topaz.Object2D.prototype.setColliderRadial = function(a, b) {
         topaz_object2d__set_collider_radial(this.impl, a, b);
         collider = [];
         const len = topaz_object2d__get_collider_len(this.impl);
@@ -1611,12 +1660,12 @@ topaz = {
     }
 
     Object.defineProperty(
-        topaz.object2d.prototype,
+        Topaz.Object2D.prototype,
         'lastCollided', {
-            get : function() { return new topaz.entity(undefined, topaz_object2d__get_last_collided(this.impl));}
+            get : function() { return new Topaz.Entity(undefined, topaz_object2d__get_last_collided(this.impl));}
         }
     );
-    topaz._componentAddSymbols(topaz.object2d.prototype);
+    Topaz._componentAddSymbols(Topaz.Object2D.prototype);
 
 
 
@@ -1627,25 +1676,25 @@ topaz = {
     /// state control
     
 
-    topaz.stateControl.prototype.add = function(name, state) {
+    Topaz.StateControl.prototype.add = function(name, state) {
         topaz_state_control__add(this.impl, name, state.onStep, state.onDraw, state.onInit);
     }
 
-    topaz.stateControl.prototype.remove = function(name) {
+    Topaz.StateControl.prototype.remove = function(name) {
         topaz_state_control__remove(this.impl, name);
     }
 
-    topaz.stateControl.prototype.execute = function(name) {
+    Topaz.StateControl.prototype.execute = function(name) {
         topaz_state_control__execute(this.impl, name);
     }
 
-    topaz.stateControl.prototype.halt = function(name) {
+    Topaz.StateControl.prototype.halt = function(name) {
         topaz_state_control__halt(this.impl, name)
     }
 
 
     Object.defineProperty(
-        topaz.stateControl.prototype,
+        Topaz.StateControl.prototype,
         'isHalted', {
             get : function() {
                 return topaz_state_control__is_halted(this.impl);
@@ -1654,46 +1703,52 @@ topaz = {
     );
 
     Object.defineProperty(
-        topaz.stateControl.prototype,
+        Topaz.StateControl.prototype,
         'state', {
             get : function() {
                 return topaz_state_control__get_current(this.impl);
             },
         }
     );
-    topaz._componentAddSymbols(topaz.stateControl.prototype);
+    Topaz._componentAddSymbols(Topaz.StateControl.prototype);
 
 
 
 
     /// scheduler 
-    topaz.scheduler.prototype.startTask = function(taskName, interval, idelay, cb) {
+    Topaz.Scheduler.prototype.startTask = function(taskName, interval, idelay, cb) {
         topaz_scheduler__start_task(this.impl, taskName, interval, idelay, cb);
     }
 
-    topaz.scheduler.prototype.startTaskSimple = function(interval, cb) {
+    Topaz.Scheduler.prototype.startTaskSimple = function(interval, cb) {
         return topaz_scheduler__start_task_simple(this.impl, interval, cb);
     }
 
 
-    topaz.scheduler.prototype.endTask = function(name) {
+    Topaz.Scheduler.prototype.endTask = function(name) {
         topaz_scheduler__end_task(this.impl, name);
     }
 
-    topaz.scheduler.prototype.pause = function(name) {
+    Topaz.Scheduler.prototype.pause = function(name) {
         topaz_scheduler__pause(this.impl, name);
     }
 
-    topaz.scheduler.prototype.resume = function(name) {
+    Topaz.Scheduler.prototype.resume = function(name) {
         topaz_scheduler__resume(this.impl, name);
     }
 
-    topaz.scheduler.prototype.getTaskIntervalRemaining = function(name) {
+    Topaz.Scheduler.prototype.getTaskIntervalRemaining = function(name) {
         return topaz_scheduler__get_task_interval_remaining(this.impl, name);
     }
+    
+    Topaz.Scheduler.Mode = {
+        time : 0,
+        frame : 1
+    }
+    
 
     Object.defineProperty(
-        topaz.scheduler.prototype,
+        Topaz.Scheduler.prototype,
         'tasks', {
             get : function() {
                 var out = [];
@@ -1705,13 +1760,14 @@ topaz = {
             },
         }
     );
-    topaz._componentAddSymbols(topaz.scheduler.prototype);
+    Topaz._componentAddSymbols(Topaz.Scheduler.prototype);
 
 
 
 
-    /// topaz.component
-    topaz._componentAddSymbols(topaz.component.prototype);
+    /// Topaz.component
+    Topaz._componentAddSymbols(Topaz.Component.prototype);
+    Topaz.Component.null = function() {return topaz_component__null();};
 
 
 
@@ -1719,21 +1775,24 @@ topaz = {
 
 
 
-    /// topaz.entity.
-    topaz._entityAddSymbols(topaz.entity.prototype);
+    /// Topaz.entity.
+    Topaz._entityAddSymbols(Topaz.Entity.prototype);
+    Topaz.Entity.null = function() {
+        return new topaz_entity__null();
+    }
 
 
 
-    // topaz.sound 
+    // Topaz.sound 
     Object.defineProperty(
-        topaz.sound.prototype,
+        Topaz.Sound.prototype,
         'sampleCount', {
             get : function()  { return topaz_sound__get_sample_count(this.impl);}
         }
     );
 
     Object.defineProperty(
-        topaz.sound.prototype,
+        Topaz.Sound.prototype,
         'samples', {
             get : function()  { 
                 var out = [];
@@ -1751,34 +1810,34 @@ topaz = {
             }
         }
     );
-    topaz._assetSetCommonSymbols(topaz.sound.prototype);
+    Topaz._assetSetCommonSymbols(Topaz.Sound.prototype);
 
 
 
-    // filesystem.path
+    // Filesystem.path
     Object.defineProperty(
-        topaz.filesystem.path.prototype,
+        Topaz.Filesystem.path.prototype,
         'string', {
             get : function()  { return topaz_filesystem_path__as_string(this.impl);}
         }
     );
 
     Object.defineProperty(
-        topaz.filesystem.path.prototype,
+        Topaz.Filesystem.path.prototype,
         'parent', {
-            get : function()  { return new topaz.filesystem.path(topaz_filesystem_path__get_parent(this.impl));}
+            get : function()  { return new Topaz.Filesystem.path(topaz_filesystem_path__get_parent(this.impl));}
         }
     );
 
 
     Object.defineProperty(
-        topaz.filesystem.path.prototype,
+        Topaz.Filesystem.path.prototype,
         'children', {
             get : function()  {
                 var out = [];
                 const len = topaz_filesystem_path__get_child_count(this.impl);
                 for(i = 0; i < len; ++i) {
-                    var p = new topaz.filesystem.path(topaz_filesystem_path__get_nth_child(this.impl, i));
+                    var p = new Topaz.Filesystem.path(topaz_filesystem_path__get_nth_child(this.impl, i));
                     if (p != undefined) {
                         out.push(p);
                     }                
@@ -1791,25 +1850,25 @@ topaz = {
 
 
 
-    // topaz.data
+    // Topaz.data
 
     
     Object.defineProperty(
-        topaz.data.prototype,
+        Topaz.Data.prototype,
         'byteCount', {
             get : function()  { return topaz_data__get_byte_count(this.impl);}
         }
     );
 
     Object.defineProperty(
-        topaz.data.prototype,
+        Topaz.Data.prototype,
         'string', {
             get : function()  { return topaz_data__get_as_string(this.impl);}
         }
     );
 
     Object.defineProperty(
-        topaz.data.prototype,
+        Topaz.Data.prototype,
         'bytes', {
             get : function()  { 
                 const bytes = [];
@@ -1825,7 +1884,7 @@ topaz = {
             }
         }
     );
-    topaz._assetSetCommonSymbols(topaz.data.prototype);
+    Topaz._assetSetCommonSymbols(Topaz.Data.prototype);
 
 
 
@@ -1838,21 +1897,21 @@ topaz = {
 
         
     Object.defineProperty(
-        topaz.image.prototype,
+        Topaz.Image.prototype,
         'width', {
             get : function()  { return topaz_image__get_width(this.impl);}
         }
     );
 
     Object.defineProperty(
-        topaz.image.prototype,
+        Topaz.Image.prototype,
         'height', {
             get : function()  { return topaz_image__get_height(this.impl);}
         }
     );
 
     Object.defineProperty(
-        topaz.image.prototype,
+        Topaz.Image.prototype,
         'frameCount', {
             get : function()  { return topaz_image__get_frame_count(this.impl);}
         }
@@ -1861,47 +1920,47 @@ topaz = {
 
 
 
-    topaz.image.prototype.resize = function(w, h) {
+    Topaz.Image.prototype.resize = function(w, h) {
         topaz_image__resize(this.impl, w, h);
     }
 
-    topaz.image.prototype.addFrame = function() {
+    Topaz.Image.prototype.addFrame = function() {
         topaz_image__add_frame(this.impl);
     }
 
-    topaz.image.prototype.removeFrame = function(f) {
+    Topaz.Image.prototype.removeFrame = function(f) {
         topaz_image__remove_frame(this.impl, f);
     }
 
-    topaz.image.prototype.setRGBA = function(i, rgbaData) {
+    Topaz.Image.prototype.setRGBA = function(i, rgbaData) {
         topaz_image__frame_set_rgba(this.impl, i, rgbaData);
     }
-    topaz._assetSetCommonSymbols(topaz.image.prototype);
+    Topaz._assetSetCommonSymbols(Topaz.Image.prototype);
 
 
 
     // audioPlaybackSound 
     
     Object.defineProperty(
-        topaz.audioPlaybackSound.prototype,
+        Topaz.Audio.PlaybackSound.prototype,
         'volume', {
             set : function(v)  { topaz_audio__playback_set_volume(this.impl, v);}
         }
     );
     Object.defineProperty(
-        topaz.audioPlaybackSound.prototype,
+        Topaz.Audio.PlaybackSound.prototype,
         'panning', {
             set : function(v)  { topaz_audio__playback_set_panning(this.impl, v);}
         }
     );
     Object.defineProperty(
-        topaz.audioPlaybackSound.prototype,
+        Topaz.Audio.PlaybackSound.prototype,
         'repeat', {
             set : function(v)  { topaz_audio__playback_set_repeat(this.impl, v);}
         }
     );
     Object.defineProperty(
-        topaz.audioPlaybackSound.prototype,
+        Topaz.Audio.PlaybackSound.prototype,
         'paused', {
             set : function(v)  { 
                 if (v)
@@ -1913,7 +1972,7 @@ topaz = {
     );
 
     Object.defineProperty(
-        topaz.audioPlaybackSound.prototype,
+        Topaz.Audio.PlaybackSound.prototype,
         'seek', {
             set : function(v)  { 
                 topaz_audio__playback_seek(this.impl, v);
@@ -1922,7 +1981,7 @@ topaz = {
     );
     
     
-    topaz.audioPlaybackSound.prototype.stop = function() {
+    Topaz.Audio.PlaybackSound.prototype.stop = function() {
         topaz_audio__playback_stop(this.impl);
     }
 
@@ -1937,116 +1996,116 @@ topaz = {
 
 
 
-    topaz.vector.prototype.getDistance = function(other) {
+    Topaz.Vector.prototype.getDistance = function(other) {
         return topaz_vector__get_distance(this.impl, other.impl);
     }        
 
-    topaz.vector.prototype.normalize = function() {
+    Topaz.Vector.prototype.normalize = function() {
         this.topaz_vector__normalize(this.impl);   
     }
 
-    topaz.vector.prototype.cross = function(other) {
+    Topaz.Vector.prototype.cross = function(other) {
         var out = topaz_vector__cross(this.impl, other.impl);
-        return new topaz.vector(0, 0, 0, out);
+        return new Topaz.Vector(0, 0, 0, out);
     }
 
-    topaz.vector.prototype.floor = function() {
+    Topaz.Vector.prototype.floor = function() {
         topaz_vector__floor(this.impl);
     }
 
-    topaz.vector.prototype.rotationXDiff = function(other) {
+    Topaz.Vector.prototype.rotationXDiff = function(other) {
         return topaz_vector__rotation_x_diff(this.impl, other.impl);
     }
 
-    topaz.vector.prototype.rotationXDiffRelative = function(other) {
+    Topaz.Vector.prototype.rotationXDiffRelative = function(other) {
         return topaz_vector__rotation_x_diff_relative(this.impl, other.impl);
     }
 
-    topaz.vector.prototype.rotationX = function() {
+    Topaz.Vector.prototype.rotationX = function() {
         return topaz_vector__rotation_x(this.impl);
     }
 
-    topaz.vector.prototype.rotationYDiff = function(other) {
+    Topaz.Vector.prototype.rotationYDiff = function(other) {
         return topaz_vector__rotation_y_diff(this.impl, other.impl);
     }
 
-    topaz.vector.prototype.rotationYDiffRelative = function(other) {
+    Topaz.Vector.prototype.rotationYDiffRelative = function(other) {
         return topaz_vector__rotation_y_diff_relative(this.impl, other.impl);
     }
 
-    topaz.vector.prototype.rotationY = function() {
+    Topaz.Vector.prototype.rotationY = function() {
         return topaz_vector__rotation_y(this.impl);
     }
 
 
-    topaz.vector.prototype.rotationZDiff = function(other) {
+    Topaz.Vector.prototype.rotationZDiff = function(other) {
         return topaz_vector__rotation_z_diff(this.impl, other.impl);
     }
 
-    topaz.vector.prototype.rotationZDiffRelative = function(other) {
+    Topaz.Vector.prototype.rotationZDiffRelative = function(other) {
         return topaz_vector__rotation_z_diff_relative(this.impl, other.impl);
     }
 
-    topaz.vector.prototype.rotationZ = function() {
+    Topaz.Vector.prototype.rotationZ = function() {
         return topaz_vector__rotation_z(this.impl);
     }
 
-    topaz.vector.prototype.rotateX = function(val) {
+    Topaz.Vector.prototype.rotateX = function(val) {
         topaz_vector__rotate_x(this.impl, val);
     }
 
-    topaz.vector.prototype.rotateY = function(val) {
+    Topaz.Vector.prototype.rotateY = function(val) {
         topaz_vector__rotate_y(this.impl, val);
     }
 
-    topaz.vector.prototype.rotateZ = function(val) {
+    Topaz.Vector.prototype.rotateZ = function(val) {
         topaz_vector__rotate_z(this.impl, val);
     }
 
-    topaz.vector.prototype.remove = function() {
+    Topaz.Vector.prototype.remove = function() {
         topaz_vector__destroy(this.impl);
         impl = {};
     }
 
-    topaz.vector.prototype.add = function(b) {
-        return new topaz.vector(this.x + b.x, this.y + b.y, this.z + b.z);
+    Topaz.Vector.prototype.add = function(b) {
+        return new Topaz.Vector(this.x + b.x, this.y + b.y, this.z + b.z);
     }
-    topaz.vector.prototype.subtract = function(b) {
-        return new topaz.vector(this.x - b.x, this.y - b.y, this.z - b.z);
+    Topaz.Vector.prototype.subtract = function(b) {
+        return new Topaz.Vector(this.x - b.x, this.y - b.y, this.z - b.z);
     }
-    topaz.vector.prototype.multiply = function(b) {
-        return new topaz.vector(this.x * b.x, this.y * b.y, this.z * b.z);
+    Topaz.Vector.prototype.multiply = function(b) {
+        return new Topaz.Vector(this.x * b.x, this.y * b.y, this.z * b.z);
     }
-    topaz.vector.prototype.divide = function(b) {
-        return new topaz.vector(this.x / b.x, this.y / b.y, this.z / b.z);
+    Topaz.Vector.prototype.divide = function(b) {
+        return new Topaz.Vector(this.x / b.x, this.y / b.y, this.z / b.z);
     }
 
 
-    Object.defineProperty(topaz.vector.prototype, 'length', {get : function(){return topaz_vector__get_length(impl)}});
-    Object.defineProperty(topaz.vector.prototype, 'x', {get : function(){return topaz_vector__get_x(this.impl);}, set : function(v){topaz_vector__set_x(this.impl, v);}});
-    Object.defineProperty(topaz.vector.prototype, 'y', {get : function(){return topaz_vector__get_y(this.impl);}, set : function(v){topaz_vector__set_y(this.impl, v);}});
-    Object.defineProperty(topaz.vector.prototype, 'z', {get : function(){return topaz_vector__get_z(this.impl);}, set : function(v){topaz_vector__set_z(this.impl, v);}});
+    Object.defineProperty(Topaz.Vector.prototype, 'length', {get : function(){return topaz_vector__get_length(impl)}});
+    Object.defineProperty(Topaz.Vector.prototype, 'x', {get : function(){return topaz_vector__get_x(this.impl);}, set : function(v){topaz_vector__set_x(this.impl, v);}});
+    Object.defineProperty(Topaz.Vector.prototype, 'y', {get : function(){return topaz_vector__get_y(this.impl);}, set : function(v){topaz_vector__set_y(this.impl, v);}});
+    Object.defineProperty(Topaz.Vector.prototype, 'z', {get : function(){return topaz_vector__get_z(this.impl);}, set : function(v){topaz_vector__set_z(this.impl, v);}});
 
 
 }());
 
 
 
-Object.defineProperty(topaz, 'isPaused', {get : function(){return topaz__is_paused();}});
-Object.defineProperty(topaz, 'root', {
-    get : function(){return new topaz.entity(undefined, topaz__get_root());},
+Object.defineProperty(Topaz, 'isPaused', {get : function(){return topaz__is_paused();}});
+Object.defineProperty(Topaz, 'root', {
+    get : function(){return new Topaz.Entity(undefined, topaz__get_root());},
     set : function(v){return topaz__set_root(v.impl);}
 });
-Object.defineProperty(topaz, 'time', {get : function(){return topaz__get_time();}});
-Object.defineProperty(topaz, 'versionMicro', {get : function(){return topaz__get_version_micro();}});
-Object.defineProperty(topaz, 'versionMajor', {get : function(){return topaz__get_version_major();}});
-Object.defineProperty(topaz, 'versionMinor', {get : function(){return topaz__get_version_minor();}});
-Object.defineProperty(topaz.input, 'mouseX', {get : function(){return topaz_input__mouse_x();}});
-Object.defineProperty(topaz.input, 'mouseY', {get : function(){return topaz_input__mouse_y();}});
-Object.defineProperty(topaz.input, 'mouseDeltaX', {get : function(){return topaz_input__mouse_delta_x();}});
-Object.defineProperty(topaz.input, 'mouseDeltaY', {get : function(){return topaz_input__mouse_delta_y();}});
-Object.defineProperty(topaz.input, 'mouseWheel', {get : function(){return topaz_input__mouse_wheel();}});
-Object.defineProperty(topaz.resources, 'assetPaths', {
+Object.defineProperty(Topaz, 'time', {get : function(){return topaz__get_time();}});
+Object.defineProperty(Topaz, 'versionMicro', {get : function(){return topaz__get_version_micro();}});
+Object.defineProperty(Topaz, 'versionMajor', {get : function(){return topaz__get_version_major();}});
+Object.defineProperty(Topaz, 'versionMinor', {get : function(){return topaz__get_version_minor();}});
+Object.defineProperty(Topaz.Input, 'mouseX', {get : function(){return topaz_input__mouse_x();}});
+Object.defineProperty(Topaz.Input, 'mouseY', {get : function(){return topaz_input__mouse_y();}});
+Object.defineProperty(Topaz.Input, 'mouseDeltaX', {get : function(){return topaz_input__mouse_delta_x();}});
+Object.defineProperty(Topaz.Input, 'mouseDeltaY', {get : function(){return topaz_input__mouse_delta_y();}});
+Object.defineProperty(Topaz.Input, 'mouseWheel', {get : function(){return topaz_input__mouse_wheel();}});
+Object.defineProperty(Topaz.Resources, 'assetPaths', {
         get : function(){
             var paths = [];
             const len = topaz_resources__asset_path_count();
@@ -2057,17 +2116,17 @@ Object.defineProperty(topaz.resources, 'assetPaths', {
         }
     }
 );
-Object.defineProperty(topaz.resources, 'path', {
+Object.defineProperty(Topaz.Resources, 'path', {
     set : function(v){topaz_resources__set_path(v);},
     get : function(){return topaz_resources__get_path();}
 });
 
 
-topaz.attachPreManager(
-    new topaz.entity({
+Topaz.attachPreManager(
+    new Topaz.Entity({
         name : 'TOPAZEntityCleaner',
         onStep : function() {
-            const pool = topaz.deadEntityPool;
+            const pool = Topaz.deadEntityPool;
             if (pool.length) {
                 for(var i = 0; i < pool.length; ++i) {
                     if (pool[i].impl) {
@@ -2076,7 +2135,7 @@ topaz.attachPreManager(
                         pool[i].impl = undefined;
                     }
                 }
-                topaz.deadEntityPool = [];
+                Topaz.deadEntityPool = [];
             }
         }
     })
@@ -2160,17 +2219,16 @@ topaz.attachPreManager(
 //   have their autorun scripts run first.
 // - autorun scripts within the same package are run in order from 
 //   first marked to last marked.
-topaz.package = (function(){
+Topaz.Package = (function(){
     var packages = [];
     var packagesActive = [];
     var packageDB = {}; // indexed by string.
 
     const loadAsset = function(jsonAsset, ext) {
         if (jsonAsset.assetBase64 != undefined) {
-            var out = topaz.fromBase64(jsonAsset.assetBase64).bytes;
-            var success = topaz.resources.loadAssetData(
+            var success = Topaz.Resources.loadAssetBase64(
                 ext,
-                out,
+                jsonAsset.assetBase64,
                 jsonAsset.assetName
             );
             if (success == undefined) {
@@ -2179,7 +2237,7 @@ topaz.package = (function(){
 
         }
         if (jsonAsset.assetPath != undefined) {
-            var success = topaz.resources.loadAsset(
+            var success = Topaz.Resources.loadAsset(
                 ext,
                 jsonAsset.assetPath,
                 jsonAsset.assetName
@@ -2226,7 +2284,7 @@ topaz.package = (function(){
 
               case 'font':
                 loadAsset(assetSrc, '')
-                topaz.fontManager.registerFont(
+                Topaz.FontManager.registerFont(
                     assetSrc.assetName
                 );
 
@@ -2244,9 +2302,9 @@ topaz.package = (function(){
     return {
         // Adds all assets for the package from a package file.
         read : function(path) {
-            var asset = topaz.resources.loadAsset('', path, path);
+            var asset = Topaz.Resources.loadAsset('', path, path);
             if (!asset) {
-                topaz.log('Could not read package ' + path + '!');
+                Topaz.log('Could not read package ' + path + '!');
                 return;
             }
             try {
@@ -2254,9 +2312,9 @@ topaz.package = (function(){
                 packageDB[pkg.name] = pkg;
                 packages.push(pkg);
             } catch(e) {
-                topaz.log(e);
+                Topaz.log(e);
             }
-            topaz.resources.removeAsset(path);
+            Topaz.Resources.removeAsset(path);
         },
 
         // Adds all assets for the package from a package JSON string.
@@ -2266,7 +2324,7 @@ topaz.package = (function(){
                 packageDB[pkg.name] = pkg;
                 packages.push(pkg);
             } catch(e) {
-                topaz.log(e);
+                Topaz.log(e);
             }
         },
 
@@ -2322,7 +2380,7 @@ topaz.package = (function(){
         resolve : function(packageName) {   
             var pkg = packageDB[packageName];
             if (!pkg) {
-                topaz.log('No such package "' + packageName + '"');
+                Topaz.log('No such package "' + packageName + '"');
                 return false;
             }
             if (pkg.resolved) return true;
@@ -2331,7 +2389,7 @@ topaz.package = (function(){
             // resolve dependencies first
             for(var i = 0; i < pkg.depends.length; ++i) {
                 if (!this.resolve(pkg.depends[i].name)) {
-                    topaz.log('ERROR: Required package for ' + packageName + ' could not be resolved.');
+                    Topaz.log('ERROR: Required package for ' + packageName + ' could not be resolved.');
                     pkg.resolved = false;
                     return false;                    
                 }
@@ -2349,17 +2407,17 @@ topaz.package = (function(){
                     (majorHave == majorNeeded &&
                      minorHave <  minorNeeded)
                 ) {
-                    topaz.log('ERROR: Required package version for ' + dep.name + 'is ' + majorNeeded + '.' + minorNeeded + ', but found ' + majorHave + ',' + minorHave);
+                    Topaz.log('ERROR: Required package version for ' + dep.name + 'is ' + majorNeeded + '.' + minorNeeded + ', but found ' + majorHave + ',' + minorHave);
                     pkg.resolved = false;
                     return false;
                 } 
             }
             for(var i = 0; i < pkg.autorun.length; ++i) {
                 try {
-                    topaz.import(pkg.autorun[i]);
+                    Topaz.import(pkg.autorun[i]);
                 } catch (e) {
-                    topaz.log('Error while running script ' + pkg.autorun[i] + 'within package:');
-                    topaz.log(topaz.objectToString(e));
+                    Topaz.log('Error while running script ' + pkg.autorun[i] + 'within package:');
+                    Topaz.log(Topaz.objectToString(e));
                 }
             }
 
@@ -2401,16 +2459,16 @@ topaz.package = (function(){
             var allPackages = [];
             var output = (function() {
                 try {
-                    var mainPath = topaz.filesystem.getPathFromString(
-                        topaz.filesystem.getPath(topaz.filesystem.defaultNode.resources),
+                    var mainPath = Topaz.Filesystem.getPathFromString(
+                        Topaz.Filesystem.getPath(Topaz.Filesystem.DefaultNode.resources),
                         path
                     );
                     if (mainPath == undefined) {
                         return "No such path.";
                     }
-                    topaz.resources.path = mainPath.string;
+                    Topaz.Resources.path = mainPath.string;
         
-                    var indata = topaz.resources.loadAsset('', 'setup_package.json', 'setup_package.json');
+                    var indata = Topaz.Resources.loadAsset('', 'setup_package.json', 'setup_package.json');
                     if (!(indata && indata.byteCount)) {
                         return ('Input file "setup_package.json" is empty or could not be opened. Exiting');
                     }
@@ -2439,10 +2497,10 @@ topaz.package = (function(){
                         return ('setup_package.json: missing "version.major" property!');
                     }
                     if (outjson.version.micro == undefined) {
-                        topaz.log('WARNING setup_package.json: missing "version.micro" property');
+                        Topaz.log('WARNING setup_package.json: missing "version.micro" property');
                     }
                     if (outjson.version.build == undefined) {
-                        topaz.log('WARNING setup_package.json: missing "version.build" property');
+                        Topaz.log('WARNING setup_package.json: missing "version.build" property');
                     }
         
                     const debug = injson.debug == undefined ? false : injson.debug;
@@ -2459,7 +2517,7 @@ topaz.package = (function(){
         
                     outjson.assets = [];
                     if (!(injson.assets && injson.assets.length)) {
-                        topaz.log('WARNING: setup_package.json specifies no assets!');
+                        Topaz.log('WARNING: setup_package.json specifies no assets!');
                     }
         
         
@@ -2473,52 +2531,52 @@ topaz.package = (function(){
         
         
                         if (debug) {
-                            asset.assetPath = topaz.filesystem.getPathFromString(
+                            asset.assetPath = Topaz.Filesystem.getPathFromString(
                                 mainPath,
                                 injson.assets[i].assetFile
                             ).string;
         
                             outjson.assets.push(asset);
-                            topaz.log(injson.assets[i].assetName + ' -> Added');
+                            Topaz.log(injson.assets[i].assetName + ' -> Added');
         
                         } else {
-                            const bufferIn = topaz.resources.loadAsset('', injson.assets[i].assetFile, injson.assets[i].assetName);
+                            const bufferIn = Topaz.Resources.loadAsset('', injson.assets[i].assetFile, injson.assets[i].assetName);
                             if (!(bufferIn && bufferIn.byteCount)) {
                                 return ('setup_package.json: could not open asset ' + injson.assets[i].assetFile);
                             }
                             allPackages.push(bufferIn.name);
-                            topaz.log('Processing asset ' + injson.assets[i].assetName, false);
-                            topaz.log('.', false);
+                            Topaz.log('Processing asset ' + injson.assets[i].assetName, false);
+                            Topaz.log('.', false);
         
                             const byteCount = bufferIn.byteCount;
                             const bytes = bufferIn.bytes;
                             const partition = Math.floor(byteCount/5);
         
-                            topaz.log('.....', false);
-                            topaz.log(' ', false);
+                            Topaz.log('.....', false);
+                            Topaz.log(' ', false);
         
         
-                            asset.assetBase64 = topaz.toBase64(bytes);                        
+                            asset.assetBase64 = Topaz.toBase64(bytes);                        
                             outjson.assets.push(asset);
-                            topaz.log('OK (' + Math.ceil(byteCount/1024) + '.' + Math.floor(((byteCount%1024) / 1024.0)*100) + 'KB)');
+                            Topaz.log('OK (' + Math.ceil(byteCount/1024) + '.' + Math.floor(((byteCount%1024) / 1024.0)*100) + 'KB)');
                         }
                     }
         
         
                     var output = JSON.stringify(outjson);
-                    var outputAsset = topaz.resources.fetchAsset(topaz.resources.assetType_Data, '__ASSET__39245s$');
+                    var outputAsset = Topaz.Resources.fetchAsset(Topaz.Resources.AssetType.data, '__ASSET__39245s$');
                     var outputData = [];
-                    topaz.log('Generating output buffer', false);
+                    Topaz.log('Generating output buffer', false);
                     const length = output.length;
                     const partition = Math.floor(length / 5);
                     for(var i = 0; i < length; ++i) {
                         if (i%partition == 0) {
-                            topaz.log('.', false);
+                            Topaz.log('.', false);
                         }
                         outputData.push(output.charCodeAt(i));
                     }
                     outputAsset.bytes = outputData;    
-                    topaz.resources.writeAsset(outputAsset, '', packageOutName);
+                    Topaz.Resources.writeAsset(outputAsset, '', packageOutName);
                     return packageOutName+' written (' + Math.ceil(length/1024) + '.' + Math.floor(((length%1024) / 1024.0)*100) + 'KB)';
                 } catch(e) {
                     return "Errors occured:" + e;
@@ -2526,9 +2584,13 @@ topaz.package = (function(){
             })();
             //cleanup
             for(var i = 0; i < allPackages.length; ++i) {
-                topaz.resources.removeAsset(allPackages[i]);
+                Topaz.Resources.removeAsset(allPackages[i]);
             }
             return output;
         }
     }
 })();
+
+
+
+

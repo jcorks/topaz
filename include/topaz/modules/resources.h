@@ -148,6 +148,22 @@ topazAsset_t * topaz_resources_load_asset_data(
     const topazString_t * name
 );
 
+/// Equivalent to topaz_resources_load_asset, except instead of reading
+/// from the filesystem, raw byte data is generated from an encoded
+/// base64 string.
+///
+topazAsset_t * topaz_resources_load_asset_base64(
+    /// The resource instance to load with.
+    topazResources_t * res,
+    /// The extension / filetype to attempt to read with.
+    const topazString_t * fileType,
+    /// The raw data for the asset. Read as a base64 string.
+    const topazString_t * data,
+    /// The unique name to give to the asset.
+    const topazString_t * name
+);
+
+
 
 
 /// Writes an asset to the filesystem at the outputpath 

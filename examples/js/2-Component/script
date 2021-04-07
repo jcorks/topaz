@@ -127,7 +127,7 @@ var Person = {
 
         // Like always, using the class name followed by parantheses is how 
         // one instantiates a class.
-        props.basket = new topaz.component(FruitBasket);
+        props.basket = new Topaz.Component(FruitBasket);
 
         // And since it is a component, we want to make sure to attach it 
         // so that the component gets updated.
@@ -160,8 +160,8 @@ var Person = {
 
 
 // Lets create our people involved
-var throcky = new topaz.entity(Person);
-var alex    = new topaz.entity(Person);
+var throcky = new Topaz.Entity(Person);
+var alex    = new Topaz.Entity(Person);
 
 // And assign names to them!
 throcky.props.myName = 'Throckmorton';
@@ -181,9 +181,9 @@ alex.props.basket.installHook(
     // The closure to run.
     function(basket) {
 
-        // Often for debugging, its useful to use topaz.log(), which 
+        // Often for debugging, its useful to use Topaz.log(), which 
         // will print a string to the system console.
-        topaz.log(basket.host.props.myName + ' removed a fruit from their basket. ' + basket.getFruitLeft() + ' left.');
+        Topaz.log(basket.host.props.myName + ' removed a fruit from their basket. ' + basket.getFruitLeft() + ' left.');
     }
 );
 
@@ -195,7 +195,7 @@ alex.props.basket.installHook(
 alex.props.basket.installHook(
     'onAddFruit',
     function(basket, other) {
-        topaz.log(basket.host.props.myName + ' gained fruit, thanks to ' + other.props.myName +'! ' + basket.getFruitLeft() + ' total.');
+        Topaz.log(basket.host.props.myName + ' gained fruit, thanks to ' + other.props.myName +'! ' + basket.getFruitLeft() + ' total.');
     }
 );
 

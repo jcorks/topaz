@@ -1344,7 +1344,7 @@ static void topaz_duk_trans_command__eval(duk_trans_dvalue_ctx * ctxT, const top
     duk_trans_dvalue_send_req(ctxT);
     duk_trans_dvalue_send_integer(ctxT, 0x1e);  
     duk_trans_dvalue_send_integer(ctxT, callstackLevel);
-    topazString_t * command = topaz_string_create_from_c_str("topaz.objectToString(");
+    topazString_t * command = topaz_string_create_from_c_str("Topaz.objectToString(");
     topaz_string_concat(command, eval);
     topaz_string_concat(command, TOPAZ_STR_CAST(")"));
     duk_trans_dvalue_send_string(ctxT, topaz_string_get_c_str(command));

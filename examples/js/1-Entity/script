@@ -44,7 +44,7 @@ var Rectangle = {
         // Shape2D is the basic component for drawing 2D shapes.
         // It can be formed into any shape, but we will stick with 
         // a basic rectangle.
-        props.visual = new topaz.shape2d();
+        props.visual = new Topaz.Shape2D();
 
         // This changes the shape into a 200 by 200 rectangle.
         props.visual.formRectangle(200, 200);
@@ -52,12 +52,12 @@ var Rectangle = {
         // By default, the center of a Shape2D is the top-left 
         // of the shape. Since rotation is about the center,
         // the set the center to one half of the rectangles span.
-        props.visual.center = new topaz.vector(100, 100);
+        props.visual.center = new Topaz.Vector(100, 100);
 
         // The color of any Shape2D can be assigned directly. 
         // The string can be a common color name, or a #RRGGBB/AA 
         // formatted hex string.
-        props.visual.color = new topaz.color('purple');        
+        props.visual.color = new Topaz.Color('purple');        
 
         // Even though the component has all the information 
         // we want stored within it, the component cannot update itself.
@@ -85,7 +85,7 @@ var Rectangle = {
         // The position, rotation, and scale properties are vector objects,
         // so to update them, you actually replace them with new vectors.
         const r = props.entity.rotation;
-        props.entity.rotation = new topaz.vector(
+        props.entity.rotation = new Topaz.Vector(
             r.x + 0.0001,
             r.y + 0.0002,
             r.z + 0.0003
@@ -98,14 +98,14 @@ var Rectangle = {
 //
 
 // This instantiates the entity we've defined based on its prefab as a "blueprint".
-var entity = new topaz.entity(Rectangle);
+var entity = new Topaz.Entity(Rectangle);
 
 // The default position for an entity is 0,0,0,
 // so we'll want to move it. Note how we set the center 
 // of the Shape2D component already: topaz is inherently 
 // hierarchical: objects will use the position / rotation / scale 
 // of things that they are attached to. 
-entity.position = new topaz.vector(100, 100);
+entity.position = new Topaz.Vector(100, 100);
 
 
 // Even though we've created the our rectangle entity,
@@ -125,4 +125,4 @@ entity.position = new topaz.vector(100, 100);
 // The tree can be manipulated while running to control 
 // runtime efficiency for the program.
 //
-topaz.root = entity;
+Topaz.root = entity;
