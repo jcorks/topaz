@@ -125,7 +125,7 @@ void topaz_context_break(
 
 
 
-///  resumes from a paused or broken state.
+///  Resumes from a paused or broken state.
 ///
 void topaz_context_resume(
     /// The context to resume.

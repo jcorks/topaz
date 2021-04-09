@@ -77,6 +77,7 @@ typedef struct {
     int targetFrame;
     int stepOver;
     int lastFrame;
+    int inGravity;
 } TopazGravity;
 
 
@@ -739,6 +740,8 @@ static topazScript_Object_t * topaz_gravity_object_reference_call(
 ) {
     TopazGravityObject * o = data;
     TopazGravity * g = o->ctx;
+    topazScript_Object_t * out;
+    g->inGravity++;
     if (VALUE_ISA_CLOSURE(o->value)) {
         uint32_t i;
         uint32_t len = topaz_array_get_size(args);
@@ -760,12 +763,13 @@ static topazScript_Object_t * topaz_gravity_object_reference_call(
         );
         free(argsV);
 
-        return topaz_gravity_value_to_script_object(o->ctx, gravity_vm_result(g->vm));
+        out = topaz_gravity_value_to_script_object(o->ctx, gravity_vm_result(g->vm));
 
     } else {
-        return topaz_script_object_undefined(g->script);
+        out = topaz_script_object_undefined(g->script);
     }
-    
+    g->inGravity--;
+    return out;
 
 }
 
@@ -970,7 +974,10 @@ static void topaz_gravity_gc(
     uint32_t i;
     uint32_t len = topaz_array_get_size(callbackData);
     for(i = 0; i < len; ++i) {
-        gravity_gc_start(topaz_array_at(callbackData, TopazGravity*, i)->vm);
+        TopazGravity * inst = topaz_array_at(callbackData, TopazGravity*, i);
+        if (!inst->inGravity) {
+            gravity_gc_start(inst->vm);
+        }
     }
 }
 

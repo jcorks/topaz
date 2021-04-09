@@ -241,7 +241,6 @@ a:hover {
 }
 
 .Class a {
-  margin-left: 30px;
 }
 
 .Class h1 {
@@ -251,6 +250,54 @@ a:hover {
 }
 
 .Class h4 {
+  padding-left: 60px;
+  font-size: 18px;
+}
+
+.VariableName {
+  font-size: 20px;
+}
+
+.VariableType a {
+  color: #967e1a;
+}
+
+.VariableType {
+  font-size: 20px;
+  color: #555555;
+}
+.PublicMembers {
+  margin-left: 30px;
+}
+.PublicSymbols {
+  margin-left: 40px;
+  font-size: 20px;
+}
+
+
+/* Singleton */
+.Singleton {
+  background-color: #eeeeee;
+  margin: 15px;
+
+  border-top-width: 5px;
+  border-color: #e9e296;
+  border-top-style: solid;
+  padding:14px;
+  
+  font-family: codeText;
+}
+
+.Singleton a {
+}
+
+.Singleton h1 {
+  font-size: 28px;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.Singleton h4 {
   padding-left: 60px;
   font-size: 18px;
 }

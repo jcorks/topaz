@@ -1,5 +1,5 @@
 
-var symbolTable = (function(){
+var SymbolTable = function(){
     
 
     var hints = [];
@@ -20,7 +20,8 @@ var symbolTable = (function(){
         VARIABLE : 6, 
         FUNCTION_POINTER : 7,
         MACRO : 8,
-        DOCPAGE : 9
+        DOCPAGE : 9,
+        SINGLETON : 10
     }
 
     const typeToString = function(type) {
@@ -28,6 +29,7 @@ var symbolTable = (function(){
           case types.NONE:           return "None";
           case types.FUNCTION:       return "Function";
           case types.CLASS:          return "Class";
+          case types.SINGLETON:      return "Singleton";
           case types.ENUMERATOR:     return "Enumerator";
           case types.OPEN_STRUCTURE: return "Structure";
           case types.LANGUAGE_TYPE:  return "BuiltIn";
@@ -122,7 +124,7 @@ var symbolTable = (function(){
             if (symbol == '') return;
             
             if (!symbols[symbolCleaned]) {
-                topaz.log('addParam(): added params to a symbol that doesnt exist');
+                Topaz.log('addParam(): added params to a symbol that doesnt exist');
             }            
 
             symbols[symbolCleaned].parameters.push({
@@ -260,7 +262,7 @@ var symbolTable = (function(){
             return out;
         }
     }
-})();
+};
 
 
 

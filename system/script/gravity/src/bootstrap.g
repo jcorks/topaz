@@ -1284,7 +1284,7 @@ class Topz {
         }
 
         func removeComponent(c) {
-            topaz_.topaz_entity__remove_component(impl_, c);
+            topaz_.topaz_entity__remove_component(impl_, c.impl_);
         }
     }
 

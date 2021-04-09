@@ -427,7 +427,7 @@ int topaz_entity_get_drawing(
 
 
 
-/// \brief Attaches a component to this entity.
+/// Attaches a component to this entity.
 ///
 /// Once attached, the component's
 /// Step and Draw functions will be called before this entity's Step and Draw.

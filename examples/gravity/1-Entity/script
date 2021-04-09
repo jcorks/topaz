@@ -70,7 +70,6 @@ class Rectangle : Topaz.Entity {
     // update functions. The most common one is onStep() which is 
     // run every frame.
     func onStep() {
-
         // Every entity has built-in properties, such as 
         // position, rotation, and scale.
         // Here, we add 0.001, 0.002, and 0.003 degrees to the x, y, and z 

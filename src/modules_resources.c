@@ -253,7 +253,7 @@ int topaz_resources_write_asset(
     int success = topaz_filesystem_path_write(
         r->path, 
         name,
-        data
+        data 
     );
 
 
