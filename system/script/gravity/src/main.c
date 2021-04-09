@@ -110,6 +110,19 @@ typedef struct {
 
 } TopazGravityObject;
 
+
+static void topaz_gravity_replace_symbols(char * f) {
+    char * iter;
+    iter = f;
+    while((iter = strstr(f, "Topaz.Entity"))) {
+        memcpy(iter, "Topz.Entity ", strlen("Topaz.Entity"));
+    }
+    iter = f;
+    while((iter = strstr(f, "Topaz.Component"))) {
+        memcpy(iter, "Topz.Component ", strlen("Topaz.Component"));
+    }
+}
+
 // holds a reference to the object in question 
 static void topaz_gravity_lock_ref(TopazGravityObject * o) {
     gravity_closure_t * storeat = gravity_class_lookup_closure(gravity_class_map, VALUE_FROM_CSTRING(o->ctx->vm, "storeat"));
@@ -300,6 +313,7 @@ static const char * topaz_gravity_loadfile_callback(
     );
 
     char * out = strdup(topaz_string_get_c_str(src));
+    topaz_gravity_replace_symbols(out);
     *fileid = g->fileIDPool++;
     *len = strlen(out);
     *is_static = 0;
@@ -546,20 +560,18 @@ static void topaz_gravity_run(
     topaz_table_insert_by_uint(g->files, fileid, topaz_string_clone(sourceName));
 
     gravity_compiler_t * c = gravity_compiler_create(&g->delegate);
-
-    topazString_t * srcFull = topaz_string_clone(g->bootstrap);
-    topaz_string_concat(srcFull, scriptData);
+    char * str = strdup(topaz_string_get_c_str(scriptData));
+    topaz_gravity_replace_symbols(str);
     gravity_closure_t * cl = gravity_compiler_run(
         c,
-        topaz_string_get_c_str(srcFull),
-        topaz_string_get_length(srcFull),
+        str,
+        topaz_string_get_length(scriptData),
         fileid,
         1,
         1
     );
     gravity_compiler_transfer(c, g->vm);
     gravity_compiler_free(c);
-    topaz_string_destroy(srcFull);
 
     if (!cl) {
         return;
