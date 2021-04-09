@@ -49,7 +49,7 @@ extern var topaz_;
 
 */
 
-class Topaz_Definition {
+class Topz {
     var run;
     var pause;
     var resume;
@@ -220,14 +220,14 @@ class Topaz_Definition {
         }
 
         func + (other) {
-            if (other is Vector) {
-                return Vector(
+            if (other is Topaz.Vector) {
+                return Topaz.Vector(
                     x + other.x,
                     y + other.y,
                     z + other.z
                 );
             } else {
-                return Vector(
+                return Topaz.Vector(
                     x + other,
                     y + other,
                     z + other
@@ -236,14 +236,14 @@ class Topaz_Definition {
         }
 
         func * (other) {
-            if (other is Vector) {
-                return Vector(
+            if (other is Topaz.Vector) {
+                return Topaz.Vector(
                     x * other.x,
                     y * other.y,
                     z * other.z
                 );
             } else {
-                return Vector(
+                return Topaz.Vector(
                     x * other,
                     y * other,
                     z * other
@@ -252,14 +252,14 @@ class Topaz_Definition {
         }
 
         func - (other) {
-            if (other is Vector) {
-                return Vector(
+            if (other is Topaz.Vector) {
+                return Topaz.Vector(
                     x - other.x,
                     y - other.y,
                     z - other.z
                 );
             } else {
-                return Vector(
+                return Topaz.Vector(
                     x - other,
                     y - other,
                     z - other
@@ -268,14 +268,14 @@ class Topaz_Definition {
         }
 
         func / (other) {
-            if (other is Vector) {
-                return Vector(
+            if (other is Topaz.Vector) {
+                return Topaz.Vector(
                     x / other.x,
                     y / other.y,
                     z / other.z
                 );
             } else {
-                return Vector(
+                return Topaz.Vector(
                     x / other,
                     y / other,
                     z / other
@@ -440,14 +440,14 @@ class Topaz_Definition {
 
         func init() {
             AssetType = [
-                "None"  : 0,
-                "Image" : 1,
-                "Sound" : 2,
-                "Model" : 3,
-                "Particle" : 4,
-                "Data" : 5,
-                "Actor" : 6,
-                "Count" : 7
+                "none"  : 0,
+                "image" : 1,
+                "sound" : 2,
+                "model" : 3,
+                "particle" : 4,
+                "data" : 5,
+                "actor" : 6,
+                "count" : 7
             ];
         }
 
@@ -468,19 +468,21 @@ class Topaz_Definition {
             if (c == '') c = b;
             var impl = topaz_.topaz_resources__load_asset(a, b, c);
             var out;
+            if (!impl) return null;
+
             switch(topaz_.topaz_asset__get_type(impl)) {
-            case AssetType.Data:
-                out = Data();
+            case AssetType.data:
+                out = Topaz.Data();
                 out.impl_ = impl;
                 return out;
 
-            case AssetType.Image:
-                out = Image();
+            case AssetType.image:
+                out = Topaz.Image();
                 out.impl_ = impl;
                 return out;
 
-            case AssetType.Sound:
-                out = Sound();
+            case AssetType.sound:
+                out = Topaz.Sound();
                 out.impl_ = impl;
                 return out;
 
@@ -492,19 +494,20 @@ class Topaz_Definition {
             if (c == '') c = b;
             var impl = topaz_.topaz_resources__load_asset_data(a, b, c);
             var out;
+            if (!impl) return null;
             switch(topaz_.topaz_asset__get_type(impl)) {
-            case AssetType.Data:
-                out = Data();
+            case AssetType.data:
+                out = Topaz.Data();
                 out.impl_ = impl;
                 return out;
 
-            case AssetType.Image:
-                out = Image();
+            case AssetType.image:
+                out = Topaz.Image();
                 out.impl_ = impl;
                 return out;
 
-            case AssetType.Sound:
-                out = Sound();
+            case AssetType.sound:
+                out = Topaz.Sound();
                 out.impl_ = impl;
                 return out;
 
@@ -516,19 +519,20 @@ class Topaz_Definition {
         func fetchAsset(a, b) {
             var impl = topaz_.topaz_resources__fetch_asset(a, b);
             var out;
+            if (!impl) return null;
             switch(topaz_.topaz_asset__get_type(impl)) {
-            case AssetType.Data:
-                out = Data();
+            case AssetType.data:
+                out = Topaz.Data();
                 out.impl_ = impl;
                 return out;
 
-            case AssetType.Image:
-                out = Image();
+            case AssetType.image:
+                out = Topaz.Image();
                 out.impl_ = impl;
                 return out;
 
-            case AssetType.Sound:
-                out = Sound();
+            case AssetType.sound:
+                out = Topaz.Sound();
                 out.impl_ = impl;
                 return out;
 
@@ -765,7 +769,7 @@ class Topaz_Definition {
 
         var mouse {
             get {
-                return Vector(
+                return Topaz.Vector(
                     topaz_.topaz_input__mouse_x(),
                     topaz_.topaz_input__mouse_y()
                 );
@@ -774,7 +778,7 @@ class Topaz_Definition {
 
         var mouseDelta {
             get {
-                return Vector(
+                return Topaz.Vector(
                     topaz_.topaz_input__mouse_delta_x(),
                     topaz_.topaz_input__mouse_delta_y()
                 );
@@ -1002,7 +1006,7 @@ class Topaz_Definition {
 
 
 
-    class Entity_Definition {    
+    class Entity {    
         var impl_;
         
         
@@ -1154,7 +1158,7 @@ class Topaz_Definition {
 
         var rotation {
             get { 
-                var out = Vector();
+                var out = Topaz.Vector();
                 out.impl_ = topaz_.topaz_entity__get_rotation(impl_);
                 return out;
             }
@@ -1167,7 +1171,7 @@ class Topaz_Definition {
 
         var position {
             get { 
-                var out = Vector();
+                var out = Topaz.Vector();
                 out.impl_ = topaz_.topaz_entity__get_position(impl_);
                 return out;
             }
@@ -1179,7 +1183,7 @@ class Topaz_Definition {
         
         var scale {
             get { 
-                var out = Vector();
+                var out = Topaz.Vector();
                 out.impl_ = topaz_.topaz_entity__get_scale(impl_);
                 return out;
             }
@@ -1193,7 +1197,7 @@ class Topaz_Definition {
         
         var globalPosition {
             get {
-                var out = Vector();
+                var out = Topaz.Vector();
                 out.impl_ = topaz_.topaz_entity__get_global_position(impl_);
                 return out;
             }
@@ -1283,13 +1287,12 @@ class Topaz_Definition {
             topaz_.topaz_entity__remove_component(impl_, c);
         }
     }
-    var Entity;
 
 
 
     ////////////////////
     //////////
-    class Component_Definition {
+    class Component {
         var impl_;
 
         
@@ -1404,10 +1407,9 @@ class Topaz_Definition {
             topaz_.topaz_component__uninstall_hook(impl_, id);        
         }    
     }
-    var Component;
 
 
-    class Object2D_Definition : Component_Definition {
+    class Object2D_Definition : Component {
         static var Group;
 
 
@@ -1504,7 +1506,7 @@ class Topaz_Definition {
 
         var nextPosition {
             get {
-                var out = Vector();
+                var out = Topaz.Vector();
                 out.impl_ = topaz_.topaz_object2d__get_next_position(impl_);
                 return out;
             }
@@ -1530,7 +1532,7 @@ class Topaz_Definition {
                 var out = [];
                 var len = topaz_.topaz_object2d__get_collider_len(impl_);
                 for(var i in 0..<len) {
-                    var vector = Vector();
+                    var vector = Topaz.Vector();
                     vector.impl_ = topaz_.topaz_object2d__get_collider_point(impl_, i);
                     out.push(vector.x);
                     out.push(vector.y);
@@ -1557,7 +1559,7 @@ class Topaz_Definition {
         }
 
         func String() {
-            return 'Component::Object2D\n  velocity:' + Vector(velocityX, velocityY) + '\n  speed:' + speed + '\n  direction:' + direction + '\n  group' + group;
+            return 'Component::Object2D\n  velocity:' + Topaz.Vector(velocityX, velocityY) + '\n  speed:' + speed + '\n  direction:' + direction + '\n  group' + group;
         }
     }
     var Object2D;
@@ -1751,8 +1753,9 @@ class Topaz_Definition {
             ];
         }
     }
+    var Filesystem;
 
-    class Scheduler_Definition : Component_Definition {
+    class Scheduler_Definition : Component {
 
         static var Mode;
 
@@ -1811,7 +1814,7 @@ class Topaz_Definition {
     var Render2D;
 
 
-    class Shape2D_Definition : Component_Definition {
+    class Shape2D_Definition : Component {
         
 
 
@@ -1853,7 +1856,7 @@ class Topaz_Definition {
 
         var center {
             get {
-                var out = Vector();
+                var out = Topaz.Vector();
                 out.impl_ = topaz_.topaz_shape2d__get_center(impl_);
                 return out; 
             }
@@ -1865,7 +1868,7 @@ class Topaz_Definition {
 
         var rotation {
             get {
-                var out = Vector();
+                var out = Topaz.Vector();
                 out.impl_ = topaz_.topaz_shape2d__get_rotation(impl_);
                 return out; 
             }
@@ -1877,7 +1880,7 @@ class Topaz_Definition {
         
         var position {
             get {
-                var out = Vector();
+                var out = Topaz.Vector();
                 out.impl_ = topaz_.topaz_shape2d__get_position(impl_);
                 return out; 
             }
@@ -1889,7 +1892,7 @@ class Topaz_Definition {
 
         var scale {
             get {
-                var out = Vector();
+                var out = Topaz.Vector();
                 out.impl_ = topaz_.topaz_shape2d__get_scale(impl_);
                 return out; 
             }
@@ -1928,7 +1931,7 @@ class Topaz_Definition {
     var Shape2D;
 
 
-    class Text2D_Definition : Component_Definition {
+    class Text2D_Definition : Component {
         private var sizeState;
         private var fontState;
 
@@ -1989,7 +1992,7 @@ class Topaz_Definition {
 
         var rotation {
             get {
-                var out = Vector();
+                var out = Topaz.Vector();
                 out.impl_ = topaz_.topaz_text2d__get_rotation(impl_);
                 return out; 
             }
@@ -2001,7 +2004,7 @@ class Topaz_Definition {
         
         var position {
             get {
-                var out = Vector();
+                var out = Topaz.Vector();
                 out.impl_ = topaz_.topaz_text2d__get_position(impl_);
                 return out; 
             }
@@ -2013,7 +2016,7 @@ class Topaz_Definition {
 
         var scale {
             get {
-                var out = Vector();
+                var out = Topaz.Vector();
                 out.impl_ = topaz_.topaz_text2d__get_scale(impl_);
                 return out; 
             }
@@ -2060,7 +2063,7 @@ class Topaz_Definition {
     var Text2D;
 
 
-    class StateControl_Definition : Component_Definition {
+    class StateControl_Definition : Component {
         func init() {
             impl_ = topaz_.topaz_state_control__create();
         }
@@ -2101,7 +2104,7 @@ class Topaz_Definition {
 
 
 
-    class Automation_Definition : Component_Definition {
+    class Automation_Definition : Component {
 
         func init() {
             impl_ = topaz_.topaz_automation__create();
@@ -2196,7 +2199,7 @@ class Topaz_Definition {
         }
 
         func vectorAt(val) {
-            var out = Vector();
+            var out = Topaz.Vector();
             out.impl_ = topaz_.topaz_automation__vector_at(impl_, val);
             return out;
         }
@@ -2207,7 +2210,7 @@ class Topaz_Definition {
 
         var vector {
             get {
-                return topaz_.topaz_automation__current_vector(impl_);
+                return topaz_.topaz_automation__current_Topaz.Vector(impl_);
             }
         }
 
@@ -2236,26 +2239,26 @@ class Topaz_Definition {
 
         private func loadAsset(jsonAsset, ext) {
             if (jsonAsset.assetBase64 != null) {
-                var out = Topaz_Definition.fromBase64(jsonAsset.assetBase64).bytes;
+                var out = Topaz.fromBase64(jsonAsset.assetBase64).bytes;
                 var success = Resources.loadAssetData(
                     ext,
                     out,
                     jsonAsset.assetName
                 );
                 if (success == null) {
-                    Topaz_Definition.log("Error loading " + jsonAsset.assetName + "!");
+                    Topaz.log("Error loading " + jsonAsset.assetName + "!");
                     return false;
                 }
 
             }
             if (jsonAsset.assetPath != null) {
-                var success = Resources_Definition.loadAsset(
+                var success = Topaz.Resources.loadAsset(
                     ext,
                     jsonAsset.assetPath,
                     jsonAsset.assetName
                 );    
                 if (success == null) {
-                    Topaz_Definition.log("Error loading " + jsonAsset.assetPath + "!");
+                    Topaz.log("Error loading " + jsonAsset.assetPath + "!");
                     return false;
                 }
             }
@@ -2314,7 +2317,7 @@ class Topaz_Definition {
 
 
         func read(path) {
-            var asset = Resources_Definition.loadAsset('', path, path);
+            var asset = Topaz.Resources.loadAsset('', path, path);
             if (!asset) {
                 Topaz.log("Could not read package");
                 return;
@@ -2325,7 +2328,7 @@ class Topaz_Definition {
                 packageDB[pkg.name] = pkg;
                 packages.push(pkg);
             } 
-            Resources_Definition.removeAsset(path);
+            Topaz.Resources.removeAsset(path);
             if (pkg) return true;
             return false;        
         }
@@ -2342,12 +2345,12 @@ class Topaz_Definition {
         func require(packageName, versionObject) {
             var pkg = packageDB[packageName];
             if (!pkg) {
-                Topaz_Definition.log('Unknown package ' + packageName);                
+                Topaz.log('Unknown package ' + packageName);                
                 return false;
             }
 
             if (!pkg.resolved) {
-                Topaz_Definition.log('Package '+packageName+' has been pre-loaded but not resolved.');                
+                Topaz.log('Package '+packageName+' has been pre-loaded but not resolved.');                
                 return false;
             }
 
@@ -2356,7 +2359,7 @@ class Topaz_Definition {
 
                 if (versionObject.major != null) {
                     if (versionObject.major > pkg.version.major) {
-                        Topaz_Definition.log('Package '+packageName+' has major version ' + pkg.version.major + ', but version ' + versionObject.major + ' is required.');                
+                        Topaz.log('Package '+packageName+' has major version ' + pkg.version.major + ', but version ' + versionObject.major + ' is required.');                
                         return false;
                     }
                 }
@@ -2365,7 +2368,7 @@ class Topaz_Definition {
                     versionObject.major != null) {
                         if (versionObject.major == pkg.version.major && 
                             versionObject.minor >  pkg.version.minor) {
-                        Topaz_Definition.log('Package '+packageName+' has version ' + pkg.version.major + '.' + pkg.version.minor + ', but version ' + versionObject.major + '.' + versionObject.minor + ' is required.');                                           
+                        Topaz.log('Package '+packageName+' has version ' + pkg.version.major + '.' + pkg.version.minor + ', but version ' + versionObject.major + '.' + versionObject.minor + ' is required.');                                           
                         return false;
                     }
                 }
@@ -2378,7 +2381,7 @@ class Topaz_Definition {
         func resolve(packageName) {
             var pkg = packageDB[packageName];
             if (!pkg) {
-                Topaz_Definition.log("No such package '" + packageName + "'");
+                Topaz.log("No such package '" + packageName + "'");
                 return false;
             }
 
@@ -2387,7 +2390,7 @@ class Topaz_Definition {
 
             for(var i in 0..<pkg.depends.count) {
                 if (!resolve(pkg.depends[i].name)) {
-                    Topaz_Definition.log("Error: Required package for " + packageName + " could not be resolved");
+                    Topaz.log("Error: Required package for " + packageName + " could not be resolved");
                     pkg.resolved = false;
                     return false;
                 }
@@ -2405,7 +2408,7 @@ class Topaz_Definition {
                     (majorHave == majorNeeded &&
                     minorHave <  minorNeeded)
                 ) {
-                    Topaz_Definition.log("ERROR: Required package version for " + dep.name + " is " + majorNeeded + "." + minorNeeded + ", but found " + majorHave + "," + minorHave);
+                    Topaz.log("ERROR: Required package version for " + dep.name + " is " + majorNeeded + "." + minorNeeded + ", but found " + majorHave + "," + minorHave);
                     pkg.resolved = false;
                     return false;
                 } 
@@ -2425,18 +2428,18 @@ class Topaz_Definition {
 
 
         private func genPackage(allPackages, path) {
-            var mainPath = Filesystem_Definition.getPathFromString(
-                Filesystem_Definition.getPath(Filesystem_Definition.DefaultNode.resources),
+            var mainPath = Topaz.Filesystem.getPathFromString(
+                Topaz.Filesystem.getPath(Topaz.Filesystem.DefaultNode.resources),
                 path
             );
             if (mainPath == null) {
-                Topaz_Definition.log("No such path.");
+                Topaz.log("No such path.");
                 return false;
             }
 
-            Resources_Definition.path = mainPath.string;
+            Topaz.Resources.path = mainPath.string;
 
-            var indata = Resources_Definition.loadAsset('', 'setup_package.json', 'setup_package.json');
+            var indata = Topaz.Resources.loadAsset('', 'setup_package.json', 'setup_package.json');
             if (!(indata != null && indata.byteCount)) {
                 return ("Input file 'setup_package.json' is empty or could not be opened. Exiting");
             }
@@ -2465,10 +2468,10 @@ class Topaz_Definition {
                 return ("setup_package.json: missing 'version.major' property!");
             }
             if (!outjson.version.hasKey("micro")) {
-                Topaz_Definition.log("WARNING setup_package.json: missing 'version.micro' property");
+                Topaz.log("WARNING setup_package.json: missing 'version.micro' property");
             }
             if (!outjson.version.hasKey("build")) {
-                Topaz_Definition.log("WARNING setup_package.json: missing 'version.build' property");
+                Topaz.log("WARNING setup_package.json: missing 'version.build' property");
             }
 
             var debug = injson.debug == null ? false : injson.debug;
@@ -2485,7 +2488,7 @@ class Topaz_Definition {
 
             outjson.assets = [];
             if (!(injson.hasKey("assets") && injson.assets.count)) {
-                Topaz_Definition.log("WARNING: setup_package.json specifies no assets!");
+                Topaz.log("WARNING: setup_package.json specifies no assets!");
             }
 
 
@@ -2496,13 +2499,13 @@ class Topaz_Definition {
 
 
                 if (debug) {
-                    asset.assetPath = Filesystem_Definition.getPathFromString(
+                    asset.assetPath = Topaz.Filesystem.getPathFromString(
                         mainPath,
                         injson.assets[i].assetFile
                     ).string;
 
                     outjson.assets.push(asset);
-                    Topaz_Definition.log(injson.assets[i].assetName + " -> Added");
+                    Topaz.log(injson.assets[i].assetName + " -> Added");
 
                 } else {
                     const bufferIn = Resources.loadAsset('', injson.assets[i].assetFile, injson.assets[i].assetName);
@@ -2510,38 +2513,38 @@ class Topaz_Definition {
                         return ('setup_package.json: could not open asset ' + injson.assets[i].assetFile);
                     }
                     allPackages.push(bufferIn.name);
-                    Topaz_Definition.log("Processing asset " + injson.assets[i].assetName, false);
-                    Topaz_Definition.log(".", false);
+                    Topaz.log("Processing asset " + injson.assets[i].assetName, false);
+                    Topaz.log(".", false);
 
                     var byteCount = bufferIn.byteCount;
                     var bytes = bufferIn.bytes;
                     var partition = Math.floor(byteCount/5);
 
-                    Topaz_Definition.log(".....", false);
-                    Topaz_Definition.log(" ", false);
+                    Topaz.log(".....", false);
+                    Topaz.log(" ", false);
 
                     asset.assetBase64 = Topaz.toBase64(bytes);                
                     outjson.assets.push(asset);
-                    Topaz_Definition.log("OK (" + Math.ceil(byteCount/1024) + "." + Math.floor(((byteCount%1024) / 1024.0)*100) + "KB)");
+                    Topaz.log("OK (" + Math.ceil(byteCount/1024) + "." + Math.floor(((byteCount%1024) / 1024.0)*100) + "KB)");
                 }
             }
 
 
             var output = JSON.stringify(outjson);
-            var outputAsset = Resources_Definition.fetchAsset(Resources_Definition.AssetType.data, "__ASSET__39245s$");
+            var outputAsset = Topaz.Resources.fetchAsset(Topaz.Resources.AssetType.data, "__ASSET__39245s$");
             var outputData = [];
-            Topaz_Definition.log("Generating output buffer", false);
+            Topaz.log("Generating output buffer", false);
             var length = output.length;
             var partition = Math.floor(length / 5);
             for(var i in 0..<length) {
                 if (i%partition == 0) {
-                    Topaz_Definition.log(".", false);
+                    Topaz.log(".", false);
                 }
                 outputData.push(output.charCodeAt(i));
             }
             outputAsset.bytes = outputData;    
-            Resources_Definition.writeAsset(outputAsset, "", packageOutName);
-            Topaz_Definition.log(" written (" + Math.ceil(length/1024) + "." + Math.floor(((length%1024) / 1024.0)*100) + "KB)");
+            Topaz.Resources.writeAsset(outputAsset, "", packageOutName);
+            Topaz.log(" written (" + Math.ceil(length/1024) + "." + Math.floor(((length%1024) / 1024.0)*100) + "KB)");
             return true;
         }
 
@@ -2550,7 +2553,7 @@ class Topaz_Definition {
             var output = genPackage(allPackages, path);
             //cleanup
             for(var i in 0..<allPackages.count) {
-                Resources_Definition.removeAsset(allPackages[i]);
+                Topaz.Resources.removeAsset(allPackages[i]);
             }
             return output;
         }
@@ -2577,8 +2580,6 @@ class Topaz_Definition {
         Vector = Vector_Definition;
         Color = Color_Definition;
         Asset = Asset_Definition;
-        Entity = Entity_Definition;
-        Component = Component_Definition;
         Data = Data_Definition;
         Sound = Sound_Definition;
         Image = Image_Definition;
@@ -2650,10 +2651,11 @@ class Topaz_Definition {
         Input = Input_Definition();
         FontManager = FontManager_Definition();
         Package  = Package_Definition();
+        Filesystem = Filesystem_Definition();
 
     }
 }
-var Topaz = Topaz_Definition();
+var Topaz = Topz();
 
 
 class Debug {

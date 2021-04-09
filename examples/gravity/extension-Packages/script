@@ -102,6 +102,6 @@
 
 
 func main() {
-    var status = Package.makePackage("./examplePackage");
+    var status = Topaz.Package.makePackage("./examplePackage");
     Topaz.quit();
 }

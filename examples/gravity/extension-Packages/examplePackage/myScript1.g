@@ -15,6 +15,6 @@ func script1Function() {
     Topaz.log("Hello from myScript1.g!: " + script2data);
 
     // Access the embedded image and report its width/height.
-    var asset = Resources.loadAsset('png', '', 'ExampleImage');
+    var asset = Topaz.Resources.loadAsset('png', '', 'ExampleImage');
     Topaz.log('Embedded image: (' + asset.width + ', ' + asset.height + ')');
 }

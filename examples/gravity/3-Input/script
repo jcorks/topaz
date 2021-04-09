@@ -27,14 +27,14 @@
 // To demonstrate the effect of input, this example entity 
 // will use a blue rectangle to show itself onscreen and will 
 // respond to the arrow keys and right-click + dragging.
-class Input_Poll : Entity {
+class Input_Poll : Topaz.Entity {
     func onReady() {
         // Since we are making the shape once and not modifying it,
         // theres no need to keep the component around.
-        var visual = Shape2D();
+        var visual = Topaz.Shape2D();
 
         // Set it to blue and make it 20x20
-        visual.color = Color('blue');
+        visual.color = Topaz.Color('blue');
         visual.formRectangle(20, 20);
 
         // As shorthand for .addComponent(), you 
@@ -60,29 +60,29 @@ class Input_Poll : Entity {
         // If the key state is non-zero, we modify the 
         // position vector by adding "1" to it in the direction 
         // that corresponds to the arrow.
-        if (Input.getState(Key.topaz_up)) {
-            position = position + Vector(0, -1);
+        if (Topaz.Input.getState(Topaz.Input.topazKey_up)) {
+            position = position + Topaz.Vector(0, -1);
         }
-        if (Input.getState(Key.topaz_down)) {
-            position = position + Vector(0, 1);
+        if (Topaz.Input.getState(Topaz.Input.topazKey_down)) {
+            position = position + Topaz.Vector(0, 1);
         }
-        if (Input.getState(Key.topaz_left)) {
-            position = position + Vector(-1, 0);
+        if (Topaz.Input.getState(Topaz.Input.topazKey_left)) {
+            position = position + Topaz.Vector(-1, 0);
         }
-        if (Input.getState(Key.topaz_right)) {
-            position = position + Vector(1, 0);
+        if (Topaz.Input.getState(Topaz.Input.topazKey_right)) {
+            position = position + Topaz.Vector(1, 0);
         }
 
 
         // The left/right/middle button can be polled using 
         // the Key.topazPointer_* inputs.
         // All inputs for the mouse+keyboard can use the getState() function.
-        if (Input.getState(Key.topazPointer_1)) {
+        if (Topaz.Input.getState(Topaz.Input.topazPointer_1)) {
             // To poll position position, getState can be used. However,
             // due to the commonality of this operation, the position 
             // can be polled by just accessing Input.mouse, which is a 
             // positional vector. 
-            position = Input.mouse;
+            position = Topaz.Input.mouse;
         }
     }
 }
@@ -114,7 +114,7 @@ class Input_Poll : Entity {
 //
 // To contrast it with the previous entity, this one 
 // is a red square controlled with W, A, S, D + left click.
-class Input_Listener : Entity {
+class Input_Listener : Topaz.Entity {
     // This will hold the state of whether the event 
     // listener detected a clicking state. When its pressed,
     // its updated to 1, but when released its updated to 0.
@@ -123,10 +123,10 @@ class Input_Listener : Entity {
     func onReady() {
 
         // Same story as above!
-        var visual = Shape2D();
+        var visual = Topaz.Shape2D();
 
         // Here, we're using RGB hex notation to define our color.
-        visual.color = Color('#ff0000');
+        visual.color = Topaz.Color('#ff0000');
         visual.formRectangle(20, 20);
         components = [visual];
 
@@ -147,24 +147,24 @@ class Input_Listener : Entity {
         // This listener is mapped to the onActive event, which 
         // is every frame that an input is non-zero. This is 
         // convenient for when buttons are held.
-        Input.addKeyboardListener(
+        Topaz.Input.addKeyboardListener(
             [
                 // Here is the onActive key/value pair.
                 // The funcion mapped takes 2 arguments: the map itself 
                 // we passed in, and the input id that is active.
                 'onActive' : func(map, key) {
                     switch(key) {
-                      case Key.topaz_w:
-                        position = position + Vector(0, -1);
+                      case Topaz.Input.topazKey_w:
+                        position = position + Topaz.Vector(0, -1);
                         break;
-                      case Key.topaz_s:
-                        position = position + Vector(0, 1);
+                      case Topaz.Input.topazKey_s:
+                        position = position + Topaz.Vector(0, 1);
                         break;
-                      case Key.topaz_a:
-                        position = position + Vector(-1, 0);
+                      case Topaz.Input.topazKey_a:
+                        position = position + Topaz.Vector(-1, 0);
                         break;
-                      case Key.topaz_d:
-                        position = position + Vector(1, 0);
+                      case Topaz.Input.topazKey_d:
+                        position = position + Topaz.Vector(1, 0);
                         break;
                     }
                 }
@@ -173,14 +173,14 @@ class Input_Listener : Entity {
 
         // Similar to adding a keyboard listener, pointer 
         // listeners will respond only to mouse events.
-        Input.addPointerListener(
+        Topaz.Input.addPointerListener(
             [
                 // The onUpdate event respondes to any time the 
                 // device sends a new event to topaz.
                 'onUpdate' : func(map, input, value) {
                     // The clicking state will by set here to detect when to apply the 
                     // x / y position change
-                    if (input == Key.topazPointer_0) {
+                    if (input == Topaz.Input.topazPointer_0) {
                         clicking = value > 0;
                     }
 
@@ -191,12 +191,12 @@ class Input_Listener : Entity {
                     // in question with the raw value.
                     if (clicking) {
                         switch(input) {
-                          case Key.topazPointer_X:
-                            position = Vector(value, position.y);
+                          case Topaz.Input.topazPointer_X:
+                            position = Topaz.Vector(value, position.y);
                             break;
 
-                          case Key.topazPointer_Y:
-                            position = Vector(position.x, value);
+                          case Topaz.Input.topazPointer_Y:
+                            position = Topaz.Vector(position.x, value);
                             break;
                         }
                     }                    
@@ -210,7 +210,7 @@ class Input_Listener : Entity {
 }
 
 
-
+class Manager : Topaz.Entity{}
 
 
 func main() {
@@ -218,7 +218,7 @@ func main() {
     // it is helpful to establish a basic "entity tree".
     // Here, our root is an empty object whose job is purely
     // to manage the input example entities we defined above.
-    var manager = Entity();
+    var manager = Manager();
 
 
     // Next, we'll instantiate those entities 

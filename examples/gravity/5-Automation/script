@@ -4,22 +4,22 @@
 
 
 
-class Rectangle : Entity {
+class Rectangle : Topaz.Entity {
     private var visual;
     private var anim;
 
     func onReady() {
 
-        visual = Shape2D();
+        visual = Topaz.Shape2D();
 
 
         visual.formRectangle(30, 30);
-        visual.center = Vector(15, 15);
+        visual.center = Topaz.Vector(15, 15);
         addComponent(visual);
 
 
 
-        anim = Automation();
+        anim = Topaz.Automation();
         addComponent(anim);
         anim.installHook('on-anim-end', func(){Topaz.log('Animation reset!')});
         anim.durationSeconds = 4;
@@ -27,15 +27,15 @@ class Rectangle : Entity {
 
 
 
-        Input.addKeyboardListener(
+        Topaz.Input.addKeyboardListener(
             [
                 'onPress' : func(map, key) {
                     switch(key) {
-                      case Key.topaz_space:
+                      case Topaz.Input.topazKey_space:
                         anim.speed = anim.speed + 0.25;
                         break;
 
-                      case Key.topaz_backspace:
+                      case Topaz.Input.topazKey_backspace:
                         if (anim.speed > 0)
                             anim.speed = anim.speed - 0.25;
                         else 
@@ -51,7 +51,7 @@ class Rectangle : Entity {
 
 
     func onStep() {
-        position = Vector(100+anim.value, position.y);
+        position = Topaz.Vector(100+anim.value, position.y);
     }
 
 
@@ -63,12 +63,12 @@ class RectangleLinear : Rectangle {
         // initialize Rectangle
         super.onReady();
 
-        visual.color = Color("purple");
-        anim.addKeyframe(0,   AutomationFunction.None,   0);
-        anim.addKeyframe(200, AutomationFunction.Linear, 0.5);
-        anim.addKeyframe(0,   AutomationFunction.Linear, 1);
+        visual.color = Topaz.Color("purple");
+        anim.addKeyframe(0,   Topaz.Automation.Function.none, 0);
+        anim.addKeyframe(200, Topaz.Automation.Function.linear, 0.5);
+        anim.addKeyframe(0,   Topaz.Automation.Function.linear, 1);
 
-        position = Vector(100, 100);
+        position = Topaz.Vector(100, 100);
     }
 }
 
@@ -77,12 +77,12 @@ class RectangleSquare : Rectangle {
         // initialize Rectangle
         super.onReady();
 
-        visual.color = Color("blue");
-        anim.addKeyframe(0,   AutomationFunction.None,   0);
-        anim.addKeyframe(200, AutomationFunction.Square, 0.5);
-        anim.addKeyframe(0,   AutomationFunction.Square, 1);
+        visual.color = Topaz.Color("blue");
+        anim.addKeyframe(0,   Topaz.Automation.Function.none,   0);
+        anim.addKeyframe(200, Topaz.Automation.Function.square, 0.5);
+        anim.addKeyframe(0,   Topaz.Automation.Function.square, 1);
 
-        position = Vector(100, 100);
+        position = Topaz.Vector(100, 100);
     }
 }
 
@@ -91,30 +91,31 @@ class RectangleRoot : Rectangle {
         // initialize Rectangle
         super.onReady();
 
-        visual.color = Color("red");
-        anim.addKeyframe(0,   AutomationFunction.None,       0);
-        anim.addKeyframe(200, AutomationFunction.SquareRoot, 0.5);
-        anim.addKeyframe(0,   AutomationFunction.SquareRoot, 1);
-
-        position = Vector(100, 100);
+        visual.color = Topaz.Color("red");
+        anim.addKeyframe(0,   Topaz.Automation.Function.none,       0);
+        anim.addKeyframe(200, Topaz.Automation.Function.squareRoot, 0.5);
+        anim.addKeyframe(0,   Topaz.Automation.Function.squareRoot, 1);
+        position = Topaz.Vector(100, 100);
     }
 }
 
 
+class Manager : Topaz.Entity{};
+
 func main() {
     // This instantiates the class we've defined.
-    var entity = Entity();    
+    var entity = Manager();    
 
 
 
     var child1 = RectangleLinear();
-    child1.position = Vector(100, 100);
+    child1.position = Topaz.Vector(100, 100);
 
     var child2 = RectangleSquare();
-    child2.position = Vector(100, 200);
+    child2.position = Topaz.Vector(100, 200);
 
     var child3 = RectangleRoot();
-    child3.position = Vector(100, 300);
+    child3.position = Topaz.Vector(100, 300);
 
     Topaz.root = entity;
     entity.children = [child1, child2, child3];

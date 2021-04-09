@@ -21,7 +21,7 @@
 //  - Show a colored rectangle on the screen
 //  - Change the rotation of the rectangle 
 //    every frame.
-class Rectangle : Entity {
+class Rectangle : Topaz.Entity {
     // In gravity, classes can have their own private 
     // variables, which is important to use to manage 
     // complexity and keep code as maintainable as possible.
@@ -41,10 +41,10 @@ class Rectangle : Entity {
         // Shape2D is the basic component for drawing 2D shapes.
         // It can be formed into any shape, but we will stick with 
         // a basic rectangle.
-        visual = Shape2D();
+        visual = Topaz.Shape2D();
 
 
-        var image = Resources.loadAsset("png", "test.png");
+        var image = Topaz.Resources.loadAsset("png", "test.png");
             
 
         // This changes the shape into an image
@@ -54,13 +54,13 @@ class Rectangle : Entity {
         // By default, the center of a Shape2D is the top-left 
         // of the shape. Since rotation is about the center,
         // the set the center to one half of the rectangles span.
-        visual.center = Vector(100, 100);
+        visual.center = Topaz.Vector(100, 100);
 
 
         // The color of any Shape2D can be assigned directly. 
         // The string can be a common color name, or a #RRGGBB/AA 
         // formatted hex string.
-        visual.color = Color("white");
+        visual.color = Topaz.Color("white");
 
         // Even though the component has all the information 
         // we want stored within it, the component cannot update itself.
@@ -82,7 +82,7 @@ class Rectangle : Entity {
         //
         // The position, rotation, and scale properties are vector objects,
         // so to update them, you actually replace them with new vectors.
-        rotation = rotation + Vector(0.0001, 0.0002, 0.0003);
+        rotation = rotation + Topaz.Vector(0.0001, 0.0002, 0.0003);
     }
 }
 
@@ -103,7 +103,7 @@ func main() {
     // of the Shape2D component already: topaz is inherently 
     // hierarchical: objects will use the position / rotation / scale 
     // of things that they are attached to. 
-    entity.position = Vector(100, 100);
+    entity.position = Topaz.Vector(100, 100);
     
 
     // Even though we've created the our rectangle entity,

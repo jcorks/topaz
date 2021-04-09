@@ -1,21 +1,21 @@
 #include "@topaz.core"
 
-class StringVisual : Entity {
+class StringVisual : Topaz.Entity {
     private var visual;
     private var bg;
     func onReady() {
-        visual = Text2D();
+        visual = Topaz.Text2D();
         visual.font = "MyFont";
         visual.size = 40;
 
         visual.text = "Hello world!\nThis is text.";
 
-        bg = Shape2D();
+        bg = Topaz.Shape2D();
         bg.formRectangle(
             visual.extentWidth,
             visual.extentHeight
         );
-        bg.color = Color("purple");
+        bg.color = Topaz.Color("purple");
 
         components = [bg, visual];
     }
@@ -25,16 +25,16 @@ class StringVisual : Entity {
 
 
 func main() {
-    Resources.loadAsset(
+    Topaz.Resources.loadAsset(
         "", // asset extension,
         "PublicSans-Regular.ttf",
         "MyFont"
     );
 
-    FontManager.registerFont("MyFont");
+    Topaz.FontManager.registerFont("MyFont");
 
 
     var ent = StringVisual();
-    ent.position = Vector(200, 200);
+    ent.position = Topaz.Vector(200, 200);
     Topaz.root = ent;
 }
