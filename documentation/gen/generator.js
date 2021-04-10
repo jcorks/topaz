@@ -94,6 +94,7 @@ var generateDocumentation = function(
         symbolTable.setTypeHint('#define',         symbolTable.type.MACRO);
         symbolTable.setTypeHint('class',           symbolTable.type.CLASS);
         symbolTable.setTypeHint('enum',            symbolTable.type.ENUMERATOR);
+        symbolTable.setTypeHint('eval',            symbolTable.type.ENUM_VALUE);
         symbolTable.setTypeHint('func object',     symbolTable.type.FUNCTION_POINTER);
         symbolTable.setTypeHint('func',            symbolTable.type.FUNCTION);
         symbolTable.setTypeHint('structure',       symbolTable.type.OPEN_STRUCTURE);
@@ -102,11 +103,11 @@ var generateDocumentation = function(
 
         symbolTable.setSymbolExtractor(/DOCPAGE\s(.+)/, symbolTable.type.DOCPAGE); 
         symbolTable.setSymbolExtractor(/func\s+(\S+)/, symbolTable.type.FUNCTION); 
-        symbolTable.setSymbolExtractor(/structure\s+(.+)\s*/, symbolTable.type.OPEN_STRUCTURE); 
-        symbolTable.setSymbolExtractor(/class\s+(.+)\s*/, symbolTable.type.CLASS); 
-        symbolTable.setSymbolExtractor(/singleton\s+(.+)\s*/, symbolTable.type.SINGLETON); 
-        symbolTable.setSymbolExtractor(/enum\s+(.+)\s*/, symbolTable.type.ENUMERATOR); 
-        symbolTable.setSymbolExtractor(/^\s*(.+)\s*\S*/, symbolTable.type.ENUM_VALUE); 
+        symbolTable.setSymbolExtractor(/structure\s+(\S+)\s*/, symbolTable.type.OPEN_STRUCTURE); 
+        symbolTable.setSymbolExtractor(/class\s+(\S+)\s*/, symbolTable.type.CLASS); 
+        symbolTable.setSymbolExtractor(/singleton\s+(\S+)\s*/, symbolTable.type.SINGLETON); 
+        symbolTable.setSymbolExtractor(/enum\s+(\S+)\s*/, symbolTable.type.ENUMERATOR); 
+        symbolTable.setSymbolExtractor(/eval\s*(.+)\s*\S*/, symbolTable.type.ENUM_VALUE); 
         symbolTable.setSymbolExtractor(/\s*([^\(\*\s,;]*)\s*(?:\)\(|=|$|\,|\;)/, symbolTable.type.VARIABLE); 
         symbolTable.setSymbolExtractor(/func\sobject\s+(\S+)/, symbolTable.type.FUNCTION_POINTER); 
         symbolTable.setSymbolExtractor(/\s*#define\s*(\S*)/, symbolTable.type.MACRO);
@@ -480,41 +481,76 @@ var generateDocumentation = function(
 
 
 
-
-                block += doc.createElement(
-                    "<b>Member Symbols:</b></br></br>",
+                var hasFunctions = false;
+                var funcList = '';
+                funcList += doc.createElement(
+                    "</br><b>Member Functions:</b></br></br>",
                     'div'
                 );
                 
                 var mem = '';
                 // list all quick symbols
                 for(var m = 0; m < symbols[i].children.length; ++m) {
-                    if (symbolTable.getChildSymbol(symbols[i], m).type == symbolTable.type.VARIABLE) {
-                    } else {
+                    if (symbolTable.getChildSymbol(symbols[i], m).type == symbolTable.type.FUNCTION) {
                         mem += 
                         doc.createElement(
                             doc.createElement(
-                                symbols[i].children[m] + (symbolTable.getChildSymbol(symbols[i], m).type == symbolTable.type.FUNCTION?"()":""),
+                                symbols[i].children[m] + "()",
                                 'a',
                                 'href="'+generateLink(symbols[i].children[m])+'"'
                             ),
                             'div'
                         );
+                        hasFunctions = true;
                     }
                 }
-                block += doc.createElement(
+                funcList += doc.createElement(
                     mem,
                     'div',
                     'class="PublicSymbols"'
                 );
+                if (hasFunctions) {
+                    block += funcList;
+                }
 
 
+                var hasEnums = false;
+                var enumList = '';
+                enumList += doc.createElement(
+                    "</br><b>Enumerators:</b></br></br>",
+                    'div'
+                );
+                
+                mem = '';
+                // list all quick symbols
+                for(var m = 0; m < symbols[i].children.length; ++m) {
+                    if (symbolTable.getChildSymbol(symbols[i], m).type == symbolTable.type.ENUMERATOR) {
+                        mem += 
+                        doc.createElement(
+                            doc.createElement(
+                                symbols[i].children[m],
+                                'a',
+                                'href="'+generateLink(symbols[i].children[m])+'"'
+                            ),
+                            'div'
+                        );
+                        hasEnums = true;
+                    }
+                }
+                enumList += doc.createElement(
+                    mem,
+                    'div',
+                    'class="PublicSymbols"'
+                );
+                if (hasEnums) {
+                    block += enumList;
+                }
 
 
                 var publicMemList = '';
                 var hasPublicMems = false;
                 publicMemList += doc.createElement(
-                    "</br></br><b>Public members:</b></br></br>",
+                    "</br></br><b>Public Variables:</b></br></br>",
                     'div'
                 );
                 // list all quick symbols
@@ -546,8 +582,7 @@ var generateDocumentation = function(
                             'pre'
                         );
                         hasPublicMems = true;
-                    } else {
-                    }
+                    } 
                 }
                 
                 publicMemList += doc.createElement(
@@ -667,23 +702,23 @@ var generateDocumentation = function(
             }
 
             
+            if (typename != '') {
+                content += doc.createElement(
+                    doc.createElement(
+                        '('+typename+')</br>',
+                        'div',
+                        'class="typetag"'
+                    )+
+                    
+                    doc.createElement(
+                        block, 
+                        'div'
+                    ) + "</br>",
 
-            content += doc.createElement(
-                doc.createElement(
-                    '('+typename+')</br>',
                     'div',
-                    'class="typetag"'
-                )+
-                
-                doc.createElement(
-                    block, 
-                    'div'
-                ) + "</br>",
-
-                'div',
-                'class="'+typename+'"'
-            );
-
+                    'class="'+typename+'"'
+                );
+                    }
         }
 
 

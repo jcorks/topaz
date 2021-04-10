@@ -1,6 +1,6 @@
 Topaz.import('generator.js');
 
-generateDocumentation('C',    '../../include/topaz/',               '../c/');
+//generateDocumentation('C',    '../../include/topaz/',               '../c/');
 generateDocumentation('None', '../../system/script/documentation/', '../scripting/');
 
 

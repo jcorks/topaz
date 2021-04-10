@@ -46,7 +46,7 @@ typedef struct topazInputManager_t topazInputManager_t;
 
 
 
-/// Standard input buttons for the keyboard buttons.
+/// Standard input buttons for built-in device types.
 ///
 typedef enum topazKey topazKey;
 enum topazKey {

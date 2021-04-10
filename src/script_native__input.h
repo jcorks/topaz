@@ -146,7 +146,7 @@ TSO_SCRIPT_API_FN(input_api__add_keyboard_listener) {
         &listener
     );
 
-    TSO_NO_RETURN;
+    return ldata->obj;
 }
 
 
@@ -171,7 +171,7 @@ TSO_SCRIPT_API_FN(input_api__add_pointer_listener) {
         &listener
     );
 
-    TSO_NO_RETURN;
+    return ldata->obj;
 }
 
 TSO_SCRIPT_API_FN(input_api__add_pad_listener) {
@@ -197,7 +197,7 @@ TSO_SCRIPT_API_FN(input_api__add_pad_listener) {
         topaz_script_object_as_int(arg1)
     );
 
-    TSO_NO_RETURN;
+    return ldata->obj;
 }
 
 TSO_SCRIPT_API_FN(input_api__add_mapped_listener) {
@@ -223,7 +223,7 @@ TSO_SCRIPT_API_FN(input_api__add_mapped_listener) {
         topaz_script_object_as_string(arg1)
     );
 
-    TSO_NO_RETURN;
+    return ldata->obj;
 }
 
 TSO_SCRIPT_API_FN(input_api__remove_listener) {

@@ -19,162 +19,8 @@ var Topaz = {
     fromBase64 : function(f) {
         return new Topaz.Data(topaz__from_base64(f));
     },
-    
-    Render2D : {
-        Parameter : {
-            alphaRule : 0,
-            depthTest : 1,
-            etchRule : 2,
-            textureFilterHint : 3
-        }    
-    },
-    
-    Renderer : {
-        EtchRule : {
-            noEtching : 0,
-            define : 1,
-            undefine : 2,
-            in : 3,
-            out : 4
-        },
-        
-        DepthTest : {
-            less : 0,
-            LEQ : 1,
-            greater : 2,
-            GEQ : 3,
-            equal : 4,
-            none : 5
-        },
 
-        AlphaRule : {
-            allow : 0,
-            opaque : 1,
-            translucent : 2,
-            invisible : 3,
-        },
-        
-        TextureFilterHint : {
-            linear : 0,
-            none : 1,
-        }
-
-    },
-
-
-
-
-    objectToString : function(obj, levelSrc) {
-        var checked = [];
-        var levelG = levelSrc ? levelSrc : 10;
-        var helper = function(obj, level) {
-            if (obj === undefined) return 'undefined';
-            if (obj === null) return 'null';
-            if (!(typeof obj === 'object')) return ''+obj;
-            if (checked.indexOf(obj) != -1) return '[Already Printed]'
-            checked.push(obj);
-            var strOut = '{\n';
-            var keys = Object.keys(obj);
-            var levelInv = levelG - level;
-            for(var i = 0; i < keys.length; ++i) {
-                var subStr = levelInv ? helper(obj[keys[i]], level+1) : obj[keys[i]];
-                for(var n = 0; n < level; ++n) strOut += '  ';
-                strOut += '  \'' + keys[i] + '\' : \'' + subStr + '\',\n'; 
-            }
-            for(var n = 0; n < level; ++n) strOut += '  ';
-            strOut += '}';
-            return strOut;
-        }
-        
-        return helper(obj, 0) + '\n';
-    },
-    deadEntityPool : [],
-    Filesystem : {
-        DefaultNode : {
-            resources : 0,
-            topaz : 1,
-            userData : 2
-        },
-        
-        getPath : function(n) {
-            return new Topaz.Filesystem.Path(topaz_filesystem__get_path(n));
-        },
-        
-        getPathFromString : function(pth, str) {
-            if (pth) {
-                return new Topaz.Filesystem.Path(topaz_filesystem__get_path_from_string(pth.impl, str));            
-            } else {
-                return new Topaz.Filesystem.Path(topaz_filesystem__get_path_from_string(str));                        
-            }
-        },
-        
-        
-        Path : function(implPre) {
-            var impl;
-            this.uniqueID = Topaz.uniqueObjectPool++;
-            if (implPre) 
-                impl = implPre;
-            else {
-                throw new Error("path object cannot be make without a LL instance.");
-            }
-            impl.__ctx = this;
-            this.impl = impl;          
-        }
-
-        
-    },
-    Input : {
-        addKeyboardListener : function(obj) {
-            topaz_input__add_keyboard_listener(obj);
-        },
-        addPadListener : function(obj, pad) {
-            topaz_input__add_pad_listener(obj, pad);
-        },
-        addPointerListener : function(obj) {
-            topaz_input__add_pointer_listener(obj);
-        },
-        addMappedListener : function(obj, str) {
-            topaz_input__add_mappded_listener(obj, str);
-        },
-        removeListener : function(obj) {
-            topaz_input__remove_listener(obj);
-        },
-
-
-        getState : function(i) {
-            return topaz_input__get_state(i);
-        },
-
-        getPadState : function(i, p) {
-            return topaz_input__get_pad_state(i, p);
-        },
-
-        getMappedState : function(i) {
-            return topaz_input__get_mapped_state(i);
-        },
-
-        setDeadzone : function(a, b, c) {
-            topaz_input__set_deadzone(a, b, c);
-        },
-
-        queryPads : function() {
-            const len = topaz_input__query_pad_count();
-            var out = [];
-            for(var i = 0; i < len; ++i) {
-                out.push(input_api__query_pad_id(i));
-            }
-            return out;
-        },
-
-        addUnicodeListener : function(l) {
-            topaz_input__add_unicode_listener(l);
-        },
-
-        removeUnicodeListener : function(l) {
-            topaz_input__remove_unicode_listener(l);
-        },
-
-        
+    Key :{
         topazNotAnInput : 0,
         topazKey_0: 1, ///< 0
         topazKey_1: 2, ///< 1
@@ -351,6 +197,163 @@ var Topaz = {
     
         topazPad_options: 511,
         topazInput_Count: 512
+    },
+    
+    Render2D : {
+        Parameter : {
+            alphaRule : 0,
+            depthTest : 1,
+            etchRule : 2,
+            textureFilterHint : 3
+        }    
+    },
+    
+    Renderer : {
+        EtchRule : {
+            noEtching : 0,
+            define : 1,
+            undefine : 2,
+            in : 3,
+            out : 4
+        },
+        
+        DepthTest : {
+            less : 0,
+            LEQ : 1,
+            greater : 2,
+            GEQ : 3,
+            equal : 4,
+            none : 5
+        },
+
+        AlphaRule : {
+            allow : 0,
+            opaque : 1,
+            translucent : 2,
+            invisible : 3,
+        },
+        
+        TextureFilterHint : {
+            linear : 0,
+            none : 1,
+        }
+
+    },
+
+
+
+
+    objectToString : function(obj, levelSrc) {
+        var checked = [];
+        var levelG = levelSrc ? levelSrc : 10;
+        var helper = function(obj, level) {
+            if (obj === undefined) return 'undefined';
+            if (obj === null) return 'null';
+            if (!(typeof obj === 'object')) return ''+obj;
+            if (checked.indexOf(obj) != -1) return '[Already Printed]'
+            checked.push(obj);
+            var strOut = '{\n';
+            var keys = Object.keys(obj);
+            var levelInv = levelG - level;
+            for(var i = 0; i < keys.length; ++i) {
+                var subStr = levelInv ? helper(obj[keys[i]], level+1) : obj[keys[i]];
+                for(var n = 0; n < level; ++n) strOut += '  ';
+                strOut += '  \'' + keys[i] + '\' : \'' + subStr + '\',\n'; 
+            }
+            for(var n = 0; n < level; ++n) strOut += '  ';
+            strOut += '}';
+            return strOut;
+        }
+        
+        return helper(obj, 0) + '\n';
+    },
+    deadEntityPool : [],
+    Filesystem : {
+        DefaultNode : {
+            resources : 0,
+            topaz : 1,
+            userData : 2
+        },
+        
+        getPath : function(n) {
+            return new Topaz.Filesystem.Path(topaz_filesystem__get_path(n));
+        },
+        
+        getPathFromString : function(pth, str) {
+            if (str == undefined) {
+                return new Topaz.Filesystem.Path(topaz_filesystem__get_path_from_string(str));            
+            } else {
+                return new Topaz.Filesystem.Path(topaz_filesystem__get_path_from_string(pth.impl, str));                        
+            }
+        },
+        
+        
+        Path : function(implPre) {
+            var impl;
+            this.uniqueID = Topaz.uniqueObjectPool++;
+            if (implPre) 
+                impl = implPre;
+            else {
+                throw new Error("path object cannot be make without a LL instance.");
+            }
+            impl.__ctx = this;
+            this.impl = impl;          
+        }
+
+        
+    },
+    Input : {
+        addKeyboardListener : function(obj) {
+            return topaz_input__add_keyboard_listener(obj);
+        },
+        addPadListener : function(obj, pad) {
+            return topaz_input__add_pad_listener(obj, pad);
+        },
+        addPointerListener : function(obj) {
+            return topaz_input__add_pointer_listener(obj);
+        },
+        addMappedListener : function(obj, str) {
+            return topaz_input__add_mappded_listener(obj, str);
+        },
+        removeListener : function(obj) {
+            topaz_input__remove_listener(obj);
+        },
+
+
+        getState : function(i) {
+            return topaz_input__get_state(i);
+        },
+
+        getPadState : function(i, p) {
+            return topaz_input__get_pad_state(i, p);
+        },
+
+        getMappedState : function(i) {
+            return topaz_input__get_mapped_state(i);
+        },
+
+        setDeadzone : function(a, b, c) {
+            topaz_input__set_deadzone(a, b, c);
+        },
+
+        queryPads : function() {
+            const len = topaz_input__query_pad_count();
+            var out = [];
+            for(var i = 0; i < len; ++i) {
+                out.push(input_api__query_pad_id(i));
+            }
+            return out;
+        },
+
+        addUnicodeListener : function(l) {
+            topaz_input__add_unicode_listener(l);
+        },
+
+        removeUnicodeListener : function(l) {
+            topaz_input__remove_unicode_listener(l);
+        },
+
+        
     },
     
     Audio : {
@@ -1844,17 +1847,6 @@ var Topaz = {
                 }
                 
                 return out;
-            },
-            
-            
-            set : function(f) {
-                var l = children;
-                for(var i = 0; i < l.length; ++i) {
-                    l[i].remove();
-                }
-                for(var i = 0; i < f.length; ++i) {
-                    this.attach(f[i]);
-                }
             }
         }
     );
@@ -2111,10 +2103,12 @@ Object.defineProperty(Topaz, 'time', {get : function(){return topaz__get_time();
 Object.defineProperty(Topaz, 'versionMicro', {get : function(){return topaz__get_version_micro();}});
 Object.defineProperty(Topaz, 'versionMajor', {get : function(){return topaz__get_version_major();}});
 Object.defineProperty(Topaz, 'versionMinor', {get : function(){return topaz__get_version_minor();}});
-Object.defineProperty(Topaz.Input, 'mouseX', {get : function(){return topaz_input__mouse_x();}});
-Object.defineProperty(Topaz.Input, 'mouseY', {get : function(){return topaz_input__mouse_y();}});
-Object.defineProperty(Topaz.Input, 'mouseDeltaX', {get : function(){return topaz_input__mouse_delta_x();}});
-Object.defineProperty(Topaz.Input, 'mouseDeltaY', {get : function(){return topaz_input__mouse_delta_y();}});
+Object.defineProperty(Topaz.Input, 'mouse',  {get : function(){ 
+    return new Topaz.Vector(topaz_input__mouse_x(), topaz_input__mouse_y());
+}});
+Object.defineProperty(Topaz.Input, 'mouseDelta', {get : function(){
+    return new Topaz.Vector(topaz_input__mouse_delta_x(), topaz_input__mouse_delta_y());
+}});
 Object.defineProperty(Topaz.Input, 'mouseWheel', {get : function(){return topaz_input__mouse_wheel();}});
 Object.defineProperty(Topaz.Resources, 'path', {
     set : function(v){topaz_resources__set_path(v);},

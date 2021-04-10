@@ -1,0 +1,45 @@
+/// Module that handles all audio related functionality.
+singleton Topaz.Audio
+
+/// Queues sound for immediate playback and returns 
+/// a playback ID that can be used to interact with the 
+/// sound.
+///
+/// A playback object represents a sound of audio that is currently
+/// undergoing playback. As such, you can use it to modify how the
+/// corresponding audio is playing. Because typical playback systems are done on
+/// separate threads, the reflection of changes caused by the calling of
+/// these functions is not immediately guaranteed.
+///
+func playSound -> Topaz.Audio.PlaybackSound
+    /// The sound to play.
+    Topaz.Sound asset 
+    /// Optional: The channel to play the sound on. 
+    /// If not specified, channel 0 is chosen.
+    Int channel
+
+/// Stops all sounds currently playing on a channel.
+func channelHalt ->
+    /// The channel to to modify.
+    Int channel 
+
+/// Sets the volume for the given channel
+/// 0.f denotes minimum volume and 1.f maximum.
+/// The values are clipped if they are beyond these bounds.
+///
+func channelSetVolume ->
+    /// The channel to to modify.
+    Int channel 
+    /// The amount, from 0 to 1. Will be clamped.
+    Number volume
+
+
+/// Sets the panning for the entire channel.
+/// 0.f denotes all the way to the left and 1.f all the way to the right.
+/// The values are clipped if they are beyond these bounds.
+///
+func channelSetPanning
+    /// The channel to to modify.
+    Int channel 
+    /// The amount, from 0 to 1. Will be clamped.
+    Number panning

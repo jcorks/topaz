@@ -570,11 +570,7 @@ class Topz {
     }
     var Resources;
 
-
-
-
-
-    class Input_Definition {
+    class Key_Definition {
         var topazNotAnInput;
         var topazKey_0; ///< 0
         var topazKey_1; ///< 1
@@ -752,62 +748,7 @@ class Topz {
         var topazPad_options;
         var topazInput_Count;
 
-
-
-        var addKeyboardListener;
-        var addPadListener
-        var addPointerListener;
-        var addMappedListener;
-        var getState;
-        var getPadState;
-        var getMappedState;
-        var getDeadzone;
-        var queryPadCount
-        var queryPadID;
-        var addUnicodeListener;
-
-
-        var mouse {
-            get {
-                return Topaz.Vector(
-                    topaz_.topaz_input__mouse_x(),
-                    topaz_.topaz_input__mouse_y()
-                );
-            }
-        }
-
-        var mouseDelta {
-            get {
-                return Topaz.Vector(
-                    topaz_.topaz_input__mouse_delta_x(),
-                    topaz_.topaz_input__mouse_delta_y()
-                );
-            }
-        }
-
-        var mouseWheel {
-            get {
-                return topaz_.topaz_input__mouse_wheel();
-            }
-        }
-    
-
-
         func init() {
-            addKeyboardListener = topaz_.topaz_input__add_keyboard_listener;
-            addUnicodeListener = topaz_.topaz_input__add_unicode_listener;
-            queryPadID = topaz_.topaz_input__query_pad_id;
-            queryPadCount = topaz_.topaz_input__query_pad_count;
-            getDeadzone = topaz_.topaz_input__set_deadzone;
-            getMappedState = topaz_.topaz_input__get_mapped_state;
-            getPadState = topaz_.topaz_input__get_pad_state;
-            getState = topaz_.topaz_input__get_state;
-            addMappedListener = topaz_.topaz_input__add_mapped_listener;
-            addPointerListener = topaz_.topaz_input__add_pointer_listener;
-            addPadListener = topaz_.topaz_input__add_pad_listener;
-
-            
-            topazNotAnInput = 0;
             topazKey_0 = 1; ///< 0
             topazKey_1 = 2; ///< 1
             topazKey_2 = 3; ///< 2
@@ -983,6 +924,71 @@ class Topz {
         
             topazPad_options = 511;
             topazInput_Count = 512;
+        }
+    }
+    var Key;
+
+
+    class Input_Definition {
+
+
+
+
+        var addKeyboardListener;
+        var addPadListener
+        var addPointerListener;
+        var addMappedListener;
+        var getState;
+        var getPadState;
+        var getMappedState;
+        var getDeadzone;
+        var queryPadCount
+        var queryPadID;
+        var addUnicodeListener;
+
+
+        var mouse {
+            get {
+                return Topaz.Vector(
+                    topaz_.topaz_input__mouse_x(),
+                    topaz_.topaz_input__mouse_y()
+                );
+            }
+        }
+
+        var mouseDelta {
+            get {
+                return Topaz.Vector(
+                    topaz_.topaz_input__mouse_delta_x(),
+                    topaz_.topaz_input__mouse_delta_y()
+                );
+            }
+        }
+
+        var mouseWheel {
+            get {
+                return topaz_.topaz_input__mouse_wheel();
+            }
+        }
+    
+
+
+        func init() {
+            addKeyboardListener = topaz_.topaz_input__add_keyboard_listener;
+            addUnicodeListener = topaz_.topaz_input__add_unicode_listener;
+            queryPadID = topaz_.topaz_input__query_pad_id;
+            queryPadCount = topaz_.topaz_input__query_pad_count;
+            getDeadzone = topaz_.topaz_input__set_deadzone;
+            getMappedState = topaz_.topaz_input__get_mapped_state;
+            getPadState = topaz_.topaz_input__get_pad_state;
+            getState = topaz_.topaz_input__get_state;
+            addMappedListener = topaz_.topaz_input__add_mapped_listener;
+            addPointerListener = topaz_.topaz_input__add_pointer_listener;
+            addPadListener = topaz_.topaz_input__add_pad_listener;
+
+            
+            topazNotAnInput = 0;
+
         }
         
     }
@@ -1703,10 +1709,10 @@ class Topz {
         }
         
         func getPathFromString(pth, str) {
-            if (pth) {
-                return Path_Definition(topaz_.topaz_filesystem__get_path_from_string(pth.impl_, str));
+            if (str == null) {
+                return Path_Definition(topaz_.topaz_filesystem__get_path_from_string(str));
             } else {
-                return Path_Definition(topaz_.topaz_filesystem__get_path_from_string(str));        
+                return Path_Definition(topaz_.topaz_filesystem__get_path_from_string(pth.impl_, str));        
             }
         }
                 
@@ -2652,6 +2658,7 @@ class Topz {
         FontManager = FontManager_Definition();
         Package  = Package_Definition();
         Filesystem = Filesystem_Definition();
+        Key = Key_Definition();
 
     }
 }

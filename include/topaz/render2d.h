@@ -60,8 +60,8 @@ enum topazRender2D_Parameter {
     ///
     topazRender2D_Parameter_AlphaRule,
 
-    /// The transparency rule for the 2D object.
-    /// Default is topazRenderer_AlphaRule_Allow
+    /// The depth testing rule for the 2D object.
+    /// Default is topazRenderer_DepthTest_None
     ///
     topazRender2D_Parameter_DepthTest,
 
