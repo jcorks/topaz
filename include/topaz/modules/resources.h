@@ -213,7 +213,7 @@ topazIOX_t * topaz_resources_get_translator(
     const topazString_t * fileExtension
 );
 
-
+/// Removes the asset by name.
 void topaz_resources_remove_asset(
     /// The resource instance to remove from.
     topazResources_t * res,

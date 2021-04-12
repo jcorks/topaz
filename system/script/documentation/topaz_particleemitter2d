@@ -1,0 +1,23 @@
+/// Inherits from Topaz.Entity
+///
+/// Particle emitters use Topaz.Particle to create particle effects.
+/// They are Entities with their own transforms.
+class Topaz.ParticleEmitter2D
+
+/// The particle to use when emitting.
+/// Write-only.
+Topaz.Particle particle 
+
+/// Emits a particle with position tracking it global/root entity space.
+/// That is, when the emitter moves, the particle will not move with it.
+/// Only the emitters position at the time of emission will be used
+/// for the particle.
+/// Write-only.
+Boolean independent 
+
+/// Emits a set number of particles from the emitter.
+///
+func emit -> 
+    /// The number to emit.
+    Int count 
+

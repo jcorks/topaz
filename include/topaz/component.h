@@ -287,7 +287,7 @@ typedef int (*topaz_event_handler)(
 
 
 
-/// Triggers the specified event for this EventSystem
+/// Triggers the specified event for this Component
 ///
 /// Returns whether the event was allowed to propogate all the
 /// way to the main handler (in other words, lets you know whether
@@ -300,7 +300,7 @@ int topaz_component_emit_event(
     /// Name of the event. This should match the name that was installed.
     const topazString_t * eventName, 
 
-    /// Optional ID that indicates the source of the event. For example, in a collision, this may be the object collided with.
+    /// Entity that indicates the source of the event. For example, in a collision, this may be the object collided with.
     topazEntity_t * source, 
 
     /// Optional string vector with additional information to be used by the event.
@@ -405,7 +405,7 @@ topazArray_t * topaz_component_get_known_events(
 
 
 
-/// Adds a new event to be recognized by the EventSystem.
+/// Adds a new event to be recognized by the Component.
 ///
 /// if mainHandler is nullptr, the event is still added, but has no default
 /// handler is set. The default handler is always guaranteed to run first for the event.

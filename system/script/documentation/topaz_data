@@ -1,0 +1,16 @@
+/// Inherits from Topaz.Asset 
+///
+/// An asset that holds raw byte data. This is most useful 
+/// for custom assets and simple text files.
+class Topaz.Data 
+
+/// Gets the number of bytes held within the asset.
+/// Read-only.
+Int byteCount 
+
+/// Creates a new string from the raw data stored in the asset.
+/// Read-only.
+String string 
+
+/// Sets/Gets the raw bytes for the data asset.
+Array bytes

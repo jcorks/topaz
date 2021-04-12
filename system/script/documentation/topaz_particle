@@ -1,0 +1,54 @@
+/// The specification of a particle. This is used as a roadmap to 
+/// generate a real particle instance using Topaz.ParticleEmitter2D.emit()
+///
+class Topaz.Particle 
+
+
+/// Modifies a render parameter. See topazRender2d_Parameter.
+///
+func setParam 
+    /// Determines how to interpret the next value.
+    /// If alphaRule, val is expected to be a value within Topaz.Renderer.AlphaRule
+    /// If depthTest, val is expected to be a value within Topaz.Renderer.DepthTest
+    /// If etchRule,  val is expected to be a value within Topaz.Renderer.EtchRule 
+    /// if textureFilterHint, val is expected to be a value within Topaz.Renderer.TextureFilter
+    Topaz.Render2D.Parameter param 
+
+    /// The new value. How its interpreted depends on param.
+    Int val 
+
+/// The minimum value for the attribute to start.
+///
+func setNoiseMin ->
+    /// The property to modify.
+    Topaz.Particle.Property p 
+    /// The value to set.
+    Number val 
+
+/// The maximum value for the attribute to start.
+///
+func setNoiseMax ->
+    /// The property to modify.
+    Topaz.Particle.Property p 
+    /// The value to set.
+    Number val 
+
+/// Sets how the particle property modifies its value over 
+/// its duration. animString is expected to be output from
+/// topaz_automation_to_string() which will describe 
+/// how the value changes from the start of its life to the end.
+func setFunction -> 
+    /// The property to modify.
+    Topaz.Particle.Property p 
+    /// The automation state string.
+    String automationString
+
+/// When read, returns string representation of the particle's
+/// state, allowing for saving / loading the state of the particle.
+/// When written, sets the particle specification from a string.
+/// This string is assumed to have come from a
+/// previously read particle string.
+String string 
+
+/// Sets the base image to use for the particle.
+Topaz.Image image

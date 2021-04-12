@@ -74,7 +74,7 @@ topazVector_t topaz_vector_from_xyz(
 ///
 /// The format of the text is 2 to 3 floating point numbers separated by
 /// any counts of either whitespace or generally accepted separation characters:
-///    ,.<>(){}[]
+///    ,<>(){}[]
 ///
 /// The point here is to allow instantiation from natural mathematical notations
 /// which depend on the usage of the Vector. Examples of valid input:

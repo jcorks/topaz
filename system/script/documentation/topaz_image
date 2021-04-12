@@ -1,0 +1,46 @@
+/// Inherits from Topaz.Asset 
+///
+/// Images are displayable visuals of pixels. Images 
+/// contain 1 or more frames; multiple-framed images 
+/// can be used for animations.
+class Topaz.Image 
+
+
+/// Returns the width of the image. 
+/// Read-only.
+Int width
+
+/// Returns the height of the image. 
+/// Read-only.
+Int height 
+
+/// Returns the number of frames within the image.
+/// Read-only.
+int frameCount
+
+
+/// Resizes the image to a new width and height.
+func resize -> 
+    /// The new width
+    Int width 
+    /// The new height
+    Int height 
+
+/// Creates a new frame after the existing frames.
+func addFrame -> 
+
+/// Removes the given frameIndex
+func removeFrame ->
+    /// The index to remove.
+    Int frameIndex 
+
+/// Sets the RGBA pixel data within the image according 
+/// to the width and height of the frame. This assumes that 
+/// the given buffer is at least width*height*4 bytes large.
+///
+func setRGBA ->
+    /// Which frame to modify.
+    Int frameIndex 
+    /// Array of RGBA data to update with.
+    Array rgbaData 
+

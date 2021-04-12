@@ -783,11 +783,11 @@ var Topaz = {
         );
 
         obj.emitEvent = function(eventName, ent) {
-            topaz_component__emit_event(this.impl, eventName, ent ? ent.impl : topaz_entity__null());
+            return topaz_component__emit_event(this.impl, eventName, ent ? ent.impl : topaz_entity__null());
         }
 
         obj.emitEventAnonymous = function(eventName) {
-            topaz_component__emit_event_anonymous(this.impl, eventName);
+            return topaz_component__emit_event_anonymous(this.impl, eventName);
         }
 
         obj.canHandleEvent = function(name) {
@@ -1138,24 +1138,37 @@ var Topaz = {
 
     /// color 
 
-    Topaz.Color.prototype.setFromString = function(str) {
-        topaz_color__set_from_string(this.impl, str);
-    }
+    Topaz.Color.prototype.setFromString = 
 
-    Topaz.Color.prototype.getHex = function() {
-        return topaz_color__to_hex_string(this.impl);
-    }
 
-    Topaz.Color.prototype.remove = function() {
-        topaz_color__destroy(this.impl);
-        this.impl = {};
-    }
 
-    Object.defineProperty(Topaz.Color.prototype, 'r', {get : function(){return this.impl.r;}, set : function(v){this.impl.r = v;}});
-    Object.defineProperty(Topaz.Color.prototype, 'g', {get : function(){return this.impl.g;}, set : function(v){this.impl.g = v;}});
-    Object.defineProperty(Topaz.Color.prototype, 'b', {get : function(){return this.impl.b;}, set : function(v){this.impl.b = v;}});
-    Object.defineProperty(Topaz.Color.prototype, 'a', {get : function(){return this.impl.a;}, set : function(v){this.impl.a = v;}});
+    Object.defineProperty(Topaz.Color.prototype, 'string', 
+        {
+            get : function() {
+                return topaz_color__to_hex_string(this.impl);
+            },
 
+            set : function(str) {
+                topaz_color__set_from_string(this.impl, str);
+            }
+        }
+    );
+    Object.defineProperty(Topaz.Color.prototype, 'r', {
+        get : function(){ return topaz_color__get_r(this.impl);}, 
+        set : function(v){       topaz_color__set_r(this.impl, v);}
+    });
+    Object.defineProperty(Topaz.Color.prototype, 'g', {
+        get : function(){ return topaz_color__get_g(this.impl);}, 
+        set : function(v){       topaz_color__set_g(this.impl, v);}
+    });
+    Object.defineProperty(Topaz.Color.prototype, 'b', {
+        get : function(){ return topaz_color__get_b(this.impl);}, 
+        set : function(v){       topaz_color__set_b(this.impl, v);}
+    });
+    Object.defineProperty(Topaz.Color.prototype, 'a', {
+        get : function(){ return topaz_color__get_a(this.impl);}, 
+        set : function(v){       topaz_color__set_a(this.impl, v);}
+    });
 
 
     /// automation
@@ -1184,7 +1197,9 @@ var Topaz = {
     Topaz.Automation.prototype.addFromString = function(str) {
         topaz_automation__add_from_string(this.impl, str);
     }
-    
+    Topaz.Automation.prototype.skipTo = function(n) {
+        topaz_automation__skip_to(this.impl, n);
+    }
     
 
 
@@ -1452,27 +1467,34 @@ var Topaz = {
         topaz_shape2d__form_rectangle(this.impl, a, b);
     }
 
+    Topaz.Shape2D.prototype.formImage = function(a) {
+        topaz_shape2d__form_image(this.impl, a);
+    }
+
+    Topaz.Shape2D.prototype.formImageScaled = function(a, b, c) {
+        topaz_shape2d__form_image(this.impl, a, b, c);
+    }
+
     Topaz.Shape2D.prototype.formRadial = function(a, b) {
         topaz_shape2d__form_radial(this.impl, a, b);
     }
 
 
-    var lines;
     Object.defineProperty(
         Topaz.Shape2D.prototype,
         'lines', {
-            get : function() {return lines;},
-            set : function(v){topaz_shape2d__form_lines(this.impl, v); lines = v;}
+            get : function() {return this._lines;},
+            set : function(v){topaz_shape2d__form_lines(this.impl, v); this._lines = v;}
         }
     );
 
 
-    var tris;
+
     Object.defineProperty(
         Topaz.Shape2D.prototype,
         'triangles', {
-            get : function() {return tris;},
-            set : function(v){topaz_shape2d__form_triangles(this.impl, v); tris = v;}
+            get : function() {return this._tris;},
+            set : function(v){topaz_shape2d__form_triangles(this.impl, v); this._tris = v;}
         }
     );
 
@@ -1637,28 +1659,27 @@ var Topaz = {
     );
 
 
-    Topaz.Object2D.prototype.setGroupInteraction = function(a, b, c) {
+    Topaz.Object2D.setGroupInteraction = function(a, b, c) {
         topaz_object2d__set_group_interaction(a, b, c);
     }
 
-    var collider = [];
     Object.defineProperty(
         Topaz.Object2D.prototype,
         'collider', {
-            get : function() { return collider; },
-            set : function(v){ collider=v; topaz_object2d__set_collider(this.impl, v);}
+            get : function() { return this._collider; },
+            set : function(v){ this._collider=v; topaz_object2d__set_collider(this.impl, v);}
         }
     );
     
 
     Topaz.Object2D.prototype.setColliderRadial = function(a, b) {
         topaz_object2d__set_collider_radial(this.impl, a, b);
-        collider = [];
+        this._collider = [];
         const len = topaz_object2d__get_collider_len(this.impl);
         for(var i = 0; i < len; ++i) {
             const pt = topaz_object2d__get_collider_point(this.impl, i);
-            collider.push(pt.x);
-            collider.push(pt.y);
+            this._collider.push(pt.x);
+            this._collider.push(pt.y);
         }
     }
 
@@ -1691,8 +1712,8 @@ var Topaz = {
         topaz_state_control__execute(this.impl, name);
     }
 
-    Topaz.StateControl.prototype.halt = function(name) {
-        topaz_state_control__halt(this.impl, name)
+    Topaz.StateControl.prototype.halt = function() {
+        topaz_state_control__halt(this.impl)
     }
 
 

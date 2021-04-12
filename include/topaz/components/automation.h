@@ -87,7 +87,7 @@ void topaz_automation_add_keyframe(
 
 
 /// Same as topaz_automation_add_keyframe, except the 
-/// value is a vector. This is usual
+/// value is a vector. 
 void topaz_automation_add_vector_keyframe(
     /// The automation instance to add a keyframe to.
     topazComponent_t * automation, 

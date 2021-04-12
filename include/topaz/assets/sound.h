@@ -35,6 +35,12 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/asset.h>
 typedef struct topazArray_t topazArray_t;
 typedef struct topazSound_Sample_t topazSound_Sample_t;
+
+
+/// Asset to hold sound data.
+typedef struct topazSound_t topazSound_t
+
+
 /// A single sample of audio. All audio data is expressed in 
 /// samples. Each sample consists of 2 pieces of data: one for the 
 /// left channel and one for the right channel for stereo output.

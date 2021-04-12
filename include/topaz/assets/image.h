@@ -36,17 +36,16 @@ DEALINGS IN THE SOFTWARE.
 typedef struct topazArray_t topazArray_t;
 typedef struct topazRenderer_Texture_t topazRenderer_Texture_t;
 typedef struct topazAsset_t topazAsset_t;
-/*
 
-    Image
-    -----
-
-    Hold image information. An image within topaz can be multiple frames
-    which can be used a variety of ways (animation, sprite map, etc.)
-
-*/
+///    Hold image information. An image within topaz can be multiple frames
+///    which can be used a variety of ways (animation, sprite map, etc.)
+typedef struct topazImage_t topazImage_t;
 
 
+
+
+/// An individual frame of information that holds pixel data.
+/// Images contain 1 or more frames.
 typedef struct topazImage_Frame_t topazImage_Frame_t;
 
 
@@ -95,8 +94,11 @@ int topaz_image_get_height(const topazAsset_t *);
 /// Afterwhich, the contents of al frames are undefined
 ///
 void topaz_image_resize(
-    topazAsset_t *,
+    /// The image to modify.
+    topazAsset_t * image,
+    /// The new width of the image.
     int width,
+    /// The new height of the image.
     int height
 );
 
@@ -110,7 +112,9 @@ void topaz_image_resize(
 /// is created as a clone of the given one.
 ///
 void topaz_image_frame_set_from_texture(
-    topazImage_Frame_t *, 
+    /// Frame to modify.
+    topazImage_Frame_t *,
+    /// Texture to clone from. 
     topazRenderer_Texture_t *
 );
 
@@ -120,7 +124,9 @@ void topaz_image_frame_set_from_texture(
 /// the given buffer is at least width*height*4 bytes large.
 ///
 void topaz_image_frame_set_data(
+    /// Frame to modify.
     topazImage_Frame_t *,
+    /// Texture data to read from and copy.
     const uint8_t * rgbdaData
 );
 

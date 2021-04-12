@@ -1,0 +1,113 @@
+/// Extends the functionality of Entities.
+///
+/// Each component can hold its own update cycle (step / draw)
+/// as well as implement a generic event / callback system, 
+/// allowing for extensions of all kinds.
+///
+class Topaz.Component 
+
+/// Destroys a component. This detaches the component from the entity 
+/// which emits the detach event.
+///
+func destroy ->
+
+/// Steps the component. Normally called for you if attached to a host.
+///
+func step ->
+
+/// Draws the component. Normally called for you if attached to a host.
+///
+func draw ->
+
+/// Sets/Gets whether this component will step when its host entity steps.
+/// Default is true.
+Boolean stepping 
+
+/// Sets/Gets whether this component will draw when its host entity steps.
+/// Default is true.
+Boolean drawing 
+
+/// Sets/Gets the tag for this entity. 
+String tag 
+
+/// Gets the entity that this component belongs to.
+/// See Topaz.Entity for how to attach components
+/// Read-only.
+Topaz.Entity host 
+
+
+/// Triggers the specified event for this Component
+///
+/// Returns whether the event was allowed to propogate all the
+/// way to the main handler (in other words, lets you know whether
+/// all the handlers allowed the event to happen)
+/// Source is passed to the handler and is usually the source of the event (but does not have to be)
+func emitEvent ->
+    /// Name of the event. This should match the name that was installed.
+    String eventName 
+    /// Entity that indicates the source of the event. For example, in a collision, this may be the object collided with.
+    Topaz.Entity source 
+
+/// Same as emitEvent but the source entity is not specified.
+func emitEventAnonymous ->
+    /// Event in question.
+    String eventName 
+
+/// Returns whether there exists at least one handler for the given event
+///
+func canHandleEvent ->
+    /// Name to query.
+    String name 
+
+/// Adds a new event to be recognized by the Component.
+///
+/// if mainHandler is nullptr, the event is still added, but has no default
+/// handler is set. The default handler is always guaranteed to run first for the event.
+func installEvent ->
+    /// The name of the event.
+    String event 
+    /// The default handler for the new event.
+    /// Arguments when called:
+    /// This component, possible entity source.
+    Function defaultHandler 
+
+/// removes a handler of an event
+///
+func uninstallEvent ->
+    String event 
+
+
+/// Adds a hook to the event. 
+///
+/// A hook happens at the end of a given event after all the
+/// handlers have been run. Hooks occur regardless of event handler propogation.
+/// (the return value is ignored for all hooks)
+func installHook -> Int
+    /// The event to add the hook to.
+    String event 
+    /// Arguments when called:
+    /// This component, possible entity source.
+    Function hook 
+
+/// Removes a hook added with installHook()
+///
+func uninstallHook ->
+    /// Id of the hook, returned from installHook().
+    Int id
+
+/// Adds a handler to an event. 
+///
+/// Handlers that are added are run in LIFO order
+/// and their return values dictate whether the event should propogate.
+/// the last handler run for an event is always the main handler of the event.
+func installHandler -> Int
+    /// The event name to install to.
+    String event 
+    /// Arguments when called:
+    /// This component, possible entity source.
+    Function handler 
+
+/// Removes a handler installed with installHandler()
+func uninstallHandler ->
+    /// Id of the hook, returned from installHandler().
+    Int id

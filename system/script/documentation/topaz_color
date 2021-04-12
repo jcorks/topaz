@@ -1,0 +1,39 @@
+/// A standard object representing an RGBA, 32-bit color
+class Topaz.Color 
+
+/// Topaz.Color constructors can be passed a string to initialize the color.
+/// This will set the "string" property with "str"
+func [constructor] -> 
+    /// The string to initialize the color with.
+    String str
+
+
+/// When read, returns a hex version of the color, encoded as such:
+/// "#rrggbbaa"
+/// When written to, sets the color to the color referred to by string.
+/// In the case that the string starts with a '#', the
+/// remainder of the string will be read as a hexidecimal
+/// integer referring to the values of the hex string. For example
+/// Color("#FF00FFFF") is equivalent to Color(255, 0, 255, 255)
+/// It is also valid to specify only 3 components:
+/// Color("#FF00FF") is equivalent to Color(255, 0, 255, 255). If the string does not
+/// begin with a '#', the string is implied to represent the name of a color.
+/// 
+String string 
+
+/// Sets/Gets the red component of the color as a number from 0 to 1. 
+/// Note that this is stored within a byte (0-255), so some  
+/// accuracy may be lost when read/writing from this value.
+Number r
+/// Sets/Gets the green component of the color as a number from 0 to 1. 
+/// Note that this is stored within a byte (0-255), so some  
+/// accuracy may be lost when read/writing from this value.
+Number g 
+/// Sets/Gets the blue component of the color as a number from 0 to 1. 
+/// Note that this is stored within a byte (0-255), so some  
+/// accuracy may be lost when read/writing from this value.
+Number b 
+/// Sets/Gets the alpha component of the color as a number from 0 to 1. 
+/// Note that this is stored within a byte (0-255), so some  
+/// accuracy may be lost when read/writing from this value.
+Number a

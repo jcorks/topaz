@@ -34,14 +34,9 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/asset.h>
 typedef struct topazArray_t topazArray_t;
-/*
 
-    Data
-    -----
-
-    Holds raw byte data.
-
-*/
+/// Holds raw byte data.
+typedef struct topazData_t topazData_t;
 
 
 

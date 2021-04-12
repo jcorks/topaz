@@ -143,6 +143,7 @@ void topaz_particle_set_noise_min(
     topazParticle_t * part,
     /// The property to modify.
     topazParticle_Property prop,
+    /// The value to set.
     float value
 );
 /// The maximum value for the attribute to start.
@@ -152,6 +153,7 @@ void topaz_particle_set_noise_max(
     topazParticle_t * part,
     /// The property to modify.
     topazParticle_Property prop,
+    /// The value to set.
     float value
 );
 

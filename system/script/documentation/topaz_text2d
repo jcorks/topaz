@@ -1,0 +1,77 @@
+/// Inherits from Topaz.Component 
+///
+///
+class Topaz.Text2D
+
+/// Sets/Gets the current text to display.
+String text 
+
+
+/// Sets the font for the text 
+func setFont ->
+    /// The name of the font to use. Should match the registered 
+    /// font name through topaz's font manager. See 
+    /// Topaz.FontManager.registerFont().
+    String fontName 
+
+    /// The pixel size of the text to appear.
+    Int pixelSize
+
+/// Sets the color for all characters.
+///
+func setColor ->
+    /// The color to set.
+    Topaz.Color color
+
+/// Sets the color for certain characters.
+///
+func setColorSection
+    /// The start character index to set the color.
+    Int from 
+    /// The end character index to set the color.
+    Int to 
+    /// The color to set.
+    Topaz.Color color 
+
+/// Gets the width of the text without transformation.
+/// Read-only.
+Int extentWidth 
+/// Gets the height of the text without transformation.
+/// Read-only.
+Int extentHeight 
+
+
+/// Gets the x position of the character at the given index.
+/// This refers to its top-left.
+///
+func getCharX -> Int 
+    /// The index of the character to query.
+    Int index
+
+
+/// Gets the x position of the character at the given index.
+/// This refers to its top-left.
+///
+func getCharY -> Int 
+    /// The index of the character to query.
+    Int index 
+
+
+/// Sets/Gets the position of the Text2D with 
+/// the host entity as the parent transform.
+Topaz.Vector position 
+/// Sets/Gets the rotation of the Text2D with 
+/// the host entity as the parent transform.
+Topaz.Vector rotation 
+/// Sets/Gets the scale of the Text2D 
+/// with the host entity as the parent transform.
+Topaz.Vector scale 
+
+/// Sets/Gets the alpha rule.
+Topaz.Renderer.AlphaRule alphaRule 
+/// Sets/Gets the depth test.
+Topaz.Renderer.DepthTest depthTest 
+/// Sets/Gets the etching rule.
+Topaz.Renderer.EtchRule etchRule 
+/// Sets/Gets the texture filter.
+Topaz.Renderer.TextureFilter textureFilter

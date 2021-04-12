@@ -1,0 +1,55 @@
+/// Inherits from Topaz.Component
+///
+/// 
+class Topaz.StateControl
+
+/// Sets up a new valid state.
+/// If an existing state fo the same name exists, it is updated.
+///
+func add ->
+    /// The name of the new state.
+    String name 
+    /// The state to add. 
+    /// This is treated as a "map" object, 
+    /// where named properties are looked for.
+    /// The following properties are expected:
+    /// "onInit" -> function called on entering the state. 
+    /// "onStep" -> function called each step within this state 
+    /// "onDraw" -> function called each draw within this state 
+    ///
+    /// If any of these properties are undefined, they are 
+    /// simply ignored. 
+    ///
+    /// When called, all mapped functions are given a single argument:
+    /// the source state control object to which they belong.
+    Object state 
+
+/// Removes the state.
+/// No action is taken if the tag does not refer to a valid state.
+///
+func remove ->
+    /// Name of the state to remove.
+    String name 
+
+/// Begins the state machine execution loop from the given state.
+/// If begin state does not refer to a valid state, no action is taken.
+/// If done in the middle of a state loop function, any queued 
+/// function calls are cancelled.
+///
+func execute ->
+    /// Name of the state to change to.
+    String name 
+
+/// Stops all current execution.
+/// If done during a state loop, all remaining state loop functions 
+/// that would have executed are cancelled.
+///
+func halt ->
+
+/// Returns whether or not the machine is in a halted state.
+/// Read-only.
+Boolean isHalted
+
+/// Returns the current state tag. If no execution state is active, the empty string is returned.
+/// Read-only.
+String state

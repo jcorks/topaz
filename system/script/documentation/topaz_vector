@@ -1,0 +1,140 @@
+/// A hybrid class suitable for both 2D and 3D
+/// positional and physical operations.
+///
+class Topaz.Vector 
+
+/// Constructor can either have 0, 1 or 3 arguments.
+/// In the case of 0, all components are initialized to 0.
+/// In the case of 1, the first argument is interpreted as a string
+/// In the case of 3, each is interpreted as a number value for x, y, and z.
+func [constructor] -> 
+    /// In the case that this is the only argument 
+    /// given to the constructor, 
+    /// it will be attempted to convert it an input string into a vector.
+    ///
+    /// The format of the text is 2 to 3 floating point numbers separated by
+    /// any counts of either whitespace or generally accepted separation characters:
+    ///    ,<>(){}[]
+    ///
+    /// The point here is to allow instantiation from natural mathematical notations
+    /// which depend on the usage of the Vector. Examples of valid input:
+    ///
+    /// topaz_vector_from_string(TOPAZ_STR_CAST("{1, 4, 5}"));
+    /// topaz_vector_from_string(TOPAZ_STR_CAST("1 4 5"));
+    /// topaz_vector_from_string(TOPAZ_STR_CAST("<1 4 5>"));
+    /// topaz_vector_from_string(TOPAZ_STR_CAST("[1 4 5]"));
+    ///
+    /// In the case that there are 3 arguments, this is interpreted as the x component 
+    /// value.
+    Object stringOrXNumber
+
+    /// The y component value
+    Number Y
+    /// The z component value
+    Number Z
+
+/// Returns the distance of this vector to the other vector.
+///
+func getDistance -> Number
+    /// The second positional vector.
+    Topaz.Vector other 
+
+/// Sets the vector to a magnitude of 1. 
+func normalize -> 
+
+/// Returns the cross product: A x B
+///
+func cross -> Topaz.Vector
+    /// Vector B
+    Topaz.Vector b
+
+/// Sets the X Y Z to integer values.
+///
+func floor -> 
+
+/// Returns the result of rotating the vector
+/// by the specified degrees about the center
+func rotateX -> 
+    /// The amount to rotate in degrees.
+    Number amt
+
+/// Returns the YZ angle between the 2
+/// vectors in relation to the origin in degrees
+func rotationXDiff -> Number 
+    /// The positional vector to measure to.
+    Topaz.Vector other 
+/// Returns the angle between the 2
+/// vectors in relation to this in degrees
+func rotationXDiffRelative -> Number 
+    /// The positional vector to measure to.
+    Topaz.Vector other 
+/// Returns the angle of the vector in degrees about the X axis
+///
+/// If a vector has length zero in these dimensions
+/// , the angle is always zero.
+/// The rotation is about the directional vector (1, 0, 0) and
+/// Positive rotation is towards the positive Z direction.
+///
+func rotationX -> Number 
+
+/// Returns the result of rotating the vector
+/// by the specified degrees about the center
+func rotateY -> 
+    /// The amount to rotate in degrees.
+    Number amt
+/// Returns the zx angle between the 2
+/// vectors in relation to the origin in degrees
+func rotationYDiff -> Number 
+    /// The positional vector to measure to.
+    Topaz.Vector other 
+
+/// Returns the angle between the 2
+/// vectors in relation to this in degrees
+func rotationYDiffRelative -> Number 
+    /// The positional vector to measure to.
+    Topaz.Vector other 
+/// Returns the angle of the vector about the Y axis in degrees
+///
+/// If a vector has length zero in these dimensions
+/// , the angle is always zero.
+/// The rotation is about the directional vector (0, 1, 0)
+/// Positive rotation is towards the positive X direction.
+func rotationY -> Number 
+
+/// Returns the result of rotating the vector
+/// by the specified degrees about the center
+func rotateZ ->
+    /// The amount to rotate in degrees. 
+    Number amt
+
+/// Returns the XY angle between the 2
+/// vectors in relation to the origin in degrees
+func rotationZDiff -> Number 
+    /// The positional vector to measure to.
+    Topaz.Vector other 
+/// Returns the angle between the 2
+/// vectors in relation to this in degrees
+func rotationZDiffRelative -> Number 
+    /// The positional vector to measure to.
+    Topaz.Vector other 
+/// Returns the angle of the vector about the Z axis in degrees
+/// These deals with angles between the x and y axes.
+/// XY is most useful for 2D angles and transformations.
+/// If a vector has length zero in these dimensions
+/// , the angle is always zero.
+/// The rotation is about the directional vector (0, 0, 1).
+/// Positive rotation is towards the positive Y direction.
+///
+func rotationZ -> Number 
+
+
+/// Returns the length of the vector.
+/// Write-only.
+Number length 
+
+/// Sets/Gets the x component of the vector.
+Number x 
+/// Sets/Gets the y component of the vector.
+Number y 
+/// Sets/Gets the z component of the vector.
+Number z

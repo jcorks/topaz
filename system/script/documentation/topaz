@@ -445,6 +445,17 @@ enum Topaz.Renderer.TextureFilterHint
     ///
     eval none
 
+
+/// Sets whether groups should interact. By default, only Group A interacts with Group A
+///
+func Topaz.Object2D.setGroupInteraction
+    /// First interaction group.
+    Topaz.Object2D.Group firstGroup
+    /// Other interaction group.
+    Topaz.Object2D.Group otherGroup
+    /// Whether to interact.
+    Boolean interact
+
 /// Standard input buttons for built-in device types.
 enum Topaz.Key
     /// Not an input.
