@@ -12,11 +12,11 @@ var Rectangle = {
         Topaz.Input.addKeyboardListener({
             onPress : function(map, key) {
                 switch(key) {
-                  case Topaz.Input.topazKey_space:
+                  case Topaz.Key.topazKey_space:
                     props.anim.speed += 0.25;
                     break;
 
-                  case Topaz.Input.topazKey_backspace:
+                  case Topaz.Key.topazKey_backspace:
                     if (props.anim.speed > 0) {
                         props.anim.speed -= 0.25;
                     } else {

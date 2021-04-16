@@ -31,11 +31,11 @@ class Rectangle : Topaz.Entity {
             [
                 'onPress' : func(map, key) {
                     switch(key) {
-                      case Topaz.Input.topazKey_space:
+                      case Topaz.Key.topazKey_space:
                         anim.speed = anim.speed + 0.25;
                         break;
 
-                      case Topaz.Input.topazKey_backspace:
+                      case Topaz.Key.topazKey_backspace:
                         if (anim.speed > 0)
                             anim.speed = anim.speed - 0.25;
                         else 
