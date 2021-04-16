@@ -167,6 +167,7 @@ struct DeviceState {
         while(topaz_input_device_get_event_count(d->device)) {
             topaz_input_device_pop_event(d->device, &ev);
             int index = (int)ev.id;
+            if (index == 0) continue;
 
 
             InputState * input = device_state_get_input(d, index);

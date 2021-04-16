@@ -18,9 +18,9 @@ TSO_SCRIPT_API_FN(topaz_api__pause) {
     TSO_NO_RETURN;
 }
 
-TSO_SCRIPT_API_FN(topaz_api__break) {
+TSO_SCRIPT_API_FN(topaz_api__pause_now) {
     topazScriptManager_t * mgr = context;
-    topaz_context_break(mgr->ctx);
+    topaz_context_pause_now(mgr->ctx);
     TSO_NO_RETURN;
 }
 
@@ -222,7 +222,7 @@ TSO_SCRIPT_API_FN(topaz_api__from_base64) {
 static void add_refs__topaz_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz__run", topaz_api__run);
     TS_MAP_NATIVE_FN("topaz__pause", topaz_api__pause);
-    TS_MAP_NATIVE_FN("topaz__break", topaz_api__break);
+    TS_MAP_NATIVE_FN("topaz__pause_now", topaz_api__pause_now);
     TS_MAP_NATIVE_FN("topaz__resume", topaz_api__resume);
     TS_MAP_NATIVE_FN("topaz__iterate", topaz_api__iterate);
     TS_MAP_NATIVE_FN("topaz__step", topaz_api__step);

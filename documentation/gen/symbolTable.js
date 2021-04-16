@@ -52,6 +52,7 @@ var SymbolTable = function(){
             'type'       : types.NONE
         };        
     }
+    
 
     // removed extra characters from a symbol name
     const clean = function(name) {
@@ -73,12 +74,24 @@ var SymbolTable = function(){
             description,  // description of symbol
             returnObject, // what the object returns
             sourceLine    // original line from which it was extracted
-        ) {
+        ) {        
             const nameCleaned   = clean(name);
             const parentCleaned = clean(parent);
+            var symbolB       = symbols[nameCleaned];
+            var parentSymbolB = symbols[parentCleaned];
 
-            var symbol       = symbols[nameCleaned];
-            var parentSymbol = symbols[parentCleaned];
+            if (!symbolB) {
+                symbols[nameCleaned] = [];
+                symbolB = symbols[nameCleaned];
+            }
+
+            if (!parentSymbolB) {
+                symbols[parentCleaned] = [];
+                parentSymbolB = symbols[parentCleaned];
+            }
+
+            var symbol = symbolB[file];
+            var parentSymbol = parentSymbolB[file];
 
             if (!symbol)       symbol       = newRef(nameCleaned);
             if (!parentSymbol) parentSymbol = newRef(parentCleaned);
@@ -96,10 +109,10 @@ var SymbolTable = function(){
             symbol.source = sourceLine;
 
             if (symbol.type != types.VARIABLE) 
-                symbols[nameCleaned] = symbol;
+                symbolB[file] = symbol;
 
             if (!parentSymbol)
-                symbols[parentCleaned] = parentSymbol;
+                parentSymbolB[file] = parentSymbol;
 
             if (!files[file]) {
                 files[file] = [];
@@ -109,8 +122,9 @@ var SymbolTable = function(){
         },
 
 
-        // adds a parameter to a symbol
+        /*// adds a parameter to a symbol
         addParam : function(
+            file,
             symbol,
             name,
             description,
@@ -132,7 +146,7 @@ var SymbolTable = function(){
                 'desc'       : description,
                 'typeSymbol' : typeCleaned
             });
-        },
+        },*/
 
 
         // Sets a plain text hint for a certain type
@@ -232,7 +246,7 @@ var SymbolTable = function(){
             const names = files[file];
             if (!names) return '';
             for(var i = 0; i < names.length; ++i) {
-                const symbol = symbols[names[i]];
+                const symbol = symbols[names[i]][file];
                 text += 'Name:        ' + names[i] + '\n';
                 text += 'Type:        ' + typeToString(symbol.type) + '\n';
                 text += 'Description: ' + symbol.desc + '\n';
@@ -242,7 +256,15 @@ var SymbolTable = function(){
         },
 
         getSymbol : function(symbolName) {
-            return symbols[symbolName];
+            var b = symbols[symbolName];
+            if (b == undefined) return undefined;
+            
+            return b[Object.keys(b)[0]];
+        },
+        getSymbolSpecific : function(symbolName, file) {
+            var b = symbols[symbolName];
+            if (b == undefined) return undefined;
+            return b[file];
         },
 
         getChildSymbol : function(symbol, childIndex) {
@@ -254,7 +276,7 @@ var SymbolTable = function(){
             const names = files[file];
             if (!names) return out;
             for(var i = 0; i < names.length; ++i) {
-                const symbol = symbols[names[i]];
+                const symbol = symbols[names[i]][file];
                 const obj = symbol;
                 obj.name = names[i];
                 out.push(obj);

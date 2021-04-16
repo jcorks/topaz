@@ -201,7 +201,7 @@ TSO_SCRIPT_API_FN(component_api__emit_event) {
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     TSO_NATIVIZE_2(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
     
-    return topaz_object_from_int(script, 
+    return topaz_script_object_from_int(script, 
             topaz_component_emit_event(
             native,
             topaz_script_object_as_string(arg1),
@@ -219,7 +219,7 @@ TSO_SCRIPT_API_FN(component_api__emit_event_anonymous) {
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     
 
-    return topaz_object_from_int(script, 
+    return topaz_script_object_from_int(script, 
         topaz_component_emit_event_anonymous(
             native,
             topaz_script_object_as_string(arg1)

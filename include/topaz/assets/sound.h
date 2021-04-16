@@ -38,7 +38,7 @@ typedef struct topazSound_Sample_t topazSound_Sample_t;
 
 
 /// Asset to hold sound data.
-typedef struct topazSound_t topazSound_t
+typedef struct topazSound_t topazSound_t;
 
 
 /// A single sample of audio. All audio data is expressed in 

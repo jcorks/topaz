@@ -16,7 +16,7 @@ Number panning
 
 /// Sets whether to repeat. Default is not to.
 /// Write-only.
-Boolean repeat 
+Boolean repeatSound
 
 /// Sets whether to pause. Default is not to.
 /// Write-only.

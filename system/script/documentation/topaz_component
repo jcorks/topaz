@@ -46,12 +46,10 @@ func emitEvent ->
     /// Name of the event. This should match the name that was installed.
     String eventName 
     /// Entity that indicates the source of the event. For example, in a collision, this may be the object collided with.
+    /// In most languages, can be omitted to emit ana anonymously-sourced event.
     Topaz.Entity source 
 
-/// Same as emitEvent but the source entity is not specified.
-func emitEventAnonymous ->
-    /// Event in question.
-    String eventName 
+
 
 /// Returns whether there exists at least one handler for the given event
 ///
@@ -74,6 +72,7 @@ func installEvent ->
 /// removes a handler of an event
 ///
 func uninstallEvent ->
+    /// The event to uninstall.
     String event 
 
 

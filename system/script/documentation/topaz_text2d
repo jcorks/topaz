@@ -7,15 +7,15 @@ class Topaz.Text2D
 String text 
 
 
-/// Sets the font for the text 
-func setFont ->
-    /// The name of the font to use. Should match the registered 
-    /// font name through topaz's font manager. See 
-    /// Topaz.FontManager.registerFont().
-    String fontName 
+/// The name of the font to use. Should match the registered 
+/// font name through topaz's font manager. See 
+/// Topaz.FontManager.registerFont().
+String font
 
-    /// The pixel size of the text to appear.
-    Int pixelSize
+/// The pixel size of the text to appear.
+/// Default is 12.
+Int size
+
 
 /// Sets the color for all characters.
 ///
@@ -67,11 +67,15 @@ Topaz.Vector rotation
 /// with the host entity as the parent transform.
 Topaz.Vector scale 
 
-/// Sets/Gets the alpha rule.
-Topaz.Renderer.AlphaRule alphaRule 
-/// Sets/Gets the depth test.
-Topaz.Renderer.DepthTest depthTest 
-/// Sets/Gets the etching rule.
-Topaz.Renderer.EtchRule etchRule 
-/// Sets/Gets the texture filter.
-Topaz.Renderer.TextureFilter textureFilter
+/// Modifies a render parameter. 
+///
+func setParameter
+    /// Determines how to interpret the next value.
+    /// If alphaRule, val is expected to be a value within Topaz.Renderer.AlphaRule
+    /// If depthTest, val is expected to be a value within Topaz.Renderer.DepthTest
+    /// If etchRule,  val is expected to be a value within Topaz.Renderer.EtchRule 
+    /// if textureFilterHint, val is expected to be a value within Topaz.Renderer.TextureFilter
+    Topaz.Render2D.Parameter param 
+
+    /// The new value. How its interpreted depends on param.
+    Int val 

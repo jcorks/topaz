@@ -12,31 +12,34 @@ func [constructor] ->
 
 /// Assigns a new task for the scheduler to process. Once 
 /// the interval time has elapsed, the callback will be called.
-/// Callback is called when the interval expires with the given callbackData
-/// as argument.
-func startTask ->
-    /// The name of the task to add.
-    String taskName 
-    /// How often the task will run. If the mode is topazScheduler_Mode_Time,
-    /// the interval is a time in milliseconds. If the mode is 
-    /// topazScheduler_Mode_Frame, the the interval is the number 
-    /// of frames.
-    Int interval 
-    /// The initial delay before the task starts being measured.
-    Int initialDelay
-    Function callback
+/// This expects a "map" object. The following members within the 
+/// map are looked for:
+///     "taskName"  (string)
+///         The name of the task. The existence of this key determines 
+///         whether this is a "simple task" or a "full task". Simple
+///         tasks only contain an interval property and a callback,
+///         all other keys of the argument are ignored. Full tasks 
+///         are expected to have properties for the callback, internal,
+///         taskName, and intervalDelay.
+///
+///     "interval" (integer)
+///         How often the task will run. If the mode is topazScheduler_Mode_Time,
+///         the interval is a time in milliseconds. If the mode is 
+///         topazScheduler_Mode_Frame, the the interval is the number 
+///         of frames.
+///
+///     "initialDelay" (integer)
+///         The initial delay before the task starts being measured.
+///
+///     "callback" (Function)
+///         Callback is called when the interval expires.
+///
+/// The name of the task is always returned.
+func startTask -> String
+    /// The argument map containing the task's properties.
+    Object args
 
-/// Same as topaz_scheduler_start_task except will simplified inputs:
-/// - No interval delay is given
-/// - a default name is generated 
-/// The task name is returned.
-func startTaskSimple -> String 
-    /// How often the task will run. If the mode is topazScheduler_Mode_Time,
-    /// the interval is a time in milliseconds. If the mode is 
-    /// topazScheduler_Mode_Frame, the the interval is the number 
-    /// of frames.
-    Int interval 
-    Function callback 
+
 
 
 /// Halts the task with the given name.

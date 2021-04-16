@@ -243,7 +243,7 @@ void topaz_context_pause(topaz_t * t) {
 }
 
     
-void topaz_context_break(topaz_t * t) {
+void topaz_context_pause_now(topaz_t * t) {
     t->paused = TRUE;
     while(t->paused)
         topaz_context_iterate(t);

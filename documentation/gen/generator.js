@@ -168,7 +168,7 @@ var generateDocumentation = function(
                     const type = symbolTable.guessType(doclineContent);
                     symbolName = symbolTable.getSymbolName(type, doclineContent);
                     const returnObject = symbolTable.getReturnObject(type, doclineContent);
-                    if (!symbolTable.getSymbol(symbolName)) {
+                    if (!symbolTable.getSymbolSpecific(symbolName, filename)) {
                         symbolTable.add(
                             filename,
                             symbolName,
@@ -249,7 +249,7 @@ var generateDocumentation = function(
         var symbol = symbolTable.getSymbolFromObject(objectString);
         if (symbol != '') {
             var symbolRef = symbolTable.getSymbol(symbol);
-
+            if (!symbolRef) return objectString;
             // Get the parent symbol
             var parent = symbolRef;
             while(parent && parent.parent) {
@@ -286,8 +286,13 @@ var generateDocumentation = function(
         // add the searchable symbols here. Skip doc pages, they should not be searchable
         for(var i = 0; i < symbols.length; ++i) {
             if (symbols[i].type == symbolTable.type.DOCPAGE) continue;
-            searchIndex[symbols[i].name] = {
-                'mainClass' : mainClass
+            var t = searchIndex[symbols[i].name]; 
+            if (!t) {
+                t = {};
+                searchIndex[symbols[i].name] = t;
+            }
+            t[files[n]] = {
+                'mainClass'   : mainClass
             };
         }
     }
@@ -295,11 +300,13 @@ var generateDocumentation = function(
 
     // returns a file link to the given symbolName
     // assumes that the search index is populated.
-    var generateLink = function(symbolName) {
-        if (!searchIndex[symbolName] || symbolName == searchIndex[symbolName].mainClass) {
+    var generateLink = function(file, symbolName) {
+        const t = searchIndex[symbolName];
+        if (!t) return '';
+        if (symbolName == t[file].mainClass) {
             return symbolName+'.html';
         } else {
-            return searchIndex[symbolName].mainClass+'.html#'+symbolName;
+            return t[file].mainClass+'.html#'+symbolName;
         }
     }
 
@@ -312,8 +319,8 @@ var generateDocumentation = function(
         for(var i = 0; i < symbols.length; ++i) {
             const entry = searchIndex[symbols[i].name];
             if (entry) {
-                const link = generateLink(symbols[i].name);
-                entry['link'] = link;
+                const link = generateLink(files[n], symbols[i].name);
+                entry[files[n]]['link'] = link;
             }
         }
     }
@@ -497,7 +504,7 @@ var generateDocumentation = function(
                             doc.createElement(
                                 symbols[i].children[m] + "()",
                                 'a',
-                                'href="'+generateLink(symbols[i].children[m])+'"'
+                                'href="'+generateLink(files[n], symbols[i].children[m])+'"'
                             ),
                             'div'
                         );
@@ -530,7 +537,7 @@ var generateDocumentation = function(
                             doc.createElement(
                                 symbols[i].children[m],
                                 'a',
-                                'href="'+generateLink(symbols[i].children[m])+'"'
+                                'href="'+generateLink(files[n], symbols[i].children[m])+'"'
                             ),
                             'div'
                         );
@@ -773,8 +780,8 @@ var generateDocumentation = function(
             )
         );
         if (mainClass != '') {
-            doc.write(generateLink(mainClass));
-            Topaz.log(generateLink(mainClass));
+            doc.write(generateLink(files[n], mainClass));
+            Topaz.log(generateLink(files[n], mainClass));
         }
     }
     Topaz.Resources.path = origPath;

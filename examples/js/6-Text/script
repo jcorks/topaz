@@ -7,7 +7,8 @@ var StringVisual = {
     onReady : function(props) {
         props.visual = new Topaz.Text2D();
 
-        props.visual.setFont('MyFont', 40);
+        props.visual.font = 'MyFont';
+        props.visual.size =  40;
         props.visual.text = 'Hello world!\nThis is text.';
 
 

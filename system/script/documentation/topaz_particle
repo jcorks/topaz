@@ -4,9 +4,9 @@
 class Topaz.Particle 
 
 
-/// Modifies a render parameter. See topazRender2d_Parameter.
+/// Modifies a render parameter.
 ///
-func setParam 
+func setParameter
     /// Determines how to interpret the next value.
     /// If alphaRule, val is expected to be a value within Topaz.Renderer.AlphaRule
     /// If depthTest, val is expected to be a value within Topaz.Renderer.DepthTest

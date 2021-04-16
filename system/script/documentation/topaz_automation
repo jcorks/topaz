@@ -59,6 +59,7 @@ func addFromString ->
 /// is meant to convey how long the automation is in a time-agnostic way.
 /// The length of the automation is not necessarily how long in seconds 
 /// or frames the automation is.
+/// Read-only.
 Number length 
 
 /// Skip to a part of the automation. The value must be between or 
@@ -110,7 +111,7 @@ func vectorAt -> Topaz.Vector
 /// Returns the float animated based on the keyframes 
 /// and the given progress within the automation. Progress is 
 /// 0 to 1 but looped.
-func value -> Number
+func at -> Number
     /// The progress along the automation.
     Number progress
 /// Returns the current vector value within the automation 

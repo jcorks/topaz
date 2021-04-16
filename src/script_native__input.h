@@ -122,7 +122,9 @@ static void script_input_on_repeat_unicode(topazInput_t * i, int input, void * d
 
 
 
-
+static int is_prop_undefined(topazScript_Object_t * obj, const char * name) {
+    return topaz_script_object_get_type(topaz_script_object_reference_map_get_property(obj, TOPAZ_STR_CAST(name))) == topazScript_Object_Type_Undefined;
+}
 
 
 TSO_SCRIPT_API_FN(input_api__add_keyboard_listener) {
@@ -135,18 +137,19 @@ TSO_SCRIPT_API_FN(input_api__add_keyboard_listener) {
     ldata->script = script;
     topaz_script_object_reference_set_native_data(ldata->obj, ldata, TSO_OBJECT_ID__INPUTLISTENER);
     topazInput_Listener_t listener;
+    topaz_script_object_reference_ref(ldata->obj);
 
-    listener.on_press = script_input_on_press;
-    listener.on_active = script_input_on_active;
-    listener.on_release = script_input_on_release;
-    listener.on_update = script_input_on_update;
+    listener.on_press = is_prop_undefined(ldata->obj, "onPress") ? NULL : script_input_on_press;
+    listener.on_active = is_prop_undefined(ldata->obj, "onActive") ? NULL : script_input_on_active;
+    listener.on_release = is_prop_undefined(ldata->obj, "onRelease") ? NULL : script_input_on_release;
+    listener.on_update = is_prop_undefined(ldata->obj, "onUpdate") ? NULL : script_input_on_update;
     listener.userData = ldata;
     topaz_input_add_keyboard_listener(
         input,
         &listener
     );
 
-    return ldata->obj;
+    TSO_NO_RETURN;
 }
 
 
@@ -160,18 +163,19 @@ TSO_SCRIPT_API_FN(input_api__add_pointer_listener) {
     ldata->script = script;
     topaz_script_object_reference_set_native_data(ldata->obj, ldata, TSO_OBJECT_ID__INPUTLISTENER);
     topazInput_Listener_t listener;
+    topaz_script_object_reference_ref(ldata->obj);
 
-    listener.on_press = script_input_on_press;
-    listener.on_active = script_input_on_active;
-    listener.on_release = script_input_on_release;
-    listener.on_update = script_input_on_update;
+    listener.on_press = is_prop_undefined(ldata->obj, "onPress") ? NULL : script_input_on_press;
+    listener.on_active = is_prop_undefined(ldata->obj, "onActive") ? NULL : script_input_on_active;
+    listener.on_release = is_prop_undefined(ldata->obj, "onRelease") ? NULL : script_input_on_release;
+    listener.on_update = is_prop_undefined(ldata->obj, "onUpdate") ? NULL : script_input_on_update;
     listener.userData = ldata;
     topaz_input_add_pointer_listener(
         input,
         &listener
     );
 
-    return ldata->obj;
+    TSO_NO_RETURN;
 }
 
 TSO_SCRIPT_API_FN(input_api__add_pad_listener) {
@@ -185,11 +189,12 @@ TSO_SCRIPT_API_FN(input_api__add_pad_listener) {
     ldata->script = script;
     topaz_script_object_reference_set_native_data(ldata->obj, ldata, TSO_OBJECT_ID__INPUTLISTENER);
     topazInput_Listener_t listener;
+    topaz_script_object_reference_ref(ldata->obj);
 
-    listener.on_press = script_input_on_press;
-    listener.on_active = script_input_on_active;
-    listener.on_release = script_input_on_release;
-    listener.on_update = script_input_on_update;
+    listener.on_press = is_prop_undefined(ldata->obj, "onPress") ? NULL : script_input_on_press;
+    listener.on_active = is_prop_undefined(ldata->obj, "onActive") ? NULL : script_input_on_active;
+    listener.on_release = is_prop_undefined(ldata->obj, "onRelease") ? NULL : script_input_on_release;
+    listener.on_update = is_prop_undefined(ldata->obj, "onUpdate") ? NULL : script_input_on_update;
     listener.userData = ldata;
     topaz_input_add_pad_listener(
         input,
@@ -197,7 +202,7 @@ TSO_SCRIPT_API_FN(input_api__add_pad_listener) {
         topaz_script_object_as_int(arg1)
     );
 
-    return ldata->obj;
+    TSO_NO_RETURN;
 }
 
 TSO_SCRIPT_API_FN(input_api__add_mapped_listener) {
@@ -211,11 +216,13 @@ TSO_SCRIPT_API_FN(input_api__add_mapped_listener) {
     ldata->script = script;
     topaz_script_object_reference_set_native_data(ldata->obj, ldata, TSO_OBJECT_ID__INPUTLISTENER);
     topazInput_Listener_t listener;
+    topaz_script_object_reference_ref(ldata->obj);
 
-    listener.on_press = script_input_on_press;
-    listener.on_active = script_input_on_active;
-    listener.on_release = script_input_on_release;
-    listener.on_update = script_input_on_update;
+
+    listener.on_press = is_prop_undefined(ldata->obj, "onPress") ? NULL : script_input_on_press;
+    listener.on_active = is_prop_undefined(ldata->obj, "onActive") ? NULL : script_input_on_active;
+    listener.on_release = is_prop_undefined(ldata->obj, "onRelease") ? NULL : script_input_on_release;
+    listener.on_update = is_prop_undefined(ldata->obj, "onUpdate") ? NULL : script_input_on_update;
     listener.userData = ldata;
     topaz_input_add_mapped_listener(
         input,
@@ -223,7 +230,7 @@ TSO_SCRIPT_API_FN(input_api__add_mapped_listener) {
         topaz_script_object_as_string(arg1)
     );
 
-    return ldata->obj;
+    TSO_NO_RETURN;
 }
 
 TSO_SCRIPT_API_FN(input_api__remove_listener) {
@@ -245,7 +252,7 @@ TSO_SCRIPT_API_FN(input_api__remove_listener) {
     listener.on_update = script_input_on_update;
     listener.userData = ldata;
     topaz_input_remove_listener(input, &listener);
-
+    topaz_script_object_reference_unref(ldata->obj);
     topaz_script_object_destroy(ldata->obj);
     free(ldata);
 

@@ -118,7 +118,7 @@ void topaz_context_pause(
 ///
 /// Like Pause() but disrupts the engine immediately rather than safely waiting 
 /// until the next iteration. Most useful for debugging purposes.
-void topaz_context_break(
+void topaz_context_pause_now(
     /// The context to break.
     topaz_t * context
 );

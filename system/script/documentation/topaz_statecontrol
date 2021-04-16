@@ -7,15 +7,22 @@ class Topaz.StateControl
 /// If an existing state fo the same name exists, it is updated.
 ///
 func add ->
-    /// The name of the new state.
-    String name 
     /// The state to add. 
     /// This is treated as a "map" object, 
     /// where named properties are looked for.
     /// The following properties are expected:
-    /// "onInit" -> function called on entering the state. 
-    /// "onStep" -> function called each step within this state 
-    /// "onDraw" -> function called each draw within this state 
+    ///
+    /// "state"  (String)
+    ///     The name of the new state.
+    ///
+    /// "onInit" (Function) 
+    ///     function called on entering the state. 
+    ///
+    /// "onStep" (Function)
+    ///     function called each step within this state 
+    ///
+    /// "onDraw" (Function) 
+    ///     function called each draw within this state 
     ///
     /// If any of these properties are undefined, they are 
     /// simply ignored. 

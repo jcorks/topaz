@@ -2,7 +2,7 @@ var Topaz = {
     uniqueObjectPool : 0,
     run : topaz__run,
     pause : topaz__pause,
-    'break' : topaz__break,
+    pauseNow : topaz__pause_now,
     resume : topaz__resume,
     iterate : topaz__iterate,
     step : topaz__step,
@@ -538,6 +538,8 @@ var Topaz = {
     Text2D : function(implPre) {
         var impl;
         this.uniqueID = Topaz.uniqueObjectPool++;
+        this.sizeState = 12;
+        this.fontState = '';
         if (implPre) 
             impl = implPre;
         else {
@@ -653,7 +655,7 @@ var Topaz = {
 
         this.impl = impl;
         if (name)
-            this.setFromString(name);
+            this.string = name;
 
     },
 
@@ -783,12 +785,12 @@ var Topaz = {
         );
 
         obj.emitEvent = function(eventName, ent) {
-            return topaz_component__emit_event(this.impl, eventName, ent ? ent.impl : topaz_entity__null());
+            if (ent == undefined)
+                return topaz_component__emit_event_anonymous(this.impl, eventName);
+            else
+                return topaz_component__emit_event(this.impl, eventName, ent.impl);
         }
 
-        obj.emitEventAnonymous = function(eventName) {
-            return topaz_component__emit_event_anonymous(this.impl, eventName);
-        }
 
         obj.canHandleEvent = function(name) {
             return topaz_component__can_handle_event(this.impl, name);
@@ -1098,7 +1100,7 @@ var Topaz = {
 
 
     /// particle 
-    Topaz.Particle.prototype.setParam = function(param, val) {
+    Topaz.Particle.prototype.setParameter = function(param, val) {
         topaz_particle__set_param(this.impl, param, val);
     }
     Topaz.Particle.prototype.setNoiseMin = function(p, val) {
@@ -1313,10 +1315,26 @@ var Topaz = {
             set : function(v) {topaz_text2d__set_text(this.impl, v);}
         }
     );
-
-    Topaz.Text2D.prototype.setFont = function(f, c) {
-        topaz_text2d__set_font(this.impl, f, c);
-    }
+    Object.defineProperty(
+        Topaz.Text2D.prototype,
+        'font', {
+            get : function()  {return this.fontState;},
+            set : function(v) {
+                this.fontState = v;
+                topaz_text2d__set_font(this.impl, this.fontState, this.sizeState);
+            }
+        }  
+    );
+    Object.defineProperty(
+        Topaz.Text2D.prototype,
+        'size', {
+            get : function()  {return this.sizeState;},
+            set : function(v) {
+                this.sizeState = v;
+                topaz_text2d__set_font(this.impl, this.fontState, this.sizeState);
+            }
+        }  
+    );
     
 
     Topaz.Text2D.prototype.setColor = function(c) {
@@ -1377,37 +1395,9 @@ var Topaz = {
     );
 
 
-    Object.defineProperty(
-        Topaz.Text2D.prototype,
-        'alphaRule', {
-            get : function() {return topaz_text2d__get_parameter(this.impl, 0)},
-            set : function(v){topaz_text2d__set_parameter(this.impl, 0, v);}
-        }
-    );
-
-    Object.defineProperty(
-        Topaz.Text2D.prototype,
-        'depthTest', {
-            get : function() {return topaz_text2d__get_parameter(this.impl, 1)},
-            set : function(v){topaz_text2d__set_parameter(this.impl, 1, v);}
-        }
-    );
-
-    Object.defineProperty(
-        Topaz.Text2D.prototype,
-        'etchRule', {
-            get : function() {return topaz_text2d__get_parameter(this.impl, 2)},
-            set : function(v){topaz_text2d__set_parameter(this.impl, 2, v);}
-        }
-    );
-
-    Object.defineProperty(
-        Topaz.Text2D.prototype,
-        'textureFilter', {
-            get : function() {return topaz_text2d__get_parameter(this.impl, 3)},
-            set : function(v){topaz_text2d__set_parameter(this.impl, 3, v);}
-        }
-    );
+    Topaz.Text2D.prototype.setParameter = function(a, b) {
+        topaz_text2d__set_parameter(this.impl, a, b);
+    }
     Topaz._componentAddSymbols(Topaz.Text2D.prototype);
 
 
@@ -1498,37 +1488,10 @@ var Topaz = {
         }
     );
 
-    Object.defineProperty(
-        Topaz.Shape2D.prototype,
-        'alphaRule', {
-            get : function() {return topaz_shape2d__get_parameter(this.impl, 0)},
-            set : function(v){topaz_shape2d__set_parameter(this.impl, 0, v);}
-        }
-    );
-
-    Object.defineProperty(
-        Topaz.Shape2D.prototype,
-        'depthTest', {
-            get : function() {return topaz_shape2d__get_parameter(this.impl, 1)},
-            set : function(v){topaz_shape2d__set_parameter(this.impl, 1, v);}
-        }
-    );
-
-    Object.defineProperty(
-        Topaz.Shape2D.prototype,
-        'etchRule', {
-            get : function() {return topaz_shape2d__get_parameter(this.impl, 2)},
-            set : function(v){topaz_shape2d__set_parameter(this.impl, 2, v);}
-        }
-    );
-
-    Object.defineProperty(
-        Topaz.Shape2D.prototype,
-        'textureFilter', {
-            get : function() {return topaz_shape2d__get_parameter(this.impl, 3)},
-            set : function(v){topaz_shape2d__set_parameter(this.impl, 3, v);}
-        }
-    );
+    Topaz.Shape2D.prototype.setParameter = function(a, b) {
+        topaz_shape2d__set_parameter(this.impl, a, b);
+    }
+    
     Topaz._componentAddSymbols(Topaz.Shape2D.prototype);
 
 
@@ -1701,7 +1664,7 @@ var Topaz = {
     
 
     Topaz.StateControl.prototype.add = function(name, state) {
-        topaz_state_control__add(this.impl, name, state.onStep, state.onDraw, state.onInit);
+        topaz_state_control__add(this.impl, state.state, state.onStep, state.onDraw, state.onInit);
     }
 
     Topaz.StateControl.prototype.remove = function(name) {
@@ -1740,14 +1703,24 @@ var Topaz = {
 
 
     /// scheduler 
-    Topaz.Scheduler.prototype.startTask = function(taskName, interval, idelay, cb) {
-        topaz_scheduler__start_task(this.impl, taskName, interval, idelay, cb);
+    Topaz.Scheduler.prototype.startTask = function(args) {
+        if (args["taskName"] != undefined) {
+            topaz_scheduler__start_task(
+                this.impl,
+                args.taskName,
+                args.interval,
+                args.intervalDelay,
+                args.callback
+            );
+            return args.taskName;
+        } else {
+            return topaz_scheduler__start_task_simple(
+                this.impl,
+                args.interval,
+                args.callback
+            );
+        }
     }
-
-    Topaz.Scheduler.prototype.startTaskSimple = function(interval, cb) {
-        return topaz_scheduler__start_task_simple(this.impl, interval, cb);
-    }
-
 
     Topaz.Scheduler.prototype.endTask = function(name) {
         topaz_scheduler__end_task(this.impl, name);
@@ -1979,7 +1952,7 @@ var Topaz = {
     );
     Object.defineProperty(
         Topaz.Audio.PlaybackSound.prototype,
-        'repeat', {
+        'repeatSound', {
             set : function(v)  { topaz_audio__playback_set_repeat(this.impl, v);}
         }
     );

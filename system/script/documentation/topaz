@@ -29,7 +29,7 @@ func pause ->
 ///
 /// Like Pause() but disrupts the engine immediately rather than safely waiting 
 /// until the next iteration. Most useful for debugging purposes.
-func break -> 
+func pauseNow -> 
 
 
 ///  Resumes from a paused or broken state.

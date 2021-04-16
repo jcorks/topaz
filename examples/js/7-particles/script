@@ -38,10 +38,10 @@ var Emitter = {
         var particle = new Topaz.Particle();
         particle.image = 'example';
 
-        particle.setParam(Topaz.Render2D.Parameter.alphaRule, Topaz.Renderer.AlphaRule.allow);
-        particle.setParam(Topaz.Render2D.Parameter.etchRule, Topaz.Renderer.EtchRule.noEtching);
-        particle.setParam(Topaz.Render2D.Parameter.depthTest, Topaz.Renderer.DepthTest.none);
-        particle.setParam(Topaz.Render2D.Parameter.textureFilterHint, Topaz.Renderer.TextureFilterHint.linear);
+        particle.setParameter(Topaz.Render2D.Parameter.alphaRule, Topaz.Renderer.AlphaRule.allow);
+        particle.setParameter(Topaz.Render2D.Parameter.etchRule, Topaz.Renderer.EtchRule.noEtching);
+        particle.setParameter(Topaz.Render2D.Parameter.depthTest, Topaz.Renderer.DepthTest.none);
+        particle.setParameter(Topaz.Render2D.Parameter.textureFilterHint, Topaz.Renderer.TextureFilterHint.linear);
 
         particle.setFunction(Topaz.Particle.Property.scaleX, ramp01);
         particle.setFunction(Topaz.Particle.Property.scaleY, ramp01);

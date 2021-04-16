@@ -83,11 +83,16 @@ Array lines
 ///
 Array triangles 
 
-/// The alpha rule to draw this shape with.
-Topaz.Renderer.AlphaRule alphaRule 
-/// The depth test to use with this shape.
-Topaz.Renderer.DepthTest depthTest 
-/// The etch rule to use with this shape.
-Topaz.Renderer.EtchRule etchRule 
-/// The texture filter for this shape.
-Topaz.Renderer.TextureFilter textureFilter
+/// Modifies a render parameter. 
+///
+func setParameter
+    /// Determines how to interpret the next value.
+    /// If alphaRule, val is expected to be a value within Topaz.Renderer.AlphaRule
+    /// If depthTest, val is expected to be a value within Topaz.Renderer.DepthTest
+    /// If etchRule,  val is expected to be a value within Topaz.Renderer.EtchRule 
+    /// if textureFilterHint, val is expected to be a value within Topaz.Renderer.TextureFilter
+    Topaz.Render2D.Parameter param 
+
+    /// The new value. How its interpreted depends on param.
+    Int val 
+

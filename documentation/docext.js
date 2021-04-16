@@ -12,12 +12,20 @@ var docext_on_input = function() {
     const keys = Object.keys(searchIndex);
     for(var i = 0; i < keys.length; ++i) {
         const key = keys[i];
-        if ((el.value == '' && searchIndex[keys[i]].mainClass == keys[i]) || 
-            (el.value != '' && key.toUpperCase().includes(el.value.toUpperCase()))
-            ) {
-            const element = document.createElement('div');
-            element.innerHTML = '<a href="'+searchIndex[keys[i]].link+'"><div class="navlist-item">'+keys[i]+'</div></a>';
-            results.append(element);
+        var v = searchIndex[keys[i]];
+        const files = Object.keys(v);
+        for(var n = 0; n < files.length; ++n) {
+            if ((el.value == '' && v[files[n]].mainClass == keys[i]) || 
+                (el.value != '' && key.toUpperCase().includes(el.value.toUpperCase()))
+                ) {
+                const element = document.createElement('div');
+                if (files.length>1) {
+                    element.innerHTML = '<a href="'+v[files[n]].link+'"><div class="navlist-item">'+keys[i]+'('+v[files[n]].mainClass+')</div></a>';
+                } else {
+                    element.innerHTML = '<a href="'+v[files[n]].link+'"><div class="navlist-item">'+keys[i]+'</div></a>';                
+                }
+                results.append(element);
+            }
         }
     }
 }

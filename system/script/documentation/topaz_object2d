@@ -38,6 +38,9 @@ func setVelocity ->
     /// The direction to add it in, in degrees. 
     Number directionDegrees
 
+/// Same as SetVelocity, but the direction is toward a 
+/// global position.
+///
 func setVelocityTowards ->
     /// The velocity amount to add.
     Number factor 
