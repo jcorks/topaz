@@ -192,7 +192,7 @@ void topaz_input_destroy(
 /// Adds a new listener object for the keyboard, calling the given 
 /// functions when the relevant event is detected. 
 ///
-void topaz_input_add_keyboard_listener(
+int topaz_input_add_keyboard_listener(
     /// The input to add a listener to.
     topazInput_t * input,
 
@@ -203,7 +203,7 @@ void topaz_input_add_keyboard_listener(
 /// Adds a new listener object for the pointer, calling the given 
 /// functions when the relevant event is detected. 
 ///
-void topaz_input_add_pointer_listener(
+int topaz_input_add_pointer_listener(
     /// The input to add a listener to.
     topazInput_t * input,
 
@@ -214,7 +214,7 @@ void topaz_input_add_pointer_listener(
 /// Adds a new listener object for an input pad, calling the given 
 /// functions when the relevant event is detected. 
 ///
-void topaz_input_add_pad_listener(
+int topaz_input_add_pad_listener(
     /// The input to add a listener to.
     topazInput_t * input,
 
@@ -228,7 +228,7 @@ void topaz_input_add_pad_listener(
 /// Adds a new listener object for an mapped input, calling the given 
 /// functions when the relevant event is detected. 
 ///
-void topaz_input_add_mapped_listener(
+int topaz_input_add_mapped_listener(
     /// The input to add a listener to.
     topazInput_t * input, 
 
@@ -240,14 +240,25 @@ void topaz_input_add_mapped_listener(
 );
 
 
+/// Returns the listener added by ID.
+/// If none, NULL is returned.
+/// The reference is owned by input and is guaranteed 
+/// to be valid until the next topaz input call.
+const topazInput_Listener_t * topaz_input_get_listener(
+    /// The input to query.
+    topazInput_t * input,
+    /// The ID of the listener to get.
+    int id
+);
+
 /// Removes an input listener.
 ///
 void topaz_input_remove_listener(
     /// The input to remove a listener
     topazInput_t * input,
 
-    /// The listener to remove. 
-    const topazInput_Listener_t * listener
+    /// The listener to remove. The ID is returned from the adding of the listener.
+    int id
 );
 
 

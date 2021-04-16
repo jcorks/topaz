@@ -9,8 +9,9 @@ singleton Topaz.Input
 
 /// Adds a new listener object for the keyboard, calling the given 
 /// functions when the relevant event is detected. 
+/// An ID to the listener is returned. This ID is used for removing the listener.
 ///
-func addKeyboardListener -> Object 
+func addKeyboardListener -> Int
     /// The listener info.
     /// The object will be accessed as a "map" object,
     /// and will look for the following key value pairs:
@@ -42,8 +43,9 @@ func addKeyboardListener -> Object
 
 /// Adds a new listener object for the pointer, calling the given 
 /// functions when the relevant event is detected. 
+/// An ID to the listener is returned. This ID is used for removing the listener.
 ///
-func addPointerListener -> Object
+func addPointerListener -> Int
     /// The listener info.
     /// The object will be accessed as a "map" object,
     /// and will look for the following key value pairs:
@@ -76,8 +78,9 @@ func addPointerListener -> Object
 
 /// Adds a new listener object for an input pad, calling the given 
 /// functions when the relevant event is detected. 
+/// An ID to the listener is returned. This ID is used for removing the listener.
 ///
-func addPadListener -> Object
+func addPadListener -> Int
     /// The listener info.
     /// The object will be accessed as a "map" object,
     /// and will look for the following key value pairs:
@@ -113,8 +116,9 @@ func addPadListener -> Object
 
 /// Adds a new listener object for an mapped input, calling the given 
 /// functions when the relevant event is detected. 
+/// An ID to the listener is returned. This ID is used for removing the listener.
 ///
-func addMappedListener -> Object
+func addMappedListener -> Int
     /// The listener info.
     /// The object will be accessed as a "map" object,
     /// and will look for the following key value pairs:
@@ -152,7 +156,7 @@ func addMappedListener -> Object
 ///
 func removeListener ->
     /// The listener to remove. Expected to be the return value of an addListener() call.
-    Object retval
+    Int retval
 
 /// Returns the current state of the device input
 /// This is most useful for keyboards. 
