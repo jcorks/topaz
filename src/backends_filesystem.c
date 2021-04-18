@@ -268,7 +268,9 @@ void topaz_filesystem_expunge(
     /// The filesystem to modify.
     topazFilesystem_t * fs
 ) {
+    #ifdef TOPAZDC_DEBUG
     assert(!"not yet");
+    #endif
 }
 
 

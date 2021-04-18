@@ -359,7 +359,7 @@ void topaz_audio_update(
                   case APU__RESPONSE__SOUND_FINISHED:
                     topaz_asb_lock_unref(audio->soundbank, inst->sound);
                     break;
-                  default:
+                  default:;
                     #ifdef TOPAZDC_DEBUG
                         printf("Unknown notifcation from topaz APU received: %d\n", inst->cmd);
                     #endif
@@ -1202,7 +1202,7 @@ static void topaz_apu_process_commands(TopazAudioProcessor * apu) {
                     break;
                   }
                   
-                  default:
+                  default:;
                     #ifdef TOPAZDC_DEBUG
                         printf("Unknown notifcation from topaz APU received: %d\n", inst->cmd);
                     #endif

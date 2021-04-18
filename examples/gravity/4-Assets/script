@@ -21,7 +21,7 @@
 //  - Show a colored rectangle on the screen
 //  - Change the rotation of the rectangle 
 //    every frame.
-class Rectangle : Topaz.Entity {
+class Rectangle : Entity {
     // In gravity, classes can have their own private 
     // variables, which is important to use to manage 
     // complexity and keep code as maintainable as possible.

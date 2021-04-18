@@ -44,7 +44,7 @@
 //
 //
 //
-class FruitBasket : Topaz.Component {
+class FruitBasket : Component {
 
     // Current amount of fruit in the basket
     // An outside instance should not be able to touch 
@@ -116,7 +116,7 @@ class FruitBasket : Topaz.Component {
 // Now that we have defined a FruitBasket, we can define a Person 
 // to hold the basket. Every person has a name and a basket of 
 // their own.
-class Person : Topaz.Entity {
+class Person : Entity {
     // The basket owned by the person.
     var basket;
     // The person's own name.

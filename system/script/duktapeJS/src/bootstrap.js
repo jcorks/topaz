@@ -1,3 +1,4 @@
+"use strict"
 var Topaz = {
     uniqueObjectPool : 0,
     run : topaz__run,
@@ -799,7 +800,7 @@ var Topaz = {
         obj.installEvent = function(event, callback) {
             topaz_component__install_event(this.impl, event, function(component, ent) {
                 if (callback)
-                    callback(Component.__ctx, ent.__ctx);
+                    callback(component.__ctx, ent.__ctx);
             });
         }
 

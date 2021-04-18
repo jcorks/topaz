@@ -188,12 +188,18 @@ void topaz_system_renderer_ogl3__backend(
         glfwWindowHint(GLFW_STENCIL_BITS, 8);
 
         context = glfwCreateWindow(640, 480, __FILE__, NULL, NULL);
-        assert(context);
+        #ifdef TOPAZDC_DEBUG
+            assert(context);
+        #endif
         glfwMakeContextCurrent(context);
         glewExperimental = GL_TRUE;
-        assert(glewInit() == GLEW_OK);
+        #ifdef TOPAZDC_DEBUG
+            assert(glewInit() == GLEW_OK);
+        #endif
         glGetError();
-        assert(GLEW_VERSION_3_1);
+        #ifdef TOPAZDC_DEBUG
+            assert(GLEW_VERSION_3_1);
+        #endif
 
         #ifdef TOPAZDC_DEBUG
             printf("CHOSEN ATTRIBS FOR GL:\n");

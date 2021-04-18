@@ -1,6 +1,6 @@
 #include "@topaz.core"
 
-class StringVisual : Topaz.Entity {
+class StringVisual : Entity {
     private var visual;
     private var bg;
     func onReady() {

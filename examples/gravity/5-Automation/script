@@ -4,7 +4,7 @@
 
 
 
-class Rectangle : Topaz.Entity {
+class Rectangle : Entity {
     private var visual;
     private var anim;
 
@@ -99,12 +99,11 @@ class RectangleRoot : Rectangle {
     }
 }
 
-
-class Manager : Topaz.Entity{};
+ 
 
 func main() {
     // This instantiates the class we've defined.
-    var entity = Manager();    
+    var entity = Entity();    
 
 
 

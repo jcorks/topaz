@@ -45,9 +45,455 @@ extern var topaz_;
                 var test = Interface.Test();
                 Topaz.log(test.a);
             }
-        
+    -   Nested classes: when constructing Nested class instances from within 
+        that nested class, NULL may be returned from that constructor. Avoid 
+        using classes within classes and, instead, use unique class names 
+        Example of problem:
 
+            class Test {
+                class Inside {
+                    func getNew() {
+                        var out = [];
+                        out.push(Inside());
+                        out.push(Inside());
+                        return out;
+                    }
+                }
+            }
+
+            class SubClass : Test.Inside {
+
+            }
+
+            func main() {
+                var v = SubClass();
+                var b = v.getNew();
+            }
+
+        Here, b will be populated with 2 nulls instead of instances of Inside
+        *** FOR THIS REASON, ENTITY AND COMPONENT CANNOT BE NESTED CLASSES OF
+            TOPAZ, AS COMPONENT AND ENTITY ARE COMPLEX IN THEIR OPERATION 
+            AND ARE NOT USED AS SIMPLE SINGLETONS ***
+
+
+    -   LIST ALL VARIABLES OF YOUR CLASS BEFORE FUNCTIONS THAT USE IT. otherwise
+        some bad things may happen.
 */
+
+
+
+class Entity {    
+    var impl_;
+    
+    
+            
+    func init() {
+        impl_ = topaz_.topaz_entity__create();
+        impl_.api_ = self;
+
+
+        topaz_.topaz_entity__set_on_step(impl_, onStep_wrapper);
+        topaz_.topaz_entity__set_on_draw(impl_, onDraw_wrapper);
+        topaz_.topaz_entity__set_on_pre_step(impl_, onPreStep_wrapper);
+        topaz_.topaz_entity__set_on_pre_draw(impl_, onPreDraw_wrapper);
+        topaz_.topaz_entity__set_on_remove(impl_, onRemove_wrapper);
+        topaz_.topaz_entity__set_on_attach(impl_, onAttach_wrapper);
+        topaz_.topaz_entity__set_on_detach(impl_, onDetach_wrapper);
+
+        onReady();
+
+    }
+
+    func onStep_wrapper(ref) {
+        ref.api_.onStep();
+    }
+    func onDraw_wrapper(ref) {
+        ref.api_.onDraw();
+    }
+    func onPreStep_wrapper(ref) {
+        ref.api_.onPreStep();
+    }
+    func onPreDraw_wrapper(ref) {
+        ref.api_.onPreDraw();
+    }
+    func onRemove_wrapper(ref) {
+        ref.api_.onRemove();
+    }
+    func onAttach_wrapper(ref) {
+        ref.api_.onAttach();
+    }
+    func onDetach_wrapper(ref) {
+        ref.api_.onDetach();
+    }
+
+
+
+    func onDraw(){};
+    func onStep(){};
+    func onPreDraw(){};
+    func onPreStep(){};
+    func onAttach(){};
+    func onDetach(){};
+    func onRemove(){};
+
+    
+    func onReady() {
+    
+    }
+
+
+
+
+
+    
+    var isValid {
+        get {return topaz_.topaz_entity__is_valid(impl_);}
+    }
+    
+    func remove() {
+        topaz_.topaz_entity__remove(impl_);
+    }
+    
+    var children {
+        get {
+            var ch = [];
+            var len = topaz_.topaz_entity__get_child_count(impl_);
+            for(var i in 0..<len) {
+                var impl_ = topaz_.topaz_entity__get_nth_child(impl_, i);
+                ch.push(impl_.api_);
+            }
+            return ch;
+        }
+
+
+        set {
+            var l = children;
+            for(var i in 0..<l.count) {
+                l[i].remove();
+            }
+            for(var i in 0..<value.count) {
+                attach(value[i]);
+            }
+        }
+    }
+    
+    
+    func step() {
+        topaz_.topaz_entity__step(impl_);
+    }
+
+    func draw() {
+        topaz_.topaz_entity__draw(impl_);
+    }
+
+    func attach(other) {
+        topaz_.topaz_entity__attach(impl_, other.impl_);
+    }
+
+    func detach() {
+        topaz_.topaz_entity__detach(impl_);
+    }
+
+    var parent {
+        get {
+            return topaz_.topaz_entity__get_parent(impl_);
+        }
+        
+        set {
+            topaz_.topaz_entity__attach(value.impl_, impl_);
+        }
+    }
+    
+    func search(str) {
+        return topaz_.topaz_entity__search(impl_, str);
+    }
+    
+    
+    
+    var priority {
+        get {
+            return topaz_.topaz_entity__get_priority(impl_);
+        }
+        
+        set {
+            topaz_.topaz_entity__set_priority(impl_, value);
+        }
+    }
+    
+    
+    func setPriorityFirst() {
+        topaz_.topaz_entity__set_priority_first(impl_);
+    }
+    
+    func setPriorityLast() {
+        topaz_.topaz_entity__set_priority_last(impl_);
+    }
+
+
+    var rotation {
+        get { 
+            var out = Topaz.Vector();
+            out.impl_ = topaz_.topaz_entity__get_rotation(impl_);
+            return out;
+        }
+        
+        set {
+            topaz_.topaz_entity__set_rotation(impl_, value.impl_);
+        }
+    }
+
+
+    var position {
+        get { 
+            var out = Topaz.Vector();
+            out.impl_ = topaz_.topaz_entity__get_position(impl_);
+            return out;
+        }
+        
+        set {
+            topaz_.topaz_entity__set_position(impl_, value.impl_);
+        }
+    }
+    
+    var scale {
+        get { 
+            var out = Topaz.Vector();
+            out.impl_ = topaz_.topaz_entity__get_scale(impl_);
+            return out;
+        }
+        
+        set {
+            topaz_.topaz_entity__set_scale(impl_, value.impl_);
+        }
+    }
+    
+    
+    
+    var globalPosition {
+        get {
+            var out = Topaz.Vector();
+            out.impl_ = topaz_.topaz_entity__get_global_position(impl_);
+            return out;
+        }
+    }
+    
+    var stepping {
+        get {
+            return topaz_.topaz_entity__get_stepping(impl_);
+        }
+        
+        set {
+            topaz_.topaz_entity__set_stepping(impl_, value);
+        }
+    }
+
+
+    var drawing {
+        get {
+            return topaz_.topaz_entity__get_drawing(impl_);
+        }
+        
+        set {
+            topaz_.topaz_entity__set_drawing(impl_, value);
+        }
+    }
+    
+    
+    var isStepping {
+        get {
+            return topaz_.topaz_entity__is_stepping(impl_);
+        }
+    }
+
+    var isDrawing {
+        get {
+            return topaz_.topaz_entity__is_drawing(impl_);
+        }
+    }
+
+    var name {
+        get {
+            return topaz_.topaz_entity__get_name(impl_);
+        }
+        set {
+            topaz_.topaz_entity__set_name(impl_, value);
+        }
+
+    }
+
+
+    func addComponent(other) {
+        topaz_.topaz_entity__add_component(impl_, other.impl_);
+    }
+
+    func addComponentAfter(other) {
+        topaz_.topaz_entity__add_component_after(impl_, other.impl_);
+    }
+
+    var components {
+        get {
+            var out = [];
+            var count = topaz_.topaz_entity__get_component_count(impl_);
+            for(var i in 0..<count) {
+                var c = topaz_.topaz_entity__get_nth_component(impl_, i);
+                out.push(c);
+            }
+            return out;
+        }
+
+        set {
+            var l = components;
+            for(var i in 0..<l.count) {
+                removeComponent(l[i]);
+            }
+
+            for(var i in value) {
+                addComponent(i);
+            }
+        }
+    }
+
+    func queryComponent(name) {
+        return topaz_.topaz_entity__query_component(impl_, name);
+    }
+
+    func removeComponent(c) {
+        topaz_.topaz_entity__remove_component(impl_, c.impl_);
+    }
+}
+
+
+
+////////////////////
+//////////
+class Component {
+    var impl_;
+
+    
+    func init() {
+        impl_ = topaz_.topaz_component__create('');
+        impl_.api_ = self;
+        topaz_.topaz_component__set_on_step(impl_, onStep_wrapper);
+        topaz_.topaz_component__set_on_draw(impl_, onDraw_wrapper);
+        topaz_.topaz_component__set_on_destroy(impl_, onDestroy_wrapper);
+        topaz_.topaz_component__set_on_attach(impl_, onAttach_wrapper);
+        topaz_.topaz_component__set_on_detach(impl_, onDetach_wrapper);
+        onReady();
+    }
+
+    func onStep_wrapper(ref) {
+        ref.api_.onStep();
+    }
+    func onDraw_wrapper(ref) {
+        ref.api_.onDraw();
+    }
+    func onDestroy_wrapper(ref) {
+        ref.api_.onDestroy();
+    }
+    func onAttach_wrapper(ref) {
+        ref.api_.onAttach();
+    }
+    func onDetach_wrapper(ref) {
+        ref.api_.onDetach();
+    }
+
+
+    func onReady(){};
+    func onDraw(){};
+    func onStep(){};
+    func onAttach(){};
+    func onDetach(){};
+    func onDestroy(){};
+    func destroy() {
+        topaz_.topaz_component__destroy(impl_);
+    }
+
+
+    func step() {
+        topaz_.topaz_component__step(impl_);
+    }
+
+    func draw() {
+        topaz_.topaz_component__draw(impl_);
+    }
+
+    var stepping {
+        get {return topaz_.topaz_component__get_stepping(impl_);}
+        set {topaz_.topaz_component__set_stepping(impl_, value);}
+    }
+
+    var drawing {
+        get {return topaz_.topaz_component__get_drawing(impl_);}
+        set {topaz_.topaz_component__set_drawing(impl_, value);}
+    }
+
+    var tag {
+        get {return topaz_.topaz_component__get_tag(impl_);}
+        set {topaz_.topaz_component__set_tag(impl_, value);}
+    }
+
+    var host {
+        get {return topaz_.topaz_component__get_host(impl_).api_;}
+    }
+
+    
+    static var Null {
+        get {
+            var out = Component('');
+            out.impl_ = topaz_.component__null();
+            return out;
+        }
+    }
+
+    func emitEvent(evName, entSource) {
+        if (entSource == undefined) {
+            topaz_.topaz_component__emit_event_anonymous(impl_, evName);
+        } else {
+            topaz_.topaz_component__emit_event(impl_, evName, entSource.impl_);
+        }
+    }    
+
+    
+
+    func canHandleEvent(evName) {
+        return topaz_.topaz_component__can_handle_event(impl_, evName);
+    }
+
+
+    func installEvent(name, handler) {
+        topaz_.topaz_component__install_event(impl_, name, func(c, e){handler(c.api_, e.api_)});
+    }
+
+    
+    
+    func uninstallEvent(name) {
+        topaz_.topaz_component__uninstall_event(impl_, name);
+    }
+
+
+    func installHook(name, handler) {
+        return topaz_.topaz_component__install_hook(impl_, name, func(c, e){
+            handler(c.api_, e.api_);
+        });
+    }
+
+    func uninstallHook(id) {
+        topaz_.topaz_component__uninstall_hook(impl_, id);        
+    }    
+
+    func installHandler(name, handler) {
+        return topaz_.topaz_component__install_hook(impl_, name, func(c, e){
+            handler(c.api_, e.api_);
+        });
+    }
+
+    func uninstallHandler(id) {
+        topaz_.topaz_component__uninstall_hook(impl_, id);        
+    }    
+
+
+}
+
 
 class Topz {
     var run;
@@ -988,7 +1434,7 @@ class Topz {
         func queryPads() {
             var len = topaz_.topaz_input__query_pad_count();
             var out = [];
-            for(var i in 0...len) {
+            for(var i in 0..<len) {
                 out.push(topaz_.input_api__query_pad_id(i));
             }
             return out;
@@ -1057,419 +1503,6 @@ class Topz {
 
 
 
-    class Entity {    
-        var impl_;
-        
-        
-                
-        func init() {
-            impl_ = topaz_.topaz_entity__create();
-            impl_.api_ = self;
-
-
-            topaz_.topaz_entity__set_on_step(impl_, onStep_wrapper);
-            topaz_.topaz_entity__set_on_draw(impl_, onDraw_wrapper);
-            topaz_.topaz_entity__set_on_pre_step(impl_, onPreStep_wrapper);
-            topaz_.topaz_entity__set_on_pre_draw(impl_, onPreDraw_wrapper);
-            topaz_.topaz_entity__set_on_remove(impl_, onRemove_wrapper);
-            topaz_.topaz_entity__set_on_attach(impl_, onAttach_wrapper);
-            topaz_.topaz_entity__set_on_detach(impl_, onDetach_wrapper);
-
-            onReady();
-
-        }
-
-        func onStep_wrapper(ref) {
-            ref.api_.onStep();
-        }
-        func onDraw_wrapper(ref) {
-            ref.api_.onDraw();
-        }
-        func onPreStep_wrapper(ref) {
-            ref.api_.onPreStep();
-        }
-        func onPreDraw_wrapper(ref) {
-            ref.api_.onPreDraw();
-        }
-        func onRemove_wrapper(ref) {
-            ref.api_.onRemove();
-        }
-        func onAttach_wrapper(ref) {
-            ref.api_.onAttach();
-        }
-        func onDetach_wrapper(ref) {
-            ref.api_.onDetach();
-        }
-
-
-
-        func onDraw(){};
-        func onStep(){};
-        func onPreDraw(){};
-        func onPreStep(){};
-        func onAttach(){};
-        func onDetach(){};
-        func onRemove(){};
-
-        
-        func onReady() {
-        
-        }
-
-
-
-
-
-        
-        var isValid {
-            get {return topaz_.topaz_entity__is_valid(impl_);}
-        }
-        
-        func remove() {
-            topaz_.topaz_entity__remove(impl_);
-        }
-        
-        var children {
-            get {
-                var children = [];
-                var len = topaz_.topaz_entity__get_child_count(impl_);
-                var child;
-                for(var i in 0...len) {
-                    child = Entity();
-                    child.impl_ = topaz_.topaz_entity__get_nth_child(impl_, i);
-                    children.push(child);
-                }
-                return children;
-            }
-
-
-            set {
-                var l = children;
-                for(var i in 0..<l.count) {
-                    l[i].remove();
-                }
-                for(var i in 0..<value.count) {
-                    attach(value[i]);
-                }
-            }
-        }
-        
-        
-        func step() {
-            topaz_.topaz_entity__step(impl_);
-        }
-
-        func draw() {
-            topaz_.topaz_entity__draw(impl_);
-        }
-
-        func attach(other) {
-            topaz_.topaz_entity__attach(impl_, other.impl_);
-        }
-
-        func detach() {
-            topaz_.topaz_entity__detach(impl_);
-        }
-
-        var parent {
-            get {
-                return topaz_.topaz_entity__get_parent(impl_);
-            }
-            
-            set {
-                topaz_.topaz_entity__attach(value.impl_, impl_);
-            }
-        }
-        
-        func search(str) {
-            return topaz_.topaz_entity__search(impl_, str);
-        }
-        
-        
-        
-        var priority {
-            get {
-                return topaz_.topaz_entity__get_priority(impl_);
-            }
-            
-            set {
-                topaz_.topaz_entity__set_priority(impl_, value);
-            }
-        }
-        
-        
-        func setPriorityFirst() {
-            topaz_.topaz_entity__set_priority_first(impl_);
-        }
-        
-        func setPriorityLast() {
-            topaz_.topaz_entity__set_priority_last(impl_);
-        }
-
-
-        var rotation {
-            get { 
-                var out = Topaz.Vector();
-                out.impl_ = topaz_.topaz_entity__get_rotation(impl_);
-                return out;
-            }
-            
-            set {
-                topaz_.topaz_entity__set_rotation(impl_, value.impl_);
-            }
-        }
-
-
-        var position {
-            get { 
-                var out = Topaz.Vector();
-                out.impl_ = topaz_.topaz_entity__get_position(impl_);
-                return out;
-            }
-            
-            set {
-                topaz_.topaz_entity__set_position(impl_, value.impl_);
-            }
-        }
-        
-        var scale {
-            get { 
-                var out = Topaz.Vector();
-                out.impl_ = topaz_.topaz_entity__get_scale(impl_);
-                return out;
-            }
-            
-            set {
-                topaz_.topaz_entity__set_scale(impl_, value.impl_);
-            }
-        }
-        
-        
-        
-        var globalPosition {
-            get {
-                var out = Topaz.Vector();
-                out.impl_ = topaz_.topaz_entity__get_global_position(impl_);
-                return out;
-            }
-        }
-        
-        var stepping {
-            get {
-                return topaz_.topaz_entity__get_stepping(impl_);
-            }
-            
-            set {
-                topaz_.topaz_entity__set_stepping(impl_, value);
-            }
-        }
-
-
-        var drawing {
-            get {
-                return topaz_.topaz_entity__get_drawing(impl_);
-            }
-            
-            set {
-                topaz_.topaz_entity__set_drawing(impl_, value);
-            }
-        }
-        
-        
-        var isStepping {
-            get {
-                return topaz_.topaz_entity__is_stepping(impl_);
-            }
-        }
-
-        var isDrawing {
-            get {
-                return topaz_.topaz_entity__is_drawing(impl_);
-            }
-        }
-
-        var name {
-            get {
-                return topaz_.topaz_entity__get_name(impl_);
-            }
-            set {
-                topaz_.topaz_entity__set_name(impl_, value);
-            }
-
-        }
-
-
-        func addComponent(other) {
-            topaz_.topaz_entity__add_component(impl_, other.impl_);
-        }
-
-        func addComponentAfter(other) {
-            topaz_.topaz_entity__add_component_after(impl_, other.impl_);
-        }
-
-        var components {
-            get {
-                var out = [];
-                var count = topaz_.topaz_entity__get_component_count(impl_);
-                for(var i in 0..<count) {
-                    var c = topaz_.topaz_entity__get_nth_component(impl_, i);
-                    out.push(c);
-                }
-                return out;
-            }
-
-            set {
-                var l = components;
-                for(var i in 0..<l.count) {
-                    removeComponent(l[i]);
-                }
-
-                for(var i in value) {
-                    addComponent(i);
-                }
-            }
-        }
-
-        func queryComponent(name) {
-            return topaz_.topaz_entity__query_component(impl_, name);
-        }
-
-        func removeComponent(c) {
-            topaz_.topaz_entity__remove_component(impl_, c.impl_);
-        }
-    }
-
-
-
-    ////////////////////
-    //////////
-    class Component {
-        var impl_;
-
-        
-        func init() {
-            impl_ = topaz_.topaz_component__create('');
-            impl_.api_ = self;
-            topaz_.topaz_component__set_on_step(impl_, onStep_wrapper);
-            topaz_.topaz_component__set_on_draw(impl_, onDraw_wrapper);
-            topaz_.topaz_component__set_on_destroy(impl_, onDestroy_wrapper);
-            topaz_.topaz_component__set_on_attach(impl_, onAttach_wrapper);
-            topaz_.topaz_component__set_on_detach(impl_, onDetach_wrapper);
-            onReady();
-        }
-
-        func onStep_wrapper(ref) {
-            ref.api_.onStep();
-        }
-        func onDraw_wrapper(ref) {
-            ref.api_.onDraw();
-        }
-        func onDestroy_wrapper(ref) {
-            ref.api_.onDestroy();
-        }
-        func onAttach_wrapper(ref) {
-            ref.api_.onAttach();
-        }
-        func onDetach_wrapper(ref) {
-            ref.api_.onDetach();
-        }
-
-
-        func onReady(){};
-        func onDraw(){};
-        func onStep(){};
-        func onAttach(){};
-        func onDetach(){};
-        func onDestroy(){};
-        func destroy() {
-            topaz_.topaz_component__destroy(impl_);
-        }
-
-
-        func step() {
-            topaz_.topaz_component__step(impl_);
-        }
-
-        func draw() {
-            topaz_.topaz_component__draw(impl_);
-        }
-
-        var stepping {
-            get {return topaz_.topaz_component__get_stepping(impl_);}
-            set {topaz_.topaz_component__set_stepping(impl_, value);}
-        }
-
-        var drawing {
-            get {return topaz_.topaz_component__get_drawing(impl_);}
-            set {topaz_.topaz_component__set_drawing(impl_, value);}
-        }
-
-        var tag {
-            get {return topaz_.topaz_component__get_tag(impl_);}
-            set {topaz_.topaz_component__set_tag(impl_, value);}
-        }
-
-        var host {
-            get {return topaz_.topaz_component__get_host(impl_).api_;}
-        }
-
-        
-        static var Null {
-            get {
-                var out = Component('');
-                out.impl_ = topaz_.component__null();
-                return out;
-            }
-        }
-
-        func emitEvent(evName, entSource) {
-            if (entSource == undefined) {
-                topaz_.topaz_component__emit_event_anonymous(impl_, evName);
-            } else {
-                topaz_.topaz_component__emit_event(impl_, evName, entSource.impl_);
-            }
-        }    
-
-        
-
-        func canHandleEvent(evName) {
-            return topaz_.topaz_component__can_handle_event(impl_, evName);
-        }
-
-
-        func installEvent(name, handler) {
-            topaz_.topaz_component__install_event(impl_, name, func(c, e){handler(c.api_, e.api_)});
-        }
-
-        
-        
-        func uninstallEvent(name) {
-            topaz_.topaz_component__uninstall_event(impl_, name);
-        }
-
-
-        func installHook(name, handler) {
-            return topaz_.topaz_component__install_hook(impl_, name, func(c, e){
-                handler(c.api_, e.api_);
-            });
-        }
-
-        func uninstallHook(id) {
-            topaz_.topaz_component__uninstall_hook(impl_, id);        
-        }    
-
-        func installHandler(name, handler) {
-            return topaz_.topaz_component__install_hook(impl_, name, func(c, e){
-                handler(c.api_, e.api_);
-            });
-        }
-
-        func uninstallHandler(id) {
-            topaz_.topaz_component__uninstall_hook(impl_, id);        
-        }    
-
-
-    }
 
 
     class Object2D_Definition : Component {
@@ -2683,7 +2716,6 @@ class Topz {
     func attachPreManagerUnpausable(v){topaz_.topaz__attach_pre_manager_unpausable(v.impl_)};
     func attachPostManager(v){topaz_.topaz__attach_post_manager(v.impl_)};
     func attachPostManagerUnpausable(v){topaz_.topaz__attach_post_manager_unpausable(v.impl_)};
-    
     
     func init() {
         run = topaz_.topaz__run;

@@ -27,7 +27,7 @@
 // To demonstrate the effect of input, this example entity 
 // will use a blue rectangle to show itself onscreen and will 
 // respond to the arrow keys and right-click + dragging.
-class Input_Poll : Topaz.Entity {
+class Input_Poll : Entity {
     func onReady() {
         // Since we are making the shape once and not modifying it,
         // theres no need to keep the component around.
@@ -114,7 +114,7 @@ class Input_Poll : Topaz.Entity {
 //
 // To contrast it with the previous entity, this one 
 // is a red square controlled with W, A, S, D + left click.
-class Input_Listener : Topaz.Entity {
+class Input_Listener : Entity {
     // This will hold the state of whether the event 
     // listener detected a clicking state. When its pressed,
     // its updated to 1, but when released its updated to 0.
@@ -210,15 +210,13 @@ class Input_Listener : Topaz.Entity {
 }
 
 
-class Manager : Topaz.Entity{}
-
 
 func main() {
     // Since our example is going to use multiple entities,
     // it is helpful to establish a basic "entity tree".
     // Here, our root is an empty object whose job is purely
     // to manage the input example entities we defined above.
-    var manager = Manager();
+    var manager = Entity();
 
 
     // Next, we'll instantiate those entities 

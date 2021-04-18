@@ -2,6 +2,7 @@
 #include "context.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 struct topazGL3_Program2D_t {
     GLint program;
@@ -105,25 +106,41 @@ topazGL3_Program2D_t * topaz_gl3_p2d_create() {
     glDeleteShader(out->fragmentShader);TOPAZ_GLES_CALL_CHECK;
     
     out->locationVBOposition = glGetAttribLocation(out->program, "position");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationVBOposition != -1);
+    #ifdef TOPAZDC_DEBUG
+        assert(out->locationVBOposition != -1);
+    #endif
     out->locationVBOuv       = glGetAttribLocation(out->program, "uv");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationVBOuv != -1);
+    #ifdef TOPAZDC_DEBUG
+        assert(out->locationVBOuv != -1);
+    #endif
     out->locationVBOrgba     = glGetAttribLocation(out->program, "rgba");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationVBOrgba != -1);
+    #ifdef TOPAZDC_DEBUG
+        assert(out->locationVBOrgba != -1);
+    #endif
 
 
 
     out->locationUniformMatrixGlobalProj = glGetUniformLocation(out->program, "proj");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationUniformMatrixGlobalProj != -1);
+    #ifdef TOPAZDC_DEBUG
+        assert(out->locationUniformMatrixGlobalProj != -1);
+    #endif
     out->locationUniformMatrixGlobalTF   = glGetUniformLocation(out->program, "mv");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationUniformMatrixGlobalTF != -1);
+    #ifdef TOPAZDC_DEBUG
+        assert(out->locationUniformMatrixGlobalTF != -1);
+    #endif
     out->locationUniformMatrixLocal      = glGetUniformLocation(out->program, "localMat");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationUniformMatrixLocal != -1);
+    #ifdef TOPAZDC_DEBUG
+        assert(out->locationUniformMatrixLocal != -1);
+    #endif
 
     out->locationUniformSampler      = glGetUniformLocation(out->program, "sampler");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationUniformSampler != -1);
+    #ifdef TOPAZDC_DEBUG
+        assert(out->locationUniformSampler != -1);
+    #endif
     out->locationUniformUseTexturing = glGetUniformLocation(out->program, "useTexturing");TOPAZ_GLES_CALL_CHECK;
-    assert(out->locationUniformUseTexturing != -1);
+    #ifdef TOPAZDC_DEBUG
+        assert(out->locationUniformUseTexturing != -1);
+    #endif
 
 
     glUseProgram(out->program);TOPAZ_GLES_CALL_CHECK;
