@@ -33,6 +33,10 @@ topazRenderer_Framebuffer_Handle topaz_es2_fb_get_handle_type(topazES2_FB_t *);
 // clears the channels within the framebuffer
 void topaz_es2_fb_clear_layer(topazES2_FB_t *, int);
 
+// The width of the framebuffer
+int topaz_es2_fb_get_width(topazES2_FB_t *);
 
+// The height of the framebuffer
+int topaz_es2_fb_get_height(topazES2_FB_t *);
 
 #endif

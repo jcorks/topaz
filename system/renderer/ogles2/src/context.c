@@ -50,6 +50,11 @@ void topaz_es2_start(topazES2_t * e) {
     if (!e->fb) return;
     TOPAZ_GLES_FN_IN;
     glBindFramebuffer(GL_FRAMEBUFFER, topaz_es2_fb_get_handle(e->fb)[0]);TOPAZ_GLES_CALL_CHECK;
+    glViewport(
+        0, 0,
+        topaz_es2_fb_get_width(e->fb),
+        topaz_es2_fb_get_height(e->fb)
+    );
 }
 
 // releases the framebuffer (unbind)

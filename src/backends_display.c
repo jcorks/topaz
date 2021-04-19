@@ -24,8 +24,19 @@ struct topazDisplay_t {
     int autoRefresh;
     topazDisplay_ViewPolicy vp;
     void * apiData;
+
+
+    topazArray_t * resizeCBs;
+    topazArray_t * closeCBs;
+    int cbPool;
 };
 
+
+typedef struct {
+    int id;
+    topaz_display_callback func;
+    void * data;
+} DisplayCB;
 
 
 
@@ -47,10 +58,6 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
         assert(api.display_get_x);
         assert(api.display_get_y);
         assert(api.display_set_name);
-        assert(api.display_add_resize_callback);
-        assert(api.display_remove_resize_callback);
-        assert(api.display_add_close_callback);
-        assert(api.display_remove_close_callback);
         assert(api.display_is_capable);
         assert(api.display_update);
         assert(api.display_supported_framebuffers);
@@ -74,6 +81,10 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
     topaz_context_attach_post_manager(ctx, out->camera3d);
     topaz_context_attach_post_manager(ctx, out->cameraRender);
     out->apiData = out->api.display_create(out, ctx);
+    
+    out->resizeCBs = topaz_array_create(sizeof(DisplayCB));
+    out->closeCBs = topaz_array_create(sizeof(DisplayCB));
+
     return out;
 }
 
@@ -86,6 +97,9 @@ void topaz_display_destroy(topazDisplay_t * t) {
     topaz_entity_remove(t->camera2d);
     topaz_entity_remove(t->camera3d);
     topaz_entity_remove(t->cameraRender);
+    topaz_array_destroy(t->resizeCBs);
+    topaz_array_destroy(t->closeCBs);
+    free(t);
 }
 
 
@@ -127,8 +141,6 @@ topazEntity_t * topaz_display_get_render_camera(topazDisplay_t * t) {
 
 void topaz_display_resize(topazDisplay_t * t, int w, int h) {
     t->api.display_resize(t, t->apiData, w, h);
-    if (t->vp == topazDisplay_ViewPolicy_MatchSize)
-        topaz_camera_set_render_resolution(t->cameraRender, w, h);
 }
 
 void topaz_display_set_position(topazDisplay_t * t, int x, int y) {
@@ -184,22 +196,71 @@ void topaz_display_set_name(topazDisplay_t * t, const topazString_t * s) {
     t->api.display_set_name(t, t->apiData, s);
 }
 
-void topaz_display_add_resize_callback(topazDisplay_t * t, topaz_display_callback cb, void * cbData) {
-    t->api.display_add_resize_callback(t, t->apiData, cb, cbData);
+int topaz_display_add_resize_callback(topazDisplay_t * t, topaz_display_callback func, void * cbData) {
+    if (!func) return -1;
+    DisplayCB cb;
+    cb.id = t->cbPool++;
+    cb.func = func;
+    cb.data = cbData;    
+    topaz_array_push(t->resizeCBs, cb);
+    return cb.id;
 }
 
-void topaz_display_remove_resize_callback(topazDisplay_t * t, topaz_display_callback cb) {
-    t->api.display_remove_resize_callback(t, t->apiData, cb);
+
+int topaz_display_add_close_callback(topazDisplay_t * t, topaz_display_callback func, void * cbData) {
+    if (!func) return -1;
+    DisplayCB cb;
+    cb.id = t->cbPool++;
+    cb.func = func;
+    cb.data = cbData;    
+    topaz_array_push(t->closeCBs, cb);
+    return cb.id;
 }
 
-void topaz_display_add_close_callback(topazDisplay_t * t, topaz_display_callback cb, void * data) {
-    t->api.display_add_close_callback(t, t->apiData, cb, data);
+void topaz_display_remove_callback(topazDisplay_t * t, int cb) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(t->closeCBs);
+
+    for(i = 0; i < len; ++i) {
+        if (topaz_array_at(t->closeCBs, DisplayCB, i).id == cb) {
+            topaz_array_remove(t->closeCBs, i);
+            return;
+        }
+    }
+    len = topaz_array_get_size(t->resizeCBs);
+
+    for(i = 0; i < len; ++i) {
+        if (topaz_array_at(t->resizeCBs, DisplayCB, i).id == cb) {
+            topaz_array_remove(t->resizeCBs, i);
+            return;
+        }
+    }
 }
 
-void topaz_display_remove_close_callback(topazDisplay_t * t, topaz_display_callback cb) {
-    t->api.display_remove_close_callback(t, t->apiData, cb);
+
+void topaz_display_signal_resize(topazDisplay_t * t, int w, int h) {
+    if (t->vp == topazDisplay_ViewPolicy_MatchSize)
+        topaz_camera_set_render_resolution(t->cameraRender, w, h);
+
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(t->resizeCBs);
+
+    for(i = 0; i < len; ++i) {
+        DisplayCB * cb = &topaz_array_at(t->resizeCBs, DisplayCB, i);
+        cb->func(t, cb->data);
+    }    
 }
 
+
+void topaz_display_signal_close(topazDisplay_t * t) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(t->closeCBs);
+
+    for(i = 0; i < len; ++i) {
+        DisplayCB * cb = &topaz_array_at(t->closeCBs, DisplayCB, i);
+        cb->func(t, cb->data);
+    }
+}
 
 
 

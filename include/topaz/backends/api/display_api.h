@@ -57,6 +57,17 @@ typedef struct topazDisplayAPI_t topazDisplayAPI_t;
 
 
 
+
+// function for backend to signal a resize event.
+// Both user requested resizes AND external resizes should end up calling 
+// this from the backend.
+void topaz_display_signal_resize(topazDisplay_t *, int w, int h);
+
+// function for backend to signal a close event.
+// Both user requested resizes AND external close events should end up calling 
+// this from the backend.
+void topaz_display_signal_close(topazDisplay_t *);
+
 typedef struct topazRenderer_Framebuffer_t topazRenderer_Framebuffer_t;
 
 // Each function is an implementation-facing copy of 
@@ -84,10 +95,6 @@ struct topazDisplayAPI_t {
     int  (*display_get_x)               (topazDisplay_t *, void *);
     int  (*display_get_y)               (topazDisplay_t *, void *);
     void (*display_set_name)            (topazDisplay_t *, void *, const topazString_t *);
-    void (*display_add_resize_callback)     (topazDisplay_t *, void *, topaz_display_callback, void *);
-    void (*display_remove_resize_callback)  (topazDisplay_t *, void *, topaz_display_callback);
-    void (*display_add_close_callback)      (topazDisplay_t *, void *, topaz_display_callback, void *);
-    void (*display_remove_close_callback)   (topazDisplay_t *, void *, topaz_display_callback);
     int  (*display_is_capable)              (topazDisplay_t *, void *, topazDisplay_Capability); 
     void (*display_update)                  (topazDisplay_t *, void *, topazRenderer_Framebuffer_t *);    
     const topazArray_t * (*display_supported_framebuffers)  (topazDisplay_t *, void *);

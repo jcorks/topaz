@@ -65,7 +65,7 @@ topazES2_FB_t * topaz_es2_fb_create() {
     ); TOPAZ_GLES_CALL_CHECK;
 
     glBindRenderbuffer(GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;    
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, 640, 480); TOPAZ_GLES_CALL_CHECK;
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, out->w, out->h); TOPAZ_GLES_CALL_CHECK;
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;
     //glBindRenderbuffer(GL_RENDERBUFFER, out->rbo_stencil); TOPAZ_GLES_CALL_CHECK;    
     //glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, 640, 480); TOPAZ_GLES_CALL_CHECK;
@@ -149,6 +149,13 @@ GLuint * topaz_es2_fb_get_handle(topazES2_FB_t * fb) {
     return fb->handle;
 }
 
+int topaz_es2_fb_get_width(topazES2_FB_t * fb) {
+    return fb->w;
+}
+
+int topaz_es2_fb_get_height(topazES2_FB_t * fb) {
+    return fb->h;
+}
 // Gets pixel data from the framebuffer
 //
 int topaz_es2_get_raw_data(topazES2_FB_t * fb, uint8_t * data) {

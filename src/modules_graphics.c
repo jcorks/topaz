@@ -95,13 +95,12 @@ void topaz_graphics_request_draw_2d(topazGraphics_t * g, topazRender2D_t * objec
     
 
     // TODO: update on some sort of signal from the camera
-    if ((int)g->ctx2d.width  != (int)topaz_display_get_width(d) ||
-        (int)g->ctx2d.height != (int)topaz_display_get_height(d)) {
+    topazEntity_t * c = topaz_display_get_render_camera(d);
+    if ((int)g->ctx2d.width  != (int)topaz_camera_get_render_width(c) ||
+        (int)g->ctx2d.height != (int)topaz_camera_get_render_height(c)) {
 
-
-
-        g->ctx2d.width = topaz_display_get_width(d);
-        g->ctx2d.height = topaz_display_get_height(d);
+        g->ctx2d.width = topaz_camera_get_render_width(c);
+        g->ctx2d.height = topaz_camera_get_render_height(c);
     }
 
 

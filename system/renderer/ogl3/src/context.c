@@ -54,6 +54,11 @@ int topaz_gl3_start(topazGL3_t * e) {
         return 0;
     }
     glBindFramebuffer(GL_FRAMEBUFFER, topaz_gl3_fb_get_handle(e->fb)[0]);TOPAZ_GLES_CALL_CHECK;
+    glViewport(
+        0, 0,
+        topaz_gl3_fb_get_width(e->fb),
+        topaz_gl3_fb_get_height(e->fb)
+    );
     return 1;
 }
 

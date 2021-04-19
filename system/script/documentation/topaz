@@ -445,6 +445,19 @@ enum Topaz.Renderer.TextureFilterHint
     ///
     eval none
 
+///  Controls how the Display displays Rendered data.
+///
+enum Topaz.Display.ViewPolicy
+    /// The Display will show the attached Framebuffer's contents with no transformation
+    /// The visual is stretched over the width and height of the display.
+    ///
+    eval none
+
+    /// The Display will resize the attached Framebuffer to match the windows dimensions
+    /// whenever the window is resized.
+    /// This is the default.
+    ///
+    eval matchSize
 
 /// Sets whether groups should interact. By default, only Group A interacts with Group A
 ///

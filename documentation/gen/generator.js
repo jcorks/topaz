@@ -56,7 +56,7 @@ var generateDocumentation = function(
 
 
     const origPath = Topaz.Resources.path;
-    Topaz.Resources.path = Topaz.Filesystem.getPathFromString(undefined, sourcePath).string;
+    Topaz.Resources.path = Topaz.Filesystem.getPathFromString(sourcePath).string;
 
 
 
@@ -211,7 +211,7 @@ var generateDocumentation = function(
     }
 
     const files = (function(){
-        var pobj = Topaz.Filesystem.getPathFromString(undefined, Topaz.Resources.path);
+        var pobj = Topaz.Filesystem.getPathFromString(Topaz.Resources.path);
         var out = [];
         var visited = {};
         var stk = [];

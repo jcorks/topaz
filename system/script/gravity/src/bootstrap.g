@@ -87,8 +87,8 @@ class Entity {
     
     
             
-    func init() {
-        impl_ = topaz_.topaz_entity__create();
+    func init(v) {
+        impl_ = v == null ? topaz_.topaz_entity__create() : v;
         impl_.api_ = self;
 
 
@@ -1486,6 +1486,31 @@ class Topz {
     var Input;
 
 
+    class ViewManager_Definition {
+        var mainDisplay {
+            set {
+                topaz_.topaz_view_manager__set_main(value.impl);
+            }
+
+            get {
+                return Topaz.Display(topaz_.topaz_view_manager__get_main());
+            }
+        }
+
+
+        var clipboard {
+            set {
+                topaz_.topaz_view_manager__set_clipboard_from_string(value);
+            }
+
+            get {
+                return topaz_.topaz_view_manager__get_clipboard_as_string();
+            }
+        }
+    }
+    var ViewManager;
+
+
 
     // asset
     class Asset_Definition {
@@ -1503,6 +1528,84 @@ class Topz {
 
 
 
+    class Display_Definition {
+        static var ViewPolicy;
+        var impl;
+        func init(m) {
+            if (m == null) {
+                impl = topaz_.topaz_view_manager__create_display();
+            } else {
+                impl = m;
+            }
+        }
+
+        func destroy() {
+            topaz_.topaz_display__destroy(impl);
+        }
+
+        func resize(w, h) {
+            topaz_.topaz_display__resize(impl, w, h);
+        }
+
+        func addResizeCallback(cb) {
+            return topaz_.topaz_display__add_resize_callback(impl, cb);
+        }
+
+        func addCloseCallback(cb) {
+            return topaz_.topaz_display__add_close_callback(impl, cb);
+        }
+
+        func removeCallback(id) {
+            topaz_.topaz_display__remove_callback(impl, id);
+        }
+
+        func setRenderResolution(w, h) {
+            topaz_.topaz_display__set_render_resolution(impl, w, h);
+        }
+
+        var width {
+            get {
+                return topaz_.topaz_display__get_width(impl);
+            }
+        }
+        
+
+        var height {
+            get {
+                return topaz_.topaz_display__get_height(impl);
+            }
+        }
+
+        var renderWidth {
+            get {
+                return topaz_.topaz_display__get_render_width(impl);
+            }
+        }
+        
+
+        var renderHeight {
+            get {
+                return topaz_.topaz_display__get_render_height(impl);
+            }
+        }
+
+
+        var camera2d {
+            get {
+                return Topaz.Entity(topaz_.topaz_display__get_camera_2d(impl));
+            }
+        }
+
+        var camera3d {
+            get {
+                return Topaz.Entity(topaz_.topaz_display__get_camera_3d(impl));
+            }
+        }
+
+
+
+    };
+    var Display;
 
 
     class Object2D_Definition : Component {
@@ -2739,6 +2842,7 @@ class Topz {
         Object2D = Object2D_Definition;
         ParticleEmitter2D = ParticleEmitter2D_Definition;
         Particle = Particle_Definition;
+        Display = Display_Definition;
         Particle_Definition.Property = [
             "duration" : 0,
             "scaleX" : 1,
@@ -2856,6 +2960,7 @@ class Topz {
         FontManager = FontManager_Definition();
         Package  = Package_Definition();
         Filesystem = Filesystem_Definition();
+        ViewManager = ViewManager_Definition();
         Key = Key_Definition();
 
     }

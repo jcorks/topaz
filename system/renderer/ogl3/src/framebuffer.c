@@ -124,7 +124,7 @@ int topaz_gl3_fb_resize(topazGL3_FB_t * out, int w, int h) {
     glBindTexture(GL_TEXTURE_2D, 0);TOPAZ_GLES_CALL_CHECK;
     glBindFramebuffer(GL_FRAMEBUFFER, out->fbo);TOPAZ_GLES_CALL_CHECK;    
     glBindRenderbuffer(GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;    
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 640, 480); TOPAZ_GLES_CALL_CHECK;
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, out->w, out->h); TOPAZ_GLES_CALL_CHECK;
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, out->rbo_depth); TOPAZ_GLES_CALL_CHECK;
     glBindRenderbuffer(GL_RENDERBUFFER, 0);TOPAZ_GLES_CALL_CHECK;
 
@@ -151,6 +151,14 @@ int topaz_gl3_fb_resize(topazGL3_FB_t * out, int w, int h) {
 // [1] == texture target object
 GLuint * topaz_gl3_fb_get_handle(topazGL3_FB_t * fb) {
     return fb->handle;
+}
+
+int topaz_gl3_fb_get_width(topazGL3_FB_t * fb) {
+    return fb->w;
+}
+
+int topaz_gl3_fb_get_height(topazGL3_FB_t * fb) {
+    return fb->h;
 }
 
 // Gets pixel data from the framebuffer

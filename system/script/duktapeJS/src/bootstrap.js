@@ -282,7 +282,7 @@ var Topaz = {
         
         getPathFromString : function(pth, str) {
             if (str == undefined) {
-                return new Topaz.Filesystem.Path(topaz_filesystem__get_path_from_string(str));            
+                return new Topaz.Filesystem.Path(topaz_filesystem__get_path_from_string(pth));            
             } else {
                 return new Topaz.Filesystem.Path(topaz_filesystem__get_path_from_string(pth.impl, str));                        
             }
@@ -302,6 +302,22 @@ var Topaz = {
         }
 
         
+    },
+    ViewManager : {
+
+    },
+
+    Display : function(implPre) {
+        var impl;
+
+        if (implPre)
+            impl = implPre;
+        else 
+            impl = topaz_view_manager__create_display();
+
+        impl.__ctx = this;
+        this.impl = impl;
+    
     },
     Input : {
         addKeyboardListener : function(obj) {
@@ -1811,6 +1827,143 @@ var Topaz = {
     Topaz._assetSetCommonSymbols(Topaz.Sound.prototype);
 
 
+    // ViewManager 
+    Object.defineProperty(
+        Topaz.ViewManager,
+        'mainDisplay', {
+            set : function(v) {
+                topaz_view_manager__set_main(v.impl);
+            },
+            get : function() {
+                return new Topaz.Display(topaz_view_manager__get_main());
+            }
+        }
+    );
+
+
+    Object.defineProperty(
+        Topaz.ViewManager,
+        'clipboard', {
+            set : function(v) {
+                topaz_view_manager__set_clipboard_from_string(v);
+            },
+            get : function() {
+                return topaz_view_manager__get_clipboard_as_string();
+            }
+        }
+    );
+
+
+
+
+
+
+    Topaz.Display.ViewPolicy = {
+        none      : 0,
+        matchSize : 1
+    }
+
+    Topaz.Display.prototype.destroy = function() {
+        topaz_display__destroy(this.impl);
+    }
+
+    Topaz.Display.prototype.resize = function(w, h) {
+        topaz_display__resize(this.impl, w, h);
+    }
+
+    Topaz.Display.prototype.addResizeCallback = function(cb) {
+        return topaz_display__add_resize_callback(this.impl, cb);
+    }
+
+    Topaz.Display.prototype.addCloseCallback = function(cb) {
+        return topaz_display__add_close_callback(this.impl, cb);
+    }
+
+    Topaz.Display.prototype.removeCallback = function(i) {
+        topaz_display__remove_callback(i);
+    }
+
+    Topaz.Display.prototype.setRenderResolution = function(w, h) {
+        topaz_display__set_render_resolution(this.impl, w, h);
+    }
+
+
+
+
+    Object.defineProperty(
+        Topaz.Display.prototype,
+        'width', {
+            get : function() {
+                return topaz_display__get_width(this.impl);
+            }
+        }
+    );
+
+    Object.defineProperty(
+        Topaz.Display.prototype,
+        'height', {
+            get : function() {
+                return topaz_display__get_height(this.impl);
+            }
+        }
+    );
+
+    Object.defineProperty(
+        Topaz.Display.prototype,
+        'renderWidth', {
+            get : function() {
+                return topaz_display__get_render_width(this.impl);
+            }
+        }
+    );
+
+    Object.defineProperty(
+        Topaz.Display.prototype,
+        'renderHeight', {
+            get : function() {
+                return topaz_display__get_render_height(this.impl);
+            }
+        }
+    );
+
+
+    Object.defineProperty(
+        Topaz.Display.prototype,
+        'camera2d', {
+            get : function() {
+                return new Topaz.Entity(topaz_display__get_camera_2d(this.impl));
+            }
+        }
+    );
+
+    Object.defineProperty(
+        Topaz.Display.prototype,
+        'camera3d', {
+            get : function() {
+                return new Topaz.Entity(topaz_display__get_camera_3d(this.impl));
+            }
+        }
+    );
+
+
+    Object.defineProperty(
+        Topaz.Display.prototype,
+        'fullscreen', {
+            set : function(v) {
+                topaz_display__fullscreen(this.impl, v);
+            }
+        }
+    );
+
+    Object.defineProperty(
+        Topaz.Display.prototype,
+        'viewPolicy', {
+            set : function(v) {
+                topaz_display__set_view_policy(this.impl, v);
+            }
+        }
+    );
+
 
     // Filesystem.path
     Object.defineProperty(
@@ -1834,7 +1987,7 @@ var Topaz = {
             get : function()  {
                 var out = [];
                 const len = topaz_filesystem_path__get_child_count(this.impl);
-                for(i = 0; i < len; ++i) {
+                for(var i = 0; i < len; ++i) {
                     var p = new Topaz.Filesystem.Path(topaz_filesystem_path__get_nth_child(this.impl, i));
                     if (p != undefined) {
                         out.push(p);

@@ -33,6 +33,11 @@ topazRenderer_Framebuffer_Handle topaz_gl3_fb_get_handle_type(topazGL3_FB_t *);
 // clears the channels within the framebuffer
 void topaz_gl3_fb_clear_layer(topazGL3_FB_t *, int);
 
+// The width of the framebuffer
+int topaz_gl3_fb_get_width(topazGL3_FB_t *);
+
+// The height of the framebuffer
+int topaz_gl3_fb_get_height(topazGL3_FB_t *);
 
 
 #endif

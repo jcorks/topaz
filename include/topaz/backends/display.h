@@ -100,11 +100,12 @@ enum topazDisplay_Capability {
 typedef enum topazDisplay_ViewPolicy topazDisplay_ViewPolicy;
 enum topazDisplay_ViewPolicy {
     /// The Display will show the attached Framebuffer's contents with no transformation
+    /// The visual is stretched over the width and height of the display.
     ///
     topazDisplay_ViewPolicy_None,       
 
-    /// The Display will stretch the attached Framebuffer's contents to match the windows dimensions.
-    /// If this is the case, resize events will also set the render resolution of its attached cameras.
+    /// The Display will resize the attached Framebuffer to match the windows dimensions
+    /// whenever the window is resized.
     /// This is the default.
     ///
     topazDisplay_ViewPolicy_MatchSize,      
@@ -378,7 +379,7 @@ void topaz_display_set_name(
 /// Adds an additional callback function to be be called after
 /// the occurance of a resize event.Callbacks are run in the order that they
 /// were added in.
-void topaz_display_add_resize_callback(
+int topaz_display_add_resize_callback(
     /// The display to add a callback to.
     topazDisplay_t * display, 
 
@@ -389,15 +390,6 @@ void topaz_display_add_resize_callback(
     void * data
 );
 
-/// Removes the callback of the same instance as one given via
-/// AddResizeCallback.
-void topaz_display_remove_resize_callback(
-    /// The display to modify.
-    topazDisplay_t * display, 
-
-    /// The callback to remove.
-    topaz_display_callback callback
-);
 
 /// Adds an additional callback function to be be called after
 /// the occurance of a closing event.
@@ -407,7 +399,7 @@ void topaz_display_remove_resize_callback(
 /// associated with the Display. Callbacks are run in the order that they
 /// were added in.
 ///
-void topaz_display_add_close_callback(
+int topaz_display_add_close_callback(
     /// The display to add a callback to.
     topazDisplay_t * display, 
 
@@ -419,15 +411,14 @@ void topaz_display_add_close_callback(
 );
 
 
-/// Removes the callback of the same instance as one given via
-/// AddCloseCallback.
+/// Removes the callback by id.
 ///
-void topaz_display_remove_close_callback(
+void topaz_display_remove_callback(
     /// The display to modify.
     topazDisplay_t * display, 
 
     /// The callback to remove.
-    topaz_display_callback callback
+    int id
 );
 
 

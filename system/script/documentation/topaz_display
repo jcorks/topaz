@@ -1,0 +1,91 @@
+///
+/// An abstraction for the environment's means of 
+/// displaying rendered information.
+///
+/// In most contexts / systems, the display is a window within the 
+/// desktop environment. On embedded systems, this may be the entire
+/// screen display.
+///
+/// Because of the flexibility / variation in what a display can be
+/// some backends may choose to implement features differently
+/// or omit features altogether where appropriate.
+///
+class Topaz.Display
+
+/// Destroys the display.
+func destroy ->
+
+/// Resizes the display. If the display does not support resizing, no action is taken.
+///    
+func resize ->
+    /// The new width.
+    Int width
+    /// The new height.
+    Int height
+
+/// Adds an additional callback function to be be called after
+/// the occurance of a resize event.Callbacks are run in the order that they
+/// were added in. The ID is returned.
+func addResizeCallback -> Int
+    /// The callback to add.
+    Function callback
+
+/// Adds an additional callback function to be be called after
+/// the occurance of a closing event.
+///
+/// Typically on desktop systems,
+/// this is triggered by pressing the close button on the window
+/// associated with the Display. Callbacks are run in the order that they
+/// were added in. The ID is returned.
+///
+func addCloseCallback -> Int
+    /// The callback to add.
+    Function callback
+
+/// Removes the callback by id.
+///
+func removeCallback ->
+    /// The callback to remove.
+    Int callbackID
+
+/// Sets the render resolution for the camera in pixels.
+///
+func setRenderResolution ->
+    /// The width of the new resolution.
+    Int width
+    /// The height of the new resolution
+    Int height 
+
+
+/// Controls how the Renderer's information is displayed. The default policy is "MatchSize"
+/// See ViewPolicy for more information. 
+///
+Topaz.Display.ViewPolicy viewPolicy
+
+/// Returns the width of the display.
+/// Read-only.
+Int width
+
+/// Returns the height of the display.
+/// Read-only.
+Int height
+
+/// Returns the render width of the display.
+/// Read-only.
+Int renderWidth
+
+/// Returns the render height of the display.
+/// Read-only.
+Int renderHeight
+
+/// Retrieves the camera associated with the display thats 
+/// used for 2d operations. This camera is used when the display is set as 
+/// the main display. see topazViewManager_t
+/// Read-only.
+Topaz.Entity camera2d
+
+/// Retrieves the camera associated with the display thats 
+/// used for 3d operations. This camera is used when the display is set as 
+/// the main display. see topazViewManager_t
+/// Read-only.
+Topaz.Entity camera3d
