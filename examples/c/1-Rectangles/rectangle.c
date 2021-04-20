@@ -40,16 +40,15 @@ topazEntity_t * rectangle_create(topaz_t * ctx) {
     topaz_shape2d_set_color(shape, topaz_color_from_string(TOPAZ_STR_CAST("cyan")));
 
 
-    topazDisplay_t * disp = topaz_view_manager_get_main(topaz_context_get_view_manager(ctx));
-    
+    topazViewManager_t * vm = topaz_context_get_view_manager(ctx);
     topaz_shape2d_form_rectangle(
-        shape, 
-        topaz_display_get_width(disp) / 2,
-        topaz_display_get_height(disp) / 2
+        shape,
+        topaz_view_manager_get_view_width(vm) / 2,
+        topaz_view_manager_get_view_height(vm) / 2
     );
     topazVector_t center = topaz_vector_from_xyz(
-        topaz_display_get_width(disp) / 4,
-        topaz_display_get_height(disp) / 4,
+        topaz_view_manager_get_view_width(vm) / 4,
+        topaz_view_manager_get_view_height(vm) / 4,
         0
     );
     topaz_shape2d_set_center(
@@ -63,8 +62,8 @@ topazEntity_t * rectangle_create(topaz_t * ctx) {
     topaz_input_add_keyboard_listener(topaz_context_get_input(ctx), &l);    
 
 
-    topaz_entity_position(e)->x += topaz_display_get_width(disp) / 2;
-    topaz_entity_position(e)->y += topaz_display_get_height(disp) / 2;
+    topaz_entity_position(e)->x += topaz_view_manager_get_view_width(vm) / 2;
+    topaz_entity_position(e)->y += topaz_view_manager_get_view_height(vm) / 2;
 
 
     topaz_entity_add_component(e, shape);

@@ -84,7 +84,8 @@ topazDisplay_t * topaz_view_manager_create_display(topazViewManager_t * v, const
         api
     );
     topaz_display_set_name(d, name);
-    topaz_display_resize(d, w, h);
+    topaz_display_set_parameter(d, topazDisplay_Parameter_Width,  w);
+    topaz_display_set_parameter(d, topazDisplay_Parameter_Height, h);    
     topaz_array_push(v->views, d);
     return d;
 }
@@ -189,12 +190,12 @@ void topaz_view_manager_set_clipboard_from_string(topazViewManager_t * v, const 
 
 int topaz_view_manager_get_view_width(const topazViewManager_t * v) {
     if (!v->currentDisplay) return -1;
-    return topaz_display_get_width(v->currentDisplay);
+    return topaz_display_get_parameter(v->currentDisplay, topazDisplay_Parameter_Width);
 }
 
 int topaz_view_manager_get_view_height(const topazViewManager_t * v) {
     if (!v->currentDisplay) return -1;
-    return topaz_display_get_height(v->currentDisplay);
+    return topaz_display_get_parameter(v->currentDisplay, topazDisplay_Parameter_Height);
 }
 
 const topazArray_t * topaz_view_manager_get_all(const topazViewManager_t * v) {

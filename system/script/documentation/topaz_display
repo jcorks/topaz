@@ -23,14 +23,26 @@ func resize ->
     /// The new height.
     Int height
 
-/// Adds an additional callback function to be be called after
-/// the occurance of a resize event.Callbacks are run in the order that they
-/// were added in. The ID is returned.
-func addResizeCallback -> Int
+/// Adds an additional callback function to be called 
+func addParameterCallback -> Int
     /// The callback to add.
     Function callback
+    
+    
+/// Gets a parameter from the display.
+func getParameter -> Int
+    /// The parameter to retrieve.
+    Topaz.Display.Parameter parameter
 
-/// Adds an additional callback function to be be called after
+
+/// Sets a parameter from the display.
+func setParameter -> Int
+    /// The parameter to modify.
+    Topaz.Display.Parameter parameter
+    /// The new value for the parameter.
+    Int value
+
+/// Adds an additional callback function to be called after
 /// the occurance of a closing event.
 ///
 /// Typically on desktop systems,
@@ -57,10 +69,7 @@ func setRenderResolution ->
     Int height 
 
 
-/// Controls how the Renderer's information is displayed. The default policy is "MatchSize"
-/// See ViewPolicy for more information. 
-///
-Topaz.Display.ViewPolicy viewPolicy
+
 
 /// Returns the width of the display.
 /// Read-only.

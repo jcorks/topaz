@@ -1862,17 +1862,31 @@ var Topaz = {
         none      : 0,
         matchSize : 1
     }
+    
+    Topaz.Display.Parameter = {
+        x : 0,
+        y : 1,
+        width : 2,
+        height : 3,
+        show : 4,
+        fullscreen : 5,
+        lockClientResize : 6,
+        lockClientPosition : 7,
+        viewPolicy : 8,
+        inputFocus : 9
+    }
 
     Topaz.Display.prototype.destroy = function() {
         topaz_display__destroy(this.impl);
     }
 
     Topaz.Display.prototype.resize = function(w, h) {
-        topaz_display__resize(this.impl, w, h);
+        topaz_display__set_parameter(this.impl, 2, w);
+        topaz_display__set_parameter(this.impl, 3, h);
     }
 
-    Topaz.Display.prototype.addResizeCallback = function(cb) {
-        return topaz_display__add_resize_callback(this.impl, cb);
+    Topaz.Display.prototype.addParameterCallback = function(cb) {
+        return topaz_display__add_parameter_callback(this.impl, cb);
     }
 
     Topaz.Display.prototype.addCloseCallback = function(cb) {
@@ -1887,14 +1901,23 @@ var Topaz = {
         topaz_display__set_render_resolution(this.impl, w, h);
     }
 
+    Topaz.Display.prototype.getParameter = function(p) {
+        return topaz_display__get_parameter(this.impl, p);
+    }
 
+    Topaz.Display.prototype.setParameter = function(p, v) {
+        topaz_display__set_parameter(this.impl, p, v);
+    }
 
 
     Object.defineProperty(
         Topaz.Display.prototype,
         'width', {
             get : function() {
-                return topaz_display__get_width(this.impl);
+                return topaz_display__get_parameter(this.impl, 2);
+            },
+            set : function(v) {
+                topaz_display__set_parameter(this.impl, 2, v);
             }
         }
     );
@@ -1903,7 +1926,10 @@ var Topaz = {
         Topaz.Display.prototype,
         'height', {
             get : function() {
-                return topaz_display__get_height(this.impl);
+                return topaz_display__get_parameter(this.impl, 3);
+            },
+            set : function(v) {
+                topaz_display__set_parameter(this.impl, 3, v);
             }
         }
     );
@@ -1946,23 +1972,6 @@ var Topaz = {
     );
 
 
-    Object.defineProperty(
-        Topaz.Display.prototype,
-        'fullscreen', {
-            set : function(v) {
-                topaz_display__fullscreen(this.impl, v);
-            }
-        }
-    );
-
-    Object.defineProperty(
-        Topaz.Display.prototype,
-        'viewPolicy', {
-            set : function(v) {
-                topaz_display__set_view_policy(this.impl, v);
-            }
-        }
-    );
 
 
     // Filesystem.path

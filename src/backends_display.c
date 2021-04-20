@@ -22,8 +22,9 @@ struct topazDisplay_t {
     topazEntity_t * camera3d;
     topazEntity_t * cameraRender;
     int autoRefresh;
-    topazDisplay_ViewPolicy vp;
     void * apiData;
+
+    int params[topazDisplay_Parameter_InputFocus];
 
 
     topazArray_t * resizeCBs;
@@ -47,18 +48,8 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
         assert(api.display_create);
         assert(api.display_destroy);
 
-        assert(api.display_set_position);
-        assert(api.display_fullscreen);
-        assert(api.display_hide);
-        assert(api.display_has_input_focus);
-        assert(api.display_lock_client_position);
-        assert(api.display_lock_client_position);
-        assert(api.display_get_width);
-        assert(api.display_get_height);
-        assert(api.display_get_x);
-        assert(api.display_get_y);
+        assert(api.display_request_parameter_change);
         assert(api.display_set_name);
-        assert(api.display_is_capable);
         assert(api.display_update);
         assert(api.display_supported_framebuffers);
         assert(api.display_get_system_handle_type);
@@ -76,14 +67,33 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
     out->cameraRender = topaz_camera_create(ctx);
     out->ctx = ctx;
     out->autoRefresh = TRUE;
-    out->vp = topazDisplay_ViewPolicy_MatchSize;
     topaz_context_attach_post_manager(ctx, out->camera2d);
     topaz_context_attach_post_manager(ctx, out->camera3d);
     topaz_context_attach_post_manager(ctx, out->cameraRender);
-    out->apiData = out->api.display_create(out, ctx);
     
     out->resizeCBs = topaz_array_create(sizeof(DisplayCB));
     out->closeCBs = topaz_array_create(sizeof(DisplayCB));
+
+
+    out->apiData = out->api.display_create(out, ctx);
+
+
+    topaz_display_set_parameter(
+        out, 
+        topazDisplay_Parameter_ViewPolicy, 
+        topazDisplay_ViewPolicy_MatchSize
+    );
+    topaz_display_set_parameter(
+        out, 
+        topazDisplay_Parameter_Width, 
+        640
+    );
+    topaz_display_set_parameter(
+        out, 
+        topazDisplay_Parameter_Height, 
+        480
+    );
+
 
     return out;
 }
@@ -138,56 +148,36 @@ topazEntity_t * topaz_display_get_render_camera(topazDisplay_t * t) {
 
 
 
-
-void topaz_display_resize(topazDisplay_t * t, int w, int h) {
-    t->api.display_resize(t, t->apiData, w, h);
+void topaz_display_set_parameter(
+    topazDisplay_t * t,
+    topazDisplay_Parameter p,
+    int value
+) {
+    t->params[p] = value;
+    t->api.display_request_parameter_change(
+        t,
+        t->apiData,
+        p,
+        value
+    );
 }
 
-void topaz_display_set_position(topazDisplay_t * t, int x, int y) {
-    t->api.display_set_position(t, t->apiData, x, y);
-}
 
-void topaz_display_fullscreen(topazDisplay_t * t, int h) {
-    t->api.display_fullscreen(t, t->apiData, h);
-}
-
-void topaz_display_hide(topazDisplay_t * t, int h) {
-    t->api.display_hide(t, t->apiData, h);
-}
-
-int topaz_display_has_input_focus(topazDisplay_t * t) {
-    return t->api.display_has_input_focus(t, t->apiData);
-}
-
-void topaz_display_lock_client_resize(topazDisplay_t * t, int h) {
-    t->api.display_lock_client_resize(t, t->apiData, h);
-}
-
-void topaz_display_lock_client_position(topazDisplay_t * t, int h) {
-    t->api.display_lock_client_position(t, t->apiData, h);
-}
-
-void topaz_display_set_view_policy(topazDisplay_t * t, topazDisplay_ViewPolicy p) {
-    t->vp = p;
+int topaz_display_get_parameter(
+    const topazDisplay_t * display,
+    topazDisplay_Parameter p
+) {
+    return display->params[p];
 }
 
 
 
-int topaz_display_get_width(topazDisplay_t * t) {
-    return t->api.display_get_width(t, t->apiData);
+int topaz_display_is_parameter_modifiable(topazDisplay_t * t, topazDisplay_Parameter p) {  
+    return t->api.display_is_parameter_modifiable(t, t->apiData, p);
 }
 
-int topaz_display_get_height(topazDisplay_t * t) {
-    return t->api.display_get_height(t, t->apiData);
-}
 
-int topaz_display_get_x(topazDisplay_t * t) {
-    return t->api.display_get_x(t, t->apiData);
-}
 
-int topaz_display_get_y(topazDisplay_t * t) {
-    return t->api.display_get_y(t, t->apiData);
-}
 
 
 
@@ -196,11 +186,11 @@ void topaz_display_set_name(topazDisplay_t * t, const topazString_t * s) {
     t->api.display_set_name(t, t->apiData, s);
 }
 
-int topaz_display_add_resize_callback(topazDisplay_t * t, topaz_display_callback func, void * cbData) {
+int topaz_display_add_parameter_callback(topazDisplay_t * t, topaz_display_parameter_callback func, void * cbData) {
     if (!func) return -1;
     DisplayCB cb;
     cb.id = t->cbPool++;
-    cb.func = func;
+    cb.func = (topaz_display_callback)func;
     cb.data = cbData;    
     topaz_array_push(t->resizeCBs, cb);
     return cb.id;
@@ -238,17 +228,31 @@ void topaz_display_remove_callback(topazDisplay_t * t, int cb) {
 }
 
 
-void topaz_display_signal_resize(topazDisplay_t * t, int w, int h) {
-    if (t->vp == topazDisplay_ViewPolicy_MatchSize)
-        topaz_camera_set_render_resolution(t->cameraRender, w, h);
+void topaz_display_signal_parameter_change(
+    topazDisplay_t * t, 
+    topazDisplay_Parameter param, 
+    int value
+) {
+    
 
+    t->params[param] = value;
     uint32_t i;
     uint32_t len = topaz_array_get_size(t->resizeCBs);
 
     for(i = 0; i < len; ++i) {
         DisplayCB * cb = &topaz_array_at(t->resizeCBs, DisplayCB, i);
-        cb->func(t, cb->data);
+        ((topaz_display_parameter_callback)cb->func)(t, param, cb->data);
     }    
+    if (param == topazDisplay_Parameter_Width ||
+        param == topazDisplay_Parameter_Height) {
+        if (t->params[topazDisplay_Parameter_ViewPolicy] == topazDisplay_ViewPolicy_MatchSize) {
+            topaz_camera_set_render_resolution(
+                t->cameraRender, 
+                t->params[topazDisplay_Parameter_Width], 
+                t->params[topazDisplay_Parameter_Height]
+            );
+        }
+    }
 }
 
 
@@ -264,9 +268,6 @@ void topaz_display_signal_close(topazDisplay_t * t) {
 
 
 
-int topaz_display_is_capable(topazDisplay_t * t, topazDisplay_Capability c) {
-    return t->api.display_is_capable(t, t->apiData, c);
-}
 
 
 

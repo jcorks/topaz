@@ -69,36 +69,45 @@ TSO_SCRIPT_API_FN(view_manager_api__create_display) {
     return object;
 }
 
-TSO_SCRIPT_API_FN(display_api__get_width) {
-    TSO_ASSERT_ARG_COUNT(1);
+TSO_SCRIPT_API_FN(display_api__get_parameter) {
+    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
+    TSO_ARG_1;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
 
     return topaz_script_object_from_int(
         script, 
-        topaz_display_get_width(native)
+        topaz_display_get_parameter(
+            native,
+            topaz_script_object_as_int(arg1)
+        )
     );
 }
 
-TSO_SCRIPT_API_FN(display_api__get_height) {
-    TSO_ASSERT_ARG_COUNT(1);
+TSO_SCRIPT_API_FN(display_api__is_parameter_modifiable) {
+    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
+    TSO_ARG_1;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
 
     return topaz_script_object_from_int(
         script, 
-        topaz_display_get_height(native)
+        topaz_display_is_parameter_modifiable(
+            native,
+            topaz_script_object_as_int(arg1)
+        )
     );
 }
 
-TSO_SCRIPT_API_FN(display_api__resize) {
+
+TSO_SCRIPT_API_FN(display_api__set_parameter) {
     TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
 
-    topaz_display_resize(
+    topaz_display_set_parameter(
         native,
         topaz_script_object_as_int(arg1),
         topaz_script_object_as_int(arg2)
@@ -108,21 +117,44 @@ TSO_SCRIPT_API_FN(display_api__resize) {
 
 
 
+
+
+
+
+
 typedef struct {
     topazScript_Object_t * func;
     topazScript_Object_t * display;
+    topazScript_t * script;
 } DisplayEventCallback;
 
 
-static void script_resize_callback(topazDisplay_t * d, void * data) {
+static void script_parameter_callback(topazDisplay_t * d, topazDisplay_Parameter p, void * data) {
     DisplayEventCallback * ev = data;
+    topazScript_Object_t * args[2];
+    args[0] = ev->display;
+    args[1] = topaz_script_object_from_int(ev->script, p);
     topaz_script_object_reference_call(
         ev->func,
-        TOPAZ_ARRAY_CAST(&ev->display, topazScript_Object_t *, 1)        
+        TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 2)
     );
+    // TODO; free int?
 }
 
-TSO_SCRIPT_API_FN(display_api__add_resize_callback) {
+
+static void script_close_callback(topazDisplay_t * d, void * data) {
+    DisplayEventCallback * ev = data;
+    topazScript_Object_t * args[1];
+    args[0] = ev->display;
+    topaz_script_object_reference_call(
+        ev->func,
+        TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 1)
+    );
+    // TODO; free int?
+}
+
+
+TSO_SCRIPT_API_FN(display_api__add_parameter_callback) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
@@ -131,12 +163,13 @@ TSO_SCRIPT_API_FN(display_api__add_resize_callback) {
         DisplayEventCallback * ev = calloc(1, sizeof(DisplayEventCallback));
         ev->func = topaz_script_object_from_object(script, arg1); 
         ev->display = topaz_script_object_from_object(script, arg0);
+        ev->script = script;
 
         return topaz_script_object_from_int(
             script,
-            topaz_display_add_resize_callback(
+            topaz_display_add_parameter_callback(
                 native,
-                script_resize_callback,
+                script_parameter_callback,
                 ev
             )
         );
@@ -145,6 +178,8 @@ TSO_SCRIPT_API_FN(display_api__add_resize_callback) {
     }        
     TSO_NO_RETURN;
 }
+
+
 
 TSO_SCRIPT_API_FN(display_api__add_close_callback) {
     TSO_ASSERT_ARG_COUNT(2);
@@ -155,12 +190,13 @@ TSO_SCRIPT_API_FN(display_api__add_close_callback) {
         DisplayEventCallback * ev = calloc(1, sizeof(DisplayEventCallback));
         ev->func = topaz_script_object_from_object(script, arg1); 
         ev->display = topaz_script_object_from_object(script, arg0);
+        ev->script = script;
 
         return topaz_script_object_from_int(
             script,
             topaz_display_add_close_callback(
                 native,
-                script_resize_callback,
+                script_close_callback,
                 ev
             )
         );
@@ -186,33 +222,7 @@ TSO_SCRIPT_API_FN(display_api__remove_callback) {
 
 }
 
-TSO_SCRIPT_API_FN(display_api__fullscreen) {
-    TSO_ASSERT_ARG_COUNT(2);
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
 
-    
-    topaz_display_fullscreen(
-        native,
-        topaz_script_object_as_int(arg1)
-    );
-    TSO_NO_RETURN;
-}
-
-TSO_SCRIPT_API_FN(display_api__set_view_policy) {
-    TSO_ASSERT_ARG_COUNT(2);
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
-
-    
-    topaz_display_set_view_policy(
-        native,
-        topaz_script_object_as_int(arg1)
-    );
-    TSO_NO_RETURN;
-}
 
 TSO_SCRIPT_API_FN(display_api__set_render_resolution) {
     TSO_ASSERT_ARG_COUNT(3);
@@ -286,14 +296,13 @@ static void add_refs__view_manager_api(topazScript_t * script, topazScriptManage
 
 
     TS_MAP_NATIVE_FN("topaz_display__destroy", display_api__destroy);
-    TS_MAP_NATIVE_FN("topaz_display__get_width", display_api__get_width);
-    TS_MAP_NATIVE_FN("topaz_display__get_height", display_api__get_height);
-    TS_MAP_NATIVE_FN("topaz_display__resize", display_api__resize);
-    TS_MAP_NATIVE_FN("topaz_display__add_resize_callback", display_api__add_resize_callback);
+    TS_MAP_NATIVE_FN("topaz_display__get_parameter", display_api__get_parameter);
+    TS_MAP_NATIVE_FN("topaz_display__set_parameter", display_api__set_parameter);
+    TS_MAP_NATIVE_FN("topaz_display__is_parameter_modifiable", display_api__is_parameter_modifiable);
+
+    TS_MAP_NATIVE_FN("topaz_display__add_parameter_callback", display_api__add_parameter_callback);
     TS_MAP_NATIVE_FN("topaz_display__add_close_callback", display_api__add_close_callback);
     TS_MAP_NATIVE_FN("topaz_display__remove_callback", display_api__remove_callback);
-    TS_MAP_NATIVE_FN("topaz_display__fullscreen", display_api__fullscreen);
-    TS_MAP_NATIVE_FN("topaz_display__set_view_policy", display_api__set_view_policy);
     TS_MAP_NATIVE_FN("topaz_display__set_render_resolution", display_api__set_render_resolution);
     TS_MAP_NATIVE_FN("topaz_display__get_render_width", display_api__get_render_width);
     TS_MAP_NATIVE_FN("topaz_display__get_render_height", display_api__get_render_height);

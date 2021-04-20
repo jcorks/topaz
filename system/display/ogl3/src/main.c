@@ -59,6 +59,8 @@ typedef struct {
     GLFWwindow * window;
     int w;
     int h;
+    int x;
+    int y;
     int lockClientPosition;
     GLint program;
     GLuint vbo;
@@ -75,9 +77,15 @@ static void glfw_fb_size_change(
     TopazGLFWWindow * d = glfwGetWindowUserPointer(win);
     d->w = w;
     d->h = h;
-    topaz_display_signal_resize(
+    topaz_display_signal_parameter_change(
         d->source,
-        w, 
+        topazDisplay_Parameter_Width,
+        w
+    );
+    topaz_display_signal_parameter_change(
+        d->source,
+        topazDisplay_Parameter_Height,
+
         h
     );
 }
@@ -100,6 +108,7 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
 
     w->w = 640;
     w->h = 480;
+    w->x = w->y = 0;
 
 
 
@@ -211,6 +220,14 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
     glfwMakeContextCurrent(wOld);
 
 
+    int x, y;    
+    glfwGetWindowPos(w->window, &x, &y);
+    topaz_display_signal_parameter_change(api, topazDisplay_Parameter_X, x);
+    topaz_display_signal_parameter_change(api, topazDisplay_Parameter_Y, y);
+    topaz_display_signal_parameter_change(api, topazDisplay_Parameter_Width, 640);
+    topaz_display_signal_parameter_change(api, topazDisplay_Parameter_Height, 480);
+
+
     return w;
 }
 
@@ -221,62 +238,79 @@ static void topaz_glfw_destroy(topazDisplay_t * dispSrc, void * api) {
 }
 
 
-static void topaz_glfw_resize(topazDisplay_t * dispSrc, void * api, int w, int h) {
+static void topaz_glfw_request_parameter_change(
+    topazDisplay_t * dispSrc, 
+    void * api, 
+    topazDisplay_Parameter param, 
+    int value
+) {
     TopazGLFWWindow * d = api;  
-    glfwSetFramebufferSizeCallback(d->window, NULL);
-    glfwSetWindowSize(d->window, w, h);
-    glfwSetFramebufferSizeCallback(d->window, glfw_fb_size_change);
-    glfw_fb_size_change(d->window, w, h);
+
+    switch(param) {
+      case topazDisplay_Parameter_Width:
+        d->w = value;
+        glfwSetFramebufferSizeCallback(d->window, NULL);
+        glfwSetWindowSize(d->window, d->w, d->h);
+        glfwSetFramebufferSizeCallback(d->window, glfw_fb_size_change);
+        glfw_fb_size_change(d->window, d->w, d->h);
+        break;
+      case topazDisplay_Parameter_Height:
+        d->h = value;
+        glfwSetFramebufferSizeCallback(d->window, NULL);
+        glfwSetWindowSize(d->window, d->w, d->h);
+        glfwSetFramebufferSizeCallback(d->window, glfw_fb_size_change);
+        glfw_fb_size_change(d->window, d->w, d->h);
+        break;
+      case topazDisplay_Parameter_X:
+        d->x = value;
+        glfwSetWindowPos(d->window, d->x, d->y);
+        break;
+      case topazDisplay_Parameter_Y:
+        d->y = value;
+        glfwSetWindowPos(d->window, d->x, d->y);
+        break;
+
+      case topazDisplay_Parameter_Show:
+        if (value) 
+            glfwShowWindow(d->window);
+        else 
+            glfwHideWindow(d->window);
+            
+        break;
+        
+      case topazDisplay_Parameter_Fullscreen:
+              /*
+        TopazGLFWWindow * d = api;      
+        const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        if (doIt) {
+            glfwSetWindowMonitor(
+                d->window,
+                glfwGetPrimaryMonitor(),
+                0,
+                0,
+                mode->width,
+                mode->height,
+                mode->refreshRate
+            );
+        } else {
+            glfwSetWindowMonitor(
+                d->window,
+                NULL,
+                0,
+                0,
+                d->w,
+                d->h,
+                mode->refreshRate
+            );
+        } 
+        */
+        break;
+      default:;  
+    }
 }
 
-static void topaz_glfw_set_position(topazDisplay_t * dispSrc, void * api, int x, int y) {
-    TopazGLFWWindow * d = api;  
-    glfwSetWindowPos(d->window, x, y);
-}
-
-void topaz_glfw_hide(topazDisplay_t * dispSrc, void * api, int hide) {
-    TopazGLFWWindow * d = api;  
-    if (hide) 
-        glfwHideWindow(d->window);
-    else 
-        glfwShowWindow(d->window);
-}
 
 
-static int topaz_glfw_has_input_focus(topazDisplay_t * dispSrc, void * api) {
-    TopazGLFWWindow * d = api;  
-    return glfwGetWindowAttrib(d->window, GLFW_FOCUSED);    
-}
-
-static void topaz_glfw_lock_client_position(topazDisplay_t * dispSrc, void * api, int p) {
-}
-
-static void topaz_glfw_lock_client_resize(topazDisplay_t * dispSrc, void * api, int p) {
-}
-
-static int topaz_glfw_get_height(topazDisplay_t * dispSrc, void * api) {
-    TopazGLFWWindow * d = api;  
-    return d->h;
-}
-
-static int topaz_glfw_get_width(topazDisplay_t * dispSrc, void * api) {
-    TopazGLFWWindow * d = api;  
-    return d->w;
-}
-
-static int topaz_glfw_get_x(topazDisplay_t * dispSrc, void * api) {
-    int x, y;    
-    TopazGLFWWindow * d = api;  
-    glfwGetWindowPos(d->window, &x, &y);
-    return x;
-}
-
-static int topaz_glfw_get_y(topazDisplay_t * dispSrc, void * api) {
-    int x, y;    
-    TopazGLFWWindow * d = api;  
-    glfwGetWindowPos(d->window, &x, &y);
-    return y;
-}
 
 static void topaz_glfw_set_name(topazDisplay_t * dispSrc, void * api, const topazString_t * str) {
     TopazGLFWWindow * d = api;      
@@ -284,7 +318,7 @@ static void topaz_glfw_set_name(topazDisplay_t * dispSrc, void * api, const topa
 }
 
 
-static int topaz_glfw_is_capable(topazDisplay_t * dispSrc, void * api, topazDisplay_Capability c) {
+static int topaz_glfw_is_parameter_modifiable(topazDisplay_t * dispSrc, void * api, topazDisplay_Parameter c) {
     return 1;
 }
 
@@ -362,33 +396,6 @@ static void * topaz_glfw_get_last_system_event(topazDisplay_t * dispSrc, void * 
     return 0;
 }
 
-static void topaz_glfw_fullscreen(topazDisplay_t * dispSrc, void * api, int doIt) {
-    /*
-    TopazGLFWWindow * d = api;      
-    const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    if (doIt) {
-        glfwSetWindowMonitor(
-            d->window,
-            glfwGetPrimaryMonitor(),
-            0,
-            0,
-            mode->width,
-            mode->height,
-            mode->refreshRate
-        );
-    } else {
-        glfwSetWindowMonitor(
-            d->window,
-            NULL,
-            0,
-            0,
-            d->w,
-            d->h,
-            mode->refreshRate
-        );
-    } 
-    */
-}
 
 static intptr_t api_nothing(){return 0;}
 
@@ -442,20 +449,10 @@ void topaz_system_display_ogl3__backend(
 
     api->display_create = topaz_glfw_create;
     api->display_destroy = topaz_glfw_destroy;
-    api->display_resize = topaz_glfw_resize;
-    api->display_set_position = topaz_glfw_set_position;
-    api->display_fullscreen = topaz_glfw_fullscreen;
-    api->display_hide = topaz_glfw_hide;
-    api->display_has_input_focus = topaz_glfw_has_input_focus;
-    api->display_lock_client_resize = topaz_glfw_lock_client_resize;
-    api->display_lock_client_position = topaz_glfw_lock_client_position;
-    api->display_get_height = topaz_glfw_get_height;
-    api->display_get_width = topaz_glfw_get_width;
-    api->display_get_x = topaz_glfw_get_x;
-    api->display_get_y = topaz_glfw_get_y;
+    api->display_request_parameter_change = topaz_glfw_request_parameter_change;
     api->display_set_name = topaz_glfw_set_name;
 
-    api->display_is_capable = topaz_glfw_is_capable;
+    api->display_is_parameter_modifiable = topaz_glfw_is_parameter_modifiable;
     api->display_update = topaz_glfw_update;
     api->display_supported_framebuffers = topaz_glfw_supported_framebuffers;
     api->display_get_system_handle_type = topaz_glfw_get_system_handle_type;

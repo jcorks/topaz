@@ -1530,6 +1530,7 @@ class Topz {
 
     class Display_Definition {
         static var ViewPolicy;
+        static var Parameter;
         var impl;
         func init(m) {
             if (m == null) {
@@ -1544,11 +1545,12 @@ class Topz {
         }
 
         func resize(w, h) {
-            topaz_.topaz_display__resize(impl, w, h);
+            topaz_.topaz_display__set_parameter(impl, 2, w);
+            topaz_.topaz_display__set_parameter(impl, 3, h);
         }
 
-        func addResizeCallback(cb) {
-            return topaz_.topaz_display__add_resize_callback(impl, cb);
+        func addParameterCallback(cb) {
+            return topaz_.topaz_display__add_parameter_callback(impl, cb);
         }
 
         func addCloseCallback(cb) {
@@ -1563,17 +1565,32 @@ class Topz {
             topaz_.topaz_display__set_render_resolution(impl, w, h);
         }
 
+        func setParameter(p, v) {
+            topaz_.topaz_display__set_parameter(impl, p, v);
+        }
+
+        func getParameter(p) {
+            return topaz_.topaz_display__get_parameter(impl, p);
+        }
+
         var width {
             get {
-                return topaz_.topaz_display__get_width(impl);
+                return topaz_.topaz_display__get_parameter(impl, 2);
+            }
+            set {
+                topaz_.topaz_display__set_parameter(impl, 2, value);
             }
         }
         
 
         var height {
             get {
-                return topaz_.topaz_display__get_height(impl);
+                return topaz_.topaz_display__get_parameter(impl, 3);
             }
+            set {
+                topaz_.topaz_display__set_parameter(impl, 3, value);
+            }
+
         }
 
         var renderWidth {
@@ -2843,6 +2860,24 @@ class Topz {
         ParticleEmitter2D = ParticleEmitter2D_Definition;
         Particle = Particle_Definition;
         Display = Display_Definition;
+        Display.ViewPolicy = [
+            "none" : 0,
+            "matchSize" : 1
+        ];
+        
+        Display.Parameter = [
+            "x" : 0,
+            "y" : 1,
+            "width" : 2,
+            "height" : 3,
+            "show" : 4,
+            "fullscreen" : 5,
+            "lockClientResize" : 6,
+            "lockClientPosition" : 7,
+            "viewPolicy" : 8,
+            "inputFocus" : 9
+
+        ];
         Particle_Definition.Property = [
             "duration" : 0,
             "scaleX" : 1,
@@ -2857,6 +2892,7 @@ class Topz {
             "blue" : 10,
             "alpha" : 11
         ];
+        
         Object2D.bind("setGroupInteraction", func(a, b, v) {
             topaz_.topaz_object2d__set_group_interaction(a, b, v);
         });

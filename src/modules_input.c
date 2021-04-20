@@ -333,7 +333,7 @@ static void input_ent__step(topazEntity_t * e, void * data) {
         uint32_t len = topaz_array_get_size(dpys);
         for(i = 0; i < len; ++i) {
             focus = topaz_array_at(dpys, topazDisplay_t*, i);
-            if (focus && topaz_display_has_input_focus(focus)) {
+            if (focus) {
                 break;
             }
             focus = NULL;

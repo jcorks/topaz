@@ -458,6 +458,58 @@ enum Topaz.Display.ViewPolicy
     /// This is the default.
     ///
     eval matchSize
+    
+/// On most systems, displays have a variety of features that can be 
+/// controlled. This provides a generic interface into those features,
+/// where a request can be posted to change a parameter via 
+/// topaz_display_set_parameter().
+///
+enum Topaz.Display.Parameter
+    /// Controls the X position of the display. 
+    ///
+    /// Usually, this is relative to whatever environment
+    /// the display exists in. For example, in a desktop environment, this could be
+    /// an offset from the DE's origin. If the display does not support moving,
+    /// no action is taken.
+    eval x     
+    /// Controls the Y position of the display. 
+    ///
+    /// Usually, this is relative to whatever environment
+    /// the display exists in. For example, in a desktop environment, this could be
+    /// an offset from the DE's origin. If the display does not support moving,
+    /// no action is taken.
+    eval y
+    /// The width of the display.
+    ///
+    eval width
+    /// The height of the display.
+    ///
+    eval height
+    /// Controls whether the display is shown.
+    eval show
+    /// Set the display into a fullscreen context. If fullscreen is not supported,
+    /// no action is taken.
+    ///
+    eval fullscreen
+    /// Controls prevention of resizing on the user's side. 
+    ///
+    /// For example,
+    /// in a desktop environment, this would disable the feature of resizing
+    /// the window.
+    ///
+    eval lockClientResize
+    /// Attempts to prevent moving on the user's side. 
+    /// 
+    eval lockClientPosition
+    /// Controls how the Renderer's information is displayed. The default policy is "MatchSize"
+    /// See ViewPolicy for more information. 
+    ///
+    eval viewPolicy
+    /// Returns whether the display has user input focus. On display implementations
+    /// where this doesnt apply, i.e. where there is only one logical display available,,
+    /// this will always return true. 
+    ///
+    eval inputFocus
 
 /// Sets whether groups should interact. By default, only Group A interacts with Group A
 ///

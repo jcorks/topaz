@@ -61,7 +61,7 @@ typedef struct topazDisplayAPI_t topazDisplayAPI_t;
 // function for backend to signal a resize event.
 // Both user requested resizes AND external resizes should end up calling 
 // this from the backend.
-void topaz_display_signal_resize(topazDisplay_t *, int w, int h);
+void topaz_display_signal_parameter_change(topazDisplay_t *, topazDisplay_Parameter, int value);
 
 // function for backend to signal a close event.
 // Both user requested resizes AND external close events should end up calling 
@@ -79,23 +79,10 @@ struct topazDisplayAPI_t {
 
 
 
+    void (*display_request_parameter_change)   (topazDisplay_t *, void *, topazDisplay_Parameter, int value);
+    int (*display_is_parameter_modifiable)   (topazDisplay_t *, void *, topazDisplay_Parameter);
 
-
-    void    (*display_resize)(topazDisplay_t *, void *, int w, int h);
-
-
-    void (*display_set_position)        (topazDisplay_t *, void *, int x, int y);
-    void (*display_fullscreen)          (topazDisplay_t *, void *, int);
-    void (*display_hide)                (topazDisplay_t *, void *, int);    
-    int  (*display_has_input_focus)     (topazDisplay_t *, void *); 
-    void (*display_lock_client_resize)  (topazDisplay_t *, void *, int);
-    void (*display_lock_client_position)(topazDisplay_t *, void *, int);
-    int  (*display_get_width)           (topazDisplay_t *, void *);
-    int  (*display_get_height)          (topazDisplay_t *, void *);
-    int  (*display_get_x)               (topazDisplay_t *, void *);
-    int  (*display_get_y)               (topazDisplay_t *, void *);
     void (*display_set_name)            (topazDisplay_t *, void *, const topazString_t *);
-    int  (*display_is_capable)              (topazDisplay_t *, void *, topazDisplay_Capability); 
     void (*display_update)                  (topazDisplay_t *, void *, topazRenderer_Framebuffer_t *);    
     const topazArray_t * (*display_supported_framebuffers)  (topazDisplay_t *, void *);
     topazDisplay_Handle (*display_get_system_handle_type)   (topazDisplay_t *, void *);

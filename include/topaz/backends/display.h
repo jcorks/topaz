@@ -54,44 +54,6 @@ typedef struct topazDisplay_t topazDisplay_t;
 
 
 
-/// Callback for responding to display events,
-typedef void (*topaz_display_callback)(
-    /// The display responding to the event.
-    topazDisplay_t * display,
-    /// The data bound to the callback.
-    void * data
-);
-
-
-
-
-/// The standard functional capabilities of a Display.
-///
-typedef enum topazDisplay_Capability topazDisplay_Capability;
-enum topazDisplay_Capability {
-    /// The Display can be resized.
-    ///
-    topazDisplay_Capability_CanResize,      
-
-    /// The Display's position can be moved.
-    ///
-    topazDisplay_Capability_CanMove,       
- 
-    /// The Display's size can consume the entire physical device, often in a special state.
-    ///
-    topazDisplay_Capability_CanFullscreen,  
-
-
-    /// The Display can be hidden.
-    ///
-    topazDisplay_Capability_CanHide,        
-
-
-    /// The Display can prevent the user from changing the dimensions of the Display.
-    ///
-    topazDisplay_Capability_CanLockSize     
-
-};
 
 
 
@@ -151,6 +113,85 @@ enum topazDisplay_Event {
     ///
     topazDisplay_Event_Unknown            
 };
+
+
+
+
+/// On most systems, displays have a variety of features that can be 
+/// controlled. This provides a generic interface into those features,
+/// where a request can be posted to change a parameter via 
+/// topaz_display_set_parameter().
+///
+typedef enum topazDisplay_Parameter topazDisplay_Parameter;
+enum topazDisplay_Parameter {
+    /// Controls the X position of the display. 
+    ///
+    /// Usually, this is relative to whatever environment
+    /// the display exists in. For example, in a desktop environment, this could be
+    /// an offset from the DE's origin. If the display does not support moving,
+    /// no action is taken.
+    topazDisplay_Parameter_X,     
+    /// Controls the Y position of the display. 
+    ///
+    /// Usually, this is relative to whatever environment
+    /// the display exists in. For example, in a desktop environment, this could be
+    /// an offset from the DE's origin. If the display does not support moving,
+    /// no action is taken.
+    topazDisplay_Parameter_Y,
+    /// The width of the display.
+    ///
+    topazDisplay_Parameter_Width,
+    /// The height of the display.
+    ///
+    topazDisplay_Parameter_Height,
+    /// Controls whether the display is shown.
+    topazDisplay_Parameter_Show,
+    /// Set the display into a fullscreen context. If fullscreen is not supported,
+    /// no action is taken.
+    ///
+    topazDisplay_Parameter_Fullscreen,
+    /// Controls prevention of resizing on the user's side. 
+    ///
+    /// For example,
+    /// in a desktop environment, this would disable the feature of resizing
+    /// the window.
+    ///
+    topazDisplay_Parameter_LockClientResize,
+    /// Attempts to prevent moving on the user's side. 
+    /// 
+    topazDisplay_Parameter_LockClientPosition,
+    /// Controls how the Renderer's information is displayed. The default policy is "MatchSize"
+    /// See ViewPolicy for more information. 
+    ///
+    topazDisplay_Parameter_ViewPolicy,
+    /// Returns whether the display has user input focus. On display implementations
+    /// where this doesnt apply, i.e. where there is only one logical display available,,
+    /// this will always return true. 
+    ///
+    topazDisplay_Parameter_InputFocus,
+};
+
+
+/// Callback for responding to display events,
+typedef void (*topaz_display_callback)(
+    /// The display responding to the event.
+    topazDisplay_t * display,
+    /// The data bound to the callback.
+    void * data
+);
+
+
+
+/// Callback for responding to display events,
+typedef void (*topaz_display_parameter_callback)(
+    /// The display responding to the event.
+    topazDisplay_t * display,
+    /// The parameter that was successfully changed.
+    topazDisplay_Parameter param,
+    /// The data bound to the callback.
+    void * data
+);
+
 
 #include <topaz/backends/api/display_api.h>
 
@@ -225,6 +266,43 @@ topazDisplayAPI_t topaz_display_get_api(
 );
 
 
+
+/// Requests to set a parameter within the display. Once the 
+/// the parameter is applied, parameters callbacks may be called 
+/// on your behalf to alert the change.
+void topaz_display_set_parameter(
+    /// The display to modify.
+    topazDisplay_t * display,
+    /// The parameter to modify.
+    topazDisplay_Parameter,
+    /// The new value of the parameter.
+    int value
+);
+
+
+/// System backends may not use or be authorized 
+/// to modify certain parameters. This can be used 
+/// return whether a parameter is meaningful and 
+/// editable.
+int topaz_display_is_parameter_modifiable(
+    /// The display to query.
+    topazDisplay_t * display,
+    /// The parameter to query.
+    topazDisplay_Parameter    
+);
+
+/// Returns the current value of the parameter.
+int topaz_display_get_parameter(
+    /// The display to query.
+    const topazDisplay_t * display,
+    /// The parameter to query.
+    topazDisplay_Parameter
+);
+
+
+
+
+
 /// Sets whether refreshing of the main-display's camera should be handled by the 
 /// display itself. The default is "true".
 ///
@@ -236,130 +314,6 @@ void topaz_display_auto_refresh_camera(
 );
 
 
-
-
-/// Resizes the display. If the display does not support resizing, no action is taken.
-///    
-void topaz_display_resize(
-    /// The display to resize.
-    topazDisplay_t * display, 
-
-    /// The new width.
-    int w, 
-    
-    /// The new height.
-    int h
-);
-
-/// Sets the position of the display. 
-///
-/// Usually, this is relative to whatever environment
-/// the display exists in. For example, in a desktop environment, this could be
-/// an offset from the DE's origin. If the display does not support moving,
-/// no action is taken.
-///
-void topaz_display_set_position(
-    /// The display to move.
-    topazDisplay_t * display, 
-    /// The x position. This is context dependent.
-    int x, 
-    /// The y position. This is context dependent.
-    int y
-);
-
-/// Set the display into a fullscreen context. If fullscreen is not supported,
-/// no action is taken.
-///
-void topaz_display_fullscreen(
-    /// The display to make fullscreen
-    topazDisplay_t * display, 
-
-    /// Whether to set fullscreen
-    int fullscreen
-);
-
-/// Attempts to hide the display. If hiding is not supported, no action is taken.
-///
-void topaz_display_hide(
-    /// The display to hide
-    topazDisplay_t * display, 
-
-    /// Whether to hide.
-    int state
-);
-
-/// Returns whether the display has user input focus. On display implementations
-/// where this doesnt apply, i.e. where there is only one logical display available,,
-/// this will always return true. 
-///
-int topaz_display_has_input_focus(
-    /// The display to query.
-    topazDisplay_t * display
-); 
-
-/// Attempts to prevent resizing on the user's side. 
-///
-/// For example,
-/// in a desktop environment, this would disable the feature of resizing
-/// the window.
-///
-void topaz_display_lock_client_resize(
-    /// The display to lock.
-    topazDisplay_t * display, 
-
-    /// Whether to lock.
-    int state
-);
-
-/// Attempts to prevent moving on the user's side. 
-/// 
-void topaz_display_lock_client_position(
-    /// The display to lock.
-    topazDisplay_t * display, 
-
-    /// Whether to lock.
-    int state
-);
-
-/// Controls how the Renderer's information is displayed. The default policy is "MatchSize"
-/// See ViewPolicy for more information. 
-///
-void topaz_display_set_view_policy(
-    /// The display to modify.
-    topazDisplay_t * display,
-
-    /// The new policy. 
-    topazDisplay_ViewPolicy policy
-);
-
-/// Returns the width of the display.
-///
-int topaz_display_get_width(
-    /// The display to query.
-    topazDisplay_t * display
-);
-
-/// Returns the height of the display.
-///
-int topaz_display_get_height(
-    /// The display to query.
-    topazDisplay_t * display
-);
-
-/// Returns the X position of the display.
-///
-int topaz_display_get_x(
-    /// The display to query.
-    topazDisplay_t * display
-);
-
-
-/// Returns the Y position of the display.
-///
-int topaz_display_get_y(
-    /// The display to query.
-    topazDisplay_t * display
-);
 
 
 
@@ -377,14 +331,18 @@ void topaz_display_set_name(
 
 
 /// Adds an additional callback function to be be called after
-/// the occurance of a resize event.Callbacks are run in the order that they
+/// the occurance of a display parameter change. When parameters 
+/// are changed, they are done so as requests; the display backend 
+/// may apply these parameters asynchronously. To handle this,
+/// the backend will post a callback when parameters are applied.
+/// Callbacks are run in the order that they
 /// were added in.
-int topaz_display_add_resize_callback(
+int topaz_display_add_parameter_callback(
     /// The display to add a callback to.
     topazDisplay_t * display, 
 
     /// The callback to add.
-    topaz_display_callback callback, 
+    topaz_display_parameter_callback callback, 
 
     /// The data to bind to the callback.
     void * data
@@ -423,17 +381,6 @@ void topaz_display_remove_callback(
 
 
 
-
-/// Returns whether or not the Display is able to 
-/// perform the requested capability.
-///
-int topaz_display_is_capable(
-    /// The display to query.
-    topazDisplay_t * display,
-
-    /// The capability to query.    
-    topazDisplay_Capability capability
-); 
 
 
 
