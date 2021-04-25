@@ -34,9 +34,11 @@ DEALINGS IN THE SOFTWARE.
 
 
 #include <topaz/system.h>
+#include <topaz/backends/renderer.h>
 typedef struct topazEntity_t topazEntity_t;
 typedef struct topaz_t topaz_t;
-
+typedef struct topazRenderer_Framebuffer_t topazRenderer_Framebuffer_t;
+typedef struct topazAsset_t topazAsset_t;
 
 ///
 /// An abstraction for the environment's means of 
@@ -171,6 +173,21 @@ enum topazDisplay_Parameter {
     topazDisplay_Parameter_InputFocus,
 };
 
+/// Every display has built in framebuffers that can be 
+/// used and exchanged between for advanced rendering effects.
+///
+typedef enum topazDisplay_Framebuffer topazDisplay_Framebuffer;
+enum topazDisplay_Framebuffer {
+    /// The default framebuffer.
+    topazDisplay_Framebuffer_A,
+    /// The second framebuffer.
+    topazDisplay_Framebuffer_B,
+    /// The 3rd framebuffer.
+    topazDisplay_Framebuffer_C,
+    /// The 4th framebuffer.
+    topazDisplay_Framebuffer_D
+};
+
 
 /// Callback for responding to display events,
 typedef void (*topaz_display_callback)(
@@ -240,13 +257,67 @@ topazEntity_t * topaz_display_get_3d_camera(
 );
 
 
-/// Gets the camera used for output rendering results. This camera's 
-/// framebuffers are used for storing the visual of whats shown in the display 
-///
-topazEntity_t * topaz_display_get_render_camera(
-    /// The display to query.
+
+
+
+
+/// Gets the framebuffer specified.
+topazRenderer_Framebuffer_t * topaz_display_get_framebuffer(
+    /// The disply in question.
+    topazDisplay_t * display,
+    /// The framebuffer to get.
+    topazDisplay_Framebuffer f
+);
+
+/// Sets the framebuffer as the main framebuffer. This framebuffer 
+/// is rendered into the display every frame.
+void topaz_display_use_framebuffer(
+    /// The display to modify.
+    topazDisplay_t * display,
+    /// The framebuffer to use.
+    topazDisplay_Framebuffer
+);
+
+/// Returns the framebuffer currently in use.
+topazRenderer_Framebuffer_t * topaz_display_get_main_framebuffer(
+    /// The disply in question.
     topazDisplay_t * display
 );
+
+/// Forces clearing of the results of drawing stored within the current framebuffer.
+///
+void topaz_display_clear_main_framebuffer(
+    /// The display to modify
+    topazDisplay_t * display,
+    
+    /// which information channel to clear.
+    topazRenderer_DataLayer
+);
+
+
+/// Gets the contents of the current framebuffer and 
+/// puts the data into an image asset frame. 
+/// The input image is cleared, resized to match the 
+/// framebuffer size, and given one frame which matches the 
+/// the framebuffer data.
+///
+/// NOTE: in general, this operation is considered "slow" as 
+/// it requires a lot of communication between the backend 
+/// renderer and engine, which are most likely on different 
+/// devices. Use sparringly!
+void topaz_display_capture_main_framebuffer(
+    /// The display to query.
+    topazDisplay_t * display,
+    /// The image to populate.
+    topazAsset_t * image
+);
+
+
+
+
+
+
+
 
 
 
@@ -303,10 +374,10 @@ int topaz_display_get_parameter(
 
 
 
-/// Sets whether refreshing of the main-display's camera should be handled by the 
-/// display itself. The default is "true".
+/// Sets whether clearing of the framebuffer's contents is done automatically. 
+/// The default is "true".
 ///
-void topaz_display_auto_refresh_camera(
+void topaz_display_auto_clear_framebuffer(
     /// The display to modify.
     topazDisplay_t * display, 
     /// Whether to auto-update.

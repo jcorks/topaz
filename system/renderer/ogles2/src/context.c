@@ -9,6 +9,8 @@ struct topazES2_t {
     int lastAlphaRule;
     int lastEtchRule;
     int lastTextureFilter;
+    
+    topazES2_Program_t * defaultProgram;
 };
 
 topazES2_t * topaz_es2_create() {
@@ -202,3 +204,32 @@ void topaz_es2_commit_process_attribs(
 
 
 }
+
+
+topazES2_Program_t * topaz_es2_get_default_program(topazES2_t * es) {
+    if (!es->defaultProgram) {
+        topazString_t * str = topaz_string_create();
+        topazES2_Program_t * out = topaz_es2_program_create(
+            TOPAZ_STR_CAST(
+                "void main() {\n"
+                "   topazSetPosition(topaz_mat_projection * (topaz_mat_modelview * (vec4(topaz_vertex_position, 1.0))));\n"
+                "}\n"   
+            ),
+            
+            TOPAZ_STR_CAST(
+                "void main() {\n"
+                "   topazSetOutput(vec4(1, 0, 1, 1));\n"
+                "}\n"               
+            ),
+            str
+        );
+        if (!out) {
+            printf("FATAL ERROR: built-in fallback program failed to compile: %s", topaz_string_get_c_str(str));
+            exit(99);
+        }
+        topaz_string_destroy(str);
+        es->defaultProgram = out;
+    }
+    return es->defaultProgram;
+}
+

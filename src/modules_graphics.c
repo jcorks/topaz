@@ -92,30 +92,41 @@ void topaz_graphics_request_draw_2d(topazGraphics_t * g, topazRender2D_t * objec
     topazDisplay_t * d = topaz_view_manager_get_main(topaz_context_get_view_manager(g->ctx));
     if (!d) return;
 
-    
+    topazRenderer_Framebuffer_t * fb = topaz_display_get_main_framebuffer(d);    
 
     // TODO: update on some sort of signal from the camera
-    topazEntity_t * c = topaz_display_get_render_camera(d);
-    if ((int)g->ctx2d.width  != (int)topaz_camera_get_render_width(c) ||
-        (int)g->ctx2d.height != (int)topaz_camera_get_render_height(c)) {
+    if ((int)g->ctx2d.width  != (int)topaz_renderer_framebuffer_get_width(fb) ||
+        (int)g->ctx2d.height != (int)topaz_renderer_framebuffer_get_height(fb)) {
 
-        g->ctx2d.width = topaz_camera_get_render_width(c);
-        g->ctx2d.height = topaz_camera_get_render_height(c);
+        g->ctx2d.width = topaz_renderer_framebuffer_get_width(fb);
+        g->ctx2d.height = topaz_renderer_framebuffer_get_height(fb);
     }
 
 
     // recommit 
-    topazRenderer_Buffer_t * buffer = topaz_camera_get_view_transform(topaz_display_get_2d_camera(d));
-    topaz_renderer_buffer_read(
-        buffer,
+    memcpy(
         (float*)&g->ctxMatrix,
-        0, 16
+        topaz_camera_get_view_transform(topaz_display_get_2d_camera(d)),
+        sizeof(float)*16
     );
 
     topaz_renderer_2d_queue_objects(
         g->renderer2d,
         &objectID,
         1
+    );
+}
+
+
+void topaz_graphics_request_draw_3d(
+    topazGraphics_t * g,
+    topazRenderer_3D_t * d,
+    const topazRenderer_ProcessAttribs_t * att
+) {
+    topaz_renderer_draw_3d(
+        g->renderer,
+        d,
+        att
     );
 }
 

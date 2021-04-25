@@ -36,6 +36,8 @@ typedef struct topaz_t topaz_t;
 typedef struct topazSystem_t topazSystem_t;
 typedef struct topazRender2D_t topazRender2D_t;
 typedef struct topazRenderer_2D_t topazRenderer_2D_t;
+typedef struct topazRenderer_3D_t topazRenderer_3D_t;
+typedef struct topazRenderer_ProcessAttribs_t topazRenderer_ProcessAttribs_t;
 typedef struct topazRenderer_t topazRenderer_t;
 
 /// The main graphics controller. It manages the context's renderer 
@@ -93,6 +95,18 @@ void topaz_graphics_request_draw_2d(
     /// The render2d to draw.
     topazRender2D_t * r2d
 );
+
+/// Applies a 3D renderering object to the renderer.
+/// A thin wrapper for topaz_renderer_draw_3d.
+void topaz_graphics_request_draw_3d(
+    /// The graphics instance to access.
+    topazGraphics_t * g,
+    /// The 3D instance.
+    topazRenderer_3D_t * d,    
+    /// Processing attributes for the object.
+    const topazRenderer_ProcessAttribs_t * att
+);
+
 
 /// Ensures that all graphics operations have finished and are pushed 
 /// to attached displays.

@@ -41,6 +41,8 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/assets/image.h>
 #include <topaz/assets/data.h>
 #include <topaz/assets/sound.h>
+#include <topaz/assets/material.h>
+#include <topaz/assets/mesh.h>
 
 
 #include <topaz/backends/audio_manager.h>
@@ -60,6 +62,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/components/clock.h>
 #include <topaz/components/scheduler.h>
 #include <topaz/components/shape2d.h>
+#include <topaz/components/shape3d.h>
 #include <topaz/components/state_control.h>
 #include <topaz/components/text2d.h>
 #include <topaz/components/automation.h>
@@ -80,10 +83,8 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/component.h>
 #include <topaz/entity.h>
 #include <topaz/input_device.h>
-#include <topaz/material.h>
 #include <topaz/math.h>
 #include <topaz/matrix.h>
-#include <topaz/mesh.h>
 #include <topaz/particle.h>
 #include <topaz/rbuffer.h>
 #include <topaz/refbank.h>

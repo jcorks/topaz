@@ -18,15 +18,12 @@ struct topazRenderer_t {
     topazSystem_Backend_t * backend;
 
 
-    topazRenderer_Buffer_t * mv;
-    topazRenderer_Buffer_t * proj;
 
     
     topazRenderer_Framebuffer_t * fb;
     topazBin_t * renderer2dList;
     topazBin_t * bufferList;
     topazBin_t * framebufferList;
-    topazBin_t * lightList;
     topazBin_t * programList;
     topazBin_t * textureList;
 };
@@ -171,39 +168,6 @@ int topaz_renderer_framebuffer_get_filtered_hint(topazRenderer_Framebuffer_t * t
 
 
 
-/////////////// light 
-struct topazRenderer_Light_t {
-    topazRenderer_LightAPI_t * api;      
-    void * data;
-    topazRenderer_t * src;
-    uint32_t binID;
-};
-
-
-topazRenderer_Light_t * topaz_renderer_light_create(topazRenderer_t * t, topazRenderer_LightType type) {
-    topazRenderer_Light_t * out = calloc(1, sizeof(topazRenderer_Light_t));
-    out->api = &(t->api.light);
-    out->data = out->api->renderer_light_create(&t->api, type);
-    out->src = t;
-    out->binID = topaz_bin_add(t->lightList, out);
-    return out;
-}
-
-void topaz_renderer_light_destroy(topazRenderer_Light_t * t) {
-    t->api->renderer_light_destroy(t->data);
-    topaz_bin_remove(t->src->lightList, t->binID);
-    free(t);
-}
-
-void topaz_renderer_light_update_attribs(topazRenderer_Light_t * t, float * f) {
-    t->api->renderer_light_update_attribs(t->data, f);
-}
-
-void topaz_renderer_light_enable(topazRenderer_Light_t * t, int doIt) {
-    t->api->renderer_light_enable(t->data, doIt);
-}
-
-
 
 
 
@@ -232,13 +196,12 @@ topazRenderer_Program_t * topaz_renderer_program_create(
 
 
 
-topazRenderer_Program_t * topaz_renderer_program_get_preset(
-    topazRenderer_t * t,
-    topazRenderer_PresetProgram preset
+topazRenderer_Program_t * topaz_renderer_program_get_fallback(
+    topazRenderer_t * t
 ) {
     topazRenderer_Program_t * out = calloc(1, sizeof(topazRenderer_ProgramAPI_t));
     out->api = &(t->api.program);
-    out->data = out->api->renderer_program_get_preset(&t->api, preset);
+    out->data = out->api->renderer_program_get_fallback(&t->api);
     return out;
 }
 
@@ -435,14 +398,6 @@ void topaz_renderer_destroy(topazRenderer_t * t) {
 
 
 
-    w = topaz_bin_get_all(t->lightList);
-    len = topaz_array_get_size(w);
-    iter = (void**)topaz_array_get_data(w);
-    for(i = 0; i < len; ++i) {
-        topaz_renderer_light_destroy(iter[i]);
-    }
-    topaz_array_destroy(w);
-    topaz_bin_destroy(t->lightList);
 
 
 
@@ -518,9 +473,9 @@ topazRenderer_t * topaz_renderer_create(
 
 
         assert(api.program.renderer_program_create);
-        assert(api.program.renderer_program_get_preset);
+        assert(api.program.renderer_program_get_fallback);
         assert(api.program.renderer_program_destroy);
-
+        assert(api.program.renderer_program_get_global_buffer);
 
         assert(api.twod.renderer_2d_create);
         assert(api.twod.renderer_2d_destroy);
@@ -532,12 +487,6 @@ topazRenderer_t * topaz_renderer_create(
         assert(api.twod.renderer_2d_set_object_transform);
         assert(api.twod.renderer_2d_set_object_texture);
 
-
-
-        assert(api.light.renderer_light_create);
-        assert(api.light.renderer_light_destroy);
-        assert(api.light.renderer_light_update_attribs);
-        assert(api.light.renderer_light_enable);
 
 
 
@@ -562,8 +511,6 @@ topazRenderer_t * topaz_renderer_create(
         assert(api.core.renderer_destroy);
         assert(api.core.renderer_draw_2d);
         assert(api.core.renderer_draw_3d);
-        assert(api.core.renderer_set_3d_projection_matrix);
-        assert(api.core.renderer_set_3d_viewing_matrix);
         assert(api.core.renderer_clear_layer);
         assert(api.core.renderer_get_parameters);
         assert(api.core.renderer_sync);
@@ -577,7 +524,6 @@ topazRenderer_t * topaz_renderer_create(
     out->bufferList = topaz_bin_create();
     out->textureList = topaz_bin_create();  
     out->programList = topaz_bin_create();
-    out->lightList = topaz_bin_create();
     out->framebufferList = topaz_bin_create();
     return out;
 }
@@ -607,22 +553,7 @@ void topaz_renderer_draw_2d(
     t->api.core.renderer_draw_2d(&t->api, twod->data, ctx, attribs);
 }
 
-topazRenderer_Buffer_t * topaz_renderer_get_3d_viewing_matrix(topazRenderer_t * t) {
-    return t->mv;    
-}
-topazRenderer_Buffer_t * topaz_renderer_get_3d_projection_matrix(topazRenderer_t * t) {
-    return t->proj;
-}
 
-
-void topaz_renderer_set_3d_viewing_matrix(topazRenderer_t * t, topazRenderer_Buffer_t * m) {
-    t->mv = m;
-    t->api.core.renderer_set_3d_viewing_matrix(&t->api, m);
-}
-void topaz_renderer_set_3d_projection_matrix(topazRenderer_t * t, topazRenderer_Buffer_t * m) {
-    t->proj = m;
-    t->api.core.renderer_set_3d_projection_matrix(&t->api, m);
-}
 
 
 void topaz_renderer_clear_layer(topazRenderer_t * t, topazRenderer_DataLayer layer) {

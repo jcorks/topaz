@@ -34,7 +34,6 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/backends/display.h>
 #include <topaz/backends/renderer.h>
 #include <topaz/containers/array.h>
-#include <topaz/camera.h>
 #include <topaz/system.h>
 #include <topaz/topaz.h>
 #include <stdlib.h>
@@ -128,7 +127,7 @@ void topaz_view_manager_set_main(topazViewManager_t * v, topazDisplay_t * d) {
         if (topaz_array_at(v->views, topazDisplay_t *, i) == d) {
             v->currentDisplay = d;
             // attach the main framebuffer to the renderer as well..
-            topazRenderer_Framebuffer_t * fb = topaz_camera_get_framebuffer(topaz_display_get_render_camera(d));
+            topazRenderer_Framebuffer_t * fb = topaz_display_get_main_framebuffer(d);
             topaz_renderer_attach_target(
                 topaz_graphics_get_renderer(
                     topaz_context_get_graphics(v->t)

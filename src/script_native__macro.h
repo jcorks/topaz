@@ -102,6 +102,7 @@ typedef enum {
     TSO_OBJECT_ID__PARTICLE_EMITTER_2D,
     TSO_OBJECT_ID__FILESYSTEM_PATH,
     TSO_OBJECT_ID__DISPLAY,
+    TSO_OBJECT_ID__FRAMEBUFFER,
 
     /// All types are above and including the 25th bit .
     /// Below the 25th bit are specific instances

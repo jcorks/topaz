@@ -36,9 +36,10 @@ DEALINGS IN THE SOFTWARE.
 #include <stdint.h>
 typedef struct topaz_t topaz_t;
 typedef struct topazRenderer_Program_t topazRenderer_Program_t;
-typedef struct topazImage_Frame_t topazImage_Frame_t;
-typedef struct topazRenderer_Framebuffer_t topazRenderer_Framebuffer_t;
 typedef struct topazRenderer_3D_t topazRenderer_3D_t;
+typedef struct topazAsset_t topazAsset_t;
+typedef struct topazTable_t topazTable_t;
+
 
 ///
 ///    Defines how 3D objects visually express their vertex data. This
@@ -74,31 +75,26 @@ struct topazMaterial_ProgramData_t {
 
     /// Customly-defined data for the material. This is interpreted 
     /// based on the currently set program.
-    float userData[32];
+    float userData[16];
 };
 
 
-/// Creates a new material. These can then be used with mesh instances to render 
-/// 3D object.s
-///
-topazMaterial_t * topaz_material_create(
-    /// The topaz context.
-    topaz_t * context
+// Creates a new material. These can then be used with mesh instances to render 
+// 3D object.s
+//
+topazAsset_t * topaz_material_create(
+    topaz_t *, 
+    const topazString_t *
 );
 
-/// Creates a copy of the material with the same attributes as the source.
-///
-topazMaterial_t * topaz_material_clone(
-    /// The material to clone.
-    const topazMaterial_t * mat
+// Creates a new data asset object, but without 
+// any loading behavior. 
+//
+topazAsset_t * topaz_material_empty(
+    topaz_t *
 );
 
-/// Frees a material
-///
-void topaz_material_destroy(
-    /// The material to destroy.
-    topazMaterial_t * mat
-);
+
 
 
 
@@ -107,72 +103,69 @@ void topaz_material_destroy(
 ///
 const topazMaterial_ProgramData_t * topaz_material_get_program_data(
     /// The material to query.
-    const topazMaterial_t * mat
+    topazAsset_t * mat
 );
 
 /// Sets the program data that material programs use.
 ///
 void topaz_material_set_program_data(
     /// The material to modify
-    topazMaterial_t * mat, 
+    topazAsset_t * mat, 
 
     /// The program data to set.
     const topazMaterial_ProgramData_t * pd
 );
 
-/// Sets the program that the material should use. See renderer.h
-///
-void topaz_material_set_program(
+
+
+/// Sets the source for the program to use.
+/// If the source changes, and the language matches that 
+/// of the backend renderer, the shader program will 
+/// attempt to be compiled on-the-fly. 
+/// If compilation fails, a default, error shader will be 
+/// be utilized.
+/// Materials can store vertex and fragment source for 
+/// a variety of languages, that way materials can be kept 
+/// and maintained for better portability.
+void topaz_material_set_program_source(
     /// The material to modify
-    topazMaterial_t * mat, 
+    topazAsset_t * mat, 
 
-    /// The program to set.
-    topazRenderer_Program_t * program
-);
+    /// The language that this source pertains to.
+    const topazString_t * language,
 
-
-/// Sets the given topazImage_Frame_t * to be a texture source 
-/// at the given index slot.
-///
-void topaz_material_set_texture(
-    /// The material to modify.
-    topazMaterial_t * mat, 
-
-    /// The slot to apply the texture to. 
-    int textureSlot, 
+    /// The vertex shader source.    
+    const topazString_t * vertexSource,
     
-    /// The source visual for the texture. 
-    const topazImage_Frame_t * frame
+    /// The fragment shader source.
+    const topazString_t * fragmentSource
 );
 
-/// Removes all index-texture associations within this material.
-/// 
-void topaz_material_clear_textures(
+
+/// Returns a table of shader languages with mapped vertex
+/// source string.
+const topazTable_t * topaz_material_get_vertex_source_table(
+    /// The material to query.
+    topazAsset_t * mat
+);
+
+/// Returns a table of shader languages with mapped vertex
+/// source string.
+const topazTable_t * topaz_material_get_fragment_source_table(
+    /// The material to query.
+    topazAsset_t * mat
+);
+
+/// Removes all shader program sources from the material.
+void topaz_material_clear_sources(
     /// The material to modify.
-    topazMaterial_t * mat
-);
-
-/// Sets the camera reference to use a framebuffer source.
-///
-void topaz_material_set_framebuffer_source(
-    /// The material to modify.
-    topazMaterial_t * mat, 
-
-    /// The framebuffer to use as source.
-    topazRenderer_Framebuffer_t * fb
+    topazAsset_t * mat
 );
 
 
-/// Populates a 3D renderer state with data from the material, 
-/// allowing the 3D render state to use this material as specified.
-///
-void topaz_material_update_3d(
-    /// The material to use as source.
-    topazMaterial_t * mat, 
+void topaz_material_update_3d(topazAsset_t * m, topazRenderer_3D_t * d3);
 
-    /// The 3D state to bind.
-    topazRenderer_3D_t * state
-);
+
 
 
 

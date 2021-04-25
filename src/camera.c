@@ -39,6 +39,8 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/assets/image.h>
 #include <topaz/modules/graphics.h>
 #include <topaz/spatial.h>
+#include <topaz/backends/display.h>
+#include <topaz/modules/view_manager.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,12 +50,8 @@ DEALINGS IN THE SOFTWARE.
 
 typedef struct {
 
-    topazRenderer_Buffer_t * mv;
-    topazRenderer_Buffer_t * proj;
     topazCamera_Type type;
 
-    topazRenderer_Framebuffer_t * fb;
-    topazRenderer_Framebuffer_t * fbAux;
 
     int lastW;
     int lastH;
@@ -63,6 +61,7 @@ typedef struct {
     float nearClip;
     float farClip;
 
+    topazMatrix_t viewMatrix;
     topazMatrix_t projectionMatrix;
     #ifdef TOPAZDC_DEBUG
         char * MAGIC_ID;
@@ -105,19 +104,13 @@ static topazMatrix_t matrix_projection_orthographic(
 );
 
 
-static topazAsset_t * camera__copy_fb(topaz_t *, topazRenderer_Framebuffer_t *);
-
 
 topazEntity_t * topaz_camera_create(topaz_t * t) {
     TopazCamera * c = calloc(1, sizeof(TopazCamera));
-    topazRenderer_t * r = topaz_graphics_get_renderer(topaz_context_get_graphics(t));
     #ifdef TOPAZDC_DEBUG
         c->MAGIC_ID = MAGIC_ID__CAMERA;
     #endif
-    c->mv    = topaz_renderer_buffer_create(r, NULL, 32);
-    c->proj  = topaz_renderer_buffer_create(r, NULL, 16);
-    c->fb    = topaz_renderer_framebuffer_create(r);
-    c->fbAux = topaz_renderer_framebuffer_create(r);
+    topazRenderer_t * r = topaz_graphics_get_renderer(topaz_context_get_graphics(t));
     c->type  = topazCamera_Type_Manual;
     c->autoRefresh = TRUE;
     c->renderer = r;
@@ -140,28 +133,13 @@ void topaz_camera_set_type(topazEntity_t * e, topazCamera_Type t) {
     c->type = t;
     if (t == topazCamera_Type_Perspective3D) {
         c->projectionMatrix = matrix_projection_perspective(60, 1, c->nearClip, c->farClip);
-        topaz_matrix_reverse_majority(&c->projectionMatrix);
-        topaz_renderer_buffer_update(c->proj, &c->projectionMatrix.data[0], 0, 16);
     } else {
         // force normal update. We dont do this for perspective because 
         // we only need to set it up once.
     }
 }
 
-void topaz_camera_refresh(topazEntity_t * e) {
-    TopazCamera * c = camera__retrieve(e);
-    topazRenderer_t * r = c->renderer;
-    topazRenderer_Framebuffer_t * old = topaz_renderer_get_target(r);
 
-    if (old != c->fb) {
-        topaz_renderer_sync(r);
-        topaz_renderer_attach_target(r, c->fb);
-        topaz_renderer_clear_layer(r, topazRenderer_DataLayer_All);
-        topaz_renderer_attach_target(r, old);
-    } else {
-        topaz_renderer_clear_layer(r, topazRenderer_DataLayer_All);
-    }
-}
 
 void topaz_camera_set_auto_refresh(topazEntity_t * e, int ar) {
     TopazCamera * c = camera__retrieve(e);
@@ -205,9 +183,11 @@ topazVector_t topaz_camera_screen_to_world(topazEntity_t * e, const topazVector_
     TopazCamera * c = camera__retrieve(e);
 
 
+    topazDisplay_t * d = topaz_view_manager_get_main(topaz_context_get_view_manager(c->ctx));
+    topazRenderer_Framebuffer_t * fb = topaz_display_get_main_framebuffer(d);
 
-    float w = topaz_renderer_framebuffer_get_width(c->fb);
-    float h = topaz_renderer_framebuffer_get_height(c->fb);
+    float w = topaz_renderer_framebuffer_get_width(fb);
+    float h = topaz_renderer_framebuffer_get_height(fb);
 
     topazVector_t in;
     in.x = (p->x/w)*2 - 1;
@@ -231,8 +211,11 @@ topazVector_t topaz_camera_screen_to_world(topazEntity_t * e, const topazVector_
 topazVector_t topaz_camera_world_to_screen(topazEntity_t * e, const topazVector_t * p) {
     TopazCamera * c = camera__retrieve(e);
 
-    float w = topaz_renderer_framebuffer_get_width(c->fb);
-    float h = topaz_renderer_framebuffer_get_height(c->fb);
+    topazDisplay_t * d = topaz_view_manager_get_main(topaz_context_get_view_manager(c->ctx));
+    topazRenderer_Framebuffer_t * fb = topaz_display_get_main_framebuffer(d);
+
+    float w = topaz_renderer_framebuffer_get_width(fb);
+    float h = topaz_renderer_framebuffer_get_height(fb);
 
     topazSpatial_t * s = topaz_entity_get_spatial(e);
 
@@ -249,80 +232,23 @@ topazVector_t topaz_camera_world_to_screen(topazEntity_t * e, const topazVector_
 
 
 
-void topaz_camera_set_render_resolution(topazEntity_t * e, int w, int h) {
-    TopazCamera * c = camera__retrieve(e);
-
-    topaz_renderer_framebuffer_resize(c->fb, w, h);
-    topaz_renderer_framebuffer_resize(c->fbAux, w, h);
-}
 
 
-int topaz_camera_get_render_height(const topazEntity_t * e) {
-    TopazCamera * c = camera__retrieve((topazEntity_t*)e);
-
-    return topaz_renderer_framebuffer_get_height(c->fb);
-}
 
 
-int topaz_camera_get_render_width(const topazEntity_t * e) {
-    TopazCamera * c = camera__retrieve((topazEntity_t*)e);
 
-    return topaz_renderer_framebuffer_get_width(c->fb);
-}
-
-
-void topaz_camera_set_filtered(topazEntity_t * e, int hint) {
-    TopazCamera * c = camera__retrieve(e);
-
-    topaz_renderer_framebuffer_set_filtered_hint(c->fb,    hint);
-    topaz_renderer_framebuffer_set_filtered_hint(c->fbAux, hint);
-}
-
-
-topazRenderer_Framebuffer_t * topaz_camera_get_framebuffer(topazEntity_t * e) {
-    TopazCamera * c = camera__retrieve(e);
-    return c->fb;
-}
-
-topazAsset_t * topaz_camera_get_front_visual(topazEntity_t * e) {
-    TopazCamera * c = camera__retrieve(e);
-    return camera__copy_fb(c->ctx, c->fb);
-}
-
-topazAsset_t * topaz_camera_get_back_visual(topazEntity_t * e) {
-    TopazCamera * c = camera__retrieve(e);
-    return camera__copy_fb(c->ctx, c->fbAux);
-}
-
-
-void topaz_camera_swap_buffers(topazEntity_t * e) {
-    TopazCamera * c = camera__retrieve(e);
-    topazRenderer_Framebuffer_t * fb = c->fb;
-    c->fb = c->fbAux;
-    c->fbAux = fb;
-    
-    topazRenderer_t * ctx = topaz_graphics_get_renderer(
-        topaz_context_get_graphics(c->ctx)
-    );
-
-    // need to also swap targets
-    if (topaz_renderer_get_target(ctx) == fb) {
-        topaz_renderer_attach_target(ctx, c->fb);
-    }
-}
-
-topazRenderer_Buffer_t * topaz_camera_get_view_transform(
+const topazMatrix_t * topaz_camera_get_view_transform(
     topazEntity_t * e
 ) {
     TopazCamera * c = camera__retrieve(e);
-    return c->mv;
+    return &c->viewMatrix;
 }
 
-topazRenderer_Buffer_t * topaz_camera_get_projection_transform(
+const topazMatrix_t * topaz_camera_get_projection_transform(
     topazEntity_t * e
 ) {
     TopazCamera * c = camera__retrieve(e);
-    return c->proj;
+    return &c->projectionMatrix;
 }
 
 
@@ -415,20 +341,6 @@ static topazMatrix_t matrix_projection_orthographic(
 }
 
 
-static topazAsset_t * camera__copy_fb(topaz_t * t, topazRenderer_Framebuffer_t * fb) {
-    topazAsset_t * image = topaz_image_create_empty(t);
-
-    int w = topaz_renderer_framebuffer_get_width(fb);
-    int h = topaz_renderer_framebuffer_get_height(fb);
-    uint8_t * data = malloc(w*h*4);
-    topaz_renderer_framebuffer_get_raw_data(fb, data);
-
-    topaz_image_add_frame(image);
-    topaz_image_frame_set_data(topaz_image_get_frame(image, 0), data);
-    free(data);
-
-    return image;
-}
 
 
 void camera__on_step(topazEntity_t * e, void * data) {
@@ -437,13 +349,14 @@ void camera__on_step(topazEntity_t * e, void * data) {
     topazSpatial_t * s = topaz_entity_get_spatial(e);
     topazMatrix_t m = *topaz_spatial_get_global_transform(s);
     topaz_matrix_invert(&m);
-    //topaz_matrix_reverse_majority(&m);
-    topaz_renderer_buffer_update(c->mv, &m.data[0], 0, 16);
+    c->viewMatrix = m;
 
 
-    if (c->fb && c->type == topazCamera_Type_Orthographic) {
-        int w = topaz_renderer_framebuffer_get_width(c->fb);
-        int h = topaz_renderer_framebuffer_get_height(c->fb);
+    if (c->type == topazCamera_Type_Orthographic) {
+        topazDisplay_t * d = topaz_view_manager_get_main(topaz_context_get_view_manager(c->ctx));
+        topazRenderer_Framebuffer_t * fb = topaz_display_get_main_framebuffer(d);
+        int w = topaz_renderer_framebuffer_get_width(fb);
+        int h = topaz_renderer_framebuffer_get_height(fb);
 
         if (c->lastW != w ||
             c->lastH != h) {
@@ -454,8 +367,6 @@ void camera__on_step(topazEntity_t * e, void * data) {
             c->projectionMatrix = matrix_projection_orthographic(0, c->lastW, c->lastH, 0, -1024.f, 1024.f);
 
             m = c->projectionMatrix;
-            topaz_matrix_reverse_majority(&m);
-            topaz_renderer_buffer_update(c->proj, m.data+0, 0, 16);
         }
     }
 }

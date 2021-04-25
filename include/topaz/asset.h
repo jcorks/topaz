@@ -71,9 +71,9 @@ enum topazAsset_Type {
     ///
     topazAsset_Type_Sound,
 
-    /// The asset is a 3D model with assets.
+    /// The asset defines how a 3D mesh should be expressed.
     ///
-    topazAsset_Type_Model,
+    topazAsset_Type_Material,
 
     /// The asset is a particle specification.
     ///
@@ -83,7 +83,11 @@ enum topazAsset_Type {
     ///
     topazAsset_Type_Data,
 
-    topazAsset_Type_Actor,
+    /// The asset is a 3D mesh
+    ///
+    topazAsset_Type_Mesh,
+    
+    
     topazAsset_Type_Count,    
 };
 

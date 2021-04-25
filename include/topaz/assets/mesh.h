@@ -35,6 +35,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <stdint.h>
 #include <topaz/backends/renderer.h>
+typedef struct topazAsset_t topazAsset_t;
 typedef struct topaz_t topaz_t;
 
 
@@ -85,36 +86,12 @@ enum topazMesh_VertexAttribute {
 
 /// Creates a new, empty mesh.
 ///
-topazMesh_t * topaz_mesh_create(
-    /// The topaz context.
-    topaz_t * context
+topazAsset_t * topaz_mesh_create(
+    topaz_t *, 
+    const topazString_t *
 );
 
-/// Creates a new mesh instance of a mesh as an exact copy.
-/// This clones the vertex data as well.
-///
-topazMesh_t * topaz_mesh_clone(
-    /// The source mesh.
-    const topazMesh_t * mesh
-);
 
-/// Creates a nice instance of a mesh, but shares the vertex data 
-/// with the source instance. Any edits to the vertex data will 
-/// be reflected in all meshes that share the same vertex data.
-///
-topazMesh_t * topaz_mesh_clone_shared(
-    /// The mesh to share (which also owns the vertices)
-    const topazMesh_t * mesh
-);
-
-/// Returns source mesh instance that the vertex data belongs to
-/// If the mesh was created in a non-shared way, the instance returned 
-/// will match the object itself.
-///
-topazMesh_t * topaz_mesh_get_shared_source(
-    /// The mesh to query.
-    topazMesh_t * mesh
-);
 
 
 
@@ -122,7 +99,7 @@ topazMesh_t * topaz_mesh_get_shared_source(
 ///
 void topaz_mesh_set_vertex_count(
     /// The mesh to modify
-    topazMesh_t * mesh, 
+    topazAsset_t * mesh, 
     /// The new vertex count
     uint32_t newCount
 );
@@ -132,7 +109,7 @@ void topaz_mesh_set_vertex_count(
 ///
 void topaz_mesh_define_vertices(
     /// The mesh to modify.
-    topazMesh_t * mesh, 
+    topazAsset_t * mesh, 
 
     /// The new vertices to be copied into the mesh.
     const topazArray_t * vertices
@@ -146,7 +123,7 @@ void topaz_mesh_define_vertices(
 ///
 const float * topaz_mesh_get_vertex(
     /// The mesh to query.
-    const topazMesh_t * mesh, 
+    topazAsset_t * mesh, 
 
     /// Which vertex attribute to retrieve.
     topazMesh_VertexAttribute attribute, 
@@ -160,7 +137,7 @@ const float * topaz_mesh_get_vertex(
 ///
 void topaz_mesh_set_vertex(
     /// The mesh to modify.
-    topazMesh_t * mesh,
+    topazAsset_t * mesh,
 
     /// The attribute to modify
     topazMesh_VertexAttribute attribute, 
@@ -176,8 +153,11 @@ void topaz_mesh_set_vertex(
 ///
 uint32_t topaz_mesh_get_vertex_count(
     /// The mesh to query.
-    const topazMesh_t * mesh
+    topazAsset_t * mesh
 );
+
+
+
 
 
 
@@ -188,14 +168,14 @@ uint32_t topaz_mesh_get_vertex_count(
 ///
 uint32_t topaz_mesh_add_object(
     /// The mesh to add an object to.
-    topazMesh_t * mesh
+    topazAsset_t * mesh
 );
 
 /// Gets the array of face indices for the corresponding index.
 ///
 topazArray_t * topaz_mesh_get_object(
     /// The mesh to retrieve an object from.
-    topazMesh_t * mesh, 
+    topazAsset_t * mesh, 
 
     /// The object index.
     uint32_t index
@@ -206,7 +186,7 @@ topazArray_t * topaz_mesh_get_object(
 ///
 void topaz_mesh_remove_object(
     /// The mesh to remove an object from.
-    topazMesh_t * mesh, 
+    topazAsset_t * mesh, 
 
     /// The index of the object to remove.
     uint32_t index
@@ -216,31 +196,17 @@ void topaz_mesh_remove_object(
 ///
 uint32_t topaz_mesh_get_object_count(
     /// The mesh to query.
-    const topazMesh_t * mesh
-);
-
-/// Returns the raw buffer for all vertices.
-///
-topazRenderer_Buffer_t * topaz_mesh_get_vertex_data(
-    /// The mesh to query.
-    topazMesh_t * mesh
+    topazAsset_t * mesh
 );
 
 
 
-/// Creates a new basic cube mesh.
-///
-topazMesh_t * topaz_mesh_create_cube(
-    /// The topaz context.
-    topaz_t * context
+void topaz_mesh_query(
+    topazAsset_t * a, 
+    topazRenderer_Buffer_t ** v,
+    topazArray_t ** ind
 );
 
-/// Creates a new basic square mesh.
-///
-topazMesh_t * topaz_mesh_create_square(
-    /// The topaz context.
-    topaz_t * context
-);
 
 
 

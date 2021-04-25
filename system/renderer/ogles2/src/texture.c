@@ -310,6 +310,27 @@ void topaz_es2_texture_local_coords_to_atlas(
 }
 
 
+void topaz_es2_texture_get_info(
+    topazES2_Texture_t * t,
+    float * local_x,    
+    float * local_y,    
+    float * local_w,    
+    float * local_h,    
+    float * atlas_w,
+    float * atlas_h,
+    GLuint * textureObjectID
+) {
+    *atlas_w = t->src->width;
+    *atlas_h = t->src->height;
+
+    *local_x = t->x;
+    *local_y = t->y;
+    *local_w = t->w;
+    *local_h = t->h;
+    *textureObjectID = t->src->object;
+}
+
+
 
 
 

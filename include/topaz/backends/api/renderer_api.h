@@ -104,11 +104,12 @@ struct topazRenderer_ProgramAPI_t {
                                                                         const topazString_t *, 
                                                                         const topazString_t *, 
                                                                         topazString_t *);
-    void *                    (*renderer_program_get_preset)        (topazRendererAPI_t *,
-                                                                        topazRenderer_PresetProgram);
-
+    void *                    (*renderer_program_get_fallback)        (topazRendererAPI_t *);
     void                    (*renderer_program_destroy)             (void * programData);
 
+    topazRenderer_Buffer_t * (*renderer_program_get_global_buffer)(
+        void * programData
+    );
 
 
 
@@ -194,30 +195,6 @@ struct topazRenderer_2DAPI_t {
 
 
 
-/*
-
-    Renderer_LightAPI
-    -----
-
-*/
-typedef struct topazRenderer_LightAPI_t    topazRenderer_LightAPI_t;
-
-// Each function is an implementation-facing copy of 
-// the user-side API for topazRenderer_t. See <topaz/backends/renderer_light.h>
-//
-struct topazRenderer_LightAPI_t {
-
-
-    void *  (*renderer_light_create)(topazRendererAPI_t *, topazRenderer_LightType);
-    void    (*renderer_light_destroy)(void *);
-
-    void (*renderer_light_update_attribs)(void *, float *);
-    void (*renderer_light_enable)(void *, int doIt);
-
-
-
-
-};
 
 
 
@@ -313,8 +290,6 @@ struct topazRenderer_CoreAPI_t {
 
     void                    (*renderer_draw_2d)             (topazRendererAPI_t *, void *, const topazRenderer_2D_Context_t *, const topazRenderer_ProcessAttribs_t *);
     void                    (*renderer_draw_3d)             (topazRendererAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *);
-    void                    (*renderer_set_3d_viewing_matrix)(topazRendererAPI_t *, void * buffer);
-    void                    (*renderer_set_3d_projection_matrix)(topazRendererAPI_t *, void * buffer);
 
 
     void                    (*renderer_clear_layer)         (topazRendererAPI_t *, topazRenderer_DataLayer);
@@ -361,11 +336,6 @@ struct topazRendererAPI_t {
     // for 2d geometry (small batch, dynamic visuals)
     //
     topazRenderer_2DAPI_t twod;
-
-    // API for the light renderer, which provides lighting control 
-    // for 3d scenes.
-    //
-    topazRenderer_LightAPI_t light;
 
     // API for the renderer framebuffer, which is the target of rendering 
     // operations.

@@ -24,9 +24,10 @@ const char * topaz_gles_error_to_string(int);
 #include "texture.h"
 #include "framebuffer.h"
 #include "2d.h"
-
+#include "program.h"
 
 typedef struct topazES2_t topazES2_t;
+typedef struct topazES2_Program_t topazES2_Program_t;
 
 // creates a new es2 context
 topazES2_t * topaz_es2_create();
@@ -59,5 +60,8 @@ void topaz_es2_commit_process_attribs(topazES2_t *, const topazRenderer_ProcessA
 
 // glFinish()?
 void topaz_es2_sync(topazES2_t *);
+
+// gets the default dynamic program.
+topazES2_Program_t * topaz_es2_get_default_program(topazES2_t *);
 
 #endif

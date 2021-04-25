@@ -15,6 +15,8 @@
 #include <topaz/assets/image.h>
 #include <topaz/assets/data.h>
 #include <topaz/assets/sound.h>
+#include <topaz/assets/material.h>
+#include <topaz/assets/mesh.h>
 
 #ifdef TOPAZDC_DEBUG
 #include <assert.h>
@@ -286,6 +288,12 @@ topazAsset_t * topaz_resources_fetch_asset(
       case topazAsset_Type_Sound:
         asset = topaz_sound_create(r->ctx, name);
         break;
+
+      case topazAsset_Type_Material:
+        asset = topaz_material_create(r->ctx, name);
+
+      case topazAsset_Type_Mesh:
+        asset = topaz_mesh_create(r->ctx, name);
 
       default:
         #ifdef TOPAZDC_DEBUG

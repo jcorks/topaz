@@ -2,7 +2,8 @@
 #include <topaz/matrix.h>
 #include <topaz/math.h>
 #include <topaz/topaz.h>
-#include <topaz/mesh.h>
+#include <topaz/asset.h>
+#include <topaz/assets/mesh.h>
 #include <topaz/modules/graphics.h>
 
 #include <stdlib.h>
@@ -11,16 +12,21 @@
 
 #ifdef TOPAZDC_DEBUG
 #include <assert.h>
+static char * MAGIC_ID__MESH = "t0p4zm3sh";
 #endif
 
 
 struct topazMesh_t {
+    #ifdef TOPAZDC_DEBUG
+    char * MAGIC_ID;
+    #endif
     topaz_t * ctx;
     topazArray_t * objs;
     topazRenderer_Buffer_t * v;
-    topazMesh_t * sharedFrom;
     float reg[4];
 };
+
+
 
 #define TOPAZ_V_TO_FLOATS(__N__) ((sizeof(topazRenderer_3D_Vertex_t) / sizeof(float))*(__N__))
 #define TOPAZ_FLOATS_TO_V(__N__) ((__N__) / sizeof(topazRenderer_3D_Vertex_t))
@@ -54,64 +60,56 @@ static void topaz_mesh__get_attrib_params(topazMesh_VertexAttribute attrib, uint
 }
 
 
-topazMesh_t * topaz_mesh_create(topaz_t * ctx) {
+static void mesh__destroy(topazAsset_t * a, void * userData) {
+    topazMesh_t * m = userData;
+    if (m->v)
+        topaz_renderer_buffer_destroy(m->v);
+
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(m->objs);
+    for(i = 0; i < len; ++i) {
+        topazArray_t * arr = topaz_array_at(m->objs, topazArray_t *, i);
+        topaz_array_destroy(arr);    
+    }
+    topaz_array_destroy(m->objs);
+    free(m);
+
+
+}
+
+static topazMesh_t * mesh__retrieve(topazAsset_t * a) {
+    topazMesh_t * m = topaz_asset_get_attributes(a)->userData;
+    #ifdef TOPAZDC_DEBUG
+        assert(m->MAGIC_ID == MAGIC_ID__MESH);
+    #endif
+    return m;
+}
+
+topazAsset_t * topaz_mesh_create(topaz_t * t, const topazString_t * name) {
     topazMesh_t * out = calloc(1, sizeof(topazMesh_t));
-    out->ctx = ctx;
+    out->ctx = t;
     out->objs = topaz_array_create(sizeof(topazArray_t *));
     out->v = NULL;
-    out->sharedFrom = out;
-    return out;
-}
 
-topazMesh_t * topaz_mesh_clone(const topazMesh_t * src) {
-    topazMesh_t * out = topaz_mesh_create(src->ctx);
 
-    // copy vertices;
-    if (src->v) {
-        int numFlt = topaz_renderer_buffer_get_size(src->v);
-        float * buffer = malloc(numFlt*sizeof(float));
-        topaz_renderer_buffer_read(src->v, buffer, 0, numFlt);
-        out->v = topaz_renderer_buffer_create(
-            topaz_graphics_get_renderer(topaz_context_get_graphics(src->ctx)),
-            buffer,
-            numFlt
-        );
-        free(buffer);
-    }
+    topazAsset_Attributes_t attribs = {};
+    attribs.on_destroy = mesh__destroy;
+    attribs.userData = out;
 
-    // copy objects
-    uint32_t i;
-    uint32_t len = topaz_array_get_size(src->objs);
-    for(i = 0; i < len; ++i) {
-        topazArray_t * t = topaz_array_clone(topaz_array_at(src->objs, topazArray_t *, i));
-        topaz_array_push(out->objs, t);
-    }
-    return out;
+    return topaz_asset_create(
+        t,
+        topazAsset_Type_Mesh,
+        name, 
+        &attribs
+    );
 }
 
 
-topazMesh_t * topaz_mesh_clone_shared(const topazMesh_t * src) {
-    topazMesh_t * out = topaz_mesh_create(src->ctx);
-    out->v = src->v;
-    out->sharedFrom = src->sharedFrom;
 
 
-    // copy objects
-    uint32_t i;
-    uint32_t len = topaz_array_get_size(src->objs);
-    for(i = 0; i < len; ++i) {
-        topazArray_t * t = topaz_array_clone(topaz_array_at(src->objs, topazArray_t *, i));
-        topaz_array_push(out->objs, t);
-    }
-    return out;
-}
 
-
-topazMesh_t * topaz_mesh_get_shared_source(topazMesh_t * m) {
-    return m->sharedFrom;
-}
-
-void topaz_mesh_set_vertex_count(topazMesh_t * m, uint32_t i) {
+void topaz_mesh_set_vertex_count(topazAsset_t * a, uint32_t i) {
+    topazMesh_t * m = mesh__retrieve(a);
     if (m->v)
         topaz_renderer_buffer_destroy(m->v);
 
@@ -122,7 +120,8 @@ void topaz_mesh_set_vertex_count(topazMesh_t * m, uint32_t i) {
     );
 }
 
-void topaz_mesh_define_vertices(topazMesh_t * m, const topazArray_t * s) {
+void topaz_mesh_define_vertices(topazAsset_t * a, const topazArray_t * s) {
+    topazMesh_t * m = mesh__retrieve(a);
     if (m->v)
         topaz_renderer_buffer_destroy(m->v);
     
@@ -138,11 +137,11 @@ void topaz_mesh_define_vertices(topazMesh_t * m, const topazArray_t * s) {
 /// vertex doesnt exist, nothing is returned.
 ///
 const float * topaz_mesh_get_vertex(
-    const topazMesh_t * mSrc, 
+    topazAsset_t * a, 
     topazMesh_VertexAttribute attrib, 
     uint32_t index
 ) {
-    topazMesh_t * m = (topazMesh_t *) mSrc; // shhhh its fine
+    topazMesh_t * m = mesh__retrieve(a);
     m->reg[0] = m->reg[1] = m->reg[2] = m->reg[3] = 0.f;
 
     if (!m->v) return m->reg;
@@ -170,11 +169,12 @@ const float * topaz_mesh_get_vertex(
 
 
 void topaz_mesh_set_vertex(
-    topazMesh_t * m,
+    topazAsset_t * a,
     topazMesh_VertexAttribute attrib, 
     uint32_t index,
     const float * data
 ) {
+    topazMesh_t * m = mesh__retrieve(a);
     if (!m->v) return;
     uint32_t count = TOPAZ_FLOATS_TO_V(topaz_renderer_buffer_get_size(m->v));
     if (index >= count) {
@@ -195,42 +195,58 @@ void topaz_mesh_set_vertex(
     );
 }
 
-uint32_t topaz_mesh_get_vertex_count(const topazMesh_t * m) {
+uint32_t topaz_mesh_get_vertex_count(topazAsset_t * a) {
+    topazMesh_t * m = mesh__retrieve(a);
     if (!m->v) return 0;
     return TOPAZ_FLOATS_TO_V(topaz_renderer_buffer_get_size(m->v));
 }
 
 
-uint32_t topaz_mesh_add_object(topazMesh_t * m) {
+uint32_t topaz_mesh_add_object(topazAsset_t * a) {
+    topazMesh_t * m = mesh__retrieve(a);
     topazArray_t * obj = topaz_array_create(sizeof(uint32_t));
     topaz_array_push(m->objs, obj);
     return topaz_array_get_size(m->objs)-1;
 }
 
-topazArray_t * topaz_mesh_get_object(topazMesh_t * m, uint32_t index) {
+topazArray_t * topaz_mesh_get_object(topazAsset_t * a, uint32_t index) {
+    topazMesh_t * m = mesh__retrieve(a);
     if (index >= topaz_array_get_size(m->objs)) return NULL;
     return topaz_array_at(m->objs, topazArray_t *, index);
 }
 
 
-void topaz_mesh_remove_object(topazMesh_t * m, uint32_t index) {
+void topaz_mesh_remove_object(topazAsset_t * a, uint32_t index) {
+    topazMesh_t * m = mesh__retrieve(a);
     if (index >= topaz_array_get_size(m->objs)) return;
     topaz_array_remove(m->objs, index);
 }
 
-uint32_t topaz_mesh_get_object_count(const topazMesh_t * m) {
+uint32_t topaz_mesh_get_object_count(topazAsset_t * a) {
+    topazMesh_t * m = mesh__retrieve(a);
     return topaz_array_get_size(m->objs);
 }
 
-topazRenderer_Buffer_t * topaz_mesh_get_vertex_data(topazMesh_t * m) {
+topazRenderer_Buffer_t * topaz_mesh_get_vertex_data(topazAsset_t * a) {
+    topazMesh_t * m = mesh__retrieve(a);
     return m->v;
+}
+
+void topaz_mesh_query(
+    topazAsset_t * a, 
+    topazRenderer_Buffer_t ** v,
+    topazArray_t ** ind) {
+
+    topazMesh_t * m = mesh__retrieve(a);
+    *v = m->v;
+    *ind = m->objs;
 }
 
 
 
 
 
-
+/*
 
 static topazRenderer_3D_Vertex_t cube_vertices[] = {
     // back face
@@ -333,4 +349,5 @@ topazMesh_t * topaz_mesh_create_square(topaz_t * ctx) {
 
     return m;
 }
+*/
 

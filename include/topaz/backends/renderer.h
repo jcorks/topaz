@@ -40,9 +40,6 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-#define MINIMUM_LIGHT_COUNT             32
-#define MINIMUM_TEXTURE_BINDING_COUNT   32
-
 
 ///
 /// Low-level renderer abstraction. Using this interface,
@@ -57,7 +54,6 @@ DEALINGS IN THE SOFTWARE.
 /// - Buffers:      holds generic information for the rest of the renderer. Usually 
 ///                 its stored on the renderering device when applicable.
 /// - Renderer2D:   Handles components optimized for 2D rendering.
-/// - Lights:       Light specifications for 3D rendering.
 /// - Programs:     Programmable pipeline interface if the renderer supports it.
 /// - Framebuffers: Accelerated targets for rendering operations.
 ///
@@ -280,12 +276,6 @@ struct topazRenderer_Parameters_t {
     // by a StaticObject when rendering.
     int maxSimultaneousTextures;
 
-    // returns the maximum number of lights supported by the renderer.
-    int maxEnabledLights;
-
-    // returns the number of lightx currently in use.
-    int numLights;
-
     // C string with the name of the renderer program language.
     // If blank, custom renderer programs are unsupported.
     //
@@ -469,8 +459,8 @@ typedef struct topazRenderer_2D_t topazRenderer_2D_t;
 typedef struct topazRenderer_2D_Vertex_t topazRenderer_2D_Vertex_t;
 
 /// Struct representing a dynamic (2D) vertex state.
-/// Dynamic vertices do not support lighting or 
-/// custom graphics programs.
+/// Dynamic vertices do not support custom graphics programs,
+/// but can better handle smaller sets of geometry that change often.
 ///
 struct topazRenderer_2D_Vertex_t{
     /// The vertex x position.
@@ -645,67 +635,6 @@ topazRenderer_t * topaz_renderer_2d_get_context(
 
 
 
-/// TODO: change to RendererProgramData as a generic 
-/// buffer, which is more accurate and usable.
-///
-typedef struct topazRenderer_Light_t topazRenderer_Light_t;
-
-
-
-
-/// Types of rendering lights.
-///
-typedef enum topazRenderer_LightType topazRenderer_LightType;
-enum topazRenderer_LightType {
-    /// The light is a point-light. It has a single position in 3D space.
-    topazRenderer_LightType_Point,
-
-    /// The light is applied in a direction universally. This is useful for 
-    /// things like sunlight
-    topazRenderer_LightType_Directional
-};
-
-
-
-// Creates a new light. When the light is first created, the state of the light
-// is undefined. (It is expected that you will update the lights attributes
-// before drawing);
-topazRenderer_Light_t * topaz_renderer_light_create(
-    /// The renderer to create the light for.
-    topazRenderer_t * renderer, 
-
-    /// The type of the light.
-    topazRenderer_LightType type
-);
-
-// Removes all resources associated with the light ID.
-void topaz_renderer_light_destroy(
-    /// The light to remove.
-    topazRenderer_Light_t * light
-);
-
-// As the default, the attributes requred are
-//  Position (3-components)
-//  Color (3-components)
-//  Intensity (1 component)
-// Thus, the renderer expects the array passed to have at least 7 components.
-void topaz_renderer_light_update_attribs(
-    /// The light to modify.
-    topazRenderer_Light_t * light, 
-
-    /// The data to copy to the light.
-    float * data
-);
-
-// Enables or diables the light by default, once added, the light is enabled by default
-void topaz_renderer_light_enable(
-    /// The light to enable.
-    topazRenderer_Light_t * light, 
-
-    /// The state of the light.
-    int doIt
-);
-
 
 
 
@@ -732,22 +661,7 @@ typedef struct topazRenderer_Program_t topazRenderer_Program_t;
 
 
 
-typedef enum topazRenderer_PresetProgram topazRenderer_PresetProgram;
-/// Preset programs are default contexts.
-///
-enum topazRenderer_PresetProgram {
-    /// MaterialIDs for render objects should be only 4 floats
-    /// Each float represents a color, all 4 corresponding to RGBA.
-    /// No lighting is enabled
-    ///
-    topazRenderer_PresetProgram_Basic,
 
-    /// The objects output color is determined by
-    /// a phong shading-like algorithm that utilizes any Light objects
-    /// and set material for the object
-    ///
-    topazRenderer_PresetProgram_Light,
-};
 
 // TODO: this should be changed to something more abstract. I.e. program_add_stage()
 // which could add a vertex / fragment processing stage which are supported by 
@@ -770,15 +684,26 @@ topazRenderer_Program_t * topaz_renderer_program_create(
 );
 
 
-// Returns a standard renderer program from built-in params.
-topazRenderer_Program_t * topaz_renderer_program_get_preset(
+// Returns a fallback program that will always produce results 
+// within the renderer. This will rarely be anything useful,
+// its meant to be used in the case a user program fails to compile to 
+// help let the user know something went wrong instead of 
+// refusing to render.
+topazRenderer_Program_t * topaz_renderer_program_get_fallback(
     /// The renderer to query.
-    topazRenderer_t * renderer,
-
-    /// The preset program to retrieve.
-    topazRenderer_PresetProgram preset
+    topazRenderer_t * renderer
 );
 
+
+// Every program has access to a certain amount of 
+// static storage, data that is consistent across all invocations
+// of the program. The buffer should not be destroyed.
+// Its size reflects the maximum capabilities of the backend,
+// certain backends will have different minimum / maximum 
+// capabilities.
+topazRenderer_Buffer_t * topaz_renderer_program_get_global_buffer(
+    topazRenderer_Program_t *
+);
 
 void topaz_renderer_program_destroy(
     /// The program to destroy.
@@ -973,50 +898,63 @@ struct topazRenderer_3D_t {
     /// Each vertex consists of:
     ///      3-components for position,
     ///      3-components for the normal.
-    ///      2-copmonents for UVs (texture coordinates)
+    ///      2-components for UVs (texture coordinates)
     ///      4-components for user-defined data. Meant to be utilized with custom programs.
     ///
     topazRenderer_Buffer_t * vertices;
     
-    /// Specifies how to render the vertices
-    topazRenderer_Program_t * program;
-
-    /// material matrix , 44-components containing
-    /// lighting material and arbitrary data setup.
-    /// The layout is as follows:
-    /// 4-floats for ambient (standardly)
-    /// 4-floats for diffuse (standardly)
-    /// 4-floats for specular (standardly);
-    /// 32-floats of user data.
-    ///
-    topazRenderer_Buffer_t * materialData;  
-
-    /// local transform matrix (scale + rotation), 32-component
-    /// Normal matrix (inverse transpose of modelData)
-    ///
-    topazRenderer_Buffer_t * modelData;  
-
-    /// the source framebuffer optionally accessible 
-    /// during rendering. If the samplebuffer is null,
-    /// the no source framebuffer will be made available
-    ///
-    topazRenderer_Framebuffer_t * samplebuffer;
-
-
-    /// specifies the textures to be used. Each pair is a slot referred to by 
-    /// each program.
-    topazArray_t * textureSlots;
-
-    //// The texture objects to use. Each index has a corresponding
-    topazArray_t * textureObjects;
-
-
     /* Static index list */
     // Index lists are used to build the geometry of the StaticState.
     // Each index refer to the index of the vertex to be used to build the triangle.
     // every 3 vertices, a triangle is formed. If a multiple of three is not used,
     // the behavior is implementation defined.
-    topazArray_t * indices;    
+    topazArray_t * indices;  
+    
+
+
+    
+    
+    /// Specifies how to render the vertices
+    topazRenderer_Program_t * program;
+
+    /// material matrix , 44-components containing
+    /// arbitrary data (pertinent to program)
+    /// The layout is as follows:
+    /// 4-floats for ambient (standardly)
+    /// 4-floats for diffuse (standardly)
+    /// 4-floats for specular (standardly)
+    /// 16-floats of user data.
+    ///
+    topazRenderer_Buffer_t * material;  
+
+    /// the source framebuffer optionally accessible 
+    /// during rendering. If the samplebuffer is null,
+    /// the no source framebuffer will be made available
+    ///
+    topazRenderer_Framebuffer_t * sampleFramebuffer;
+
+    /// The Textures to use. Simply null if a slot isnt used.
+    topazRenderer_Texture_t * sampleTexture0;
+    topazRenderer_Texture_t * sampleTexture1;
+    topazRenderer_Texture_t * sampleTexture2;
+
+
+ 
+    
+    /// The 3D viewing matrix buffer currently set. 
+    /// a 4x4 matrix representing the translation, scale, etc of the view.
+    /// Row-major matrices are expected.
+    /// If NULL, an identity matrix is used.
+    ///
+    topazRenderer_Buffer_t * modelviewMatrix;
+
+
+    /// The 3D projection matrix buffer. The buffer should be 
+    /// a 4x4 matrix representing this matrix.
+    /// Row-major matrices are expected.
+    /// If NULL, an identity matrix is used.
+    ///
+    topazRenderer_Buffer_t * projectionMatrix;
 
 
 };
@@ -1119,46 +1057,6 @@ void topaz_renderer_draw_2d(
 );
 
 
-/// Sets the 3D viewing matrix buffer. The buffer should be 
-/// a 4x4 matrix representing the translation, scale, etc of the view.
-/// Row-major matrices are expected.
-///
-void topaz_renderer_set_3d_viewing_matrix(
-    /// The renderer to modify.
-    topazRenderer_t * renderer, 
-
-    /// The viewing matrix to use.
-    topazRenderer_Buffer_t * transform
-);
-
-/// Sets the 3D projection matrix buffer. The buffer should be 
-/// a 4x4 matrix representing this matrix.
-/// Row-major matrices are expected.
-///
-void topaz_renderer_set_3d_projection_matrix(
-    /// The renderer to modify.
-    topazRenderer_t * renderer, 
-
-    /// The viewing matrix to use.
-    topazRenderer_Buffer_t * transform
-);
-
-
-
-/// Returns the 3D viewing matrix buffer currently set. 
-/// The default is "none".
-///
-topazRenderer_Buffer_t * topaz_renderer_get_3d_viewing_matrix(
-    /// The renderer to query.
-    topazRenderer_t * renderer
-);
-
-/// Returns the 3D projection matrix.
-/// The default is "none".
-topazRenderer_Buffer_t * topaz_renderer_get_3d_projection_matrix(
-    /// The renderer to query.
-    topazRenderer_t * renderer
-);
 
 
 
