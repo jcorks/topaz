@@ -1,4 +1,363 @@
-extern var topaz_;
+
+var TOPAZ = [
+    "INPUT" : [
+        "NOT_AN_INPUT" : 0,
+        "KEY_0" : 1, ///< 0
+        "KEY_1" : 2, ///< 1
+        "KEY_2" : 3, ///< 2
+        "KEY_3" : 4, ///< 3
+        "KEY_4" : 5, ///< 4
+        "KEY_5" : 6, ///< 5
+        "KEY_6" : 7, ///< 6
+        "KEY_7" : 8, ///< 7
+        "KEY_8" : 9, ///< 8
+        "KEY_9" : 10, ///< 9
+        "KEY_a" : 11, ///< a
+        "KEY_b" : 12, ///< b
+        "KEY_c" : 13, ///< c
+        "KEY_d" : 14, ///< d
+        "KEY_e" : 15, ///< e
+        "KEY_f" : 16, ///< f
+        "KEY_g" : 17, ///< g
+        "KEY_h" : 18, ///< h
+        "KEY_i" : 19, ///< i
+        "KEY_j" : 20, ///< j
+        "KEY_k" : 21, ///< k
+        "KEY_l" : 22, ///< l
+        "KEY_m" : 23, ///< m
+        "KEY_n" : 24, ///< n
+        "KEY_o" : 25, ///< o
+        "KEY_p" : 26, ///< p
+        "KEY_q" : 27, ///< q
+        "KEY_r" : 28, ///< r
+        "KEY_s" : 29, ///< s
+        "KEY_t" : 30, ///< t
+        "KEY_u" : 31, ///< u
+        "KEY_v" : 32, ///< v
+        "KEY_w" : 33, ///< w
+        "KEY_x" : 34, ///< x
+        "KEY_y" : 35, ///< y
+        "KEY_z" : 36, ///< z
+        "KEY_lshift" : 37, ///< Left shift key
+        "KEY_rshift" : 38, ///< Right shift key
+        "KEY_lctrl" : 39,  ///< Left control key
+        "KEY_rctrl" : 40,  ///< Right control key
+        "KEY_lalt" : 41,   ///< Left alt key
+        "KEY_ralt" : 42,   ///< Right alt key
+        "KEY_tab" : 43,    ///< Tab
+        "KEY_F1" : 44,     ///< F1
+        "KEY_F2" : 45,     ///< F2
+        "KEY_F3" : 46,     ///< F3
+        "KEY_F4" : 47,     ///< F4
+        "KEY_F5" : 48,     ///< F5
+        "KEY_F6" : 49,     ///< F6
+        "KEY_F7" : 50,     ///< F7
+        "KEY_F8" : 51,     ///< F8
+        "KEY_F9" : 52,     ///< F9
+        "KEY_F10" : 53,    ///< F10
+        "KEY_F11" : 54,    ///< F11
+        "KEY_F12" : 55,    ///< F12
+        "KEY_up" : 100,     ///< Up arrow
+        "KEY_down" : 101,   ///< Down arrow
+        "KEY_left" : 102,   ///< Left arrow
+        "KEY_right" : 103,  ///< Right arrow
+        "KEY_minus" : 104,  ///< -
+        "KEY_equal" : 105,  ///< = 
+        "KEY_backspace" : 106,  ///< Backspace
+        "KEY_grave" : 107,  ///< `
+        "KEY_esc" : 108,    ///< Escape
+        "KEY_home" : 109,   ///< Home key
+        "KEY_pageUp" : 110, ///< Page up key
+        "KEY_pageDown" : 111,  ///< Page down key
+        "KEY_end" : 112,    ///< End key
+        "KEY_backslash" : 113, ///< '\'
+        "KEY_lbracket" : 114, ///< [
+        "KEY_rbracket" : 115, ///< ]
+        "KEY_semicolon" : 116, ///< ;
+        "KEY_apostrophe" : 117, ///< '
+        "KEY_frontslash" : 118, ///< /
+        "KEY_enter" : 119, ///< Enter
+        "KEY_delete" : 120, ///< Delete
+        "KEY_numpad0" : 121, ///< Numpad 0
+        "KEY_numpad1" : 122, ///< Numpad 1
+        "KEY_numpad2" : 123, ///< Numpad 2
+        "KEY_numpad3" : 124, ///< Numpad 3
+        "KEY_numpad4" : 125, ///< Numpad 4
+        "KEY_numpad5" : 126, ///< Numpad 5
+        "KEY_numpad6" : 127, ///< Numpad 6
+        "KEY_numpad7" : 128, ///< Numpad 7
+        "KEY_numpad8" : 129, ///< Numpad 8
+        "KEY_numpad9" : 130, ///< Numpad 9
+        "KEY_prtscr" : 131, ///< Print screen button
+        "KEY_lsuper" : 132, ///< Left Super key (Windows key)
+        "KEY_rsuper" : 133, ///< Right Super key (Windows key)
+        "KEY_space" : 134,  ///< Space
+        "KEY_insert" : 135, ///< Insert key
+        "KEY_comma" : 136, ///< ,
+        "KEY_period" : 137 , ///< .
+        "KEY_world1" : 138, /// I8n key0
+        "KEY_world2" : 139, /// I8n key1
+        "KEY_world3" : 140, /// I8n key2
+        "KEY_world4" : 141, /// I8n key3
+        "KEY_world5" : 142, /// I8n key4
+        "KEY_world6" : 143, /// I8n key5
+        "KEY_world7" : 144, /// I8n key6
+        "KEY_world8" : 145, /// I8n key7
+        "KEY_world9" : 146, /// I8n key8
+    
+        "POINTER_0" : 256, ///< Left click
+        "POINTER_1" : 257, ///< Right click
+        "POINTER_2" : 258, ///< Middle click
+    
+        "POINTER_X" : 259, ///< Horizontal axis. Usually for the X axis of the pointer
+        "POINTER_Y" : 260, ///< Horizontal axis. Usually for the X axis of the pointer
+        "POINTER_Wheel" : 261, ///< Mouse wheel.
+    
+        "PAD_a" : 300,     ///< Button 0
+        "PAD_b" : 301,     ///< Button 1
+        "PAD_c" : 302,     ///< Button 2
+        "PAD_x" : 303,     ///< Button 3
+        "PAD_y" : 304,     ///< Button 4
+        "PAD_r" : 305,     ///< Button 5
+        "PAD_l" : 306,     ///< Button 6
+        "PAD_r2" : 307,    ///< Button 7
+        "PAD_l2" : 308,    ///< Button 8
+        "PAD_r3" : 309,    ///< Button 9
+        "PAD_l3" : 310,    ///< Button 10
+        "PAD_start" : 311,    ///< Button 11
+        "PAD_select" : 312,///< Button 12
+        "PAD_b13" : 313,///< Button 13
+        "PAD_b14" : 314,///< Button 14
+        "PAD_b15" : 315,///< Button 15
+        "PAD_b16" : 316,///< Button 16
+        "PAD_b17" : 317,///< Button 17
+        "PAD_b18" : 318,///< Button 18
+        "PAD_b19" : 319,///< Button 19
+        "PAD_b20" : 320,///< Button 20
+        "PAD_b21" : 321,///< Button 21
+        "PAD_b22" : 322,///< Button 22
+        "PAD_b23" : 323,///< Button 23
+        "PAD_b24" : 324,///< Button 24
+        "PAD_b25" : 325,///< Button 25
+        "PAD_b26" : 326,///< Button 26
+        "PAD_b27" : 327,///< Button 27
+        "PAD_b28" : 328,///< Button 28
+        "PAD_b29" : 329,///< Button 29
+        "PAD_b30" : 330,///< Button 30
+        "PAD_b31" : 331,///< Button 31
+        "PAD_b32" : 332,///< Button 32
+    
+        "PAD_axisX" : 400, ///< X button
+        "PAD_axisY" : 401, ///< Y button
+        "PAD_axisZ" : 402, ///< Z button
+        "PAD_axisX2" : 403,///< X2 button 
+        "PAD_axisY2" : 404,///< Y2 button
+        "PAD_axisZ2" : 405,///< Z2 button
+        "PAD_axisX3" : 406,///< X3 button
+        "PAD_axisY3" : 407,///< Y3 button
+        "PAD_axisZ3" : 408,///< Z3 button
+        "PAD_axisX4" : 409,///< X4 button
+        "PAD_axisY4" : 410,///< Y4 button
+        "PAD_axisZ4" : 411,///< Z4 button
+        "PAD_axisX5" : 412,///< X4 button
+        "PAD_axisY5" : 413,///< Y4 button
+        "PAD_axisZ5" : 414,///< Z4 button
+        "PAD_axisX6" : 415,///< X4 button
+        "PAD_axisY6" : 416,///< Y4 button
+        "PAD_axisZ6" : 417,///< Z4 button
+    
+        "PAD_axisR" : 450,   
+        "PAD_axisL" : 451,    
+        "PAD_axisR2" : 452,    
+        "PAD_axisL2" : 453,    
+        "PAD_axisR3" : 454,    
+        "PAD_axisL3" : 455,    
+        "PAD_axisR4" : 456,    
+        "PAD_axisL4" : 457,    
+    
+        "PAD_options" : 511,
+        "COUNT" : 512
+    ],
+
+  
+    "RENDERER" : [
+        "ATTRIBUTE" : [
+            "PRIMITIVE" : 0,
+            "ALPHA_RULE" : 1,
+            "DEPTH_TEST" : 2,
+            "ETCH_RULE" : 3,
+            "TEXTURE_FILTER_HINT" : 4
+        ],
+        
+        "PRIMITIVE" : [
+            "TRIANGLE" : 0,
+            "LINE" : 1
+        ],
+
+        "ETCH_RULE" : [
+            "NO_ETCHING" : 0,
+            "DEFINE" : 1,
+            "UNDEFINE" : 2,
+            "IN" : 3,
+            "OUT" : 4
+        ],
+        
+        "DEPTH_TEST" : [
+            "LESS" : 0,
+            "LEQ" : 1,
+            "GREATER" : 2,
+            "GEQ" : 3,
+            "EQUAL" : 4,
+            "NONE" : 5
+        ],
+
+        "ALPHA_RULE" : [
+            "ALLOW" : 0,
+            "OPAQUE" : 1,
+            "TRANSLUCENT" : 2,
+            "INVISIBLE" : 3
+        ],
+        
+        "TEXTURE_FILTER_HINT" : [
+            "LINEAR" : 0,
+            "NONE" : 1
+        ],
+        
+        "LAYER" : [
+            "COLOR" : 1,
+            "DEPTH" : 2,
+            "ETCH" : 4,
+            "ALL" : 7
+        ]
+
+    ],
+    
+    "ASSET" : [ 
+        "TYPE" : [
+            "NONE" : 0,
+            "IMAGE" : 1,
+            "SOUND" : 2,
+            "MATERIAL" : 3,
+            "PARTICLE" : 4,
+            "DATA" : 5,
+            "MESH" : 6
+        ]
+    ],
+    
+    
+    "PARTICLE" : [
+        "PROPERTY" : [
+            "DURATION" : 0,
+            "SCALE_X" : 1,
+            "SCALE_Y" : 2,
+            "SCALE_MULTIPLIER" : 3,
+            "ROTATION" : 4,
+            "DIRECTION" : 5,
+            "SPEED_X" : 6,
+            "SPEED_Y" : 7,
+            "RED" : 8,
+            "GREEN" : 9,
+            "BLUE" : 10,
+            "ALPHA" : 11
+        ]
+    ],
+    
+    "FILESYSTEM" : [
+        "DEFAULT_NODE" : [
+            "RESOURCES" : 0,
+            "TOPAZ" : 1,
+            "USER_DATA" : 2
+        ]
+    
+    ],
+    
+    "AUTOMATION" : [
+        "FUNCTION" : [
+            "NONE" : 0,
+            "LINEAR" : 1,
+            "SQUARE" : 2,
+            "CUBE" : 3,
+            "SQUARE_ROOT" : 4,
+            "CUBE_ROOT" : 5,
+            "RANDOM" : 6    
+        ]      
+    ],
+
+
+    "SHAPE3D" : [
+        "TEXTURE" : [
+            "SLOT_0" : 0,
+            "SLOT_1" : 1,
+            "SLOT_2" : 2
+        ]
+    ],
+
+
+    "OBJECT2D" : [
+        "GROUP" : [
+            "A" : 0,
+            "B" : 1,
+            "C" : 2,
+            "D" : 3,
+            "E" : 4,
+            "F" : 5,
+            "G" : 6,
+            "H" : 7,
+            "I" : 8,
+            "J" : 9,
+            "K" : 10,
+            "L" : 11,
+            "M" : 12,
+            "N" : 13,
+            "O" : 14,
+            "P" : 15,
+            "Q" : 16,
+            "R" : 17,
+            "S" : 18,
+            "T" : 19,
+            "U" : 20,
+            "V" : 21,
+            "W" : 22,
+            "X" : 23,
+            "Y" : 24,
+            "Z" : 25
+        ]
+    ],
+    
+    "SCHEDULER" : [
+        "MODE" : [
+            "TIME" : 0,
+            "FRAME" : 1
+        ]
+    ],
+    
+    "DISPLAY" : [
+        "VIEW_POLICY" : [
+            "NONE" : 0,
+            "MATCH_SIZE" : 1
+        ],
+
+        "PARAMETER" : [
+            "X" : 0,
+            "Y" : 1,
+            "WIDTH" : 2,
+            "HEIGHT" : 3,
+            "SHOW" : 4,
+            "FULLSCREEN" : 5,
+            "LOCK_CLIENT_RESIZE" : 6,
+            "LOCK_CLIENT_POSITION" : 7,
+            "VIEW_POLICY" : 8,
+            "INPUT_FOCUS" : 9
+        ],
+        
+        "FRAMEBUFFER" : [
+            "A" : 0,
+            "B" : 1,
+            "C" : 2,
+            "D" : 3
+        ]
+    ]
+];
 
 /*
     Some maintenance notes for gravity:
@@ -71,7 +430,7 @@ extern var topaz_;
             }
 
         Here, b will be populated with 2 nulls instead of instances of Inside
-        *** FOR THIS REASON, ENTITY AND COMPONENT CANNOT BE NESTED CLASSES OF
+        *** FOR REASON, ENTITY AND COMPONENT CANNOT BE NESTED CLASSES OF
             TOPAZ, AS COMPONENT AND ENTITY ARE COMPLEX IN THEIR OPERATION 
             AND ARE NOT USED AS SIMPLE SINGLETONS ***
 
@@ -81,24 +440,28 @@ extern var topaz_;
 */
 
 
+extern var topaz_;
 
 class Entity {    
-    var impl_;
+    var impl;
     
     
             
     func init(v) {
-        impl_ = v == null ? topaz_.topaz_entity__create() : v;
-        impl_.api_ = self;
+        if (v == undefined) {
+            impl = topaz_.topaz_entity__create();
+        } else {
+            impl = v;        
+        }
+        impl.api_ = self;
 
-
-        topaz_.topaz_entity__set_on_step(impl_, onStep_wrapper);
-        topaz_.topaz_entity__set_on_draw(impl_, onDraw_wrapper);
-        topaz_.topaz_entity__set_on_pre_step(impl_, onPreStep_wrapper);
-        topaz_.topaz_entity__set_on_pre_draw(impl_, onPreDraw_wrapper);
-        topaz_.topaz_entity__set_on_remove(impl_, onRemove_wrapper);
-        topaz_.topaz_entity__set_on_attach(impl_, onAttach_wrapper);
-        topaz_.topaz_entity__set_on_detach(impl_, onDetach_wrapper);
+        topaz_.topaz_entity__set_on_step(impl, onStep_wrapper);
+        topaz_.topaz_entity__set_on_draw(impl, onDraw_wrapper);
+        topaz_.topaz_entity__set_on_pre_step(impl, onPreStep_wrapper);
+        topaz_.topaz_entity__set_on_pre_draw(impl, onPreDraw_wrapper);
+        topaz_.topaz_entity__set_on_remove(impl, onRemove_wrapper);
+        topaz_.topaz_entity__set_on_attach(impl, onAttach_wrapper);
+        topaz_.topaz_entity__set_on_detach(impl, onDetach_wrapper);
 
         onReady();
 
@@ -147,20 +510,20 @@ class Entity {
 
     
     var isValid {
-        get {return topaz_.topaz_entity__is_valid(impl_);}
+        get {return topaz_.topaz_entity__is_valid(impl);}
     }
     
     func remove() {
-        topaz_.topaz_entity__remove(impl_);
+        topaz_.topaz_entity__remove(impl);
     }
     
     var children {
         get {
             var ch = [];
-            var len = topaz_.topaz_entity__get_child_count(impl_);
+            var len = topaz_.topaz_entity__get_child_count(impl);
             for(var i in 0..<len) {
-                var impl_ = topaz_.topaz_entity__get_nth_child(impl_, i);
-                ch.push(impl_.api_);
+                var im = topaz_.topaz_entity__get_nth_child(impl, i);
+                ch.push(im.api_);
             }
             return ch;
         }
@@ -179,66 +542,66 @@ class Entity {
     
     
     func step() {
-        topaz_.topaz_entity__step(impl_);
+        topaz_.topaz_entity__step(impl);
     }
 
     func draw() {
-        topaz_.topaz_entity__draw(impl_);
+        topaz_.topaz_entity__draw(impl);
     }
 
     func attach(other) {
-        topaz_.topaz_entity__attach(impl_, other.impl_);
+        topaz_.topaz_entity__attach(impl, other.impl);
     }
 
     func detach() {
-        topaz_.topaz_entity__detach(impl_);
+        topaz_.topaz_entity__detach(impl);
     }
 
     var parent {
         get {
-            return topaz_.topaz_entity__get_parent(impl_);
+            return topaz_.topaz_entity__get_parent(impl);
         }
         
         set {
-            topaz_.topaz_entity__attach(value.impl_, impl_);
+            topaz_.topaz_entity__attach(value.impl, impl);
         }
     }
     
     func search(str) {
-        return topaz_.topaz_entity__search(impl_, str);
+        return topaz_.topaz_entity__search(impl, str);
     }
     
     
     
     var priority {
         get {
-            return topaz_.topaz_entity__get_priority(impl_);
+            return topaz_.topaz_entity__get_priority(impl);
         }
         
         set {
-            topaz_.topaz_entity__set_priority(impl_, value);
+            topaz_.topaz_entity__set_priority(impl, value);
         }
     }
     
     
     func setPriorityFirst() {
-        topaz_.topaz_entity__set_priority_first(impl_);
+        topaz_.topaz_entity__set_priority_first(impl);
     }
     
     func setPriorityLast() {
-        topaz_.topaz_entity__set_priority_last(impl_);
+        topaz_.topaz_entity__set_priority_last(impl);
     }
 
 
     var rotation {
         get { 
             var out = Topaz.Vector();
-            out.impl_ = topaz_.topaz_entity__get_rotation(impl_);
+            out.impl = topaz_.topaz_entity__get_rotation(impl);
             return out;
         }
         
         set {
-            topaz_.topaz_entity__set_rotation(impl_, value.impl_);
+            topaz_.topaz_entity__set_rotation(impl, value.impl);
         }
     }
 
@@ -246,24 +609,24 @@ class Entity {
     var position {
         get { 
             var out = Topaz.Vector();
-            out.impl_ = topaz_.topaz_entity__get_position(impl_);
+            out.impl = topaz_.topaz_entity__get_position(impl);
             return out;
         }
         
         set {
-            topaz_.topaz_entity__set_position(impl_, value.impl_);
+            topaz_.topaz_entity__set_position(impl, value.impl);
         }
     }
     
     var scale {
         get { 
             var out = Topaz.Vector();
-            out.impl_ = topaz_.topaz_entity__get_scale(impl_);
+            out.impl = topaz_.topaz_entity__get_scale(impl);
             return out;
         }
         
         set {
-            topaz_.topaz_entity__set_scale(impl_, value.impl_);
+            topaz_.topaz_entity__set_scale(impl, value.impl);
         }
     }
     
@@ -272,70 +635,70 @@ class Entity {
     var globalPosition {
         get {
             var out = Topaz.Vector();
-            out.impl_ = topaz_.topaz_entity__get_global_position(impl_);
+            out.impl = topaz_.topaz_entity__get_global_position(impl);
             return out;
         }
     }
     
     var stepping {
         get {
-            return topaz_.topaz_entity__get_stepping(impl_);
+            return topaz_.topaz_entity__get_stepping(impl);
         }
         
         set {
-            topaz_.topaz_entity__set_stepping(impl_, value);
+            topaz_.topaz_entity__set_stepping(impl, value);
         }
     }
 
 
     var drawing {
         get {
-            return topaz_.topaz_entity__get_drawing(impl_);
+            return topaz_.topaz_entity__get_drawing(impl);
         }
         
         set {
-            topaz_.topaz_entity__set_drawing(impl_, value);
+            topaz_.topaz_entity__set_drawing(impl, value);
         }
     }
     
     
     var isStepping {
         get {
-            return topaz_.topaz_entity__is_stepping(impl_);
+            return topaz_.topaz_entity__is_stepping(impl);
         }
     }
 
     var isDrawing {
         get {
-            return topaz_.topaz_entity__is_drawing(impl_);
+            return topaz_.topaz_entity__is_drawing(impl);
         }
     }
 
     var name {
         get {
-            return topaz_.topaz_entity__get_name(impl_);
+            return topaz_.topaz_entity__get_name(impl);
         }
         set {
-            topaz_.topaz_entity__set_name(impl_, value);
+            topaz_.topaz_entity__set_name(impl, value);
         }
 
     }
 
 
     func addComponent(other) {
-        topaz_.topaz_entity__add_component(impl_, other.impl_);
+        topaz_.topaz_entity__add_component(impl, other.impl);
     }
 
     func addComponentAfter(other) {
-        topaz_.topaz_entity__add_component_after(impl_, other.impl_);
+        topaz_.topaz_entity__add_component_after(impl, other.impl);
     }
 
     var components {
         get {
             var out = [];
-            var count = topaz_.topaz_entity__get_component_count(impl_);
+            var count = topaz_.topaz_entity__get_component_count(impl);
             for(var i in 0..<count) {
-                var c = topaz_.topaz_entity__get_nth_component(impl_, i);
+                var c = topaz_.topaz_entity__get_nth_component(impl, i);
                 out.push(c);
             }
             return out;
@@ -354,11 +717,11 @@ class Entity {
     }
 
     func queryComponent(name) {
-        return topaz_.topaz_entity__query_component(impl_, name);
+        return topaz_.topaz_entity__query_component(impl, name);
     }
 
     func removeComponent(c) {
-        topaz_.topaz_entity__remove_component(impl_, c.impl_);
+        topaz_.topaz_entity__remove_component(impl, c.impl);
     }
 }
 
@@ -367,17 +730,17 @@ class Entity {
 ////////////////////
 //////////
 class Component {
-    var impl_;
+    var impl;
 
     
     func init() {
-        impl_ = topaz_.topaz_component__create('');
-        impl_.api_ = self;
-        topaz_.topaz_component__set_on_step(impl_, onStep_wrapper);
-        topaz_.topaz_component__set_on_draw(impl_, onDraw_wrapper);
-        topaz_.topaz_component__set_on_destroy(impl_, onDestroy_wrapper);
-        topaz_.topaz_component__set_on_attach(impl_, onAttach_wrapper);
-        topaz_.topaz_component__set_on_detach(impl_, onDetach_wrapper);
+        impl = topaz_.topaz_component__create('');
+        impl.api_ = self;
+        topaz_.topaz_component__set_on_step(impl, onStep_wrapper);
+        topaz_.topaz_component__set_on_draw(impl, onDraw_wrapper);
+        topaz_.topaz_component__set_on_destroy(impl, onDestroy_wrapper);
+        topaz_.topaz_component__set_on_attach(impl, onAttach_wrapper);
+        topaz_.topaz_component__set_on_detach(impl, onDetach_wrapper);
         onReady();
     }
 
@@ -405,90 +768,90 @@ class Component {
     func onDetach(){};
     func onDestroy(){};
     func destroy() {
-        topaz_.topaz_component__destroy(impl_);
+        topaz_.topaz_component__destroy(impl);
     }
 
 
     func step() {
-        topaz_.topaz_component__step(impl_);
+        topaz_.topaz_component__step(impl);
     }
 
     func draw() {
-        topaz_.topaz_component__draw(impl_);
+        topaz_.topaz_component__draw(impl);
     }
 
     var stepping {
-        get {return topaz_.topaz_component__get_stepping(impl_);}
-        set {topaz_.topaz_component__set_stepping(impl_, value);}
+        get {return topaz_.topaz_component__get_stepping(impl);}
+        set {topaz_.topaz_component__set_stepping(impl, value);}
     }
 
     var drawing {
-        get {return topaz_.topaz_component__get_drawing(impl_);}
-        set {topaz_.topaz_component__set_drawing(impl_, value);}
+        get {return topaz_.topaz_component__get_drawing(impl);}
+        set {topaz_.topaz_component__set_drawing(impl, value);}
     }
 
     var tag {
-        get {return topaz_.topaz_component__get_tag(impl_);}
-        set {topaz_.topaz_component__set_tag(impl_, value);}
+        get {return topaz_.topaz_component__get_tag(impl);}
+        set {topaz_.topaz_component__set_tag(impl, value);}
     }
 
     var host {
-        get {return topaz_.topaz_component__get_host(impl_).api_;}
+        get {return topaz_.topaz_component__get_host(impl).api_;}
     }
 
     
     static var Null {
         get {
             var out = Component('');
-            out.impl_ = topaz_.component__null();
+            out.impl = topaz_.component__null();
             return out;
         }
     }
 
     func emitEvent(evName, entSource) {
         if (entSource == undefined) {
-            topaz_.topaz_component__emit_event_anonymous(impl_, evName);
+            topaz_.topaz_component__emit_event_anonymous(impl, evName);
         } else {
-            topaz_.topaz_component__emit_event(impl_, evName, entSource.impl_);
+            topaz_.topaz_component__emit_event(impl, evName, entSource.impl);
         }
     }    
 
     
 
     func canHandleEvent(evName) {
-        return topaz_.topaz_component__can_handle_event(impl_, evName);
+        return topaz_.topaz_component__can_handle_event(impl, evName);
     }
 
 
     func installEvent(name, handler) {
-        topaz_.topaz_component__install_event(impl_, name, func(c, e){handler(c.api_, e.api_)});
+        topaz_.topaz_component__install_event(impl, name, func(c, e){handler(c.api_, e.api_)});
     }
 
     
     
     func uninstallEvent(name) {
-        topaz_.topaz_component__uninstall_event(impl_, name);
+        topaz_.topaz_component__uninstall_event(impl, name);
     }
 
 
     func installHook(name, handler) {
-        return topaz_.topaz_component__install_hook(impl_, name, func(c, e){
+        return topaz_.topaz_component__install_hook(impl, name, func(c, e){
             handler(c.api_, e.api_);
         });
     }
 
     func uninstallHook(id) {
-        topaz_.topaz_component__uninstall_hook(impl_, id);        
+        topaz_.topaz_component__uninstall_hook(impl, id);        
     }    
 
     func installHandler(name, handler) {
-        return topaz_.topaz_component__install_hook(impl_, name, func(c, e){
+        return topaz_.topaz_component__install_hook(impl, name, func(c, e){
             handler(c.api_, e.api_);
         });
     }
 
     func uninstallHandler(id) {
-        topaz_.topaz_component__uninstall_hook(impl_, id);        
+        topaz_.topaz_component__uninstall_hook(impl, id);        
     }    
 
 
@@ -506,7 +869,7 @@ class Topz {
     var toBase64;
     func fromBase64(f) {
         var out = Data();
-        out.impl_ = topaz_.topaz__from_base64(f);
+        out.impl = topaz_.topaz__from_base64(f);
         return out;
     }
 
@@ -521,7 +884,7 @@ class Topz {
             return topaz_.topaz__get_root();
         }
         set {
-            topaz_.topaz__set_root(value.impl_);
+            topaz_.topaz__set_root(value.impl);
         }
     }
 
@@ -560,41 +923,41 @@ class Topz {
     /// vector 
     class Vector_Definition {
         // effectively private.
-        var impl_;
+        var impl;
 
         func init(x_, y_, z_) {
             if (x_ is String) {
-                impl_ = topaz_.topaz_vector__create(x_);                    
+                impl = topaz_.topaz_vector__create(x_);                    
             } else {
                 if (z_ == undefined) {
-                    impl_ = topaz_.topaz_vector__create(x_, y_, 0);                                    
+                    impl = topaz_.topaz_vector__create(x_, y_, 0);                                    
                 } else {
-                    impl_ = topaz_.topaz_vector__create(x_, y_, z_);
+                    impl = topaz_.topaz_vector__create(x_, y_, z_);
                 }
             }
 
         }    
         func getDistance(other) {
-            return topaz_.topaz_vector__get_distance(impl_, other.impl_);
+            return topaz_.topaz_vector__get_distance(impl, other.impl);
         }
 
         func normalize() {
-            topaz_.topaz_vector__normalize(impl_);
+            topaz_.topaz_vector__normalize(impl);
         }
 
         func cross(other) {
             var out = Vector();
-            out.impl_ = topaz_.topaz_vector__cross(impl_, other.impl_);
+            out.impl = topaz_.topaz_vector__cross(impl, other.impl);
             return out;
         }
 
         func floor(other) {
-            topaz_.topaz_vector__floor(impl_);
+            topaz_.topaz_vector__floor(impl);
         }
 
 
         var length {
-            get {return topaz_.topaz_vector__get_length(impl_);}
+            get {return topaz_.topaz_vector__get_length(impl);}
         }    
 
 
@@ -604,57 +967,57 @@ class Topz {
         
         
         func rotationXdiff(other) {
-            return topaz_.topaz_vector__rotation_x_diff(impl_, other.impl_);
+            return topaz_.topaz_vector__rotation_x_diff(impl, other.impl);
         }   
         
         func rotationXDiffRelative(other) {
-            return topaz_.topaz_vector__rotation_x_diff_relative(impl_, other.impl_);
+            return topaz_.topaz_vector__rotation_x_diff_relative(impl, other.impl);
         }   
 
         func rotationX() {
-            return topaz_.topaz_vector__rotation_x(impl_);
+            return topaz_.topaz_vector__rotation_x(impl);
         }        
         
 
 
         func rotationYdiff(other) {
-            return topaz_.topaz_vector__rotation_y_diff(impl_, other.impl_);
+            return topaz_.topaz_vector__rotation_y_diff(impl, other.impl);
         }   
         
         func rotationYDiffRelative(other) {
-            return topaz_.topaz_vector__rotation_y_diff_relative(impl_, other.impl_);
+            return topaz_.topaz_vector__rotation_y_diff_relative(impl, other.impl);
         }   
 
         func rotationY() {
-            return topaz_.topaz_vector__rotation_y(impl_);
+            return topaz_.topaz_vector__rotation_y(impl);
         }        
 
 
 
 
         func rotationZdiff(other) {
-            return topaz_.topaz_vector__rotation_z_diff(impl_, other.impl_);
+            return topaz_.topaz_vector__rotation_z_diff(impl, other.impl);
         }   
         
         func rotationZDiffRelative(other) {
-            return topaz_.topaz_vector__rotation_z_diff_relative(impl_, other.impl_);
+            return topaz_.topaz_vector__rotation_z_diff_relative(impl, other.impl);
         }   
 
         func rotationZ() {
-            return topaz_.topaz_vector__rotation_z(impl_);
+            return topaz_.topaz_vector__rotation_z(impl);
         }        
 
 
 
 
         func rotateX() {
-            topaz_.topaz_vector__rotate_x(impl_);
+            topaz_.topaz_vector__rotate_x(impl);
         }
         func rotateY() {
-            topaz_.topaz_vector__rotate_y(impl_);
+            topaz_.topaz_vector__rotate_y(impl);
         }
         func rotateZ() {
-            topaz_.topaz_vector__rotate_z(impl_);
+            topaz_.topaz_vector__rotate_z(impl);
         }
 
 
@@ -731,18 +1094,18 @@ class Topz {
 
         
         var x {
-            set {topaz_.topaz_vector__set_x(impl_, value);}
-            get {return topaz_.topaz_vector__get_x(impl_);}
+            set {topaz_.topaz_vector__set_x(impl, value);}
+            get {return topaz_.topaz_vector__get_x(impl);}
         }
         
         var y {
-            set {topaz_.topaz_vector__set_y(impl_, value);}
-            get {return topaz_.topaz_vector__get_y(impl_);}
+            set {topaz_.topaz_vector__set_y(impl, value);}
+            get {return topaz_.topaz_vector__get_y(impl);}
         }
 
         var z {
-            set {topaz_.topaz_vector__set_z(impl_, value);}
-            get {return topaz_.topaz_vector__get_z(impl_);}
+            set {topaz_.topaz_vector__set_z(impl, value);}
+            get {return topaz_.topaz_vector__get_z(impl);}
         }
 
 
@@ -750,36 +1113,36 @@ class Topz {
     var Vector;
 
     class Particle_Definition {
-        var impl_;
+        var impl;
         static var Property;
         func init() {
-            impl_ = topaz_.topaz_particle__create();
+            impl = topaz_.topaz_particle__create();
         }
-        func setParameter(a, b) {
-            topaz_.topaz_shape2d__set_param(impl_, a, b);
+        func setAttribute(a, b) {
+            topaz_.topaz_particle__set_attribute(impl, a, b);
         }
         func setNoiseMin(p, val) {
-            topaz_.topaz_particle__set_noise_min(impl_, p, val);
+            topaz_.topaz_particle__set_noise_min(impl, p, val);
         }
         func setNoiseMax(p, val) {
-            topaz_.topaz_particle__set_noise_max(impl_, p, val);
+            topaz_.topaz_particle__set_noise_max(impl, p, val);
         }
         func setFunction(p, val) {
-            topaz_.topaz_particle__set_function(impl_, p, val);
+            topaz_.topaz_particle__set_function(impl, p, val);
         }
         
         var string {
             get {
-                return topaz_.topaz_particle__to_string(impl_)
+                return topaz_.topaz_particle__to_string(impl)
             }
             set {
-                topaz_.topaz_particle__set_from_string(impl_, value);
+                topaz_.topaz_particle__set_from_string(impl, value);
             }
         }
         
         var image {
             set {
-                return topaz_.topaz_particle__set_image(impl_, value);
+                return topaz_.topaz_particle__set_image(impl, value);
             }
         }
 
@@ -789,9 +1152,9 @@ class Topz {
 
     /////// color 
     class Color_Definition {
-        var impl_;
+        var impl;
         func init(r_) {
-            impl_ = topaz_.topaz_color__create();
+            impl = topaz_.topaz_color__create();
             if (r_.length > 0) {
                 string = r_;
             }
@@ -799,29 +1162,29 @@ class Topz {
 
         var string {
             get {
-                return topaz_.topaz_color__to_hex_string(impl_);
+                return topaz_.topaz_color__to_hex_string(impl);
             }
 
             set {
-                topaz_.topaz_color__set_from_string(impl_, value);
+                topaz_.topaz_color__set_from_string(impl, value);
             }
         }
 
         var r {
-            get {return topaz_.topaz_color__get_r(impl_);}
-            set {       topaz_.topaz_color__set_r(impl_, value);}
+            get {return topaz_.topaz_color__get_r(impl);}
+            set {       topaz_.topaz_color__set_r(impl, value);}
         }
         var g {
-            get {return topaz_.topaz_color__get_g(impl_);}
-            set {       topaz_.topaz_color__set_g(impl_, value);}
+            get {return topaz_.topaz_color__get_g(impl);}
+            set {       topaz_.topaz_color__set_g(impl, value);}
         }
         var b {
-            get {return topaz_.topaz_color__get_b(impl_);}
-            set {       topaz_.topaz_color__set_b(impl_, value);}
+            get {return topaz_.topaz_color__get_b(impl);}
+            set {       topaz_.topaz_color__set_b(impl, value);}
         }
         var a {
-            get {return topaz_.topaz_color__get_a(impl_);}
-            set {       topaz_.topaz_color__set_a(impl_, value);}
+            get {return topaz_.topaz_color__get_a(impl);}
+            set {       topaz_.topaz_color__set_a(impl, value);}
         }
 
 
@@ -837,55 +1200,55 @@ class Topz {
     ////////// audio
     class Audio_Definition {
         class PlaybackSound_Definition {
-            var impl_;
+            var impl;
             
             func init(id) {
-                impl_ = id;
+                impl = id;
             }   
             
             var volume {
                 set {
-                    topaz_.topaz_audio__playback_set_volume(impl_, value);
+                    topaz_.topaz_audio__playback_set_volume(impl, value);
                 }
             }
 
             var panning {
                 set {
-                    topaz_.topaz_audio__playback_set_panning(impl_, value);
+                    topaz_.topaz_audio__playback_set_panning(impl, value);
                 }
             }
 
             var repeatSound {
                 set {
-                    topaz_.topaz_audio__playback_set_repeat(impl_, value);
+                    topaz_.topaz_audio__playback_set_repeat(impl, value);
                 }
             }
 
             var paused {
                 set {
                     if (value)
-                        topaz_.topaz_audio__playback_pause(impl_);
+                        topaz_.topaz_audio__playback_pause(impl);
                     else 
-                        topaz_.topaz_audio__playback_resume(impl_);
+                        topaz_.topaz_audio__playback_resume(impl);
                 }
             }
             
             
             var seek {
                 set {
-                    topaz_.topaz_audio__playback_seek(impl_, value);            
+                    topaz_.topaz_audio__playback_seek(impl, value);            
                 }
             }
 
             func stop() {
-                topaz_.topaz_audio__playback_stop(impl_);
+                topaz_.topaz_audio__playback_stop(impl);
             }
 
 
         }    
 
         func playSound(asset, channel) {
-            return PlaybackSound_Definition(topaz_.topaz_audio__play_sound(asset.impl_, channel == undefined ? 0 : channel));
+            return PlaybackSound_Definition(topaz_.topaz_audio__play_sound(asset.impl, channel == undefined ? 0 : channel));
         }
         
         var channelHalt;
@@ -910,20 +1273,7 @@ class Topz {
     ////////// resources
     /////
     class Resources_Definition {
-        var AssetType;
 
-        func init() {
-            AssetType = [
-                "none"  : 0,
-                "image" : 1,
-                "sound" : 2,
-                "model" : 3,
-                "particle" : 4,
-                "data" : 5,
-                "actor" : 6,
-                "count" : 7
-            ];
-        }
 
 
 
@@ -945,19 +1295,29 @@ class Topz {
             if (!impl) return null;
 
             switch(topaz_.topaz_asset__get_type(impl)) {
-            case AssetType.data:
+            case TOPAZ.ASSET.TYPE.MESH:
+                out = Topaz.Mesh();
+                out.impl = impl;
+                return out;
+                
+            case TOPAZ.ASSET.TYPE.MATERIAL:
+                out = Topaz.Material();
+                out.impl = impl;
+                return out;
+            
+            case TOPAZ.ASSET.TYPE.DATA:
                 out = Topaz.Data();
-                out.impl_ = impl;
+                out.impl = impl;
                 return out;
 
-            case AssetType.image:
+            case TOPAZ.ASSET.TYPE.IMAGE:
                 out = Topaz.Image();
-                out.impl_ = impl;
+                out.impl = impl;
                 return out;
 
-            case AssetType.sound:
+            case TOPAZ.ASSET.TYPE.SOUND:
                 out = Topaz.Sound();
-                out.impl_ = impl;
+                out.impl = impl;
                 return out;
 
             }
@@ -970,19 +1330,29 @@ class Topz {
             var out;
             if (!impl) return null;
             switch(topaz_.topaz_asset__get_type(impl)) {
-            case AssetType.data:
+            case TOPAZ.ASSET.TYPE.MESH:
+                out = Topaz.Mesh();
+                out.impl = impl;
+                return out;
+                
+            case TOPAZ.ASSET.TYPE.MATERIAL:
+                out = Topaz.Material();
+                out.impl = impl;
+                return out;
+
+            case TOPAZ.ASSET.TYPE.DATA:
                 out = Topaz.Data();
-                out.impl_ = impl;
+                out.impl = impl;
                 return out;
 
-            case AssetType.image:
+            case TOPAZ.ASSET.TYPE.IMAGE:
                 out = Topaz.Image();
-                out.impl_ = impl;
+                out.impl = impl;
                 return out;
 
-            case AssetType.sound:
+            case TOPAZ.ASSET.TYPE.SOUND:
                 out = Topaz.Sound();
-                out.impl_ = impl;
+                out.impl = impl;
                 return out;
 
             }
@@ -995,19 +1365,29 @@ class Topz {
             var out;
             if (!impl) return null;
             switch(topaz_.topaz_asset__get_type(impl)) {
-            case AssetType.data:
+            case TOPAZ.ASSET.TYPE.MESH:
+                out = Topaz.Mesh();
+                out.impl = impl;
+                return out;
+                
+            case TOPAZ.ASSET.TYPE.MATERIAL:
+                out = Topaz.Material();
+                out.impl = impl;
+                return out;
+
+            case TOPAZ.ASSET.TYPE.DATA:
                 out = Topaz.Data();
-                out.impl_ = impl;
+                out.impl = impl;
                 return out;
 
-            case AssetType.image:
+            case TOPAZ.ASSET.TYPE.IMAGE:
                 out = Topaz.Image();
-                out.impl_ = impl;
+                out.impl = impl;
                 return out;
 
-            case AssetType.sound:
+            case TOPAZ.ASSET.TYPE.SOUND:
                 out = Topaz.Sound();
-                out.impl_ = impl;
+                out.impl = impl;
                 return out;
 
             }
@@ -1019,19 +1399,29 @@ class Topz {
             var out;
             if (!impl) return null;
             switch(topaz_.topaz_asset__get_type(impl)) {
-            case AssetType.data:
+            case TOPAZ.ASSET.TYPE.MESH:
+                out = Topaz.Mesh();
+                out.impl = impl;
+                return out;
+                
+            case TOPAZ.ASSET.TYPE.MATERIAL:
+                out = Topaz.Material();
+                out.impl = impl;
+                return out;
+
+            case TOPAZ.ASSET.TYPE.DATA:
                 out = Topaz.Data();
-                out.impl_ = impl;
+                out.impl = impl;
                 return out;
 
-            case AssetType.image:
+            case TOPAZ.ASSET.TYPE.IMAGE:
                 out = Topaz.Image();
-                out.impl_ = impl;
+                out.impl = impl;
                 return out;
 
-            case AssetType.sound:
+            case TOPAZ.ASSET.TYPE.SOUND:
                 out = Topaz.Sound();
-                out.impl_ = impl;
+                out.impl = impl;
                 return out;
 
             }
@@ -1039,7 +1429,7 @@ class Topz {
         }
         
         func writeAsset(asset, name, ext) {
-            return topaz_.topaz_resources__write_asset(asset.impl_, name, ext);
+            return topaz_.topaz_resources__write_asset(asset.impl, name, ext);
         }
 
         func removeAsset(a) {
@@ -1055,364 +1445,6 @@ class Topz {
     }
     var Resources;
 
-    class Key_Definition {
-        var topazNotAnInput;
-        var topazKey_0; ///< 0
-        var topazKey_1; ///< 1
-        var topazKey_2; ///< 2
-        var topazKey_3; ///< 3
-        var topazKey_4; ///< 4
-        var topazKey_5; ///< 5
-        var topazKey_6; ///< 6
-        var topazKey_7; ///< 7
-        var topazKey_8; ///< 8
-        var topazKey_9; ///< 9
-        var topazKey_a; ///< a
-        var topazKey_b; ///< b
-        var topazKey_c; ///< c
-        var topazKey_d; ///< d
-        var topazKey_e; ///< e
-        var topazKey_f; ///< f
-        var topazKey_g; ///< g
-        var topazKey_h; ///< h
-        var topazKey_i; ///< i
-        var topazKey_j; ///< j
-        var topazKey_k; ///< k
-        var topazKey_l; ///< l
-        var topazKey_m; ///< m
-        var topazKey_n; ///< n
-        var topazKey_o; ///< o
-        var topazKey_p; ///< p
-        var topazKey_q; ///< q
-        var topazKey_r; ///< r
-        var topazKey_s; ///< s
-        var topazKey_t; ///< t
-        var topazKey_u; ///< u
-        var topazKey_v; ///< v
-        var topazKey_w; ///< w
-        var topazKey_x; ///< x
-        var topazKey_y; ///< y
-        var topazKey_z; ///< z
-        var topazKey_lshift; ///< Left shift key
-        var topazKey_rshift; ///< Right shift key
-        var topazKey_lctrl;  ///< Left control key
-        var topazKey_rctrl;  ///< Right control key
-        var topazKey_lalt;   ///< Left alt key
-        var topazKey_ralt;   ///< Right alt key
-        var topazKey_tab;    ///< Tab
-        var topazKey_F1;     ///< F1
-        var topazKey_F2;     ///< F2
-        var topazKey_F3;     ///< F3
-        var topazKey_F4;     ///< F4
-        var topazKey_F5;     ///< F5
-        var topazKey_F6;     ///< F6
-        var topazKey_F7;     ///< F7
-        var topazKey_F8;     ///< F8
-        var topazKey_F9;     ///< F9
-        var topazKey_F10;    ///< F10
-        var topazKey_F11;    ///< F11
-        var topazKey_F12;    ///< F12
-        var topazKey_up;     ///< Up arrow
-        var topazKey_down;   ///< Down arrow
-        var topazKey_left;   ///< Left arrow
-        var topazKey_right;  ///< Right arrow
-        var topazKey_minus;  ///< -
-        var topazKey_equal;  ///< = 
-        var topazKey_backspace;  ///< Backspace
-        var topazKey_grave;  ///< `
-        var topazKey_esc;    ///< Escape
-        var topazKey_home;   ///< Home key
-        var topazKey_pageUp; ///< Page up key
-        var topazKey_pageDown;  ///< Page down key
-        var topazKey_end;    ///< End key
-        var topazKey_backslash; ///< '\'
-        var topazKey_lbracket; ///< [
-        var topazKey_rbracket; ///< ]
-        var topazKey_semicolon; ///< ;
-        var topazKey_apostrophe; ///< '
-        var topazKey_frontslash; ///< /
-        var topazKey_enter; ///< Enter
-        var topazKey_delete; ///< Delete
-        var topazKey_numpad0; ///< Numpad 0
-        var topazKey_numpad1; ///< Numpad 1
-        var topazKey_numpad2; ///< Numpad 2
-        var topazKey_numpad3; ///< Numpad 3
-        var topazKey_numpad4; ///< Numpad 4
-        var topazKey_numpad5; ///< Numpad 5
-        var topazKey_numpad6; ///< Numpad 6
-        var topazKey_numpad7; ///< Numpad 7
-        var topazKey_numpad8; ///< Numpad 8
-        var topazKey_numpad9; ///< Numpad 9
-        var topazKey_prtscr; ///< Print screen button
-        var topazKey_lsuper; ///< Left Super key (Windows key)
-        var topazKey_rsuper; ///< Right Super key (Windows key)
-        var topazKey_space;  ///< Space
-        var topazKey_insert; ///< Insert key
-        var topazKey_comma;///< ,
-        var topazKey_period;///< .
-        var topazKey_world1;/// I8n key0
-        var topazKey_world2;/// I8n key1
-        var topazKey_world3;/// I8n key2
-        var topazKey_world4;/// I8n key3
-        var topazKey_world5;/// I8n key4
-        var topazKey_world6;/// I8n key5
-        var topazKey_world7;/// I8n key6
-        var topazKey_world8;/// I8n key7
-        var topazKey_world9;/// I8n key8
-    
-        var topazPointer_0;///< Left click
-        var topazPointer_1;///< Right click
-        var topazPointer_2;///< Middle click
-    
-        var topazPointer_X;///< Horizontal axis. Usually for the X axis of the pointer
-        var topazPointer_Y;///< Horizontal axis. Usually for the X axis of the pointer
-        var topazPointer_Wheel;///< Mouse wheel.
-    
-        var topazPad_a;///< Button 0
-        var topazPad_b;///< Button 1
-        var topazPad_c;///< Button 2
-        var topazPad_x;///< Button 3
-        var topazPad_y;///< Button 4
-        var topazPad_r;///< Button 5
-        var topazPad_l;///< Button 6
-        var topazPad_r2;///< Button 7
-        var topazPad_l2;///< Button 8
-        var topazPad_r3;///< Button 9
-        var topazPad_l3;///< Button 10
-        var topazPad_start;///< Button 11
-        var topazPad_select;///< Button 12
-        var topazPad_b13;///< Button 13
-        var topazPad_b14;///< Button 14
-        var topazPad_b15;///< Button 15
-        var topazPad_b16;///< Button 16
-        var topazPad_b17;///< Button 17
-        var topazPad_b18;///< Button 18
-        var topazPad_b19;///< Button 19
-        var topazPad_b20;///< Button 20
-        var topazPad_b21;///< Button 21
-        var topazPad_b22;///< Button 22
-        var topazPad_b23;///< Button 23
-        var topazPad_b24;///< Button 24
-        var topazPad_b25;///< Button 25
-        var topazPad_b26;///< Button 26
-        var topazPad_b27;///< Button 27
-        var topazPad_b28;///< Button 28
-        var topazPad_b29;///< Button 29
-        var topazPad_b30;///< Button 30
-        var topazPad_b31;///< Button 31
-        var topazPad_b32;///< Button 32
-    
-        var topazPad_axisX;///< X button
-        var topazPad_axisY;///< Y button
-        var topazPad_axisZ;///< Z button
-        var topazPad_axisX2;///< X2 button 
-        var topazPad_axisY2;///< Y2 button
-        var topazPad_axisZ2;///< Z2 button
-        var topazPad_axisX3;///< X3 button
-        var topazPad_axisY3;///< Y3 button
-        var topazPad_axisZ3;///< Z3 button
-        var topazPad_axisX4;///< X4 button
-        var topazPad_axisY4;///< Y4 button
-        var topazPad_axisZ4;///< Z4 button
-        var topazPad_axisX5;///< X4 button
-        var topazPad_axisY5;///< Y4 button
-        var topazPad_axisZ5;///< Z4 button
-        var topazPad_axisX6;///< X4 button
-        var topazPad_axisY6;///< Y4 button
-        var topazPad_axisZ6;///< Z4 button
-    
-        var topazPad_axisR;
-        var topazPad_axisL;
-        var topazPad_axisR2;
-        var topazPad_axisL2;
-        var topazPad_axisR3;
-        var topazPad_axisL3;
-        var topazPad_axisR4;
-        var topazPad_axisL4;
-    
-        var topazPad_options;
-        var topazInput_Count;
-
-        func init() {
-            topazNotAnInput = 0;
-            topazKey_0 = 1; ///< 0
-            topazKey_1 = 2; ///< 1
-            topazKey_2 = 3; ///< 2
-            topazKey_3 = 4; ///< 3
-            topazKey_4 = 5; ///< 4
-            topazKey_5 = 6; ///< 5
-            topazKey_6 = 7; ///< 6
-            topazKey_7 = 8; ///< 7
-            topazKey_8 = 9; ///< 8
-            topazKey_9 = 10; ///< 9
-            topazKey_a = 11; ///< a
-            topazKey_b = 12; ///< b
-            topazKey_c = 13; ///< c
-            topazKey_d = 14; ///< d
-            topazKey_e = 15; ///< e
-            topazKey_f = 16; ///< f
-            topazKey_g = 17; ///< g
-            topazKey_h = 18; ///< h
-            topazKey_i = 19; ///< i
-            topazKey_j = 20; ///< j
-            topazKey_k = 21; ///< k
-            topazKey_l = 22; ///< l
-            topazKey_m = 23; ///< m
-            topazKey_n = 24; ///< n
-            topazKey_o = 25; ///< o
-            topazKey_p = 26; ///< p
-            topazKey_q = 27; ///< q
-            topazKey_r = 28; ///< r
-            topazKey_s = 29; ///< s
-            topazKey_t = 30; ///< t
-            topazKey_u = 31; ///< u
-            topazKey_v = 32; ///< v
-            topazKey_w = 33; ///< w
-            topazKey_x = 34; ///< x
-            topazKey_y = 35; ///< y
-            topazKey_z = 36; ///< z
-            topazKey_lshift = 37; ///< Left shift key
-            topazKey_rshift = 38; ///< Right shift key
-            topazKey_lctrl = 39;  ///< Left control key
-            topazKey_rctrl = 40;  ///< Right control key
-            topazKey_lalt = 41;   ///< Left alt key
-            topazKey_ralt = 42;   ///< Right alt key
-            topazKey_tab = 43;    ///< Tab
-            topazKey_F1 = 44;     ///< F1
-            topazKey_F2 = 45;     ///< F2
-            topazKey_F3 = 46;     ///< F3
-            topazKey_F4 = 47;     ///< F4
-            topazKey_F5 = 48;     ///< F5
-            topazKey_F6 = 49;     ///< F6
-            topazKey_F7 = 50;     ///< F7
-            topazKey_F8 = 51;     ///< F8
-            topazKey_F9 = 52;     ///< F9
-            topazKey_F10 = 53;    ///< F10
-            topazKey_F11 = 54;    ///< F11
-            topazKey_F12 = 55;    ///< F12
-            topazKey_up = 100;     ///< Up arrow
-            topazKey_down = 101;   ///< Down arrow
-            topazKey_left = 102;   ///< Left arrow
-            topazKey_right = 103;  ///< Right arrow
-            topazKey_minus = 104;  ///< -
-            topazKey_equal = 105;  ///< = 
-            topazKey_backspace = 106;  ///< Backspace
-            topazKey_grave = 107;  ///< `
-            topazKey_esc = 108;    ///< Escape
-            topazKey_home = 109;   ///< Home key
-            topazKey_pageUp = 110; ///< Page up key
-            topazKey_pageDown = 111;  ///< Page down key
-            topazKey_end = 112;    ///< End key
-            topazKey_backslash = 113; ///< '\'
-            topazKey_lbracket = 114; ///< [
-            topazKey_rbracket = 115; ///< ]
-            topazKey_semicolon = 116; ///< ;
-            topazKey_apostrophe = 117; ///< '
-            topazKey_frontslash = 118; ///< /
-            topazKey_enter = 119; ///< Enter
-            topazKey_delete = 120; ///< Delete
-            topazKey_numpad0 = 121; ///< Numpad 0
-            topazKey_numpad1 = 122; ///< Numpad 1
-            topazKey_numpad2 = 123; ///< Numpad 2
-            topazKey_numpad3 = 124; ///< Numpad 3
-            topazKey_numpad4 = 125; ///< Numpad 4
-            topazKey_numpad5 = 126; ///< Numpad 5
-            topazKey_numpad6 = 127; ///< Numpad 6
-            topazKey_numpad7 = 128; ///< Numpad 7
-            topazKey_numpad8 = 129; ///< Numpad 8
-            topazKey_numpad9 = 130; ///< Numpad 9
-            topazKey_prtscr = 131; ///< Print screen button
-            topazKey_lsuper = 132; ///< Left Super key (Windows key)
-            topazKey_rsuper = 133; ///< Right Super key (Windows key)
-            topazKey_space = 134;  ///< Space
-            topazKey_insert = 135; ///< Insert key
-            topazKey_comma = 136; ///< ,
-            topazKey_period = 137; ///< .
-            topazKey_world1 = 138; /// I8n key0
-            topazKey_world2 = 139; /// I8n key1
-            topazKey_world3 = 140; /// I8n key2
-            topazKey_world4 = 141; /// I8n key3
-            topazKey_world5 = 142; /// I8n key4
-            topazKey_world6 = 143; /// I8n key5
-            topazKey_world7 = 144; /// I8n key6
-            topazKey_world8 = 145; /// I8n key7
-            topazKey_world9 = 146; /// I8n key8
-        
-            topazPointer_0 = 256; ///< Left click
-            topazPointer_1 = 257; ///< Right click
-            topazPointer_2 = 258; ///< Middle click
-        
-            topazPointer_X = 259; ///< Horizontal axis. Usually for the X axis of the pointer
-            topazPointer_Y = 260; ///< Horizontal axis. Usually for the X axis of the pointer
-            topazPointer_Wheel = 261; ///< Mouse wheel.
-        
-            topazPad_a = 300;     ///< Button 0
-            topazPad_b = 301;     ///< Button 1
-            topazPad_c = 302;     ///< Button 2
-            topazPad_x = 303;     ///< Button 3
-            topazPad_y = 304;     ///< Button 4
-            topazPad_r = 305;     ///< Button 5
-            topazPad_l = 306;     ///< Button 6
-            topazPad_r2 = 307;    ///< Button 7
-            topazPad_l2 = 308;    ///< Button 8
-            topazPad_r3 = 309;    ///< Button 9
-            topazPad_l3 = 310;    ///< Button 10
-            topazPad_start = 311;    ///< Button 11
-            topazPad_select = 312;///< Button 12
-            topazPad_b13 = 313;///< Button 13
-            topazPad_b14 = 314;///< Button 14
-            topazPad_b15 = 315;///< Button 15
-            topazPad_b16 = 316;///< Button 16
-            topazPad_b17 = 317;///< Button 17
-            topazPad_b18 = 318;///< Button 18
-            topazPad_b19 = 319;///< Button 19
-            topazPad_b20 = 320;///< Button 20
-            topazPad_b21 = 321;///< Button 21
-            topazPad_b22 = 322;///< Button 22
-            topazPad_b23 = 323;///< Button 23
-            topazPad_b24 = 324;///< Button 24
-            topazPad_b25 = 325;///< Button 25
-            topazPad_b26 = 326;///< Button 26
-            topazPad_b27 = 327;///< Button 27
-            topazPad_b28 = 328;///< Button 28
-            topazPad_b29 = 329;///< Button 29
-            topazPad_b30 = 330;///< Button 30
-            topazPad_b31 = 331;///< Button 31
-            topazPad_b32 = 332;///< Button 32
-        
-            topazPad_axisX = 400; ///< X button
-            topazPad_axisY = 401; ///< Y button
-            topazPad_axisZ = 402; ///< Z button
-            topazPad_axisX2 = 403;///< X2 button 
-            topazPad_axisY2 = 404;///< Y2 button
-            topazPad_axisZ2 = 405;///< Z2 button
-            topazPad_axisX3 = 406;///< X3 button
-            topazPad_axisY3 = 407;///< Y3 button
-            topazPad_axisZ3 = 408;///< Z3 button
-            topazPad_axisX4 = 409;///< X4 button
-            topazPad_axisY4 = 410;///< Y4 button
-            topazPad_axisZ4 = 411;///< Z4 button
-            topazPad_axisX5 = 412;///< X4 button
-            topazPad_axisY5 = 413;///< Y4 button
-            topazPad_axisZ5 = 414;///< Z4 button
-            topazPad_axisX6 = 415;///< X4 button
-            topazPad_axisY6 = 416;///< Y4 button
-            topazPad_axisZ6 = 417;///< Z4 button
-        
-            topazPad_axisR = 450;   
-            topazPad_axisL = 451;    
-            topazPad_axisR2 = 452;    
-            topazPad_axisL2 = 453;    
-            topazPad_axisR3 = 454;    
-            topazPad_axisL3 = 455;    
-            topazPad_axisR4 = 456;    
-            topazPad_axisL4 = 457;    
-        
-            topazPad_options = 511;
-            topazInput_Count = 512;
-        }
-    }
-    var Key;
 
 
     class Input_Definition {
@@ -1514,13 +1546,13 @@ class Topz {
 
     // asset
     class Asset_Definition {
-        var impl_;
+        var impl;
         var name {
-            get {return topaz_.topaz_asset__get_name(impl_)}
+            get {return topaz_.topaz_asset__get_name(impl)}
         }
 
         var type {
-            get {return topaz_.topaz_asset__get_type(impl_)}
+            get {return topaz_.topaz_asset__get_type(impl)}
         }
     }
     var Asset;
@@ -1533,7 +1565,7 @@ class Topz {
         static var Parameter;
         var impl;
         func init(m) {
-            if (m == null) {
+            if (m == undefined) {
                 impl = topaz_.topaz_view_manager__create_display();
             } else {
                 impl = m;
@@ -1561,9 +1593,6 @@ class Topz {
             topaz_.topaz_display__remove_callback(impl, id);
         }
 
-        func setRenderResolution(w, h) {
-            topaz_.topaz_display__set_render_resolution(impl, w, h);
-        }
 
         func setParameter(p, v) {
             topaz_.topaz_display__set_parameter(impl, p, v);
@@ -1593,18 +1622,6 @@ class Topz {
 
         }
 
-        var renderWidth {
-            get {
-                return topaz_.topaz_display__get_render_width(impl);
-            }
-        }
-        
-
-        var renderHeight {
-            get {
-                return topaz_.topaz_display__get_render_height(impl);
-            }
-        }
 
 
         var camera2d {
@@ -1620,6 +1637,30 @@ class Topz {
         }
 
 
+        func getFramebuffer(a) {
+            return Topaz.Framebuffer(topaz_.topaz_display__get_framebuffer(impl, a));
+        }
+        
+        func useFramebuffer(a) {
+            topaz_.topaz_display__use_framebuffer(impl, a);
+        }
+        
+        var framebuffer {
+            get {
+                var fb = Topaz.Framebuffer();
+                fb.impl = topaz_.topaz_display__get_main_framebuffer(impl);
+                return fb;
+            }        
+        }
+
+        func clearMainFramebuffer(a) {
+            topaz_.topaz_display__clear_main_framebuffer(impl, a);            
+        }
+        
+        func captureMainFramebuffer(a) {
+            topaz_.topaz_display__capture_main_framebuffer(impl, a.impl);
+        }
+        
 
     };
     var Display;
@@ -1631,70 +1672,70 @@ class Topz {
 
 
         func init() {
-            impl_ = topaz_.topaz_object2d__create();
+            impl = topaz_.topaz_object2d__create();
         }
         
         func addVelocity(a, p) {
-            topaz_.topaz_object2d__add_velocity(impl_, a, p);
+            topaz_.topaz_object2d__add_velocity(impl, a, p);
         }   
 
         func addVelocityTowards(a, p, i) {
-            topaz_.topaz_object2d__add_velocity_towards(impl_, a, p.impl_, i);
+            topaz_.topaz_object2d__add_velocity_towards(impl, a, p.impl, i);
         }
 
         func setVelocity(a, p) {
-            topaz_.topaz_object2d__set_velocity(impl_, a, p);
+            topaz_.topaz_object2d__set_velocity(impl, a, p);
         }   
 
         func setVelocityTowards(a, p, i) {
-            topaz_.topaz_object2d__set_velocity_towards(impl_, a, p.impl_, i);
+            topaz_.topaz_object2d__set_velocity_towards(impl, a, p.impl, i);
         }
 
 
         var velocityX {
             get {
-                return topaz_.topaz_object2d__get_velocity_x(impl_);
+                return topaz_.topaz_object2d__get_velocity_x(impl);
             }
 
             set {
-                topaz_.topaz_object2d__set_velocity_x(impl_, value);
+                topaz_.topaz_object2d__set_velocity_x(impl, value);
             }
         }
 
 
         var velocityY {
             get {
-                return topaz_.topaz_object2d__get_velocity_y(impl_);
+                return topaz_.topaz_object2d__get_velocity_y(impl);
             }
 
             set {
-                topaz_.topaz_object2d__set_velocity_y(impl_, value);
+                topaz_.topaz_object2d__set_velocity_y(impl, value);
             }
         }
 
         var frictionX {
             get {
-                return topaz_.topaz_object2d__get_friction_x(impl_);
+                return topaz_.topaz_object2d__get_friction_x(impl);
             }
 
             set {
-                topaz_.topaz_object2d__set_friction_x(impl_, value);
+                topaz_.topaz_object2d__set_friction_x(impl, value);
             }
         }
 
         var frictionY {
             get {
-                return topaz_.topaz_object2d__get_friction_y(impl_);
+                return topaz_.topaz_object2d__get_friction_y(impl);
             }
 
             set {
-                topaz_.topaz_object2d__get_friction_y(impl_);
+                topaz_.topaz_object2d__get_friction_y(impl);
             }
         }
 
         var direction {
             get {
-                return topaz_.topaz_object2d__get_direction(impl_);
+                return topaz_.topaz_object2d__get_direction(impl);
             }
 
             set {
@@ -1703,27 +1744,27 @@ class Topz {
         }
 
         func halt() {
-            topaz_.topaz_object2d__halt(impl_);
+            topaz_.topaz_object2d__halt(impl);
         }
 
         
         func resetMotion() {
-            topaz_.topaz_object2d__reset_motion(impl_);
+            topaz_.topaz_object2d__reset_motion(impl);
         }   
         
         var speed {
             get {
-                return topaz_.topaz_object2d__get_speed(impl_);
+                return topaz_.topaz_object2d__get_speed(impl);
             }
             set {
-                topaz_.topaz_object2d__set_speed(impl_, value);
+                topaz_.topaz_object2d__set_speed(impl, value);
             }
         }
 
         var nextPosition {
             get {
                 var out = Topaz.Vector();
-                out.impl_ = topaz_.topaz_object2d__get_next_position(impl_);
+                out.impl = topaz_.topaz_object2d__get_next_position(impl);
                 return out;
             }
         }
@@ -1731,11 +1772,11 @@ class Topz {
 
         var group {
             get {
-                return topaz_.topaz_object2d__get_group(impl_);
+                return topaz_.topaz_object2d__get_group(impl);
             }
 
             set {
-                topaz_.topaz_object2d__set_group(impl_, value);
+                topaz_.topaz_object2d__set_group(impl, value);
             }
         }
 
@@ -1747,17 +1788,17 @@ class Topz {
 
             set {
                 collider_ = value;
-                topaz_.topaz_object2d__set_collider(impl_, value);
+                topaz_.topaz_object2d__set_collider(impl, value);
             }
         }
 
 
         func setColliderRadial(rad, num) {
-            topaz_.topaz_object2d__set_collider_radial(impl_, rad, num);
+            topaz_.topaz_object2d__set_collider_radial(impl, rad, num);
             collider_ = [];
-            var len = topaz_.topaz_object2d__get_collider_len(impl_);
+            var len = topaz_.topaz_object2d__get_collider_len(impl);
             for(var i in 0..<len) {
-                var pt = topaz_.topaz_object2d__get_collider_point(impl_, i);
+                var pt = topaz_.topaz_object2d__get_collider_point(impl, i);
                 collider_.push(pt.x);
                 collider_.push(pt.y);
             }
@@ -1766,7 +1807,7 @@ class Topz {
 
         var lastCollided {
             get {
-                var out = topaz_.topaz_object2d__get_last_collided(impl_);
+                var out = topaz_.topaz_object2d__get_last_collided(impl);
                 if (out != null) return out.api_;
                 return null;
             }
@@ -1779,25 +1820,25 @@ class Topz {
     var Object2D;
 
     class ParticleEmitter2D_Definition {
-        var impl_;
+        var impl;
         func init() {
-            impl_ = topaz_.topaz_particle_emitter_2d__create();
+            impl = topaz_.topaz_particle_emitter_2d__create();
         }
         
         var particle {
             set {
-                topaz_.topaz_particle_emitter_2d__set_particle(impl_, value.impl_);
+                topaz_.topaz_particle_emitter_2d__set_particle(impl, value.impl);
             }
         }
         
         var independent {
             set {
-                topaz_.topaz_particle_emitter_2d__set_independent(impl_, value);
+                topaz_.topaz_particle_emitter_2d__set_independent(impl, value);
             }
         }
         
         func emit(v) {
-            topaz_.topaz_particle_mitter_2d__emit(impl_, v);
+            topaz_.topaz_particle_mitter_2d__emit(impl, v);
         }
     }
     var ParticleEmitter2D;
@@ -1806,14 +1847,14 @@ class Topz {
     class Data_Definition : Asset_Definition {
         var bytes {
             set {
-                topaz_.topaz_data__set(impl_, value);
+                topaz_.topaz_data__set(impl, value);
             }
 
             get {
                 var arr = [];
-                var count = topaz_.topaz_data__get_byte_count(impl_);
+                var count = topaz_.topaz_data__get_byte_count(impl);
                 for(var i in 0..<count) {
-                    arr.push(topaz_.topaz_data__get_nth_byte(impl_, i));
+                    arr.push(topaz_.topaz_data__get_nth_byte(impl, i));
                 }
                 return arr;
             }
@@ -1821,18 +1862,18 @@ class Topz {
 
         var byteCount {
             get {
-                return topaz_.topaz_data__get_byte_count(impl_);
+                return topaz_.topaz_data__get_byte_count(impl);
             }
         }
 
         var string {
             get {
-                return topaz_.topaz_data__get_as_string(impl_);
+                return topaz_.topaz_data__get_as_string(impl);
             }
         }
 
         func String() {
-            return 'Data asset (' + topaz_.topaz_data__get_byte_count(impl_) + ' bytes)';
+            return 'Data asset (' + topaz_.topaz_data__get_byte_count(impl) + ' bytes)';
         }    
 
 
@@ -1841,34 +1882,157 @@ class Topz {
 
 
 
+    class Framebuffer_Definition {
+        var impl;
+        var width {
+            get {
+                return topaz_.topaz_framebuffer__get_width(impl);
+            }
+        }
+
+        var height {
+            get {
+                return topaz_.topaz_framebuffer__get_height(impl);                    
+            }
+        }
+        
+        func resize(w, h) {
+            topaz_.topaz_framebuffer__resize(impl, w, h);
+        }
+    }
+    var Framebuffer;
+
+
+    class Material_Definition : Asset_Definition {
+        func setProgramData(a, b) {
+            topaz_.topaz_material__set_program_data(impl, a, b);
+        }
+        func getProgramData(a) {
+            return topaz_.topaz_material__set_program_data(impl, a);
+        }
+        
+        func clearSources() {
+            topaz_.topaz_material__clear_sources(impl);
+        }
+        
+        func setProgramSource(a, b, c) {
+            topaz_.topaz_material__set_program_source(impl, a, b, c);        
+        }
+    }
+    var Material;
+    
+    class Mesh_Definition : Asset_Definition {
+        var vertexCount {
+            get { return topaz_.topaz_mesh__get_vertex_count(impl);}
+            set { return topaz_.topaz_mesh__set_vertex_count(impl, value);}
+        }
+
+
+        var vertices {
+            set {
+                topaz_.topaz_mesh__define_vertices(impl, value); 
+            }
+            get {
+                var out = [];
+                var len = vertexCount;
+                for(var i in 0..<len) {
+                    out.push(topaz_.topaz_mesh__get_vertex(impl, 0, i, 0));
+                    out.push(topaz_.topaz_mesh__get_vertex(impl, 0, i, 1));
+                    out.push(topaz_.topaz_mesh__get_vertex(impl, 0, i, 2));
+
+                    out.push(topaz_.topaz_mesh__get_vertex(impl, 1, i, 0));
+                    out.push(topaz_.topaz_mesh__get_vertex(impl, 1, i, 1));
+                    out.push(topaz_.topaz_mesh__get_vertex(impl, 1, i, 2));
+
+                    out.push(topaz_.topaz_mesh__get_vertex(impl, 2, i, 0));
+                    out.push(topaz_.topaz_mesh__get_vertex(impl, 2, i, 1));
+
+                    out.push(topaz_.topaz_mesh__get_vertex(impl, 3, i, 0));
+                    out.push(topaz_.topaz_mesh__get_vertex(impl, 3, i, 1));
+                    out.push(topaz_.topaz_mesh__get_vertex(impl, 3, i, 2));
+                    out.push(topaz_.topaz_mesh__get_vertex(impl, 3, i, 3));
+                }      
+               
+                return out;            
+            }
+        }
+        
+        
+        func setVertex(i, v) {
+            topaz_.topaz_mesh__set_vertex(impl, i, v);
+        }
+        
+        func getVertex(i) {
+            var out = [];
+            out.push(topaz_.topaz_mesh__get_vertex(impl, 0, i, 0));
+            out.push(topaz_.topaz_mesh__get_vertex(impl, 0, i, 1));
+            out.push(topaz_.topaz_mesh__get_vertex(impl, 0, i, 2));
+
+            out.push(topaz_.topaz_mesh__get_vertex(impl, 1, i, 0));
+            out.push(topaz_.topaz_mesh__get_vertex(impl, 1, i, 1));
+            out.push(topaz_.topaz_mesh__get_vertex(impl, 1, i, 2));
+
+            out.push(topaz_.topaz_mesh__get_vertex(impl, 2, i, 0));
+            out.push(topaz_.topaz_mesh__get_vertex(impl, 2, i, 1));
+
+            out.push(topaz_.topaz_mesh__get_vertex(impl, 3, i, 0));
+            out.push(topaz_.topaz_mesh__get_vertex(impl, 3, i, 1));
+            out.push(topaz_.topaz_mesh__get_vertex(impl, 3, i, 2));
+            out.push(topaz_.topaz_mesh__get_vertex(impl, 3, i, 3));
+            return out;    
+        }
+        
+        func addObject(obj) {
+            topaz_.topaz_mesh__add_object(impl);
+            if (obj != undefined) {
+                topaz_.topaz_mesh__set_object(objectCount-1, obj);
+            }
+        }
+        
+        var objectCount {
+            get {
+                return topaz_.topaz_mesh__get_object_count(impl);
+            }
+        }
+        
+        func removeObject(i) {
+            topaz_.topaz_mesh__remove_object(impl, i);
+        }
+        
+        func setObject(i, v) {
+            topaz_.topaz_mesh__set_object(impl, i, v);
+        }
+    }
+    var Mesh;
+
 
 
     //// sound 
     class Sound_Definition : Asset_Definition {
         var sampleCount {
             get {
-                return topaz_.topaz_sound__get_sample_count(impl_);        
+                return topaz_.topaz_sound__get_sample_count(impl);        
             }
         }
 
         var samples {
             get {
                 var out = [];
-                var len = topaz_.topaz_sound__get_sample_count(impl_);
+                var len = topaz_.topaz_sound__get_sample_count(impl);
                 for(var i in 0..<len) {
-                    out.push(topaz_.topaz_sound__get_nth_sample_left(impl_, i));
-                    out.push(topaz_.topaz_sound__get_nth_sample_right(impl_, i));
+                    out.push(topaz_.topaz_sound__get_nth_sample_left(impl, i));
+                    out.push(topaz_.topaz_sound__get_nth_sample_right(impl, i));
                 }
                 return out;
             }
             
             set {
-                topaz_.topaz_sound__set_samples(impl_, value);        
+                topaz_.topaz_sound__set_samples(impl, value);        
             }
         }
 
         func String() {
-            return 'Sound asset (' + topaz_.topaz_sound__get_sample_count(impl_) + ' samples)';
+            return 'Sound asset (' + topaz_.topaz_sound__get_sample_count(impl) + ' samples)';
         }    
     }
     var Sound;
@@ -1880,45 +2044,45 @@ class Topz {
     class Image_Definition : Asset_Definition {
         var height {
             get {
-                return topaz_.topaz_image__get_height(impl_);
+                return topaz_.topaz_image__get_height(impl);
             }
 
             set {
-                topaz_.topaz_image__resize(impl_, width, value);
+                topaz_.topaz_image__resize(impl, width, value);
             }
         }
 
         var width {
             get {
-                return topaz_.topaz_image__get_width(impl_);
+                return topaz_.topaz_image__get_width(impl);
             }
 
             set {
-                topaz_.topaz_image__resize(impl_, value, height);
+                topaz_.topaz_image__resize(impl, value, height);
             }
         }
 
 
         func resize(w, h) {
-            topaz_.topaz_image__resize(impl_, w, h);
+            topaz_.topaz_image__resize(impl, w, h);
         }
 
         func addFrame() {
-            topaz_.topaz_image__add_frame(impl_);
+            topaz_.topaz_image__add_frame(impl);
         }
 
         func removeFrame(i) {
-            topaz_.topaz_image__remove_frame(impl_, i);
+            topaz_.topaz_image__remove_frame(impl, i);
         }
 
         var frameCount{
             get {
-            return topaz_.topaz_image__get_frame_count(impl_);
+            return topaz_.topaz_image__get_frame_count(impl);
             }
         }
 
         func setRGBA(i, rgba) {
-            topaz_.topaz_image__frame_set_rgba(impl_, i, rgba);        
+            topaz_.topaz_image__frame_set_rgba(impl, i, rgba);        
         }
     }
     var Image;
@@ -1947,38 +2111,38 @@ class Topz {
         }
         
         func getPathFromString(pth, str) {
-            if (str == null) {
+            if (str == undefined) {
                 return Path_Definition(topaz_.topaz_filesystem__get_path_from_string(str));
             } else {
-                return Path_Definition(topaz_.topaz_filesystem__get_path_from_string(pth.impl_, str));        
+                return Path_Definition(topaz_.topaz_filesystem__get_path_from_string(pth.impl, str));        
             }
         }
                 
         class Path_Definition {
-            var impl_;
+            var impl;
             
             func init(id) {
-                impl_ = id;
+                impl = id;
             }   
             
             var string {
                 get {
-                    return topaz_.topaz_filesystem_path__as_string(impl_);
+                    return topaz_.topaz_filesystem_path__as_string(impl);
                 }
             }
             
             var parent {
                 get {
-                    return Path_Definition(topaz_.topaz_filesystem_path__get_parent(impl_));
+                    return Path_Definition(topaz_.topaz_filesystem_path__get_parent(impl));
                 }
             }
             
             var children {
                 get {
                     var out = [];
-                    var len = topaz_.topaz_filesystem_path__get_child_count(impl_);
+                    var len = topaz_.topaz_filesystem_path__get_child_count(impl);
                     for(var i in 0..<len) {
-                        out.push(Path_Definition(topaz_.topaz_filesystem_path__get_nth_child(impl_, i)));
+                        out.push(Path_Definition(topaz_.topaz_filesystem_path__get_nth_child(impl, i)));
                     }
                     return out;
                 }
@@ -1987,14 +2151,8 @@ class Topz {
         var Path;
 
 
-        var DefaultNode;
         func init() {
             Path = Path_Definition;
-            DefaultNode = [
-                "resources" : 0,
-                "topaz" : 1,
-                "userData" : 2
-            ];
         }
     }
     var Filesystem;
@@ -2004,13 +2162,13 @@ class Topz {
         static var Mode;
 
         func init(type) {
-            impl_ = topaz_.topaz_scheduler__create(type);
+            impl = topaz_.topaz_scheduler__create(type);
         }
 
         func startTask(args) {
             if (args.hasKey("taskName")) {
                 topaz_.topaz_scheduler__start_task(
-                    impl_,
+                    impl,
                     args.taskName,
                     args.interval,
                     args.intervalDelay,
@@ -2019,7 +2177,7 @@ class Topz {
                 return args.taskName;
             } else {
                 return topaz_.topaz_scheduler__start_task_simple(
-                    impl_,
+                    impl,
                     args.interval,
                     args.callback
                 );
@@ -2027,31 +2185,31 @@ class Topz {
         }
         
         func getTaskIntervalRemaining(name) {
-            return topaz_.topaz_scheduler__get_task_interval_remaining(impl_, name);
+            return topaz_.topaz_scheduler__get_task_interval_remaining(impl, name);
         }
 
 
         func endTask(name) {
-            topaz_.topaz_scheduler__end_task(impl_, name);
+            topaz_.topaz_scheduler__end_task(impl, name);
         }
 
         var tasks {
             get {
                 var out = [];
-                var len = topaz_.topaz_scheduler__get_task_count(impl_);
+                var len = topaz_.topaz_scheduler__get_task_count(impl);
                 for(var i in 0..<len) {
-                    out.push(topaz_.topaz_scheduler__get_task(impl_, i));
+                    out.push(topaz_.topaz_scheduler__get_task(impl, i));
                 }
                 return out;
             }
         }
 
         func pause() {
-            topaz_.topaz_scheduler__pause(impl_);
+            topaz_.topaz_scheduler__pause(impl);
         }
 
         func resume() {
-            topaz_.topaz_scheduler__pause(impl_);
+            topaz_.topaz_scheduler__pause(impl);
         }
         
         func String() {
@@ -2070,98 +2228,101 @@ class Topz {
 
 
         func init() {
-            impl_ = topaz_.topaz_shape2d__create();
+            impl = topaz_.topaz_shape2d__create();
         }
 
         var color {
             get {
                 var out = Color();
-                out.impl_ = topaz_.topaz_shape2d__get_color(impl_);
+                out.impl = topaz_.topaz_shape2d__get_color(impl);
                 return out;
             }
 
             set {
-                topaz_.topaz_shape2d__set_color(impl_, value.impl_);
+                topaz_.topaz_shape2d__set_color(impl, value.impl);
             }
         }
 
 
-        func setParameter(p, v) {
-            topaz_.topaz_shape2d__set_parameter(impl_, p, v);
+        func setAttribute(p, v) {
+            topaz_.topaz_shape2d__set_attribute(impl, p, v);
+        }
+        func getAttribute(p) {
+            return topaz_.topaz_shape2d__get_attribute(impl, p);
         }
 
         var animSpeed {
             get {
-                return topaz_.topaz_shape2d__get_anim_speed(impl_);
+                return topaz_.topaz_shape2d__get_anim_speed(impl);
             }
 
             set {
-                topaz_.topaz_shape2d__set_anim_speed(impl_, value);
+                topaz_.topaz_shape2d__set_anim_speed(impl, value);
             }
         }
 
         var center {
             get {
                 var out = Topaz.Vector();
-                out.impl_ = topaz_.topaz_shape2d__get_center(impl_);
+                out.impl = topaz_.topaz_shape2d__get_center(impl);
                 return out; 
             }
 
             set {
-                topaz_.topaz_shape2d__set_center(impl_, value.impl_);
+                topaz_.topaz_shape2d__set_center(impl, value.impl);
             }
         }
 
         var rotation {
             get {
                 var out = Topaz.Vector();
-                out.impl_ = topaz_.topaz_shape2d__get_rotation(impl_);
+                out.impl = topaz_.topaz_shape2d__get_rotation(impl);
                 return out; 
             }
 
             set {
-                topaz_.topaz_shape2d__set_rotation(impl_, value.impl_);
+                topaz_.topaz_shape2d__set_rotation(impl, value.impl);
             }
         }
         
         var position {
             get {
                 var out = Topaz.Vector();
-                out.impl_ = topaz_.topaz_shape2d__get_position(impl_);
+                out.impl = topaz_.topaz_shape2d__get_position(impl);
                 return out; 
             }
 
             set {
-                topaz_.topaz_shape2d__set_position(impl_, value.impl_);
+                topaz_.topaz_shape2d__set_position(impl, value.impl);
             }
         }
 
         var scale {
             get {
                 var out = Topaz.Vector();
-                out.impl_ = topaz_.topaz_shape2d__get_scale(impl_);
+                out.impl = topaz_.topaz_shape2d__get_scale(impl);
                 return out; 
             }
 
             set {
-                topaz_.topaz_shape2d__set_scale(impl_, value.impl_);
+                topaz_.topaz_shape2d__set_scale(impl, value.impl);
             }
         }
 
 
         func formRectangle(w, h) {
-            topaz_.topaz_shape2d__form_rectangle(impl_, w, h);
+            topaz_.topaz_shape2d__form_rectangle(impl, w, h);
         }
         
         func formImage(img) {
-            topaz_.topaz_shape2d__form_image(impl_, img.impl_);
+            topaz_.topaz_shape2d__form_image(impl, img.impl);
         }
         func formImageScaled(img, w, h) {
-            topaz_.topaz_shape2d__form_image(impl_, img.impl_, w, h);
+            topaz_.topaz_shape2d__form_image(impl, img.impl, w, h);
         }
 
         func formRadial(rad, sid) {
-            topaz_.topaz_shape2d__form_radial(impl_, rad, sid);
+            topaz_.topaz_shape2d__form_radial(impl, rad, sid);
         }
         var lines_;
         var lines {
@@ -2170,7 +2331,7 @@ class Topz {
             }
             
             set {
-                topaz_.topaz_shape2d__form_lines(impl_, value);
+                topaz_.topaz_shape2d__form_lines(impl, value);
                 lines_ = value;
             }
         }
@@ -2183,7 +2344,7 @@ class Topz {
             }
             
             set {
-                topaz_.topaz_shape2d__form_triangles(impl_, value);
+                topaz_.topaz_shape2d__form_triangles(impl, value);
                 triangles_ = value;
             }
         }
@@ -2196,6 +2357,81 @@ class Topz {
 
     }
     var Shape2D;
+    
+    
+    class Shape3D_Definition : Component {
+        func init(v) {
+            impl = topaz_.topaz_shape3d__create();
+            impl.api_ = self;
+        }
+        func setAttribute(p, v) {
+            topaz_.topaz_shape3d__set_attribute(impl, p, v);
+        }
+        func getAttribute(p) {
+            return topaz_.topaz_shape3d__set_attribute(impl, p);
+        }    
+        func setTexture(slot, t) {
+            topaz_.topaz_shape3d__set_texture(impl, slot, t.impl);
+        }
+        
+        
+        var mesh {
+            set {
+                topaz_.topaz_shape3d__set_mesh(impl, value.impl);            
+            }        
+        }
+
+        var material {
+            set {
+                topaz_.topaz_shape3d__set_material(impl, value.impl);            
+            }        
+        }
+
+        var sampleFramebuffer {
+            set {
+                topaz_.topaz_shape3d__set_sample_framebuffer(impl, value.impl);            
+            }        
+        }
+
+        
+        
+        var rotation {
+            get {
+                var out = Topaz.Vector();
+                out.impl = topaz_.topaz_shape3d__get_rotation(impl);
+                return out; 
+            }
+
+            set {
+                topaz_.topaz_shape3d__set_rotation(impl, value.impl);
+            }
+        }
+        
+        var position {
+            get {
+                var out = Topaz.Vector();
+                out.impl = topaz_.topaz_shape3d__get_position(impl);
+                return out; 
+            }
+
+            set {
+                topaz_.topaz_shape3d__set_position(impl, value.impl);
+            }
+        }
+
+        var scale {
+            get {
+                var out = Topaz.Vector();
+                out.impl = topaz_.topaz_shape3d__get_scale(impl);
+                return out; 
+            }
+
+            set {
+                topaz_.topaz_shape3d__set_scale(impl, value.impl);
+            }
+        }    
+    }
+    var Shape3D;
 
 
     class Text2D_Definition : Component {
@@ -2206,23 +2442,23 @@ class Topz {
 
 
         func init() {
-            impl_ = topaz_.topaz_text2d__create();
+            impl = topaz_.topaz_text2d__create();
             sizeState = 12;
             fontState = '';
             
         }
 
         private func applyFont() {
-            topaz_.topaz_text2d__set_font(impl_, fontState, sizeState);
+            topaz_.topaz_text2d__set_font(impl, fontState, sizeState);
         }
 
 
         var text {
             get {
-                return topaz_.topaz_text2d__get_text(impl_);
+                return topaz_.topaz_text2d__get_text(impl);
             }
             set {
-                topaz_.topaz_text2d__set_text(impl_, value);
+                topaz_.topaz_text2d__set_text(impl, value);
             }
         }
 
@@ -2248,8 +2484,11 @@ class Topz {
 
 
 
-        func setParameter(p, v) {
-            topaz_.topaz_shape2d__set_parameter(impl_, p, v);
+        func setAttribute(p, v) {
+            topaz_.topaz_text2d__set_attribute(impl, p, v);
+        }
+        func getAttribute(p) {
+            return topaz_.topaz_text2d__set_attribute(impl, p);
         }
 
 
@@ -2257,61 +2496,61 @@ class Topz {
         var rotation {
             get {
                 var out = Topaz.Vector();
-                out.impl_ = topaz_.topaz_text2d__get_rotation(impl_);
+                out.impl = topaz_.topaz_text2d__get_rotation(impl);
                 return out; 
             }
 
             set {
-                topaz_.topaz_text2d__set_rotation(impl_, value.impl_);
+                topaz_.topaz_text2d__set_rotation(impl, value.impl);
             }
         }
         
         var position {
             get {
                 var out = Topaz.Vector();
-                out.impl_ = topaz_.topaz_text2d__get_position(impl_);
+                out.impl = topaz_.topaz_text2d__get_position(impl);
                 return out; 
             }
 
             set {
-                topaz_.topaz_text2d__set_position(impl_, value.impl_);
+                topaz_.topaz_text2d__set_position(impl, value.impl);
             }
         }
 
         var scale {
             get {
                 var out = Topaz.Vector();
-                out.impl_ = topaz_.topaz_text2d__get_scale(impl_);
+                out.impl = topaz_.topaz_text2d__get_scale(impl);
                 return out; 
             }
 
             set {
-                topaz_.topaz_text2d__set_scale(impl_, value.impl_);
+                topaz_.topaz_text2d__set_scale(impl, value.impl);
             }
         }
 
 
         var extentWidth {
-            get {return topaz_.topaz_text2d__get_extent_width(impl_);}
+            get {return topaz_.topaz_text2d__get_extent_width(impl);}
         }
         var extentHeight {
-            get {return topaz_.topaz_text2d__get_extent_height(impl_);}
+            get {return topaz_.topaz_text2d__get_extent_height(impl);}
         }
 
         func getCharX(i) {
-            return topaz_.topaz_text2d__get_char_x(impl_, i);
+            return topaz_.topaz_text2d__get_char_x(impl, i);
         }
 
         func getCharY(i) {
-            return topaz_.topaz_text2d__get_char_y(impl_, i);
+            return topaz_.topaz_text2d__get_char_y(impl, i);
         }
 
         func setColor(color) {
-            topaz_.topaz_text2d__set_color(impl_, color.impl_);
+            topaz_.topaz_text2d__set_color(impl, color.impl);
         }
 
         func setColorSection(from, to, color) {
-            topaz_.topaz_text2d__set_color_section(impl_, from, to, color.impl_);
+            topaz_.topaz_text2d__set_color_section(impl, from, to, color.impl);
         }
 
         
@@ -2329,12 +2568,12 @@ class Topz {
 
     class StateControl_Definition : Component {
         func init() {
-            impl_ = topaz_.topaz_state_control__create();
+            impl = topaz_.topaz_state_control__create();
         }
 
         func add(args) {
             topaz_.topaz_state_control__add(
-                impl_,
+                impl,
                 args.state,
                 args.onStep,
                 args.onDraw,
@@ -2343,23 +2582,23 @@ class Topz {
         }
         
         func remove(name) {
-            topaz_.topaz_state_control__remove(impl_, name);
+            topaz_.topaz_state_control__remove(impl, name);
         }
         
         func execute(nam) {
-            topaz_.topaz_state_control__execute(impl_, nam);
+            topaz_.topaz_state_control__execute(impl, nam);
         }
 
         func halt() {
-            topaz_.topaz_state_control__halt(impl_);
+            topaz_.topaz_state_control__halt(impl);
         }
 
         var isHalted {
-            get { return topaz_.topaz_state_control__is_halted(impl_); }
+            get { return topaz_.topaz_state_control__is_halted(impl); }
         }
 
         var state {
-            get { return topaz_.topaz_state_control__get_current(impl_); }
+            get { return topaz_.topaz_state_control__get_current(impl); }
         }
 
         func String() {
@@ -2375,116 +2614,116 @@ class Topz {
     class Automation_Definition : Component {
 
         func init() {
-            impl_ = topaz_.topaz_automation__create();
+            impl = topaz_.topaz_automation__create();
         }
 
         func addKeyframe(value, fn, offset) {
-            topaz_.topaz_automation__add_keyframe(impl_, value, fn, offset);
+            topaz_.topaz_automation__add_keyframe(impl, value, fn, offset);
         }
 
         func addVectorKeyframe(value, fn, offset) {
-            topaz_.topaz_automation__add_vector_keyframe(impl_, value, fn, offset);
+            topaz_.topaz_automation__add_vector_keyframe(impl, value, fn, offset);
         }
         
         func clear() {
-            topaz_.topaz_automation__clear(impl_);
+            topaz_.topaz_automation__clear(impl);
         }
 
         func blend(other) {
-            topaz_.topaz_automation__blend(impl_, other.impl_);
+            topaz_.topaz_automation__blend(impl, other.impl);
         }
 
         func smooth() {
-            topaz_.topaz_automation__other(impl_);
+            topaz_.topaz_automation__other(impl);
         }
 
         func addFromString(str) {
-            topaz_.topaz_automation__add_from_string(impl_, str);
+            topaz_.topaz_automation__add_from_string(impl, str);
         }
 
         func skipTo(n) {
-            topaz_.topaz_automation__skip_to(impl_, n);
+            topaz_.topaz_automation__skip_to(impl, n);
         }
 
         var length {
             get {
-                return topaz_.topaz_automation__get_length(impl_);
+                return topaz_.topaz_automation__get_length(impl);
             }
         }
 
         var durationFrames {
             set {
-                topaz_.topaz_automation__set_duration_frames(impl_, value);
+                topaz_.topaz_automation__set_duration_frames(impl, value);
             }
         }
 
 
         var durationSeconds {
             set {
-                topaz_.topaz_automation__set_duration_seconds(impl_, value);
+                topaz_.topaz_automation__set_duration_seconds(impl, value);
             }
         }
 
         var duration {
             get {
-                return topaz_.topaz_automation__get_duration(impl_);
+                return topaz_.topaz_automation__get_duration(impl);
             }
         }
 
         var looped {
             get {
-                return topaz_.topaz_automation__get_looped(impl_);
+                return topaz_.topaz_automation__get_looped(impl);
             }
             set {
-                topaz_.topaz_automation__set_looped(impl_, value);
+                topaz_.topaz_automation__set_looped(impl, value);
             }
         }
 
         var speed {
             get {
-                return topaz_.topaz_automation__get_speed(impl_);
+                return topaz_.topaz_automation__get_speed(impl);
             }
             set {
-                topaz_.topaz_automation__set_speed(impl_, value);
+                topaz_.topaz_automation__set_speed(impl, value);
             }
         }
 
         func resume() {
-            topaz_.topaz_automation__resume(impl_);
+            topaz_.topaz_automation__resume(impl);
         }
         func pause() {
-            topaz_.topaz_automation__pause(impl_);
+            topaz_.topaz_automation__pause(impl);
         }
 
         var string {
             set {
-                return topaz_.topaz_automation__to_string(impl_);
+                return topaz_.topaz_automation__to_string(impl);
             }
 
             get {
-                topaz_.topaz_automation__set_from_string(impl_, value);
+                topaz_.topaz_automation__set_from_string(impl, value);
             }
         }
 
         func vectorAt(val) {
             var out = Topaz.Vector();
-            out.impl_ = topaz_.topaz_automation__vector_at(impl_, val);
+            out.impl = topaz_.topaz_automation__vector_at(impl, val);
             return out;
         }
 
         func at(val) {
-            return topaz_.topaz_automation__at(impl_, val);
+            return topaz_.topaz_automation__at(impl, val);
         }
 
         var vector {
             get {
-                return topaz_.topaz_automation__current_Topaz.Vector(impl_);
+                return topaz_.topaz_automation__current_Topaz.Vector(impl);
             }
         }
 
         var value {
             get {
-                return topaz_.topaz_automation__current(impl_);
+                return topaz_.topaz_automation__current(impl);
             }
         }
 
@@ -2513,7 +2752,7 @@ class Topz {
                     out,
                     jsonAsset.assetName
                 );
-                if (success == null) {
+                if (success == undefined) {
                     Topaz.log("Error loading " + jsonAsset.assetName + "!");
                     return false;
                 }
@@ -2525,7 +2764,7 @@ class Topz {
                     jsonAsset.assetPath,
                     jsonAsset.assetName
                 );    
-                if (success == null) {
+                if (success == undefined) {
                     Topaz.log("Error loading " + jsonAsset.assetPath + "!");
                     return false;
                 }
@@ -2551,7 +2790,7 @@ class Topz {
                 pkg.depends = [];
             }
             // not a valid array, tolerate it.
-            if (pkg.depends.count == null) {
+            if (pkg.depends.count == undefined) {
                 pkg.depends = [];
             }
             pkg.resolved = false;
@@ -2697,10 +2936,10 @@ class Topz {
 
         private func genPackage(allPackages, path) {
             var mainPath = Topaz.Filesystem.getPathFromString(
-                Topaz.Filesystem.getPath(Topaz.Filesystem.DefaultNode.resources),
+                Topaz.Filesystem.getPath(TOPAZ.FILESYSTEM.DEFAULT_NODE.RESOURCES),
                 path
             );
-            if (mainPath == null) {
+            if (mainPath == undefined) {
                 Topaz.log("No such path.");
                 return false;
             }
@@ -2720,11 +2959,11 @@ class Topz {
             if (injson.outputName != null) {
                 packageOutName = injson.outputName;
             }
-            if (outjson.name == null) {
+            if (outjson.name == undefined) {
                 return ("setup_package.json: missing 'name' property!");
             }
             outjson.version = injson.version;
-            if (outjson.version == null) {
+            if (outjson.version == undefined) {
                 return ("setup_package.json: missing 'version' property!");
             }
 
@@ -2742,7 +2981,7 @@ class Topz {
                 Topaz.log("WARNING setup_package.json: missing 'version.build' property");
             }
 
-            var debug = injson.debug == null ? false : injson.debug;
+            var debug = injson.debug == undefined ? false : injson.debug;
 
             outjson.depends = [];
             if (injson.hasKey("depends") && injson.depends.count) {
@@ -2799,7 +3038,7 @@ class Topz {
 
 
             var output = JSON.stringify(outjson);
-            var outputAsset = Topaz.Resources.fetchAsset(Topaz.Resources.AssetType.data, "__ASSET__39245s$");
+            var outputAsset = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.DATA, "__ASSET__39245s$");
             var outputData = [];
             Topaz.log("Generating output buffer", false);
             var length = output.length;
@@ -2830,12 +3069,12 @@ class Topz {
 
     var Renderer;
     func attachPreManager(v) {
-        topaz_.topaz__attach_pre_manager(v.impl_);
+        topaz_.topaz__attach_pre_manager(v.impl);
     }
 
-    func attachPreManagerUnpausable(v){topaz_.topaz__attach_pre_manager_unpausable(v.impl_)};
-    func attachPostManager(v){topaz_.topaz__attach_post_manager(v.impl_)};
-    func attachPostManagerUnpausable(v){topaz_.topaz__attach_post_manager_unpausable(v.impl_)};
+    func attachPreManagerUnpausable(v){topaz_.topaz__attach_pre_manager_unpausable(v.impl)};
+    func attachPostManager(v){topaz_.topaz__attach_post_manager(v.impl)};
+    func attachPostManagerUnpausable(v){topaz_.topaz__attach_post_manager_unpausable(v.impl)};
     
     func init() {
         run = topaz_.topaz__run;
@@ -2854,143 +3093,28 @@ class Topz {
         Color = Color_Definition;
         Asset = Asset_Definition;
         Data = Data_Definition;
+        Material = Material_Definition;
+        Mesh = Mesh_Definition;
         Sound = Sound_Definition;
         Image = Image_Definition;
         Object2D = Object2D_Definition;
         ParticleEmitter2D = ParticleEmitter2D_Definition;
         Particle = Particle_Definition;
         Display = Display_Definition;
-        Display.ViewPolicy = [
-            "none" : 0,
-            "matchSize" : 1
-        ];
-        
-        Display.Parameter = [
-            "x" : 0,
-            "y" : 1,
-            "width" : 2,
-            "height" : 3,
-            "show" : 4,
-            "fullscreen" : 5,
-            "lockClientResize" : 6,
-            "lockClientPosition" : 7,
-            "viewPolicy" : 8,
-            "inputFocus" : 9
 
-        ];
-        Particle_Definition.Property = [
-            "duration" : 0,
-            "scaleX" : 1,
-            "scaleY" : 2,
-            "scaleMultiplier" : 3,
-            "rotation" : 4,
-            "direction" : 5,
-            "speedX" : 6,
-            "speedY" : 7,
-            "red" : 8,
-            "green" : 9,
-            "blue" : 10,
-            "alpha" : 11
-        ];
         
         Object2D.bind("setGroupInteraction", func(a, b, v) {
             topaz_.topaz_object2d__set_group_interaction(a, b, v);
         });
-        Object2D_Definition.Group = [
-            "A" : 0,
-            "B" : 1,
-            "C" : 2,
-            "D" : 3,
 
-            "E" : 4,
-            "F" : 5,
-            "G" : 6,
-            "H" : 7,
-
-            "I" : 8,
-            "J" : 9,
-            "K" : 10,
-            "L" : 11,
-
-            "M" : 12,
-            "N" : 13,
-            "O" : 14,
-            "P" : 15,
-
-            "Q" : 16,
-            "R" : 17,
-            "S" : 18,
-            "T" : 19,
-
-            "U" : 20,
-            "V" : 21,
-            "W" : 22,
-            "X" : 23,
-
-            "Y" : 24,
-            "Z" : 25
-        ];
         Scheduler = Scheduler_Definition;
-        Scheduler.Mode = [
-            "time"  : 0,
-            "frame" : 1
-        ];
-        Renderer = [
-            "Parameter" : [
-                "alphaRule" : 0,
-                "depthTest" : 1,
-                "etchRule" : 2,
-                "textureFilterHint" : 3
-            ],
-            
-            
 
-            "EtchRule" : [
-                "noEtching" : 0,
-                "define" : 1,
-                "undefine" : 2,
-                "in" : 3,
-                "out" : 4
-            ],
-
-            "DepthTest" : [
-                "less" : 0,
-                "LEQ" : 1,
-                "greater" : 2,
-                "GEQ" : 3,
-                "equal" : 4,
-                "none" : 5
-            ],
-
-            "AlphaRule" : [
-                "allow" : 0,
-                "opaque" : 1,
-                "translucent" : 2,
-                "invisible" : 3
-            ],
-
-            "TextureFilterHint" : [
-                "linear" : 0,
-                "none" : 1
-            ]
-
-        ];
         
         Shape2D = Shape2D_Definition;
+        Shape3D = Shape3D_Definition;
         Text2D = Text2D_Definition;
         StateControl = StateControl_Definition;
         Automation = Automation_Definition;
-        Automation_Definition.Function = [
-            "none" : 0,
-            "linear" : 1,
-            "square" : 2,
-            "cube" : 3,
-            "squareRoot" : 4,
-            "cubeRoot" : 5,
-            "random" : 6
-        ];
-
-
         Audio = Audio_Definition(); // subnamespace
         Resources = Resources_Definition();
         Input = Input_Definition();
@@ -2998,7 +3122,6 @@ class Topz {
         Package  = Package_Definition();
         Filesystem = Filesystem_Definition();
         ViewManager = ViewManager_Definition();
-        Key = Key_Definition();
 
     }
 }

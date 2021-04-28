@@ -60,16 +60,16 @@ class Input_Poll : Entity {
         // If the key state is non-zero, we modify the 
         // position vector by adding "1" to it in the direction 
         // that corresponds to the arrow.
-        if (Topaz.Input.getState(Topaz.Key.topazKey_up)) {
+        if (Topaz.Input.getState(TOPAZ.INPUT.KEY_up)) {
             position = position + Topaz.Vector(0, -1);
         }
-        if (Topaz.Input.getState(Topaz.Key.topazKey_down)) {
+        if (Topaz.Input.getState(TOPAZ.INPUT.KEY_down)) {
             position = position + Topaz.Vector(0, 1);
         }
-        if (Topaz.Input.getState(Topaz.Key.topazKey_left)) {
+        if (Topaz.Input.getState(TOPAZ.INPUT.KEY_left)) {
             position = position + Topaz.Vector(-1, 0);
         }
-        if (Topaz.Input.getState(Topaz.Key.topazKey_right)) {
+        if (Topaz.Input.getState(TOPAZ.INPUT.KEY_right)) {
             position = position + Topaz.Vector(1, 0);
         }
 
@@ -77,7 +77,7 @@ class Input_Poll : Entity {
         // The left/right/middle button can be polled using 
         // the Key.topazPointer_* inputs.
         // All inputs for the mouse+keyboard can use the getState() function.
-        if (Topaz.Input.getState(Topaz.Key.topazPointer_1)) {
+        if (Topaz.Input.getState(TOPAZ.INPUT.POINTER_1)) {
             // To poll position position, getState can be used. However,
             // due to the commonality of this operation, the position 
             // can be polled by just accessing Input.mouse, which is a 
@@ -154,16 +154,16 @@ class Input_Listener : Entity {
                 // we passed in, and the input id that is active.
                 'onActive' : func(map, key) {
                     switch(key) {
-                      case Topaz.Key.topazKey_w:
+                      case TOPAZ.INPUT.KEY_w:
                         position = position + Topaz.Vector(0, -1);
                         break;
-                      case Topaz.Key.topazKey_s:
+                      case TOPAZ.INPUT.KEY_s:
                         position = position + Topaz.Vector(0, 1);
                         break;
-                      case Topaz.Key.topazKey_a:
+                      case TOPAZ.INPUT.KEY_a:
                         position = position + Topaz.Vector(-1, 0);
                         break;
-                      case Topaz.Key.topazKey_d:
+                      case TOPAZ.INPUT.KEY_d:
                         position = position + Topaz.Vector(1, 0);
                         break;
                     }
@@ -180,7 +180,7 @@ class Input_Listener : Entity {
                 'onUpdate' : func(map, input, value) {
                     // The clicking state will by set here to detect when to apply the 
                     // x / y position change
-                    if (input == Topaz.Key.topazPointer_0) {
+                    if (input == TOPAZ.INPUT.POINTER_0) {
                         clicking = value > 0;
                     }
 
@@ -191,11 +191,11 @@ class Input_Listener : Entity {
                     // in question with the raw value.
                     if (clicking) {
                         switch(input) {
-                          case Topaz.Key.topazPointer_X:
+                          case TOPAZ.INPUT.POINTER_X:
                             position = Topaz.Vector(value, position.y);
                             break;
 
-                          case Topaz.Key.topazPointer_Y:
+                          case TOPAZ.INPUT.POINTER_Y:
                             position = Topaz.Vector(position.x, value);
                             break;
                         }

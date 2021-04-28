@@ -31,11 +31,11 @@ class Rectangle : Entity {
             [
                 'onPress' : func(map, key) {
                     switch(key) {
-                      case Topaz.Key.topazKey_space:
+                      case TOPAZ.INPUT.KEY_space:
                         anim.speed = anim.speed + 0.25;
                         break;
 
-                      case Topaz.Key.topazKey_backspace:
+                      case TOPAZ.INPUT.KEY_backspace:
                         if (anim.speed > 0)
                             anim.speed = anim.speed - 0.25;
                         else 
@@ -64,9 +64,9 @@ class RectangleLinear : Rectangle {
         super.onReady();
 
         visual.color = Topaz.Color("purple");
-        anim.addKeyframe(0,   Topaz.Automation.Function.none, 0);
-        anim.addKeyframe(200, Topaz.Automation.Function.linear, 0.5);
-        anim.addKeyframe(0,   Topaz.Automation.Function.linear, 1);
+        anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE, 0);
+        anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.LINEAR, 0.5);
+        anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.LINEAR, 1);
 
         position = Topaz.Vector(100, 100);
     }
@@ -78,9 +78,9 @@ class RectangleSquare : Rectangle {
         super.onReady();
 
         visual.color = Topaz.Color("blue");
-        anim.addKeyframe(0,   Topaz.Automation.Function.none,   0);
-        anim.addKeyframe(200, Topaz.Automation.Function.square, 0.5);
-        anim.addKeyframe(0,   Topaz.Automation.Function.square, 1);
+        anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE,   0);
+        anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.SQUARE, 0.5);
+        anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE, 1);
 
         position = Topaz.Vector(100, 100);
     }
@@ -92,9 +92,9 @@ class RectangleRoot : Rectangle {
         super.onReady();
 
         visual.color = Topaz.Color("red");
-        anim.addKeyframe(0,   Topaz.Automation.Function.none,       0);
-        anim.addKeyframe(200, Topaz.Automation.Function.squareRoot, 0.5);
-        anim.addKeyframe(0,   Topaz.Automation.Function.squareRoot, 1);
+        anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE,       0);
+        anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
+        anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
         position = Topaz.Vector(100, 100);
     }
 }

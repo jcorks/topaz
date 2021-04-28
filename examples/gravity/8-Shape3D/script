@@ -1,0 +1,85 @@
+#include "@topaz.core"
+class Example3D : Entity {
+    private var stepper;
+    func onReady() {
+        stepper = 0;
+        var v = Topaz.Shape3D();
+        v.setAttribute(
+            TOPAZ.RENDERER.ATTRIBUTE.TEXTURE_FILTER_HINT, 
+            TOPAZ.RENDERER.TEXTURE_FILTER_HINT.NONE
+        );
+
+        v.mesh     = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.MESH, 'testMesh');
+        v.material = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.MATERIAL, 'testMaterial');
+        v.setTexture(0, Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.IMAGE, 'testTex'));
+        
+        components = [v];
+    }
+    
+    
+    func onStep(props) {
+        stepper += 0.0001;
+        rotation = Topaz.Vector(
+            stepper, 
+            stepper*3, 
+            stepper*8
+        );
+    }
+}
+
+
+func main() {
+
+    var mesh = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.MESH, 'testMesh');
+    mesh.vertices = [
+       -1,-1, 0,    0, 1, 0,    0, 0,    1, 0, 1, 1,
+        1,-1, 0,    0, 1, 0,    1, 0,    1, 0, 1, 1,
+        1, 1, 0,    0, 1, 0,    1, 1,    1, 0, 1, 1,
+       -1, 1, 0,    0, 1, 0,    0, 1,    1, 0, 1, 1
+    ];
+
+    mesh.addObject();
+    mesh.setObject(0, [
+        0, 1, 2,
+        2, 3, 0
+    ]);
+
+    var material = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.MATERIAL, 'testMaterial');
+    material.setProgramSource(
+        'GLSL ES2',
+        Topaz.Resources.loadAsset('', 'vertex_es2.glsl', 'vertex_es2.glsl').string,             
+        Topaz.Resources.loadAsset('',   'frag_es2.glsl',   'frag_es2.glsl').string
+    );
+
+
+
+    var tex = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.IMAGE, 'testTex');
+    tex.resize(2, 2);
+    tex.addFrame();
+    tex.setRGBA(0, 
+        [
+            255,   0,   0, 255,
+            0,   255,   0, 255,
+            0,     0, 255, 255,
+            255, 255, 255, 255
+
+
+        ]
+    );
+
+
+
+
+
+    const a = Example3D();
+    a.position = Topaz.Vector(0, 0, -4);
+
+    const b = Example3D();
+    b.position = Topaz.Vector(2, 0, 1);
+    b.scale = Topaz.Vector(0.7, 0.3, 0.3);
+
+
+
+    a.children = [b];
+    Topaz.root = a;
+}

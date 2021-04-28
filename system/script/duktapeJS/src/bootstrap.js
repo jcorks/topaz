@@ -2296,7 +2296,7 @@ var Topaz = {
     );    
     
     Topaz.Mesh.prototype.setVertex = function(i, v) {        
-        topaz_mesh__set_vertex(this.impl, v);
+        topaz_mesh__set_vertex(this.impl, i, v);
     }
 
     Topaz.Mesh.prototype.getVertex = function(i) {
