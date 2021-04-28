@@ -103,6 +103,9 @@ typedef enum {
     TSO_OBJECT_ID__FILESYSTEM_PATH,
     TSO_OBJECT_ID__DISPLAY,
     TSO_OBJECT_ID__FRAMEBUFFER,
+    TSO_OBJECT_ID__MATERIAL,
+    TSO_OBJECT_ID__MESH,
+    TSO_OBJECT_ID__SHAPE3D,
 
     /// All types are above and including the 25th bit .
     /// Below the 25th bit are specific instances

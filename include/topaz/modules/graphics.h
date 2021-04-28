@@ -37,7 +37,7 @@ typedef struct topazSystem_t topazSystem_t;
 typedef struct topazRender2D_t topazRender2D_t;
 typedef struct topazRenderer_2D_t topazRenderer_2D_t;
 typedef struct topazRenderer_3D_t topazRenderer_3D_t;
-typedef struct topazRenderer_ProcessAttribs_t topazRenderer_ProcessAttribs_t;
+typedef struct topazRenderer_Attributes_t topazRenderer_Attributes_t;
 typedef struct topazRenderer_t topazRenderer_t;
 
 /// The main graphics controller. It manages the context's renderer 
@@ -104,7 +104,7 @@ void topaz_graphics_request_draw_3d(
     /// The 3D instance.
     topazRenderer_3D_t * d,    
     /// Processing attributes for the object.
-    const topazRenderer_ProcessAttribs_t * att
+    const topazRenderer_Attributes_t * att
 );
 
 

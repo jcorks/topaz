@@ -1,0 +1,764 @@
+/// Holds all constants
+singleton constants
+
+
+
+
+/// Enumerator for different scheduler modes.
+/// See Topaz.Scheduler
+enum TOPAZ.SCHEDULER.MODE 
+    /// Tells the scheduler to measure with real time.
+    eval TIME
+
+    /// Tells the scheduler to measyre with frames.
+    eval FRAME
+
+
+/// Enumerator for different particle properties.
+/// See Topaz.Particle
+enum TOPAZ.PARTICLE.PROPERTY 
+    /// The duration of the particle.
+    eval DURATION
+
+    /// The X-scale of the particle.
+    eval SCALE_X
+
+    /// The Y-scale of the particle.
+    eval SCALE_Y
+
+    /// The total multiplier for the scale.
+    eval SCALE_MULTIPLIER
+
+    /// The rotation of the particle in degrees.
+    eval ROTATION
+
+    /// The direction that the particle is headed. Under 0 degree rotation
+    /// which is the default, +/- speedX translates to right and left movement.
+    /// +/- speedY translates to down and upward movement respectively.
+    eval DIRECTION
+
+    /// Speed in the X direction.
+    eval SPEED_X
+
+    /// Speed in the y direction.
+    eval SPEED_Y
+
+    /// Red color of the particle.
+    eval RED
+    /// green color of the particle.
+    eval GREEN
+    /// Blue color of the particle.
+    eval BLUE
+    /// Alpha (transparency) of the particle.
+    eval ALPHA
+
+
+/// Enumerator for the different available automation 
+/// functions. Every automation can have functions associated with it
+/// that describe how values change over time. These primitive 
+/// functions can be string together to make virtually any 
+/// value description.
+/// See Topaz.Automation.
+enum TOPAZ.AUTOMATION.FUNCTION
+    /// The value instantaneously becomes the end value.
+    eval NONE 
+
+    /// The value linearly becomes the end value.
+    eval LINEAR
+
+    /// The value becomes the end value slowly, then ramps up according to a square relationship.
+    eval square 
+
+    /// The value becomes the end value slowly, then ramps up according to a cube relationship.
+    eval cube 
+
+    /// The value becomes the end value quickly, then slows down according to a square relationship.
+    eval squareRoot 
+
+    /// The value becomes the end value quickly, then slows down according to a cube relationship.
+    eval cubeRoot 
+
+    /// The value becomes any value between begin and end when it is re-sampled.
+    eval random
+
+
+/// Enumerator of all possible collision groups available for use 
+/// within Topaz.Object2D. By default, all objects belong to group A.
+enum TOPAZ.OBJECT2D.GROUP
+    /// Collision group A
+    eval A
+    /// Collision group B
+    eval B
+    /// Collision group C
+    eval C
+    /// Collision group D
+    eval D
+    /// Collision group E
+    eval E
+    /// Collision group F
+    eval F
+    /// Collision group G
+    eval G
+    /// Collision group H
+    eval H
+    /// Collision group I
+    eval I
+    /// Collision group J
+    eval J
+    /// Collision group K
+    eval K
+    /// Collision group L
+    eval L
+    /// Collision group M
+    eval M
+    /// Collision group N
+    eval N
+    /// Collision group O
+    eval O
+    /// Collision group P
+    eval P
+    /// Collision group Q
+    eval Q
+    /// Collision group R
+    eval R
+    /// Collision group S
+    eval S
+    /// Collision group T
+    eval T
+    /// Collision group U
+    eval U
+    /// Collision group V
+    eval V
+    /// Collision group W
+    eval W
+    /// Collision group X
+    eval X
+    /// Collision group Y
+    eval Y
+    /// Collision group Z
+    eval Z
+
+
+/// The parameters control more fine operations when rendering the 
+/// the objects.
+///
+enum TOPAZ.RENDERER.ATTRIBUTE
+    /// The geometric primitive to use when interpreting vertices.
+    ///
+    eval PRIMITIVE
+    /// The transparency rule for the 2D object.
+    ///
+    eval ALPHA_RULE
+    /// The transparency rule for the 2D object.
+    ///
+    eval DEPTH_TEST 
+
+    /// The currently set etch rule, which determines how the 
+    /// etch rules is applied when rendering this 2d object.
+    ///
+    eval ETCH_RULE
+
+    /// The texturing hint for the 2D object.
+    ///
+    eval TEXTURE_FILTER_HINT
+
+
+
+/// Allows for etching, which will ignore rendered results if they arent in the etch.
+/// Etch regions last until next frame by default.
+///
+enum TOPAZ.RENDERER.ETCH_RULE 
+    /// Default, no etching is done
+    ///
+    eval NO_ETCHING
+
+    /// Along with whatever is being drawn, the etch region is defined. 
+    /// Etches are only defined in ares where the depth test passes
+    ///
+    eval DEFINE 
+
+    /// Along with whatever is being drawn, the etch region is undefined if 
+    /// defined within the frame.
+    ///
+    eval UNDEFINE 
+
+    /// Only shows things that fall within the etch region
+    ///
+    eval IN
+
+    /// Only shows things that fall OUTSIDE the etch region
+    ///
+    eval OUT
+
+
+/// Defines the polygon type.
+///
+enum TOPAZ.RENDERER.PRIMITIVE
+    /// Triangle primitive. The most basic and versatile.
+    ///
+    eval TRIANGLE
+    /// Line primitive. 
+    ///
+    eval LINE
+
+
+/// Defines the depth test, meaning the rule that determines which objects are to be 
+/// to be drawn in front or behind. "Less" is the standard for 3D, which allows polygons 
+/// with a lower depth to be drawn in front. "NoTest" is standard for 2D, which 
+/// allows graphics drawn later to be on top.
+///
+enum TOPAZ.RENDERER.DEPTHTEST 
+    /// Generated framebuffer elements whose calculated depth are less
+    /// will be in front.
+    ///
+    eval LESS
+    /// Generated framebuffer elements whose calculated depth are <=
+    /// will be in front.
+    ///
+    eval LEQ 
+    /// Generated framebuffer elements whose calculated depth are greater
+    /// will be in front.
+    ///
+    eval GREATER 
+    /// Generated framebuffer elements whose calculated depth are >=
+    /// will be in front.
+    ///
+    eval GEQ
+    /// Generated framebuffer elements whole calculated depth is equal to 
+    /// whats in the depth buffer
+    eval EQUAL
+    /// No depth test is calculated. All elements pass.
+    ///
+    eval NONE
+
+
+/// Allows for differenct transparency effects 
+///
+enum TOPAZ.RENDERER.ALPHA_RULE 
+    /// allows for standard "fade" transparency. What we're all used to
+    ///
+    eval ALLOW 
+
+    /// Ignores transparency
+    ///
+    eval OPAQUE 
+    /// Additive blending, which adds the result color ontop of whats already 
+    /// there.
+    ///
+    eval TRANSLUCENT
+    /// Makes the drawn objects invisible. Note that etching and depth 
+    /// information may still be written.
+    ///
+    eval INVISIBLE
+
+
+/// Defines the texture filter hint. Linear will 
+/// texture all subsequent textures bilinearly, giving 
+/// a smoother look to textures when scaled up.
+/// Hints may be ignored by the renderer
+///
+enum TOPAZ.RENDERER.TEXTURE_FILTER_HINT
+    /// Linear filtering of textures.
+    ///
+    eval LINEAR
+    /// No filtering of textures.
+    ///
+    eval NONE
+
+/// Data component of the a framebuffer.
+///
+enum TOPAZ.RENDERER.LAYER
+    /// RGBA component.
+    ///
+    eval COLOR
+    /// Depth component.
+    ///
+    eval DEPTH
+    /// Etch component.
+    ///
+    eval ETCH
+    /// All components.
+    ///
+    eval ALL
+
+///  Controls how the Display displays Rendered data.
+///
+enum TOPAZ.DISPLAY.VIEW_POLICY
+    /// The Display will show the attached Framebuffer's contents with no transformation
+    /// The visual is stretched over the width and height of the display.
+    ///
+    eval NONE
+
+    /// The Display will resize the attached Framebuffer to match the windows dimensions
+    /// whenever the window is resized.
+    /// This is the default.
+    ///
+    eval MATCH_SIZE
+    
+/// On most systems, displays have a variety of features that can be 
+/// controlled. This provides a generic interface into those features,
+/// where a request can be posted to change a parameter via 
+/// topaz_display_set_parameter().
+///
+enum TOPAZ.DISPLAY.PARAMETER
+    /// Controls the X position of the display. 
+    ///
+    /// Usually, this is relative to whatever environment
+    /// the display exists in. For example, in a desktop environment, this could be
+    /// an offset from the DE's origin. If the display does not support moving,
+    /// no action is taken.
+    eval X     
+    /// Controls the Y position of the display. 
+    ///
+    /// Usually, this is relative to whatever environment
+    /// the display exists in. For example, in a desktop environment, this could be
+    /// an offset from the DE's origin. If the display does not support moving,
+    /// no action is taken.
+    eval Y
+    /// The width of the display.
+    ///
+    eval WIDTH
+    /// The height of the display.
+    ///
+    eval HEIGHT
+    /// Controls whether the display is shown.
+    eval SHOW
+    /// Set the display into a fullscreen context. If fullscreen is not supported,
+    /// no action is taken.
+    ///
+    eval FULLSCREEN
+    /// Controls prevention of resizing on the user's side. 
+    ///
+    /// For example,
+    /// in a desktop environment, this would disable the feature of resizing
+    /// the window.
+    ///
+    eval LOCK_CLIENT_RESIZE
+    /// Attempts to prevent moving on the user's side. 
+    /// 
+    eval LOCK_CLIENT_POSITION
+    /// Controls how the Renderer's information is displayed. The default policy is "MatchSize"
+    /// See ViewPolicy for more information. 
+    ///
+    eval VIEW_POLICY
+    /// Returns whether the display has user input focus. On display implementations
+    /// where this doesnt apply, i.e. where there is only one logical display available,,
+    /// this will always return true. 
+    ///
+    eval INPUT_FOCUS
+
+/// Type of asset.
+///
+/// Every asset has a type that gives a hint to what child class
+/// it is. 
+///
+enum TOPAZ.ASSET.TYPE
+    /// The asset doesnt have a type. This is used for 
+    /// error cases.
+    ///
+    eval NONE
+    /// The asset is a Topaz.Image, which holds raw 
+    /// pixel data.
+    eval IMAGE
+    /// The asset is a Topaz.Sound, which holds raw 
+    /// audio data.
+    eval SOUND
+    /// The asset is a Topaz.Material, which defines how 
+    /// 3d geometry looks.
+    eval MATERIAL
+    /// The asset is a Topaz.Data, which expresses raw bytes / text. 
+    eval DATA
+    /// The asset is a Topaz.Mesh, which holds raw 3D data.
+    eval MESH
+
+
+/// Every shape3d can have textures attached to it, which are
+/// used by rendering programs.
+enum TOPAZ.SHAPE3D.TEXTURE
+    /// The first slot for texturing.
+    eval SLOT_0
+    /// The second slot for texturing.
+    eval SLOT_1
+    /// The third slot for texturing.
+    eval SLOT_2
+
+/// Every display has built in framebuffers that can be 
+/// used and exchanged between for advanced rendering effects.
+///
+enum TOPAZ.DISPLAY.FRAMEBUFFER 
+    /// The default framebuffer.
+    eval A
+    /// The second framebuffer. 
+    eval B
+    /// The 3rd framebuffer.
+    eval C
+    /// The 4th framebuffer.
+    eval D
+
+
+
+/// Enumerator of possible locations to retrieve a path for.
+enum TOPAZ.FILESYSTEM.DEFAULT_NODE
+    /// The directory reserved for topaz resources.
+    /// This location is recommended for reading assets.
+    eval RESOURCES
+
+    /// The directory where the topaz directory is located.
+    eval TOPAZ
+
+    /// The directory where user data may be kept.
+    eval USER_DATA
+
+
+
+
+
+/// Standard input buttons for built-in device types.
+enum TOPAZ.INPUT
+    /// Not an input.
+    eval NOT_AN_INPUT
+    /// The 0 key.
+    eval KEY_0
+    /// The 1 key.
+    eval KEY_1
+    /// The 2 key.
+    eval KEY_2 
+    /// The 3 key.
+    eval KEY_3
+    /// The 4 key.
+    eval KEY_4
+    /// The 5 key.
+    eval KEY_5
+    /// The 6 key.
+    eval KEY_6
+    /// The 7 key.
+    eval KEY_7
+    /// The 8 key.
+    eval KEY_8
+    /// The 9 key.
+    eval KEY_9
+    /// The a key.
+    eval KEY_a
+    /// The b key.
+    eval KEY_b 
+    /// The c key.
+    eval KEY_c 
+    /// The d key.
+    eval KEY_d 
+    /// The e key.
+    eval KEY_e 
+    /// The f key.
+    eval KEY_f 
+    /// The g key.
+    eval KEY_g 
+    /// The h key.
+    eval KEY_h 
+    /// The i key.
+    eval KEY_i 
+    /// The j key.
+    eval KEY_j  
+    /// The k key.
+    eval KEY_k 
+    /// The l key.
+    eval KEY_l 
+    /// The m key.
+    eval KEY_m 
+    /// The n key.
+    eval KEY_n 
+    /// The o key.
+    eval KEY_o 
+    /// The p key.
+    eval KEY_p 
+    /// The q key.
+    eval KEY_q 
+    /// The r key.
+    eval KEY_r 
+    /// The s key.
+    eval KEY_s 
+    /// The t key.
+    eval KEY_t 
+    /// The u key.
+    eval KEY_u 
+    /// The v key.
+    eval KEY_v 
+    /// The w key.
+    eval KEY_w 
+    /// The x key.
+    eval KEY_x 
+    /// The y key.
+    eval KEY_y 
+    /// The z key.
+    eval KEY_z 
+    /// The lshift key.
+    eval KEY_lshift 
+    /// The rshift key.
+    eval KEY_rshift 
+    /// The lctrl key.
+    eval KEY_lctrl  
+    /// The rctrl key.
+    eval KEY_rctrl  
+    /// The lalt key.
+    eval KEY_lalt   
+    /// The ralt key.
+    eval KEY_ralt   
+    /// The tab key.
+    eval KEY_tab    
+    /// The F1 key.
+    eval KEY_F1     
+    /// The F2 key.
+    eval KEY_F2     
+    /// The F3 key.
+    eval KEY_F3     
+    /// The F4 key.
+    eval KEY_F4     
+    /// The F5 key.
+    eval KEY_F5     
+    /// The F6 key.
+    eval KEY_F6     
+    /// The F7 key.
+    eval KEY_F7     
+    /// The F8 key.
+    eval KEY_F8     
+    /// The F9 key.
+    eval KEY_F9     
+    /// The F10 key.
+    eval KEY_F10    
+    /// The F11 key.
+    eval KEY_F11    
+    /// The F12 key.
+    eval KEY_F12    
+    /// The up key.
+    eval KEY_up     
+    /// The down key.
+    eval KEY_down   
+    /// The left key.
+    eval KEY_left   
+    /// The right key.
+    eval KEY_right  
+    /// The minus key.
+    eval KEY_minus  
+    /// The equal key.
+    eval KEY_equal  
+    /// The backspace key.
+    eval KEY_backspace  
+    /// The grave key.
+    eval KEY_grave  
+    /// The esc key.
+    eval KEY_esc    
+    /// The home key.
+    eval KEY_home   
+    /// The pageUp key.
+    eval KEY_pageUp 
+    /// The pageDown key.
+    eval KEY_pageDown  
+    /// The end key.
+    eval KEY_end    
+    /// The backslash key.
+    eval KEY_backslash 
+    /// The lbracket key.
+    eval KEY_lbracket 
+    /// The rbracket key.
+    eval KEY_rbracket 
+    /// The semicolon key.
+    eval KEY_semicolon 
+    /// The apostrophe key.
+    eval KEY_apostrophe 
+    /// The frontslash key.
+    eval KEY_frontslash 
+    /// The enter key.
+    eval KEY_enter 
+    /// The delete key.
+    eval KEY_delete 
+    /// The numpad0 key.
+    eval KEY_numpad0 
+    /// The numpad1 key.
+    eval KEY_numpad1 
+    /// The numpad2 key.
+    eval KEY_numpad2 
+    /// The numpad3 key.
+    eval KEY_numpad3 
+    /// The numpad4 key.
+    eval KEY_numpad4 
+    /// The numpad5 key.
+    eval KEY_numpad5 
+    /// The numpad6 key.
+    eval KEY_numpad6 
+    /// The numpad7 key.
+    eval KEY_numpad7 
+    /// The numpad8 key.
+    eval KEY_numpad8 
+    /// The numpad9 key.
+    eval KEY_numpad9 
+    /// The prtscr key.
+    eval KEY_prtscr 
+    /// The lsuper key.
+    eval KEY_lsuper 
+    /// The rsuper key.
+    eval KEY_rsuper 
+    /// The space key.
+    eval KEY_space  
+    /// The insert key.
+    eval KEY_insert 
+    /// The comma key.
+    eval KEY_comma 
+    /// The period key.
+    topazeval KEY_period= 137 , 
+    /// The world1 key.
+    eval KEY_world1 
+    /// The world2 key.
+    eval KEY_world2 
+    /// The world3 key.
+    eval KEY_world3 
+    /// The world4 key.
+    eval KEY_world4  
+    /// The world5 key.
+    eval KEY_world5  
+    /// The world6 key.
+    eval KEY_world6 
+    /// The world7 key.
+    eval KEY_world7  
+    /// The world8 key.
+    eval KEY_world8  
+    /// The world9 key.
+    eval KEY_world9  
+
+    /// The 0th pointer button.
+    eval POINTER_0 
+    /// The 1st pointer button.
+    eval POINTER_1 
+    /// The 2nd pointer button.
+    eval POINTER_2 
+
+    /// The pointer x axis.
+    eval POINTER_X 
+    /// The pointer y axis.
+    eval POINTER_Y 
+    /// The pointer wheel axis.
+    eval POINTER_Wheel 
+
+    /// The a pad input.
+    eval PAD_a     
+    /// The b pad input.
+    eval PAD_b     
+    /// The c pad input.
+    eval PAD_c     
+    /// The x pad input.
+    eval PAD_x     
+    /// The y pad input.
+    eval PAD_y     
+    /// The r pad input.
+    eval PAD_r     
+    /// The l pad input.
+    eval PAD_l     
+    /// The r2 pad input.
+    eval PAD_r2    
+    /// The l2 pad input.
+    eval PAD_l2    
+    /// The r3 pad input.
+    eval PAD_r3    
+    /// The l3 pad input.
+    eval PAD_l3    
+    /// The start pad input.
+    eval PAD_start    
+    /// The select pad input.
+    eval PAD_select
+    /// The b13 pad input.
+    eval PAD_b13
+    /// The b14 pad input.
+    eval PAD_b14
+    /// The b15 pad input.
+    eval PAD_b15
+    /// The b16 pad input.
+    eval PAD_b16
+    /// The b17 pad input.
+    eval PAD_b17
+    /// The b18 pad input.
+    eval PAD_b18
+    /// The b19 pad input.
+    eval PAD_b19
+    /// The b20 pad input.
+    eval PAD_b20
+    /// The b21 pad input.
+    eval PAD_b21
+    /// The b22 pad input.
+    eval PAD_b22
+    /// The b23 pad input.
+    eval PAD_b23
+    /// The b24 pad input.
+    eval PAD_b24
+    /// The b25 pad input.
+    eval PAD_b25
+    /// The b26 pad input.
+    eval PAD_b26
+    /// The b27 pad input.
+    eval PAD_b27
+    /// The b28 pad input.
+    eval PAD_b28
+    /// The b29 pad input.
+    eval PAD_b29
+    /// The b30 pad input.
+    eval PAD_b30
+    /// The b31 pad input.
+    eval PAD_b31
+    /// The b32 pad input.
+    eval PAD_b32
+
+    /// The axisX pad input.
+    eval PAD_axisX 
+    /// The axisY pad input.
+    eval PAD_axisY 
+    /// The axisZ pad input.
+    eval PAD_axisZ 
+    /// The axisX2 pad input.
+    eval PAD_axisX2
+    /// The axisY2 pad input.
+    eval PAD_axisY2
+    /// The axisZ2 pad input.
+    eval PAD_axisZ2
+    /// The axisX3 pad input.
+    eval PAD_axisX3
+    /// The axisY3 pad input.
+    eval PAD_axisY3
+    /// The axisZ3 pad input.
+    eval PAD_axisZ3
+    /// The axisX4 pad input.
+    eval PAD_axisX4
+    /// The axisY4 pad input.
+    eval PAD_axisY4
+    /// The axisZ4 pad input.
+    eval PAD_axisZ4
+    /// The axisX5 pad input.
+    eval PAD_axisX5
+    /// The axisY5 pad input.
+    eval PAD_axisY5
+    /// The axisZ5 pad input.
+    eval PAD_axisZ5
+    /// The axisX6 pad input.
+    eval PAD_axisX6
+    /// The axisY6 pad input.
+    eval PAD_axisY6
+    /// The axisZ6 pad input.
+    eval PAD_axisZ6
+
+    /// The axisR pad input.
+    eval PAD_axisR   
+    /// The axisL pad input.
+    eval PAD_axisL    
+    /// The axisR2 pad input.
+    eval PAD_axisR2    
+    /// The axisL2 pad input.
+    eval PAD_axisL2    
+    /// The axisR3 pad input.
+    eval PAD_axisR3    
+    /// The axisL3 pad input.
+    eval PAD_axisL3    
+    /// The axisR4 pad input.
+    eval PAD_axisR4    
+    /// The axisL4 pad input.
+    eval PAD_axisL4    
+
+    /// The options pad input.
+    eval PAD_options
+
+    /// Number of built-in inputs.
+    eval COUNT

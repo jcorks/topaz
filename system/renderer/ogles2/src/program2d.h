@@ -28,7 +28,7 @@ typedef struct {
 void topaz_es2_p2d_render(
     topazES2_Program2D_t *, 
     const topazRenderer_2D_Context_t * ctx,
-    const topazRenderer_ProcessAttribs_t * attribs,
+    const topazRenderer_Attributes_t * attribs,
     const topazES2_Program2D_Renderable_t **,
     uint32_t count
 );

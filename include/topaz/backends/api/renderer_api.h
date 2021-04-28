@@ -288,8 +288,26 @@ struct topazRenderer_CoreAPI_t {
 
 
 
-    void                    (*renderer_draw_2d)             (topazRendererAPI_t *, void *, const topazRenderer_2D_Context_t *, const topazRenderer_ProcessAttribs_t *);
-    void                    (*renderer_draw_3d)             (topazRendererAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *);
+    void                    (*renderer_draw_2d)             (topazRendererAPI_t *, void *, const topazRenderer_2D_Context_t *, const topazRenderer_Attributes_t *);
+    void (*renderer_draw_3d) (
+        topazRendererAPI_t *, 
+        void * vertices_bufferObject,
+        topazArray_t * indices,
+
+        void * program_programObject,
+        void * material_bufferObject,
+
+        void * sampleFramebuffer_framebufferObject,
+
+        void * sampleTexture0_textureObject,
+        void * sampleTexture1_textureObject,
+        void * sampleTexture2_textureObject,
+
+        void * modelviewMatrix_bufferObject,
+        void * projectionMatrix_bufferObject,
+
+        const topazRenderer_Attributes_t *
+    );
 
 
     void                    (*renderer_clear_layer)         (topazRendererAPI_t *, topazRenderer_DataLayer);

@@ -7,7 +7,7 @@ class Topaz.Scheduler
 /// The constructor requires a mode.
 func [constructor] ->
     /// The mode to use.
-    Topaz.Scheduler.Mode mode
+    TOPAZ.SCHEDULER.MODE mode
 
 
 /// Assigns a new task for the scheduler to process. Once 

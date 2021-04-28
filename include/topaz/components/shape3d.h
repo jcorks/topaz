@@ -39,7 +39,7 @@ DEALINGS IN THE SOFTWARE.
 typedef struct topazTransform_t topazTransform_t;
 typedef struct topazAsset_t topazAsset_t;
 
-/// Can express basic 3D objects, such as images and shapes.
+/// Can express objects in 3D space.
 typedef struct topazShape3D_t topazShape3D_t;
 
 
@@ -88,7 +88,7 @@ void topaz_shape3d_set_texture(
 
 
 /// Sets the special framebuffer source item.
-void topaz_shape3d_set_framebuffer(
+void topaz_shape3d_set_sample_framebuffer(
     /// The shape to modify.
     topazComponent_t * shape3d,
     /// The framebuffer to act as a source.
@@ -124,12 +124,12 @@ void topaz_shape3d_set_attributes(
     topazComponent_t * shape3d, 
 
     /// The new process attributes
-    const topazRenderer_ProcessAttribs_t * att
+    const topazRenderer_Attributes_t * att
 );
 
 /// Gets the parameter value.
 ///
-const topazRenderer_ProcessAttribs_t * topaz_shape3d_get_attributes(
+const topazRenderer_Attributes_t * topaz_shape3d_get_attributes(
     /// The shape3d to query.
     topazComponent_t * shape3d
 

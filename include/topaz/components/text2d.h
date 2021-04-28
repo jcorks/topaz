@@ -156,29 +156,24 @@ void topaz_text2d_set_color(
     topazColor_t color
 );
 
-/// Sets the parameter value. The value accepted is one of the appropriate 
-/// enum values within renderer.h
+
+/// Sets the rendering attributes.
 ///
-void topaz_text2d_set_parameter(
-    /// The text2d to modify.
+void topaz_text2d_set_attributes(
+    /// The text to modify
     topazComponent_t * text2d, 
 
-    /// The parameter to set the value for.
-    topazRender2D_Parameter param, 
-
-    /// The value to set.
-    int value
+    /// The new process attributes.
+    const topazRenderer_Attributes_t * attribute
 );
 
-/// Gets the parameter value.
+/// Gets the rendering attributes.
 ///
-int topaz_text2d_get_parameter(
-    /// The text2d to query.
-    topazComponent_t * text2d, 
-
-    /// The parameter to query.
-    topazRender2D_Parameter param
+const topazRenderer_Attributes_t * topaz_text2d_get_attributes (
+    /// The text to query.
+    topazComponent_t * text2d
 );
+
 
 
 

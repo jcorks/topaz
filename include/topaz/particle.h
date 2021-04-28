@@ -35,6 +35,7 @@ DEALINGS IN THE SOFTWARE.
 
 typedef struct topazEntity_t topazEntity_t;
 typedef struct topazString_t topazString_t;
+typedef struct topazRenderer_Attributes_t topazRenderer_Attributes_t;
 typedef struct topaz_t topaz_t;
 
 /// The specification of a particle. This is used as a roadmap to 
@@ -114,16 +115,21 @@ const topazString_t * topaz_particle_to_string(
     topazParticle_t * part
 );
 
-/// Modifies a render parameter. See topazRender2d_Parameter.
+/// Modifies a the rendering attributes.
 ///
-void topaz_particle_set_param(
+void topaz_particle_set_attributes(
     /// The particle to modify
     topazParticle_t * part,
-    /// The parameter to modify
-    topazRender2D_Parameter p,
-    /// The value of the parameter.
-    int value
+    /// New attributes.
+    const topazRenderer_Attributes_t * attribs
 );
+
+/// Gets the current attributes for particle rendering.
+const topazRenderer_Attributes_t * topaz_particle_get_attributes(
+    /// The particle to query
+    topazParticle_t * part
+);
+
 
 
 /// Sets the image

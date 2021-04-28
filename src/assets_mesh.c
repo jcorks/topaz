@@ -90,7 +90,9 @@ topazAsset_t * topaz_mesh_create(topaz_t * t, const topazString_t * name) {
     out->ctx = t;
     out->objs = topaz_array_create(sizeof(topazArray_t *));
     out->v = NULL;
-
+    #ifdef TOPAZDC_DEBUG 
+        out->MAGIC_ID = MAGIC_ID__MESH;
+    #endif
 
     topazAsset_Attributes_t attribs = {};
     attribs.on_destroy = mesh__destroy;

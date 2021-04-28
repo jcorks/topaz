@@ -1,0 +1,27 @@
+/// Holds the results of rendering operations
+class Topaz.Framebuffer
+
+
+/// Returns the width of the framebuffer.
+/// Read-only.
+Int width
+
+/// Returns the height of the framebuffer.
+/// Read-only.
+Int height 
+
+
+/// Sets whether to interpret the Framebuffer's data
+/// in a filtered way.
+///
+/// It is not defined by topaz as to exactly what this means, other than some sort of pixel
+/// interpolation to make the visual data smoother than otherwise when displayed to a user.
+/// This is most applicable when using the Framebuffer where
+/// its natural size cannot be expressed (i.e. displaying the framebuffer
+/// visual on a system window of a different size). It should also be mentioned,
+/// any module that utilizes the Framebuffer may choose to ignore the
+/// the filtered hint. As such, you should expect the filtered setting
+/// to be a purely cosmetic effect after all graphics processing as finished. 
+/// The default is true. This does not affect the retrieval of raw data through capturing.
+///
+Boolean filteredHint

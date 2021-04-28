@@ -1,4 +1,366 @@
 "use strict"
+const TOPAZ = {
+    INPUT : {
+        NOT_AN_INPUT : 0,
+        KEY_0: 1, ///< 0
+        KEY_1: 2, ///< 1
+        KEY_2: 3, ///< 2
+        KEY_3: 4, ///< 3
+        KEY_4: 5, ///< 4
+        KEY_5: 6, ///< 5
+        KEY_6: 7, ///< 6
+        KEY_7: 8, ///< 7
+        KEY_8: 9, ///< 8
+        KEY_9: 10, ///< 9
+        KEY_a: 11, ///< a
+        KEY_b: 12, ///< b
+        KEY_c: 13, ///< c
+        KEY_d: 14, ///< d
+        KEY_e: 15, ///< e
+        KEY_f: 16, ///< f
+        KEY_g: 17, ///< g
+        KEY_h: 18, ///< h
+        KEY_i: 19, ///< i
+        KEY_j: 20, ///< j
+        KEY_k: 21, ///< k
+        KEY_l: 22, ///< l
+        KEY_m: 23, ///< m
+        KEY_n: 24, ///< n
+        KEY_o: 25, ///< o
+        KEY_p: 26, ///< p
+        KEY_q: 27, ///< q
+        KEY_r: 28, ///< r
+        KEY_s: 29, ///< s
+        KEY_t: 30, ///< t
+        KEY_u: 31, ///< u
+        KEY_v: 32, ///< v
+        KEY_w: 33, ///< w
+        KEY_x: 34, ///< x
+        KEY_y: 35, ///< y
+        KEY_z: 36, ///< z
+        KEY_lshift: 37, ///< Left shift key
+        KEY_rshift: 38, ///< Right shift key
+        KEY_lctrl: 39,  ///< Left control key
+        KEY_rctrl: 40,  ///< Right control key
+        KEY_lalt: 41,   ///< Left alt key
+        KEY_ralt: 42,   ///< Right alt key
+        KEY_tab: 43,    ///< Tab
+        KEY_F1: 44,     ///< F1
+        KEY_F2: 45,     ///< F2
+        KEY_F3: 46,     ///< F3
+        KEY_F4: 47,     ///< F4
+        KEY_F5: 48,     ///< F5
+        KEY_F6: 49,     ///< F6
+        KEY_F7: 50,     ///< F7
+        KEY_F8: 51,     ///< F8
+        KEY_F9: 52,     ///< F9
+        KEY_F10: 53,    ///< F10
+        KEY_F11: 54,    ///< F11
+        KEY_F12: 55,    ///< F12
+        KEY_up: 100,     ///< Up arrow
+        KEY_down: 101,   ///< Down arrow
+        KEY_left: 102,   ///< Left arrow
+        KEY_right: 103,  ///< Right arrow
+        KEY_minus: 104,  ///< -
+        KEY_equal: 105,  ///< = 
+        KEY_backspace: 106,  ///< Backspace
+        KEY_grave: 107,  ///< `
+        KEY_esc: 108,    ///< Escape
+        KEY_home: 109,   ///< Home key
+        KEY_pageUp: 110, ///< Page up key
+        KEY_pageDown: 111,  ///< Page down key
+        KEY_end: 112,    ///< End key
+        KEY_backslash: 113, ///< '\'
+        KEY_lbracket: 114, ///< [
+        KEY_rbracket: 115, ///< ]
+        KEY_semicolon: 116, ///< ;
+        KEY_apostrophe: 117, ///< '
+        KEY_frontslash: 118, ///< /
+        KEY_enter: 119, ///< Enter
+        KEY_delete: 120, ///< Delete
+        KEY_numpad0: 121, ///< Numpad 0
+        KEY_numpad1: 122, ///< Numpad 1
+        KEY_numpad2: 123, ///< Numpad 2
+        KEY_numpad3: 124, ///< Numpad 3
+        KEY_numpad4: 125, ///< Numpad 4
+        KEY_numpad5: 126, ///< Numpad 5
+        KEY_numpad6: 127, ///< Numpad 6
+        KEY_numpad7: 128, ///< Numpad 7
+        KEY_numpad8: 129, ///< Numpad 8
+        KEY_numpad9: 130, ///< Numpad 9
+        KEY_prtscr: 131, ///< Print screen button
+        KEY_lsuper: 132, ///< Left Super key (Windows key)
+        KEY_rsuper: 133, ///< Right Super key (Windows key)
+        KEY_space: 134,  ///< Space
+        KEY_insert: 135, ///< Insert key
+        KEY_comma: 136, ///< ,
+        KEY_period: 137 , ///< .
+        KEY_world1: 138, /// I8n key0
+        KEY_world2: 139, /// I8n key1
+        KEY_world3: 140, /// I8n key2
+        KEY_world4: 141, /// I8n key3
+        KEY_world5: 142, /// I8n key4
+        KEY_world6: 143, /// I8n key5
+        KEY_world7: 144, /// I8n key6
+        KEY_world8: 145, /// I8n key7
+        KEY_world9: 146, /// I8n key8
+    
+        POINTER_0: 256, ///< Left click
+        POINTER_1: 257, ///< Right click
+        POINTER_2: 258, ///< Middle click
+    
+        POINTER_X: 259, ///< Horizontal axis. Usually for the X axis of the pointer
+        POINTER_Y: 260, ///< Horizontal axis. Usually for the X axis of the pointer
+        POINTER_Wheel: 261, ///< Mouse wheel.
+    
+        PAD_a: 300,     ///< Button 0
+        PAD_b: 301,     ///< Button 1
+        PAD_c: 302,     ///< Button 2
+        PAD_x: 303,     ///< Button 3
+        PAD_y: 304,     ///< Button 4
+        PAD_r: 305,     ///< Button 5
+        PAD_l: 306,     ///< Button 6
+        PAD_r2: 307,    ///< Button 7
+        PAD_l2: 308,    ///< Button 8
+        PAD_r3: 309,    ///< Button 9
+        PAD_l3: 310,    ///< Button 10
+        PAD_start: 311,    ///< Button 11
+        PAD_select: 312,///< Button 12
+        PAD_b13: 313,///< Button 13
+        PAD_b14: 314,///< Button 14
+        PAD_b15: 315,///< Button 15
+        PAD_b16: 316,///< Button 16
+        PAD_b17: 317,///< Button 17
+        PAD_b18: 318,///< Button 18
+        PAD_b19: 319,///< Button 19
+        PAD_b20: 320,///< Button 20
+        PAD_b21: 321,///< Button 21
+        PAD_b22: 322,///< Button 22
+        PAD_b23: 323,///< Button 23
+        PAD_b24: 324,///< Button 24
+        PAD_b25: 325,///< Button 25
+        PAD_b26: 326,///< Button 26
+        PAD_b27: 327,///< Button 27
+        PAD_b28: 328,///< Button 28
+        PAD_b29: 329,///< Button 29
+        PAD_b30: 330,///< Button 30
+        PAD_b31: 331,///< Button 31
+        PAD_b32: 332,///< Button 32
+    
+        PAD_axisX: 400, ///< X button
+        PAD_axisY: 401, ///< Y button
+        PAD_axisZ: 402, ///< Z button
+        PAD_axisX2: 403,///< X2 button 
+        PAD_axisY2: 404,///< Y2 button
+        PAD_axisZ2: 405,///< Z2 button
+        PAD_axisX3: 406,///< X3 button
+        PAD_axisY3: 407,///< Y3 button
+        PAD_axisZ3: 408,///< Z3 button
+        PAD_axisX4: 409,///< X4 button
+        PAD_axisY4: 410,///< Y4 button
+        PAD_axisZ4: 411,///< Z4 button
+        PAD_axisX5: 412,///< X4 button
+        PAD_axisY5: 413,///< Y4 button
+        PAD_axisZ5: 414,///< Z4 button
+        PAD_axisX6: 415,///< X4 button
+        PAD_axisY6: 416,///< Y4 button
+        PAD_axisZ6: 417,///< Z4 button
+    
+        PAD_axisR: 450,   
+        PAD_axisL: 451,    
+        PAD_axisR2: 452,    
+        PAD_axisL2: 453,    
+        PAD_axisR3: 454,    
+        PAD_axisL3: 455,    
+        PAD_axisR4: 456,    
+        PAD_axisL4: 457,    
+    
+        PAD_options: 511,
+        COUNT: 512
+    },
+
+  
+    RENDERER : {
+        ATTRIBUTE : {
+            PRIMITIVE : 0,
+            ALPHA_RULE : 1,
+            DEPTH_TEST : 2,
+            ETCH_RULE : 3,
+            TEXTURE_FILTER_HINT : 4
+        },
+        
+        PRIMITIVE : {
+            TRIANGLE : 0,
+            LINE : 1
+        },
+
+        ETCH_RULE : {
+            NO_ETCHING : 0,
+            DEFINE : 1,
+            UNDEFINE : 2,
+            IN : 3,
+            OUT : 4
+        },
+        
+        DEPTH_TEST : {
+            LESS : 0,
+            LEQ : 1,
+            GREATER : 2,
+            GEQ : 3,
+            EQUAL : 4,
+            NONE : 5
+        },
+
+        ALPHA_RULE : {
+            ALLOW : 0,
+            OPAQUE : 1,
+            TRANSLUCENT : 2,
+            INVISIBLE : 3,
+        },
+        
+        TEXTURE_FILTER_HINT : {
+            LINEAR : 0,
+            NONE : 1,
+        },
+        
+        LAYER : {
+            COLOR : 1,
+            DEPTH : 2,
+            ETCH : 4,
+            ALL  : 7
+        }
+
+    },
+    
+    ASSET : { 
+        TYPE : {
+            NONE : 0,
+            IMAGE : 1,
+            SOUND : 2,
+            MATERIAL : 3,
+            PARTICLE : 4,
+            DATA : 5,
+            MESH : 6
+        }
+    },
+    
+    
+    PARTICLE : {
+        PROPERTY : {
+            DURATION : 0,
+            SCALE_X : 1,
+            SCALE_Y : 2,
+            SCALE_MULTIPLIER : 3,
+            ROTATION : 4,
+            DIRECTION : 5,
+            SPEED_X : 6,
+            SPEED_Y : 7,
+            RED : 8,
+            GREEN : 9,
+            BLUE : 10,
+            ALPHA : 11,
+        }
+    },
+    
+    FILESYSTEM : {
+        DEFAULT_NODE : {
+            RESOURCES : 0,
+            TOPAZ : 1,
+            USER_DATA : 2
+        },
+    
+    },
+    
+    AUTOMATION : {
+        FUNCTION : {
+            NONE : 0,
+            LINEAR : 1,
+            SQUARE : 2,
+            CUBE : 3,
+            SQUARE_ROOT : 4,
+            CUBE_ROOT : 5,
+            RANDOM : 6    
+        }      
+    },
+
+
+    SHAPE3D : {
+        TEXTURE : {
+            SLOT_0 : 0,
+            SLOT_1 : 1,
+            SLOT_2 : 2
+        }
+    },
+
+
+    OBJECT2D : {
+        GROUP : {
+            A : 0,
+            B : 1,
+            C : 2,
+            D : 3,
+            E : 4,
+            F : 5,
+            G : 6,
+            H : 7,
+            I : 8,
+            J : 9,
+            K : 10,
+            L : 11,
+            M : 12,
+            N : 13,
+            O : 14,
+            P : 15,
+            Q : 16,
+            R : 17,
+            S : 18,
+            T : 19,
+            U : 20,
+            V : 21,
+            W : 22,
+            X : 23,
+            Y : 24,
+            Z : 25
+        }
+    },
+    
+    SCHEDULER : {
+        MODE : {
+            TIME : 0,
+            FRAME : 1
+        }
+    },
+    
+    DISPLAY : {
+        VIEW_POLICY : {
+            NONE      : 0,
+            MATCH_SIZE : 1
+        },
+
+        PARAMETER : {
+            X : 0,
+            Y : 1,
+            WIDTH : 2,
+            HEIGHT : 3,
+            SHOW : 4,
+            FULLSCREEN : 5,
+            LOCK_CLIENT_RESIZE : 6,
+            LOCK_CLIENT_POSITION : 7,
+            VIEW_POLICY : 8,
+            INPUT_FOCUS : 9
+        },
+        
+        FRAMEBUFFER : {
+            A : 0,
+            B : 1,
+            C : 2,
+            D : 3
+        }
+    },
+    
+
+}
+
 var Topaz = {
     uniqueObjectPool : 0,
     run : topaz__run,
@@ -21,225 +383,8 @@ var Topaz = {
         return new Topaz.Data(topaz__from_base64(f));
     },
 
-    Key :{
-        topazNotAnInput : 0,
-        topazKey_0: 1, ///< 0
-        topazKey_1: 2, ///< 1
-        topazKey_2: 3, ///< 2
-        topazKey_3: 4, ///< 3
-        topazKey_4: 5, ///< 4
-        topazKey_5: 6, ///< 5
-        topazKey_6: 7, ///< 6
-        topazKey_7: 8, ///< 7
-        topazKey_8: 9, ///< 8
-        topazKey_9: 10, ///< 9
-        topazKey_a: 11, ///< a
-        topazKey_b: 12, ///< b
-        topazKey_c: 13, ///< c
-        topazKey_d: 14, ///< d
-        topazKey_e: 15, ///< e
-        topazKey_f: 16, ///< f
-        topazKey_g: 17, ///< g
-        topazKey_h: 18, ///< h
-        topazKey_i: 19, ///< i
-        topazKey_j: 20, ///< j
-        topazKey_k: 21, ///< k
-        topazKey_l: 22, ///< l
-        topazKey_m: 23, ///< m
-        topazKey_n: 24, ///< n
-        topazKey_o: 25, ///< o
-        topazKey_p: 26, ///< p
-        topazKey_q: 27, ///< q
-        topazKey_r: 28, ///< r
-        topazKey_s: 29, ///< s
-        topazKey_t: 30, ///< t
-        topazKey_u: 31, ///< u
-        topazKey_v: 32, ///< v
-        topazKey_w: 33, ///< w
-        topazKey_x: 34, ///< x
-        topazKey_y: 35, ///< y
-        topazKey_z: 36, ///< z
-        topazKey_lshift: 37, ///< Left shift key
-        topazKey_rshift: 38, ///< Right shift key
-        topazKey_lctrl: 39,  ///< Left control key
-        topazKey_rctrl: 40,  ///< Right control key
-        topazKey_lalt: 41,   ///< Left alt key
-        topazKey_ralt: 42,   ///< Right alt key
-        topazKey_tab: 43,    ///< Tab
-        topazKey_F1: 44,     ///< F1
-        topazKey_F2: 45,     ///< F2
-        topazKey_F3: 46,     ///< F3
-        topazKey_F4: 47,     ///< F4
-        topazKey_F5: 48,     ///< F5
-        topazKey_F6: 49,     ///< F6
-        topazKey_F7: 50,     ///< F7
-        topazKey_F8: 51,     ///< F8
-        topazKey_F9: 52,     ///< F9
-        topazKey_F10: 53,    ///< F10
-        topazKey_F11: 54,    ///< F11
-        topazKey_F12: 55,    ///< F12
-        topazKey_up: 100,     ///< Up arrow
-        topazKey_down: 101,   ///< Down arrow
-        topazKey_left: 102,   ///< Left arrow
-        topazKey_right: 103,  ///< Right arrow
-        topazKey_minus: 104,  ///< -
-        topazKey_equal: 105,  ///< = 
-        topazKey_backspace: 106,  ///< Backspace
-        topazKey_grave: 107,  ///< `
-        topazKey_esc: 108,    ///< Escape
-        topazKey_home: 109,   ///< Home key
-        topazKey_pageUp: 110, ///< Page up key
-        topazKey_pageDown: 111,  ///< Page down key
-        topazKey_end: 112,    ///< End key
-        topazKey_backslash: 113, ///< '\'
-        topazKey_lbracket: 114, ///< [
-        topazKey_rbracket: 115, ///< ]
-        topazKey_semicolon: 116, ///< ;
-        topazKey_apostrophe: 117, ///< '
-        topazKey_frontslash: 118, ///< /
-        topazKey_enter: 119, ///< Enter
-        topazKey_delete: 120, ///< Delete
-        topazKey_numpad0: 121, ///< Numpad 0
-        topazKey_numpad1: 122, ///< Numpad 1
-        topazKey_numpad2: 123, ///< Numpad 2
-        topazKey_numpad3: 124, ///< Numpad 3
-        topazKey_numpad4: 125, ///< Numpad 4
-        topazKey_numpad5: 126, ///< Numpad 5
-        topazKey_numpad6: 127, ///< Numpad 6
-        topazKey_numpad7: 128, ///< Numpad 7
-        topazKey_numpad8: 129, ///< Numpad 8
-        topazKey_numpad9: 130, ///< Numpad 9
-        topazKey_prtscr: 131, ///< Print screen button
-        topazKey_lsuper: 132, ///< Left Super key (Windows key)
-        topazKey_rsuper: 133, ///< Right Super key (Windows key)
-        topazKey_space: 134,  ///< Space
-        topazKey_insert: 135, ///< Insert key
-        topazKey_comma: 136, ///< ,
-        topazKey_period: 137 , ///< .
-        topazKey_world1: 138, /// I8n key0
-        topazKey_world2: 139, /// I8n key1
-        topazKey_world3: 140, /// I8n key2
-        topazKey_world4: 141, /// I8n key3
-        topazKey_world5: 142, /// I8n key4
-        topazKey_world6: 143, /// I8n key5
-        topazKey_world7: 144, /// I8n key6
-        topazKey_world8: 145, /// I8n key7
-        topazKey_world9: 146, /// I8n key8
     
-        topazPointer_0: 256, ///< Left click
-        topazPointer_1: 257, ///< Right click
-        topazPointer_2: 258, ///< Middle click
-    
-        topazPointer_X: 259, ///< Horizontal axis. Usually for the X axis of the pointer
-        topazPointer_Y: 260, ///< Horizontal axis. Usually for the X axis of the pointer
-        topazPointer_Wheel: 261, ///< Mouse wheel.
-    
-        topazPad_a: 300,     ///< Button 0
-        topazPad_b: 301,     ///< Button 1
-        topazPad_c: 302,     ///< Button 2
-        topazPad_x: 303,     ///< Button 3
-        topazPad_y: 304,     ///< Button 4
-        topazPad_r: 305,     ///< Button 5
-        topazPad_l: 306,     ///< Button 6
-        topazPad_r2: 307,    ///< Button 7
-        topazPad_l2: 308,    ///< Button 8
-        topazPad_r3: 309,    ///< Button 9
-        topazPad_l3: 310,    ///< Button 10
-        topazPad_start: 311,    ///< Button 11
-        topazPad_select: 312,///< Button 12
-        topazPad_b13: 313,///< Button 13
-        topazPad_b14: 314,///< Button 14
-        topazPad_b15: 315,///< Button 15
-        topazPad_b16: 316,///< Button 16
-        topazPad_b17: 317,///< Button 17
-        topazPad_b18: 318,///< Button 18
-        topazPad_b19: 319,///< Button 19
-        topazPad_b20: 320,///< Button 20
-        topazPad_b21: 321,///< Button 21
-        topazPad_b22: 322,///< Button 22
-        topazPad_b23: 323,///< Button 23
-        topazPad_b24: 324,///< Button 24
-        topazPad_b25: 325,///< Button 25
-        topazPad_b26: 326,///< Button 26
-        topazPad_b27: 327,///< Button 27
-        topazPad_b28: 328,///< Button 28
-        topazPad_b29: 329,///< Button 29
-        topazPad_b30: 330,///< Button 30
-        topazPad_b31: 331,///< Button 31
-        topazPad_b32: 332,///< Button 32
-    
-        topazPad_axisX: 400, ///< X button
-        topazPad_axisY: 401, ///< Y button
-        topazPad_axisZ: 402, ///< Z button
-        topazPad_axisX2: 403,///< X2 button 
-        topazPad_axisY2: 404,///< Y2 button
-        topazPad_axisZ2: 405,///< Z2 button
-        topazPad_axisX3: 406,///< X3 button
-        topazPad_axisY3: 407,///< Y3 button
-        topazPad_axisZ3: 408,///< Z3 button
-        topazPad_axisX4: 409,///< X4 button
-        topazPad_axisY4: 410,///< Y4 button
-        topazPad_axisZ4: 411,///< Z4 button
-        topazPad_axisX5: 412,///< X4 button
-        topazPad_axisY5: 413,///< Y4 button
-        topazPad_axisZ5: 414,///< Z4 button
-        topazPad_axisX6: 415,///< X4 button
-        topazPad_axisY6: 416,///< Y4 button
-        topazPad_axisZ6: 417,///< Z4 button
-    
-        topazPad_axisR: 450,   
-        topazPad_axisL: 451,    
-        topazPad_axisR2: 452,    
-        topazPad_axisL2: 453,    
-        topazPad_axisR3: 454,    
-        topazPad_axisL3: 455,    
-        topazPad_axisR4: 456,    
-        topazPad_axisL4: 457,    
-    
-        topazPad_options: 511,
-        topazInput_Count: 512
-    },
-    
-    Render2D : {
-        Parameter : {
-            alphaRule : 0,
-            depthTest : 1,
-            etchRule : 2,
-            textureFilterHint : 3
-        }    
-    },
-    
-    Renderer : {
-        EtchRule : {
-            noEtching : 0,
-            define : 1,
-            undefine : 2,
-            in : 3,
-            out : 4
-        },
-        
-        DepthTest : {
-            less : 0,
-            LEQ : 1,
-            greater : 2,
-            GEQ : 3,
-            equal : 4,
-            none : 5
-        },
-
-        AlphaRule : {
-            allow : 0,
-            opaque : 1,
-            translucent : 2,
-            invisible : 3,
-        },
-        
-        TextureFilterHint : {
-            linear : 0,
-            none : 1,
-        }
-
-    },
+  
 
 
 
@@ -270,11 +415,7 @@ var Topaz = {
     },
     deadEntityPool : [],
     Filesystem : {
-        DefaultNode : {
-            resources : 0,
-            topaz : 1,
-            userData : 2
-        },
+
         
         getPath : function(n) {
             return new Topaz.Filesystem.Path(topaz_filesystem__get_path(n));
@@ -319,6 +460,48 @@ var Topaz = {
         this.impl = impl;
     
     },
+    
+    Framebuffer : function(implPre) {
+        var impl;
+
+        if (implPre)
+            impl = implPre;
+        else {
+            throw new Error("framebuffer object cannot be made without a LL instance.");
+        }
+
+        impl.__ctx = this;
+        this.impl = impl;
+    
+    },
+    
+    Material : function(implPre) {
+        var impl;
+
+        if (implPre)
+            impl = implPre;
+        else {
+            throw new Error("material object cannot be made without a LL instance.");
+        }
+
+        impl.__ctx = this;
+        this.impl = impl;
+    
+    },
+
+    Mesh : function(implPre) {
+        var impl;
+
+        if (implPre)
+            impl = implPre;
+        else {
+            throw new Error("mesh object cannot be made without a LL instance.");
+        }
+
+        impl.__ctx = this;
+        this.impl = impl;        
+    },
+    
     Input : {
         addKeyboardListener : function(obj) {
             return topaz_input__add_keyboard_listener(obj);
@@ -400,22 +583,17 @@ var Topaz = {
     },
 
     Resources : {
-        AssetType : {
-            none : 0,
-            image : 1,
-            sound : 2,
-            model : 3,
-            particle : 4,
-            data : 5,
-            actor : 6
-        },
+
         
         _rawAssetToInstance : function(impl) {
             if (!impl) return undefined;
             switch(topaz_asset__get_type(impl)) {
-              case Topaz.Resources.AssetType.image: return new Topaz.Image(impl); break;
-              case Topaz.Resources.AssetType.data:  return new Topaz.Data (impl); break;
-              case Topaz.Resources.AssetType.sound:  return new Topaz.Sound(impl); break;
+              case TOPAZ.ASSET.TYPE.IMAGE: return new Topaz.Image(impl); break;
+              case TOPAZ.ASSET.TYPE.DATA:  return new Topaz.Data (impl); break;
+              case TOPAZ.ASSET.TYPE.SOUND:  return new Topaz.Sound(impl); break;
+              case TOPAZ.ASSET.TYPE.MATERIAL:  return new Topaz.Material(impl); break;
+              case TOPAZ.ASSET.TYPE.MESH:  return new Topaz.Mesh(impl); break;
+
             }
             return new Topaz.Asset(impl);
 
@@ -643,6 +821,18 @@ var Topaz = {
             impl = implPre;
         else {
             impl = topaz_shape2d__create();
+        }
+        impl.__ctx = this;
+        this.impl = impl;
+
+    },
+    Shape3D : function(implPre) {
+        var impl;
+        this.uniqueID = Topaz.uniqueObjectPool++;
+        if (implPre) 
+            impl = implPre;
+        else {
+            impl = topaz_shape3d__create();
         }
         impl.__ctx = this;
         this.impl = impl;
@@ -1117,8 +1307,8 @@ var Topaz = {
 
 
     /// particle 
-    Topaz.Particle.prototype.setParameter = function(param, val) {
-        topaz_particle__set_param(this.impl, param, val);
+    Topaz.Particle.prototype.setAttribute = function(param, val) {
+        topaz_particle__set_attribute(this.impl, param, val);
     }
     Topaz.Particle.prototype.setNoiseMin = function(p, val) {
         topaz_particle__set_noise_min(this.impl, p, val);
@@ -1131,20 +1321,6 @@ var Topaz = {
     }
     
     
-    Topaz.Particle.Property = {
-        duration : 0,
-        scaleX : 1,
-        scaleY : 2,
-        scaleMultiplier : 3,
-        rotation : 4,
-        direction : 5,
-        speedX : 6,
-        speedY : 7,
-        red : 8,
-        green : 9,
-        blue : 10,
-        alpha : 11,
-    };
 
     Object.defineProperty(Topaz.Particle.prototype, 'string', {get : function(){return topaz_particle__to_string(this.impl)}, set : function(v){topaz_particle__set_from_string(this.impl, v);}})
     Object.defineProperty(Topaz.Particle.prototype, 'image',  {set : function(v){return topaz_particle__set_image(this.impl, v)}});
@@ -1223,16 +1399,6 @@ var Topaz = {
 
 
 
-
-    Topaz.Automation.Function = {
-        none : 0,
-        linear : 1,
-        square : 2,
-        cube : 3,
-        squareRoot : 4,
-        cubeRoot : 5,
-        random : 6    
-    };
 
 
 
@@ -1412,9 +1578,13 @@ var Topaz = {
     );
 
 
-    Topaz.Text2D.prototype.setParameter = function(a, b) {
-        topaz_text2d__set_parameter(this.impl, a, b);
+    Topaz.Text2D.prototype.setAttribute = function(a, b) {
+        topaz_text2d__set_attribute(this.impl, a, b);
     }
+    Topaz.Text2D.prototype.getAttribute = function(a) {
+        return topaz_text2d__get_attribute(this.impl, a);
+    }
+
     Topaz._componentAddSymbols(Topaz.Text2D.prototype);
 
 
@@ -1505,11 +1675,90 @@ var Topaz = {
         }
     );
 
-    Topaz.Shape2D.prototype.setParameter = function(a, b) {
-        topaz_shape2d__set_parameter(this.impl, a, b);
+    Topaz.Shape2D.prototype.setAttribute = function(a, b) {
+        topaz_shape2d__set_attribute(this.impl, a, b);
+    }
+    Topaz.Shape2D.prototype.getAttribute = function(a) {
+        return topaz_shape2d__set_attribute(this.impl, a);
     }
     
     Topaz._componentAddSymbols(Topaz.Shape2D.prototype);
+
+
+
+    /// shape3d
+    Object.defineProperty(
+        Topaz.Shape3D.prototype,
+        'position', {
+            get : function() {return new Topaz.Vector(0, 0, 0, topaz_shape3d__get_position(this.impl));},
+            set : function(v){topaz_shape3d__set_position(this.impl, v.impl);}
+        }
+    );
+
+    Object.defineProperty(
+        Topaz.Shape3D.prototype,
+        'rotation', {
+            get : function() {return new Topaz.Vector(0, 0, 0, topaz_shape3d__get_rotation(this.impl));},
+            set : function(v){topaz_shape3d__set_rotation(this.impl, v.impl);}
+        }
+    );
+
+    Object.defineProperty(
+        Topaz.Shape3D.prototype,
+        'scale', {
+            get : function() {return new Topaz.Vector(0, 0, 0, topaz_shape3d__get_scale(this.impl));},
+            set : function(v){topaz_shape3d__set_scale(this.impl, v.impl);}
+        }
+    );
+
+
+    Topaz.Shape3D.prototype.setAttribute = function(a, b) {
+        topaz_shape3d__set_attribute(this.impl, a, b);
+    }
+    Topaz.Shape3D.prototype.getAttribute = function(a) {
+        return topaz_shape3d__set_attribute(this.impl, a);
+    }
+    
+    
+    Topaz.Shape3D.prototype.setTexture = function(slot, t) {
+        topaz_shape3d__set_texture(this.impl, slot, t.impl);
+    } 
+    
+    Object.defineProperty(
+        Topaz.Shape3D.prototype,
+        'mesh', {
+            set : function(v) {
+                topaz_shape3d__set_mesh(this.impl, v.impl);            
+            }
+        }
+    );
+    
+
+    Object.defineProperty(
+        Topaz.Shape3D.prototype,
+        'sampleFramebuffer', {
+            set : function(v) {
+                topaz_shape3d__set_sample_framebuffer(this.impl, v.impl);
+            }
+        }
+    );
+    
+
+    Object.defineProperty(
+        Topaz.Shape3D.prototype,
+        'material', {
+            set : function(v) {
+                topaz_shape3d__set_material(this.impl, v.impl);
+            }
+        }
+    );
+
+
+
+    Topaz._componentAddSymbols(Topaz.Shape3D.prototype);
+
+    
+
 
 
 
@@ -1533,34 +1782,7 @@ var Topaz = {
         topaz_object2d__set_velocity_towards(this.impl, a, b, c);
     }
     
-    Topaz.Object2D.Group = {
-        A : 0,
-        B : 1,
-        C : 2,
-        D : 3,
-        E : 4,
-        F : 5,
-        G : 6,
-        H : 7,
-        I : 8,
-        J : 9,
-        K : 10,
-        L : 11,
-        M : 12,
-        N : 13,
-        O : 14,
-        P : 15,
-        Q : 16,
-        R : 17,
-        S : 18,
-        T : 19,
-        U : 20,
-        V : 21,
-        W : 22,
-        X : 23,
-        Y : 24,
-        Z : 25
-    };
+
 
     
     Object.defineProperty(
@@ -1755,10 +1977,7 @@ var Topaz = {
         return topaz_scheduler__get_task_interval_remaining(this.impl, name);
     }
     
-    Topaz.Scheduler.Mode = {
-        time : 0,
-        frame : 1
-    }
+
     
 
     Object.defineProperty(
@@ -1858,23 +2077,7 @@ var Topaz = {
 
 
 
-    Topaz.Display.ViewPolicy = {
-        none      : 0,
-        matchSize : 1
-    }
-    
-    Topaz.Display.Parameter = {
-        x : 0,
-        y : 1,
-        width : 2,
-        height : 3,
-        show : 4,
-        fullscreen : 5,
-        lockClientResize : 6,
-        lockClientPosition : 7,
-        viewPolicy : 8,
-        inputFocus : 9
-    }
+
 
     Topaz.Display.prototype.destroy = function() {
         topaz_display__destroy(this.impl);
@@ -1897,9 +2100,6 @@ var Topaz = {
         topaz_display__remove_callback(i);
     }
 
-    Topaz.Display.prototype.setRenderResolution = function(w, h) {
-        topaz_display__set_render_resolution(this.impl, w, h);
-    }
 
     Topaz.Display.prototype.getParameter = function(p) {
         return topaz_display__get_parameter(this.impl, p);
@@ -1934,24 +2134,6 @@ var Topaz = {
         }
     );
 
-    Object.defineProperty(
-        Topaz.Display.prototype,
-        'renderWidth', {
-            get : function() {
-                return topaz_display__get_render_width(this.impl);
-            }
-        }
-    );
-
-    Object.defineProperty(
-        Topaz.Display.prototype,
-        'renderHeight', {
-            get : function() {
-                return topaz_display__get_render_height(this.impl);
-            }
-        }
-    );
-
 
     Object.defineProperty(
         Topaz.Display.prototype,
@@ -1970,6 +2152,202 @@ var Topaz = {
             }
         }
     );
+    
+    
+    
+        
+    
+    Topaz.Display.prototype.getFramebuffer = function(a) {
+        return new Topaz.Framebuffer(topaz_display__get_framebuffer(this.impl, a));
+    }
+
+    Topaz.Display.prototype.useFramebuffer = function(a) {
+        return topaz_display__use_framebuffer(this.impl, a);
+    }
+
+    Object.defineProperty(
+        Topaz.Display.prototype,
+        'framebuffer',
+        {
+            get : function() {
+                return new Topaz.Framebuffer(topaz_display__get_main_framebuffer(this.impl));
+            }
+        }
+    );
+    
+    
+    
+    
+    Topaz.Display.prototype.clearMainFramebuffer = function(a) {
+        topaz_display__clear_main_framebuffer(this.impl, a);
+    }
+    
+    
+    Topaz.Display.prototype.captureMainFramebuffer = function(a) {
+        topaz_display__capture_main_framebuffer(this.impl, a.impl);
+    }
+    
+    
+    
+    
+    
+    
+    // framebuffer 
+    Object.defineProperty(
+        Topaz.Framebuffer.prototype,
+        'width', {
+            get : function() {
+                return topaz_framebuffer__get_width(this.impl);
+            }
+        }
+    );
+    Object.defineProperty(
+        Topaz.Framebuffer.prototype,
+        'height', {
+            get : function() {
+                return topaz_framebuffer__get_height(this.impl);
+            }
+        }
+    );
+    
+    Topaz.Framebuffer.prototype.resize = function(w, h) {
+        topaz_framebuffer__resize(this.impl, w, h);
+    }
+
+
+    Object.defineProperty(
+        Topaz.Framebuffer.prototype,
+        'filteredHint', {
+            get : function() {
+                return topaz_framebuffer__get_filtered_hint(this.impl);
+            },
+            set : function(b) {
+                return topaz_framebuffer__set_filtered_hint(this.impl, b);
+            }
+            
+        }
+    );
+    
+    
+    
+    // material 
+    Topaz.Material.prototype.setProgramData = function(a, b) {
+        topaz_material__set_program_data(this.impl, a, b);
+    }
+
+    Topaz.Material.prototype.getProgramData = function(a) {
+        return topaz_material__set_program_data(this.impl, a);
+    }
+
+    Topaz.Material.prototype.clearSources = function() {
+        topaz_material__clear_sources(this.impl);
+    }
+
+    Topaz.Material.prototype.setProgramSource = function(a, b, c) {
+        topaz_material__set_program_source(this.impl, a, b, c);        
+    }    
+    Topaz._assetSetCommonSymbols(Topaz.Material.prototype);
+
+    
+
+    // mesh 
+    
+    Object.defineProperty(
+        Topaz.Mesh.prototype,
+        'vertexCount', {
+            get : function()  { return topaz_mesh__get_vertex_count(this.impl);},
+            set : function(v) { return topaz_mesh__set_vertex_count(this.impl, v);}
+        }
+    );
+
+
+
+    Object.defineProperty(
+        Topaz.Mesh.prototype,
+        'vertices', {
+            set : function(v) {
+                topaz_mesh__define_vertices(this.impl, v); 
+            },
+            
+            get : function() {
+                var out = [];
+                const len = this.vertexCount;
+                for(var i = 0; i < len; ++i) {
+                    out.push(topaz_mesh__get_vertex(this.impl, 0, i, 0));
+                    out.push(topaz_mesh__get_vertex(this.impl, 0, i, 1));
+                    out.push(topaz_mesh__get_vertex(this.impl, 0, i, 2));
+
+                    out.push(topaz_mesh__get_vertex(this.impl, 1, i, 0));
+                    out.push(topaz_mesh__get_vertex(this.impl, 1, i, 1));
+                    out.push(topaz_mesh__get_vertex(this.impl, 1, i, 2));
+
+                    out.push(topaz_mesh__get_vertex(this.impl, 2, i, 0));
+                    out.push(topaz_mesh__get_vertex(this.impl, 2, i, 1));
+
+                    out.push(topaz_mesh__get_vertex(this.impl, 3, i, 0));
+                    out.push(topaz_mesh__get_vertex(this.impl, 3, i, 1));
+                    out.push(topaz_mesh__get_vertex(this.impl, 3, i, 2));
+                    out.push(topaz_mesh__get_vertex(this.impl, 3, i, 3));
+                }      
+                
+                return out;
+            }
+        }
+    );    
+    
+    Topaz.Mesh.prototype.setVertex = function(i, v) {        
+        topaz_mesh__set_vertex(this.impl, v);
+    }
+
+    Topaz.Mesh.prototype.getVertex = function(i) {
+        var out = [];
+        out.push(topaz_mesh__get_vertex(this.impl, 0, i, 0));
+        out.push(topaz_mesh__get_vertex(this.impl, 0, i, 1));
+        out.push(topaz_mesh__get_vertex(this.impl, 0, i, 2));
+
+        out.push(topaz_mesh__get_vertex(this.impl, 1, i, 0));
+        out.push(topaz_mesh__get_vertex(this.impl, 1, i, 1));
+        out.push(topaz_mesh__get_vertex(this.impl, 1, i, 2));
+
+        out.push(topaz_mesh__get_vertex(this.impl, 2, i, 0));
+        out.push(topaz_mesh__get_vertex(this.impl, 2, i, 1));
+
+        out.push(topaz_mesh__get_vertex(this.impl, 3, i, 0));
+        out.push(topaz_mesh__get_vertex(this.impl, 3, i, 1));
+        out.push(topaz_mesh__get_vertex(this.impl, 3, i, 2));
+        out.push(topaz_mesh__get_vertex(this.impl, 3, i, 3));
+        return out;            
+    }
+    
+    
+    
+    
+    Topaz.Mesh.prototype.addObject = function(obj) {
+        topaz_mesh__add_object(this.impl);
+        if (obj != undefined) {
+            topaz_mesh__set_object(this.objectCount-1, obj);
+        }
+    }
+
+        
+    Object.defineProperty(
+        Topaz.Mesh.prototype,
+        'objectCount', {
+            get : function() {
+                return topaz_mesh__get_object_count(this.impl);
+            }
+        }
+    );
+    
+    Topaz.Mesh.prototype.removeObject = function(i) {
+        topaz_mesh__remove_object(this.impl, i);
+    }
+    
+
+    Topaz.Mesh.prototype.setObject = function(i, v) {
+        topaz_mesh__set_object(this.impl, i, v);
+    }    
+    Topaz._assetSetCommonSymbols(Topaz.Mesh.prototype);
 
 
 
@@ -2604,7 +2982,7 @@ Topaz.Package = (function(){
             var output = (function() {
                 try {
                     var mainPath = Topaz.Filesystem.getPathFromString(
-                        Topaz.Filesystem.getPath(Topaz.Filesystem.DefaultNode.resources),
+                        Topaz.Filesystem.getPath(TOPAZ.FILESYSTEM.DEFAULT_NODE.RESOURCES),
                         path
                     );
                     if (mainPath == undefined) {
@@ -2708,7 +3086,7 @@ Topaz.Package = (function(){
         
         
                     var output = JSON.stringify(outjson);
-                    var outputAsset = Topaz.Resources.fetchAsset(Topaz.Resources.AssetType.data, '__ASSET__39245s$');
+                    var outputAsset = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.DATA, '__ASSET__39245s$');
                     var outputData = [];
                     Topaz.log('Generating output buffer', false);
                     const length = output.length;

@@ -14,7 +14,7 @@ struct topazGraphics_t {
     topaz_t * ctx;
     topazRenderer_2D_t * renderer2d;
     topazRenderer_t * renderer;
-    topazRenderer_ProcessAttribs_t lastAttr;
+    topazRenderer_Attributes_t lastAttr;
     topazRenderer_2D_Context_t ctx2d;
     topazMatrix_t ctxMatrix;
 };
@@ -57,7 +57,7 @@ topazRenderer_2D_t * topaz_graphics_get_renderer_2d(topazGraphics_t * t) {
 
 static void set_display_mode_2d(
     topazGraphics_t * g,
-    const topazRenderer_ProcessAttribs_t * attr 
+    const topazRenderer_Attributes_t * attr 
 ) {
     if (attr->primitive != g->lastAttr.primitive ||
         attr->depthTest != g->lastAttr.depthTest ||
@@ -78,7 +78,7 @@ static void set_display_mode_2d(
 
 
 void topaz_graphics_request_draw_2d(topazGraphics_t * g, topazRender2D_t * object) {
-    topazRenderer_ProcessAttribs_t attribs;
+    topazRenderer_Attributes_t attribs;
     topazSpatial_t * tf = topaz_render2d_get_spatial(object);
 
     // force update
@@ -121,7 +121,7 @@ void topaz_graphics_request_draw_2d(topazGraphics_t * g, topazRender2D_t * objec
 void topaz_graphics_request_draw_3d(
     topazGraphics_t * g,
     topazRenderer_3D_t * d,
-    const topazRenderer_ProcessAttribs_t * att
+    const topazRenderer_Attributes_t * att
 ) {
     topaz_renderer_draw_3d(
         g->renderer,

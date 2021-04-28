@@ -6,13 +6,14 @@ class Topaz.Particle
 
 /// Modifies a render parameter.
 ///
-func setParameter
+func setAttribute
     /// Determines how to interpret the next value.
-    /// If alphaRule, val is expected to be a value within Topaz.Renderer.AlphaRule
-    /// If depthTest, val is expected to be a value within Topaz.Renderer.DepthTest
-    /// If etchRule,  val is expected to be a value within Topaz.Renderer.EtchRule 
-    /// if textureFilterHint, val is expected to be a value within Topaz.Renderer.TextureFilter
-    Topaz.Render2D.Parameter param 
+    /// If PRIMITIVE, val is expected to be a value within TOPAZ.RENDERER.PRIMITIVE
+    /// If ALPHA_RULE, val is expected to be a value within TOPAZ.RENDERER.ALPHA_RULE
+    /// If DEPTH_TEST, val is expected to be a value within TOPAZ.RENDERER.DEPTH_TEST
+    /// If ETCH_RULE,  val is expected to be a value within TOPAZ.RENDERER.ETCH_RULE 
+    /// if TEXTURE_FILTER_HINT, val is expected to be a value within TOPAZ.RENDERER.TEXTURE_FILTER_HINT
+    TOPAZ.RENDERER.ATTRIBUTE param 
 
     /// The new value. How its interpreted depends on param.
     Int val 
@@ -21,7 +22,7 @@ func setParameter
 ///
 func setNoiseMin ->
     /// The property to modify.
-    Topaz.Particle.Property p 
+    TOPAZ.PARTICLE.PROPERTY p 
     /// The value to set.
     Number val 
 
@@ -29,7 +30,7 @@ func setNoiseMin ->
 ///
 func setNoiseMax ->
     /// The property to modify.
-    Topaz.Particle.Property p 
+    TOPAZ.PARTICLE.PROPERTY p 
     /// The value to set.
     Number val 
 
@@ -39,7 +40,7 @@ func setNoiseMax ->
 /// how the value changes from the start of its life to the end.
 func setFunction -> 
     /// The property to modify.
-    Topaz.Particle.Property p 
+    TOPAZ.PARTICLE.PROPERTY p 
     /// The automation state string.
     String automationString
 

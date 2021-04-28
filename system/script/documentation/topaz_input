@@ -23,18 +23,18 @@ func addKeyboardListener -> Int
     ///
     /// When the corresponding event occurs, the callback will be triggered.
     ///
-    /// onPress: arguments = (listenerMap, Topaz.Key)
+    /// onPress: arguments = (listenerMap, TOPAZ.INPUT)
     ///     Function called upon pressing of the input.
     ///     Press means: from 0 to non-zero.
     ///
-    /// onActive: arguments = (listenerMap, Topaz.Key, inputValue)
+    /// onActive: arguments = (listenerMap, TOPAZ.INPUT, inputValue)
     ///     Function called every update the input is non-zero.
     ///
-    /// onRelease: arguments = (listenerMap, Topaz.Key)
+    /// onRelease: arguments = (listenerMap, TOPAZ.INPUT)
     ///     Function called upon releasing of the input.
     ///     Release means: from non-zero to 0
     ///
-    /// onUpdate: arguments = (listenerMap, Topaz.Key, inputValue)
+    /// onUpdate: arguments = (listenerMap, TOPAZ.INPUT, inputValue)
     ///     Function called when the device posts a new event for this 
     ///     input. The value may or may not be changed. (some implementations
     ///     may post new events to the device, but the value could be the same
@@ -57,18 +57,18 @@ func addPointerListener -> Int
     ///
     /// When the corresponding event occurs, the callback will be triggered.
     ///
-    /// onPress: arguments = (listenerMap, Topaz.Key)
+    /// onPress: arguments = (listenerMap, TOPAZ.INPUT)
     ///     Function called upon pressing of the input.
     ///     Press means: from 0 to non-zero.
     ///
-    /// onActive: arguments = (listenerMap, Topaz.Key, inputValue)
+    /// onActive: arguments = (listenerMap, TOPAZ.INPUT, inputValue)
     ///     Function called every update the input is non-zero.
     ///
-    /// onRelease: arguments = (listenerMap, Topaz.Key)
+    /// onRelease: arguments = (listenerMap, TOPAZ.INPUT)
     ///     Function called upon releasing of the input.
     ///     Release means: from non-zero to 0
     ///
-    /// onUpdate: arguments = (listenerMap, Topaz.Key, inputValue)
+    /// onUpdate: arguments = (listenerMap, TOPAZ.INPUT, inputValue)
     ///     Function called when the device posts a new event for this 
     ///     input. The value may or may not be changed. (some implementations
     ///     may post new events to the device, but the value could be the same
@@ -92,18 +92,18 @@ func addPadListener -> Int
     ///
     /// When the corresponding event occurs, the callback will be triggered.
     ///
-    /// onPress: arguments = (listenerMap, Topaz.Key)
+    /// onPress: arguments = (listenerMap, TOPAZ.INPUT)
     ///     Function called upon pressing of the input.
     ///     Press means: from 0 to non-zero.
     ///
-    /// onActive: arguments = (listenerMap, Topaz.Key, inputValue)
+    /// onActive: arguments = (listenerMap, TOPAZ.INPUT, inputValue)
     ///     Function called every update the input is non-zero.
     ///
-    /// onRelease: arguments = (listenerMap, Topaz.Key)
+    /// onRelease: arguments = (listenerMap, TOPAZ.INPUT)
     ///     Function called upon releasing of the input.
     ///     Release means: from non-zero to 0
     ///
-    /// onUpdate: arguments = (listenerMap, Topaz.Key, inputValue)
+    /// onUpdate: arguments = (listenerMap, TOPAZ.INPUT, inputValue)
     ///     Function called when the device posts a new event for this 
     ///     input. The value may or may not be changed. (some implementations
     ///     may post new events to the device, but the value could be the same
@@ -130,18 +130,18 @@ func addMappedListener -> Int
     ///
     /// When the corresponding event occurs, the callback will be triggered.
     ///
-    /// onPress: arguments = (listenerMap, Topaz.Key)
+    /// onPress: arguments = (listenerMap, TOPAZ.INPUT)
     ///     Function called upon pressing of the input.
     ///     Press means: from 0 to non-zero.
     ///
-    /// onActive: arguments = (listenerMap, Topaz.Key, inputValue)
+    /// onActive: arguments = (listenerMap, TOPAZ.INPUT, inputValue)
     ///     Function called every update the input is non-zero.
     ///
-    /// onRelease: arguments = (listenerMap, Topaz.Key)
+    /// onRelease: arguments = (listenerMap, TOPAZ.INPUT)
     ///     Function called upon releasing of the input.
     ///     Release means: from non-zero to 0
     ///
-    /// onUpdate: arguments = (listenerMap, Topaz.Key, inputValue)
+    /// onUpdate: arguments = (listenerMap, TOPAZ.INPUT, inputValue)
     ///     Function called when the device posts a new event for this 
     ///     input. The value may or may not be changed. (some implementations
     ///     may post new events to the device, but the value could be the same
@@ -164,7 +164,7 @@ func removeListener ->
 func getState -> Number 
 
     /// The input value to query. Usually of type topazKey. 
-    Topaz.Key input
+    TOPAZ.INPUT input
 
 
 /// Returns the current state of the device input for a given pad.
@@ -174,7 +174,7 @@ func getPadState -> Number
     /// The pad to query.
     Int padID 
     /// The input to query.
-    Topaz.Key input 
+    TOPAZ.INPUT input 
 
 /// Returns the current state of the device input for a mapped input
 ///
@@ -190,7 +190,7 @@ func setDeadzone ->
     /// The pad index to modify.
     Int padID 
     /// The input key to set a deadzone. Mostly useful for pad axes inputs
-    Topaz.Key input 
+    TOPAZ.INPUT input 
     /// The deadzone amount. If an input value's absolute value is 
     /// below this amount, then the input will be ignored.
     Number deadzone

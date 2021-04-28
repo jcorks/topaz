@@ -61,7 +61,7 @@ void topaz_es2_2d_set_object_transform(
 void topaz_es2_2d_render(
     topazES2_2D_t *,
     const topazRenderer_2D_Context_t *,
-    const topazRenderer_ProcessAttribs_t *
+    const topazRenderer_Attributes_t *
 );
 
 

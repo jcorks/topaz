@@ -9,7 +9,7 @@ var generateDocumentation = function(
 ) {
     var symbolTable = SymbolTable();
     const writeTextFile = function(str, filename) {
-        const asset = Topaz.Resources.fetchAsset(Topaz.Resources.AssetType.data, filename);
+        const asset = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.DATA, filename);
                         
         var bytes = [];
         for(var i = 0; i < str.length; ++i) {
@@ -330,7 +330,7 @@ var generateDocumentation = function(
         var searchIndexText = 'var searchIndex = ' + JSON.stringify(searchIndex);
         const filename = "searchindex_db.js"
 
-        const asset = Topaz.Resources.fetchAsset(Topaz.Resources.AssetType.data, filename);
+        const asset = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.DATA, filename);
         var bytes = [];
         for(var i = 0; i < searchIndexText.length; ++i) {
             bytes.push(searchIndexText.charCodeAt(i));

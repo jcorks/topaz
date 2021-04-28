@@ -247,7 +247,7 @@ static uint32_t create_test_object(topazES2_2D_t * t, float x, float y, float r)
 
             
 
-            topazRenderer_ProcessAttribs_t attribs = {
+            topazRenderer_Attributes_t attribs = {
                 topazRenderer_Primitive_Triangle,
                 topazRenderer_DepthTest_None,
                 topazRenderer_AlphaRule_Allow,
@@ -297,7 +297,7 @@ static void topaz_api_es2__destroy(topazRendererAPI_t * api, topazRenderer_CoreA
     topaz_es2_destroy(api->implementationData);
 }
 
-static void topaz_api_es2__draw_2d(topazRendererAPI_t * api, void *d2, const topazRenderer_2D_Context_t * ctx, const topazRenderer_ProcessAttribs_t * attribs) {
+static void topaz_api_es2__draw_2d(topazRendererAPI_t * api, void *d2, const topazRenderer_2D_Context_t * ctx, const topazRenderer_Attributes_t * attribs) {
     topaz_es2_start(api->implementationData);
     topaz_es2_commit_process_attribs(api->implementationData, attribs);
     topaz_es2_2d_render(
@@ -311,46 +311,59 @@ static void topaz_api_es2__draw_2d(topazRendererAPI_t * api, void *d2, const top
 
 static void topaz_api_es2__renderer_draw_3d(
     topazRendererAPI_t * api, 
-    topazRenderer_3D_t * d3, 
-    const topazRenderer_ProcessAttribs_t * attribs
+    void * vertices,
+    topazArray_t * indices,
+
+    void * program,
+    void * material,
+
+    void * sampleFramebuffer,
+
+    void * sampleTexture0,
+    void * sampleTexture1,
+    void * sampleTexture2,
+
+    void * modelviewMatrix,
+    void * projectionMatrix,
+    const topazRenderer_Attributes_t * attribs
 ) {
-    if (!d3->program) {
+    if (!program) {
         #ifdef TOPAZDC_DEBUG
             assert(!"Cannot render without a program.");
         #endif
         return;
     }
     
-    if (!(d3->indices && topaz_array_get_size(d3->indices))) {
+    if (!(indices && topaz_array_get_size(indices))) {
         return;
     }
 
     topaz_es2_program_update_dynamic(
-        (void*)d3->program,
-        d3->material ? topaz_es2_buffer_get_offline_ptr((void*)d3->material) : NULL,
-        d3->modelviewMatrix ? topaz_es2_buffer_get_offline_ptr((void*)d3->modelviewMatrix) : NULL,
-        d3->projectionMatrix ? topaz_es2_buffer_get_offline_ptr((void*)d3->projectionMatrix) : NULL
+        program,
+        material ? topaz_es2_buffer_get_offline_ptr(material) : NULL,
+        modelviewMatrix ? topaz_es2_buffer_get_offline_ptr(modelviewMatrix) : NULL,
+        projectionMatrix ? topaz_es2_buffer_get_offline_ptr(projectionMatrix) : NULL
     );
     
-    if (d3->sampleTexture0) {
+    if (sampleTexture0) {
         topaz_es2_program_bind_texture(
-            (topazES2_Program_t*)d3->program,
+            program,
             0,
-            (topazES2_Texture_t*)d3->sampleTexture0
+            sampleTexture0
         );
     }
-    if (d3->sampleTexture1) {
+    if (sampleTexture1) {
         topaz_es2_program_bind_texture(
-            (topazES2_Program_t*)d3->program,
+            program,
             1,
-            (topazES2_Texture_t*)d3->sampleTexture1
+            sampleTexture1
         );
     }
-    if (d3->sampleTexture2) {
+    if (sampleTexture2) {
         topaz_es2_program_bind_texture(
-            (topazES2_Program_t*)d3->program,
+            program,
             2,
-            (topazES2_Texture_t*)d3->sampleTexture2
+            sampleTexture2
         );
     }
     
@@ -358,13 +371,15 @@ static void topaz_api_es2__renderer_draw_3d(
 
     topaz_es2_start(api->implementationData);
     topaz_es2_commit_process_attribs(api->implementationData, attribs);
-    GLuint * ids = topaz_es2_fb_get_handle((topazES2_FB_t *)d3->sampleFramebuffer);
+    GLuint * ids = NULL;
+    if (sampleFramebuffer)
+        ids = topaz_es2_fb_get_handle(sampleFramebuffer);
     topaz_es2_program_render(
-        (topazES2_Program_t*)d3->program,
-        (topazES2_Buffer_t *)d3->vertices,
-        ids[1],
-        topaz_array_get_data(d3->indices), 
-        topaz_array_get_size(d3->indices)
+        program,
+        vertices,
+        ids ? ids[1] : NULL,
+        topaz_array_get_data(indices), 
+        topaz_array_get_size(indices)
     );
 
     topaz_es2_end(api->implementationData);

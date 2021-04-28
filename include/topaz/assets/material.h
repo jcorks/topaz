@@ -58,24 +58,12 @@ typedef struct topazMaterial_ProgramData_t topazMaterial_ProgramData_t;
 /// The default is ambient =  {1, 0, 1, 1}
 ///                diffuse =  {1, 0, 1, 1}
 ///                specular = {1, 0, 1, 1}
-///                userData = {0..0}
+///                userData = {0..0} (16 floats)
 ///
 struct topazMaterial_ProgramData_t {
-    /// The ambient color of the material.
-    ///
-    float ambient[4];
-
-    /// The diffuse color of the material.
-    ///
-    float diffuse[4];
-
-    /// The specular color of the material.
-    ///
-    float specular[4];
-
     /// Customly-defined data for the material. This is interpreted 
     /// based on the currently set program.
-    float userData[16];
+    float userData[28];
 };
 
 

@@ -2935,15 +2935,16 @@ class Topz {
             "time"  : 0,
             "frame" : 1
         ];
-        Render2D = [
+        Renderer = [
             "Parameter" : [
                 "alphaRule" : 0,
                 "depthTest" : 1,
                 "etchRule" : 2,
                 "textureFilterHint" : 3
-            ]
-        ];
-        Renderer = [
+            ],
+            
+            
+
             "EtchRule" : [
                 "noEtching" : 0,
                 "define" : 1,

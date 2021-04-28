@@ -15,7 +15,6 @@
 #include <math.h>
 
 #define PROP_COUNT (topazParticle_Property__Alpha+1)
-#define PARAM_COUNT (topazRender2D_Parameter_TextureFilterHint+1)
 
 typedef struct {
     // automation string function
@@ -30,7 +29,7 @@ struct topazParticle_t {
     // asset name for image.
     topazString_t * image;
     // all parameters for render2d within emitter
-    topazRender2D_Parameter params[PARAM_COUNT];
+    topazRenderer_Attributes_t attribs;
 
     // properties for the particle
     ParticleProperty props[PROP_COUNT];
@@ -96,10 +95,12 @@ void topaz_particle_set_from_string(
     topaz_string_set(part->image, next);
 
 
-    int i;
-    for(i = 0; i < PARAM_COUNT; ++i) {
-        part->params[i] = READ_INT;
-    }
+
+    part->attribs.primitive = topazRenderer_Primitive_Triangle;
+    part->attribs.depthTest = READ_INT;
+    part->attribs.alphaRule = READ_INT;
+    part->attribs.etchRule  = READ_INT;
+    part->attribs.textureFilter = READ_INT;
 
 
     if (vernum == 1) {
@@ -116,6 +117,7 @@ void topaz_particle_set_from_string(
     // string was unreadable (either partly or entirely)
     // count will be less than prop_count, so 
     // empty them out to reduce negative effects.
+    int i;
     for(i = count; i < PROP_COUNT; ++i) {
         topaz_string_set(part->props[count].anim, next);
         part->props[i].noiseMin = 0;
@@ -133,10 +135,13 @@ const topazString_t * topaz_particle_to_string(
 ) {
     topaz_string_clear(part->state);
     topaz_string_concat_printf(part->state, "1|%s|", topaz_string_get_c_str(part->image));
+
+    topaz_string_concat_printf(part->state, "%d|", part->attribs.depthTest);
+    topaz_string_concat_printf(part->state, "%d|", part->attribs.alphaRule);
+    topaz_string_concat_printf(part->state, "%d|", part->attribs.etchRule);
+    topaz_string_concat_printf(part->state, "%d|", part->attribs.textureFilter);
+
     int i;
-    for(i = 0; i < PARAM_COUNT; ++i) {
-        topaz_string_concat_printf(part->state, "%d|", part->params[i]);
-    }
     for(i = 0; i < PROP_COUNT; ++i) {
         topaz_string_concat(part->state, part->props[i].anim);
         topaz_string_concat(part->state, TOPAZ_STR_CAST("|"));
@@ -153,16 +158,21 @@ const topazString_t * topaz_particle_to_string(
 
 
 
-void topaz_particle_set_param(
+void topaz_particle_set_attributes(
     /// The particle to modify
     topazParticle_t * part,
-    /// The parameter to modify
-    topazRender2D_Parameter p,
-    /// The value of the parameter.
-    int value
+    /// New attributes.
+    const topazRenderer_Attributes_t * attribs
 ) {
-    if (p < 0 || p >= PARAM_COUNT) return;
-    part->params[p] = value;
+    part->attribs = *attribs;
+}
+
+
+const topazRenderer_Attributes_t * topaz_particle_get_attributes(
+    /// The particle to modify
+    topazParticle_t * part
+) {
+    return &part->attribs;
 }
 
 
@@ -255,7 +265,7 @@ typedef struct {
     topaz_t * ctx;
     
     // all parameters for render2d within emitter
-    topazRender2D_Parameter params[PARAM_COUNT];
+    topazRenderer_Attributes_t attribs;
     
     // render2d instances.
     topazArray_t * brushPool;
@@ -423,10 +433,7 @@ void topaz_particle_emitter_2d_set_particle(
         p->image
     );
 
-    int i;
-    for(i = 0; i < PARAM_COUNT; ++i) {
-        emitter->params[i] = p->params[i]; 
-    }
+    emitter->attribs = p->attribs; 
 
 
     topazImage_Frame_t * f = topaz_image_get_frame(image, 0);
@@ -437,7 +444,7 @@ void topaz_particle_emitter_2d_set_particle(
 
     // copy params
 
-
+    int i;
     for(i = 0; i < PROP_COUNT; ++i) {
         topaz_automation_set_from_string(emitter->propsActive[i], p->props[i].anim);
         emitter->propsMaxNoise[i] = p->props[i].noiseMax;
@@ -469,14 +476,10 @@ static void particle_emit(
         );
     }
 
-    int i;
-    for(i = 0; i < PARAM_COUNT; ++i) {
-        topaz_render2d_set_parameter(
-            p->visual,
-            i,
-            emitter->params[i]
-        );
-    }
+    topaz_render2d_set_attributes(
+        p->visual,
+        &emitter->attribs
+    );
     
     p->duration = emitter->propsMinNoise[topazParticle_Property__Duration] + topaz_rng_next_value(emitter->rng)*(emitter->propsMaxNoise[topazParticle_Property__Duration] - emitter->propsMinNoise[topazParticle_Property__Duration]);    
     p->position = topaz_entity_get_global_position(e);

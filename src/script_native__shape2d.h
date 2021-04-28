@@ -30,7 +30,7 @@ TSO_SCRIPT_API_FN(shape2d_api__set_color) {
     TSO_NO_RETURN;
 }
 
-TSO_SCRIPT_API_FN(shape2d_api__get_parameter) {
+TSO_SCRIPT_API_FN(shape2d_api__get_attribute) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
@@ -38,26 +38,29 @@ TSO_SCRIPT_API_FN(shape2d_api__get_parameter) {
 
     return topaz_script_object_from_number(
         script,
-        topaz_shape2d_get_parameter(
-            native,
-            topaz_script_object_as_number(arg1)
+        topaz_renderer_attributes_get_attribute(
+            topaz_shape2d_get_attributes(
+                native
+            ),
+            topaz_script_object_as_number(arg1)            
         )
     );
 }
 
-TSO_SCRIPT_API_FN(shape2d_api__set_parameter) {
+TSO_SCRIPT_API_FN(shape2d_api__set_attribute) {
     TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
 
-
-    topaz_shape2d_set_parameter(
-        native,
+    topazRenderer_Attributes_t att = *topaz_shape2d_get_attributes(native);
+    topaz_renderer_attributes_set_attribute(
+        &att,
         topaz_script_object_as_number(arg1),
         topaz_script_object_as_number(arg2)
-    );  
+    );
+    topaz_shape2d_set_attributes(native, &att);
     TSO_NO_RETURN;
 }
 
@@ -282,8 +285,8 @@ static void add_refs__shape2d_api(topazScript_t * script, topazScriptManager_t *
     TS_MAP_NATIVE_FN("topaz_shape2d__create", shape2d_api__create);
     TS_MAP_NATIVE_FN("topaz_shape2d__get_color", shape2d_api__get_color);
     TS_MAP_NATIVE_FN("topaz_shape2d__set_color", shape2d_api__set_color);
-    TS_MAP_NATIVE_FN("topaz_shape2d__get_parameter", shape2d_api__get_parameter);
-    TS_MAP_NATIVE_FN("topaz_shape2d__set_parameter", shape2d_api__set_parameter);
+    TS_MAP_NATIVE_FN("topaz_shape2d__get_attribute", shape2d_api__get_attribute);
+    TS_MAP_NATIVE_FN("topaz_shape2d__set_attribute", shape2d_api__set_attribute);
 
 
 

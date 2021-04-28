@@ -187,9 +187,11 @@ topazRenderer_Program_t * topaz_renderer_program_create(
     const topazString_t *   fragSrc, 
     topazString_t *         log
 ) {
+    void * p = t->api.program.renderer_program_create(&t->api, vertexSrc, fragSrc, log);
+    if (!p) return NULL;
     topazRenderer_Program_t * out = calloc(1, sizeof(topazRenderer_ProgramAPI_t));
     out->api = &(t->api.program);
-    out->data = out->api->renderer_program_create(&t->api, vertexSrc, fragSrc, log);
+    out->data = p;
     out->binID = topaz_bin_add(t->programList, out);
     return out;
 }
@@ -535,10 +537,31 @@ topazRenderer_t * topaz_renderer_create(
 
 void topaz_renderer_draw_3d(
     topazRenderer_t * t,
-    topazRenderer_3D_t * threed,
-    const topazRenderer_ProcessAttribs_t * attribs
+    topazRenderer_3D_t * d3,
+    const topazRenderer_Attributes_t * attribs
 ) {
-    t->api.core.renderer_draw_3d(&t->api, threed, attribs);    
+    if (!d3->vertices) return;
+    if (!d3->indices) return;
+    if (!d3->program) return;
+    if (!d3->material) return;
+
+    t->api.core.renderer_draw_3d(
+        &t->api, 
+        d3->vertices->bufferData,
+        d3->indices,
+        
+        d3->program->data,
+        d3->material->bufferData,
+        
+        d3->sampleFramebuffer ? d3->sampleFramebuffer->framebufferData : NULL,
+        d3->sampleTexture0 ? d3->sampleTexture0->data : NULL,
+        d3->sampleTexture1 ? d3->sampleTexture1->data : NULL,
+        d3->sampleTexture2 ? d3->sampleTexture2->data : NULL,
+
+        d3->modelviewMatrix->bufferData,
+        d3->projectionMatrix->bufferData,
+        attribs
+    );    
 }
 
 
@@ -547,7 +570,7 @@ void topaz_renderer_draw_2d(
     topazRenderer_t * t,
     topazRenderer_2D_t * twod,
     const topazRenderer_2D_Context_t * ctx,
-    const topazRenderer_ProcessAttribs_t * attribs
+    const topazRenderer_Attributes_t * attribs
 
 ) {
     t->api.core.renderer_draw_2d(&t->api, twod->data, ctx, attribs);
@@ -579,7 +602,48 @@ topazRenderer_Framebuffer_t * topaz_renderer_get_target(topazRenderer_t * t) {
 }
 
 
+void topaz_renderer_attributes_set_attribute(
+    topazRenderer_Attributes_t * c, 
+    topazRenderer_Attribute p, 
+    int i
+) {
+    switch(p) {
+      case topazRenderer_Attribute_Primitive:
+        c->primitive = i;
+        break;
+      case topazRenderer_Attribute_AlphaRule:
+        c->alphaRule = i;                
+        break;
+      case topazRenderer_Attribute_DepthTest:
+        c->depthTest = i;                
+        break;
+      case topazRenderer_Attribute_EtchRule:
+        c->etchRule = i;                
+        break;
+      case topazRenderer_Attribute_TextureFilterHint:
+        c->textureFilter = i;                
+        break;
+    }    
+}
 
+int topaz_renderer_attributes_get_attribute(
+    const topazRenderer_Attributes_t * c, 
+    topazRenderer_Attribute p
+) {
+    switch(p) {
+      case topazRenderer_Attribute_Primitive:
+        return c->primitive;
+      case topazRenderer_Attribute_AlphaRule:
+        return c->alphaRule;
+      case topazRenderer_Attribute_DepthTest:
+        return c->depthTest;
+      case topazRenderer_Attribute_EtchRule:
+        return c->etchRule;
+      case topazRenderer_Attribute_TextureFilterHint:
+        return c->textureFilter;
+    }    
+    return -1;
 
+}
 
 

@@ -257,6 +257,7 @@ static topazMatrix_t matrix_projection_perspective(
     float fovy, float ratio, float zNear, float zFar
 ) {
     topazMatrix_t out;
+    topaz_matrix_set_identity(&out);
     float * projection = &out.data[0];
     float perspective[4];
     perspective[0] = fovy * (topaz_math_pi / 180.f);

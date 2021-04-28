@@ -48,10 +48,11 @@ static char * MAGIC_ID__MATERIAL = "t0p4zm4t3r14l";
 
 
 static topazMaterial_ProgramData_t default_program_data = {
-    {1.f, 0.f, 1.f, 1.f},
-    {1.f, 0.f, 1.f, 1.f},
-    {1.f, 0.f, 1.f, 1.f},
     {
+    1.f, 0.f, 1.f, 1.f,
+    1.f, 0.f, 1.f, 1.f,
+    1.f, 0.f, 1.f, 1.f,
+    
         0.f, 0.f, 0.f, 0.f,
         0.f, 0.f, 0.f, 0.f,
         0.f, 0.f, 0.f, 0.f,
@@ -98,6 +99,10 @@ topazAsset_t * topaz_material_create(topaz_t * t, const topazString_t * name) {
     out->fragment = topaz_table_create_hash_topaz_string();    
     out->materialData = topaz_renderer_buffer_create(r, (float*)&default_program_data, 16+12);
     out->ctx = t;
+    
+    #ifdef TOPAZDC_DEBUG
+        out->MAGIC_ID = MAGIC_ID__MATERIAL;
+    #endif
 
 
     topazAsset_Attributes_t attribs = {};

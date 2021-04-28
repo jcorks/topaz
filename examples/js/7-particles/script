@@ -8,27 +8,27 @@ var Emitter = {
 
     onReady : function(props) {
         var a = new Topaz.Automation();
-        a.addKeyframe(0, Topaz.Automation.Function.squareRoot, 0);
-        a.addKeyframe(0.5, Topaz.Automation.Function.squareRoot, 0.5);
-        a.addKeyframe(1, Topaz.Automation.Function.squareRoot, 1);
+        a.addKeyframe(0, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0);
+        a.addKeyframe(0.5, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
+        a.addKeyframe(1, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
         var ramp01 = a.string;
         a.clear();
-        a.addKeyframe(1, Topaz.Automation.Function.none, 0);
-        a.addKeyframe(1, Topaz.Automation.Function.none, 1);
+        a.addKeyframe(1, TOPAZ.AUTOMATION.FUNCTION.NONE, 0);
+        a.addKeyframe(1, TOPAZ.AUTOMATION.FUNCTION.NONE, 1);
         var stable1 = a.string;
         a.clear();
-        a.addKeyframe(0, Topaz.Automation.Function.linear, 0);
-        a.addKeyframe(360, Topaz.Automation.Function.linear, 1);
+        a.addKeyframe(0, TOPAZ.AUTOMATION.FUNCTION.LINEAR, 0);
+        a.addKeyframe(360, TOPAZ.AUTOMATION.FUNCTION.LINEAR, 1);
         var ramp360 = a.string;
         a.clear();
-        a.addKeyframe(1,   Topaz.Automation.Function.squareRoot, 0);
-        a.addKeyframe(0.5, Topaz.Automation.Function.squareRoot, 0.5);
-        a.addKeyframe(0,   Topaz.Automation.Function.squareRoot, 1);
+        a.addKeyframe(1,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0);
+        a.addKeyframe(0.5, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
+        a.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
         var ramp10 = a.string;
         a.clear();
-        a.addKeyframe(10,   Topaz.Automation.Function.squareRoot, 0);
-        a.addKeyframe(5, Topaz.Automation.Function.squareRoot, 0.5);
-        a.addKeyframe(0,   Topaz.Automation.Function.squareRoot, 1);
+        a.addKeyframe(10,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0);
+        a.addKeyframe(5, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
+        a.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
         var ramp100 = a.string;
         
         
@@ -38,42 +38,42 @@ var Emitter = {
         var particle = new Topaz.Particle();
         particle.image = 'example';
 
-        particle.setParameter(Topaz.Render2D.Parameter.alphaRule, Topaz.Renderer.AlphaRule.allow);
-        particle.setParameter(Topaz.Render2D.Parameter.etchRule, Topaz.Renderer.EtchRule.noEtching);
-        particle.setParameter(Topaz.Render2D.Parameter.depthTest, Topaz.Renderer.DepthTest.none);
-        particle.setParameter(Topaz.Render2D.Parameter.textureFilterHint, Topaz.Renderer.TextureFilterHint.linear);
+        particle.setAttribute(TOPAZ.RENDERER.ATTRIBUTE.ALPHA_RULE, TOPAZ.RENDERER.ALPHA_RULE.ALLOW);
+        particle.setAttribute(TOPAZ.RENDERER.ATTRIBUTE.ETCH_RULE, TOPAZ.RENDERER.ETCH_RULE.NOETCHING);
+        particle.setAttribute(TOPAZ.RENDERER.ATTRIBUTE.DEPTH_TEST, TOPAZ.RENDERER.DEPTH_TEST.NONE);
+        particle.setAttribute(TOPAZ.RENDERER.ATTRIBUTE.TEXTURE_FILTER_HINT, TOPAZ.RENDERER.TEXTURE_FILTER_HINT.LINEAR);
 
-        particle.setFunction(Topaz.Particle.Property.scaleX, ramp01);
-        particle.setFunction(Topaz.Particle.Property.scaleY, ramp01);
-        particle.setFunction(Topaz.Particle.Property.speedX, ramp100);
-        particle.setFunction(Topaz.Particle.Property.speedY, ramp100);
-        particle.setFunction(Topaz.Particle.Property.scaleMultiplier, stable1);
-        particle.setFunction(Topaz.Particle.Property.direction, ramp360);
-        //particle.setFunction(Topaz.Particle.Property.Rotation, ramp01);
-        particle.setFunction(Topaz.Particle.Property.red,   stable1);
-        particle.setFunction(Topaz.Particle.Property.green, stable1);
-        particle.setFunction(Topaz.Particle.Property.blue,  stable1);
-        particle.setFunction(Topaz.Particle.Property.alpha, ramp10);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SCALE_X, ramp01);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SCALE_Y, ramp01);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SPEED_X, ramp100);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SPEED_Y, ramp100);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SCALE_MULTIPLIER, stable1);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.DIRECTION, ramp360);
+        //particle.setFunction(TOPAZ.PARTICLE.PROPERTY.Rotation, ramp01);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.RED,   stable1);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.GREEN, stable1);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.BLUE,  stable1);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.ALPHA, ramp10);
 
-        //particle.setNoiseMin(Topaz.Particle.Property.SpeedX, 0.4);
-        //particle.setNoiseMax(Topaz.Particle.Property.SpeedX, 5);
-        //particle.setNoiseMin(Topaz.Particle.Property.SpeedY, 0.4);
-        //particle.setNoiseMax(Topaz.Particle.Property.SpeedY, 5);
+        //particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.SpeedX, 0.4);
+        //particle.setNoiseMax(TOPAZ.PARTICLE.PROPERTY.SpeedX, 5);
+        //particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.SpeedY, 0.4);
+        //particle.setNoiseMax(TOPAZ.PARTICLE.PROPERTY.SpeedY, 5);
 
-        particle.setNoiseMin(Topaz.Particle.Property.scaleMultiplier, 10);
-        particle.setNoiseMax(Topaz.Particle.Property.scaleMultiplier, 14);
-
-
-        particle.setNoiseMin(Topaz.Particle.Property.duration, 1);
-        particle.setNoiseMin(Topaz.Particle.Property.duration, 100);
-
-        particle.setNoiseMin(Topaz.Particle.Property.direction, 0);
-        particle.setNoiseMin(Topaz.Particle.Property.direction, 356);
+        particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.SCALE_MULTIPLIER, 10);
+        particle.setNoiseMax(TOPAZ.PARTICLE.PROPERTY.SCALE_MULTIPLIER, 14);
 
 
+        particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.DURATION, 1);
+        particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.DURATION, 100);
 
-        particle.setNoiseMin(Topaz.Particle.Property.red, 0);
-        particle.setNoiseMax(Topaz.Particle.Property.red, 1);
+        particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.DIRECTION, 0);
+        particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.DIRECTION, 356);
+
+
+
+        particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.RED, 0);
+        particle.setNoiseMax(TOPAZ.PARTICLE.PROPERTY.RED, 1);
 
 
 

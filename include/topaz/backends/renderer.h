@@ -210,8 +210,8 @@ enum topazRenderer_EtchRule {
 /// in a general sense. This is usually independent of the processing 
 /// program in the case of 3D rendering.
 ///
-typedef struct topazRenderer_ProcessAttribs_t topazRenderer_ProcessAttribs_t;
-struct topazRenderer_ProcessAttribs_t {
+typedef struct topazRenderer_Attributes_t topazRenderer_Attributes_t;
+struct topazRenderer_Attributes_t {
     /// The primitive. See topazRenderer_Primitive
     ///
     topazRenderer_Primitive primitive;
@@ -236,6 +236,51 @@ struct topazRenderer_ProcessAttribs_t {
 
 
 
+/// The parameters control more fine operations when rendering the 
+/// the objects.
+///
+typedef enum topazRenderer_Attribute topazRenderer_Attribute;
+enum topazRenderer_Attribute {
+    /// The primitive to use
+    topazRenderer_Attribute_Primitive,
+    
+    /// The transparency rule.
+    ///
+    topazRenderer_Attribute_AlphaRule,
+
+    /// The depth testing rule.
+    ///
+    topazRenderer_Attribute_DepthTest,
+
+    /// The currently set etch rule    
+    ///
+    topazRenderer_Attribute_EtchRule,
+
+    /// The texturing hint.
+    ///
+    topazRenderer_Attribute_TextureFilterHint
+};
+
+
+/// Convenience function to set an attribute.
+/// 
+void topaz_renderer_attributes_set_attribute(
+    /// The attribute instance to modify.
+    topazRenderer_Attributes_t * c,
+    /// The attribute to set.
+    topazRenderer_Attribute p, 
+    /// The value to set for the attribute.
+    int i
+);
+
+/// Convenience function to get an attribute.
+/// 
+int topaz_renderer_attributes_get_attribute(
+    /// The attribute instance to query.
+    const topazRenderer_Attributes_t * c,
+    /// The attribute to query. 
+    topazRenderer_Attribute p
+);
 
 
 
@@ -1033,7 +1078,7 @@ void topaz_renderer_draw_3d(
     topazRenderer_3D_t * inst,
 
     /// The processing attributes for rendering the object.
-    const topazRenderer_ProcessAttribs_t * attribs
+    const topazRenderer_Attributes_t * attribs
 );
 
 
@@ -1052,7 +1097,7 @@ void topaz_renderer_draw_2d(
     const topazRenderer_2D_Context_t * context,
 
     /// Further processing details for rendering the 2D instance.
-    const topazRenderer_ProcessAttribs_t * attribs
+    const topazRenderer_Attributes_t * attribs
 
 );
 

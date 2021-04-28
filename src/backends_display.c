@@ -67,6 +67,7 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
     out->backend = b;
     out->camera2d = topaz_camera_create(ctx);
     out->camera3d = topaz_camera_create(ctx);
+    topaz_camera_set_type(out->camera3d, topazCamera_Type_Perspective3D);
     topazRenderer_t * r = topaz_graphics_get_renderer(topaz_context_get_graphics(ctx));
     out->fbs[0] = topaz_renderer_framebuffer_create(r);
     out->fbs[1] = topaz_renderer_framebuffer_create(r);

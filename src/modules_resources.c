@@ -291,9 +291,10 @@ topazAsset_t * topaz_resources_fetch_asset(
 
       case topazAsset_Type_Material:
         asset = topaz_material_create(r->ctx, name);
-
+        break;
       case topazAsset_Type_Mesh:
         asset = topaz_mesh_create(r->ctx, name);
+        break;
 
       default:
         #ifdef TOPAZDC_DEBUG

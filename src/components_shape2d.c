@@ -255,10 +255,9 @@ void topaz_shape2d_form_rectangle(topazComponent_t * c, float w, float h) {
         )
     );
 
-    topaz_render2d_set_primitive(
-        s->render2d,
-        topazRenderer_Primitive_Triangle
-    );
+    topazRenderer_Attributes_t att = *topaz_render2d_get_attributes(s->render2d);
+    att.primitive = topazRenderer_Primitive_Triangle;
+    topaz_render2d_set_attributes(s->render2d, &att);
 
     
 }
@@ -323,10 +322,9 @@ void topaz_shape2d_form_image_frame_scaled(topazComponent_t * c, topazAsset_t * 
         )
     );
 
-    topaz_render2d_set_primitive(
-        s->render2d,
-        topazRenderer_Primitive_Triangle
-    );
+    topazRenderer_Attributes_t att = *topaz_render2d_get_attributes(s->render2d);
+    att.primitive = topazRenderer_Primitive_Triangle;
+    topaz_render2d_set_attributes(s->render2d, &att);
 
 }
 
@@ -407,10 +405,9 @@ void topaz_shape2d_form_triangles(topazComponent_t * c, const topazArray_t * pts
         
     }
 
-    topaz_render2d_set_primitive(
-        s->render2d,
-        topazRenderer_Primitive_Triangle
-    );
+    topazRenderer_Attributes_t att = *topaz_render2d_get_attributes(s->render2d);
+    att.primitive = topazRenderer_Primitive_Triangle;
+    topaz_render2d_set_attributes(s->render2d, &att);
 
     topaz_render2d_set_vertices(
         s->render2d, 
@@ -427,20 +424,19 @@ void topaz_shape2d_form_triangles(topazComponent_t * c, const topazArray_t * pts
 void topaz_shape2d_form_lines(topazComponent_t * c, const topazArray_t * ptsSrc) {
     Shape2D * s = shape2d__retrieve(c);
     topaz_shape2d_form_triangles(c, ptsSrc);
-    topaz_render2d_set_primitive(
-        s->render2d,
-        topazRenderer_Primitive_Line
-    );
+    topazRenderer_Attributes_t att = *topaz_render2d_get_attributes(s->render2d);
+    att.primitive = topazRenderer_Primitive_Line;
+    topaz_render2d_set_attributes(s->render2d, &att);
 }
 
-void topaz_shape2d_set_parameter(topazComponent_t * c, topazRender2D_Parameter p, int i) {
+void topaz_shape2d_set_attributes(topazComponent_t * c, const topazRenderer_Attributes_t * att) {
     Shape2D * s = shape2d__retrieve(c);
-    topaz_render2d_set_parameter(s->render2d, p, i);
+    topaz_render2d_set_attributes(s->render2d, att);
 }
 
-int topaz_shape2d_get_parameter(topazComponent_t * c, topazRender2D_Parameter p) {
+const topazRenderer_Attributes_t * topaz_shape2d_get_attributes(topazComponent_t * c) {
     Shape2D * s = shape2d__retrieve(c);
-    return topaz_render2d_get_parameter(s->render2d, p);
+    return topaz_render2d_get_attributes(s->render2d);
 }
 
 

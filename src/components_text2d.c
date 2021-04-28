@@ -73,7 +73,7 @@ typedef struct {
     float width;
     float height;
     topazArray_t * glyphs;
-    topazRenderer_ProcessAttribs_t attribs;
+    topazRenderer_Attributes_t attribs;
     
     
 
@@ -144,7 +144,7 @@ topazComponent_t * topaz_text2d_create(topaz_t * t) {
     data->text = topaz_string_create();
     data->glyphs = topaz_array_create(sizeof(topazRender2D_t *));
     data->spatial = topaz_spatial_create();
-    data->attribs.depthTest = topazRenderer_DepthTest_Less;
+    data->attribs.depthTest = topazRenderer_DepthTest_None;
     data->attribs.alphaRule = topazRenderer_AlphaRule_Allow;
     data->attribs.etchRule  = topazRenderer_EtchRule_NoEtching;
     data->attribs.textureFilter = topazRenderer_TextureFilterHint_Linear;
@@ -162,61 +162,34 @@ topazComponent_t * topaz_text2d_create(topaz_t * t) {
     return out;
 }
 
-void topaz_text2d_set_parameter(
-    topazComponent_t * c,
-    topazRender2D_Parameter param,
-    int val 
+void topaz_text2d_set_attributes(
+    /// The shape2d to modify
+    topazComponent_t * c, 
+
+    /// The new process attributes.
+    const topazRenderer_Attributes_t * attributes
 ) {
     Text2D * t = text2d__retrieve(c);
-    switch(param) {
-      case topazRender2D_Parameter_AlphaRule:
-        if (t->attribs.alphaRule == val) return;
-        t->attribs.alphaRule = val;
-        break;
-      case topazRender2D_Parameter_DepthTest:
-        if (t->attribs.depthTest == val) return;
-        t->attribs.depthTest = val;
-        break;
-      case topazRender2D_Parameter_EtchRule:
-        if (t->attribs.etchRule == val) return;
-        t->attribs.etchRule = val;
-        break;
-      case topazRender2D_Parameter_TextureFilterHint:
-        if (t->attribs.textureFilter == val) return;
-        t->attribs.textureFilter = val;
-        break;
-    }
+    t->attribs = *attributes;
 
     uint32_t i;
     uint32_t len = topaz_array_get_size(t->glyphs);
     topazRender2D_t * glyph;
     for(i = 0; i < len; ++i) {
         glyph = topaz_array_at(t->glyphs, topazRender2D_t *, i);
-        topaz_render2d_set_parameter(
-            glyph, 
-            param,
-            val
-        ); 
+        topaz_render2d_set_attributes(
+            glyph,
+            attributes
+        );
     }
 }
 
 
-int topaz_text2d_get_parameter(
-    topazComponent_t * c,
-    topazRender2D_Parameter param
+const topazRenderer_Attributes_t * topaz_text2d_get_attributes(
+    topazComponent_t * c
 ) {
     Text2D * t = text2d__retrieve(c);
-    switch(param) {
-      case topazRender2D_Parameter_AlphaRule:
-        return t->attribs.alphaRule;
-      case topazRender2D_Parameter_DepthTest:
-        return t->attribs.depthTest;
-      case topazRender2D_Parameter_EtchRule:
-        return t->attribs.etchRule;
-      case topazRender2D_Parameter_TextureFilterHint:
-        return t->attribs.textureFilter;
-    }
-    return -1;
+    return &t->attribs;
 }
 
 
@@ -272,10 +245,8 @@ static void text2d_update(Text2D * t, const topazString_t * str, const topazStri
     // so need to match in size
     while(topaz_array_get_size(t->glyphs) < topaz_string_get_length(t->text)) {
         topazRender2D_t * r = topaz_render2d_create(topaz_graphics_get_renderer_2d(topaz_context_get_graphics(t->ctx)), t->spatial);
-        topaz_render2d_set_parameter(r, topazRender2D_Parameter_AlphaRule,          t->attribs.alphaRule);
-        topaz_render2d_set_parameter(r, topazRender2D_Parameter_EtchRule,           t->attribs.etchRule);
-        topaz_render2d_set_parameter(r, topazRender2D_Parameter_DepthTest,          t->attribs.depthTest);
-        topaz_render2d_set_parameter(r, topazRender2D_Parameter_TextureFilterHint,  t->attribs.textureFilter);
+        t->attribs.primitive = topazRenderer_Primitive_Triangle;
+        topaz_render2d_set_attributes(r, &t->attribs);
 
         topaz_render2d_set_vertices(r, TOPAZ_ARRAY_CAST(vtx_base, topazRenderer_2D_Vertex_t, 6));
         topaz_array_push(t->glyphs, r);

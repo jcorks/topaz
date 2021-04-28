@@ -67,30 +67,30 @@ var Input_Poll = {
         // position vector by adding "1" to it in the direction 
         // that corresponds to the arrow.
 
-        if (Topaz.Input.getState(Topaz.Key.topazKey_up)) {
+        if (Topaz.Input.getState(TOPAZ.INPUT.KEY_up)) {
             // The add() function for vectors allows the creation 
             // of a new vector by summing the x, y, and z components
             // of the source vector and argument vector.
             $.position = $.position.add(new Topaz.Vector(0, -1));            
         }
 
-        if (Topaz.Input.getState(Topaz.Key.topazKey_down)) {
+        if (Topaz.Input.getState(TOPAZ.INPUT.KEY_down)) {
             $.position = $.position.add(new Topaz.Vector(0, 1));            
         }
 
-        if (Topaz.Input.getState(Topaz.Key.topazKey_left)) {
+        if (Topaz.Input.getState(TOPAZ.INPUT.KEY_left)) {
             $.position = $.position.add(new Topaz.Vector(-1, 0));            
         }
 
 
-        if (Topaz.Input.getState(Topaz.Key.topazKey_right)) {
+        if (Topaz.Input.getState(TOPAZ.INPUT.KEY_right)) {
             $.position = $.position.add(new Topaz.Vector(1, 0));            
         }
 
         // The left/right/middle button can be polled using 
         // the Topaz.Key.topazPointer_* inputs.
         // All inputs for the mouse+keyboard can use the getState() function.
-        if (Topaz.Input.getState(Topaz.Key.topazPointer_1)) {
+        if (Topaz.Input.getState(TOPAZ.INPUT.POINTER_1)) {
             // To poll position position, getState can be used. However,
             // due to the commonality of this operation, the position 
             // can be polled by just accessing Topaz.Input.mouseX / Y.
@@ -164,19 +164,19 @@ var Input_List = {
             // we passed in, and the input id that is active.
             'onActive' : function(map, key) {
                 switch(key) {
-                  case Topaz.Key.topazKey_w:
+                  case TOPAZ.INPUT.KEY_w:
                     $.position = $.position.add(new Topaz.Vector(0, -1));            
                     break;
 
-                  case Topaz.Key.topazKey_s:
+                  case TOPAZ.INPUT.KEY_s:
                     $.position = $.position.add(new Topaz.Vector(0, 1));            
                     break;
 
-                  case Topaz.Key.topazKey_a:
+                  case TOPAZ.INPUT.KEY_a:
                     $.position = $.position.add(new Topaz.Vector(-1, 0));            
                     break;
 
-                  case Topaz.Key.topazKey_d:
+                  case TOPAZ.INPUT.KEY_d:
                     $.position = $.position.add(new Topaz.Vector(1, 0));            
                     break;
                 }
@@ -193,7 +193,7 @@ var Input_List = {
 
                 // The clicking state will by set here to detect when to apply the 
                 // x / y position change
-                if (input == Topaz.Key.topazPointer_0) {
+                if (input == TOPAZ.INPUT.POINTER_0) {
                     props.clicking = value > 0;
                 }
 
@@ -203,11 +203,11 @@ var Input_List = {
                 // in question with the raw value.
                 if (props.clicking) {
                     switch(input) {
-                      case Topaz.Key.topazPointer_X:
+                      case TOPAZ.INPUT.POINTER_X:
                         $.position = new Topaz.Vector(value, $.position.y);
                         break;
 
-                      case Topaz.Key.topazPointer_Y:
+                      case TOPAZ.INPUT.POINTER_Y:
                         $.position = new Topaz.Vector($.position.x, value);
                         break;
 

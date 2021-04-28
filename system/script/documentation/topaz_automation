@@ -13,7 +13,7 @@ func addKeyframe ->
     Number value 
     /// The traveling function that describes how 
     /// the next keyframe's value should be reached. 
-    Topaz.Automation.Function f 
+    TOPAZ.AUTOMATION.FUNCTION f 
     /// The offset from the end of the last keyframe.
     /// This can be querried with the length property.
     Number offset
@@ -27,7 +27,7 @@ func addVectorKeyframe ->
     Topaz.Vector value 
     /// The traveling function that describes how 
     /// the next keyframe's value should be reached. 
-    Topaz.Automation.Function f 
+    TOPAZ.AUTOMATION.FUNCTION f 
     /// The offset from the end of the last keyframe.
     /// This can be querried with the length property.
     Number offset

@@ -32,13 +32,13 @@ func addParameterCallback -> Int
 /// Gets a parameter from the display.
 func getParameter -> Int
     /// The parameter to retrieve.
-    Topaz.Display.Parameter parameter
+    TOPAZ.DISPLAY.PARAMETER parameter
 
 
 /// Sets a parameter from the display.
 func setParameter -> Int
     /// The parameter to modify.
-    Topaz.Display.Parameter parameter
+    TOPAZ.DISPLAY.PARAMETER parameter
     /// The new value for the parameter.
     Int value
 
@@ -60,14 +60,6 @@ func removeCallback ->
     /// The callback to remove.
     Int callbackID
 
-/// Sets the render resolution for the camera in pixels.
-///
-func setRenderResolution ->
-    /// The width of the new resolution.
-    Int width
-    /// The height of the new resolution
-    Int height 
-
 
 
 
@@ -79,13 +71,44 @@ Int width
 /// Read-only.
 Int height
 
-/// Returns the render width of the display.
-/// Read-only.
-Int renderWidth
 
-/// Returns the render height of the display.
-/// Read-only.
-Int renderHeight
+/// Gets the framebuffer specified.
+func getFramebuffer -> Topaz.Framebuffer 
+    /// The framebuffer to get.
+    TOPAZ.DISPLAY.FRAMEBUFFER fb
+
+/// Sets the framebuffer as the main framebuffer. This framebuffer 
+/// is rendered into the display every frame.
+func useFramebuffer -> 
+    /// The framebuffer to use.
+    TOPAZ.DISPLAY.FRAMEBUFFER fb
+
+
+/// The current framebuffer in use.
+Topaz.Framebuffer framebuffer
+
+/// Forces clearing of the results of drawing stored within the current framebuffer.
+///
+func clearMainFramebuffer ->
+    /// What data to clear from the framebuffer
+    TOPAZ.RENDERER.LAYER layer
+    
+    
+/// Gets the contents of the current framebuffer and 
+/// puts the data into an image asset frame. 
+/// The input image is cleared, resized to match the 
+/// framebuffer size, and given one frame which matches the 
+/// the framebuffer data.
+///
+/// NOTE: in general, this operation is considered "slow" as 
+/// it requires a lot of communication between the backend 
+/// renderer and engine, which are most likely on different 
+/// devices. Use sparringly!
+func captureMainFramebuffer -> 
+    /// The image to populate.
+    Topaz.Image capture
+
+
 
 /// Retrieves the camera associated with the display thats 
 /// used for 2d operations. This camera is used when the display is set as 

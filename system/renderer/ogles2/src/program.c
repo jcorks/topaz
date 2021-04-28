@@ -37,6 +37,7 @@ struct topazES2_Program_t {
     // vec4
     GLint locationFragmentUniform_Texture2Data;
 
+
     // 9 vectors
     GLint locationGlobalUniform_Material;    
 
@@ -47,19 +48,19 @@ struct topazES2_Program_t {
 
 
 static char * vertex_pre = 
-"attribute vec3 topaz_vertex_position;\n"
-"attribute vec3 topaz_vertex_normal;\n"
-"attribute vec2 topaz_vertex_uv;\n"
-"attribute vec4 topaz_vertex_userdata;\n\n"
+"attribute mediump vec3 topaz_vertex_position;\n"
+"attribute mediump vec3 topaz_vertex_normal;\n"
+"attribute mediump vec2 topaz_vertex_uv;\n"
+"attribute mediump vec4 topaz_vertex_userdata;\n\n"
 
-"varying vec2 _topaz_uv_out;\n"
-"varying vec2 _topaz_userdata_out;\n"
+"varying mediump vec2 _topaz_uv_out;\n"
+"varying mediump vec4 _topaz_userdata_out;\n"
 
-"uniform mat4 topaz_mat_modelview;\n"
-"uniform mat4 topaz_mat_projection;\n"
-"uniform mat3 topaz_mat_normal;\n"
+"uniform mediump mat4 topaz_mat_modelview;\n"
+"uniform mediump mat4 topaz_mat_projection;\n"
+"uniform mediump mat3 topaz_mat_normal;\n"
 
-"uniform vec4 topaz_material[9];\n"
+"uniform mediump vec4 topaz_material[9];\n"
 
 
 "void topazSetPosition(in vec4 a) {\n"
@@ -83,17 +84,18 @@ static char * vertex_pre =
 static char * fragment_pre = 
 
 "varying mediump vec2 _topaz_uv_out;\n"
-"varying mediump vec2 _topaz_userdata_out;\n"
+"varying mediump vec4 _topaz_userdata_out;\n"
 
 "uniform sampler2D _topaz_t_fb;\n"
 "uniform sampler2D _topaz_t_0;\n"
 "uniform sampler2D _topaz_t_1;\n"
 "uniform sampler2D _topaz_t_2;\n"
-"uniform vec4 _topaz_t0;\n"
-"uniform vec4 _topaz_t1;\n"
-"uniform vec4 _topaz_t2;\n"
+"uniform mediump vec4 _topaz_t0;\n"
+"uniform mediump vec4 _topaz_t1;\n"
+"uniform mediump vec4 _topaz_t2;\n"
 
-"uniform vec4 topaz_material[9];\n"
+
+"uniform mediump vec4 topaz_material[9];\n"
 
 
 
@@ -102,24 +104,32 @@ static char * fragment_pre =
 "}\n"
 
 
-"vec4 topazSampleFramebuffer(in vec2 uvs) {\n"
+"mediump vec4 topazSampleFramebuffer(in vec2 uvs) {\n"
 "   return texture2D(_topaz_t_fb, uvs);\n"
 "}\n"
 
-"vec4 topazSampleTexture0(in vec2 uvs) {\n"
-"   vec2 uvs_conv = vec2((uvs.x / _topaz_t0.y) + _topaz_t0.x, (uvs.y / _topaz_t0.w) + _topaz_t0.z);\n"
+"mediump vec4 topazSampleTexture0(in vec2 uvs) {\n"
+"   mediump vec2 uvs_conv = vec2(_topaz_t0.x + uvs.x * _topaz_t0.y, _topaz_t0.z + uvs.y * _topaz_t0.w);\n"
 "   return texture2D(_topaz_t_0, uvs_conv);\n"
 "}\n"
 
-"vec4 topazSampleTexture1(in vec2 uvs) {\n"
-"   vec2 uvs_conv = vec2((uvs.x / _topaz_t1.y) + _topaz_t1.x, (uvs.y / _topaz_t1.w) + _topaz_t1.z);\n"
+"mediump vec4 topazSampleTexture1(in vec2 uvs) {\n"
+"   mediump vec2 uvs_conv = vec2(_topaz_t1.x + uvs.x * _topaz_t1.y, _topaz_t1.z + uvs.y * _topaz_t1.w);\n"
 "   return texture2D(_topaz_t_1, uvs_conv);\n"
 "}\n"
 
-"vec4 topazSampleTexture2(in vec2 uvs) {\n"
-"   vec2 uvs_conv = vec2((uvs.x / _topaz_t2.y) + _topaz_t2.x, (uvs.y / _topaz_t2.w) + _topaz_t2.z);\n"
+"mediump vec4 topazSampleTexture2(in vec2 uvs) {\n"
+"   mediump vec2 uvs_conv = vec2(_topaz_t2.x + uvs.x * _topaz_t2.y, _topaz_t2.z + uvs.y * _topaz_t2.w);\n"
 "   return texture2D(_topaz_t_2, uvs_conv);\n"
 "}\n"
+
+"mediump vec4 topazGetUserData() {\n"
+"   return _topaz_userdata_out;\n"
+"}\n"
+"mediump vec2 topazGetUV() {\n"
+"   return _topaz_uv_out;\n"
+"}\n"
+
 ;
 
 
@@ -258,6 +268,8 @@ topazES2_Program_t * topaz_es2_program_create(
     out->locationFragmentUniform_Texture1Data = glGetUniformLocation(out->program, "_topaz_t1");TOPAZ_GLES_CALL_CHECK;
     out->locationFragmentUniform_Texture2Data = glGetUniformLocation(out->program, "_topaz_t2");TOPAZ_GLES_CALL_CHECK;
 
+
+
     out->locationGlobalUniform_Material = glGetUniformLocation(out->program, "_topaz_material");TOPAZ_GLES_CALL_CHECK;
 
     out->locationVBOpos      = glGetAttribLocation(out->program, "topaz_vertex_position");TOPAZ_GLES_CALL_CHECK;
@@ -288,6 +300,7 @@ void topaz_es2_program_update_dynamic(
     const float * projmatrix_float16_rowmajor
 ) {
     TOPAZ_GLES_FN_IN;
+    glUseProgram(program->program);
     // material
     if (material_float28 && program->locationGlobalUniform_Material > -1) {
         glUniform4fv(
@@ -370,6 +383,7 @@ void topaz_es2_program_update_dynamic(
             projmatrix_float16_rowmajor
         );TOPAZ_GLES_CALL_CHECK;
     }
+    glUseProgram(0);
 
 }
 
@@ -430,23 +444,32 @@ void topaz_es2_program_bind_texture(
         location = program->locationFragmentUniform_TextureSampler_0;
         if (location < 0) return;
         glActiveTexture(GL_TEXTURE0+0);TOPAZ_GLES_CALL_CHECK;
+        glUniform1i(location, 0);
+        location = program->locationFragmentUniform_Texture0Data;
         break;
 
       case 1: 
         location = program->locationFragmentUniform_TextureSampler_1;
+
         if (location < 0) return;
         glActiveTexture(GL_TEXTURE0+1);TOPAZ_GLES_CALL_CHECK;
+        glUniform1i(location, 1);
+        location = program->locationFragmentUniform_Texture1Data;
         break;
 
       case 2: 
         location = program->locationFragmentUniform_TextureSampler_2;
+        
         if (location < 0) return;
         glActiveTexture(GL_TEXTURE0+2);TOPAZ_GLES_CALL_CHECK;
+        glUniform1i(location, 2);
+        location = program->locationFragmentUniform_Texture2Data;
         break;
 
 
     }
     
+    if (location < 0) return;
     topaz_es2_texture_get_info(
         tex,
         &local_x,
@@ -464,17 +487,19 @@ void topaz_es2_program_bind_texture(
 
 
     float values[4];
-    values[0] = (local_x / atlas_w) + (local_w / atlas_w);
-    values[1] = atlas_w;
-    values[2] = (local_y / atlas_h) + (local_h / atlas_h);
-    values[3] = atlas_h;
+    values[0] = local_x / (float)atlas_w;
+    values[1] = local_w / (float)atlas_w;
+    values[2] = local_y / (float)atlas_h;
+    values[3] = local_h / (float)atlas_h;
     
-    
+
+        
     glUniform4fv(
         location,
-        4,
+        1,
         values
     );TOPAZ_GLES_CALL_CHECK;
+
 }
 
 
@@ -495,32 +520,40 @@ void topaz_es2_program_render(
     uint32_t count
 ) {
     TOPAZ_GLES_FN_IN;
-    glUseProgram(p->program); TOPAZ_GLES_CALL_CHECK;
-    
-    if (p->locationFragmentUniform_TextureSampler_FB > -1) 
-        glUniform1i(p->locationFragmentUniform_TextureSampler_FB, framebufferTexID);
+    topaz_es2_buffer_set_type(vertexBuffer, GL_ARRAY_BUFFER);
 
-    glEnableVertexAttribArray(p->locationVBOpos);TOPAZ_GLES_CALL_CHECK;
-    glEnableVertexAttribArray(p->locationVBOnormal);TOPAZ_GLES_CALL_CHECK;
-    glEnableVertexAttribArray(p->locationVBOuv);TOPAZ_GLES_CALL_CHECK;
-    glEnableVertexAttribArray(p->locationVBOdata);TOPAZ_GLES_CALL_CHECK;
+    glUseProgram(p->program); TOPAZ_GLES_CALL_CHECK;
+
+    
+    
+    if (p->locationFragmentUniform_TextureSampler_FB > -1 && framebufferTexID > 0) {
+        glActiveTexture(GL_TEXTURE0+3);TOPAZ_GLES_CALL_CHECK;
+        glBindTexture(GL_TEXTURE_2D, framebufferTexID);
+        glUniform1i(p->locationFragmentUniform_TextureSampler_FB, 3);
+    }
+
+
+    if (p->locationVBOpos > -1)    glEnableVertexAttribArray(p->locationVBOpos);TOPAZ_GLES_CALL_CHECK;
+    if (p->locationVBOnormal > -1) glEnableVertexAttribArray(p->locationVBOnormal);TOPAZ_GLES_CALL_CHECK;
+    if (p->locationVBOuv > -1)     glEnableVertexAttribArray(p->locationVBOuv);TOPAZ_GLES_CALL_CHECK;
+    if (p->locationVBOdata > -1)   glEnableVertexAttribArray(p->locationVBOdata);TOPAZ_GLES_CALL_CHECK;
 
     glBindBuffer(GL_ARRAY_BUFFER, topaz_es2_buffer_get_buffer_id(vertexBuffer));TOPAZ_GLES_CALL_CHECK;
 
-    glVertexAttribPointer(p->locationVBOpos,      3, GL_FLOAT, GL_FALSE, sizeof(float)*12, 0);TOPAZ_GLES_CALL_CHECK;
-    glVertexAttribPointer(p->locationVBOnormal,   3, GL_FLOAT, GL_FALSE, sizeof(float)*12, (void*)(sizeof(float)*3));TOPAZ_GLES_CALL_CHECK;
-    glVertexAttribPointer(p->locationVBOuv,       2, GL_FLOAT, GL_FALSE, sizeof(float)*12, (void*)(sizeof(float)*6));TOPAZ_GLES_CALL_CHECK;
-    glVertexAttribPointer(p->locationVBOdata,     4, GL_FLOAT, GL_FALSE, sizeof(float)*12, (void*)(sizeof(float)*8));TOPAZ_GLES_CALL_CHECK;
+    if (p->locationVBOpos > -1)    glVertexAttribPointer(p->locationVBOpos,      3, GL_FLOAT, GL_FALSE, sizeof(float)*12, 0);TOPAZ_GLES_CALL_CHECK;
+    if (p->locationVBOnormal > -1) glVertexAttribPointer(p->locationVBOnormal,   3, GL_FLOAT, GL_FALSE, sizeof(float)*12, (void*)(sizeof(float)*3));TOPAZ_GLES_CALL_CHECK;
+    if (p->locationVBOuv > -1)     glVertexAttribPointer(p->locationVBOuv,       2, GL_FLOAT, GL_FALSE, sizeof(float)*12, (void*)(sizeof(float)*6));TOPAZ_GLES_CALL_CHECK;
+    if (p->locationVBOdata > -1)   glVertexAttribPointer(p->locationVBOdata,     4, GL_FLOAT, GL_FALSE, sizeof(float)*12, (void*)(sizeof(float)*8));TOPAZ_GLES_CALL_CHECK;
 
 
 
     glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, indices);TOPAZ_GLES_CALL_CHECK;
 
 
-    glDisableVertexAttribArray(p->locationVBOpos);TOPAZ_GLES_CALL_CHECK;
-    glDisableVertexAttribArray(p->locationVBOnormal);TOPAZ_GLES_CALL_CHECK;
-    glDisableVertexAttribArray(p->locationVBOuv);TOPAZ_GLES_CALL_CHECK;
-    glDisableVertexAttribArray(p->locationVBOdata);TOPAZ_GLES_CALL_CHECK;
+    if (p->locationVBOpos > -1)    glDisableVertexAttribArray(p->locationVBOpos);TOPAZ_GLES_CALL_CHECK;
+    if (p->locationVBOnormal > -1) glDisableVertexAttribArray(p->locationVBOnormal);TOPAZ_GLES_CALL_CHECK;
+    if (p->locationVBOuv > -1)     glDisableVertexAttribArray(p->locationVBOuv);TOPAZ_GLES_CALL_CHECK;
+    if (p->locationVBOdata > -1)   glDisableVertexAttribArray(p->locationVBOdata);TOPAZ_GLES_CALL_CHECK;
 
     glUseProgram(0);TOPAZ_GLES_CALL_CHECK;
 

@@ -43,7 +43,7 @@ TSO_SCRIPT_API_FN(text2d_api__set_text) {
 }
 
 
-TSO_SCRIPT_API_FN(text2d_api__get_parameter) {
+TSO_SCRIPT_API_FN(text2d_api__get_attribute) {
     TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
@@ -51,26 +51,29 @@ TSO_SCRIPT_API_FN(text2d_api__get_parameter) {
 
     return topaz_script_object_from_number(
         script,
-        topaz_text2d_get_parameter(
-            native,
-            topaz_script_object_as_number(arg1)
+        topaz_renderer_attributes_get_attribute(
+            topaz_text2d_get_attributes(
+                native
+            ),
+            topaz_script_object_as_number(arg1)            
         )
     );
 }
 
-TSO_SCRIPT_API_FN(text2d_api__set_parameter) {
+TSO_SCRIPT_API_FN(text2d_api__set_attribute) {
     TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);   
 
-
-    topaz_text2d_set_parameter(
-        native,
+    topazRenderer_Attributes_t att = *topaz_text2d_get_attributes(native);
+    topaz_renderer_attributes_set_attribute(
+        &att,
         topaz_script_object_as_number(arg1),
         topaz_script_object_as_number(arg2)
-    );  
+    );
+    topaz_text2d_set_attributes(native, &att);
     TSO_NO_RETURN;
 }
 
@@ -204,8 +207,8 @@ static void add_refs__text2d_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_text2d__set_text", text2d_api__set_text);
     TS_MAP_NATIVE_FN("topaz_text2d__set_font", text2d_api__set_font);
 
-    TS_MAP_NATIVE_FN("topaz_text2d__get_parameter", text2d_api__get_parameter);
-    TS_MAP_NATIVE_FN("topaz_text2d__set_parameter", text2d_api__set_parameter);
+    TS_MAP_NATIVE_FN("topaz_text2d__get_attribute", text2d_api__get_attribute);
+    TS_MAP_NATIVE_FN("topaz_text2d__set_attribute", text2d_api__set_attribute);
 
 
     TS_MAP_NATIVE_FN("topaz_text2d__get_extent_width", text2d_api__get_extent_width);

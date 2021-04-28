@@ -50,33 +50,6 @@ DEALINGS IN THE SOFTWARE.
 ///
 typedef struct topazRender2D_t topazRender2D_t;
 
-/// The parameters control more fine operations when rendering the 
-/// the objects.
-///
-typedef enum topazRender2D_Parameter topazRender2D_Parameter;
-enum topazRender2D_Parameter {
-    /// The transparency rule for the 2D object.
-    /// Default is topazRenderer_AlphaRule_Allow
-    ///
-    topazRender2D_Parameter_AlphaRule,
-
-    /// The depth testing rule for the 2D object.
-    /// Default is topazRenderer_DepthTest_None
-    ///
-    topazRender2D_Parameter_DepthTest,
-
-    /// The currently set etch rule, which determines how the 
-    /// etch rules is applied when rendering this 2d object.
-    /// Default is topazRenderer_EtchRule_Out
-    ///
-    topazRender2D_Parameter_EtchRule,
-
-    /// The texturing hint for the 2D object.
-    /// Default is topazRenderer_TextureFilterHint_Linear
-    ///
-    topazRender2D_Parameter_TextureFilterHint
-};
-
 
 
 /// Creates a new 2d object. If a collection of 
@@ -104,28 +77,25 @@ void topaz_render2d_destroy(
 
 
 
-/// Sets the parameter value. The value accepted is one of the appropriate 
-/// enum values within renderer.h
+/// Sets the rendering attributes
 ///
-void topaz_render2d_set_parameter(
+void topaz_render2d_set_attributes(
     /// The render2d to modify.
     topazRender2D_t * r2d,
 
-    /// The parameter to set. 
-    topazRender2D_Parameter param, 
-
-    /// The value for the parameter.
-    int value
+    /// The attributes to set.
+    const topazRenderer_Attributes_t * attribs
 );
 
-/// Gets the parameter value.
+/// Gets the rendering attributes.
+/// Default is topazRenderer_TextureFilterHint_Linear
+///            topazRenderer_EtchRule_Out
+///            topazRenderer_DepthTest_None
+///            topazRenderer_AlphaRule_Allow
 ///
-int topaz_render2d_get_parameter(
+const topazRenderer_Attributes_t * topaz_render2d_get_attributes(
     /// The render2d to query.
-    topazRender2D_t * r2d, 
-
-    /// The parameter to query.
-    topazRender2D_Parameter param
+    topazRender2D_t * r2d
 );
 
 
@@ -158,23 +128,6 @@ void topaz_render2d_set_texture(
     topazRenderer_Texture_t * tex
 );
 
-/// Gets the primitive for this 2D object. The default is 
-/// topazRenderer_Primitive_Triangle
-///
-topazRenderer_Primitive topaz_render2d_get_primitive(
-    /// The render2d to query.
-    const topazRender2D_t * r2d
-);
-
-/// Sets the primitive for the 2D object
-///
-void topaz_render2d_set_primitive(
-    /// The render2d to modify.
-    topazRender2D_t * r2d, 
-
-    /// The primitive to use with this render2d instance.
-    topazRenderer_Primitive prim
-);
 
 /// Gets the spatial object for this 2D instance
 ///
@@ -210,7 +163,7 @@ uint32_t topaz_render2d_get_render_data(
     topazRender2D_t * r2d,
 
     /// The process attributes to populate. 
-    topazRenderer_ProcessAttribs_t * attribs
+    topazRenderer_Attributes_t * attribs
 );
 
 #endif

@@ -52,19 +52,38 @@ TSO_SCRIPT_API_FN(particle_api__set_image) {
     topaz_particle_set_image(native, topaz_script_object_as_string(arg1));
     TSO_NO_RETURN; 
 }
-TSO_SCRIPT_API_FN(particle_api__set_param) {
+TSO_SCRIPT_API_FN(particle_api__get_attribute) {
+    TSO_ASSERT_ARG_COUNT(2);
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazParticle_t *, TSO_OBJECT_ID__PARTICLE);
+
+    return topaz_script_object_from_number(
+        script,
+        topaz_renderer_attributes_get_attribute(
+            topaz_particle_get_attributes(
+                native
+            ),
+            topaz_script_object_as_number(arg1)            
+        )
+    );
+}
+
+TSO_SCRIPT_API_FN(particle_api__set_attribute) {
     TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
     TSO_NATIVIZE(topazParticle_t *, TSO_OBJECT_ID__PARTICLE);
 
-    topaz_particle_set_param(
-        native, 
-        topaz_script_object_as_int(arg1),
+    topazRenderer_Attributes_t att = *topaz_particle_get_attributes(native);
+    topaz_renderer_attributes_set_attribute(
+        &att,
+        topaz_script_object_as_number(arg1),
         topaz_script_object_as_number(arg2)
     );
-    TSO_NO_RETURN; 
+    topaz_particle_set_attributes(native, &att);
+    TSO_NO_RETURN;
 }
 TSO_SCRIPT_API_FN(particle_api__set_noise_min) {
     TSO_ASSERT_ARG_COUNT(3);
@@ -119,7 +138,8 @@ static void add_refs__particle_api(topazScript_t * script, topazScriptManager_t 
     TS_MAP_NATIVE_FN("topaz_particle__to_string", particle_api__to_string);
     TS_MAP_NATIVE_FN("topaz_particle__set_from_string", particle_api__set_from_string);
     TS_MAP_NATIVE_FN("topaz_particle__set_image", particle_api__set_image);
-    TS_MAP_NATIVE_FN("topaz_particle__set_param", particle_api__set_param);
+    TS_MAP_NATIVE_FN("topaz_particle__set_attribute", particle_api__set_attribute);
+    TS_MAP_NATIVE_FN("topaz_particle__get_attribute", particle_api__get_attribute);
     TS_MAP_NATIVE_FN("topaz_particle__set_noise_min", particle_api__set_noise_min);
     TS_MAP_NATIVE_FN("topaz_particle__set_noise_max", particle_api__set_noise_max);
     TS_MAP_NATIVE_FN("topaz_particle__set_function", particle_api__set_function);

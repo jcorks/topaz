@@ -43,6 +43,8 @@ TSO_SCRIPT_API_FN(resources_api__load_asset) {
       case topazAsset_Type_Image:  type |= TSO_OBJECT_ID__IMAGE; break;
       case topazAsset_Type_Data:   type |= TSO_OBJECT_ID__DATA; break;
       case topazAsset_Type_Sound:  type |= TSO_OBJECT_ID__SOUND; break;
+      case topazAsset_Type_Material:  type |= TSO_OBJECT_ID__MATERIAL; break;
+      case topazAsset_Type_Mesh:      type |= TSO_OBJECT_ID__MESH; break;
       default:;
     }
 
@@ -84,6 +86,9 @@ TSO_SCRIPT_API_FN(resources_api__load_asset_data) {
       case topazAsset_Type_Image:  type |= TSO_OBJECT_ID__IMAGE; break;
       case topazAsset_Type_Data:   type |= TSO_OBJECT_ID__DATA; break;
       case topazAsset_Type_Sound:  type |= TSO_OBJECT_ID__SOUND; break;
+      case topazAsset_Type_Material:  type |= TSO_OBJECT_ID__MATERIAL; break;
+      case topazAsset_Type_Mesh:      type |= TSO_OBJECT_ID__MESH; break;
+
       default:;
     }
 
@@ -117,6 +122,9 @@ TSO_SCRIPT_API_FN(resources_api__load_asset_base64) {
       case topazAsset_Type_Image:  type |= TSO_OBJECT_ID__IMAGE; break;
       case topazAsset_Type_Data:   type |= TSO_OBJECT_ID__DATA; break;
       case topazAsset_Type_Sound:  type |= TSO_OBJECT_ID__SOUND; break;
+      case topazAsset_Type_Material:  type |= TSO_OBJECT_ID__MATERIAL; break;
+      case topazAsset_Type_Mesh:      type |= TSO_OBJECT_ID__MESH; break;
+
       default:;
     }
 
@@ -145,9 +153,11 @@ TSO_SCRIPT_API_FN(resources_api__fetch_asset) {
 
     int type = TSO_OBJECT_TYPE__ASSET;
     switch(topaz_asset_get_type(asset)) {
-      case topazAsset_Type_Image:  type |= TSO_OBJECT_ID__IMAGE; break;
-      case topazAsset_Type_Data:   type |= TSO_OBJECT_ID__DATA; break;
-      case topazAsset_Type_Sound:  type |= TSO_OBJECT_ID__SOUND; break;
+      case topazAsset_Type_Image:     type |= TSO_OBJECT_ID__IMAGE; break;
+      case topazAsset_Type_Data:      type |= TSO_OBJECT_ID__DATA; break;
+      case topazAsset_Type_Sound:     type |= TSO_OBJECT_ID__SOUND; break;
+      case topazAsset_Type_Material:  type |= TSO_OBJECT_ID__MATERIAL; break;
+      case topazAsset_Type_Mesh:      type |= TSO_OBJECT_ID__MESH; break;
       default:;
     }
 

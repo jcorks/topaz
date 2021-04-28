@@ -239,28 +239,21 @@ void topaz_shape2d_form_lines(
 );
 
 
-/// Sets the parameter value. The value accepted is one of the appropriate 
-/// enum values within renderer.h
+/// Sets the rendering attributes.
 ///
-void topaz_shape2d_set_parameter(
+void topaz_shape2d_set_attributes(
     /// The shape2d to modify
     topazComponent_t * shape2d, 
 
-    /// The renderer parameter to edit.
-    topazRender2D_Parameter param, 
-
-    /// The new value of the parameter.
-    int value
+    /// The new process attributes.
+    const topazRenderer_Attributes_t * attributes
 );
 
-/// Gets the parameter value.
+/// Gets the rendering attributes.
 ///
-int topaz_shape2d_get_parameter(
+const topazRenderer_Attributes_t * topaz_shape2d_get_attributes (
     /// The shape2d to query.
-    topazComponent_t * shape2d, 
-
-    /// The parameter to query.
-    topazRender2D_Parameter param
+    topazComponent_t * shape2d
 );
 
 

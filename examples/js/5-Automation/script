@@ -12,11 +12,11 @@ var Rectangle = {
         Topaz.Input.addKeyboardListener({
             onPress : function(map, key) {
                 switch(key) {
-                  case Topaz.Key.topazKey_space:
+                  case TOPAZ.INPUT.KEY_space:
                     props.anim.speed += 0.25;
                     break;
 
-                  case Topaz.Key.topazKey_backspace:
+                  case TOPAZ.INPUT.KEY_backspace:
                     if (props.anim.speed > 0) {
                         props.anim.speed -= 0.25;
                     } else {
@@ -58,9 +58,9 @@ var RectangleLinear = {
     props : {},
     onReady : function(props) {
         props.visual.color = new Topaz.Color('purple');
-        props.anim.addKeyframe(0,   Topaz.Automation.Function.none, 0);
-        props.anim.addKeyframe(200, Topaz.Automation.Function.linear, 0.5);
-        props.anim.addKeyframe(0,   Topaz.Automation.Function.linear, 1);
+        props.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE, 0);
+        props.anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.LINEAR, 0.5);
+        props.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.LINEAR, 1);
 
         props.entity.position = new Topaz.Vector(100, 100);
     }
@@ -71,9 +71,9 @@ var RectangleSquare = {
     props : {},
     onReady : function(props) {
         props.visual.color = new Topaz.Color('blue');
-        props.anim.addKeyframe(0,   Topaz.Automation.Function.none,   0);
-        props.anim.addKeyframe(200, Topaz.Automation.Function.square, 0.5);
-        props.anim.addKeyframe(0,   Topaz.Automation.Function.square, 1);
+        props.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE,   0);
+        props.anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.SQUARE, 0.5);
+        props.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE, 1);
 
         props.entity.position = new Topaz.Vector(100, 200);
     }
@@ -84,9 +84,9 @@ var RectangleRoot = {
     props : {},
     onReady : function(props) {
         props.visual.color = new Topaz.Color('red');
-        props.anim.addKeyframe(0,   Topaz.Automation.Function.none,       0);
-        props.anim.addKeyframe(200, Topaz.Automation.Function.squareRoot, 0.5);
-        props.anim.addKeyframe(0,   Topaz.Automation.Function.squareRoot, 1);
+        props.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE,       0);
+        props.anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
+        props.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
 
 
         props.entity.position = new Topaz.Vector(100, 300);

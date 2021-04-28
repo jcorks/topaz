@@ -1,0 +1,84 @@
+var mesh = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.MESH, 'testMesh');
+mesh.vertices = [
+   -1,-1, 0,    0, 1, 0,    0, 0,    1, 0, 1, 1,
+    1,-1, 0,    0, 1, 0,    1, 0,    1, 0, 1, 1,
+    1, 1, 0,    0, 1, 0,    1, 1,    1, 0, 1, 1,
+   -1, 1, 0,    0, 1, 0,    0, 1,    1, 0, 1, 1,
+];
+
+mesh.addObject();
+mesh.setObject(0, [
+    0, 1, 2,
+    2, 3, 0
+]);
+
+var material = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.MATERIAL, 'testMaterial');
+material.setProgramSource(
+    'GLSL ES2',
+    Topaz.Resources.loadAsset('', 'vertex_es2.glsl', 'vertex_es2.glsl').string,             
+    Topaz.Resources.loadAsset('',   'frag_es2.glsl',   'frag_es2.glsl').string
+);
+
+
+
+var tex = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.IMAGE, 'testTex');
+tex.resize(2, 2);
+tex.addFrame();
+tex.setRGBA(0, 
+    [
+        255,   0,   0, 255,
+        0,   255,   0, 255,
+        0,     0, 255, 255,
+        255, 255, 255, 255
+
+
+    ]
+);
+
+
+
+const Example3D = {
+    props : {
+        'v' : undefined ,
+        'stepper' : 0 
+    },
+    onReady : function(props) {
+                   
+    
+        var v = new Topaz.Shape3D();
+        v.material = material;
+        v.mesh = mesh;
+        v.setTexture(0, tex);
+        v.setAttribute(
+            TOPAZ.RENDERER.ATTRIBUTE.TEXTURE_FILTER_HINT, 
+            TOPAZ.RENDERER.TEXTURE_FILTER_HINT.NONE
+        );
+        
+        
+        props.entity.components = [v];
+        props.v = v;
+    },
+    
+    
+    onStep : function(props) {
+        props.stepper += 0.0001;
+        props.entity.rotation = new Topaz.Vector(
+            props.stepper, 
+            props.stepper*3, 
+            props.stepper*8
+        );
+    }
+};
+
+
+const a = new Topaz.Entity(Example3D);
+a.position = new Topaz.Vector(0, 0, -4);
+
+const b = new Topaz.Entity(Example3D);
+b.position = new Topaz.Vector(2, 0, 1);
+b.scale = new Topaz.Vector(0.7, 0.3, 0.3);
+
+
+
+a.children = [b];
+Topaz.root = a;

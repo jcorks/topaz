@@ -1,4 +1,3 @@
-
 /// Manages assets and acts as a repository for them.
 ///
 /// Many projects require thats some external data be 
@@ -22,7 +21,7 @@ singleton Topaz.Resources
 /// 
 func fetchAsset -> Topaz.Asset 
     /// The asset type.
-    Topaz.Resources.AssetType type 
+    TOPAZ.ASSET.TYPE type 
     /// The unique name of the asset.
     String name 
 

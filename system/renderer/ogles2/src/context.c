@@ -86,7 +86,7 @@ const char * topaz_gles_error_to_string(int e) {
 
 void topaz_es2_commit_process_attribs(
     topazES2_t * p, 
-    const topazRenderer_ProcessAttribs_t * attribs
+    const topazRenderer_Attributes_t * attribs
 ) {
 
     // transparency control. Preserved until it changes

@@ -56,7 +56,7 @@ void topaz_es2_end(topazES2_t *);
 
 // Ensures that following rendering options adhere to the process 
 // attribs specified here.
-void topaz_es2_commit_process_attribs(topazES2_t *, const topazRenderer_ProcessAttribs_t *);
+void topaz_es2_commit_process_attribs(topazES2_t *, const topazRenderer_Attributes_t *);
 
 // glFinish()?
 void topaz_es2_sync(topazES2_t *);

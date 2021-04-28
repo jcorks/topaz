@@ -71,7 +71,7 @@ typedef struct {
     topazRenderer_3D_t d3;
     topazAsset_t * mesh;
     topazAsset_t * material;
-    topazRenderer_ProcessAttribs_t attribs;
+    topazRenderer_Attributes_t attribs;
 } Shape3D;
 
 static void shape3d__on_draw(topazComponent_t * c, Shape3D * s) {
@@ -170,6 +170,12 @@ topazComponent_t * topaz_shape3d_create(topaz_t * t) {
     data->d3.modelviewMatrix = topaz_renderer_buffer_create(data->r, NULL, 16);
     data->d3.projectionMatrix = topaz_renderer_buffer_create(data->r, NULL, 16);
 
+    data->attribs.primitive = topazRenderer_Primitive_Triangle;
+    data->attribs.depthTest = topazRenderer_DepthTest_Less;
+    data->attribs.etchRule  = topazRenderer_EtchRule_NoEtching;
+    data->attribs.alphaRule = topazRenderer_AlphaRule_Opaque;
+    data->attribs.textureFilter = topazRenderer_TextureFilterHint_Linear;
+    
     // create base component and assign attribs
     topazComponent_Attributes_t attribs;
     memset(&attribs, 0, sizeof(topazComponent_Attributes_t));
@@ -226,7 +232,7 @@ void topaz_shape3d_set_texture(
 }
 
 
-void topaz_shape3d_set_framebuffer(
+void topaz_shape3d_set_sample_framebuffer(
     topazComponent_t * shape3d,
     topazRenderer_Framebuffer_t * framebuffer
 ) {
@@ -257,13 +263,13 @@ void topaz_shape3d_set_material(
 void topaz_shape3d_set_attributes(
     topazComponent_t * shape3d, 
 
-    const topazRenderer_ProcessAttribs_t * att
+    const topazRenderer_Attributes_t * att
 ) {
     Shape3D * s = shape3d__retrieve(shape3d);
     s->attribs = *att;
 }
 
-const topazRenderer_ProcessAttribs_t * topaz_shape3d_get_attributes(
+const topazRenderer_Attributes_t * topaz_shape3d_get_attributes(
     topazComponent_t * shape3d
 
 ) {
