@@ -88,6 +88,18 @@ void topaz_gl3_texture_local_coords_to_atlas(
     int * atlasIndex
 );
 
+// Gets all the information of a texture in regards to the atlas
+void topaz_gl3_texture_get_info(
+    topazGL3_Texture_t * t,
+    float * local_x,    
+    float * local_y,    
+    float * local_w,    
+    float * local_h,    
+    float * atlas_w,
+    float * atlas_h,
+    GLuint * textureObjectID
+);
+
 
 
 

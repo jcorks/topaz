@@ -12,7 +12,8 @@ handlers += {
          'system/renderer/ogl3/src/2d.c',
          'system/renderer/ogl3/src/texture.c',
          'system/renderer/ogl3/src/framebuffer.c',
-         'system/renderer/ogl3/src/context.c'
+         'system/renderer/ogl3/src/context.c',
+         'system/renderer/ogl3/src/program.c'
     ],
     'shouldTest' : true,
     'dependencies' : [

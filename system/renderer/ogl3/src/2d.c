@@ -160,7 +160,7 @@ void topaz_gl3_2d_set_object_transform(
 void topaz_gl3_2d_render(
     topazGL3_2D_t * t,
     const topazRenderer_2D_Context_t * ctx,
-    const topazRenderer_ProcessAttribs_t * attribs
+    const topazRenderer_Attributes_t * attribs
 ) {
     topaz_gl3_p2d_render(
         t->program,

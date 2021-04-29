@@ -38,6 +38,7 @@ DEALINGS IN THE SOFTWARE.
 #include "2d.h"
 #include "buffer.h"
 #include "framebuffer.h"
+#include "program.h"
 #include <stdlib.h>
 
 
@@ -55,7 +56,7 @@ static void topaz_api_gl3__destroy(topazRendererAPI_t * api, topazRenderer_CoreA
     topaz_gl3_destroy(api->implementationData);
 }
 
-static void topaz_api_gl3__draw_2d(topazRendererAPI_t * api, void *d2, const topazRenderer_2D_Context_t * ctx, const topazRenderer_ProcessAttribs_t * attribs) {
+static void topaz_api_gl3__draw_2d(topazRendererAPI_t * api, void *d2, const topazRenderer_2D_Context_t * ctx, const topazRenderer_Attributes_t * attribs) {
     if (topaz_gl3_start(api->implementationData)) {
         topaz_gl3_commit_process_attribs(api->implementationData, attribs);
         topaz_gl3_2d_render(
@@ -67,6 +68,85 @@ static void topaz_api_gl3__draw_2d(topazRendererAPI_t * api, void *d2, const top
     }
 }
 
+
+static void topaz_api_gl3__renderer_draw_3d(
+    topazRendererAPI_t * api, 
+    void * vertices,
+    topazArray_t * indices,
+
+    void * program,
+    void * material,
+
+    void * sampleFramebuffer,
+
+    void * sampleTexture0,
+    void * sampleTexture1,
+    void * sampleTexture2,
+
+    void * modelviewMatrix,
+    void * projectionMatrix,
+    const topazRenderer_Attributes_t * attribs
+) {
+    if (!program) {
+        #ifdef TOPAZDC_DEBUG
+            assert(!"Cannot render without a program.");
+        #endif
+        return;
+    }
+    
+    if (!(indices && topaz_array_get_size(indices))) {
+        return;
+    }
+
+    topaz_gl3_program_update_dynamic(
+        program,
+        material ? topaz_gl3_buffer_get_offline_ptr(material) : NULL,
+        modelviewMatrix ? topaz_gl3_buffer_get_offline_ptr(modelviewMatrix) : NULL,
+        projectionMatrix ? topaz_gl3_buffer_get_offline_ptr(projectionMatrix) : NULL
+    );
+    
+    if (sampleTexture0) {
+        topaz_gl3_program_bind_texture(
+            program,
+            0,
+            sampleTexture0
+        );
+    }
+    if (sampleTexture1) {
+        topaz_gl3_program_bind_texture(
+            program,
+            1,
+            sampleTexture1
+        );
+    }
+    if (sampleTexture2) {
+        topaz_gl3_program_bind_texture(
+            program,
+            2,
+            sampleTexture2
+        );
+    }
+    
+
+
+    topaz_gl3_start(api->implementationData);
+    topaz_gl3_commit_process_attribs(api->implementationData, attribs);
+    GLuint * ids = NULL;
+    if (sampleFramebuffer)
+        ids = topaz_gl3_fb_get_handle(sampleFramebuffer);
+    topaz_gl3_program_render(
+        program,
+        vertices,
+        ids ? ids[1] : NULL,
+        topaz_array_get_data(indices), 
+        topaz_array_get_size(indices)
+    );
+
+    topaz_gl3_end(api->implementationData);
+}
+
+
+
 static void topaz_api_gl3__clear_layer(topazRendererAPI_t* api, topazRenderer_DataLayer layer) {
     topaz_gl3_fb_clear_layer(
         topaz_gl3_get_target(api->implementationData),
@@ -77,8 +157,6 @@ static void topaz_api_gl3__clear_layer(topazRendererAPI_t* api, topazRenderer_Da
 topazRenderer_Parameters_t topaz_api_gl3__get_parameters(topazRendererAPI_t* nu) {
     static topazRenderer_Parameters_t p = {
         0, // variable,
-        0,
-        0,
         "GLSL",
     };
 
@@ -118,6 +196,45 @@ void * topaz_api_gl3__2d_create(topazRendererAPI_t * api) {
 void * topaz_api_gl3__framebuffer_create(topazRendererAPI_t * api, topazRenderer_FramebufferAPI_t * fb) {
     return topaz_gl3_fb_create();
 }
+
+
+
+ 
+
+static void * topaz_api_gl3__renderer_program_create(
+    topazRendererAPI_t * apiSrc,
+    const topazString_t * vtxSrc, 
+    const topazString_t * fragSrc, 
+    topazString_t * log
+) {
+    return topaz_gl3_program_create(
+        vtxSrc,
+        fragSrc,
+        log
+    );
+}
+static void * topaz_api_gl3__renderer_program_get_fallback(
+    topazRendererAPI_t * api
+) {
+    
+    return topaz_gl3_get_default_program(api);
+}
+
+static void topaz_api_gl3__renderer_program_destroy(
+    void * programData
+) {
+    
+}
+
+static topazRenderer_Buffer_t * topaz_api_gl3__renderer_program_get_global_buffer(
+    void * programData
+) {
+    return (topazRenderer_Buffer_t*)topaz_gl3_program_get_static_buffer(programData);
+}
+
+
+
+
 
 
 
@@ -277,23 +394,14 @@ void topaz_system_renderer_ogl3__backend(
 
 
     // missing
-    api->core.renderer_draw_3d = (void (*)(topazRendererAPI_t *, topazRenderer_3D_t *, const topazRenderer_ProcessAttribs_t *))api_nothing;
-    api->core.renderer_set_3d_viewing_matrix = (void (*)(topazRendererAPI_t *, void *))api_nothing;
-    api->core.renderer_set_3d_projection_matrix = (void (*)(topazRendererAPI_t *, void *))api_nothing;
+    api->core.renderer_draw_3d = topaz_api_gl3__renderer_draw_3d;
 
 
-    api->light.renderer_light_create = (void * (*)(topazRendererAPI_t *,  topazRenderer_LightType)) api_nothing;
-    api->light.renderer_light_destroy = (void (*)( void *)) api_nothing;
-    api->light.renderer_light_update_attribs = (void (*)(void *, float *)) api_nothing;
-    api->light.renderer_light_enable = (void (*)(void *,  int doIt )) api_nothing;
 
-    api->program.renderer_program_create = (void * (*)(topazRendererAPI_t *,
-                                                                        const topazString_t *, 
-                                                                        const topazString_t *, 
-                                                                        topazString_t *)) api_nothing;
-    api->program.renderer_program_get_preset = (void * (*)(topazRendererAPI_t *,
-                                                                        topazRenderer_PresetProgram)) api_nothing;
-    api->program.renderer_program_destroy = (void (*)(void *)) api_nothing;
+    api->program.renderer_program_create = topaz_api_gl3__renderer_program_create;
+    api->program.renderer_program_get_fallback = topaz_api_gl3__renderer_program_get_fallback;
+    api->program.renderer_program_destroy = topaz_api_gl3__renderer_program_destroy;
+    api->program.renderer_program_get_global_buffer = topaz_api_gl3__renderer_program_get_global_buffer;
 
 
 

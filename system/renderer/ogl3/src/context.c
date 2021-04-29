@@ -9,6 +9,8 @@ struct topazGL3_t {
     int lastAlphaRule;
     int lastEtchRule;
     int lastTextureFilter;
+    
+    topazGL3_Program_t * defaultProgram;
 };
 
 topazGL3_t * topaz_gl3_create() {
@@ -75,7 +77,7 @@ void topaz_gl3_sync(topazGL3_t * e) {
 
 void topaz_gl3_commit_process_attribs(
     topazGL3_t * p, 
-    const topazRenderer_ProcessAttribs_t * attribs
+    const topazRenderer_Attributes_t * attribs
 ) {
 
     // transparency control. Preserved until it changes
@@ -193,6 +195,36 @@ void topaz_gl3_commit_process_attribs(
 
 
 }
+
+
+
+topazGL3_Program_t * topaz_gl3_get_default_program(topazGL3_t * es) {
+    if (!es->defaultProgram) {
+        topazString_t * str = topaz_string_create();
+        topazGL3_Program_t * out = topaz_gl3_program_create(
+            TOPAZ_STR_CAST(
+                "void main() {\n"
+                "   topazSetPosition(topaz_mat_projection * (topaz_mat_modelview * (vec4(topaz_vertex_position, 1.0))));\n"
+                "}\n"   
+            ),
+            
+            TOPAZ_STR_CAST(
+                "void main() {\n"
+                "   topazSetOutput(vec4(1, 0, 1, 1));\n"
+                "}\n"               
+            ),
+            str
+        );
+        if (!out) {
+            printf("FATAL ERROR: built-in fallback program failed to compile: %s", topaz_string_get_c_str(str));
+            exit(99);
+        }
+        topaz_string_destroy(str);
+        es->defaultProgram = out;
+    }
+    return es->defaultProgram;
+}
+
 
 const char * topaz_gles_error_to_string(int e) {
     switch(e) {

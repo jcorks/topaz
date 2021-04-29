@@ -23,9 +23,12 @@ const char * topaz_gles_error_to_string(int);
 #include "texture.h"
 #include "framebuffer.h"
 #include "2d.h"
+#include "program.h"
 
 
 typedef struct topazGL3_t topazGL3_t;
+typedef struct topazGL3_Program_t topazGL3_Program_t;
+
 
 // creates a new es2 context
 topazGL3_t * topaz_gl3_create();
@@ -54,7 +57,7 @@ void topaz_gl3_end(topazGL3_t *);
 
 // Ensures that following rendering options adhere to the process 
 // attribs specified here.
-void topaz_gl3_commit_process_attribs(topazGL3_t *, const topazRenderer_ProcessAttribs_t *);
+void topaz_gl3_commit_process_attribs(topazGL3_t *, const topazRenderer_Attributes_t *);
 
 // glFinish()?
 void topaz_gl3_sync(topazGL3_t *);

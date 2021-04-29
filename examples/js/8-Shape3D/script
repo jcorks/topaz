@@ -19,6 +19,12 @@ material.setProgramSource(
     Topaz.Resources.loadAsset('',   'frag_es2.glsl',   'frag_es2.glsl').string
 );
 
+material.setProgramSource(
+    'GLSL',
+    Topaz.Resources.loadAsset('', 'vertex.glsl', 'vertex.glsl').string,             
+    Topaz.Resources.loadAsset('',   'frag.glsl',   'frag.glsl').string
+);
+
 
 
 var tex = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.IMAGE, 'testTex');

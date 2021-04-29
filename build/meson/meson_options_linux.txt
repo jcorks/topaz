@@ -22,6 +22,7 @@ option(
     value   : 'ogles2',
     choices : [
         'ogles2',
+        'ogl3',
         'noRenderer',
         'srgs',
     ]
@@ -35,9 +36,10 @@ option(
 
     value : 'ogles2',
     choices : [
+        'ogles2',
+        'ogl3',
         'noDisplay',
-        'ncurses',
-        'ogles2'
+        'ncurses'
     ]
 )
 
@@ -61,7 +63,7 @@ option(
     choices : [
         'noInputManager',
         'ncurses',
-	'glfw'
+        'glfw'
     ]
 )
 
