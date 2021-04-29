@@ -310,8 +310,9 @@ void topaz_system_renderer_ogl3__backend(
         #endif
         glfwMakeContextCurrent(context);
         glewExperimental = GL_TRUE;
+        int res = glewInit();
         #ifdef TOPAZDC_DEBUG
-            assert(glewInit() == GLEW_OK);
+            assert(res == GLEW_OK);
         #endif
         glGetError();
         #ifdef TOPAZDC_DEBUG
