@@ -309,15 +309,11 @@ void topaz_system_renderer_ogl3__backend(
             assert(context);
         #endif
         glfwMakeContextCurrent(context);
-        glewExperimental = GL_TRUE;
-        int res = glewInit();
+        int res = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         #ifdef TOPAZDC_DEBUG
-            assert(res == GLEW_OK);
+            assert(res == 1);
         #endif
         glGetError();
-        #ifdef TOPAZDC_DEBUG
-            assert(GLEW_VERSION_3_1);
-        #endif
 
         #ifdef TOPAZDC_DEBUG
             printf("CHOSEN ATTRIBS FOR GL:\n");

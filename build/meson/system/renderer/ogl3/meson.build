@@ -13,7 +13,8 @@ handlers += {
          'system/renderer/ogl3/src/texture.c',
          'system/renderer/ogl3/src/framebuffer.c',
          'system/renderer/ogl3/src/context.c',
-         'system/renderer/ogl3/src/program.c'
+         'system/renderer/ogl3/src/program.c',
+         'system/renderer/ogl3/src/glad.c'
     ],
     'shouldTest' : true,
     'dependencies' : [
@@ -24,11 +25,8 @@ handlers += {
         {
             'name'          : 'GL',
             'alternateName' : 'OpenGL'
-        },
-        {
-            'name'          : 'GLEW',
-            'alternateName' : 'glew'
-        },
+        }
+
 
 
 

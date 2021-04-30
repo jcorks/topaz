@@ -37,7 +37,7 @@ DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <topaz/backends/renderer.h>
 #include <topaz/system.h>
-#include <GL/glew.h>
+#include "glad.h"
 #include <GLFW/glfw3.h>
 
 #if _WIN64 || _WIN32

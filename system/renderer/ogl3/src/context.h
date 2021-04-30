@@ -1,7 +1,7 @@
 #ifndef H_TOPAZGL3_CONTEXT_INCLUDED
 #define H_TOPAZGL3_CONTEXT_INCLUDED
 
-#include <GL/glew.h>
+#include "glad.h"
 #include <GLFW/glfw3.h>
 
 
