@@ -79,6 +79,9 @@ if host_machine.system() == 'windows' or host_machine.system().contains('mingw')
     baselibs += cc.find_library('shlwapi')    
 endif
 
+if host_machine.system() == 'linux'
+    baselibs += cc.find_library('dl')    
+endif
 
 # compile args
 compile_args = []

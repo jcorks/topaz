@@ -249,7 +249,7 @@ static void topaz_duk_object_keep_reference(TOPAZDUK * ctx, TOPAZDUKObjectTag * 
         assert(duk_is_object(ctx->js, -1));
         assert(duk_put_prop_index(ctx->js, -2, tag->stashID));
     #else
-        duk_put_prop(ctx->js, -2);
+        duk_put_prop_index(ctx->js, -2, tag->stashID);
     #endif
     duk_pop(ctx->js);
 
