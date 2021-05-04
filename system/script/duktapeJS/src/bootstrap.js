@@ -2842,6 +2842,7 @@ Topaz.Package = (function(){
             Topaz.Resources.removeAsset(path);
         },
 
+
         // Adds all assets for the package from a package JSON string.
         readData : function(jsonStr) {
             try {
@@ -2957,6 +2958,23 @@ Topaz.Package = (function(){
                 }
             }
             return true;
+        },
+        
+        
+        // Convenience function. Given a path to a 
+        // directory:
+        // - read()s all packages within the directory. Looks for the suffix ".package.json"
+        // - calls resolveAll()
+        importPath : function(path) {
+            const obj = Topaz.Filesystem.getPathFromString(Topaz.Filesystem.getPathFromString(Topaz.Resources.path), path);
+            const children = obj.children;
+            for(var i = 0; i < children.length; ++i) {
+                const subpath = children[i].string;
+                if (subpath.indexOf('.package.json') != -1) {
+                    Topaz.Package.read(subpath);
+                }
+            }
+            Topaz.Package.resolveAll();
         },
 
 

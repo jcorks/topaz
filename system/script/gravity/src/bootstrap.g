@@ -2112,7 +2112,7 @@ class Topz {
         
         func getPathFromString(pth, str) {
             if (str == undefined) {
-                return Path_Definition(topaz_.topaz_filesystem__get_path_from_string(str));
+                return Path_Definition(topaz_.topaz_filesystem__get_path_from_string(pth));
             } else {
                 return Path_Definition(topaz_.topaz_filesystem__get_path_from_string(pth.impl, str));        
             }
@@ -2931,6 +2931,19 @@ class Topz {
                 }
             }
             return true;
+        }
+        
+        func importPath(path) {
+            var obj = Topaz.Filesystem.getPathFromString(Topaz.Filesystem.getPathFromString(Topaz.Resources.path), path);
+            var children = obj.children;
+            for(var i in 0..<children.count) {
+                var subpath = children[i].string;
+                var iof = subpath.index(".package.json");
+                if (iof != null) {
+                    Topaz.Package.read(subpath);
+                }
+            }
+            Topaz.Package.resolveAll();
         }
 
 
