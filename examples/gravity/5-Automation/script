@@ -23,7 +23,7 @@ class Rectangle : Entity {
         addComponent(anim);
         anim.installHook('on-anim-end', func(){Topaz.log('Animation reset!')});
         anim.durationSeconds = 4;
-        anim.looped = false;
+        anim.looped = true;
 
 
 

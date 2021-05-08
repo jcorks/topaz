@@ -287,6 +287,7 @@ topazComponent_t * topaz_automation_create(
     data->currentKeyframe = 0;
     data->animStr = topaz_string_create();
     data->speed = 1.0;
+    data->lastFrame = topaz_context_get_time(context);
     
     // create base component and assign attribs
     topazComponent_Attributes_t attribs;
@@ -493,6 +494,7 @@ void topaz_automation_skip_to(
     TopazAutomation * a = automation__retrieve(automation);
     float length = topaz_automation_get_length(automation);
     uint32_t len = topaz_array_get_size(a->keyframes);
+    if (!len) return;
     TAKeyframe * frames = topaz_array_get_data(a->keyframes);
     value = fmod(value, length);
 
@@ -546,7 +548,7 @@ void topaz_automation_set_looped(
     int loop
 ) {
     TopazAutomation * a = automation__retrieve(automation);
-    a->looped = 1;
+    a->looped = loop;
 }
 
 int topaz_automation_get_looped(

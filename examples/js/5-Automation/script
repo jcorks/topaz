@@ -38,7 +38,7 @@ var Rectangle = {
             Topaz.log('Animation reset!');
         });
         props.anim.durationSeconds = 4;
-        props.anim.looped = false;
+        props.anim.looped = true;
         props.entity.addComponent(props.anim);
 
 

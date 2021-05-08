@@ -939,7 +939,7 @@ var Topaz = {
             var keys = Object.keys(this.events);
             for(var i = 0; i < keys.length; ++i) {
                 topaz_component__install_event(
-                    impl, 
+                    this.impl, 
                     keys[i],
                     (function(fn){ // proper reference capture
                         return function(c) {
@@ -1255,7 +1255,7 @@ var Topaz = {
                     const len = topaz_entity__get_component_count(this.impl);
                     var out = [];
                     for(var i = 0; i < len; ++i) {
-                        var f = topaz_entity__get_nth_component(this.impl, index);
+                        var f = topaz_entity__get_nth_component(this.impl, i);
                         if (f.__ctx) {
                             out.push(f.__ctx);
                         } else { 
@@ -1266,7 +1266,7 @@ var Topaz = {
                 },
                 set : function(c) {
                     while(topaz_entity__get_component_count(this.impl)) {
-                        topaz_entity__remove_component(topaz_component__get_tag(topaz_entity__get_nth_component(this.impl, 0)));
+                        topaz_entity__remove_component(this.impl, topaz_entity__get_nth_component(this.impl, 0));
                     }
     
                     for(var i = 0; i < c.length; ++i) {
@@ -1374,7 +1374,7 @@ var Topaz = {
     }
 
     Topaz.Automation.prototype.addVectorKeyframe = function(value, fn, offset) {
-        topaz_automation__add_vector_keyframe(this.impl, value, fn, offset);
+        topaz_automation__add_vector_keyframe(this.impl, value.impl, fn, offset);
     }
 
     Topaz.Automation.prototype.clear = function() {

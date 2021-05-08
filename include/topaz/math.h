@@ -48,13 +48,13 @@ typedef struct topazMath_t topazMath_t;
 /// subdiv.
 #define topaz_math_snap(__VAL__,__SUBDIV__) (round((__VAL__) / __SUBDIV__) * __SUBDIV__)
 
-/// Converts input radians to degrees.
-///
-#define topaz_math_to_degrees(__VAL__) ((__VAL__) * topaz_math_pi / 180.f)
-
 /// Converts input degrees to radians
 ///
-#define topaz_math_to_radians(__VAL__) ((__VAL__) * 180.f / topaz_math_pi)
+#define topaz_math_to_radians(__VAL__) ((__VAL__) * topaz_math_pi / 180.f)
+
+/// Converts input radians to degrees.
+///
+#define topaz_math_to_degrees(__VAL__) ((__VAL__) * 180.f / topaz_math_pi)
 
 /// Returns whether the given topazVector_t, pos, is within a box formed 
 /// by the topazVector_t boxorigin as the topleft and w/h as the width/height
