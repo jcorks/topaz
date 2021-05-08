@@ -72,29 +72,29 @@ class RectangleLinear : Rectangle {
     }
 }
 
-class RectangleSquare : Rectangle {
+class RectangleAccel : Rectangle {
     func onReady() {
         // initialize Rectangle
         super.onReady();
 
         visual.color = Topaz.Color("blue");
         anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE,   0);
-        anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.SQUARE, 0.5);
-        anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE, 1);
+        anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.ACCEL, 0.5);
+        anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.ACCEL, 1);
 
         position = Topaz.Vector(100, 100);
     }
 }
 
-class RectangleRoot : Rectangle {
+class RectangleSlow : Rectangle {
     func onReady() {
         // initialize Rectangle
         super.onReady();
 
         visual.color = Topaz.Color("red");
         anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE,       0);
-        anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
-        anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
+        anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.SLOW, 0.5);
+        anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SLOW, 1);
         position = Topaz.Vector(100, 100);
     }
 }
@@ -110,10 +110,10 @@ func main() {
     var child1 = RectangleLinear();
     child1.position = Topaz.Vector(100, 100);
 
-    var child2 = RectangleSquare();
+    var child2 = RectangleSlow();
     child2.position = Topaz.Vector(100, 200);
 
-    var child3 = RectangleRoot();
+    var child3 = RectangleAccel();
     child3.position = Topaz.Vector(100, 300);
 
     Topaz.root = entity;

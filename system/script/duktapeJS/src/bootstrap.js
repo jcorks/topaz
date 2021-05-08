@@ -275,10 +275,10 @@ const TOPAZ = {
         FUNCTION : {
             NONE : 0,
             LINEAR : 1,
-            SQUARE : 2,
-            CUBE : 3,
-            SQUARE_ROOT : 4,
-            CUBE_ROOT : 5,
+            ACCEL : 2,
+            SLOW : 3,
+            SOFT_ACCEL : 4,
+            SOFT_SLOW : 5,
             RANDOM : 6    
         }      
     },

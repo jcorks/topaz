@@ -93,7 +93,14 @@ typedef struct {
     #endif
 } TopazAutomation;
 #include <stdio.h>
+
+static float bezier(float t, float from, float to, float mid) {
+    return (1 - t)*(1 - t)*from + 2*(1-t) * t * mid + t*t*to;
+}
+
 static topazVector_t anim_interpolate(float at, topazAutomation_Function func, topazVector_t from, topazVector_t to) {
+    if (at <= 0.0) return from;
+    if (at >= 1.0) return to;
     topazVector_t out;
     float f;
     switch(func) {
@@ -107,32 +114,28 @@ static topazVector_t anim_interpolate(float at, topazAutomation_Function func, t
         out.z = at*to.z + f*from.z;
         return out;
 
-      case topazAutomation_Function_Square:
-        f = at*at;
-        out.x = f*to.x + (1-f)*from.x;
-        out.y = f*to.y + (1-f)*from.y;
-        out.z = f*to.z + (1-f)*from.z;
+      case topazAutomation_Function_Slow:
+        out.x = bezier(at, from.x, to.x, to.x);
+        out.y = bezier(at, from.y, to.y, to.y);
+        out.z = bezier(at, from.z, to.z, to.z);
         return out;
 
-      case topazAutomation_Function_Cube:
-        f = at*at*at;
-        out.x = f*to.x + (1-f)*from.x;
-        out.y = f*to.y + (1-f)*from.y;
-        out.z = f*to.z + (1-f)*from.z;
+      case topazAutomation_Function_Accel:
+        out.x = bezier(at, from.x, to.x, from.x);
+        out.y = bezier(at, from.y, to.y, from.y);
+        out.z = bezier(at, from.z, to.z, from.z);
         return out;
 
-      case topazAutomation_Function_SquareRoot:
-        f = sqrt(at);
-        out.x = f*to.x + (1-f)*from.x;
-        out.y = f*to.y + (1-f)*from.y;
-        out.z = f*to.z + (1-f)*from.z;
+      case topazAutomation_Function_SoftSlow:
+        out.x = bezier(at, from.x, to.x, from.x + (to.x - from.x)*0.70);
+        out.y = bezier(at, from.y, to.y, from.y + (to.y - from.y)*0.70);
+        out.z = bezier(at, from.z, to.z, from.z + (to.z - from.z)*0.70);
         return out;
 
-      case topazAutomation_Function_CubeRoot:
-        f = pow(at, 1/3.0);
-        out.x = f*to.x + (1-f)*from.x;
-        out.y = f*to.y + (1-f)*from.y;
-        out.z = f*to.z + (1-f)*from.z;
+      case topazAutomation_Function_SoftAccel:
+        out.x = bezier(at, from.x, to.x, from.x + (to.x - from.x)*0.3);
+        out.y = bezier(at, from.y, to.y, from.y + (to.y - from.y)*0.3);
+        out.z = bezier(at, from.z, to.z, from.z + (to.z - from.z)*0.3);
         return out;
 
 
@@ -168,7 +171,7 @@ static topazVector_t animate_at(float at, TAKeyframe * frames, uint32_t len) {
             );
         }
     }
-    return frames->value;
+    return frames[len-1].value;
 }
 
 static TopazAutomation * automation__retrieve(topazComponent_t * c) {
@@ -386,7 +389,7 @@ void topaz_automation_blend(
     TopazAutomation * aOther = automation__retrieve(other);
 
 
-    uint32_t i, n;
+    uint32_t i = 0, n = 0;
     uint32_t aLen = topaz_array_get_size(a->keyframes);
     uint32_t otherLen = topaz_array_get_size(aOther->keyframes);
 

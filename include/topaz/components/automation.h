@@ -38,15 +38,28 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-typedef enum topazAutomation_Function topazAutomation_Function;
 
+
+/// Enumerator for the different available automation 
+/// functions. Every automation can have functions associated with it
+/// that describe how values change over time. These primitive 
+/// functions can be string together to make virtually any 
+/// value description.
+typedef enum topazAutomation_Function topazAutomation_Function;
 enum topazAutomation_Function {
+    /// The value instantaneously becomes the end value.
     topazAutomation_Function_None,
+    /// The value linearly becomes the end value.
     topazAutomation_Function_Linear,
-    topazAutomation_Function_Square,
-    topazAutomation_Function_Cube,
-    topazAutomation_Function_SquareRoot,
-    topazAutomation_Function_CubeRoot,
+    /// The value follows a bezier curve, where the value starts slow then accelerates to the end value.
+    topazAutomation_Function_Accel,
+    /// The value follows a bezier curve, where the value starts quickly then slows.
+    topazAutomation_Function_Slow,
+    /// The value follows a bezier curve, where the value starts slow then accelerates to the end value, but more mildly.
+    topazAutomation_Function_SoftAccel,
+    /// The value follows a bezier curve, where the value starts quickly then slows, but more mildly.
+    topazAutomation_Function_SoftSlow,
+    /// The value becomes any value between begin and end when it is re-sampled.
     topazAutomation_Function_Random
 };
 

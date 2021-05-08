@@ -66,27 +66,27 @@ var RectangleLinear = {
     }
 };
 
-var RectangleSquare = {
+var RectangleAccel = {
     inherits : Rectangle,
     props : {},
     onReady : function(props) {
         props.visual.color = new Topaz.Color('blue');
         props.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE,   0);
-        props.anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.SQUARE, 0.5);
-        props.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE, 1);
+        props.anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.ACCEL, 0.5);
+        props.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.ACCEL, 1);
 
         props.entity.position = new Topaz.Vector(100, 200);
     }
 };
 
-var RectangleRoot = {
+var RectangleSlow = {
     inherits : Rectangle,
     props : {},
     onReady : function(props) {
         props.visual.color = new Topaz.Color('red');
         props.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE,       0);
-        props.anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
-        props.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
+        props.anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.SLOW, 0.5);
+        props.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SLOW, 1);
 
 
         props.entity.position = new Topaz.Vector(100, 300);
@@ -98,8 +98,8 @@ var RectangleRoot = {
 (function(){
     const root = new Topaz.Entity();
     root.attach(new Topaz.Entity(RectangleLinear));
-    root.attach(new Topaz.Entity(RectangleSquare));
-    root.attach(new Topaz.Entity(RectangleRoot));
+    root.attach(new Topaz.Entity(RectangleAccel));
+    root.attach(new Topaz.Entity(RectangleSlow));
 
     Topaz.root = root;
 })();
