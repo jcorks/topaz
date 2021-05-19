@@ -106,6 +106,7 @@ typedef enum {
     TSO_OBJECT_ID__MATERIAL,
     TSO_OBJECT_ID__MESH,
     TSO_OBJECT_ID__SHAPE3D,
+    TSO_OBJECT_ID__RNG,
 
     /// All types are above and including the 25th bit .
     /// Below the 25th bit are specific instances

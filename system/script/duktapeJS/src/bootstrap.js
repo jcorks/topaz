@@ -444,6 +444,11 @@ var Topaz = {
 
         
     },
+    RNG : function(str) {
+        var impl = topaz_rng__create(str);
+        this.impl = impl;
+        impl.__ctx = this;
+    },
     ViewManager : {
 
     },
@@ -1759,7 +1764,33 @@ var Topaz = {
 
     
 
+    /// RNG 
+    Object.defineProperty(
+        Topaz.RNG.prototype,
+        'seed', {
+            set : function(s) {
+                topaz_rng__set_seed(this.impl, s);
+            }
+        }
+    );
 
+    Object.defineProperty(
+        Topaz.RNG.prototype,
+        'integer', {
+            get : function(s) {
+                return topaz_rng__next_int(this.impl);
+            }
+        }
+    );
+
+    Object.defineProperty(
+        Topaz.RNG.prototype,
+        'value', {
+            get : function(s) {
+                return topaz_rng__next_value(this.impl);
+            }
+        }
+    );
 
 
 

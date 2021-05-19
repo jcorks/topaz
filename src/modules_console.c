@@ -479,7 +479,7 @@ TOPAZCCOMMAND(command__default_dbg) {
 
     } else { // else eval
         topazString_t * eval = topaz_string_create();
-        topazString_t * realCommand = trim_command(fullCommand);
+        topazString_t * realCommand = topaz_string_clone(fullCommand);
         topaz_string_concat_printf(eval, "%d:", console->debugLevel);
         topaz_string_concat(eval, realCommand);
         topaz_string_destroy(realCommand);

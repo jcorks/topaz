@@ -297,7 +297,7 @@ TSO_SCRIPT_API_FN(component_api__install_event) {
 
     topaz_component_install_hook(
         native, 
-        TOPAZ_STR_CAST("on-detach"), 
+        TOPAZ_STR_CAST("on-destroy"), 
         component_api_callback_cleanup, 
         data
     );
@@ -345,7 +345,7 @@ TSO_SCRIPT_API_FN(component_api__install_hook) {
 
     topaz_component_install_hook(
         native, 
-        TOPAZ_STR_CAST("on-detach"), 
+        TOPAZ_STR_CAST("on-destroy"), 
         component_api_callback_cleanup, 
         data
     );
@@ -399,7 +399,7 @@ TSO_SCRIPT_API_FN(component_api__install_handler) {
 
     topaz_component_install_hook(
         native, 
-        TOPAZ_STR_CAST("on-detach"), 
+        TOPAZ_STR_CAST("on-destroy"), 
         component_api_callback_cleanup, 
         data
     );

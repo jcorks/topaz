@@ -107,6 +107,7 @@ topazComponent_t * topaz_component_create_with_attributes(const topazString_t * 
     
     topaz_component_install_event(out, TOPAZ_STR_CAST("on-attach"), NULL, NULL);
     topaz_component_install_event(out, TOPAZ_STR_CAST("on-detach"), NULL, NULL);
+    topaz_component_install_event(out, TOPAZ_STR_CAST("on-destroy"), NULL, NULL);
     return out;
 
 }
@@ -137,6 +138,7 @@ topazComponent_t * topaz_component_null() {
 
 void topaz_component_destroy(topazComponent_t * c) {
     if (!c->valid) return;
+    topaz_component_emit_event_anonymous(c, TOPAZ_STR_CAST("on-destroy"));
     if (topaz_entity_is_valid(c->host)) {
         topaz_component_detach(c);
     }    
