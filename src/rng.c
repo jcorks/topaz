@@ -140,6 +140,7 @@ void topaz_rng_set_seed(topazRNG_t * t, uint64_t d) {
     for(i = 0; i < sizeof(uint64_t); ++i) {
         t->state[i%TT800_SEED_COUNT] += src[i%TT800_SEED_COUNT];
     }
+    t->index = 0;
 }
 
 

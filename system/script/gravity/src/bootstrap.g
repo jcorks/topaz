@@ -1111,6 +1111,39 @@ class Topz {
 
     }
     var Vector;
+    
+    
+    
+    class RNG_Definition {
+        // effectively private.
+        var impl;
+
+        func init(x_) {
+            impl = topaz_.topaz_rng__create();
+            if (x_ is String) {
+                impl = topaz_.topaz_rng__set_seed(impl, x_);                    
+            }
+        }    
+
+
+
+
+        
+        var seed {
+            set {topaz_.topaz_rng__set_seed(impl, value);}
+        }
+        
+        var integer {
+            get {return topaz_.topaz_rng__next_int(impl);}
+        }
+
+        var value {
+            get {return topaz_.topaz_rng__next_value(impl);}
+        }
+
+
+    }
+    var RNG;
 
     class Particle_Definition {
         var impl;
@@ -3103,6 +3136,7 @@ class Topz {
 
         // classes 
         Vector = Vector_Definition;
+        RNG = RNG_Definition;
         Color = Color_Definition;
         Asset = Asset_Definition;
         Data = Data_Definition;

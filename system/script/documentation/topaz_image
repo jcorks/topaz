@@ -16,7 +16,7 @@ Int height
 
 /// Returns the number of frames within the image.
 /// Read-only.
-int frameCount
+Int frameCount
 
 
 /// Resizes the image to a new width and height.
