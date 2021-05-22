@@ -1650,11 +1650,11 @@ var Topaz = {
     }
 
     Topaz.Shape2D.prototype.formImage = function(a) {
-        topaz_shape2d__form_image(this.impl, a);
+        topaz_shape2d__form_image(this.impl, a.impl);
     }
 
     Topaz.Shape2D.prototype.formImageScaled = function(a, b, c) {
-        topaz_shape2d__form_image(this.impl, a, b, c);
+        topaz_shape2d__form_image(this.impl, a.impl, b, c);
     }
 
     Topaz.Shape2D.prototype.formRadial = function(a, b) {

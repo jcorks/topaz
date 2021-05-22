@@ -25,3 +25,11 @@ Int height
 /// The default is true. This does not affect the retrieval of raw data through capturing.
 ///
 Boolean filteredHint
+
+
+/// Changes the size of the framebuffer manually.
+func resize ->
+    // New width for the framebuffer 
+    Int width 
+    // New height for the framebuffer
+    Int height
