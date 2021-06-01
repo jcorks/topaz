@@ -41,6 +41,8 @@ struct topazGL3_Program_t {
     // 9 vectors
     GLint locationGlobalUniform_Material;    
 
+    // vertex array object
+    GLuint vao;
 
     topazGL3_Buffer_t * globalBuffer;
 
@@ -272,11 +274,22 @@ topazGL3_Program_t * topaz_gl3_program_create(
 
     out->locationGlobalUniform_Material = glGetUniformLocation(out->program, "_topaz_material");TOPAZ_GLES_CALL_CHECK;
 
+    glGenVertexArrays(1, &out->vao);
+    glBindVertexArray(out->vao);
+
     out->locationVBOpos      = glGetAttribLocation(out->program, "topaz_vertex_position");TOPAZ_GLES_CALL_CHECK;
     out->locationVBOnormal   = glGetAttribLocation(out->program, "topaz_vertex_normal");TOPAZ_GLES_CALL_CHECK;
     out->locationVBOuv       = glGetAttribLocation(out->program, "topaz_vertex_uv");TOPAZ_GLES_CALL_CHECK;
     out->locationVBOdata     = glGetAttribLocation(out->program, "topaz_vertex_userdata");TOPAZ_GLES_CALL_CHECK;
 
+
+    if (out->locationVBOpos > -1)    glEnableVertexAttribArray(out->locationVBOpos);TOPAZ_GLES_CALL_CHECK;
+    if (out->locationVBOnormal > -1) glEnableVertexAttribArray(out->locationVBOnormal);TOPAZ_GLES_CALL_CHECK;
+    if (out->locationVBOuv > -1)     glEnableVertexAttribArray(out->locationVBOuv);TOPAZ_GLES_CALL_CHECK;
+    if (out->locationVBOdata > -1)   glEnableVertexAttribArray(out->locationVBOdata);TOPAZ_GLES_CALL_CHECK;
+
+
+    glBindVertexArray(0);
 
 
     glUseProgram(out->program);TOPAZ_GLES_CALL_CHECK;
@@ -532,12 +545,8 @@ void topaz_gl3_program_render(
         glUniform1i(p->locationFragmentUniform_TextureSampler_FB, 3);
     }
 
-
-    if (p->locationVBOpos > -1)    glEnableVertexAttribArray(p->locationVBOpos);TOPAZ_GLES_CALL_CHECK;
-    if (p->locationVBOnormal > -1) glEnableVertexAttribArray(p->locationVBOnormal);TOPAZ_GLES_CALL_CHECK;
-    if (p->locationVBOuv > -1)     glEnableVertexAttribArray(p->locationVBOuv);TOPAZ_GLES_CALL_CHECK;
-    if (p->locationVBOdata > -1)   glEnableVertexAttribArray(p->locationVBOdata);TOPAZ_GLES_CALL_CHECK;
-
+    
+    glBindVertexArray(p->vao);
     glBindBuffer(GL_ARRAY_BUFFER, topaz_gl3_buffer_get_buffer_id(vertexBuffer));TOPAZ_GLES_CALL_CHECK;
 
     if (p->locationVBOpos > -1)    glVertexAttribPointer(p->locationVBOpos,      3, GL_FLOAT, GL_FALSE, sizeof(float)*12, 0);TOPAZ_GLES_CALL_CHECK;
@@ -545,16 +554,10 @@ void topaz_gl3_program_render(
     if (p->locationVBOuv > -1)     glVertexAttribPointer(p->locationVBOuv,       2, GL_FLOAT, GL_FALSE, sizeof(float)*12, (void*)(sizeof(float)*6));TOPAZ_GLES_CALL_CHECK;
     if (p->locationVBOdata > -1)   glVertexAttribPointer(p->locationVBOdata,     4, GL_FLOAT, GL_FALSE, sizeof(float)*12, (void*)(sizeof(float)*8));TOPAZ_GLES_CALL_CHECK;
 
-
-
     glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, indices);TOPAZ_GLES_CALL_CHECK;
 
 
-    if (p->locationVBOpos > -1)    glDisableVertexAttribArray(p->locationVBOpos);TOPAZ_GLES_CALL_CHECK;
-    if (p->locationVBOnormal > -1) glDisableVertexAttribArray(p->locationVBOnormal);TOPAZ_GLES_CALL_CHECK;
-    if (p->locationVBOuv > -1)     glDisableVertexAttribArray(p->locationVBOuv);TOPAZ_GLES_CALL_CHECK;
-    if (p->locationVBOdata > -1)   glDisableVertexAttribArray(p->locationVBOdata);TOPAZ_GLES_CALL_CHECK;
-
+    glBindVertexArray(0);
     glUseProgram(0);TOPAZ_GLES_CALL_CHECK;
 
 

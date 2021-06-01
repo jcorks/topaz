@@ -64,7 +64,7 @@ const Example3D = function() {
         
         
         onStep : function(ent) {
-            stepper += 0.0001;
+            stepper += 0.1;
             ent.rotation = new Topaz.Vector(
                 stepper, 
                 stepper*3, 
