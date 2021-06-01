@@ -608,6 +608,10 @@ var Topaz = {
             return Topaz.Resources._rawAssetToInstance(topaz_resources__fetch_asset(type, name));
         },
 
+        createAsset : function(type) {
+            return Topaz.Resources._rawAssetToInstance(topaz_resources__create_asset(type));
+        },
+
         loadAsset : function(ext, path, name) {
             return Topaz.Resources._rawAssetToInstance(topaz_resources__load_asset(ext, path, name));
         },
@@ -921,41 +925,42 @@ var Topaz = {
         }
 
         // sets onStep, onDraw, etc.
-        obj.define = function(props) {
-            this.props = {};
+        obj.define = function(propsSrc) {
+            const props = propsSrc ? propsSrc() : {};
+
             var keys = Object.keys(props.props);
             for(var i = 0; i < keys.length; ++i) {
-                this.props[keys[i]] = props.props[keys[i]];
+                this[keys[i]] = props.props[keys[i]];
             }
-            this.events = props.events;
-            if (!this.events) this.events = {};
-            
+
+            var events = props.events;
+            if (!events) events = {};
+                        
 
 
-            this.props.component = this;
             this.tag = props.tag;
-            this.impl.onStep = props.onStep ? function(e){props.onStep(e.__ctx.props);} : undefined;
-            this.impl.onDraw = props.onDraw ? function(e){props.onDraw(e.__ctx.props);} : undefined;
-            this.impl.onAttach = props.onAttach ? function(e){props.onAttach(e.__ctx.props);} : undefined;
-            this.impl.onDetach = props.onDetach ? function(e){props.onDetach(e.__ctx.props);} : undefined;
-            this.impl.onDestroy = props.onDestroy ? function(e){props.onDestroy(e.__ctx.props);} : undefined;
+            this.impl.onStep = props.onStep ? function(e){props.onStep(e.__ctx);} : undefined;
+            this.impl.onDraw = props.onDraw ? function(e){props.onDraw(e.__ctx);} : undefined;
+            this.impl.onAttach = props.onAttach ? function(e){props.onAttach(e.__ctx);} : undefined;
+            this.impl.onDetach = props.onDetach ? function(e){props.onDetach(e.__ctx);} : undefined;
+            this.impl.onDestroy = props.onDestroy ? function(e){props.onDestroy(e.__ctx);} : undefined;
 
-            
-            var keys = Object.keys(this.events);
+            const self = this;            
+            var keys = Object.keys(events);
             for(var i = 0; i < keys.length; ++i) {
                 topaz_component__install_event(
                     this.impl, 
                     keys[i],
                     (function(fn){ // proper reference capture
                         return function(c) {
-                            fn(this.props);
+                            fn(self);
                         }
-                    })(this.events[keys[i]])
+                    })(events[keys[i]])
                 );
             }
 
             if (props.onReady) {
-                props.onReady(this.props);
+                props.onReady(this);
             }
         }
 
@@ -1138,33 +1143,32 @@ var Topaz = {
             topaz_entity__set_priority_first(this.impl);
         }
     
-        obj.define = function(props, prevProps) {
-    
-            this.props = prevProps == undefined ? {} : prevProps;
+        obj.define = function(pSrc) {
+            const props = pSrc();
+
             // REALLY simple inheritence
             if (props.inherits) {
-                this.define(props.inherits, this.props);
+                this.define(props.inherits);
             }
+            
     
             // todo: shallow copy
             if (props.props) {
                 var keys = Object.keys(props.props);
                 for(var i = 0; i < keys.length; ++i) {
-                    this.props[keys[i]] = props.props[keys[i]];
+                    this[keys[i]] = props.props[keys[i]];
                 }
             }
-    
-            this.props.entity = this;
             this.name = props.name;
-            if (props.onStep) topaz_entity__set_on_step(this.impl, function(e){props.onStep(e.__ctx.props)});
-            if (props.onDraw) topaz_entity__set_on_draw(this.impl, function(e){props.onDraw(e.__ctx.props)});
-            if (props.onPreStep) topaz_entity__set_on_pre_step(this.impl, function(e){props.onPreStep(e.__ctx.props)});
-            if (props.onPreDraw) topaz_entity__set_on_pre_draw(this.impl, function(e){props.onPreDraw(e.__ctx.props)});
-            if (props.onAttach) topaz_entity__set_on_attach(this.impl, function(e){props.onAttach(e.__ctx.props)});
-            if (props.onDetach) topaz_entity__set_on_detach(this.impl, function(e){props.onDetach(e.__ctx.props)});
-            if (props.onRemove) topaz_entity__set_on_remove(this.impl, function(e){props.onRemove(e.__ctx.props)});
+            if (props.onStep) topaz_entity__set_on_step(this.impl, function(e){props.onStep(e.__ctx)});
+            if (props.onDraw) topaz_entity__set_on_draw(this.impl, function(e){props.onDraw(e.__ctx)});
+            if (props.onPreStep) topaz_entity__set_on_pre_step(this.impl, function(e){props.onPreStep(e.__ctx)});
+            if (props.onPreDraw) topaz_entity__set_on_pre_draw(this.impl, function(e){props.onPreDraw(e.__ctx)});
+            if (props.onAttach) topaz_entity__set_on_attach(this.impl, function(e){props.onAttach(e.__ctx)});
+            if (props.onDetach) topaz_entity__set_on_detach(this.impl, function(e){props.onDetach(e.__ctx)});
+            if (props.onRemove) topaz_entity__set_on_remove(this.impl, function(e){props.onRemove(e.__ctx)});
             if (props.onReady) {
-                props.onReady(this.props);
+                props.onReady(this);
             }
         }
     
@@ -2683,19 +2687,20 @@ Object.defineProperty(Topaz.Resources, 'path', {
 
 
 Topaz.attachPreManager(
-    new Topaz.Entity({
-        name : 'TOPAZEntityCleaner',
-        onStep : function() {
-            const pool = Topaz.deadEntityPool;
-            if (pool.length) {
-                for(var i = 0; i < pool.length; ++i) {
-                    if (pool[i].impl) {
-                        pool[i].impl.__ctx.props = undefined;
-                        pool[i].impl.__ctx = undefined;
-                        pool[i].impl = undefined;
+    new Topaz.Entity(function(){
+        return {
+            name : 'TOPAZEntityCleaner',
+            onStep : function() {
+                const pool = Topaz.deadEntityPool;
+                if (pool.length) {
+                    for(var i = 0; i < pool.length; ++i) {
+                        if (pool[i].impl) {
+                            pool[i].impl.__ctx = undefined;
+                            pool[i].impl = undefined;
+                        }
                     }
+                    Topaz.deadEntityPool = [];
                 }
-                Topaz.deadEntityPool = [];
             }
         }
     })

@@ -184,6 +184,16 @@ int topaz_resources_write_asset(
 );
 
 
+/// Creates a new asset with an auto-generated name.
+/// The name will be registered with the resources instance and 
+/// can be used to refer to the asset.
+topazAsset_t * topaz_resources_create_asset(
+    /// The resource instance to fetch with/
+    topazResources_t * res,
+    /// The asset type.
+    topazAsset_Type type
+);
+
 /// Either creates a new asset if the given name doesn't exist, or 
 /// returns an existing asset.
 /// In the case that a new asset needs to be created, 

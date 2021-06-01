@@ -91,7 +91,7 @@ int topaz_image_get_width(const topazAsset_t *);
 int topaz_image_get_height(const topazAsset_t *);
 
 /// Resets the width/height of the image.
-/// Afterwhich, the contents of al frames are undefined
+/// Afterwhich, the contents of all frames are undefined
 ///
 void topaz_image_resize(
     /// The image to modify.
@@ -100,6 +100,71 @@ void topaz_image_resize(
     int width,
     /// The new height of the image.
     int height
+);
+
+
+/// Different events for textures.
+typedef enum topazImage_TextureEvent topazImage_TextureEvent;
+
+enum topazImage_TextureEvent {
+
+    /// This callback is called BEFORE texture is removed.
+    topazImage_TextureEvent_Removed,
+
+    /// This callback is valled when refetching the frame's texture 
+    /// will yield a different texture object.
+    topazImage_TextureEvent_Changed
+
+
+
+};
+
+/// Callback set with topaz_image_add_texture_event_notify().
+typedef void (*topaz_image_texture_event_callback)(
+    /// The image whose texture is getting removed.
+    topazAsset_t * image,
+    /// The frame of the texture getting removed.
+    int frame,
+    /// The event for the texture,
+    topazImage_TextureEvent event,
+    /// The associated data.
+    void * data
+);
+
+/// Adds a callback to be run when the internal topazTexture_t of 
+/// a frame is removed and should no longer be used. 
+/// This can happen for actions such as:
+/// - image resizing
+/// - frame removal
+/// - texture replacement
+///
+/// This is mostly used within topaz itself to make sure that 
+/// things using topazImage_t instances can efficiently know 
+/// when to stop using a texture and when to refetch a texture.
+///
+/// A unique ID to the notification is returned. This can 
+/// be used to remove the callback.
+uint32_t topaz_image_add_texture_event_notify(
+    /// The image to return.
+    topazAsset_t * image,
+
+    /// The callback to be called when the image resizes.
+    topaz_image_texture_event_callback callback,
+
+    /// The data to associate with the callback.
+    void * data
+);
+
+
+/// Removes a texture event notify callback.
+///
+void topaz_image_remove_texture_event_notify(
+    /// The image to remove a notify from.
+    topazAsset_t * image,
+
+    /// The callback to remove.
+    uint32_t callbackID
+    
 );
 
 

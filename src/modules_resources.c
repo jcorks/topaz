@@ -263,6 +263,26 @@ int topaz_resources_write_asset(
     return success;
 }
 
+topazAsset_t * topaz_resources_create_asset(
+    topazResources_t * r,
+    topazAsset_Type type
+) {
+    static int ref = 0;
+    topazString_t * name = topaz_string_create_from_c_str(
+        "$TOPAZASSET_%d", ref++
+    );
+    // failsafe
+    while (topaz_table_find(r->name2asset, name)) {
+        topaz_string_concat_printf(name, "%d", rand());
+    }
+    topazAsset_t * out = topaz_resources_fetch_asset(
+        r,
+        type,
+        name
+    );
+    topaz_string_destroy(name);
+    return out;
+}
 
 
 topazAsset_t * topaz_resources_fetch_asset(

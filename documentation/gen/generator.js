@@ -22,7 +22,7 @@ var generateDocumentation = function(
 
     }
 
-    gendoc = (function(){
+    var gendoc = (function(){
         const header = Topaz.Resources.loadAsset('txt', 'html_header', 'html_header').string;
         const footer = Topaz.Resources.loadAsset('txt', 'html_footer', 'html_footer').string;
 

@@ -1426,7 +1426,39 @@ class Topz {
             }
             return null;
         }
+        func createAsset(a) {
+            var impl = topaz_.topaz_resources__create_asset(a);
+            var out;
+            if (!impl) return null;
+            switch(topaz_.topaz_asset__get_type(impl)) {
+            case TOPAZ.ASSET.TYPE.MESH:
+                out = Topaz.Mesh();
+                out.impl = impl;
+                return out;
+                
+            case TOPAZ.ASSET.TYPE.MATERIAL:
+                out = Topaz.Material();
+                out.impl = impl;
+                return out;
 
+            case TOPAZ.ASSET.TYPE.DATA:
+                out = Topaz.Data();
+                out.impl = impl;
+                return out;
+
+            case TOPAZ.ASSET.TYPE.IMAGE:
+                out = Topaz.Image();
+                out.impl = impl;
+                return out;
+
+            case TOPAZ.ASSET.TYPE.SOUND:
+                out = Topaz.Sound();
+                out.impl = impl;
+                return out;
+
+            }
+            return null;
+        }
         func fetchAsset(a, b) {
             var impl = topaz_.topaz_resources__fetch_asset(a, b);
             var out;

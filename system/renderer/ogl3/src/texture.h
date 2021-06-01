@@ -5,7 +5,7 @@
 typedef struct topazGL3_Texture_t topazGL3_Texture_t;
 typedef struct topazGL3_TexMan_t topazGL3_TexMan_t;
 #include "context.h"
-
+#include <topaz/containers/array.h>
 
 // Creates a new texture atlast. This atlas has a single GLTexture 
 // id that is used with all rendering operations.
@@ -39,15 +39,22 @@ void topaz_gl3_texman_print_section(
 // Sets a callback to be fired when a texture 
 // has its atlas coordinates changed due to a reset event.
 // good idea for object2d stuff
+// Each element within the array is a topazES2_Texture_t *
+typedef void (*topaz_gl3_texman_change_fn)(topazArray_t * textures, void * data);
 
-typedef void (*topaz_gl3_texman_reset_fn)(topazGL3_Texture_t * texture, void * data);
 
-
-void topaz_gl3_texman_add_reset_callback(
+int topaz_gl3_texman_add_change_callback(
     topazGL3_TexMan_t *,
-    topaz_gl3_texman_reset_fn,
+    topaz_gl3_texman_change_fn,
     void * cbData
 );
+
+void topaz_gl3_texman_remove_change_callback(
+    topazGL3_TexMan_t *,
+    int
+);
+
+
 
 
 

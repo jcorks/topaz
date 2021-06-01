@@ -11,6 +11,15 @@
 /// transparent way to quickly access assets.
 singleton Topaz.Resources
 
+
+/// Creates a new asset with an auto-generated name.
+/// The name will be registered with the resources instance and 
+/// can be used to refer to the asset.
+func createAsset -> Topaz.Asset
+    /// The asset type.
+    TOPAZ.ASSET.TYPE type 
+
+
 /// Either creates a new asset if the given name doesn't exist, or 
 /// returns an existing asset.
 /// In the case that a new asset needs to be created, 

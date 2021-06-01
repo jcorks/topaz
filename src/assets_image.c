@@ -32,6 +32,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/assets/image.h>
 #include <topaz/containers/string.h>
 #include <topaz/containers/array.h>
+#include <topaz/containers/bin.h>
 #include <topaz/topaz.h>
 #include <topaz/backends/renderer.h>
 #include <topaz/modules/graphics.h>
@@ -149,7 +150,6 @@ const uint8_t default_texture_data[] = {
 
 
 
-
 typedef struct {
     #ifdef TOPAZDC_DEBUG
     char * MAGIC_ID;
@@ -164,12 +164,44 @@ typedef struct {
     int width;
     int height;
 
+    topazBin_t * notifs;
+
 } TopazImage;
 
 struct topazImage_Frame_t {
     topazRenderer_Texture_t * object;
     TopazImage * img;
+    topazAsset_t * asset;
 };
+
+
+
+
+
+typedef struct {
+    topaz_image_texture_event_callback cb;
+    void * data;
+} topazImage_RemoveNotify_t;
+
+
+static void notify_event(
+    TopazImage * img,
+    topazAsset_t * a, 
+    topazImage_TextureEvent event,
+    int index
+) {
+    // TODO: efficiency
+    topazArray_t * arr = topaz_bin_get_all(img->notifs);
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(arr);
+    for(i = 0; i < len; ++i) {
+        topazImage_RemoveNotify_t * n = topaz_array_at(arr, topazImage_RemoveNotify_t *, i);
+        n->cb(
+            a, index, event, n->data
+        );
+    }
+}
+
 
 
 
@@ -195,6 +227,9 @@ static int image__asset_callback_empty(topazAsset_t * asset, const void * dataIn
 }
 
 
+
+
+
 topazAsset_t * topaz_image_create(topaz_t * t, const topazString_t * name) {
 
     TopazImage * img = calloc(1, sizeof(TopazImage));
@@ -203,7 +238,7 @@ topazAsset_t * topaz_image_create(topaz_t * t, const topazString_t * name) {
     #endif
     img->frames = topaz_array_create(sizeof(topazImage_Frame_t *));
     img->ctx = t;
-
+    img->notifs = topaz_bin_create();
 
     topazAsset_Attributes_t attribs = {};
     attribs.on_destroy = image__destroy;
@@ -231,6 +266,7 @@ topazImage_Frame_t * topaz_image_add_frame(topazAsset_t * a) {
     TopazImage * img = image__retrieve(a);
     topazImage_Frame_t * frame = calloc(sizeof(topazImage_Frame_t), 1);
     frame->img = img;
+    frame->asset = a;
     frame->object = topaz_renderer_texture_create(topaz_graphics_get_renderer(topaz_context_get_graphics(img->ctx)), img->width, img->height, NULL);
     topaz_array_push(img->frames, frame);
     return frame;
@@ -249,6 +285,7 @@ void topaz_image_remove_frame(topazAsset_t * a, uint32_t index) {
     TopazImage * img = image__retrieve(a);
     if (index >= topaz_array_get_size(img->frames)) return;
     topazImage_Frame_t * frame = topaz_array_at(img->frames, topazImage_Frame_t *, index);
+    notify_event(img, a, topazImage_TextureEvent_Removed, index);
     topaz_renderer_texture_destroy(frame->object);
     free(frame);
     topaz_array_remove(img->frames, index);
@@ -284,7 +321,7 @@ void topaz_image_resize(
 
     for(i = 0; i < len; ++i) {
         f = topaz_array_at(img->frames, topazImage_Frame_t *, i);
-
+        notify_event(img, a, topazImage_TextureEvent_Removed, i);
         topaz_renderer_texture_destroy(f->object);
         f->object = topaz_renderer_texture_create(
             topaz_graphics_get_renderer(
@@ -292,18 +329,28 @@ void topaz_image_resize(
             ),
             width, height, NULL
         );
+        notify_event(img, a, topazImage_TextureEvent_Changed, i);
 
     }
 }
 
 
 
-
+static int topaz_image_frame_get_index(topazImage_Frame_t * f) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(f->img->frames);
+    for(i = 0; i < len; ++i) {
+        if (topaz_array_at(f->img->frames, topazImage_Frame_t *, i) == f) return i;
+    }
+    return -1;
+}
 
 void topaz_image_frame_set_from_texture(
     topazImage_Frame_t * f, 
     topazRenderer_Texture_t * t
 ) {
+    int index = topaz_image_frame_get_index(f);
+    notify_event(f->img, f->asset, topazImage_TextureEvent_Removed, index);
     topaz_renderer_texture_destroy(f->object);
 
     int w = f->img->width;
@@ -317,6 +364,8 @@ void topaz_image_frame_set_from_texture(
         ),
         w, h, newData
     );
+    notify_event(f->img, f->asset, topazImage_TextureEvent_Changed, index);
+
 }
 
 
@@ -351,6 +400,29 @@ topazArray_t * topaz_image_frame_get_rgba_data(const topazImage_Frame_t * f) {
     return arr;
 }
 
+uint32_t topaz_image_add_texture_event_notify(
+    topazAsset_t * image,
+    topaz_image_texture_event_callback callback,
+    void * data
+) {
+    TopazImage * img = image__retrieve(image);
+    topazImage_RemoveNotify_t * n = calloc(1, sizeof(topazImage_RemoveNotify_t));
+    n->cb = callback;
+    n->data = data;
+    return topaz_bin_add(img->notifs, n);    
+}
+
+
+void topaz_image_remove_texture_event_notify(
+    topazAsset_t * image,
+    uint32_t callbackID   
+) {
+    TopazImage * img = image__retrieve(image);
+    topazImage_RemoveNotify_t * n = topaz_bin_fetch(img->notifs, callbackID);
+    if (!n) return;
+    free(n);
+    topaz_bin_remove(img->notifs, callbackID);
+}
 
 
 

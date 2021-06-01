@@ -71,6 +71,19 @@ typedef struct {
     topazRenderer_3D_t d3;
     topazAsset_t * mesh;
     topazAsset_t * material;
+
+    topazAsset_t * slot0_old;
+    topazAsset_t * slot1_old;
+    topazAsset_t * slot2_old;
+
+    int frame0_old;
+    int frame1_old;
+    int frame2_old;
+
+    uint32_t slot0_id;
+    uint32_t slot1_id;
+    uint32_t slot2_id;
+
     topazRenderer_Attributes_t attribs;
 } Shape3D;
 
@@ -201,6 +214,66 @@ topazTransform_t * topaz_shape3d_get_node(
     return topaz_spatial_get_node(s->spatial);
 }
 
+static void topaz_shape3d_texture_event0(
+    topazImage_t * img,
+    int frame,
+    topazImage_TextureEvent event,
+    void * data
+) {
+    Shape3D * s = data;
+    if (frame != s->frame0_old) return;
+
+    switch(event) {
+      case topazImage_TextureEvent_Removed:
+        s->d3.sampleTexture0 = NULL;
+        break;
+
+      case topazImage_TextureEvent_Changed:
+        s->d3.sampleTexture0 = topaz_image_frame_get_texture(topaz_image_get_frame(s->slot0_old, frame));
+        break;
+    }
+}   
+
+static void topaz_shape3d_texture_event1(
+    topazImage_t * img,
+    int frame,
+    topazImage_TextureEvent event,
+    void * data
+) {
+    Shape3D * s = data;
+    if (frame != s->frame1_old) return;
+
+    switch(event) {
+      case topazImage_TextureEvent_Removed:
+        s->d3.sampleTexture1 = NULL;
+        break;
+
+      case topazImage_TextureEvent_Changed:
+        s->d3.sampleTexture1 = topaz_image_frame_get_texture(topaz_image_get_frame(s->slot1_old, frame));
+        break;
+    }
+}   
+
+
+static void topaz_shape3d_texture_event2(
+    topazImage_t * img,
+    int frame,
+    topazImage_TextureEvent event,
+    void * data
+) {
+    Shape3D * s = data;
+    if (frame != s->frame2_old) return;
+
+    switch(event) {
+      case topazImage_TextureEvent_Removed:
+        s->d3.sampleTexture2 = NULL;
+        break;
+
+      case topazImage_TextureEvent_Changed:
+        s->d3.sampleTexture2 = topaz_image_frame_get_texture(topaz_image_get_frame(s->slot2_old, frame));
+        break;
+    }
+}   
 
 
 /// Sets the image to use for the given texture slot.
@@ -216,15 +289,33 @@ void topaz_shape3d_set_texture(
 
     switch(slot) {
       case topazShape3D_TextureSlot_0:
+        if (s->slot0_old) {
+            topaz_image_remove_texture_event_notify(s->slot0_old, s->slot0_id);
+        }
         s->d3.sampleTexture0 = topaz_image_frame_get_texture(image);
+        s->slot0_id = topaz_image_add_texture_event_notify(src, topaz_shape3d_texture_event0, s);
+        s->frame0_old = 0;
+        s->slot0_old = src;
         break;
 
       case topazShape3D_TextureSlot_1:
+        if (s->slot1_old) {
+            topaz_image_remove_texture_event_notify(s->slot1_old, s->slot1_id);
+        }
         s->d3.sampleTexture1 = topaz_image_frame_get_texture(image);
+        s->slot1_id = topaz_image_add_texture_event_notify(src, topaz_shape3d_texture_event1, s);
+        s->frame1_old = 0;
+        s->slot1_old = src;
         break;
 
       case topazShape3D_TextureSlot_2:
+        if (s->slot2_old) {
+            topaz_image_remove_texture_event_notify(s->slot2_old, s->slot2_id);
+        }
         s->d3.sampleTexture2 = topaz_image_frame_get_texture(image);
+        s->slot2_id = topaz_image_add_texture_event_notify(src, topaz_shape3d_texture_event2, s);
+        s->frame2_old = 0;
+        s->slot2_old = image;
         break;
     
       default:;

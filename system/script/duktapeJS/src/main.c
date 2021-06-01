@@ -793,13 +793,14 @@ void topaz_duk_run(
     void * data, 
     
     const topazString_t * sourceName, 
-    const topazString_t * sourceData) {
+    const topazString_t * sourceDataD) {
 
     TOPAZDUK * ctx = data;
     #ifdef TOPAZDC_DEBUG
         int stackSize = duk_get_top(ctx->js);
     #endif
-
+    topazString_t * sourceData = topaz_string_create_from_c_str("'use strict';");
+    topaz_string_concat(sourceData, sourceDataD);
     duk_push_string(ctx->js, topaz_string_get_c_str(sourceData));
     duk_push_string(ctx->js, topaz_string_get_c_str(sourceName));
     duk_compile(ctx->js, 0);
@@ -824,7 +825,7 @@ void topaz_duk_run(
         fflush(stdout);
     }
     duk_pop(ctx->js); // throw away result of last statement.
-
+    topaz_string_destroy(sourceData);
     #ifdef TOPAZDC_DEBUG 
         assert(duk_get_top(ctx->js) == stackSize);
     #endif

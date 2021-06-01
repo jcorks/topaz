@@ -72,6 +72,12 @@ typedef struct {
     float animSpeed;
     int animFrame;
     AnimMode animMode;
+    // for texture tracking
+    uint32_t notifID;
+    topazAsset_t * notifImg;
+    int notifFrameIndex;
+    float notifW;
+    float notifH;
 } Shape2D;
 
 static void shape2d__on_draw(topazComponent_t * c, Shape2D * s) {
@@ -284,43 +290,85 @@ void topaz_shape2d_form_image_frame(topazComponent_t * c, topazAsset_t * img, ui
 }
 
 
+static void topaz_shape2d_texture_event(
+    topazAsset_t * img,
+    int frame,
+    topazImage_TextureEvent event,
+    void * data
+) {
+    Shape2D * s = data;
+
+    if (s->notifFrameIndex != frame) return;
+
+    switch(event) {
+      case topazImage_TextureEvent_Removed:
+        topaz_render2d_set_texture(
+            s->render2d, 
+            NULL
+        );
+        break;
+
+      case topazImage_TextureEvent_Changed: {
+        topaz_render2d_set_texture(
+            s->render2d, 
+            topaz_image_frame_get_texture(topaz_image_get_frame(s->notifImg, frame))
+        );
+        float w = s->notifW;
+        float h = s->notifH;
+        float color[4] = {
+            topaz_color_r_amt(s->color),
+            topaz_color_g_amt(s->color),
+            topaz_color_b_amt(s->color),
+            topaz_color_a_amt(s->color)
+        };
+
+
+        topazRenderer_2D_Vertex_t v[6] = {
+            { -s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     0, 0 },
+            { -s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     0, 1 },
+            {w-s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     1, 1 },
+
+            { -s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     0, 0 },
+            {w-s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     1, 1 },
+            {w-s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     1, 0 }
+        };
+
+
+        topaz_render2d_set_vertices(
+            s->render2d, 
+            TOPAZ_ARRAY_CAST(
+                v, 
+                topazRenderer_2D_Vertex_t,
+                6
+            )
+        );
+
+        break;
+      }
+    }        
+}   
+
+
 void topaz_shape2d_form_image_frame_scaled(topazComponent_t * c, topazAsset_t * img, uint32_t frame,  float w, float h) {
     Shape2D * s = shape2d__retrieve(c);
     s->id = img;
     s->animFrame = frame;
     s->animMode = AnimMode_SingleFrame;
-    topaz_render2d_set_texture(
-        s->render2d, 
-        topaz_image_frame_get_texture(topaz_image_get_frame(img, frame))
-    );
+    if (s->notifImg) {
+        topaz_image_remove_texture_event_notify(s->notifImg, s->notifID);
+    }
+    s->notifID = topaz_image_add_texture_event_notify(
+        img,
+        topaz_shape2d_texture_event,
+        s
+    ); 
+    s->notifImg = img;
+    s->notifFrameIndex = frame;
+    s->notifW = w;
+    s->notifH = h;
 
-    float color[4] = {
-        topaz_color_r_amt(s->color),
-        topaz_color_g_amt(s->color),
-        topaz_color_b_amt(s->color),
-        topaz_color_a_amt(s->color)
-    };
+    topaz_shape2d_texture_event(img, frame, topazImage_TextureEvent_Changed, s);
 
-
-    topazRenderer_2D_Vertex_t v[6] = {
-        { -s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     0, 0 },
-        { -s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     0, 1 },
-        {w-s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     1, 1 },
-
-        { -s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     0, 0 },
-        {w-s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     1, 1 },
-        {w-s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     1, 0 }
-    };
-
-
-    topaz_render2d_set_vertices(
-        s->render2d, 
-        TOPAZ_ARRAY_CAST(
-            v, 
-            topazRenderer_2D_Vertex_t,
-            6
-        )
-    );
 
     topazRenderer_Attributes_t att = *topaz_render2d_get_attributes(s->render2d);
     att.primitive = topazRenderer_Primitive_Triangle;

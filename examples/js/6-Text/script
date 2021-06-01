@@ -1,27 +1,28 @@
-var StringVisual = {
-    props : {
-        visual : undefined,
-        bg : undefined
-    },
-
-    onReady : function(props) {
-        props.visual = new Topaz.Text2D();
-
-        props.visual.font = 'MyFont';
-        props.visual.size =  40;
-        props.visual.text = 'Hello world!\nThis is text.';
+var StringVisual = function() {
+    const visual = new Topaz.Text2D();    
+    visual.font = 'MyFont';
+    visual.size =  40;
 
 
-        props.bg = new Topaz.Shape2D();
-        props.bg.formRectangle(
-            props.visual.extentWidth,
-            props.visual.extentHeight
-        );
-        props.bg.color = new Topaz.Color('purple');
+    const bg = new Topaz.Shape2D();
+    bg.color = new Topaz.Color('purple');
 
-        props.entity.addComponent(props.bg);
-        props.entity.addComponent(props.visual);
 
+
+    return {
+        props : {
+            setText : function(text) {
+                visual.text = text;
+                bg.formRectangle(
+                    visual.extentWidth,
+                    visual.extentHeight
+                );
+            }
+        },
+
+        onReady : function(ent) {
+            ent.components = [bg, visual];
+        }
     }
 }
 
@@ -36,7 +37,13 @@ Topaz.Resources.loadAsset(
 
 Topaz.FontManager.registerFont('MyFont');
 
+
+
 var ent = new Topaz.Entity(StringVisual);
+ent.setText('Hello world!\nThis is text.');
+
+
+
 ent.position = new Topaz.Vector(200, 200);
 Topaz.root = ent;
 

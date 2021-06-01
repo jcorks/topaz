@@ -4,11 +4,11 @@
 
 static uint64_t rng_str_to_seed(const topazString_t * str) {
     uint64_t seed = 0;
+    uint8_t * iter = (uint8_t*)&seed;    
     uint32_t i;
     uint32_t len = topaz_string_get_length(str);
     for(i = 0; i < len; ++i) {
-        uint64_t val = topaz_string_get_char(str, i) * pow(2, i%8);
-        seed += val;
+        iter[i%sizeof(uint64_t)] += topaz_string_get_char(str, i);
     }
     return seed;
 }

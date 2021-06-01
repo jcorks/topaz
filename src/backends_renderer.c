@@ -243,6 +243,7 @@ topazRenderer_Texture_t * topaz_renderer_texture_create(topazRenderer_t * t, int
     out->api = &(t->api.texture);
     out->data = out->api->renderer_texture_create(&t->api, w, h, rgbaTextureData);
     out->binID = topaz_bin_add(t->textureList, out);
+    out->src = t;
     return out;
 }
 
@@ -336,7 +337,7 @@ void topaz_renderer_2d_set_object_texture(
     uint32_t object, 
     topazRenderer_Texture_t * params
 ) {
-    t->api->renderer_2d_set_object_texture(t->data, object, params->data);
+    t->api->renderer_2d_set_object_texture(t->data, object, params ? params->data : NULL);
 }
 
 

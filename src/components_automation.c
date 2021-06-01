@@ -500,6 +500,7 @@ void topaz_automation_skip_to(
     if (!len) return;
     TAKeyframe * frames = topaz_array_get_data(a->keyframes);
     value = fmod(value, length);
+    a->lastFrame = topaz_context_get_time(a->ctx);
 
     uint32_t i;
     for(i = 0; i < len-1; ++i, frames++) {

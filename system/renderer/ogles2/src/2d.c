@@ -30,6 +30,7 @@ struct topazES2_2D_t {
     topazArray_t * queued; // of type topazES2_Program2D_Renderable_t *
     topazES2_TexMan_t * textureManager;
     topazES2_Program2D_t * program;
+    int texmanCallbackID;
 };
 
 
@@ -46,7 +47,8 @@ static void object_on_linked_buffer_commit(topazES2_Buffer_t * buffer, void * ob
 // forces reforming of the vbo and other tasks
 static void object_prepare_renderable(ES2Object *);
 
-
+// Called when a texture has changed its atlas coordinates
+static void object_texture_changed(topazArray_t *, void *);
 
 
 
@@ -63,12 +65,14 @@ topazES2_2D_t * topaz_es2_2d_create(topazES2_TexMan_t * t) {
     out->program = topaz_es2_p2d_create();
     out->textureManager = t;
     textureManager_staticIDs = (GLuint*)topaz_es2_texman_gl_textures(t);
+    out->texmanCallbackID = topaz_es2_texman_add_change_callback(t, object_texture_changed, out);
     return out;
 }
 
 void topaz_es2_2d_destroy(topazES2_2D_t * t) {
     topaz_bin_destroy(t->objects);
     topaz_array_destroy(t->queued);
+    topaz_es2_texman_remove_change_callback(t->textureManager, t->texmanCallbackID);
     free(t);
 }
 
@@ -241,6 +245,7 @@ static void object_prepare_renderable(ES2Object * o) {
         } else {
             // no texture? blind copy! easy!
             memcpy(vtx, vtxSrc, sizeof(topazRenderer_2D_Vertex_t)*o->pdata.vboVertexCount);
+            o->pdata.texture = 0;
         }
             
         glBindBuffer(GL_ARRAY_BUFFER, o->pdata.vbo); TOPAZ_GLES_CALL_CHECK;
@@ -255,5 +260,26 @@ static void object_prepare_renderable(ES2Object * o) {
 
 }
 
+
+static void object_texture_changed(topazArray_t * textures, void * src) {
+    topazES2_2D_t * d2 = src;
+    topazArray_t * all = topaz_bin_get_all(d2->objects);
+    uint32_t i;
+    uint32_t n;
+    uint32_t tlen = topaz_array_get_size(textures);
+    uint32_t len = topaz_array_get_size(all);
+
+    for(i = 0; i < len; ++i) {
+        ES2Object * o = topaz_array_at(all, ES2Object *, i);
+        if (!o->texture) continue;
+
+        for(n = 0; n < tlen; ++n) {
+            if (o->texture == topaz_array_at(textures, topazES2_Texture_t *, n)) {
+                object_prepare_renderable(o);
+                break;
+            }
+        }
+    }
+}
 
 

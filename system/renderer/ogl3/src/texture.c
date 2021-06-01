@@ -7,8 +7,9 @@
 #define ATLAS_START_LEN 512
 
 typedef struct {
-    topaz_gl3_texman_reset_fn fn;
+    topaz_gl3_texman_change_fn fn;
     void * data;
+    uint32_t id;
 } ResetCB;
 
 
@@ -179,20 +180,34 @@ void topaz_gl3_texman_print_section(
 }
 
 
-void topaz_gl3_texman_add_reset_callback(
+int topaz_gl3_texman_add_change_callback(
     topazGL3_TexMan_t * tm,
-    topaz_gl3_texman_reset_fn fn,
+    topaz_gl3_texman_change_fn fn,
     void * cbData
 ) {
+    static uint32_t id = 0;
     ResetCB cb;
     cb.fn = fn;
     cb.data = cbData;
-
+    cb.id = id++;
     topaz_array_push(tm->cbs, cb);
+    return cb.id;
 }
 
 
-
+void topaz_gl3_texman_remove_change_callback(
+    topazGL3_TexMan_t * tm,
+    int id
+) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(tm->cbs);
+    for(i = 0; i < len; ++i) {
+        if (topaz_array_at(tm->cbs, ResetCB, i).id == id) {
+            topaz_array_remove(tm->cbs, i);
+            return;
+        }
+    }
+}
 
 
 
@@ -533,13 +548,24 @@ void atlas_resize(GLTexAtlas * a, int newWidth, int newHeight) {
 
 
 
-    // re-upload to atlas, but KEEP all same regions (no resize event needed)
+    // re-upload to atlas, but KEEP all same regions
+    // resize event still needed because of the atlas size change.
+    topazArray_t * changedTex = topaz_array_create(sizeof(topazGL3_Texture_t*));
+    uint32_t cbCount = topaz_array_get_size(a->parent->cbs);
+    uint32_t n;
     for(i = 0; i < len; ++i) {
         topazGL3_Texture_t * texture = topaz_array_at(a->textures, topazGL3_Texture_t *, i);
         atlas_write(a, texture->x, texture->y, texture->w, texture->h, texture->intermediateData);
         free(texture->intermediateData);
         texture->intermediateData = 0;
+        topaz_array_push(changedTex, texture);
     }
+    for(n = 0; n < cbCount; ++n) {
+        ResetCB * cb = &topaz_array_at(a->parent->cbs, ResetCB, n);
+        cb->fn(changedTex, cb->data);
+    }
+    topaz_array_destroy(changedTex);
+ 
 
 
 }
@@ -566,6 +592,7 @@ void atlas_reset(GLTexAtlas * a) {
 
     a->iterX = 0;
     a->iterY = 0;
+    topazArray_t * changedTex = topaz_array_create(sizeof(topazGL3_Texture_t*));
     for(i = 0; i < len; ++i) {
         topazGL3_Texture_t * texture = topaz_array_at(cl, topazGL3_Texture_t *, i);
         atlas_request_region(a, texture);
@@ -574,11 +601,13 @@ void atlas_reset(GLTexAtlas * a) {
         free(texture->intermediateData);
         texture->intermediateData = 0;
 
-        for(n = 0; n < cbCount; ++n) {
-            ResetCB * cb = &topaz_array_at(a->parent->cbs, ResetCB, n);
-            cb->fn(texture, cb->data);
-        }
+        topaz_array_push(changedTex, texture);
     }
+    for(n = 0; n < cbCount; ++n) {
+        ResetCB * cb = &topaz_array_at(a->parent->cbs, ResetCB, n);
+        cb->fn(changedTex, cb->data);
+    }
+    topaz_array_destroy(changedTex);
 
     a->needsReshuffle = 0;
 }
