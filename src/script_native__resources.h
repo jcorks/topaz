@@ -31,7 +31,7 @@ TSO_SCRIPT_API_FN(resources_api__load_asset) {
         r,
         topaz_script_object_as_string(arg0),
         topaz_script_object_as_string(arg1),
-        topaz_script_object_as_string(arg2)
+        (topaz_script_object_get_type(arg2) == topazScript_Object_Type_Undefined) ? topaz_script_object_as_string(arg1) : topaz_script_object_as_string(arg2)
     );
 
 

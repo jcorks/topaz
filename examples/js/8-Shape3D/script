@@ -43,33 +43,31 @@ tex.setRGBA(0,
 
 
 
-const Example3D = function() {
-    const v = new Topaz.Shape3D();
-    v.material = material;
-    v.mesh = mesh;
-    v.setTexture(0, tex);
-    v.setAttribute(
-        TOPAZ.RENDERER.ATTRIBUTE.TEXTURE_FILTER_HINT, 
-        TOPAZ.RENDERER.TEXTURE_FILTER_HINT.NONE
-    );
+const Example3D = {
+    CLASS : function(ent) {
+        const v = new Topaz.Shape3D();
+        v.material = material;
+        v.mesh = mesh;
+        v.setTexture(0, tex);
+        v.setAttribute(
+            TOPAZ.RENDERER.ATTRIBUTE.TEXTURE_FILTER_HINT, 
+            TOPAZ.RENDERER.TEXTURE_FILTER_HINT.NONE
+        );
 
-    var stepper = 0;
-    
-
-
-    return {
-        onReady : function(ent) {
-            ent.components = [v];
-        },
+        var stepper = 0;
         
-        
-        onStep : function(ent) {
-            stepper += 0.1;
-            ent.rotation = new Topaz.Vector(
-                stepper, 
-                stepper*3, 
-                stepper*8
-            );
+
+        ent.components = [v];
+
+        return {
+            onStep : function() {
+                stepper += 0.1;
+                ent.rotation = new Topaz.Vector(
+                    stepper, 
+                    stepper*3, 
+                    stepper*8
+                );v
+            }
         }
     }
 };

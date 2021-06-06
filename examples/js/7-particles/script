@@ -1,90 +1,89 @@
 
 
-var Emitter = function() {
-    const emitter = new Topaz.ParticleEmitter2D();    
+var Emitter = {
+    CLASS : function(ent) {
+        const emitter = new Topaz.ParticleEmitter2D();    
+
+        var a = new Topaz.Automation();
+        a.addKeyframe(0, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0);
+        a.addKeyframe(0.5, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
+        a.addKeyframe(1, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
+        var ramp01 = a.string;
+        a.clear();
+        a.addKeyframe(1, TOPAZ.AUTOMATION.FUNCTION.NONE, 0);
+        a.addKeyframe(1, TOPAZ.AUTOMATION.FUNCTION.NONE, 1);
+        var stable1 = a.string;
+        a.clear();
+        a.addKeyframe(0, TOPAZ.AUTOMATION.FUNCTION.LINEAR, 0);
+        a.addKeyframe(360, TOPAZ.AUTOMATION.FUNCTION.LINEAR, 1);
+        var ramp360 = a.string;
+        a.clear();
+        a.addKeyframe(1,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0);
+        a.addKeyframe(0.5, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
+        a.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
+        var ramp10 = a.string;
+        a.clear();
+        a.addKeyframe(10,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0);
+        a.addKeyframe(5, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
+        a.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
+        var ramp100 = a.string;
+        
+        
+        Topaz.Resources.loadAsset('png', 'base.png', 'example');
 
 
-    return {
-        onReady : function(ent) {
-            var a = new Topaz.Automation();
-            a.addKeyframe(0, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0);
-            a.addKeyframe(0.5, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
-            a.addKeyframe(1, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
-            var ramp01 = a.string;
-            a.clear();
-            a.addKeyframe(1, TOPAZ.AUTOMATION.FUNCTION.NONE, 0);
-            a.addKeyframe(1, TOPAZ.AUTOMATION.FUNCTION.NONE, 1);
-            var stable1 = a.string;
-            a.clear();
-            a.addKeyframe(0, TOPAZ.AUTOMATION.FUNCTION.LINEAR, 0);
-            a.addKeyframe(360, TOPAZ.AUTOMATION.FUNCTION.LINEAR, 1);
-            var ramp360 = a.string;
-            a.clear();
-            a.addKeyframe(1,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0);
-            a.addKeyframe(0.5, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
-            a.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
-            var ramp10 = a.string;
-            a.clear();
-            a.addKeyframe(10,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0);
-            a.addKeyframe(5, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
-            a.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
-            var ramp100 = a.string;
-            
-            
-            Topaz.Resources.loadAsset('png', 'base.png', 'example');
+        var particle = new Topaz.Particle();
+        particle.image = 'example';
+
+        particle.setAttribute(TOPAZ.RENDERER.ATTRIBUTE.ALPHA_RULE, TOPAZ.RENDERER.ALPHA_RULE.ALLOW);
+        particle.setAttribute(TOPAZ.RENDERER.ATTRIBUTE.ETCH_RULE, TOPAZ.RENDERER.ETCH_RULE.NOETCHING);
+        particle.setAttribute(TOPAZ.RENDERER.ATTRIBUTE.DEPTH_TEST, TOPAZ.RENDERER.DEPTH_TEST.NONE);
+        particle.setAttribute(TOPAZ.RENDERER.ATTRIBUTE.TEXTURE_FILTER_HINT, TOPAZ.RENDERER.TEXTURE_FILTER_HINT.LINEAR);
+
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SCALE_X, ramp01);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SCALE_Y, ramp01);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SPEED_X, ramp100);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SPEED_Y, ramp100);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SCALE_MULTIPLIER, stable1);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.DIRECTION, ramp360);
+        //particle.setFunction(TOPAZ.PARTICLE.PROPERTY.Rotation, ramp01);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.RED,   stable1);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.GREEN, stable1);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.BLUE,  stable1);
+        particle.setFunction(TOPAZ.PARTICLE.PROPERTY.ALPHA, ramp10);
+
+        //particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.SpeedX, 0.4);
+        //particle.setNoiseMax(TOPAZ.PARTICLE.PROPERTY.SpeedX, 5);
+        //particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.SpeedY, 0.4);
+        //particle.setNoiseMax(TOPAZ.PARTICLE.PROPERTY.SpeedY, 5);
+
+        particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.SCALE_MULTIPLIER, 10);
+        particle.setNoiseMax(TOPAZ.PARTICLE.PROPERTY.SCALE_MULTIPLIER, 14);
 
 
-            var particle = new Topaz.Particle();
-            particle.image = 'example';
+        particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.DURATION, 1);
+        particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.DURATION, 100);
 
-            particle.setAttribute(TOPAZ.RENDERER.ATTRIBUTE.ALPHA_RULE, TOPAZ.RENDERER.ALPHA_RULE.ALLOW);
-            particle.setAttribute(TOPAZ.RENDERER.ATTRIBUTE.ETCH_RULE, TOPAZ.RENDERER.ETCH_RULE.NOETCHING);
-            particle.setAttribute(TOPAZ.RENDERER.ATTRIBUTE.DEPTH_TEST, TOPAZ.RENDERER.DEPTH_TEST.NONE);
-            particle.setAttribute(TOPAZ.RENDERER.ATTRIBUTE.TEXTURE_FILTER_HINT, TOPAZ.RENDERER.TEXTURE_FILTER_HINT.LINEAR);
-
-            particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SCALE_X, ramp01);
-            particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SCALE_Y, ramp01);
-            particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SPEED_X, ramp100);
-            particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SPEED_Y, ramp100);
-            particle.setFunction(TOPAZ.PARTICLE.PROPERTY.SCALE_MULTIPLIER, stable1);
-            particle.setFunction(TOPAZ.PARTICLE.PROPERTY.DIRECTION, ramp360);
-            //particle.setFunction(TOPAZ.PARTICLE.PROPERTY.Rotation, ramp01);
-            particle.setFunction(TOPAZ.PARTICLE.PROPERTY.RED,   stable1);
-            particle.setFunction(TOPAZ.PARTICLE.PROPERTY.GREEN, stable1);
-            particle.setFunction(TOPAZ.PARTICLE.PROPERTY.BLUE,  stable1);
-            particle.setFunction(TOPAZ.PARTICLE.PROPERTY.ALPHA, ramp10);
-
-            //particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.SpeedX, 0.4);
-            //particle.setNoiseMax(TOPAZ.PARTICLE.PROPERTY.SpeedX, 5);
-            //particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.SpeedY, 0.4);
-            //particle.setNoiseMax(TOPAZ.PARTICLE.PROPERTY.SpeedY, 5);
-
-            particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.SCALE_MULTIPLIER, 10);
-            particle.setNoiseMax(TOPAZ.PARTICLE.PROPERTY.SCALE_MULTIPLIER, 14);
-
-
-            particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.DURATION, 1);
-            particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.DURATION, 100);
-
-            particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.DIRECTION, 0);
-            particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.DIRECTION, 356);
-
-
-
-            particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.RED, 0);
-            particle.setNoiseMax(TOPAZ.PARTICLE.PROPERTY.RED, 1);
+        particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.DIRECTION, 0);
+        particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.DIRECTION, 356);
 
 
 
-            // FIXME
-            //props.emitter.position = new topaz.vector(200, 200);
-            emitter.particle = particle;
-            
-            ent.attach(emitter);
-        },
+        particle.setNoiseMin(TOPAZ.PARTICLE.PROPERTY.RED, 0);
+        particle.setNoiseMax(TOPAZ.PARTICLE.PROPERTY.RED, 1);
 
-        onStep : function(ent) {
-            emitter.emit(1);
+
+
+        // FIXME
+        //props.emitter.position = new topaz.vector(200, 200);
+        emitter.particle = particle;
+        
+        ent.attach(emitter);
+
+        return {
+            onStep : function(ent) {
+                emitter.emit(1);
+            }
         }
     }
 }

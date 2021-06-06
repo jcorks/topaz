@@ -925,42 +925,60 @@ var Topaz = {
         }
 
         // sets onStep, onDraw, etc.
-        obj.define = function(propsSrc) {
-            const props = propsSrc ? propsSrc() : {};
+        obj.define = function(pSrc) {
+            if (!pSrc) return;
 
-            var keys = Object.keys(props.props);
-            for(var i = 0; i < keys.length; ++i) {
-                this[keys[i]] = props.props[keys[i]];
+            // REALLY simple inheritence
+            // base classes always get initialized first.            
+            if (pSrc.INHERITS) {
+                if (pSrc.INHERITS.length) {
+                    for(var i = 0; i < pSrc.INHERITS.length; ++i) {
+                        this.define(pSrc.INHERITS[i]);
+                    }
+                } else {
+                    this.define(pSrc.INHERITS);
+                }
             }
 
-            var events = props.events;
-            if (!events) events = {};
-                        
-
-
-            this.tag = props.tag;
-            this.impl.onStep = props.onStep ? function(e){props.onStep(e.__ctx);} : undefined;
-            this.impl.onDraw = props.onDraw ? function(e){props.onDraw(e.__ctx);} : undefined;
-            this.impl.onAttach = props.onAttach ? function(e){props.onAttach(e.__ctx);} : undefined;
-            this.impl.onDetach = props.onDetach ? function(e){props.onDetach(e.__ctx);} : undefined;
-            this.impl.onDestroy = props.onDestroy ? function(e){props.onDestroy(e.__ctx);} : undefined;
-
-            const self = this;            
-            var keys = Object.keys(events);
-            for(var i = 0; i < keys.length; ++i) {
-                topaz_component__install_event(
-                    this.impl, 
-                    keys[i],
-                    (function(fn){ // proper reference capture
-                        return function(c) {
-                            fn(self);
-                        }
-                    })(events[keys[i]])
-                );
+            if (pSrc.TAG) {
+                this.tag = pSrc.TAG;
             }
 
-            if (props.onReady) {
-                props.onReady(this);
+
+
+            if (pSrc.CLASS) {
+                var props = pSrc.CLASS(this);
+                if (props == undefined) props = {};
+
+                var keys = Object.keys(props.props);
+                for(var i = 0; i < keys.length; ++i) {
+                    this[keys[i]] = props.props[keys[i]];
+                }
+
+                var events = props.events;
+                if (!events) events = {};
+                            
+
+
+                this.impl.onStep = props.onStep ? function(e){props.onStep();} : undefined;
+                this.impl.onDraw = props.onDraw ? function(e){props.onDraw();} : undefined;
+                this.impl.onAttach = props.onAttach ? function(e){props.onAttach();} : undefined;
+                this.impl.onDetach = props.onDetach ? function(e){props.onDetach();} : undefined;
+                this.impl.onDestroy = props.onDestroy ? function(e){props.onDestroy();} : undefined;
+
+                const self = this;            
+                var keys = Object.keys(events);
+                for(var i = 0; i < keys.length; ++i) {
+                    topaz_component__install_event(
+                        this.impl, 
+                        keys[i],
+                        (function(fn){ // proper reference capture
+                            return function(c) {
+                                fn(self);
+                            }
+                        })(events[keys[i]])
+                    );
+                }
             }
         }
 
@@ -1144,31 +1162,45 @@ var Topaz = {
         }
     
         obj.define = function(pSrc) {
-            const props = pSrc();
+            if (!pSrc) return;
 
             // REALLY simple inheritence
-            if (props.inherits) {
-                this.define(props.inherits);
-            }
-            
-    
-            // todo: shallow copy
-            if (props.props) {
-                var keys = Object.keys(props.props);
-                for(var i = 0; i < keys.length; ++i) {
-                    this[keys[i]] = props.props[keys[i]];
+            // base classes always get initialized first.            
+            if (pSrc.INHERITS) {
+                if (pSrc.INHERITS.length) {
+                    for(var i = 0; i < pSrc.INHERITS.length; ++i) {
+                        this.define(pSrc.INHERITS[i]);
+                    }
+                } else {
+                    this.define(pSrc.INHERITS);
                 }
             }
-            this.name = props.name;
-            if (props.onStep) topaz_entity__set_on_step(this.impl, function(e){props.onStep(e.__ctx)});
-            if (props.onDraw) topaz_entity__set_on_draw(this.impl, function(e){props.onDraw(e.__ctx)});
-            if (props.onPreStep) topaz_entity__set_on_pre_step(this.impl, function(e){props.onPreStep(e.__ctx)});
-            if (props.onPreDraw) topaz_entity__set_on_pre_draw(this.impl, function(e){props.onPreDraw(e.__ctx)});
-            if (props.onAttach) topaz_entity__set_on_attach(this.impl, function(e){props.onAttach(e.__ctx)});
-            if (props.onDetach) topaz_entity__set_on_detach(this.impl, function(e){props.onDetach(e.__ctx)});
-            if (props.onRemove) topaz_entity__set_on_remove(this.impl, function(e){props.onRemove(e.__ctx)});
-            if (props.onReady) {
-                props.onReady(this);
+
+            if (pSrc.NAME) {
+                this.name = pSrc.NAME;
+            }
+            
+
+
+            if (pSrc.CLASS) {
+                const props = pSrc.CLASS(this);
+                if (props == undefined)
+                    props = {};
+        
+                // todo: shallow copy
+                if (props.props) {
+                    var keys = Object.keys(props.props);
+                    for(var i = 0; i < keys.length; ++i) {
+                        this[keys[i]] = props.props[keys[i]];
+                    }
+                }
+                if (props.onStep) topaz_entity__set_on_step(this.impl, function(e){props.onStep()});
+                if (props.onDraw) topaz_entity__set_on_draw(this.impl, function(e){props.onDraw()});
+                if (props.onPreStep) topaz_entity__set_on_pre_step(this.impl, function(e){props.onPreStep()});
+                if (props.onPreDraw) topaz_entity__set_on_pre_draw(this.impl, function(e){props.onPreDraw()});
+                if (props.onAttach) topaz_entity__set_on_attach(this.impl, function(e){props.onAttach()});
+                if (props.onDetach) topaz_entity__set_on_detach(this.impl, function(e){props.onDetach()});
+                if (props.onRemove) topaz_entity__set_on_remove(this.impl, function(e){props.onRemove()});
             }
         }
     

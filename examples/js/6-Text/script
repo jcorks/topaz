@@ -1,27 +1,24 @@
-var StringVisual = function() {
-    const visual = new Topaz.Text2D();    
-    visual.font = 'MyFont';
-    visual.size =  40;
+var StringVisual = {
+    CLASS : function(ent) {
+        const visual = new Topaz.Text2D();    
+        visual.font = 'MyFont';
+        visual.size =  40;
 
 
-    const bg = new Topaz.Shape2D();
-    bg.color = new Topaz.Color('purple');
+        const bg = new Topaz.Shape2D();
+        bg.color = new Topaz.Color('purple');
 
-
-
-    return {
-        props : {
-            setText : function(text) {
-                visual.text = text;
-                bg.formRectangle(
-                    visual.extentWidth,
-                    visual.extentHeight
-                );
+        ent.components = [bg, visual];
+        return {
+            props : {
+                setText : function(text) {
+                    visual.text = text;
+                    bg.formRectangle(
+                        visual.extentWidth,
+                        visual.extentHeight
+                    );
+                }
             }
-        },
-
-        onReady : function(ent) {
-            ent.components = [bg, visual];
         }
     }
 }
