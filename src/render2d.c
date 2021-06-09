@@ -97,6 +97,8 @@ topazRender2D_t * topaz_render2d_create(topazRenderer_2D_t * r, topazSpatial_t *
         (void(*)(topazSpatial_t *, void *))topaz_render2d_update_transform,
         out
     );
+    // populate 2d transform from current global transform.
+    topaz_render2d_update_transform(out->spatial, out);
     
     return out;
 }
