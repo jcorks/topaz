@@ -174,6 +174,12 @@ struct topazFontRenderer_Spacing_t {
     /// The y position of the origin to use for the next character.
     ///
     float yNextOrigin;
+
+    /// The minimum amount of space needed to display the font in the 
+    /// y direction given the size of the font.
+    /// This is always populated even for characters that have 
+    /// no valid glyph.
+    float yMinimumSpace;
 };
 
 

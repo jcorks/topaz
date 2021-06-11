@@ -207,6 +207,7 @@ static void topaz_freetype_get_spacing(
     }
 
     FT_GlyphSlot glyphSrc = ft->face->glyph;
+    spacing->yMinimumSpace = ft->face->size->metrics.height/64.f;
     if (thischar == '\n') {
         spacing->xOffset = 0;
         spacing->yOffset = 0;

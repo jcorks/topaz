@@ -268,6 +268,25 @@ static void text2d_update(Text2D * t, const topazString_t * str, const topazStri
     topazVector_t * fme = p;
 
 
+    // before we begin, we need to establish a baseline origin that is 
+    // low enough to allow for horizontal fonts to have enough room for their first row 
+    // of glyphs without any requiring of the user code to move the 
+    // string to maintain an imaginary line of where the glyphs lie.
+    // The intent of the yMinimumSpace gives a "worst case" for height 
+    // of glyphs and allows to establish a reliable topleft.
+    if (len) {
+        topazFontRenderer_Spacing_t s = {};
+        topaz_font_renderer_query_spacing(
+            fontRenderer, 
+            &s,
+            t->currentSize,
+            0,
+            topaz_string_get_char(t->text, 0),
+            0
+        );
+        originY = s.yMinimumSpace;
+        spacing.yNextOrigin = s.yMinimumSpace;
+    }
     // first we need the space layout for the character positions.
     // The reason we do this is the font renderer may request glyphs to be in negative 
     // space. This is not to spec, as the visual should have 0,0 be the origin.
@@ -283,6 +302,7 @@ static void text2d_update(Text2D * t, const topazString_t * str, const topazStri
             topaz_string_get_char(t->text, i),
             i >= len ? 0 : topaz_string_get_char(t->text, i+1)
         );
+
 
         // top left
         p->x = originX+spacing.xOffset;
