@@ -75,7 +75,9 @@ typedef struct {
     topazArray_t * glyphs;
     topazRenderer_Attributes_t attribs;
     
-    
+    topazFontRenderer_Spacing_t spacingLast;
+    float oobLeftLast;
+    float oobTopLast;    
 
 } Text2D;
 
@@ -192,8 +194,7 @@ const topazRenderer_Attributes_t * topaz_text2d_get_attributes(
     return &t->attribs;
 }
 
-
-static void text2d_update(Text2D * t, const topazString_t * str, const topazString_t * fontName, int pixelSize) {
+static void text2d_update__full(Text2D * t, const topazString_t * str, const topazString_t * fontName, int pixelSize) {
     uint32_t i;
     uint32_t len;
 
@@ -224,6 +225,7 @@ static void text2d_update(Text2D * t, const topazString_t * str, const topazStri
         fontRenderer = topaz_font_manager_get_renderer(topaz_context_get_font_manager(t->ctx), t->fontName);        
     }
     
+
     // update source data
     t->currentSize = pixelSize;
     topaz_string_set(t->text, str);
@@ -417,6 +419,7 @@ static void text2d_update(Text2D * t, const topazString_t * str, const topazStri
 
         // top right
         v->x = pIter->x - oobLeft;
+
         v->y = pIter->y - oobTop;
         v->r = v->b = v->g = v->a = 1.f;
         v++; pIter++;
@@ -450,7 +453,276 @@ static void text2d_update(Text2D * t, const topazString_t * str, const topazStri
 
         topaz_render2d_set_vertices(r, TOPAZ_ARRAY_CAST(vtx_base, topazRenderer_2D_Vertex_t, 6));
     }
+    t->spacingLast = spacing;
+    t->oobLeftLast = oobLeft;
+    t->oobTopLast = oobTop;
     free(fme);
+}
+
+// adds additional text to an existing text2d instance thats of the same font and size.
+// quite a bit 
+static void text2d_update__add(Text2D * t, const topazString_t * str, const topazString_t * fontName, int pixelSize) {
+    uint32_t i;
+    uint32_t len;
+
+    topazFontRenderer_Spacing_t spacing = t->spacingLast;
+    float originX = spacing.xNextOrigin;
+    float originY = spacing.yNextOrigin;
+
+
+    // get context
+    topazFontRenderer_t * fontRenderer = topaz_font_manager_get_renderer(topaz_context_get_font_manager(t->ctx), t->fontName);
+    
+    uint32_t oldLen = topaz_string_get_length(t->text);
+    // update source data
+    topaz_string_set(t->text, str);
+
+
+    // base vertices
+    topazRenderer_2D_Vertex_t vtx_base[6] = {
+        {0, 0,    0, 0, 0, 0,   0, 0},
+        {0, 0,    0, 0, 0, 0,   1, 1},
+        {0, 0,    0, 0, 0, 0,   1, 0},
+
+        {0, 0,    0, 0, 0, 0,   0, 0},
+        {0, 0,    0, 0, 0, 0,   0, 1},
+        {0, 0,    0, 0, 0, 0,   1, 1},
+    };
+
+
+    // glyphs act as a cache of renderables for the text,
+    // so need to match in size
+    while(topaz_array_get_size(t->glyphs) < topaz_string_get_length(t->text)) {
+        topazRender2D_t * r = topaz_render2d_create(topaz_graphics_get_renderer_2d(topaz_context_get_graphics(t->ctx)), t->spatial);
+        t->attribs.primitive = topazRenderer_Primitive_Triangle;
+        topaz_render2d_set_attributes(r, &t->attribs);
+
+        topaz_render2d_set_vertices(r, TOPAZ_ARRAY_CAST(vtx_base, topazRenderer_2D_Vertex_t, 6));
+        topaz_array_push(t->glyphs, r);
+    }
+    
+    if (!fontRenderer) {
+        return;
+    }
+
+
+
+    len = topaz_string_get_length(t->text);
+    float oobLeft = t->oobLeftLast;
+    float oobTop = t->oobTopLast;
+    t->width = 0;
+    t->height = 0;
+    topazVector_t * p = malloc(sizeof(topazVector_t)*6*len);
+    topazVector_t * pIter = p;
+    topazVector_t * fme = p;
+
+
+
+    // first we need the space layout for the character positions.
+    // The reason we do this is the font renderer may request glyphs to be in negative 
+    // space. This is not to spec, as the visual should have 0,0 be the origin.
+    // oob (out of bounds) left and top hold the offset needed to 
+    // prevent overflow into negative.
+    for(i = oldLen; i < len; ++i) {
+        // Get spacing 
+        topaz_font_renderer_query_spacing(
+            fontRenderer, 
+            &spacing,
+            t->currentSize,
+            topaz_string_get_char(t->text, i-1),
+            topaz_string_get_char(t->text, i),
+            topaz_string_get_char(t->text, i+1)
+        );
+
+
+        // top left
+        p->x = originX+spacing.xOffset;
+        p->y = originY+spacing.yOffset;
+        if (p->x < oobLeft)  oobLeft = p->x;
+        if (p->y < oobTop)   oobTop  = p->y;
+        p++;
+
+
+
+        // bottom right
+        p->x = originX+spacing.width+spacing.xOffset;
+        p->y = originY+spacing.height+spacing.yOffset;
+        if (p->x < oobLeft)  oobLeft = p->x;
+        if (p->y < oobTop)   oobTop  = p->y;
+        p++;
+
+
+
+        // top right
+        p->x = originX+spacing.width+spacing.xOffset;
+        p->y = originY+spacing.yOffset;
+        if (p->x < oobLeft)  oobLeft = p->x;
+        if (p->y < oobTop)   oobTop  = p->y;
+        p++;
+
+
+
+
+
+
+
+        // top left
+        p->x = originX+spacing.xOffset;
+        p->y = originY+spacing.yOffset;
+        if (p->x < oobLeft)  oobLeft = p->x;
+        if (p->y < oobTop)   oobTop  = p->y;
+        p++;
+
+
+
+        // bottom left
+        p->x = originX+spacing.xOffset;
+        p->y = originY+spacing.height+spacing.yOffset;
+        if (p->x < oobLeft)  oobLeft = p->x;
+        if (p->y < oobTop)   oobTop  = p->y;
+        p++;
+
+
+
+        // bottom right
+        p->x = originX+spacing.width+spacing.xOffset;
+        p->y = originY+spacing.height+spacing.yOffset;
+        if (p->x < oobLeft)  oobLeft = p->x;
+        if (p->y < oobTop)   oobTop  = p->y;
+        p++;
+
+        
+
+
+        // update total extent width/height
+        if (originX+spacing.width+spacing.xOffset > t->width)
+            t->width = originX+spacing.width+spacing.xOffset;
+
+        if (originY+spacing.height+spacing.yOffset > t->height)
+            t->height = originY+spacing.height+spacing.yOffset;
+
+
+        originX = spacing.xNextOrigin;
+        originY = spacing.yNextOrigin; 
+    }
+
+    // width and height are also impacted by OOB measurements 
+    t->width -= oobLeft;
+    t->height -= oobTop;
+
+
+    // now we apply the positions with oob measurements for the 
+    // real glyph verticies.
+    for(i = oldLen; i < len; ++i) {
+        topazRender2D_t * r = topaz_array_at(t->glyphs, topazRender2D_t *, i);
+
+
+        // set the next texture    
+        const topazAsset_t * image = topaz_font_renderer_image_ref(
+            fontRenderer,
+            topaz_string_get_char(t->text, i),
+            t->currentSize
+        );
+
+        topazRenderer_Texture_t * texture = topaz_image_frame_get_texture(topaz_image_get_frame((topazAsset_t *)image, 0));
+        topaz_render2d_set_texture(r, texture);
+
+
+        // apply data
+        topazRenderer_2D_Vertex_t * v = &vtx_base[0];
+
+
+        // top left
+        v->x = pIter->x - oobLeft;
+        v->y = pIter->y - oobTop;
+        v->r = v->b = v->g = v->a = 1.f;
+        v++; pIter++;
+
+
+        // bottom right
+        v->x = pIter->x - oobLeft;
+        v->y = pIter->y - oobTop;
+        v->r = v->b = v->g = v->a = 1.f;
+        v++; pIter++;
+
+
+        // top right
+        v->x = pIter->x - oobLeft;
+        v->y = pIter->y - oobTop;
+        v->r = v->b = v->g = v->a = 1.f;
+        v++; pIter++;
+
+
+
+
+
+
+        // top left
+        v->x = pIter->x - oobLeft;
+        v->y = pIter->y - oobTop;
+        v->r = v->b = v->g = v->a = 1.f;
+        v++; pIter++;
+
+
+        // bottom left
+        v->x = pIter->x - oobLeft;
+        v->y = pIter->y - oobTop;
+        v->r = v->b = v->g = v->a = 1.f;
+        v++; pIter++;
+
+
+        // bottom right
+        v->x = pIter->x - oobLeft;
+        v->y = pIter->y - oobTop;
+        v->r = v->b = v->g = v->a = 1.f;
+        pIter++;
+        
+
+
+        topaz_render2d_set_vertices(r, TOPAZ_ARRAY_CAST(vtx_base, topazRenderer_2D_Vertex_t, 6));
+    }
+    t->spacingLast = spacing;
+    t->oobLeftLast = oobLeft;
+    t->oobTopLast = oobTop;
+    free(fme);
+}
+
+static void text2d_update(Text2D * t, const topazString_t * str, const topazString_t * fontName, int pixelSize) {
+    uint32_t i;
+    uint32_t len, lenNew;
+
+    len = topaz_string_get_length(t->text);
+    lenNew = topaz_string_get_length(str);
+    for(i = 0; i < len && i < lenNew; ++i) {
+        if (topaz_string_get_char(t->text, i) != topaz_string_get_char(str, i)) break;
+    }    
+
+
+
+    // pixel size / font changed... need a full reset
+    if (!topaz_string_test_eq(t->fontName, fontName) || t->currentSize != pixelSize) {
+
+        text2d_update__full(t, str, fontName, pixelSize);
+
+    // different string entirely
+    } else if (i == 0) { 
+        text2d_update__full(t, str, fontName, pixelSize);
+
+
+    // same string, no change needed
+    } else if (len == lenNew && i == len) { 
+
+
+    // current string is the base, new content being added.
+    } else if (lenNew > len && i == len) {
+        text2d_update__add(t, str, fontName, pixelSize);
+
+    // default full update.
+    } else {
+        text2d_update__full(t, str, fontName, pixelSize);
+    }
+
+
 }
 
 void topaz_text2d_set_font(
