@@ -960,11 +960,11 @@ var Topaz = {
                             
 
 
-                this.impl.onStep = props.onStep ? function(e){props.onStep();} : undefined;
-                this.impl.onDraw = props.onDraw ? function(e){props.onDraw();} : undefined;
-                this.impl.onAttach = props.onAttach ? function(e){props.onAttach();} : undefined;
-                this.impl.onDetach = props.onDetach ? function(e){props.onDetach();} : undefined;
-                this.impl.onDestroy = props.onDestroy ? function(e){props.onDestroy();} : undefined;
+                if (props.onStep) topaz_component__set_on_step(this.impl, function(e){props.onStep()});
+                if (props.onDraw) topaz_component__set_on_draw(this.impl, function(e){props.onDraw()});
+                if (props.onAttach) topaz_component__set_on_attach(this.impl, function(e){props.onAttach()});
+                if (props.onDetach) topaz_component__set_on_detach(this.impl, function(e){props.onDetach()});
+                if (props.onRemove) topaz_component__set_on_remove(this.impl, function(e){props.onRemove()});
 
                 const self = this;            
                 var keys = Object.keys(events);
@@ -1374,7 +1374,9 @@ var Topaz = {
 
     /// color 
 
-    Topaz.Color.prototype.setFromString = 
+    Topaz.Color.prototype.toString = function() {
+        return 'RGBA: ' + Math.round(this.r*255) + ',' + Math.round(this.g*255) + ',' + Math.round(this.b*255) + ':' + Math.round(this.a*255);    
+    };
 
 
 
@@ -2607,6 +2609,10 @@ var Topaz = {
 
     Topaz.Vector.prototype.normalize = function() {
         this.topaz_vector__normalize(this.impl);   
+    }
+
+    Topaz.Vector.prototype.toString = function() {
+        return '{' + this.x + ',' + this.y + ',' + '}';
     }
 
     Topaz.Vector.prototype.cross = function(other) {
