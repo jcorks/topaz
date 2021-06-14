@@ -231,7 +231,7 @@ static TOPAZLUAObjectTag * topaz_lua_object_get_tag_from_top(lua_State * lua) {
 
 // assigns the pointer to the tag as a read-only property string 
 // for the object itself.
-static TOPAZLUAObjectTag * topaz_lua_object_set_tag(TOPAZLUA * ctx) {
+static TOPAZLUAObjectTag * topaz_lua_top_object_set_tag(TOPAZLUA * ctx) {
     #ifdef TOPAZDC_DEBUG
         int stackSize = lua_gettop(ctx->lua);
     #endif
@@ -266,7 +266,7 @@ static void topaz_lua_object_keep_reference(TOPAZLUA * ctx, TOPAZLUAObjectTag * 
     lua_setfield(ctx->lua, LUA_REGISTRYINDEX, topaz_string_get_c_str(ctx->spfString));
 
     #ifdef TOPAZDC_DEBUG 
-        assert(lua_gettop(ctx->) == stackSize);
+        assert(lua_gettop(ctx->lua) == stackSize);
     #endif
 }
 
@@ -275,29 +275,27 @@ static void topaz_lua_object_keep_reference(TOPAZLUA * ctx, TOPAZLUAObjectTag * 
 // open to garbage collection sweeps if it is no longer used / accessible.
 static void topaz_lua_object_unkeep_reference(TOPAZLUA * ctx, TOPAZLUAObjectTag * tag) {
     #ifdef TOPAZDC_DEBUG
-        int stackSize = duk_get_top(ctx->js);
+        int stackSize = lua_gettop(ctx->lua);
     #endif
 
     lua_pushnil(ctx->lua);
     topaz_string_clear(ctx->spfString);
     topaz_string_concat_printf(ctx->spfString, "%d", tag->stashID);
     lua_setfield(ctx->lua, LUA_REGISTRYINDEX, topaz_string_get_c_str(ctx->spfString));
-    topaz_string_destroy(s);
+
 
     #ifdef TOPAZDC_DEBUG 
-        assert(duk_get_top(ctx->js) == stackSize);
+        assert(lua_gettop(ctx->lua) == stackSize);
     #endif
 
 }
 
 
-static duk_ret_t topaz_lua_object_finalizer(duk_context * js) {
-    duk_get_prop_string(js, 0, "___tz");
-    TOPAZLUAObjectTag * tag;
-    const char * target = duk_get_string(js, -1);
-    if (target)
-        sscanf(target, "p%p", &tag);
-    duk_pop(js);
+static int topaz_lua_object_finalizer(lua_State * l) {
+    TOPAZLUAObjectTag * tag = NULL;
+    lua_getupvalue(l, -1, 1); 
+    tag = lua_touserdata(l, -1); 
+    lua_pop(l, 1);
 
 
     #ifdef TOPAZDC_DEBUG
@@ -320,13 +318,13 @@ static duk_ret_t topaz_lua_object_finalizer(duk_context * js) {
 
 
 static void topaz_lua_object_push_to_top_from_tag(TOPAZLUAObjectTag * tag) {
-    topaz_string_clear(ctx->spfString);
-    topaz_string_concat_printf(ctx->spfString, "%d", tag->stashID);
-    lua_getfield(tag->ctx->lua, LUA_REGISTRYINDEX, topaz_string_get_c_str(ctx->spfString));
+    topaz_string_clear(tag->ctx->spfString);
+    topaz_string_concat_printf(tag->ctx->spfString, "%d", tag->stashID);
+    lua_getfield(tag->ctx->lua, LUA_REGISTRYINDEX, topaz_string_get_c_str(tag->ctx->spfString));
 
 
     #ifdef TOPAZDC_DEBUG
-        if (lua_isnil(tag->ctx->js, -1)) {
+        if (lua_isnil(tag->ctx->lua, -1)) {
             assert(!"topaz_lua_object_push_to_top_from_tag() resulted in UNDEFINED. This shouldn't happen!\n");
         }
     #endif
@@ -337,26 +335,25 @@ static void topaz_lua_object_push_to_top_from_tag(TOPAZLUAObjectTag * tag) {
 
 
 // fetches/creates an ObjectTag for a given object
-static void * topaz_lua_object_wrap(void * ctxSrc) {
+static void * topaz_lua_top_object_wrap(void * ctxSrc) {
     TOPAZLUA * ctx = ctxSrc;
     #ifdef TOPAZDC_DEBUG
         int stackSize = lua_gettop(ctx->lua);
     #endif
 
-    TOPAZLUAObjectTag * tag = topaz_lua_object_get_tag_from_top(ctx->js);
+    TOPAZLUAObjectTag * tag = topaz_lua_object_get_tag_from_top(ctx->lua);
 
     if (!tag) {
         // create a new tag and bind that tag to this object using a hidden prop
-        tag = topaz_lua_object_set_tag(ctx);   
-
+        tag = topaz_lua_top_object_set_tag(ctx);   
         tag->ctx = ctx;
 
  
 
         // Sets the standard finalizer function.
         lua_newtable(ctx->lua);
-        lua_pushlightuserdata(ctx->lua, userData);
-        lua_pushcclosure(ctx->js, topaz_lua_object_finalizer, 1);
+        lua_pushlightuserdata(ctx->lua, tag);
+        lua_pushcclosure(ctx->lua, topaz_lua_object_finalizer, 1);
         lua_setfield(ctx->lua, -2, "__gc");
         lua_setmetatable(ctx->lua, -2);
     }
@@ -373,7 +370,7 @@ static void * topaz_lua_object_wrap(void * ctxSrc) {
 
 
     #ifdef TOPAZDC_DEBUG 
-        assert(duk_get_top(ctx->js) == stackSize);
+        assert(lua_gettop(ctx->lua) == stackSize);
     #endif
 
     return tag;
@@ -402,7 +399,9 @@ static topazScript_Object_t * topaz_lua_stack_object_to_tso(TOPAZLUA * ctx, int 
 
       case LUA_TTABLE: 
       case LUA_TFUNCTION:{
-        o = topaz_script_object_wrapper(ctx->script, topaz_lua_object_wrap(ctx));        
+        lua_pushvalue(ctx->lua, index);
+        o = topaz_script_object_wrapper(ctx->script, topaz_lua_top_object_wrap(ctx));        
+        lua_pop(ctx->lua, 1);
         break;
       }
 
@@ -852,39 +851,39 @@ topazScript_Object_t * topaz_lua_create_empty_object(
 ) {
     TOPAZLUA * ctx = data;
     #ifdef TOPAZDC_DEBUG
-        int stackSize = duk_get_top(ctx->js);
+        int stackSize = lua_gettop(ctx->lua);
     #endif
 
 
     // create the new object
-    duk_newtable(ctx->js);
+    lua_newtable(ctx->lua);
 
     // create raw tso
     topazScript_Object_t * out = topaz_lua_stack_object_to_tso(ctx, -1);
 
     // get the tag so we can add the finalizer
-    TOPAZLUAObjectTag * tag = topaz_lua_object_get_tag_from_top(ctx->js);
+    TOPAZLUAObjectTag * tag = topaz_lua_object_get_tag_from_top(ctx->lua);
 
     tag->cfinalizer = cleanup;
     tag->cfinalizerData = cleanupData;
 
-    duk_pop(ctx->js);
+    lua_pop(ctx->lua, 1);
 
     #ifdef TOPAZDC_DEBUG 
-        assert(duk_get_top(ctx->js) == stackSize);
+        assert(lua_gettop(ctx->lua) == stackSize);
     #endif
 
     return out;
 }
 
-/*
+
 void topaz_lua_bootstrap(topazScript_t * script, void * n) {
     #include "bootstrap_bytes"
 
     #ifdef TOPAZDC_DEBUG
         topaz_script_run(
             script,
-            TOPAZ_STR_CAST("TOPAZ_BOOTSTRAP.js"),
+            TOPAZ_STR_CAST("TOPAZ_BOOTSTRAP.lua"),
             TOPAZ_STR_CAST((char*)bootstrap_bytes)
         );
     #else
@@ -920,18 +919,18 @@ void topaz_lua_bootstrap(topazScript_t * script, void * n) {
 
 
  
- 
+
 static void * topaz_lua_object_reference_create_from_reference(topazScript_Object_t * o, void * ctxSrc, topazScript_Object_t * from, void * fromData) {
     TOPAZLUA * ctx = ctxSrc;
     #ifdef TOPAZDC_DEBUG
-        int stackSize = duk_get_top(ctx->js);
+        int stackSize = lua_gettop(ctx->lua);
     #endif
     topaz_lua_object_push_to_top_from_tag(fromData);
-    void * outTag = topaz_lua_object_wrap(ctxSrc);
+    void * outTag = topaz_lua_top_object_wrap(ctxSrc);
 
-    duk_pop(ctx->js);
+    lua_pop(ctx->lua, 1);
     #ifdef TOPAZDC_DEBUG 
-        assert(duk_get_top(ctx->js) == stackSize);
+        assert(lua_gettop(ctx->lua) == stackSize);
     #endif
     return outTag;
 }
@@ -949,33 +948,38 @@ static void topaz_lua_object_reference_destroy(topazScript_Object_t * o, void * 
 
 static int topaz_lua_object_reference_get_feature_mask(topazScript_Object_t * o, void * tagSrc) {
     TOPAZLUAObjectTag * t = tagSrc;
-    duk_context * ctx = t->ctx->js;
+    lua_State * ctx = t->ctx->lua;
     #ifdef TOPAZDC_DEBUG
-        int stackSize = duk_get_top(ctx);
+        int stackSize = lua_gettop(ctx);
     #endif
 
     topaz_lua_object_push_to_top_from_tag(t);
     int out = 0; // all objects in js can have properties
-    if (duk_is_callable(ctx, -1)) {
+    if (lua_isfunction(ctx, -1)) {
         out |= topazScript_Object_Feature_Callable;
-    }
+    } 
 
-    if (duk_is_array(ctx, -1)) {
-        out |= topazScript_Object_Feature_Array;
-    }
-
-    // /should/ always be true...
-    if (duk_is_object(ctx, -1)) {
+    if (lua_istable(ctx, -1)) {
         out |= topazScript_Object_Feature_Map;
+        out |= topazScript_Object_Feature_Array;
+        
+        int calltype = luaL_getmetafield(ctx, -1, "__call"); 
+        if (calltype == LUA_TFUNCTION) {
+            out |= topazScript_Object_Feature_Callable;
+        }
+        if (calltype == LUA_TNIL) {
+            lua_pop(ctx, -1);
+        }
     }
-
-    duk_pop(ctx);
+    lua_pop(ctx, -1);
 
     #ifdef TOPAZDC_DEBUG 
-        assert(duk_get_top(ctx) == stackSize);
+        assert(lua_gettop(ctx) == stackSize);
     #endif
     return out;
 }
+
+
 
 static void * topaz_lua_object_reference_get_native_data(topazScript_Object_t * o, int * tagID, void * tagSrc) {
     TOPAZLUAObjectTag * t = tagSrc;
@@ -1004,15 +1008,15 @@ static void topaz_lua_object_reference_unref(topazScript_Object_t * o, void * da
 
     if (tag->refCount == 0) {
         #ifdef TOPAZDC_DEBUG
-            int stackSize = duk_get_top(tag->ctx->js);
+            int stackSize = lua_gettop(tag->ctx->lua);
         #endif
 
         topaz_lua_object_push_to_top_from_tag(tag);
         topaz_lua_object_unkeep_reference(tag->ctx, tag);
-        duk_pop(tag->ctx->js); 
+        lua_pop(tag->ctx->lua, -1); 
 
         #ifdef TOPAZDC_DEBUG 
-            assert(duk_get_top(tag->ctx->js) == stackSize);
+            assert(lua_gettop(tag->ctx->lua) == stackSize);
         #endif
     }
 
@@ -1025,7 +1029,7 @@ static topazScript_Object_t * topaz_lua_object_reference_call(topazScript_Object
     TOPAZLUAObjectTag * tag = data;
 
     #ifdef TOPAZDC_DEBUG
-        int stackSize = duk_get_top(tag->ctx->js);
+        int stackSize = lua_gettop(tag->ctx->lua);
     #endif
 
     // assumes callable
@@ -1043,15 +1047,15 @@ static topazScript_Object_t * topaz_lua_object_reference_call(topazScript_Object
         );
     }
 
-    duk_call(tag->ctx->js, len);
+    lua_call(tag->ctx->lua, len, 1);
     topazScript_Object_t * out = topaz_lua_stack_object_to_tso(
         tag->ctx,
         -1
     );
-    duk_pop(tag->ctx->js);
+    lua_pop(tag->ctx->lua, 1);
 
     #ifdef TOPAZDC_DEBUG 
-        assert(duk_get_top(tag->ctx->js) == stackSize);
+        assert(lua_gettop(tag->ctx->lua) == stackSize);
     #endif
  
     return out;
@@ -1066,16 +1070,16 @@ static topazScript_Object_t * topaz_lua_object_reference_array_get_nth(
 
     TOPAZLUAObjectTag * tag = tagSrc;
     #ifdef TOPAZDC_DEBUG
-        int stackSize = duk_get_top(tag->ctx->js);
+        int stackSize = lua_gettop(tag->ctx->lua);
     #endif
 
     topaz_lua_object_push_to_top_from_tag(tag);
-    duk_get_prop_index(tag->ctx->js, -1, index);
+    lua_geti(tag->ctx->lua, -1, index);
     topazScript_Object_t * o = topaz_lua_stack_object_to_tso(tag->ctx, -1);
-    duk_pop_2(tag->ctx->js);
+    lua_pop(tag->ctx->lua, 2);
 
     #ifdef TOPAZDC_DEBUG 
-        assert(duk_get_top(tag->ctx->js) == stackSize);
+        assert(lua_gettop(tag->ctx->lua) == stackSize);
     #endif
 
     return o;
@@ -1085,15 +1089,16 @@ static topazScript_Object_t * topaz_lua_object_reference_array_get_nth(
 static int topaz_lua_object_reference_array_get_count(topazScript_Object_t * o, void * tagSrc) {
     TOPAZLUAObjectTag * tag = tagSrc;
     #ifdef TOPAZDC_DEBUG
-        int stackSize = duk_get_top(tag->ctx->js);
+        int stackSize = lua_gettop(tag->ctx->lua);
     #endif
 
     topaz_lua_object_push_to_top_from_tag(tag);
-    int len = (int)duk_get_length(tag->ctx->js, -1);
-    duk_pop(tag->ctx->js); 
+    lua_len(tag->ctx->lua, -1);
+    int len = lua_tointeger(tag->ctx->lua, -1);
+    lua_pop(tag->ctx->lua, 2); 
 
     #ifdef TOPAZDC_DEBUG 
-        assert(duk_get_top(tag->ctx->js) == stackSize);
+        assert(lua_gettop(tag->ctx->lua) == stackSize);
     #endif
     return len;
 }
@@ -1105,18 +1110,17 @@ static topazScript_Object_t * topaz_lua_object_reference_map_get_property(
 ) {
     TOPAZLUAObjectTag * tag = tagSrc;
     #ifdef TOPAZDC_DEBUG
-        int stackSize = duk_get_top(tag->ctx->js);
+        int stackSize = lua_gettop(tag->ctx->lua);
     #endif
 
     topaz_lua_object_push_to_top_from_tag(tag);
-    duk_push_string(tag->ctx->js, topaz_string_get_c_str(prop));
-    duk_get_prop(tag->ctx->js, -2);
+    lua_getfield(tag->ctx->lua, -1, topaz_string_get_c_str(prop));
     topazScript_Object_t * out = topaz_lua_stack_object_to_tso(tag->ctx, -1);
-    duk_pop_2(tag->ctx->js);
+    lua_pop(tag->ctx->lua, 2);
 
 
     #ifdef TOPAZDC_DEBUG 
-        assert(duk_get_top(tag->ctx->js) == stackSize);
+        assert(lua_gettop(tag->ctx->lua) == stackSize);
     #endif
 
     return out;
@@ -1130,21 +1134,21 @@ void topaz_lua_object_reference_to_string(
     TOPAZLUAObjectTag * tag = tagSrc;
 
     #ifdef TOPAZDC_DEBUG
-        int stackSize = duk_get_top(tag->ctx->js);
+        int stackSize = lua_gettop(tag->ctx->lua);
     #endif
 
     topaz_lua_object_push_to_top_from_tag(tag);
-    const char * strC = duk_to_string(tag->ctx->js, -1);
-    topaz_string_concat_printf(str, "%s", strC);
-    duk_pop(tag->ctx->js);
+    const char * strC = lua_tostring(tag->ctx->lua, -1);
+    topaz_string_concat_printf(str, "%s", strC ? strC : "[not coercable to string]");
+    lua_pop(tag->ctx->lua, 1);
 
 
     #ifdef TOPAZDC_DEBUG 
-        assert(duk_get_top(tag->ctx->js) == stackSize);
+        assert(lua_gettop(tag->ctx->lua) == stackSize);
     #endif
 }
 
-
+/*
 // SUPPORT TRANS WRITES
 
 static const char * dvalue_to_string(duk_dvalue * dv) {
@@ -1662,27 +1666,27 @@ void topaz_system_script_lua__backend(
     );
 
 
-    api->objectAPI.object_reference_create_from_reference = NOOP;//topaz_lua_object_reference_create_from_reference;
-    api->objectAPI.object_reference_destroy = NOOP;//topaz_lua_object_reference_destroy;
-    api->objectAPI.object_reference_get_feature_mask = NOOP;//topaz_lua_object_reference_get_feature_mask;
-    api->objectAPI.object_reference_get_native_data = NOOP;//topaz_lua_object_reference_get_native_data;
-    api->objectAPI.object_reference_set_native_data = NOOP;//topaz_lua_object_reference_set_native_data;
-    api->objectAPI.object_reference_ref = NOOP;//topaz_lua_object_reference_ref;
-    api->objectAPI.object_reference_unref = NOOP;//topaz_lua_object_reference_unref;
-    api->objectAPI.object_reference_call = NOOP;//topaz_lua_object_reference_call;
-    api->objectAPI.object_reference_array_get_nth = NOOP;//topaz_lua_object_reference_array_get_nth;
-    api->objectAPI.object_reference_array_get_count = NOOP;//topaz_lua_object_reference_array_get_count;
-    api->objectAPI.object_reference_map_get_property = NOOP;//topaz_lua_object_reference_map_get_property;
-    api->objectAPI.object_reference_to_string = NOOP;//topaz_lua_object_reference_to_string;
+    api->objectAPI.object_reference_create_from_reference = topaz_lua_object_reference_create_from_reference;
+    api->objectAPI.object_reference_destroy = topaz_lua_object_reference_destroy;
+    api->objectAPI.object_reference_get_feature_mask = topaz_lua_object_reference_get_feature_mask;
+    api->objectAPI.object_reference_get_native_data = topaz_lua_object_reference_get_native_data;
+    api->objectAPI.object_reference_set_native_data = topaz_lua_object_reference_set_native_data;
+    api->objectAPI.object_reference_ref = topaz_lua_object_reference_ref;
+    api->objectAPI.object_reference_unref = topaz_lua_object_reference_unref;
+    api->objectAPI.object_reference_call = topaz_lua_object_reference_call;
+    api->objectAPI.object_reference_array_get_nth = topaz_lua_object_reference_array_get_nth;
+    api->objectAPI.object_reference_array_get_count = topaz_lua_object_reference_array_get_count;
+    api->objectAPI.object_reference_map_get_property = topaz_lua_object_reference_map_get_property;
+    api->objectAPI.object_reference_to_string = topaz_lua_object_reference_to_string;
 
     api->script_create = topaz_lua_create;
     api->script_destroy = topaz_lua_destroy;
     api->script_map_native_function = topaz_lua_map_native_function;
     api->script_run = topaz_lua_run;
     api->script_expression = topaz_lua_expression;
-    api->script_create_empty_object = NOOP;//topaz_lua_create_empty_object;
+    api->script_create_empty_object = topaz_lua_create_empty_object;
     api->script_throw_error = NOOP;//topaz_lua_throw_error;
-    api->script_bootstrap = NOOP;//topaz_lua_bootstrap;
+    api->script_bootstrap = topaz_lua_bootstrap;
 
 
     api->script_debug_start = topaz_lua_debug_start;
