@@ -142,6 +142,7 @@ void topaz_shape2d_form_image(
 
 /// Same as topaz_shape2d_form_image, except a specific width/height 
 /// can be given. If so, the image will be rescaled to match this width/height.
+/// If the asset is omitted, the same asset is used as last call.
 ///
 void topaz_shape2d_form_image_scaled(
     /// The shape2d to modify.
@@ -161,7 +162,7 @@ void topaz_shape2d_form_image_scaled(
 /// Forms the object into a specific frame of the given image asset.
 /// The given frame will always be valid. If its beyond the number of frames 
 /// in the image asset, the the frame index will be equal to frame modulo
-/// the total frame count.
+/// the total frame count. If the asset is omitted, the same asset is used as last call.
 ///
 void topaz_shape2d_form_image_frame(
     /// The shape2d to modify.

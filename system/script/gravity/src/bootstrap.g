@@ -2382,6 +2382,9 @@ class Topz {
         func formImage(img) {
             topaz_.topaz_shape2d__form_image(impl, img.impl);
         }
+        func formImageFrame(img, a) {
+            topaz_.topaz_shape2d__form_image_frame(impl, img.impl, a);
+        }
         func formImageScaled(img, w, h) {
             topaz_.topaz_shape2d__form_image(impl, img.impl, w, h);
         }

@@ -200,6 +200,33 @@ TSO_SCRIPT_API_FN(shape2d_api__form_image) {
     TSO_NO_RETURN;
 }
 
+TSO_SCRIPT_API_FN(shape2d_api__form_image_frame) {
+    TSO_ASSERT_ARG_COUNT(3);
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
+
+    if (topaz_script_object_get_type(arg2) = topazScript_Object_Type_Undefined) {
+        topaz_shape2d_form_image_frame(
+            native,
+            NULL,
+            topaz_script_object_as_int(arg2)
+        );
+    } else {
+        TSO_NATIVIZE_1(topazAsset_t *, TSO_OBJECT_TYPE__ASSET);   
+        topaz_shape2d_form_image_frame(
+            native,
+            native1,
+            topaz_script_object_as_int(arg2)
+        );
+
+    }
+
+    TSO_NO_RETURN;
+}
+
+
 TSO_SCRIPT_API_FN(shape2d_api__form_image_scaled) {
     TSO_ASSERT_ARG_COUNT(4);
     TSO_ARG_0;
@@ -207,14 +234,25 @@ TSO_SCRIPT_API_FN(shape2d_api__form_image_scaled) {
     TSO_ARG_2;
     TSO_ARG_3;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
-    TSO_NATIVIZE_1(topazAsset_t *, TSO_OBJECT_TYPE__ASSET);   
 
-    topaz_shape2d_form_image_scaled(
-        native,
-        native1,
-        topaz_script_object_as_number(arg2),
-        topaz_script_object_as_number(arg3)
-    );
+
+    if (topaz_script_object_get_type(arg2) = topazScript_Object_Type_Undefined) {
+        topaz_shape2d_form_image_scaled(
+            native,
+            NULL,
+            topaz_script_object_as_number(arg2),
+            topaz_script_object_as_number(arg3)
+        );
+    } else {
+        TSO_NATIVIZE_1(topazAsset_t *, TSO_OBJECT_TYPE__ASSET);   
+        topaz_shape2d_form_image_scaled(
+            native,
+            native1,
+            topaz_script_object_as_number(arg2),
+            topaz_script_object_as_number(arg3)
+        );
+
+    }
     TSO_NO_RETURN;
 }
 
@@ -307,6 +345,7 @@ static void add_refs__shape2d_api(topazScript_t * script, topazScriptManager_t *
 
     TS_MAP_NATIVE_FN("topaz_shape2d__form_rectangle", shape2d_api__form_rectangle);
     TS_MAP_NATIVE_FN("topaz_shape2d__form_image", shape2d_api__form_image);
+    TS_MAP_NATIVE_FN("topaz_shape2d__form_image_frame", shape2d_api__form_image_frame);
     TS_MAP_NATIVE_FN("topaz_shape2d__form_image_scaled", shape2d_api__form_image_scaled);
     TS_MAP_NATIVE_FN("topaz_shape2d__form_radial", shape2d_api__form_radial);
     TS_MAP_NATIVE_FN("topaz_shape2d__form_triangles", shape2d_api__form_triangles);

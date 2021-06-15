@@ -23,7 +23,7 @@ Topaz.Vector rotation
 /// Sets/Gets the scale with the host entity being the parent transform.
 Topaz.Vector scale
 
-/// Forms the object into a triangle. The Shape2D origin is the top-left of the
+/// Forms the object into a rectangle. The Shape2D origin is the top-left of the
 /// rectangle. 
 ///
 func formRectangle ->
@@ -42,8 +42,17 @@ func formImage ->
     /// The image asset to use as the source.
     Topaz.Image image
 
+/// Forms the object into the shape and visual of an image's specific frame.
+/// If the image argument is empty, the currently set image is used.
+func formImageFrame ->
+    /// The image asset to use as the source.
+    Topaz.Image image
+    /// The frame of the image, 0-indexed.
+    Integer frameIndex
+
 /// Same as topaz_shape2d_form_image, except a specific width/height 
 /// can be given. If so, the image will be rescaled to match this width/height.
+/// If the image argument is empty, the currently set image is used.
 ///
 func formImageScaled ->
     /// The image asset to use as the source.

@@ -54,10 +54,6 @@ static char * MAGIC_ID__SHAPE_2D = "t0p4zsh4p32d";
 #endif
 
 
-typedef enum {
-    AnimMode_Normal,
-    AnimMode_SingleFrame,
-} AnimMode;
 
 typedef struct {
     #ifdef TOPAZDC_DEBUG
@@ -71,7 +67,6 @@ typedef struct {
     topazVector_t center;
     float animSpeed;
     int animFrame;
-    AnimMode animMode;
     // for texture tracking
     uint32_t notifID;
     topazAsset_t * notifImg;
@@ -271,22 +266,22 @@ void topaz_shape2d_form_rectangle(topazComponent_t * c, float w, float h) {
 
 void topaz_shape2d_form_image(topazComponent_t * c, topazAsset_t * img) {
     topaz_shape2d_form_image_frame(c, img, 0);
-    Shape2D * s = shape2d__retrieve(c);
-    s->animMode = topaz_image_get_frame_count(img) == 1 ? AnimMode_SingleFrame : AnimMode_Normal;
 }
 
 
 void topaz_shape2d_form_image_scaled(topazComponent_t * c, topazAsset_t * img, float width, float height) {
+    if (!img) img = s->id;
+    if (!img) return;
     topaz_shape2d_form_image_frame_scaled(c, img, 0, width, height);
-    Shape2D * s = shape2d__retrieve(c);
-    s->animMode = topaz_image_get_frame_count(img) == 1 ? AnimMode_SingleFrame : AnimMode_Normal;
 }
 
 void topaz_shape2d_form_image_frame(topazComponent_t * c, topazAsset_t * img, uint32_t frame) {
+    if (!img) img = s->id;
+    if (!img) return;
     if (topaz_image_get_frame_count(img) == 0) return;
     int w = topaz_image_get_width(img);
     int h = topaz_image_get_height(img);
-    topaz_shape2d_form_image_scaled(c, img, w, h);
+    topaz_shape2d_form_image_frame_scaled(c, img, frame, w, h);
 }
 
 
@@ -353,7 +348,6 @@ void topaz_shape2d_form_image_frame_scaled(topazComponent_t * c, topazAsset_t * 
     Shape2D * s = shape2d__retrieve(c);
     s->id = img;
     s->animFrame = frame;
-    s->animMode = AnimMode_SingleFrame;
     if (s->notifImg) {
         topaz_image_remove_texture_event_notify(s->notifImg, s->notifID);
     }
