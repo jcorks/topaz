@@ -84,7 +84,40 @@ typedef struct {
 } TOPAZLUABackend;
 
 
+static uint32_t stashPool = 1;
+
+
+typedef struct TOPAZLUA TOPAZLUA;
+
+// The tag is the data that "follows" a script object and is unique 
+// to that object. Since you can have multiple object references 
+// refer to the same object, the tag for that object should always be
+// the same for all those references.
+//
 typedef struct {
+    
+    // used for set/get native
+    void * nativeData;
+
+    // also used for set/get native
+    int tagID;
+
+    // reference counting for when to lock the object to prevent garbage collection
+    int refCount;
+
+    // the source context
+    TOPAZLUA * ctx;
+
+    // populated if the object was created from C
+    topaz_script_native_function cfinalizer;
+
+    void * cfinalizerData;
+
+    // used for finding the tag in the global stash
+    uint32_t stashID;
+} TOPAZLUAObjectTag;
+
+struct TOPAZLUA {
     lua_State * lua;
     topazScript_t * script;
     // used for object reference creation
@@ -131,36 +164,13 @@ typedef struct {
 
     // for temporary string operations.
     topazString_t * spfString;
-} TOPAZLUA;
-
-
-// The tag is the data that "follows" a script object and is unique 
-// to that object. Since you can have multiple object references 
-// refer to the same object, the tag for that object should always be
-// the same for all those references.
-//
-typedef struct {
     
-    // used for set/get native
-    void * nativeData;
+    // placeholder tag for functions, which all use the same tag.
+    // Bare minimum to work.
+    TOPAZLUAObjectTag functiontag;
+};
 
-    // also used for set/get native
-    int tagID;
 
-    // reference counting for when to lock the object to prevent garbage collection
-    int refCount;
-
-    // the source context
-    TOPAZLUA * ctx;
-
-    // populated if the object was created from C
-    topaz_script_native_function cfinalizer;
-
-    void * cfinalizerData;
-
-    // used for finding the tag in the global stash
-    uint32_t stashID;
-} TOPAZLUAObjectTag;
 
 
 
@@ -174,6 +184,31 @@ typedef struct {
     topazString_t * result;
 
 } DebugNotification;
+
+
+
+static int topaz_lua_object_finalizer(lua_State * l) {
+    TOPAZLUAObjectTag * tag = NULL;
+    tag = lua_touserdata(l, lua_upvalueindex(1)); 
+    lua_pop(l, 1);
+
+
+    #ifdef TOPAZDC_DEBUG
+        assert(tag);
+    #endif
+
+    // if this is even happening, the global stash entry was already removed.
+
+    // call c finalizer, which is why this is here mostly
+    if (tag->cfinalizer)
+        tag->cfinalizer(
+                tag->ctx->script, 
+                topaz_array_empty(), 
+                tag->cfinalizerData
+        );
+    free(tag);
+    return 0;
+}
 
 
 // gets the current debug traceback
@@ -214,17 +249,37 @@ static void * topaz_lua_get_private_prop(lua_State * l, const char * pName) {
 
 
 // Gets the object tag from the top object
-static TOPAZLUAObjectTag * topaz_lua_object_get_tag_from_top(lua_State * lua) {
+static TOPAZLUAObjectTag * topaz_lua_object_get_tag_from_top(TOPAZLUA * ctx) {
     #ifdef TOPAZDC_DEBUG
-        int stackSize = lua_gettop(lua);
+        int stackSize = lua_gettop(ctx->lua);
     #endif
 
+    if (lua_isfunction(ctx->lua, -1)) {
+        // TODO: save;
+        // right now, a new tag
+        // is created for every function as a sort of transient object, as 
+        // the function cannot refer back to the finalizer very simply 
+        // as can be done with tables. So, a finalizer is set to 
+        // clean this up after.
+
+        TOPAZLUAObjectTag * out = calloc(1, sizeof(TOPAZLUAObjectTag));
+        out->stashID = stashPool++;
+        out->ctx = ctx;        
+
+        // special one-off finalizer for function
+        lua_newtable(ctx->lua);
+        lua_pushlightuserdata(ctx->lua, out);
+        lua_pushcclosure(ctx->lua, topaz_lua_object_finalizer, 1);
+        lua_setfield(ctx->lua, -2, "__gc");
+        lua_setmetatable(ctx->lua, -2);
+        return out;
+    }
     // uhh?? unsafe if someone puts a ___tz prop by hand in a js context.
     // think of a different way before release, thanks
-    TOPAZLUAObjectTag * tag = topaz_lua_get_private_prop(lua, "___tz");
+    TOPAZLUAObjectTag * tag = topaz_lua_get_private_prop(ctx->lua, "___tz");
 
     #ifdef TOPAZDC_DEBUG 
-        assert(lua_gettop(lua) == stackSize);
+        assert(lua_gettop(ctx->lua) == stackSize);
     #endif
     return tag;
 }
@@ -235,8 +290,6 @@ static TOPAZLUAObjectTag * topaz_lua_top_object_set_tag(TOPAZLUA * ctx) {
     #ifdef TOPAZDC_DEBUG
         int stackSize = lua_gettop(ctx->lua);
     #endif
-
-    static uint32_t stashPool = 1;
 
     TOPAZLUAObjectTag * out = calloc(1, sizeof(TOPAZLUAObjectTag));
     out->stashID = stashPool++;
@@ -291,30 +344,6 @@ static void topaz_lua_object_unkeep_reference(TOPAZLUA * ctx, TOPAZLUAObjectTag 
 }
 
 
-static int topaz_lua_object_finalizer(lua_State * l) {
-    TOPAZLUAObjectTag * tag = NULL;
-    lua_getupvalue(l, -1, 1); 
-    tag = lua_touserdata(l, -1); 
-    lua_pop(l, 1);
-
-
-    #ifdef TOPAZDC_DEBUG
-        assert(tag);
-    #endif
-
-    // if this is even happening, the global stash entry was already removed.
-
-    // call c finalizer, which is why this is here mostly
-    if (tag->cfinalizer)
-        tag->cfinalizer(
-                tag->ctx->script, 
-                topaz_array_empty(), 
-                tag->cfinalizerData
-        );
-    free(tag);
-    return 0;
-}
-
 
 
 static void topaz_lua_object_push_to_top_from_tag(TOPAZLUAObjectTag * tag) {
@@ -340,8 +369,8 @@ static void * topaz_lua_top_object_wrap(void * ctxSrc) {
     #ifdef TOPAZDC_DEBUG
         int stackSize = lua_gettop(ctx->lua);
     #endif
-
-    TOPAZLUAObjectTag * tag = topaz_lua_object_get_tag_from_top(ctx->lua);
+    
+    TOPAZLUAObjectTag * tag = topaz_lua_object_get_tag_from_top(ctx);
 
     if (!tag) {
         // create a new tag and bind that tag to this object using a hidden prop
@@ -437,9 +466,8 @@ static void topaz_lua_object_push_tso(TOPAZLUA * ctx, topazScript_Object_t * o) 
         break;
 
       case topazScript_Object_Type_Reference: {
-        //TOPAZLUAObjectTag * tag = topaz_script_object_get_api_data(o);
-        //topaz_lua_object_push_to_top_from_tag(tag);
-        lua_pushnil(ctx->lua);
+        TOPAZLUAObjectTag * tag = topaz_script_object_get_api_data(o);
+        topaz_lua_object_push_to_top_from_tag(tag);
         break;
       }
       default:
@@ -533,19 +561,17 @@ static duk_ret_t topaz_lua_set_internal(duk_context * js) {
 
 */
 static int topaz_lua_native_function_internal(lua_State * l) {
-    #ifdef TOPAZDC_DEBUG
-        int stackSize = lua_gettop(l);
-    #endif
+
+    uint32_t nargs = lua_gettop(l);
+
 
     // retrieve tag and actual getter
-    lua_getupvalue(l, -1, 1); TOPAZLUA * ctx = lua_touserdata(l, -1); lua_pop(l, 1);
-    lua_getupvalue(l, -1, 2); topaz_script_native_function fnReal = lua_touserdata(l, -1); lua_pop(l, 1);
-    lua_getupvalue(l, -1, 3); void * fnData = lua_touserdata(l, -1); lua_pop(l, 1);
-
+    TOPAZLUA * ctx                      = lua_touserdata(l, lua_upvalueindex(1));
+    topaz_script_native_function fnReal = lua_touserdata(l, lua_upvalueindex(2));
+    void * fnData                       = lua_touserdata(l, lua_upvalueindex(3));
 
     // convert all args to tso
     uint32_t i;
-    uint32_t nargs = lua_gettop(l);
     topazScript_Object_t * args[nargs];
     for(i = 0; i < nargs; ++i) {
         args[i] = topaz_lua_stack_object_to_tso(ctx, i+1);
@@ -559,10 +585,10 @@ static int topaz_lua_native_function_internal(lua_State * l) {
     );
 
     #ifdef TOPAZDC_DEBUG 
-        assert(lua_gettop(l) == stackSize);
+        assert(lua_gettop(l) == nargs);
     #endif
 
-    // finally, push the tso result as a duk object 
+    // finally, push the tso result as a lua object 
     if (res) {
         topaz_lua_object_push_tso(ctx, res);
         topaz_script_object_destroy(res);
@@ -670,6 +696,7 @@ static void * topaz_lua_create(topazScript_t * scr, topaz_t * ctx) {
     out->debugQueuedNotifications = topaz_array_create(sizeof(DebugNotification));
     out->spfString = topaz_string_create();
     out->lua = luaL_newstate();
+    out->functiontag.ctx = out;
     luaL_openlibs(out->lua);
     out->script = scr;
 
@@ -862,7 +889,7 @@ topazScript_Object_t * topaz_lua_create_empty_object(
     topazScript_Object_t * out = topaz_lua_stack_object_to_tso(ctx, -1);
 
     // get the tag so we can add the finalizer
-    TOPAZLUAObjectTag * tag = topaz_lua_object_get_tag_from_top(ctx->lua);
+    TOPAZLUAObjectTag * tag = topaz_lua_object_get_tag_from_top(ctx);
 
     tag->cfinalizer = cleanup;
     tag->cfinalizerData = cleanupData;
@@ -967,11 +994,11 @@ static int topaz_lua_object_reference_get_feature_mask(topazScript_Object_t * o,
         if (calltype == LUA_TFUNCTION) {
             out |= topazScript_Object_Feature_Callable;
         }
-        if (calltype == LUA_TNIL) {
-            lua_pop(ctx, -1);
+        if (calltype != LUA_TNIL) {
+            lua_pop(ctx, 1);
         }
     }
-    lua_pop(ctx, -1);
+    lua_pop(ctx, 1);
 
     #ifdef TOPAZDC_DEBUG 
         assert(lua_gettop(ctx) == stackSize);
@@ -1013,7 +1040,7 @@ static void topaz_lua_object_reference_unref(topazScript_Object_t * o, void * da
 
         topaz_lua_object_push_to_top_from_tag(tag);
         topaz_lua_object_unkeep_reference(tag->ctx, tag);
-        lua_pop(tag->ctx->lua, -1); 
+        lua_pop(tag->ctx->lua, 1); 
 
         #ifdef TOPAZDC_DEBUG 
             assert(lua_gettop(tag->ctx->lua) == stackSize);

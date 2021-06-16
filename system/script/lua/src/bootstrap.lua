@@ -368,20 +368,45 @@ Class = {}
 -- Its basic, but workable!!
 --
 -- Usage:
+--[[
+MyClass = class({
+  define = function(instance, arg1, arg2) 
+  
+    local privateVar = arg1+arg2;
+
+    instance.interface({
+    
+      publicFunction = function()
+        return privateVar
+      end
+      
+      publicValue = {
+        get = function()
+          return privateVar
+        end
+      }
+    }); 
+ 
+  end
+})
+
+instance = MyClass(2, 4);
+
+print(instance.publicFunction()) --> 6
+print(instance.publicValue)      --> 6
+
+--]]
 --
--- MyClass = class({
---   define = function(instance, arg1, arg2) 
---     local privateVar = arg1+arg2;
---     function instance:publicFunction()
---       return privateVar
---     end
---   end
--- })
---
--- instance = MyClass(2, 4);
---
--- print(instance.publicFunction()) --> 6
---
+-- Features:
+--[[
+
+- Inheritance with access to superclass members 
+- Throws error if unrecognized members are accessed
+- toString
+- Explicitly defined public interface 
+
+
+]]--
 
 function class(d) 
 
@@ -390,31 +415,109 @@ function class(d)
         constructor = d.define
     };
     
+    local classinst = {};
+    if d.declare ~= nil then 
+        d.declare(classinst);
+    end
     
-    local out = {
-        new = function(...) 
-            local out = nil;
-            if data.inherits ~= nil then
-                out = data.inherits(...);
-            end
-            if (out == nil) then out = {} end
-            data.constructor(out, ...); 
-            local mt = {};            
-            if d.toString ~= nil then mt.__tostring = function()return d.toString(out)end; end
-            setmetatable(out, mt);            
-
-            return out;
+    classinst.new = function(...) 
+        local out = nil;
+        if data.inherits ~= nil then
+            out = data.inherits(...);
         end
-    };
+        if (out == nil) then out = {} end
+        
 
-    data.inst = out;
+        local getters;            
+        local setters;
+        local pfuncs;
+
+
+        -- for inheritance, this will already 
+        -- exist and can be appended.
+        if out.__class ~= nil then 
+            getters = out.__class.getters;
+            setters = out.__class.setters;
+            pfuncs  = out.__class.pfuncs;
+        else 
+            getters = {};
+            setters = {};
+            pfuncs  = {};            
+        end
+
+        
+        -- captured set/get.
+        local makeprop = function(name, pdefine)
+            if pdefine.set ~= nil then 
+                setters[name] = pdefine.set;                
+            end
+            if pdefine.get ~= nil then 
+                getters[name] = pdefine.get;                
+            end
+        end
+
+        -- TODO: preserve old metatable better. This is sloppy!
+        local oldmt = getmetatable(out);
+        setmetatable(out, {});
+        -- one function that defines the class interface
+        out.interface = function(obj)
+            setmetatable(out, {});
+            for k, v in pairs(obj) do
+                if type(v) == 'function' then
+                    pfuncs[k] = v;
+                    out[k] = v;
+                elseif type(v) == 'table' then 
+                    makeprop(k, v);
+                end
+            end
+        end
+        setmetatable(out, oldmt);
+
+        -- actually define interface
+        data.constructor(classinst, out, ...); 
+        out.interface = nil;
+        if out.__class == nil then 
+            out.__class = {
+                getters = getters,
+                setters = setters,
+                pfuncs = pfuncs
+            }            
+        end
+        
+        
+        local mt = {
+            __index = function(table, key)
+                local g = getters[key];
+                if g ~= nil then 
+                    return g()
+                end
+                error('Unknown public member "'..key..'"'..debug.traceback());
+             end,
+             
+            __newindex = function(table, key, value)
+                local s = setters[key];
+                if s ~= nil then 
+                    s(value)  
+                    return;                  
+                end
+
+                error('Unknown public member "'..key..'"' ..debug.traceback());
+            end
+        };            
+
+        if d.toString ~= nil then mt.__tostring = function()return d.toString(out)end; end
+        setmetatable(out, mt);            
+
+        return out;
+    end
+
     setmetatable(
-        out, {
-            __call = function(nu, ...) return out.new(...) end,
+        classinst, {
+            __call = function(nu, ...) return classinst.new(...) end,
             __tostring = function()return '[Topaz Class]'end
         }
     );
-    return out;
+    return classinst;
 end
 
 
@@ -426,37 +529,51 @@ end
 -- this external data and usually have little to no state 
 -- outside of this.
 __Native__ = class({
-    uniqueObjectPool = 0,
-    define = function(this)
+    declare = function(thisclass)
+        thisclass.uniqueObjectPool = 0;    
+    end,
+    
+    define = function(thisclass, this)
         local impl = nil;
+        local id = thisclass.uniqueObjectPool;
+        thisclass.uniqueObjectPool = 1 + thisclass.uniqueObjectPool;       
         
-        -- binds a native instance to this table. Will throw an error 
-        -- if no since native instance can be bound. Binding happens through 2 
-        -- mechanisms: 1) instData.nativeCreate is a native function that can 
-        -- return a new object for us to use or 2) instData.instance contains 
-        -- a preexisting native reference.
-        this.bindNative = function(instData, ...) 
-            impl = instaData.instance;
-            if instData.impl == nil and instData.nativeCreate ~= nil then 
-                this.impl = instData.nativeCreate(...);
-            end
-            if impl == nil then
-                error('Topaz.Native instance cannot have a nil native reference.');
-                return;
-            end
-            impl.ctx__ = this;
-        end
-        
-        
-        -- A unique id that identifies this instance.
-        this.uniqueID = Topaz.Native.uniqueObjectPool;
-        Topaz.Native.uniqueObjectPool = 1 + Topaz.Native.uniqueObjectPool;       
-        
-        
-        --public: Gets the external reference to this external class
-        this.getInstance = function() 
-            return impl;
-        end            
+        this.interface({
+            -- binds a native instance to this table. Will throw an error 
+            -- if no since native instance can be bound. Binding happens through 2 
+            -- mechanisms: 1) instData.nativeCreate is a native function that can 
+            -- return a new object for us to use or 2) instData.instance contains 
+            -- a preexisting native reference.
+            bindNative = function(instData, ...) 
+                impl = instData.instance;
+                if instData.impl == nil and instData.nativeCreate ~= nil then 
+                    impl = instData.nativeCreate(...);
+                end
+                if impl == nil then
+                    error('Topaz.Native instance cannot have a nil native reference.'.. tostring(debug.traceback('')));
+                    return;
+                end
+                impl.ctx__ = this;
+                return impl;
+            end,
+            
+            
+            -- A unique id that identifies this instance.
+            uniqueID = {
+                get = function()
+                    return id;
+                end            
+            },
+            
+            
+            --Gets the external reference to this external class
+            native = { 
+                get = function() 
+                    return impl;
+                end
+            }          
+        });
+     
     end
 });
 
@@ -487,6 +604,10 @@ Topaz = {
     fromBase64 = function(f) 
         return Topaz.Data(topaz__from_base64(f));
     end,
+    
+    setRoot = function(e)
+        return topaz__set_root(e.native)
+    end,
 
     objectToString = function(obj, levelSrc)
         local checked = {};
@@ -508,11 +629,9 @@ Topaz = {
                 
                 checked[obj] = 1;
 
-                local strOut = '{\n';
+                local strOut = '|'..tostring(obj)..'|{\n';
                 local levelInv = levelG - level;    
 
-                for n = 0, level do strOut = strOut .. '  '; end
-                strOut = strOut .. '  \'__tostring()\' -> "' .. tostring(obj) .. '"\n' 
                                 
                 for k,v in pairs(obj) do 
                     local subStr;
@@ -522,7 +641,7 @@ Topaz = {
                         subStr = v;
                     end
                     for n = 0, level do strOut = strOut .. '  '; end
-                    strOut = strOut .. '  \'' .. k .. '\' : \'' .. subStr .. '\',\n'; 
+                    strOut = strOut .. '  ' .. k .. ' : ' .. subStr .. ',\n'; 
                 
                 end
                 for n = 0, level do strOut = strOut .. '  '; end
@@ -553,11 +672,503 @@ Topaz = {
         
         Path = class({
             inherits = __Native__,
-            define   = function(this, implePre)
-                this.bindNative(implePre);
+            define   = function(thisclass, this, implePre)
+                local impl = this.bindNative({instance = implePre});
+
+                this.interface({
+                    string = {
+                        get = function()
+                            return topaz_filesystem_path__as_string(impl);
+                        end
+                    },
+                    
+                    parent = {
+                        get = function()
+                            return Topaz.Filesystem.Path(topaz_filesystem_path__get_parent(impl));
+                        end
+                    },
+                    
+                    children = {
+                        get = function()
+                            local out = {};
+                            local len = topaz_filesystem_path__get_child_count(impl);
+                            for i = 0, len-1 do 
+                                local p = Topaz.Filesystem.Path(topaz_filesystem_path__get_nth_child(impl, i));
+                                if p ~= nil then
+                                    table.insert(out, p);
+                                end
+                            end
+                            return out;
+                        end
+                    }
+                });
             end
-        })
+        }),
     },
+    
+    RNG = class({
+        inherits = __Native__,
+        define = function(thisclass, this, implePre, ...);
+
+            local impl = this.bindNative({
+                instance = implePre, 
+                nativeCreate = topaz_rng__create
+            }, ...);
+
+            
+            this.interface({
+                seed = {
+                    set = function(s) 
+                        topaz_rng__set_seed(impl, s);
+                    end
+                },
+                
+                integer = {
+                    get = function() 
+                        return topaz_rng__next_int(impl);
+                    end
+                },
+                
+                value = {
+                    get = function() 
+                        return topaz_rng__next_value(impl);
+                    end
+                }
+            });
+        end
+    }),
+    
+    
+    Entity = class({
+        inherits = __Native__,
+        define = function(thisclass, this, implePre, ...)
+            local impl = this.bindNative({
+                instance = implePre,
+                nativeCreate = topaz_entity__create
+            });
+            
+            this.interface({
+                isValid = {
+                    get = function()
+                        return topaz_entity__is_valid(impl);
+                    end
+                },
+                
+                remove = function()
+                    topaz_entity__remove(impl);
+                end,
+                
+                childCount = {
+                    get = function()
+                        return topaz_entity__get_child_count(impl);
+                    end
+                },
+                
+                nthChild = function(n)
+                    local f = topaz_entity__get_nth_child(impl, n);
+                    if f.__ctx ~= nil then return f.__ctx end;
+                    return thisclass.new(f);                
+                end,
+                
+                
+                children = {
+                    get = function()
+                        local children = {};
+                        local len = topaz_entity__get_child_count(impl);
+                        for i = 1, len do 
+                            table.append(children, topaz_entity__get_nth_child(this.impl, i).__ctx);
+                        end
+                        return children;
+                    end,
+                    
+                    set = function(c)
+                        while topaz_entity__get_child_count(impl) do
+                            topaz_entity__detach(topaz_entity__get_nth_child(impl, 0));
+                        end
+                            
+                        for i = 1, #c do
+                            topaz_entity__attach(impl, c[i].native);
+                        end
+                    end
+                },
+                
+                
+                --TODO: the rest, also onStep, onDraw, etc <3
+                step = function() 
+                    topaz_entity__step(impl);
+                end,
+                
+                draw = function() 
+                    topaz_entity__step(impl);
+                end,
+
+                attach = function(other) 
+                    topaz_entity__attach(impl, other.native);
+                end,
+
+                detach = function() 
+                    topaz_entity__detach(impl);
+                end,
+                
+                parent = {
+                    get = function() 
+                        local f = topaz_entity__get_parent(impl);
+                        if f.__ctx ~= nil then return f.__ctx; end
+                        return thisclass.new(f);
+                    end,
+                    
+                    set = function(v)
+                        topaz_entity__attach(v.native, impl);
+                    end
+                },
+                
+                query = function(name) 
+                    local f = topaz_entity__query(impl, name);
+                    if f.__ctx ~= nil then return f.ctx end;
+                    return thisclass.new(f);
+                end,
+                
+                
+                search = function(name)
+                    local f = topaz_entity__search(impl, name);
+                    if f.__ctx ~= nil then return f.ctx end;
+                    return thisclass.new(f);                
+                end,
+                
+                priority = {
+                    get = function() return topaz_entity__get_priority(impl);end, 
+                    set = function(v)topaz_entity__set_priority(impl, v);end               
+                },
+                
+    
+                setPriorityLast = function()
+                    topaz_entity__set_priority_last(impl);
+                end,
+    
+                setPriorityFirst = function()
+                    topaz_entity__set_priority_first(impl);
+                end,
+
+                position = {
+                    get = function()   return Topaz.Vector(0, 0, 0, topaz_entity__get_position(impl)); end,
+                    set = function(v)  topaz_entity__set_position(impl, v.native); end
+                },
+                
+                scale = {
+                    get = function()  return Topaz.Vector(0, 0, 0, topaz_entity__get_scale(impl));end,
+                    set = function(v) topaz_entity__set_scale(impl, v.native);end
+                },
+                
+                globalPosition = {
+                    get = function() return Topaz.Vector(0, 0, 0, topaz_entity__get_global_position(impl));end
+                },
+                
+                isStepping = {
+                    get = function() return topaz_entity__is_stepping(impl); end
+                },
+                
+                isDrawing = {
+                    get = function() return topaz_entity__is_drawing(impl) end
+                },
+                
+                stepping = {
+                    get = function()  return topaz_entity__get_stepping(impl);end,
+                    set = function(v) return topaz_entity__set_stepping(impl, v);end
+                },
+                
+                drawing = {
+                    get = function()  return topaz_entity__get_drawing(impl);end,
+                    set = function(v) return topaz_entity__set_drawing(impl, v);end
+                },
+                
+                name = {
+                    get = function()  return topaz_entity__get_name(impl);end,
+                    set = function(v) return topaz_entity__set_name(impl, v);end
+                },
+
+                addComponent = function(c)
+                    topaz_entity__add_component(impl, c.native);
+                end,
+            
+                addComponentAfter = function(c)
+                    topaz_entity__add_component_after(impl, c.native);
+                end,
+                    
+                components = {
+                    get = function()
+                        local len = topaz_entity__get_component_count(impl);
+                        local out = {};
+                        for i = 1, len do
+                            local f = topaz_entity__get_nth_component(impl, i-1);
+                            if f.__ctx ~= nil then
+                                table.append(out, f.__ctx);
+                            else 
+                                out.push(Topaz.Component(f));
+                            end
+                        end
+                        return out;
+                    end,
+                    set = function(c)
+                        while topaz_entity__get_component_count(impl) do
+                            topaz_entity__remove_component(impl, topaz_entity__get_nth_component(impl, 0));
+                        end
+
+                        for i = 1, #c do
+                            topaz_entity__add_component(impl, c[i].native);
+                        end
+                    end
+                },
+
+
+                queryComponent = function(tag) 
+                    local f = topaz_entity__query_component(impl, tag);
+                    if f.__ctx ~= nil then return f.__ctx; end
+                    return Topaz.Component(f);
+                end,
+            
+                removeComponent = function(c)
+                    return topaz_entity__remove_component(impl, c.native);
+                end,
+                
+                onStep = {set = function(v)
+                        topaz_entity__set_on_step(impl, function() v() end);
+
+                end},
+
+                onDraw = {set = function(v)
+                        topaz_entity__set_on_draw(impl, function()v()end);
+                end},
+
+                onPreStep = {set = function(v)
+                        topaz_entity__set_on_pre_step(impl, function()v()end);
+                end},
+
+                onPreDraw = {set = function(v)
+                        topaz_entity__set_on_pre_draw(impl, function()v()end);
+                end},
+                
+                onAttach = {set = function(v)
+                        topaz_entity__set_on_attach(impl, function()v()end);
+                end},
+
+                onDetach = {set = function(v)
+                        topaz_entity__set_on_detach(impl, function()v()end);
+                end},
+
+                onRemove = {set = function(v)
+                        topaz_entity__set_on_remove(impl, function()v()end);
+                end}
+
+                
+
+
+            
+            });        
+        end    
+    }),
+    
+    Vector = class({
+        inherits = __Native__,
+        define = function(thisclass, this, x_, y_, z_, implPre)
+
+            local impl = this.bindNative({
+                instance = implePre,
+                nativeCreate = topaz_vector__create
+            }, x_, y_, z_);
+            
+            this.interface({
+                getDistance = function(other)
+                    return topaz_vector__get_distance(impl, other.native);
+                end,
+                
+                normalize = function()
+                    this.topaz_vector__normalize(impl);   
+                end,
+                
+                cross = function(other)
+                    return Topaz.Vector(0, 0, 0, topaz_vector__cross(impl, other.native));
+                end,
+
+                floor = function()
+                    topaz_vector__floor(impl);
+                end,
+                
+                rotationXDiff = function(other)
+                    return topaz_vector__rotation_x_diff(impl, other.native);
+                end,
+                
+                rotationXDiffRelative = function(other)
+                    return topaz_vector__rotation_x_diff_relative(impl, other.native);
+                end,
+                
+                rotationX = function() 
+                    return topaz_vector__rotation_x(impl);
+                end,
+                
+                rotationYDiff = function(other) 
+                    return topaz_vector__rotation_y_diff(impl, other.native);
+                end,
+                
+                rotationYDiffRelative = function(other)
+                    return topaz_vector__rotation_y_diff_relative(impl, other.native);
+                end,
+                
+                rotationY = function()
+                    return topaz_vector__rotation_y(impl);
+                end,
+                
+                rotationZDiff = function(other)
+                    return topaz_vector__rotation_z_diff(impl, other.native);
+                end,
+                
+                rotationZDiffRelative = function(other)
+                    return topaz_vector__rotation_z_diff_relative(impl, other.native);
+                end,
+                
+                rotationZ = function()
+                    return topaz_vector__rotation_z(impl);
+                end,
+                
+                rotateX = function(val)
+                    topaz_vector__rotate_x(impl, val);
+                end,
+                
+                rotateY = function(val)
+                    topaz_vector__rotate_y(impl, val);
+                end,
+                
+                rotateZ = function(val)
+                    topaz_vector__rotate_z(impl, val);
+                end,
+                
+                remove = function()
+                    topaz_vector__destroy(impl);
+                    impl = {};
+                end,
+                
+                add = function(b)
+                    return Topaz.Vector(this.x + b.x, this.y + b.y, this.z + b.z);
+                end,
+                
+                subtract = function(b)
+                    return Topaz.Vector(this.x - b.x, this.y - b.y, this.z - b.z);
+                end,
+
+                multiply = function(b)
+                    return Topaz.Vector(this.x * b.x, this.y * b.y, this.z * b.z);
+                end,
+                
+                divide = function(b)
+                    return Topaz.Vector(this.x / b.x, this.y / b.y, this.z / b.z);
+                end,
+                
+                length = {get = function()return topaz_vector__get_length(impl)end},
+                x = {get = function()return topaz_vector__get_x(impl);end, set = function(v)topaz_vector__set_x(impl, v);end},
+                y = {get = function()return topaz_vector__get_y(impl);end, set = function(v)topaz_vector__set_y(impl, v);end},
+                z = {get = function()return topaz_vector__get_z(impl);end, set = function(v)topaz_vector__set_z(impl, v);end}
+
+            });        
+        end,
+        toString = function(this)
+            return '{'..this.x..','..this.y..',' ..this.z..'}';        
+        end
+    }),
+    
+    Component = class({
+        inherits = __Native__,
+        define = function(thisclass, this, implePre)
+            local impl = this.bindNative({
+                instance = implePre,
+                nativeCreate = topaz_component__create
+            }, '');
+
+            this.interface({
+                destroy = function()
+                    topaz_component__destroy(impl);
+                end,
+                
+                step = function()
+                    topaz_component__run(impl);
+                end,
+                
+                draw = function()
+                    topaz_component__draw(impl);
+                end,
+                
+                stepping = {
+                    get = function()  return topaz_component__get_stepping(impl);end,
+                    set = function(v) topaz_component__set_stepping(impl, v);end
+                },
+                
+                drawing = {
+                    get = function()  return topaz_component__get_drawing(impl);end,
+                    set = function(v) topaz_component__set_drawing(impl, v);end
+                },
+                
+                tag = {
+                    get = function()  return topaz_component__get_tag(impl);end,
+                    set = function(v) topaz_component__set_tag(impl, v);end
+                },
+                
+                host = {
+                    get = function()
+                        local f = topaz_component__get_host(this.impl);
+                        if f.__ctx ~= nil then return f.__ctx end;
+                        return Topaz.Entity(f);
+                    end
+                },
+                
+                emitEvent = function(eventName, ent)
+                    if ent == nil then
+                        return topaz_component__emit_event_anonymous(impl, eventName);
+                    else
+                        return topaz_component__emit_event(impl, eventName, ent.native);
+                    end
+                end,
+                
+                canHandleEvent = function(name)
+                    return topaz_component__can_handle_event(impl, name);
+                end,
+                
+                installEvent = function(event, callback)
+                    local cb;
+                    if callback ~= nil then
+                        cb = function(component, ent)callback(component.__ctx, ent.__ctx)end
+                    else 
+                        cb = function()end
+                    end
+                        
+                    topaz_component__install_event(impl, event, cb);
+                end,
+                
+                uninstallEvent = function(event)
+                    topaz_component__uninstall_event(impl, event);
+                end,
+                
+                installHook = function(event, callback)
+                    return topaz_component__install_hook(impl, event, function(component, ent)
+                        callback(component.__ctx, ent.__ctx);
+                    end);
+                end,
+                
+                uninstallHook = function(event, id)
+                    topaz_component__uninstall_hook(impl, event, id);
+                end,
+                
+                installHandler = function(event, callback)
+                    return topaz_component__install_handler(this.impl, event, function(component, ent)
+                        callback(component.__ctx, ent.__ctx);
+                    end);
+                end,
+                
+                uninstallHandler = function(event, id)
+                    topaz_component__uninstall_handler(impl, event, id);
+                end
+            });
+        end
+    });
   
 
 }
+
+

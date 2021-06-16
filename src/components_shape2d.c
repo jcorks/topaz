@@ -270,14 +270,10 @@ void topaz_shape2d_form_image(topazComponent_t * c, topazAsset_t * img) {
 
 
 void topaz_shape2d_form_image_scaled(topazComponent_t * c, topazAsset_t * img, float width, float height) {
-    if (!img) img = s->id;
-    if (!img) return;
     topaz_shape2d_form_image_frame_scaled(c, img, 0, width, height);
 }
 
 void topaz_shape2d_form_image_frame(topazComponent_t * c, topazAsset_t * img, uint32_t frame) {
-    if (!img) img = s->id;
-    if (!img) return;
     if (topaz_image_get_frame_count(img) == 0) return;
     int w = topaz_image_get_width(img);
     int h = topaz_image_get_height(img);
@@ -346,6 +342,8 @@ static void topaz_shape2d_texture_event(
 
 void topaz_shape2d_form_image_frame_scaled(topazComponent_t * c, topazAsset_t * img, uint32_t frame,  float w, float h) {
     Shape2D * s = shape2d__retrieve(c);
+    if (!img) img = s->id;
+    if (!img) return;
     s->id = img;
     s->animFrame = frame;
     if (s->notifImg) {

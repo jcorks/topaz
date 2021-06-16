@@ -207,7 +207,7 @@ TSO_SCRIPT_API_FN(shape2d_api__form_image_frame) {
     TSO_ARG_2;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
 
-    if (topaz_script_object_get_type(arg2) = topazScript_Object_Type_Undefined) {
+    if (topaz_script_object_get_type(arg2) == topazScript_Object_Type_Undefined) {
         topaz_shape2d_form_image_frame(
             native,
             NULL,
@@ -236,7 +236,7 @@ TSO_SCRIPT_API_FN(shape2d_api__form_image_scaled) {
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
 
 
-    if (topaz_script_object_get_type(arg2) = topazScript_Object_Type_Undefined) {
+    if (topaz_script_object_get_type(arg2) == topazScript_Object_Type_Undefined) {
         topaz_shape2d_form_image_scaled(
             native,
             NULL,
