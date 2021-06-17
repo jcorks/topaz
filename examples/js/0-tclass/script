@@ -1,13 +1,38 @@
 
 var BaseClass = tclass({
+    // Since class members are dynamically bound
+    // the definition function serves as both a constructor and a class definition.
+    // 
+    // classinst: the class definition. Can be used for static class storage.
+    // inst: the "this" object, representing a new object being constructed.
+    // argobj: optional constructor object / vaue
+    //
     define : function(classinst, inst, argobj) {
-        var privateA = argobj;
+    
+        // inaccessible. Private to the "define" closure.
+        var privateA = argobj.initialValue;
+        
+        // similarly functions are also part of this mechanic
         const privateFunction = function() {
             privateA = privateA - 1;
         }
         
         
+        
+        // Using private variables, the public members can be constructed
+        // There is no public storage, all variables are setters / getters.
+        //
+        // All public members are implemented in the interface() function 
+        // as an object argument. There are only 2 accepted types within the 
+        // object argument: a function, or a get/set object.
+        //
+        // get/set objects define a public variable.
+        // functions define a public method.
+        //
         inst.interface({ 
+
+            // public variables can have their get/sets defined 
+            // and have the get or set omitted for read/write only behavior.
             test : {
                 get : function() {
                     return privateA*2;
@@ -25,8 +50,13 @@ var BaseClass = tclass({
                 }
             },
 
+            // functions simplr
             nextValue : function() {
-                privateFunction();
+                privateA = 10;
+            },
+            
+            decrement : function() {
+                privateFunction();                
             },
             
             reset : function() {
@@ -37,11 +67,19 @@ var BaseClass = tclass({
 });
 
 var SubClass = tclass({
+    // Specify a single base class (may upgrade to array for multiple inheritance?)
     inherits : BaseClass,
+    
+    // same as before.
+    // Notice how the argobj is optionally ommitted since its not used.
     define : function(classinst, inst) {
+    
+        // We can override base class methods by just redefining it.
+        // Note that you can use only
         inst.interface({
             nextValue : function() { 
-                return 'f';
+                inst.decrement();
+                inst.decrement();
             }
         });
 
@@ -55,6 +93,26 @@ var SubClass = tclass({
 
 
 
-var a = SubClass.new(100);
-Topaz.log(JSON.stringify(a.introspect()));
+var a = SubClass.new({initialValue: 100});
+a.nextValue();
+Topaz.log(''+a);
+a.reset();
+Topaz.log(''+a);
+// prints:
+/*
+{
+  'public' : '{
+    'variables' : '{
+      'test' : 'Read/Write',
+      'b' : 'Read-only',
+    }',
+    'methods' : '{
+      'nextValue' : 'overridden',
+      'reset' : 'default',
+    }',
+  }',
+}
+*/
+Topaz.log(Topaz.objectToString(a.introspect()));
+
 

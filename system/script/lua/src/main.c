@@ -1101,7 +1101,7 @@ static topazScript_Object_t * topaz_lua_object_reference_array_get_nth(
     #endif
 
     topaz_lua_object_push_to_top_from_tag(tag);
-    lua_geti(tag->ctx->lua, -1, index);
+    lua_geti(tag->ctx->lua, -1, index+1);
     topazScript_Object_t * o = topaz_lua_stack_object_to_tso(tag->ctx, -1);
     lua_pop(tag->ctx->lua, 2);
 

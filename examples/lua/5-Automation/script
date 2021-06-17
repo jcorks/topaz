@@ -1,0 +1,108 @@
+Rectangle = tclass({
+    inherits = Topaz.Entity,
+    define = function(thisinst, ent) 
+        local visual = Topaz.Shape2D.new();
+        visual.formRectangle(30, 30);
+        visual.center = Topaz.Vector.new({x=15, y=15});
+
+
+        local anim = Topaz.Automation.new();
+        anim.installHook('on-anim-end', function()
+            Topaz.log('Animation reset!');
+        end);
+        anim.durationSeconds = 4;
+        anim.looped = true;
+
+
+        Topaz.Input.addKeyboardListener({
+            onPress = function(map, key)
+                -- speed up
+                if key == TOPAZ.INPUT.KEY_space then
+                    anim.speed = anim.speed + 0.25;                
+
+                -- slow down
+                elseif key == TOPAZ.INPUT.KEY_backspace then
+                    if anim.speed > 0 then
+                        anim.speed =  anim.speed - 0.25;
+                    else
+                        anim.speed = 0;
+                    end                
+                end
+            end
+        });
+
+
+        ent.components = {anim, visual};
+
+        ent.onStep = function()
+            local r = ent.position;
+            ent.position = Topaz.Vector.new({x=100+anim.value, y=r.y});
+        end
+
+    
+
+        ent.interface({
+            anim = {
+                get = function()
+                    return anim
+                end
+            },
+            
+            visual = {
+                get = function()
+                    return visual
+                end
+            }
+        })
+    end
+})
+
+
+RectangleLinear = tclass({
+    inherits = Rectangle,
+    define = function(thisclass, ent)
+        ent.visual.color = Topaz.Color.new({name='purple'});
+        ent.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE, 0);
+        ent.anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.LINEAR, 0.5);
+        ent.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.LINEAR, 1);
+
+        ent.position = Topaz.Vector.new({x=100, y=100});
+    end
+});
+
+RectangleAccel = tclass({
+    inherits = Rectangle,
+    define = function(thisclass, ent)
+        ent.visual.color = Topaz.Color.new({name='blue'});
+        ent.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE,   0);
+        ent.anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.ACCEL, 0.5);
+        ent.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.ACCEL, 1);
+
+        ent.position = Topaz.Vector.new({x=100, y=200});
+    end
+});
+
+RectangleSlow = tclass({
+    inherits = Rectangle,
+    define = function(thisclass, ent)
+        ent.visual.color = Topaz.Color.new({name='red'});
+        ent.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE,       0);
+        ent.anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.SLOW, 0.5);
+        ent.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SLOW, 1);
+
+
+        ent.position = Topaz.Vector.new({x=100, y=300});
+    end
+});
+
+
+
+root = Topaz.Entity.new();
+root.children = {
+    RectangleLinear.new(),
+    RectangleAccel.new(),
+    RectangleSlow.new()
+};
+
+Topaz.root = root;
+

@@ -372,6 +372,7 @@ var tclass = function(d) {
     }
     
     classinst.new = function(argobj, noseal) {
+        if (argobj == undefined) argobj = {};
         var out = undefined;
         if (d.inherits != undefined) {
             out = d.inherits.new(argobj, true);

@@ -1,8 +1,0 @@
-#include "@topaz.core"
-#include "ExampleScript1"
-
-func main() {
-    // If everything worked, we should be able to run the function within 
-    // the packaged version of example-package/myScript1.js
-    script1Function();
-}

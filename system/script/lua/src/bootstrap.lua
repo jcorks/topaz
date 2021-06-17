@@ -369,9 +369,9 @@ TOPAZ = {
 -- Usage:
 --[[
 MyClass = tclass({
-  define = function(instance, arg1, arg2) 
+  define = function(instance, arg) 
   
-    local privateVar = arg1+arg2;
+    local privateVar = arg.a1+arg.a2;
 
     instance.interface({
     
@@ -389,7 +389,7 @@ MyClass = tclass({
   end
 })
 
-instance = MyClass(2, 4);
+instance = MyClass({a1=2, a2=4});
 
 print(instance.publicFunction()) --> 6
 print(instance.publicValue)      --> 6
@@ -419,10 +419,11 @@ function tclass(d)
         d.declare(classinst);
     end
     
-    classinst.new = function(...) 
+    classinst.new = function(args) 
+        if args == nil then args = {} end
         local out = nil;
         if data.inherits ~= nil then
-            out = data.inherits(...);
+            out = data.inherits.new(args);
         end
         if (out == nil) then out = {} end
         
@@ -503,7 +504,7 @@ function tclass(d)
         setmetatable(out, oldmt);
 
         -- actually define interface
-        data.constructor(classinst, out, ...); 
+        data.constructor(classinst, out, args); 
         out.interface = nil;
         if out.__class == nil then 
             out.__class = {
@@ -547,7 +548,6 @@ function tclass(d)
 
     setmetatable(
         classinst, {
-            __call = function(nu, ...) return classinst.new(...) end,
             __tostring = function()return '[tclass]'end
         }
     );
@@ -585,8 +585,15 @@ Topaz = tclass({
                     -- return a new object for us to use or 2) instData.instance contains 
                     -- a preexisting native reference.
                     bindNative = function(instData, ...) 
-                        impl = instData.instance;
-                        if instData.impl == nil and instData.nativeCreate ~= nil then 
+                        
+                        if instData.instance == nil then 
+                            impl = nil                        
+                        else
+                            impl = instData.instance.native;
+                        end 
+                        
+                        
+                        if impl == nil and instData.nativeCreate ~= nil then 
                             impl = instData.nativeCreate(...);
                         end
                         if impl == nil then
@@ -620,9 +627,9 @@ Topaz = tclass({
         -- Must be separate since Topaz inherit from the asset ahead of time before Topaz is computed.
         local __Asset__ = tclass({
             inherits = __Native__,
-            define = function(thisclass, this, implePre)
+            define = function(thisclass, this, args)
                 local impl = this.bindNative({
-                    instance = implePre,
+                    instance = args,
                 });
 
                 this.interface({
@@ -632,8 +639,8 @@ Topaz = tclass({
                     },
 
                     name = {
-                        get = function()   return topaz_asset__get_name(this.impl);end,
-                        set = function(v)         topaz_asset__set_name(this.impl, v);end
+                        get = function()   return topaz_asset__get_name(impl);end,
+                        set = function(v)         topaz_asset__set_name(impl, v);end
                     }
                 });
             end
@@ -642,21 +649,21 @@ Topaz = tclass({
 
         local __Filesystem__ = {        
             getPath = function(n) 
-                return __Topaz__.Filesystem.Path(topaz_filesystem__get_path(n));
+                return __Topaz__.Filesystem.Path.new({native=topaz_filesystem__get_path(n)});
             end,
             
             getPathFromString = function(pth, str)
                 if str == undefined then
-                    return __Topaz__.Filesystem.Path(topaz_filesystem__get_path_from_string(pth));            
+                    return __Topaz__.Filesystem.Path.new({native=topaz_filesystem__get_path_from_string(pth)});            
                 else
-                    return __Topaz__.Filesystem.Path(topaz_filesystem__get_path_from_string(pth.impl, str));                        
+                    return __Topaz__.Filesystem.Path.new({native=topaz_filesystem__get_path_from_string(pth.native, str)});                        
                 end
             end,
             
             Path = tclass({
                 inherits = __Native__,
-                define   = function(thisclass, this, implePre)
-                    local impl = this.bindNative({instance = implePre});
+                define   = function(thisclass, this, args)
+                    local impl = this.bindNative({instance = args});
 
                     this.interface({
                         string = {
@@ -667,7 +674,7 @@ Topaz = tclass({
                         
                         parent = {
                             get = function()
-                                return __Topaz__.Filesystem.Path(topaz_filesystem_path__get_parent(impl));
+                                return __Topaz__.Filesystem.Path.new({native=topaz_filesystem_path__get_parent(impl)});
                             end
                         },
                         
@@ -676,7 +683,7 @@ Topaz = tclass({
                                 local out = {};
                                 local len = topaz_filesystem_path__get_child_count(impl);
                                 for i = 0, len-1 do 
-                                    local p = __Topaz__.Filesystem.Path(topaz_filesystem_path__get_nth_child(impl, i));
+                                    local p = __Topaz__.Filesystem.Path.new({native=topaz_filesystem_path__get_nth_child(impl, i)});
                                     if p ~= nil then
                                         table.insert(out, p);
                                     end
@@ -691,12 +698,12 @@ Topaz = tclass({
 
         local __RNG__ = tclass({
             inherits = __Native__,
-            define = function(thisclass, this, implePre, ...);
+            define = function(thisclass, this, args);
     
                 local impl = this.bindNative({
-                    instance = implePre, 
+                    instance = args, 
                     nativeCreate = topaz_rng__create
-                }, ...);
+                }, args.seed);
     
                 
                 this.interface({
@@ -729,7 +736,7 @@ Topaz = tclass({
                             topaz_view_manager__set_main(v.native);
                         end,
                         get = function()
-                            return __Topaz__.Display(topaz_view_manager__get_main());
+                            return __Topaz__.Display.new({native=topaz_view_manager__get_main()});
                         end
                     },
     
@@ -747,9 +754,9 @@ Topaz = tclass({
 
         local __Display__ =  tclass({
             inherits = __Native__,
-            define = function(thisclass, this, implePre) 
+            define = function(thisclass, this, args) 
                 local impl = this.bindNative({
-                    instance = implePre,
+                    instance = args,
                     nativeCreate = topaz_view_manager__create_display()
                 });
                 
@@ -785,7 +792,7 @@ Topaz = tclass({
     
     
                     getFramebuffer = function(a)
-                        return __Topaz__.Framebuffer(topaz_display__get_framebuffer(impl, a));
+                        return __Topaz__.Framebuffer.new({native=topaz_display__get_framebuffer(impl, a)});
                     end,
     
                     useFramebuffer = function(a)
@@ -821,19 +828,19 @@ Topaz = tclass({
     
                     camera2d = {
                         get = function()
-                            return __Topaz__.Entity(topaz_display__get_camera_2d(impl));
+                            return __Topaz__.Entity.new({native=topaz_display__get_camera_2d(impl)});
                         end
                     },
     
                     camera3d = {
                         get = function()
-                            return __Topaz__.Entity(topaz_display__get_camera_3d(impl));
+                            return __Topaz__.Entity.new({native=topaz_display__get_camera_3d(impl)});
                         end
                     },
     
                     framebuffer = {
                         get = function()
-                            return __Topaz__.Framebuffer(topaz_display__get_main_framebuffer(impl));
+                            return __Topaz__.Framebuffer.new({native=topaz_display__get_main_framebuffer(impl)});
                         end
                     }
                 });
@@ -842,9 +849,9 @@ Topaz = tclass({
     
         local __Framebuffer__ = tclass({
             inherits = __Native__,
-            define = function(thisclass, this, implePre)
+            define = function(thisclass, this, args)
                 local impl = this.bindNative({
-                    instance = implePre
+                    instance = args
                 });
     
                 this.interface({
@@ -879,10 +886,7 @@ Topaz = tclass({
         local __Mesh__ = tclass({
             inherits = __Asset__,
             define = function(thisclass, this, implPre)
-                local impl = this.bindNative({
-                    instance = implePre,
-                });
-    
+                local impl = this.native;    
                 this.interface({
                     vertexCount = {
                         get = function()   return topaz_mesh__get_vertex_count(impl);end,
@@ -969,20 +973,125 @@ Topaz = tclass({
                 });
             end
         });
+        local __Vector__ = tclass({
+            inherits = __Native__,
+            define = function(thisclass, this, args)
+    
+                local impl = this.bindNative({
+                    instance = args,
+                    nativeCreate = topaz_vector__create
+                }, args.x, args.y, args.z);
+                
+                this.interface({
+                    getDistance = function(other)
+                        return topaz_vector__get_distance(impl, other.native);
+                    end,
+                    
+                    normalize = function()
+                        this.topaz_vector__normalize(impl);   
+                    end,
+                    
+                    cross = function(other)
+                        return __Topaz__.Vector.new({native=topaz_vector__cross(impl, other.native)});
+                    end,
+    
+                    floor = function()
+                        topaz_vector__floor(impl);
+                    end,
+                    
+                    rotationXDiff = function(other)
+                        return topaz_vector__rotation_x_diff(impl, other.native);
+                    end,
+                    
+                    rotationXDiffRelative = function(other)
+                        return topaz_vector__rotation_x_diff_relative(impl, other.native);
+                    end,
+                    
+                    rotationX = function() 
+                        return topaz_vector__rotation_x(impl);
+                    end,
+                    
+                    rotationYDiff = function(other) 
+                        return topaz_vector__rotation_y_diff(impl, other.native);
+                    end,
+                    
+                    rotationYDiffRelative = function(other)
+                        return topaz_vector__rotation_y_diff_relative(impl, other.native);
+                    end,
+                    
+                    rotationY = function()
+                        return topaz_vector__rotation_y(impl);
+                    end,
+                    
+                    rotationZDiff = function(other)
+                        return topaz_vector__rotation_z_diff(impl, other.native);
+                    end,
+                    
+                    rotationZDiffRelative = function(other)
+                        return topaz_vector__rotation_z_diff_relative(impl, other.native);
+                    end,
+                    
+                    rotationZ = function()
+                        return topaz_vector__rotation_z(impl);
+                    end,
+                    
+                    rotateX = function(val)
+                        topaz_vector__rotate_x(impl, val);
+                    end,
+                    
+                    rotateY = function(val)
+                        topaz_vector__rotate_y(impl, val);
+                    end,
+                    
+                    rotateZ = function(val)
+                        topaz_vector__rotate_z(impl, val);
+                    end,
+                    
+                    remove = function()
+                        topaz_vector__destroy(impl);
+                        impl = {};
+                    end,
+                    
+                    add = function(b)
+                        return __Topaz__.Vector.new({x=this.x + b.x, y=this.y + b.y, z=this.z + b.z});
+                    end,
+                    
+                    subtract = function(b)
+                        return __Topaz__.Vector.new({x=this.x - b.x, y=this.y - b.y, z=this.z - b.z});
+                    end,
+    
+                    multiply = function(b)
+                        return __Topaz__.Vector.new({x=this.x * b.x, y=this.y * b.y, z=this.z * b.z});
+                    end,
+                    
+                    divide = function(b)
+                        return __Topaz__.Vector.new({x=this.x / b.x, y=this.y / b.y, z=this.z / b.z});
+                    end,
+                    
+                    length = {get = function()return topaz_vector__get_length(impl)end},
+                    x = {get = function()return topaz_vector__get_x(impl);end, set = function(v)topaz_vector__set_x(impl, v);end},
+                    y = {get = function()return topaz_vector__get_y(impl);end, set = function(v)topaz_vector__set_y(impl, v);end},
+                    z = {get = function()return topaz_vector__get_z(impl);end, set = function(v)topaz_vector__set_z(impl, v);end}
+    
+                });        
+            end,
+            toString = function(this)
+                return '{'..this.x..','..this.y..',' ..this.z..'}';        
+            end
+        });
 
-
-        local Input = tclass({
+        local __Input__ = tclass({
             define = function(thisclass, this) 
                 this.interface({
                     mouse = {   
                         get = function()
-                            return __Topaz__.Vector(topaz_input__mouse_x(), topaz_input__mouse_y());
+                            return __Vector__.new({x=topaz_input__mouse_x(), y=topaz_input__mouse_y()});
                         end
                     },
     
                     mouseDelta = {
                         get = function()
-                            return __Topaz__.Vector(topaz_input__mouse_delta_x(), topaz_input__mouse_delta_y());
+                            return __Vector__.new({x=topaz_input__mouse_delta_x(), y=topaz_input__mouse_delta_y()});
                         end 
                     },
     
@@ -1050,9 +1159,9 @@ Topaz = tclass({
             define = function(thisclass, this)
                 local ps = tclass({
                     inherits = __Native__,
-                    define = function(thisclass, this) 
+                    define = function(thisclass, this, args) 
                         local impl = this.bindNative({
-                            instance = implePre
+                            instance = args
                         });
     
     
@@ -1101,9 +1210,9 @@ Topaz = tclass({
                 
                     playSound = function(asset, channel) 
                         if channel == nil then 
-                            return ps(topaz_audio__play_sound(asset.impl, 0));
+                            return ps(topaz_audio__play_sound(asset.native, 0));
                         else
-                            return ps(topaz_audio__play_sound(asset.impl, channel));
+                            return ps(topaz_audio__play_sound(asset.native, channel));
                         end
                     end,
                     
@@ -1124,8 +1233,8 @@ Topaz = tclass({
 
         local __Material__ = tclass({
             inherits = __Asset__,
-            define = function(thisclass, this, implePre)
-
+            define = function(thisclass, this)
+                local impl = this.native;
                 this.interface({
                     setProgramData = function(a, b)
                         topaz_material__set_program_data(impl, a, b);
@@ -1150,19 +1259,19 @@ Topaz = tclass({
         
         local __Image__ = tclass({
             inherits = __Asset__,
-            define = function(thisclass, this, implPre)
+            define = function(thisclass, this)
                 local impl = this.native;
                 this.interface({
                     width = {
-                        get = function()   return topaz_image__get_width(this.impl);end
+                        get = function()   return topaz_image__get_width(impl);end
                     },
                     
                     height = {
-                        get = function()   return topaz_image__get_height(this.impl);end
+                        get = function()   return topaz_image__get_height(impl);end
                     },
                     
                     frameCount = {
-                        get = function()   return topaz_image__get_frame_count(this.impl);end
+                        get = function()   return topaz_image__get_frame_count(impl);end
                     },
                     
                     resize = function(w, h) 
@@ -1186,7 +1295,7 @@ Topaz = tclass({
         
         local __Data__ = tclass({
             inherits = __Asset__,
-            define = function(thisclass, this, implPre) 
+            define = function(thisclass, this) 
                 local impl = this.native;
                 
                 this.interface({
@@ -1219,7 +1328,7 @@ Topaz = tclass({
         
         local __Sound__ = tclass({
             inherits = __Asset__,
-            define = function(thisclass, this, implPre)
+            define = function(thisclass, this)
                 local impl = this.native;            
                 
                 this.interface({
@@ -1252,16 +1361,16 @@ Topaz = tclass({
         local __Resources__ = tclass({
             define = function(thisclass, this)
                 local swtch = {};
-                swtch[TOPAZ.ASSET.TYPE.IMAGE] = function(i)return __Topaz__.Image(i)end
-                swtch[TOPAZ.ASSET.TYPE.DATA] = function(i)return __Topaz__.Data(i)end
-                swtch[TOPAZ.ASSET.TYPE.SOUND] = function(i)return __Topaz__.Sound(i)end
-                swtch[TOPAZ.ASSET.TYPE.MATERIAL] = function(i)return __Topaz__.Material(i)end
-                swtch[TOPAZ.ASSET.TYPE.MESH] = function(i)return __Topaz__.Mesh(i)end
+                swtch[TOPAZ.ASSET.TYPE.IMAGE] = function(i)return __Topaz__.Image.new({native=i})end
+                swtch[TOPAZ.ASSET.TYPE.DATA] = function(i)return __Topaz__.Data.new({native=i})end
+                swtch[TOPAZ.ASSET.TYPE.SOUND] = function(i)return __Topaz__.Sound.new({native=i})end
+                swtch[TOPAZ.ASSET.TYPE.MATERIAL] = function(i)return __Topaz__.Material.new({native=i})end
+                swtch[TOPAZ.ASSET.TYPE.MESH] = function(i)return __Topaz__.Mesh.new({native=i})end
 
                 local _rawAssetToInstance = function(impl) 
                     if impl == nil then return undefined; end
                     local fn = swtch[topaz_asset__get_type(impl)];
-                    if fn == nil then return __Topaz__.Asset(impl); end
+                    if fn == nil then return __Topaz__.Asset.new({native=impl}); end
                     return fn(impl);
                 end
             
@@ -1332,57 +1441,59 @@ Topaz = tclass({
             end
         }).new();
 
-        
+
+
+                
 
         local __Entity__ = tclass({
             inherits = __Native__,
-            define = function(thisclass, this, implePre, ...)
-                local impl = this.bindNative({
-                    instance = implePre,
+            define = function(thisclass, this, args)    
+                this.bindNative({
+                    instance = args,
                     nativeCreate = topaz_entity__create
                 });
                 
                 this.interface({
                     isValid = {
                         get = function()
-                            return topaz_entity__is_valid(impl);
+                            return topaz_entity__is_valid(this.native);
                         end
                     },
                     
                     remove = function()
-                        topaz_entity__remove(impl);
+                        topaz_entity__remove(this.native);
                     end,
                     
                     childCount = {
                         get = function()
-                            return topaz_entity__get_child_count(impl);
+                            return topaz_entity__get_child_count(this.native);
                         end
                     },
                     
                     nthChild = function(n)
-                        local f = topaz_entity__get_nth_child(impl, n);
+                        local f = topaz_entity__get_nth_child(this.native, n);
                         if f.__ctx ~= nil then return f.__ctx end;
-                        return thisclass.new(f);                
+                        return thisclass.new({native=f});                
                     end,
                     
                     
                     children = {
                         get = function()
                             local children = {};
-                            local len = topaz_entity__get_child_count(impl);
+                            local len = topaz_entity__get_child_count(this.native);
                             for i = 1, len do 
-                                table.append(children, topaz_entity__get_nth_child(this.impl, i).__ctx);
+                                table.append(children, topaz_entity__get_nth_child(this.native, i).__ctx);
                             end
                             return children;
                         end,
                         
                         set = function(c)
-                            while topaz_entity__get_child_count(impl) do
-                                topaz_entity__detach(topaz_entity__get_nth_child(impl, 0));
+                            while topaz_entity__get_child_count(this.native) > 0 do
+                                topaz_entity__detach(topaz_entity__get_nth_child(this.native, 0));
                             end
                                 
                             for i = 1, #c do
-                                topaz_entity__attach(impl, c[i].native);
+                                topaz_entity__attach(this.native, c[i].native);
                             end
                         end
                     },
@@ -1390,169 +1501,175 @@ Topaz = tclass({
                     
                     --TODO: the rest, also onStep, onDraw, etc <3
                     step = function() 
-                        topaz_entity__step(impl);
+                        topaz_entity__step(this.native);
                     end,
                     
                     draw = function() 
-                        topaz_entity__step(impl);
+                        topaz_entity__step(this.native);
                     end,
     
                     attach = function(other) 
-                        topaz_entity__attach(impl, other.native);
+                        topaz_entity__attach(this.native, other.native);
                     end,
     
                     detach = function() 
-                        topaz_entity__detach(impl);
+                        topaz_entity__detach(this.native);
                     end,
                     
                     parent = {
                         get = function() 
-                            local f = topaz_entity__get_parent(impl);
+                            local f = topaz_entity__get_parent(this.native);
                             if f.__ctx ~= nil then return f.__ctx; end
-                            return thisclass.new(f);
+                            return thisclass.new({native=f});
                         end,
                         
                         set = function(v)
-                            topaz_entity__attach(v.native, impl);
+                            topaz_entity__attach(v.native, this.native);
                         end
                     },
                     
                     query = function(name) 
-                        local f = topaz_entity__query(impl, name);
+                        local f = topaz_entity__query(this.native, name);
                         if f.__ctx ~= nil then return f.ctx end;
-                        return thisclass.new(f);
+                        return thisclass.new({native=f});
                     end,
                     
                     
                     search = function(name)
-                        local f = topaz_entity__search(impl, name);
+                        local f = topaz_entity__search(this.native, name);
                         if f.__ctx ~= nil then return f.ctx end;
-                        return thisclass.new(f);                
+                        return thisclass.new({native=f});                
                     end,
                     
                     priority = {
-                        get = function() return topaz_entity__get_priority(impl);end, 
-                        set = function(v)topaz_entity__set_priority(impl, v);end               
+                        get = function() return topaz_entity__get_priority(this.native);end, 
+                        set = function(v)topaz_entity__set_priority(this.native, v);end               
                     },
                     
         
                     setPriorityLast = function()
-                        topaz_entity__set_priority_last(impl);
+                        topaz_entity__set_priority_last(this.native);
                     end,
         
                     setPriorityFirst = function()
-                        topaz_entity__set_priority_first(impl);
+                        topaz_entity__set_priority_first(this.native);
                     end,
     
+                    rotation = {
+                        get = function()  return __Vector__.new({native=topaz_entity__get_rotation(this.native)});end,
+                        set = function(v) topaz_entity__set_rotation(this.native, v.native);end
+                    },
+
+    
                     position = {
-                        get = function()   return __Topaz__.Vector(0, 0, 0, topaz_entity__get_position(impl)); end,
-                        set = function(v)  topaz_entity__set_position(impl, v.native); end
+                        get = function()   return __Vector__.new({native=topaz_entity__get_position(this.native)}); end,
+                        set = function(v)  topaz_entity__set_position(this.native, v.native); end
                     },
                     
                     scale = {
-                        get = function()  return __Topaz__.Vector(0, 0, 0, topaz_entity__get_scale(impl));end,
-                        set = function(v) topaz_entity__set_scale(impl, v.native);end
+                        get = function()  return __Vector__.new({native=topaz_entity__get_scale(this.native)});end,
+                        set = function(v) topaz_entity__set_scale(this.native, v.native);end
                     },
                     
                     globalPosition = {
-                        get = function() return __Topaz__.Vector(0, 0, 0, topaz_entity__get_global_position(impl));end
+                        get = function() return __Vector__.new({native=topaz_entity__get_global_position(this.native)});end
                     },
                     
                     isStepping = {
-                        get = function() return topaz_entity__is_stepping(impl); end
+                        get = function() return topaz_entity__is_stepping(this.native); end
                     },
                     
                     isDrawing = {
-                        get = function() return topaz_entity__is_drawing(impl) end
+                        get = function() return topaz_entity__is_drawing(this.native) end
                     },
                     
                     stepping = {
-                        get = function()  return topaz_entity__get_stepping(impl);end,
-                        set = function(v) return topaz_entity__set_stepping(impl, v);end
+                        get = function()  return topaz_entity__get_stepping(this.native);end,
+                        set = function(v) return topaz_entity__set_stepping(this.native, v);end
                     },
                     
                     drawing = {
-                        get = function()  return topaz_entity__get_drawing(impl);end,
-                        set = function(v) return topaz_entity__set_drawing(impl, v);end
+                        get = function()  return topaz_entity__get_drawing(this.native);end,
+                        set = function(v) return topaz_entity__set_drawing(this.native, v);end
                     },
                     
                     name = {
-                        get = function()  return topaz_entity__get_name(impl);end,
-                        set = function(v) return topaz_entity__set_name(impl, v);end
+                        get = function()  return topaz_entity__get_name(this.native);end,
+                        set = function(v) return topaz_entity__set_name(this.native, v);end
                     },
     
                     addComponent = function(c)
-                        topaz_entity__add_component(impl, c.native);
+                        topaz_entity__add_component(this.native, c.native);
                     end,
                 
                     addComponentAfter = function(c)
-                        topaz_entity__add_component_after(impl, c.native);
+                        topaz_entity__add_component_after(this.native, c.native);
                     end,
                         
                     components = {
                         get = function()
-                            local len = topaz_entity__get_component_count(impl);
+                            local len = topaz_entity__get_component_count(this.native);
                             local out = {};
                             for i = 1, len do
-                                local f = topaz_entity__get_nth_component(impl, i-1);
+                                local f = topaz_entity__get_nth_component(this.native, i-1);
                                 if f.__ctx ~= nil then
                                     table.append(out, f.__ctx);
                                 else 
-                                    out.push(__Topaz__.Component(f));
+                                    out.push(__Topaz__.Component.new({native=f}));
                                 end
                             end
                             return out;
                         end,
                         set = function(c)
                             
-                            while topaz_entity__get_component_count(impl) > 0 do
-                                topaz_entity__remove_component(impl, topaz_entity__get_nth_component(impl, 0));
+                            while topaz_entity__get_component_count(this.native) > 0 do
+                                topaz_entity__remove_component(this.native, topaz_entity__get_nth_component(this.native, 0));
                             end
     
                             for i = 1, #c do
-                                topaz_entity__add_component(impl, c[i].native);
+                                topaz_entity__add_component(this.native, c[i].native);
                             end
                         end
                     },
     
     
                     queryComponent = function(tag) 
-                        local f = topaz_entity__query_component(impl, tag);
+                        local f = topaz_entity__query_component(this.native, tag);
                         if f.__ctx ~= nil then return f.__ctx; end
-                        return __Topaz__.Component(f);
+                        return __Topaz__.Component({native=f});
                     end,
                 
                     removeComponent = function(c)
-                        return topaz_entity__remove_component(impl, c.native);
+                        return topaz_entity__remove_component(this.native, c.native);
                     end,
                     
                     onStep = {set = function(v)
-                            topaz_entity__set_on_step(impl, function() v() end);
+                            topaz_entity__set_on_step(this.native, function() v() end);
     
                     end},
     
                     onDraw = {set = function(v)
-                            topaz_entity__set_on_draw(impl, function()v()end);
+                            topaz_entity__set_on_draw(this.native, function()v()end);
                     end},
     
                     onPreStep = {set = function(v)
-                            topaz_entity__set_on_pre_step(impl, function()v()end);
+                            topaz_entity__set_on_pre_step(this.native, function()v()end);
                     end},
     
                     onPreDraw = {set = function(v)
-                            topaz_entity__set_on_pre_draw(impl, function()v()end);
+                            topaz_entity__set_on_pre_draw(this.native, function()v()end);
                     end},
                     
                     onAttach = {set = function(v)
-                            topaz_entity__set_on_attach(impl, function()v()end);
+                            topaz_entity__set_on_attach(this.native, function()v()end);
                     end},
     
                     onDetach = {set = function(v)
-                            topaz_entity__set_on_detach(impl, function()v()end);
+                            topaz_entity__set_on_detach(this.native, function()v()end);
                     end},
     
                     onRemove = {set = function(v)
-                            topaz_entity__set_on_remove(impl, function()v()end);
+                            topaz_entity__set_on_remove(this.native, function()v()end);
                     end}
     
                     
@@ -1563,123 +1680,16 @@ Topaz = tclass({
             end    
         });
 
-        local __Vector__ = tclass({
-            inherits = __Native__,
-            define = function(thisclass, this, x_, y_, z_, implPre)
-    
-                local impl = this.bindNative({
-                    instance = implePre,
-                    nativeCreate = topaz_vector__create
-                }, x_, y_, z_);
-                
-                this.interface({
-                    getDistance = function(other)
-                        return topaz_vector__get_distance(impl, other.native);
-                    end,
-                    
-                    normalize = function()
-                        this.topaz_vector__normalize(impl);   
-                    end,
-                    
-                    cross = function(other)
-                        return __Topaz__.Vector(0, 0, 0, topaz_vector__cross(impl, other.native));
-                    end,
-    
-                    floor = function()
-                        topaz_vector__floor(impl);
-                    end,
-                    
-                    rotationXDiff = function(other)
-                        return topaz_vector__rotation_x_diff(impl, other.native);
-                    end,
-                    
-                    rotationXDiffRelative = function(other)
-                        return topaz_vector__rotation_x_diff_relative(impl, other.native);
-                    end,
-                    
-                    rotationX = function() 
-                        return topaz_vector__rotation_x(impl);
-                    end,
-                    
-                    rotationYDiff = function(other) 
-                        return topaz_vector__rotation_y_diff(impl, other.native);
-                    end,
-                    
-                    rotationYDiffRelative = function(other)
-                        return topaz_vector__rotation_y_diff_relative(impl, other.native);
-                    end,
-                    
-                    rotationY = function()
-                        return topaz_vector__rotation_y(impl);
-                    end,
-                    
-                    rotationZDiff = function(other)
-                        return topaz_vector__rotation_z_diff(impl, other.native);
-                    end,
-                    
-                    rotationZDiffRelative = function(other)
-                        return topaz_vector__rotation_z_diff_relative(impl, other.native);
-                    end,
-                    
-                    rotationZ = function()
-                        return topaz_vector__rotation_z(impl);
-                    end,
-                    
-                    rotateX = function(val)
-                        topaz_vector__rotate_x(impl, val);
-                    end,
-                    
-                    rotateY = function(val)
-                        topaz_vector__rotate_y(impl, val);
-                    end,
-                    
-                    rotateZ = function(val)
-                        topaz_vector__rotate_z(impl, val);
-                    end,
-                    
-                    remove = function()
-                        topaz_vector__destroy(impl);
-                        impl = {};
-                    end,
-                    
-                    add = function(b)
-                        return __Topaz__.Vector(this.x + b.x, this.y + b.y, this.z + b.z);
-                    end,
-                    
-                    subtract = function(b)
-                        return __Topaz__.Vector(this.x - b.x, this.y - b.y, this.z - b.z);
-                    end,
-    
-                    multiply = function(b)
-                        return __Topaz__.Vector(this.x * b.x, this.y * b.y, this.z * b.z);
-                    end,
-                    
-                    divide = function(b)
-                        return __Topaz__.Vector(this.x / b.x, this.y / b.y, this.z / b.z);
-                    end,
-                    
-                    length = {get = function()return topaz_vector__get_length(impl)end},
-                    x = {get = function()return topaz_vector__get_x(impl);end, set = function(v)topaz_vector__set_x(impl, v);end},
-                    y = {get = function()return topaz_vector__get_y(impl);end, set = function(v)topaz_vector__set_y(impl, v);end},
-                    z = {get = function()return topaz_vector__get_z(impl);end, set = function(v)topaz_vector__set_z(impl, v);end}
-    
-                });        
-            end,
-            toString = function(this)
-                return '{'..this.x..','..this.y..',' ..this.z..'}';        
-            end
-        });
-        
 
         local __Component__ = tclass({
             inherits = __Native__,
-            define = function(thisclass, this, implePre)
+            define = function(thisclass, this, args)
                 -- some classes will inherit and overwrite the native instance, so a 
                 -- local impl doesnt make sense.
                 this.bindNative({
-                    instance = implePre,
+                    instance = args,
                     nativeCreate = topaz_component__create
-                }, '');
+                }, args.tag);
     
                 this.interface({
                     destroy = function()
@@ -1713,7 +1723,7 @@ Topaz = tclass({
                         get = function()
                             local f = topaz_component__get_host(this.native);
                             if f.__ctx ~= nil then return f.__ctx end;
-                            return __Topaz__.Entity(f);
+                            return __Topaz__.Entity.new({native=f});
                         end
                     },
                     
@@ -1768,12 +1778,13 @@ Topaz = tclass({
         });
         
         local __Color__ = tclass({
-            define = function(thisclass, this, implPre, name)
+            inherits = __Native__,
+            define = function(thisclass, this, args)
                 local impl = this.bindNative({
-                    instance = implPre,
+                    instance = args,
                     nativeCreate = topaz_color__create
-                });
-                topaz_color__set_from_string(impl, name);
+                }, args.name);
+                topaz_color__set_from_string(impl, args.name);
                 
                 this.interface({
                     string =
@@ -1818,13 +1829,13 @@ Topaz = tclass({
         
         local __Text2D__ = tclass({
             inherits = __Component__,
-            define = function(thisclass, this, implPre)
+            define = function(thisclass, this, args)
                 -- whoops, the component constructor already made a generic component native.
                 -- destroy it and make a real one
                 this.native.__ctx.destroy();
                 
                 local impl = this.bindNative({
-                    instance = implePre,
+                    instance = args,
                     nativeCreate = topaz_text2d__create
                 });
                 
@@ -1878,17 +1889,17 @@ Topaz = tclass({
                     end,
                     
                     position = {
-                        get = function() return Topaz.Vector(0, 0, 0, topaz_text2d__get_position(this.impl));end,
+                        get = function() return __Vector__.new({native=topaz_text2d__get_position(impl)});end,
                         set = function(v)topaz_text2d__set_position(impl, v.native);end
                     },
                     
                     rotation = {
-                        get = function() return Topaz.Vector(0, 0, 0, topaz_text2d__get_rotation(this.impl));end,
+                        get = function() return __Vector__.new({native=topaz_text2d__get_rotation(impl)});end,
                         set = function(v)topaz_text2d__set_rotation(impl, v.native);end
                     },
                     
                     scale = {
-                        get = function() return Topaz.Vector(0, 0, 0, topaz_text2d__get_scale(this.impl));end,
+                        get = function() return __Vector__.new({native=topaz_text2d__get_scale(impl)});end,
                         set = function(v)topaz_text2d__set_scale(impl, v.native);end
                     },
                     
@@ -1903,6 +1914,531 @@ Topaz = tclass({
 
             end
         });
+        
+        local __Scheduler__ = tclass({
+            inherits = __Component__,
+            define = function(thisclass, this, args)
+                -- whoops, the component constructor already made a generic component native.
+                -- destroy it and make a real one
+                this.native.__ctx.destroy();
+                
+                local impl = this.bindNative({
+                    instance = args,
+                    nativeCreate = topaz_scheduler__create
+                }, args.type);
+                
+                this.interface({
+                    startTask = function(args)
+                        if args["taskName"] ~= nil then
+                            topaz_scheduler__start_task(
+                                impl,
+                                args.taskName,
+                                args.interval,
+                                args.intervalDelay,
+                                args.callback
+                            );
+                            return args.taskName;
+                        else
+                            return topaz_scheduler__start_task_simple(
+                                impl,
+                                args.interval,
+                                args.callback
+                            );
+                        end
+                    end,
+                    
+                    endTask = function(name)
+                        topaz_scheduler__end_task(impl, name);
+                    end,
+                
+                    pause = function(name)
+                        topaz_scheduler__pause(impl, name);
+                    end,
+                    
+                    resume = function(name) 
+                        topaz_scheduler__resume(impl, name);
+                    end,
+                    
+                    getTaskIntervalRemaining = function(name)
+                        return topaz_scheduler__get_task_interval_remaining(impl, name);
+                    end,
+                    
+                    tasks = {
+                        get = function()
+                            local out = {};
+                            local len = topaz_scheduler__get_task_count(impl);
+                            for i = 0, len-1 do
+                                table.append(out, topaz_schedluer__get_task(impl, i));
+                            end
+                            return out;
+                        end
+                    },
+                    
+                    
+                });
+            end 
+        });
+        
+        local __StateControl__ = tclass({
+            inherits = __Component__,
+            define = function(thisclass, this, args)
+                -- whoops, the component constructor already made a generic component native.
+                -- destroy it and make a real one
+                this.native.__ctx.destroy();
+                
+                local impl = this.bindNative({
+                    instance = args,
+                    nativeCreate = topaz_state_control__create
+                });
+                
+                this.interface({
+                    add = function(name, state)
+                        topaz_state_control__add(impl, state.state, state.onStep, state.onDraw, state.onInit);
+                    end,
+                    
+                    remove = function(name)
+                        topaz_state_control__remove(impl, name);
+                    end,
+                    
+                    execute = function(name)
+                        topaz_state_control__execute(impl, name);
+                    end,
+                    
+                    halt = function()
+                        topaz_state_control__halt(impl)
+                    end,
+                    
+                    isHalted = {
+                        get = function()
+                            return topaz_state_control__is_halted(impl);
+                        end,
+                    },
+                    
+                    state = {
+                        get = function()
+                            return topaz_state_control__get_current(impl);
+                        end,
+                    }                    
+                    
+                           
+                });
+            end
+        });
+        
+        local __Object2D__ = tclass({
+            inherits = __Component__,
+            define = function(thisclass, this, args)
+                -- whoops, the component constructor already made a generic component native.
+                -- destroy it and make a real one
+                this.native.__ctx.destroy();
+                
+                local impl = this.bindNative({
+                    instance = args,
+                    nativeCreate = topaz_oject2d__create
+                });
+                
+                thisclass.setGroupInteraction = function(a, b, c)
+                    topaz_object2d__set_group_interaction(a, b, c);
+                end
+                
+                local collider_;
+                
+                this.interface({
+                    addVelocity = function(a, b) 
+                        topaz_object2d__add_velocity(impl, a, b);
+                    end,
+
+                    addVelocityTowards = function(a, b, c) 
+                        topaz_object2d__add_velocity_towards(impl, a, b, c);
+                    end,
+
+                    setVelocity = function(a, b) 
+                        topaz_object2d__set_velocity(impl, a, b);
+                    end,
+
+                    setVelocityTowards = function(a, b, c) 
+                        topaz_object2d__set_velocity_towards(impl, a, b, c);
+                    end,
+
+
+
+
+                    frictionX = {
+                        get = function()  return topaz_object2d__get_friction_x(impl);end,
+                        set = function(v) topaz_object2d__set_friction_x(impl, v);end
+                    },
+
+                    frictionY = {
+                        get = function()  return topaz_object2d__get_friction_y(impl);end,
+                        set = function(v) topaz_object2d__set_friction_y(impl, v);end
+                    },
+
+                    direction = {
+                        get = function()  return topaz_object2d__get_direction(impl);end,
+                        set = function(v)
+                            topaz_object2d__set_velocity(
+                                impl,
+                                topaz_object2d__get_speed(impl),
+                                topaz_object2d__get_direction(impl)
+                            );
+                        end
+                    },
+
+                    halt = function() topaz_object2d__halt(impl);end,
+                    resetMotion = function() topaz_object2d__reset_motion(impl);end,
+
+                    velocityX = {
+                        get = function()  return topaz_object2d__get_velocity_x(impl);end,
+                        set = function(v) topaz_object2d__set_velocity_x(impl, v);end
+                    },
+
+                    velocityY = {
+                        get = function()  return topaz_object2d__get_velocity_y(impl);end,
+                        set = function(v) topaz_object2d__set_velocity_y(impl, v);end
+                    },
+
+                    speed = {
+                        get = function()  return topaz_object2d__get_speed(impl);end,
+                        set = function(v) topaz_object2d__set_speed(impl, v);end
+                    },
+
+                    nextPosition = {
+                        get = function()  return topaz_object2d__get_next_position(impl);end
+                    },
+
+                    group = {
+                        get = function()  return topaz_object2d__get_group(impl);end,
+                        set = function(v) topaz_object2d__set_group(impl, v);end
+                    },
+
+                    collider = {
+                        get = function()  return _collider; end,
+                        set = function(v) _collider=v; topaz_object2d__set_collider(impl, v);end
+                    },
+
+                    setColliderRadial = function(a, b) 
+                        topaz_object2d__set_collider_radial(impl, a, b);
+                        _collider = {};
+                        local len = topaz_object2d__get_collider_len(impl);
+                        for i = 0, len-1 do
+                            local pt = topaz_object2d__get_collider_point(impl, i);
+                            table.append(_collider, pt.x);
+                            table.append(_collider, pt.y);
+                        end
+                    end,
+
+                    lastCollided = {
+                        get = function()  return __Topaz__.Entity.new({native=topaz_object2d__get_last_collided(impl)});end
+                    }
+                });                
+            end
+        });
+        
+        local __Shape2D__ = tclass({
+            inherits = __Component__,
+            define = function(thisclass, this, args)
+                -- whoops, the component constructor already made a generic component native.
+                -- destroy it and make a real one
+                this.native.__ctx.destroy();
+                
+                local impl = this.bindNative({
+                    instance = args,
+                    nativeCreate = topaz_shape2d__create
+                });
+                
+                local _lines;
+                local _tris;
+                
+                this.interface({
+                    color = {
+                        get = function() return __Color__.new({native=topaz_shape2d__get_color(impl)});end,
+                        set = function(v)topaz_shape2d__set_color(impl, v.native);end
+                    },
+
+
+                    animSpeed = {
+                        get = function() return topaz_shape2d__get_anim_speed(impl);end,
+                        set = function(v)topaz_shape2d__set_anim_speed(impl, v);end
+                    },
+
+                    center = {
+                        get = function() return __Topaz__.Vector.new({native=topaz_shape2d__get_center(impl)});end,
+                        set = function(v)topaz_shape2d__set_center(impl, v.native);end
+                    },
+
+                    position = {
+                        get = function() return __Topaz__.Vector.new({native=topaz_shape2d__get_position(impl)});end,
+                        set = function(v)topaz_shape2d__set_position(impl, v.native);end
+                    },
+
+                    rotation = {
+                        get = function() return __Topaz__.Vector.new({native=topaz_shape2d__get_rotation(impl)});end,
+                        set = function(v)topaz_shape2d__set_rotation(impl, v.native);end
+                    },
+
+                    scale = {
+                        get = function() return __Topaz__.Vector.new({native=topaz_shape2d__get_scale(impl)});end,
+                        set = function(v)topaz_shape2d__set_scale(impl, v.native);end
+                    },
+
+                    lines = {
+                        get = function() return _lines;end,
+                        set = function(v)topaz_shape2d__form_lines(impl, v); _lines = v;end
+                    },
+
+                    triangles = {
+                        get = function() return _tris;end,
+                        set = function(v)topaz_shape2d__form_triangles(impl, v); _tris = v;end
+                    },
+
+                    setAttribute = function(a, b) 
+                        topaz_shape2d__set_attribute(impl, a, b);
+                    end,
+
+                    getAttribute = function(a) 
+                        return topaz_shape2d__set_attribute(impl, a);
+                    end,
+
+                    formRectangle = function(a, b)
+                        topaz_shape2d__form_rectangle(impl, a, b);
+                    end,
+
+                    formImage = function(a) 
+                        topaz_shape2d__form_image(impl, a.native);
+                    end,
+
+                    formImageFrame = function(a, b) 
+                        topaz_shape2d__form_image_frame(impl, a.native, b);
+                    end,
+
+                    formImageScaled = function(a, b, c) 
+                        topaz_shape2d__form_image(impl, a.native, b, c);
+                    end,
+
+                    formRadial = function(a, b) 
+                        topaz_shape2d__form_radial(impl, a, b);
+                    end,
+
+
+
+
+
+
+
+
+                });
+            end
+        });
+        
+        
+        local __Shape3D__ = tclass({
+            inherits = __Component__,
+            define = function(thisclass, this, args)
+                -- whoops, the component constructor already made a generic component native.
+                -- destroy it and make a real one
+                this.native.__ctx.destroy();
+                
+                local impl = this.bindNative({
+                    instance = args,
+                    nativeCreate = topaz_shape3d__create
+                });
+                
+                
+                this.interface({
+                    position = {
+                        get = function() return __Vector__.new({native=topaz_shape3d__get_position(impl)});end,
+                        set = function(v)topaz_shape3d__set_position(impl, v.native);end
+                    },
+
+                    rotation = {
+                        get = function() return __Vector__.new({native=topaz_shape3d__get_rotation(impl)});end,
+                        set = function(v)topaz_shape3d__set_rotation(impl, v.native);end
+                    },
+
+                    scale = {
+                        get = function() return __Vector__.new({native=topaz_shape3d__get_scale(impl)});end,
+                        set = function(v)topaz_shape3d__set_scale(impl, v.native);end
+                    },
+
+                    setAttribute = function(a, b)
+                        topaz_shape3d__set_attribute(impl, a, b);
+                    end,
+
+                    getAttribute = function(a)
+                        return topaz_shape3d__set_attribute(impl, a);
+                    end,
+
+                    setTexture = function(slot, t)
+                        topaz_shape3d__set_texture(impl, slot, t.native);
+                    end,
+
+                    mesh = {
+                        set = function(v)
+                            topaz_shape3d__set_mesh(impl, v.native);            
+                        end
+                    },
+
+                    sampleFramebuffer = {
+                        set = function(v) 
+                            topaz_shape3d__set_sample_framebuffer(impl, v.native);
+                        end
+                    },
+
+                    material = {
+                        set = function(v)
+                            topaz_shape3d__set_material(impl, v.native);
+                        end
+                    }
+                });  
+                
+            end
+        });
+        
+        local __Automation__ = tclass({
+            inherits = __Component__,
+            define = function(thisclass, this, args)
+                -- whoops, the component constructor already made a generic component native.
+                -- destroy it and make a real one
+                this.native.__ctx.destroy();
+                
+                local impl = this.bindNative({
+                    instance = args,
+                    nativeCreate = topaz_automation__create
+                });
+                
+                this.interface({
+                    addKeyframe = function(value, fn, offset)
+                        topaz_automation__add_keyframe(impl, value, fn, offset);
+                    end,
+
+                    addVectorKeyframe = function(value, fn, offset)
+                        topaz_automation__add_vector_keyframe(impl, value.native, fn, offset);
+                    end,
+
+                    clear = function()
+                        topaz_automation__clear(impl);
+                    end,
+
+                    blend = function(other)
+                        topaz_automation__blend(impl, other.native);
+                    end,
+
+                    smooth = function()
+                        topaz_automation__smooth(impl);
+                    end,
+
+                    addFromString = function(str)
+                        topaz_automation__add_from_string(impl, str);
+                    end,
+
+                    skipTo = function(n)
+                        topaz_automation__skip_to(impl, n);
+                    end,
+
+                    resume = function() 
+                        topaz_automation__resume(impl);
+                    end,
+
+                    pause = function() 
+                        topaz_automation__pause(impl);
+                    end,
+
+                    vectorAt = function(at) 
+                        return __Vector__.new({native=topaz_automation__vector_at(impl, at)});
+                    end,
+
+                    at = function(a) 
+                        return topaz_automation__at(impl, at);
+                    end,
+
+                    vector = {
+                        get = function() return __Topaz__.Vector.new({native=topaz_automation__current_vector(impl)})end,
+                    },
+
+                    value = {
+                        get = function() return topaz_automation__current(impl);end,
+                    },
+
+                    string = {
+                        get = function() return topaz_automation__to_string(impl);end,
+                        set = function(v) return topaz_automation__set_from_string(impl, v);end,
+                    },
+
+                    length = {
+                        get = function() return topaz_automation__get_length(impl);end,
+                    },
+
+                    durationFrames = {
+                        set = function(v) topaz_automation__set_duration_frames(impl, v);end
+                    },
+
+                    durationSeconds = {
+                        set = function(v) topaz_automation__set_duration_seconds(impl, v);end
+                    },
+
+                    duration = {
+                        get = function() return topaz_automation__get_duration(impl);end,
+                    },
+
+                    looped = {
+                        get = function() return topaz_automation__get_looped(impl);end,
+                        set = function(v) return topaz_automation__set_looped(impl, v);end,
+                    },
+
+                    speed = {
+                        get = function() return topaz_automation__get_speed(impl);end,
+                        set = function(v) return topaz_automation__set_speed(impl, v);end,
+                    }
+                });
+            end
+        });
+        
+        local __Particle__ = tclass({
+            define = function(thisclass, this)
+
+                local impl = this.bindNative({
+                    nativeCreate = topaz_particle__create
+                });
+                
+                this.interface({
+                    setAttribute = function(param, val) 
+                        topaz_particle__set_attribute(impl, param, val);
+                    end,
+
+                    setNoiseMin = function(p, val) 
+                        topaz_particle__set_noise_min(impl, p, val);
+                    end,
+
+                    setNoiseMax = function(p, val) 
+                        topaz_particle__set_noise_max(impl, p, val);
+                    end,
+
+                    setFunction = function(p, val) 
+                        topaz_particle__set_function(impl, p, val);
+                    end,
+
+                    string = {get = function() return topaz_particle__to_string(impl)end, set = function(v)topaz_particle__set_from_string(impl, v);end},
+                    image =  {set = function(v) return topaz_particle__set_image(impl, v)end}
+                });
+            end        
+        });
+        
+        local __ParticleEmitter2D__  = tclass({
+            inherits = __Entity__,
+            define = function(thisclass, this) 
+                local impl = this.native;
+
+                this.interface({
+
+                    particle = {set = function(v)topaz_particle_emitter_2d__set_particle(impl, v.native);end},
+                    independent = {set = function(v)topaz_particle_emitter_2d__set_independent(impl, v);end},
+
+                    emit = function(c)
+                        topaz_particle_emitter_2d__emit(impl, c);
+                    end,
+                });
+            end
+        });
 
         this.interface({
             run   = topaz__run,
@@ -1912,17 +2448,17 @@ Topaz = tclass({
             iterate = topaz__iterate,
             step = topaz__step,
             draw = topaz__draw,
-            attachPreManager = function(v)topaz__attach_pre_manager(v.impl);end,        
-            attachPreManagerUnpausable = function(v)topaz__attach_pre_manager_unpausable(v.impl);end,        
-            attachPostManager = function(v)topaz__attach_post_manager(v.impl);end,        
-            attachPostManagerUnpausable = function(v)topaz__attach_post_manager_unpausable(v.impl);end,        
+            attachPreManager = function(v)topaz__attach_pre_manager(v.native);end,        
+            attachPreManagerUnpausable = function(v)topaz__attach_pre_manager_unpausable(v.native);end,        
+            attachPostManager = function(v)topaz__attach_post_manager(v.native);end,        
+            attachPostManagerUnpausable = function(v)topaz__attach_post_manager_unpausable(v.native);end,        
             quit = topaz__quit,
             wait = topaz__wait,
             import = topaz_script__import,
             log = topaz__log,
             toBase64 = topaz__to_base64,
             fromBase64 = function(f) 
-                return __Topaz__.Data(topaz__from_base64(f));
+                return __Topaz__.Data.new({native=topaz__from_base64(f)});
             end,
             
             root = {
@@ -1934,6 +2470,41 @@ Topaz = tclass({
                     
                 end
             },
+            
+            isPaused = {
+                get = function()
+                    return topaz__is_paused();
+                end            
+            },
+            
+            time = {
+                get = function()
+                    return topaz__get_time();
+                end
+            },
+            
+            versionMicro = {
+                get = function() 
+                    return topaz__get_version_micro();                
+                end
+            },
+            versionMajor = {
+                get = function() 
+                    return topaz__get_version_major();                
+                end
+            },
+            versionMinor = {
+                get = function() 
+                    return topaz__get_version_minor();                
+                end
+            },
+            
+
+            
+            
+            
+            
+            
             objectToString = function(obj, levelSrc)
                 local checked = {};
                 local levelG;
@@ -2002,8 +2573,15 @@ Topaz = tclass({
             Data        = {get = function()return __Data__ end},
             Sound       = {get = function()return __Sound__ end},
             Color       = {get = function()return __Color__ end},
-            Text2D      = {get = function()return __Text2D__ end}
-            
+            Text2D      = {get = function()return __Text2D__ end},
+            Scheduler   = {get = function()return __Scheduler__ end},
+            StateControl= {get = function()return __StateControl__ end},
+            Object2D    = {get = function()return __Object2D__ end},
+            Shape2D     = {get = function()return __Shape2D__ end},
+            Shape3D     = {get = function()return __Shape3D__ end},
+            Automation  = {get = function()return __Automation__ end},
+            Particle    = {get = function()return __Particle__ end},
+            ParticleEmitter2D = {get = function()return __ParticleEmitter2D__ end}
        });
     end
 }).new();

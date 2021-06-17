@@ -1,0 +1,84 @@
+mesh = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.MESH, 'testMesh');
+mesh.vertices = {
+   -1,-1, 0,    0, 1, 0,    0, 0,    1, 0, 1, 1,
+    1,-1, 0,    0, 1, 0,    1, 0,    1, 0, 1, 1,
+    1, 1, 0,    0, 1, 0,    1, 1,    1, 0, 1, 1,
+   -1, 1, 0,    0, 1, 0,    0, 1,    1, 0, 1, 1,
+};
+
+mesh.addObject();
+mesh.setObject(0, {
+    0, 1, 2,
+    2, 3, 0
+});
+
+material = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.MATERIAL, 'testMaterial');
+material.setProgramSource(
+    'GLSL ES2',
+    Topaz.Resources.loadAsset('', 'vertex_es2.glsl', 'vertex_es2.glsl').string,             
+    Topaz.Resources.loadAsset('',   'frag_es2.glsl',   'frag_es2.glsl').string
+);
+
+material.setProgramSource(
+    'GLSL',
+    Topaz.Resources.loadAsset('', 'vertex.glsl', 'vertex.glsl').string,             
+    Topaz.Resources.loadAsset('',   'frag.glsl',   'frag.glsl').string
+);
+
+
+tex = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.IMAGE, 'testTex');
+tex.resize(2, 2);
+tex.addFrame();
+tex.setRGBA(0, 
+    {
+        255,   0,   0, 255,
+        0,   255,   0, 255,
+        0,     0, 255, 255,
+        255, 255, 255, 255
+    }
+);
+
+
+
+Example3D = tclass({
+    inherits = Topaz.Entity,
+    define = function(thisclass, ent)
+        local v = Topaz.Shape3D.new();
+        v.material = material;
+        v.mesh = mesh;
+        v.setTexture(0, tex);
+        v.setAttribute(
+            TOPAZ.RENDERER.ATTRIBUTE.TEXTURE_FILTER_HINT, 
+            TOPAZ.RENDERER.TEXTURE_FILTER_HINT.NONE
+        );
+
+        local stepper = 0;
+        
+
+        ent.components = {v};
+
+        ent.onStep = function()
+            stepper = stepper + 0.1;
+            ent.rotation = Topaz.Vector.new({
+                x = stepper, 
+                y = stepper*3, 
+                z = stepper*8
+            });
+        end
+
+
+    end
+});
+
+
+a = Example3D.new();
+a.position = Topaz.Vector.new({z=-4});
+
+b = Example3D.new();
+b.position = Topaz.Vector.new({x=2, y=0, z=1});
+b.scale    = Topaz.Vector.new({x=0.7,y= 0.3, z=0.3});
+
+
+
+a.children = {b};
+Topaz.root = a;
