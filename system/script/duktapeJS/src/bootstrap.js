@@ -2171,7 +2171,7 @@ var Topaz = {
     }
 
     Topaz.Display.prototype.removeCallback = function(i) {
-        topaz_display__remove_callback(i);
+        topaz_display__remove_callback(this.impl, i);
     }
 
 
