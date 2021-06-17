@@ -359,7 +359,6 @@ TOPAZ = {
 }
 
 
-Class = {}
 
 
 
@@ -369,7 +368,7 @@ Class = {}
 --
 -- Usage:
 --[[
-MyClass = class({
+MyClass = tclass({
   define = function(instance, arg1, arg2) 
   
     local privateVar = arg1+arg2;
@@ -408,7 +407,7 @@ print(instance.publicValue)      --> 6
 
 ]]--
 
-function class(d) 
+function tclass(d) 
 
     local data = {
         inherits = d.inherits,
@@ -429,8 +428,9 @@ function class(d)
         
 
         local getters;            
-        local setters;
-        local pfuncs;
+        local setters;        
+        local varnames;
+        local mthnames;
 
 
         -- for inheritance, this will already 
@@ -438,22 +438,38 @@ function class(d)
         if out.__class ~= nil then 
             getters = out.__class.getters;
             setters = out.__class.setters;
-            pfuncs  = out.__class.pfuncs;
+            varnames  = out.__class.varnames;
+            mthnames = out.__class.mthnames;
         else 
             getters = {};
             setters = {};
-            pfuncs  = {};            
+            mthnames = {};
+            varnames  = {};
         end
 
         
         -- captured set/get.
         local makeprop = function(name, pdefine)
+            local r = false;
+            local w = false;
+
             if pdefine.set ~= nil then 
                 setters[name] = pdefine.set;                
+                w = true;
             end
             if pdefine.get ~= nil then 
                 getters[name] = pdefine.get;                
+                r = true;
             end
+            
+            if r == true and w == false then 
+                varnames[name] = 'Read-only'            
+            elseif r == false and w == true then 
+                varnames[name] = 'Write-only'                        
+            else 
+                varnames[name] = 'Read/Write'            
+            end
+                
         end
 
         -- TODO: preserve old metatable better. This is sloppy!
@@ -464,12 +480,25 @@ function class(d)
             setmetatable(out, {});
             for k, v in pairs(obj) do
                 if type(v) == 'function' then
-                    pfuncs[k] = v;
+                    if mthnames[k] == nil then 
+                        mthnames[k] = 'default';
+                    else 
+                        mthnames[k] = 'overidden';                    
+                    end
                     out[k] = v;
                 elseif type(v) == 'table' then 
                     makeprop(k, v);
                 end
             end
+        end
+        
+        out.introspect = function()
+            return {
+                public = {
+                    variables = varnames,
+                    methods = mthnames
+                }
+            }
         end
         setmetatable(out, oldmt);
 
@@ -480,7 +509,8 @@ function class(d)
             out.__class = {
                 getters = getters,
                 setters = setters,
-                pfuncs = pfuncs
+                mthnames = mthnames,
+                varnames = varnames
             }            
         end
         
@@ -491,7 +521,7 @@ function class(d)
                 if g ~= nil then 
                     return g()
                 end
-                error('Unknown public member "'..key..'"'..debug.traceback());
+                error('tclass: Unknown public member "'..key..'"'..debug.traceback());
              end,
              
             __newindex = function(table, key, value)
@@ -501,9 +531,13 @@ function class(d)
                     return;                  
                 end
 
-                error('Unknown public member "'..key..'"' ..debug.traceback());
-            end
+                error('tclass: Unknown public member "'..key..'"' ..debug.traceback());
+            end,
         };            
+        if oldmt ~= nil then 
+            mt.__tostring = oldmt.__tostring
+        end
+
 
         if d.toString ~= nil then mt.__tostring = function()return d.toString(out)end; end
         setmetatable(out, mt);            
@@ -514,7 +548,7 @@ function class(d)
     setmetatable(
         classinst, {
             __call = function(nu, ...) return classinst.new(...) end,
-            __tostring = function()return '[Topaz Class]'end
+            __tostring = function()return '[tclass]'end
         }
     );
     return classinst;
@@ -526,7 +560,7 @@ end
 
 
 
-Topaz = class({
+Topaz = tclass({
     define = function(thisclass, this)
         local __Topaz__ = this;
 
@@ -534,7 +568,7 @@ Topaz = class({
         -- Instances of this class act as "shells" or interfaces for 
         -- this external data and usually have little to no state 
         -- outside of this.
-        local __Native__ = class({
+        local __Native__ = tclass({
             declare = function(thisclass)
                 thisclass.uniqueObjectPool = 0;    
             end,
@@ -559,7 +593,7 @@ Topaz = class({
                             error('Topaz.Native instance cannot have a nil native reference.'.. tostring(debug.traceback('')));
                             return;
                         end
-                        impl.ctx__ = this;
+                        impl.__ctx = this;
                         return impl;
                     end,
                     
@@ -584,7 +618,7 @@ Topaz = class({
         });
 
         -- Must be separate since Topaz inherit from the asset ahead of time before Topaz is computed.
-        local __Asset__ = class({
+        local __Asset__ = tclass({
             inherits = __Native__,
             define = function(thisclass, this, implePre)
                 local impl = this.bindNative({
@@ -619,7 +653,7 @@ Topaz = class({
                 end
             end,
             
-            Path = class({
+            Path = tclass({
                 inherits = __Native__,
                 define   = function(thisclass, this, implePre)
                     local impl = this.bindNative({instance = implePre});
@@ -655,7 +689,7 @@ Topaz = class({
             }),
         };
 
-        local __RNG__ = class({
+        local __RNG__ = tclass({
             inherits = __Native__,
             define = function(thisclass, this, implePre, ...);
     
@@ -687,7 +721,7 @@ Topaz = class({
             end
         });
 
-        local __ViewManager__ = (class({
+        local __ViewManager__ = (tclass({
             define = function(thisclass, this)
                 this.interface({
                     mainDisplay = {
@@ -711,7 +745,7 @@ Topaz = class({
             end
         })).new();
 
-        local __Display__ =  class({
+        local __Display__ =  tclass({
             inherits = __Native__,
             define = function(thisclass, this, implePre) 
                 local impl = this.bindNative({
@@ -806,7 +840,7 @@ Topaz = class({
             end
         });
     
-        local __Framebuffer__ = class({
+        local __Framebuffer__ = tclass({
             inherits = __Native__,
             define = function(thisclass, this, implePre)
                 local impl = this.bindNative({
@@ -842,7 +876,7 @@ Topaz = class({
             end
         });
 
-        local __Mesh__ = class({
+        local __Mesh__ = tclass({
             inherits = __Asset__,
             define = function(thisclass, this, implPre)
                 local impl = this.bindNative({
@@ -937,7 +971,7 @@ Topaz = class({
         });
 
 
-        local Input = class({
+        local Input = tclass({
             define = function(thisclass, this) 
                 this.interface({
                     mouse = {   
@@ -1012,9 +1046,9 @@ Topaz = class({
         }).new();
 
 
-        local __Audio__ = class({
+        local __Audio__ = tclass({
             define = function(thisclass, this)
-                local ps = class({
+                local ps = tclass({
                     inherits = __Native__,
                     define = function(thisclass, this) 
                         local impl = this.bindNative({
@@ -1088,10 +1122,10 @@ Topaz = class({
             end
         }).new();
 
-        local __Material__ = class({
+        local __Material__ = tclass({
             inherits = __Asset__,
             define = function(thisclass, this, implePre)
-    
+
                 this.interface({
                     setProgramData = function(a, b)
                         topaz_material__set_program_data(impl, a, b);
@@ -1113,8 +1147,194 @@ Topaz = class({
                 });
             end
         });
+        
+        local __Image__ = tclass({
+            inherits = __Asset__,
+            define = function(thisclass, this, implPre)
+                local impl = this.native;
+                this.interface({
+                    width = {
+                        get = function()   return topaz_image__get_width(this.impl);end
+                    },
+                    
+                    height = {
+                        get = function()   return topaz_image__get_height(this.impl);end
+                    },
+                    
+                    frameCount = {
+                        get = function()   return topaz_image__get_frame_count(this.impl);end
+                    },
+                    
+                    resize = function(w, h) 
+                        topaz_image__resize(impl, w, h);
+                    end,
+                    
+                    addFrame = function() 
+                        topaz_image__add_frame(impl);
+                    end,
+                    
+                    removeFrame = function(f) 
+                        topaz_image__remove_frame(impl, f);
+                    end,
+                    
+                    setRGBA = function(i, rgbaData) 
+                        topaz_image__frame_set_rgba(impl, i, rgbaData);
+                    end
+                });
+            end
+        });
+        
+        local __Data__ = tclass({
+            inherits = __Asset__,
+            define = function(thisclass, this, implPre) 
+                local impl = this.native;
+                
+                this.interface({
+                    byteCount = {
+                        get = function()   return topaz_data__get_byte_count(impl);end
+                    },
+                    
+                    string = {
+                        get = function()   return topaz_data__get_as_string(impl); end
+                    },
+                    
+                    bytes = {
+                        get = function() 
+                            local bytes = {};
+                            local len = topaz_data__get_byte_count(impl);
+                            for i = 0, len-1 do
+                                table.append(bytes, topaz_data__get_nth_byte(impl, i));
+                            end
+                            return bytes;
+                        end,
 
-        local __Entity__ = class({
+                        set = function(v)
+                            topaz_data__set(impl, v);
+                        end
+                    }
+               }); 
+            end
+        });
+        
+        
+        local __Sound__ = tclass({
+            inherits = __Asset__,
+            define = function(thisclass, this, implPre)
+                local impl = this.native;            
+                
+                this.interface({
+                    sampleCount = {
+                        get = function() return topaz_sound__get_sample_count(impl); end
+                    },
+                    
+                    samples = {
+                        get = function()  
+                            local out = {};
+                            local len = this.sampleCount;
+                            for i = 0, len-1 do
+                                table.append(out, topaz_sound__get_nth_sample_left(impl, i));
+                                table.append(out, topaz_sound__get_nth_sample_right(impl, i));
+                            end
+                            return out;
+                        end,
+                        
+                        
+                        set = function(v) 
+                            topaz_sound__set_samples(impl, v);
+                        end
+                    }
+                });
+            end
+        });
+        
+        
+        
+        local __Resources__ = tclass({
+            define = function(thisclass, this)
+                local swtch = {};
+                swtch[TOPAZ.ASSET.TYPE.IMAGE] = function(i)return __Topaz__.Image(i)end
+                swtch[TOPAZ.ASSET.TYPE.DATA] = function(i)return __Topaz__.Data(i)end
+                swtch[TOPAZ.ASSET.TYPE.SOUND] = function(i)return __Topaz__.Sound(i)end
+                swtch[TOPAZ.ASSET.TYPE.MATERIAL] = function(i)return __Topaz__.Material(i)end
+                swtch[TOPAZ.ASSET.TYPE.MESH] = function(i)return __Topaz__.Mesh(i)end
+
+                local _rawAssetToInstance = function(impl) 
+                    if impl == nil then return undefined; end
+                    local fn = swtch[topaz_asset__get_type(impl)];
+                    if fn == nil then return __Topaz__.Asset(impl); end
+                    return fn(impl);
+                end
+            
+            
+                this.interface({
+                    fetchAsset = function(type, name)
+                        return _rawAssetToInstance(topaz_resources__fetch_asset(type, name));
+                    end,
+
+                    createAsset = function(type) 
+                        return _rawAssetToInstance(topaz_resources__create_asset(type));
+                    end,
+
+                    loadAsset = function(ext, path, name) 
+                        return _rawAssetToInstance(topaz_resources__load_asset(ext, path, name));
+                    end,
+
+                    loadAssetData = function(ext, data, name) 
+                        return _rawAssetToInstance(topaz_resources__load_asset_data(ext, data, name));
+                    end,
+                    loadAssetBase64 = function(ext, b64, name) 
+                        return _rawAssetToInstance(topaz_resources__load_asset_base64(ext, b64, name));
+                    end,
+
+
+                    writeAsset = function(asset, ext, path) 
+                        return topaz_resources__write_asset(asset.native, ext, path);
+                    end,
+
+                    removeAsset = function(name) 
+                        topaz_resources__remove_asset(name);
+                    end,
+
+                    
+
+                    isExtensionSupported = function(ext) 
+                        return topaz_resources__is_extension_supported(ext);
+                    end,
+                    
+                    path = {
+                        get = function() 
+                            return topaz_resources__get_path();                        
+                        end,
+                        
+                        set = function(v) 
+                            repoaz_resources__set_path(v);             
+                        end
+                    }
+                });
+            end
+        }).new();
+        
+        local __FontManager__ = tclass({
+            define = function(thisclass, this) 
+                this.interface({
+                    registerFont = function(n)
+                        topaz_font_manager__register_font(n);
+                    end,
+
+                    preloadGlyphs = function(a, c, b)
+                        topaz_font_manager__preload_glyphs(a, c, b);
+                    end,
+
+                    unregisterFont = function(n)
+                        topaz_font_manager__unregister_font(n);
+                    end,            
+                });
+            end
+        }).new();
+
+        
+
+        local __Entity__ = tclass({
             inherits = __Native__,
             define = function(thisclass, this, implePre, ...)
                 local impl = this.bindNative({
@@ -1284,7 +1504,8 @@ Topaz = class({
                             return out;
                         end,
                         set = function(c)
-                            while topaz_entity__get_component_count(impl) do
+                            
+                            while topaz_entity__get_component_count(impl) > 0 do
                                 topaz_entity__remove_component(impl, topaz_entity__get_nth_component(impl, 0));
                             end
     
@@ -1342,7 +1563,7 @@ Topaz = class({
             end    
         });
 
-        local __Vector__ = class({
+        local __Vector__ = tclass({
             inherits = __Native__,
             define = function(thisclass, this, x_, y_, z_, implPre)
     
@@ -1450,45 +1671,47 @@ Topaz = class({
         });
         
 
-        local __Component__ = class({
+        local __Component__ = tclass({
             inherits = __Native__,
             define = function(thisclass, this, implePre)
-                local impl = this.bindNative({
+                -- some classes will inherit and overwrite the native instance, so a 
+                -- local impl doesnt make sense.
+                this.bindNative({
                     instance = implePre,
                     nativeCreate = topaz_component__create
                 }, '');
     
                 this.interface({
                     destroy = function()
-                        topaz_component__destroy(impl);
+                        topaz_component__destroy(this.native);
                     end,
                     
                     step = function()
-                        topaz_component__run(impl);
+                        topaz_component__run(this.native);
                     end,
                     
                     draw = function()
-                        topaz_component__draw(impl);
+                        topaz_component__draw(this.native);
                     end,
                     
                     stepping = {
-                        get = function()  return topaz_component__get_stepping(impl);end,
-                        set = function(v) topaz_component__set_stepping(impl, v);end
+                        get = function()  return topaz_component__get_stepping(this.native);end,
+                        set = function(v) topaz_component__set_stepping(this.native, v);end
                     },
                     
                     drawing = {
-                        get = function()  return topaz_component__get_drawing(impl);end,
-                        set = function(v) topaz_component__set_drawing(impl, v);end
+                        get = function()  return topaz_component__get_drawing(this.native);end,
+                        set = function(v) topaz_component__set_drawing(this.native, v);end
                     },
                     
                     tag = {
-                        get = function()  return topaz_component__get_tag(impl);end,
-                        set = function(v) topaz_component__set_tag(impl, v);end
+                        get = function()  return topaz_component__get_tag(this.native);end,
+                        set = function(v) topaz_component__set_tag(this.native, v);end
                     },
                     
                     host = {
                         get = function()
-                            local f = topaz_component__get_host(this.impl);
+                            local f = topaz_component__get_host(this.native);
                             if f.__ctx ~= nil then return f.__ctx end;
                             return __Topaz__.Entity(f);
                         end
@@ -1496,14 +1719,14 @@ Topaz = class({
                     
                     emitEvent = function(eventName, ent)
                         if ent == nil then
-                            return topaz_component__emit_event_anonymous(impl, eventName);
+                            return topaz_component__emit_event_anonymous(this.native, eventName);
                         else
-                            return topaz_component__emit_event(impl, eventName, ent.native);
+                            return topaz_component__emit_event(this.native, eventName, ent.native);
                         end
                     end,
                     
                     canHandleEvent = function(name)
-                        return topaz_component__can_handle_event(impl, name);
+                        return topaz_component__can_handle_event(this.native, name);
                     end,
                     
                     installEvent = function(event, callback)
@@ -1514,33 +1737,170 @@ Topaz = class({
                             cb = function()end
                         end
                             
-                        topaz_component__install_event(impl, event, cb);
+                        topaz_component__install_event(this.native, event, cb);
                     end,
                     
                     uninstallEvent = function(event)
-                        topaz_component__uninstall_event(impl, event);
+                        topaz_component__uninstall_event(this.native, event);
                     end,
                     
                     installHook = function(event, callback)
-                        return topaz_component__install_hook(impl, event, function(component, ent)
+                        return topaz_component__install_hook(this.native, event, function(component, ent)
                             callback(component.__ctx, ent.__ctx);
                         end);
                     end,
                     
                     uninstallHook = function(event, id)
-                        topaz_component__uninstall_hook(impl, event, id);
+                        topaz_component__uninstall_hook(this.native, event, id);
                     end,
                     
                     installHandler = function(event, callback)
-                        return topaz_component__install_handler(this.impl, event, function(component, ent)
+                        return topaz_component__install_handler(this.native, event, function(component, ent)
                             callback(component.__ctx, ent.__ctx);
                         end);
                     end,
                     
                     uninstallHandler = function(event, id)
-                        topaz_component__uninstall_handler(impl, event, id);
+                        topaz_component__uninstall_handler(this.native, event, id);
                     end
                 });
+            end
+        });
+        
+        local __Color__ = tclass({
+            define = function(thisclass, this, implPre, name)
+                local impl = this.bindNative({
+                    instance = implPre,
+                    nativeCreate = topaz_color__create
+                });
+                topaz_color__set_from_string(impl, name);
+                
+                this.interface({
+                    string =
+                    {
+                        get = function()
+                            return topaz_color__to_hex_string(impl);
+                        end,
+
+                        set = function(str)
+                            topaz_color__set_from_string(impl, str);
+                        end
+                    },
+                    r= {
+                        get = function() return topaz_color__get_r(impl);end, 
+                        set = function(v)       topaz_color__set_r(impl, v);end
+                    },
+                    
+                    g= {
+                        get = function() return topaz_color__get_g(impl);end, 
+                        set = function(v)       topaz_color__set_g(impl, v);end
+                    },
+                    
+                    b= {
+                        get = function() return topaz_color__get_b(impl);end, 
+                        set = function(v)       topaz_color__set_b(impl, v);end
+                    },
+                    
+                    a= {
+                        get = function() return topaz_color__get_a(impl);end, 
+                        set = function(v)       topaz_color__set_a(impl, v);end
+                    }
+                });
+            end,
+
+
+            
+            toString = function()
+                return 'RGBA: '..math.floor(this.r*255)..','..math.floor(this.g*255)..','..math.floor(this.b*255)..':'..math.floor(this.a*255);    
+            end   
+        });
+        
+        
+        local __Text2D__ = tclass({
+            inherits = __Component__,
+            define = function(thisclass, this, implPre)
+                -- whoops, the component constructor already made a generic component native.
+                -- destroy it and make a real one
+                this.native.__ctx.destroy();
+                
+                local impl = this.bindNative({
+                    instance = implePre,
+                    nativeCreate = topaz_text2d__create
+                });
+                
+                local fontState;
+                local fontSize;
+                
+                this.interface({
+                    text = {
+                        get = function() return topaz_text2d__get_text(impl);end,
+                        set = function(v) topaz_text2d__set_text(impl, v);end
+                    },
+                    
+                    font = {
+                        get = function()  return this.fontState;end,
+                        set = function(v) 
+                            fontState = v;
+                            topaz_text2d__set_font(impl, fontState, sizeState);
+                        end
+                    },
+                    
+                    size =  {
+                        get = function()  return this.sizeState;end,
+                        set = function(v) 
+                            sizeState = v;
+                            topaz_text2d__set_font(impl, fontState, sizeState);
+                        end
+                    },
+                    
+                    setColor = function(c) 
+                        topaz_text2d__set_color(impl, c.native);
+                    end,
+                    
+                    setColorSection = function(from, to, c) 
+                        topaz_text2d__set_color_section(impl, from, to, c.native);
+                    end,
+                    
+                    extentWidth = {
+                        get = function() return topaz_text2d__get_extent_width(impl);end
+                    },
+                    
+                    extentHeight = {
+                        get = function() return topaz_text2d__get_extent_height(impl);end
+                    },
+                    
+                    getCharX = function(i) 
+                        return topaz_text2d__get_char_x(impl, i);
+                    end,
+                    
+                    getCharY = function(i) 
+                        return topaz_text2d__get_char_y(impl, i);
+                    end,
+                    
+                    position = {
+                        get = function() return Topaz.Vector(0, 0, 0, topaz_text2d__get_position(this.impl));end,
+                        set = function(v)topaz_text2d__set_position(impl, v.native);end
+                    },
+                    
+                    rotation = {
+                        get = function() return Topaz.Vector(0, 0, 0, topaz_text2d__get_rotation(this.impl));end,
+                        set = function(v)topaz_text2d__set_rotation(impl, v.native);end
+                    },
+                    
+                    scale = {
+                        get = function() return Topaz.Vector(0, 0, 0, topaz_text2d__get_scale(this.impl));end,
+                        set = function(v)topaz_text2d__set_scale(impl, v.native);end
+                    },
+                    
+                    setAttribute = function(a, b)
+                        topaz_text2d__set_attribute(impl, a, b);
+                    end,
+                    
+                    getAttribute = function(a)
+                        return topaz_text2d__get_attribute(impl, a);
+                    end
+                });
+
             end
         });
 
@@ -1587,6 +1947,7 @@ Topaz = class({
                     if obj == nil then return '<nil>'; end
                     if type(obj) == 'function' then return '<function()>'
                     elseif type(obj) == 'userdata' then return '<internal>'
+                    elseif type(obj) == 'string' then return obj
                     elseif type(obj) == 'table' then
 
                         if checked[obj] ~= nil then return '[Already Printed]' end
@@ -1634,7 +1995,15 @@ Topaz = class({
             Material    = {get = function()return __Material__ end},
             Entity      = {get = function()return __Entity__ end},
             Vector      = {get = function()return __Vector__ end},
-            Component   = {get = function()return __Component__ end}
+            Component   = {get = function()return __Component__ end},
+            Resources   = {get = function()return __Resources__ end},
+            FontManager = {get = function()return __FontManager__ end},
+            Image       = {get = function()return __Image__ end},
+            Data        = {get = function()return __Data__ end},
+            Sound       = {get = function()return __Sound__ end},
+            Color       = {get = function()return __Color__ end},
+            Text2D      = {get = function()return __Text2D__ end}
+            
        });
     end
 }).new();

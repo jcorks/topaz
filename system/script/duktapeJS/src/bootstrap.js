@@ -361,6 +361,98 @@ const TOPAZ = {
 
 }
 
+// prototype: tclass
+//
+// Gives a strict class definition with 
+// easy introspection.
+var tclass = function(d) {
+    const classinst = {};
+    if (d.declare != undefined) {
+        d.declare(classinst);
+    }
+    
+    classinst.new = function(argobj, noseal) {
+        var out = undefined;
+        if (d.inherits != undefined) {
+            out = d.inherits.new(argobj, true);
+        }
+        if (out == undefined) out = {};
+        
+        var varnames;
+        var mthnames;
+        var fnkey;
+        if (out.publicVars != undefined) {
+            varnames = out.publicVars;
+            mthnames = out.publicMethods;
+            fnkey = 'overridden';
+        } else {
+            varnames = {};
+            mthnames = {};
+            out.publicVars = varnames;
+            out.publicMethods = mthnames;
+            fnkey = 'default';
+        }
+        
+        out.interface = function(obj) {
+            const keys = Object.keys(obj);
+            for(var i = 0; i < keys.length; ++i) {
+                const v = obj[keys[i]];
+                switch(typeof(v)) {
+                  case 'function':
+                    out[keys[i]] = v; 
+                    mthnames[keys[i]] = fnkey;
+                    break;
+                    
+                  case 'object':
+                    Object.defineProperty(out,
+                        keys[i], {
+                            get : v.get,
+                            set : v.set,
+                        }
+                    );
+                    if (v.get == undefined && v.set != undefined) {
+                        varnames[keys[i]] = 'Write-only';                        
+                    } else if (v.get != undefined && v.set == undefined) {
+                        varnames[keys[i]] = 'Read-only';                                            
+                    } else {
+                        varnames[keys[i]] = 'Read/Write';                                                                
+                    }
+                    break;
+                    
+                  default:
+                    throw new Error('tclass interfaces can only have getters/setters and methods.');
+                }
+            }
+        }
+        d.define(classinst, out, argobj);
+        delete out.interface;
+
+        if (d.toString != undefined) {
+            const a = d.toString;
+            out.toString = function(){return a(out);};
+        }
+
+        if (!noseal) {
+            out.introspect = function() {
+                return {
+                    'public' : {
+                        'variables' : varnames,
+                        'methods' : mthnames
+                    }
+                };
+            }
+            delete out.publicMethods;
+            delete out.publicVars;
+
+            Object.seal(out);
+        }
+        return out;        
+    }
+    
+    return classinst
+}
+
+
 var Topaz = {
     uniqueObjectPool : 0,
     run : topaz__run,
@@ -3209,3 +3301,12 @@ Topaz.Package = (function(){
         }
     }
 })();
+
+
+
+
+
+
+
+
+

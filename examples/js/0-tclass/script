@@ -1,0 +1,60 @@
+
+var BaseClass = tclass({
+    define : function(classinst, inst, argobj) {
+        var privateA = argobj;
+        const privateFunction = function() {
+            privateA = privateA - 1;
+        }
+        
+        
+        inst.interface({ 
+            test : {
+                get : function() {
+                    return privateA*2;
+                },
+                
+                set : function(value) {
+                    privateA = value*2;
+                }
+            },
+            
+            
+            b : {
+                get : function() {
+                    return privateA;                
+                }
+            },
+
+            nextValue : function() {
+                privateFunction();
+            },
+            
+            reset : function() {
+                privateA = 100
+            }
+        });
+    }
+});
+
+var SubClass = tclass({
+    inherits : BaseClass,
+    define : function(classinst, inst) {
+        inst.interface({
+            nextValue : function() { 
+                return 'f';
+            }
+        });
+
+    },
+    
+    toString : function(inst) {
+        return 'My Value: ' + inst.test;
+    }
+});
+
+
+
+
+var a = SubClass.new(100);
+Topaz.log(JSON.stringify(a.introspect()));
+
