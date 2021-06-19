@@ -25,13 +25,13 @@
 -- respond to the arrow keys and right-click + dragging.
 Input_Poll = tclass({
     inherits = Topaz.Entity,
-    define = function(thisclass, ent)
+    define = function(ent)
         -- Since we are making the shape once and not modifying it,
         -- theres no need to keep the component around.
         local visual = Topaz.Shape2D.new();
 
         -- Set it to blue and make it 20x20
-        visual.color = Topaz.Color.new({name='blue'});
+        visual.color = Color.fromString('blue');
         visual.formRectangle(20, 20);
 
         -- As shorthand for .addComponent(), you 
@@ -64,20 +64,20 @@ Input_Poll = tclass({
                 -- The add() function for vectors allows the creation 
                 -- of a new vector by summing the x, y, and z components
                 -- of the source vector and argument vector.
-                ent.position = ent.position.add(Topaz.Vector.new({x=0, y=-1}));            
+                ent.position = Vector.add(ent.position, {x=0, y=-1});            
             end
 
             if Topaz.Input.getState(TOPAZ.INPUT.KEY_down) ~= 0 then 
-                ent.position = ent.position.add(Topaz.Vector.new({x=0, y=1}));            
+                ent.position = Vector.add(ent.position, {x=0, y=1});            
             end
 
             if Topaz.Input.getState(TOPAZ.INPUT.KEY_left) ~= 0 then
-                ent.position = ent.position.add(Topaz.Vector.new({x=-1, y=0}));            
+                ent.position = Vector.add(ent.position, {x=-1, y=0});            
             end
 
 
             if Topaz.Input.getState(TOPAZ.INPUT.KEY_right) ~= 0 then
-                ent.position = ent.position.add(Topaz.Vector.new({x=1, y=0}));            
+                ent.position = Vector.add(ent.position, {x=1, y=0});            
             end
 
             -- The left/right/middle button can be polled using 
@@ -87,10 +87,10 @@ Input_Poll = tclass({
                 -- To poll position position, getState can be used. However,
                 -- due to the commonality of this operation, the position 
                 -- can be polled by just accessing Topaz.Input.mouseX / Y.
-                ent.position = Topaz.Vector.new({
+                ent.position = {
                     x=Topaz.Input.mouse.x,
                     y=Topaz.Input.mouse.y
-                });
+                };
             end
         end
     end
@@ -121,7 +121,7 @@ Input_Poll = tclass({
 -- is a red square controlled with W, A, S, D + left click.
 Input_List = tclass({
     inherits = Topaz.Entity,
-    define = function(thisclass, ent) 
+    define = function(ent) 
         -- This will hold the state of whether the event 
         -- listener detected a clicking state. When its pressed,
         -- its updated to 1, but when released its updated to 0.
@@ -131,7 +131,7 @@ Input_List = tclass({
         local visual = Topaz.Shape2D.new();
 
         -- Here, we're using RGB hex notation to define our color.
-        visual.color = Topaz.Color.new({name='#ff0000'});
+        visual.color = Color.fromString('#ff0000');
         visual.formRectangle(20, 20);
         ent.components = {visual};
 
@@ -157,13 +157,13 @@ Input_List = tclass({
             -- we passed in, and the input id that is active.
             onActive = function(map, key)
                 if key == TOPAZ.INPUT.KEY_w then
-                    ent.position = ent.position.add(Topaz.Vector.new({x=0, y=-1}));            
+                    ent.position = Vector.add(ent.position, {x=0, y=-1});            
                 elseif key == TOPAZ.INPUT.KEY_s then 
-                    ent.position = ent.position.add(Topaz.Vector.new({x=0, y=1}));            
+                    ent.position = Vector.add(ent.position, {x=0, y=1});            
                 elseif key == TOPAZ.INPUT.KEY_a then
-                    ent.position = ent.position.add(Topaz.Vector.new({x=-1, y=0}));            
+                    ent.position = Vector.add(ent.position, {x=-1, y=0});            
                 elseif key == TOPAZ.INPUT.KEY_d then
-                    ent.position = ent.position.add(Topaz.Vector.new({x=1, y=0}));            
+                    ent.position = Vector.add(ent.position, {x=1, y=0});            
                 end
             end
         });
@@ -193,11 +193,11 @@ Input_List = tclass({
                 if clicking == true then
                 
                     if input == TOPAZ.INPUT.POINTER_X then  
-                        ent.position = Topaz.Vector.new({x=value, y=ent.position.y});
+                        ent.position = {x=value, y=ent.position.y};
 
 
                     elseif input == TOPAZ.INPUT.POINTER_Y then 
-                        ent.position = Topaz.Vector.new({x=ent.position.x, y=value});
+                        ent.position = {x=ent.position.x, y=value};
 
                     end
                 end

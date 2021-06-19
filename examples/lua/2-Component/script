@@ -42,7 +42,7 @@
 --
 FruitBasket = tclass({
     inherits = Topaz.Component,
-    define = function(thisclass, component) 
+    define = function(component) 
         -- Current amount of fruit in the basket.
         -- We start the basket with a decent amount of fruit.
         --
@@ -137,7 +137,7 @@ FruitBasket = tclass({
 -- their own.
 Person = tclass({
     inherits = Topaz.Entity,
-    define = function(thisclass, ent)
+    define = function(ent)
         -- Like always, using the class name followed by parantheses is how 
         -- one instantiates a class.
         local basketPrivate = FruitBasket.new();

@@ -42,7 +42,7 @@ tex.setRGBA(0,
 
 Example3D = tclass({
     inherits = Topaz.Entity,
-    define = function(thisclass, ent)
+    define = function(ent)
         local v = Topaz.Shape3D.new();
         v.material = material;
         v.mesh = mesh;
@@ -59,11 +59,11 @@ Example3D = tclass({
 
         ent.onStep = function()
             stepper = stepper + 0.1;
-            ent.rotation = Topaz.Vector.new({
+            ent.rotation = {
                 x = stepper, 
                 y = stepper*3, 
                 z = stepper*8
-            });
+            };
         end
 
 
@@ -72,11 +72,11 @@ Example3D = tclass({
 
 
 a = Example3D.new();
-a.position = Topaz.Vector.new({z=-4});
+a.position = {z=-4};
 
 b = Example3D.new();
-b.position = Topaz.Vector.new({x=2, y=0, z=1});
-b.scale    = Topaz.Vector.new({x=0.7,y= 0.3, z=0.3});
+b.position = {x=2, y=0, z=1};
+b.scale    = {x=0.7,y= 0.3, z=0.3};
 
 
 
