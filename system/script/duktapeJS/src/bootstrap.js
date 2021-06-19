@@ -379,19 +379,23 @@ var tclass = function(d) {
         }
         if (out == undefined) out = {};
         
-        var varnames;
-        var mthnames;
-        var fnkey;
+        var varnames = {};
+        var mthnames = {};
         if (out.publicVars != undefined) {
-            varnames = out.publicVars;
-            mthnames = out.publicMethods;
-            fnkey = 'overridden';
+            mthnames = {
+                inherited : out.publicMethods
+            };
+    
+            varnames = {
+                inherited : out.publicVars
+            };
+            out.publicVars = varnames;
+            out.publicMethods = mthnames;
         } else {
             varnames = {};
             mthnames = {};
             out.publicVars = varnames;
             out.publicMethods = mthnames;
-            fnkey = 'default';
         }
         
         out.interface = function(obj) {
@@ -401,7 +405,7 @@ var tclass = function(d) {
                 switch(typeof(v)) {
                   case 'function':
                     out[keys[i]] = v; 
-                    mthnames[keys[i]] = fnkey;
+                    mthnames[keys[i]] = '';
                     break;
                     
                   case 'object':
@@ -425,7 +429,7 @@ var tclass = function(d) {
                 }
             }
         }
-        d.define(classinst, out, argobj);
+        d.define(out, argobj, classinst);
         delete out.interface;
 
         if (d.toString != undefined) {
@@ -455,7 +459,7 @@ var tclass = function(d) {
 
 const Vector = (function(){
     const statepush = function(v) {
-        if (v.native = undefined) {
+        if (v.native == undefined) {
             v.native = topaz_vector__create(v.x, v.y, v.z);
         } else {
             topaz_vector__set_xyz(v.native, v.x, v.y, v.z);
@@ -467,31 +471,34 @@ const Vector = (function(){
         v.y = topaz_vector__get_y(v.native);
         v.z = topaz_vector__get_z(v.native);
     }
-
+    const cnew = function(inst) {
+        if (inst.native == undefined) {
+            const o = {
+                x : inst.x,
+                y : inst.y,
+                z : inst.z,
+                native : undefined
+            };
+            if (o.x == undefined) o.x = 0;
+            if (o.y == undefined) o.y = 0;
+            if (o.z == undefined) o.z = 0;
+            Object.seal(o);
+            return o;    
+        } else {
+            const o = {
+                x : topaz_vector__get_x(inst.native),
+                y : topaz_vector__get_y(inst.native),
+                z : topaz_vector__get_z(inst.native),
+                native : inst.native
+            };
+            Object.seal(o);
+            return o;    
+        }
+    }
     return {
         statepush : statepush,
         statepull : statepull,
-        new : function(inst) {
-            if (inst.native == undefined) {
-                const o = {
-                    x : inst.x,
-                    y : inst.y,
-                    z : inst.z,
-                    native : undefined
-                };
-                Object.seal(o);
-                return o;    
-            } else {
-                const o = {
-                    x : topaz_vector__get_x(inst.native),
-                    y : topaz_vector__get_y(inst.native),
-                    z : topaz_vector__get_z(inst.native),
-                    native : inst.native
-                };
-                Object.seal(o);
-                return o;    
-            }
-        },
+        new : cnew,
         getDistance : function(a, b){ 
             statepush(a); statepush(b);
             return topaz_vector__get_distance(a.native, b.native);
@@ -506,7 +513,7 @@ const Vector = (function(){
         cross : function(a, b){ 
             statepush(a);
             statepush(b);
-            return this.new({native=topaz_vector__cross(a.native, b.native)});
+            return cnew({native:topaz_vector__cross(a.native, b.native)});
         },
 
         floor : function(a){ 
@@ -586,19 +593,19 @@ const Vector = (function(){
 
         
         add : function(a, b){ 
-            return this.new({x=a.x + b.x, y=a.y + b.y, z=a.z + b.z});
+            return cnew({x:a.x + b.x, y:a.y + b.y, z:a.z + b.z});
         },
         
         subtract : function(a, b){ 
-            return this.new({x=a.x - b.x, y=a.y - b.y, z=a.z - b.z});
+            return cnew({x:a.x - b.x, y:a.y - b.y, z:a.z - b.z});
         },
 
         multiply : function(a, b){ 
-            return this.new({x=a.x * b.x, y=a.y * b.y, z=a.z * b.z});
+            return cnew({x:a.x * b.x, y:a.y * b.y, z:a.z * b.z});
         },
         
-        divide : function(b, b){ 
-            return this.new({x=a.x / b.x, y=a.y / b.y, z=a.z / b.z});
+        divide : function(a, b){ 
+            return cnew({x:a.x / b.x, y:a.y / b.y, z:a.z / b.z});
         },
         
         length : function(a){
@@ -609,9 +616,72 @@ const Vector = (function(){
 })();
 
 
+// similar to vector, color is a "light object" where 
+// the state is held in-script and no real methods are 
+// bound to it. When it interacts with 
+// the native context, a wrapper is added and the data syncd
+const Color = (function(){
+    const statepush = function(v) {
+        if (v.native == undefined) {
+            v.native = topaz_color__create(v.r, v.g, v.b, v.a);
+        } else {
+            topaz_color__set_rgba(v.native, v.r, v.g, v.b, v.a);
+        }
+    }
+
+    const statepull = function(v) {
+        v.x = topaz_vector__get_x(v.native);
+        v.y = topaz_vector__get_y(v.native);
+
+        v.z = topaz_vector__get_z(v.native);
+    }
+    const refColor = topaz_color__create(0, 0, 0, 0);
+
+    const cnew = function(inst) {
+        if (inst.native == undefined) {
+            const o = {
+                r : 0,
+                g : 0,
+                b : 0,
+                a : 0,
+                native : undefined
+            };
+            Object.seal(o);
+            if (inst.name != undefined) {
+                topaz_color__set_from_string(refColor, inst.name);
+                o.r = topaz_color__get_r(refColor);
+                o.g = topaz_color__get_g(refColor);
+                o.b = topaz_color__get_b(refColor);
+                o.a = topaz_color__get_a(refColor);
+            }            
+            return o;    
+        } else {
+            const o = {
+                r : topaz_color__get_r(inst.native),
+                g : topaz_color__get_g(inst.native),
+                b : topaz_color__get_b(inst.native),
+                a : topaz_color__get_a(inst.native),
+                native : inst.native
+            };
+            Object.seal(o);
+            return o;    
+        }
+    }
+    return {
+        new : cnew,
+        statepush : statepush,
+        statepull : statepull,
+        asString : function(a) {
+            statepush(a);
+            return topaz_color__to_hex_string(a.native);
+        }
+    }
+})();
+
+
 
 var Topaz = tclass({
-    define = function(this_class, this_){ 
+    define : function(this_, args, classinst){ 
         var __Topaz__ = this_;
 
         // Declares a class which has external, native data.
@@ -623,7 +693,7 @@ var Topaz = tclass({
                 this_class.uniqueObjectPool = 0;    
             },
             
-            define : function(this_class, this_){ 
+            define : function(this_, args, this_class){ 
                 var impl = undefined;
                 var id = this_class.uniqueObjectPool;
                 this_class.uniqueObjectPool = 1 + this_class.uniqueObjectPool;       
@@ -634,7 +704,7 @@ var Topaz = tclass({
                     // mechanisms: 1) instData.nativeCreate is a native function that can { 
                     // return a new object for us to use or 2) instData.instance contains 
                     // a preexisting native reference.
-                    bindNative : function(instData, ...v) { 
+                    bindNative : function(instData, args) { 
                         
                         if (instData.instance == undefined) { 
                             impl = undefined                        
@@ -644,7 +714,23 @@ var Topaz = tclass({
                         
                         
                         if (impl == undefined && instData.nativeCreate != undefined) { 
-                            impl = instData.nativeCreate(...v);
+                            if (args == undefined) {
+                                impl = instData.nativeCreate();
+                            } else {
+                                switch(args.length) {
+                                  case 1:
+                                    impl = instData.nativeCreate(args[0]);
+                                    break;
+                                  case 2:
+                                    impl = instData.nativeCreate(args[0], args[1]);
+                                    break;
+                                  case 3:
+                                    impl = instData.nativeCreate(args[0], args[1], args[2]);
+                                    break;
+                                  defaul:
+                                    throw new Error('Too many arguments to dispatch native create call');
+                                }
+                            }
                         }
                         if (impl == undefined) {
                             error('Topaz.Native instance cannot have a undefined native reference.'+ tostring(debug.traceback('')));
@@ -677,7 +763,7 @@ var Topaz = tclass({
         // Must be separate since Topaz inherit from the asset ahead of time before Topaz is computed.
         var __Asset__ = tclass({
             inherits : __Native__,
-            define : function(this_class, this_, args){ 
+            define : function(this_, args, this_class){ 
                 var impl = this_.bindNative({
                     instance : args,
                 });
@@ -699,14 +785,14 @@ var Topaz = tclass({
 
         var __Filesystem__ = {        
             getPath : function(n) { 
-                return __Topaz__.Filesystem.Path.new({native=topaz_filesystem__get_path(n)});
+                return __Topaz__.Filesystem.Path.new({native:topaz_filesystem__get_path(n)});
             },
             
             getPathFromString : function(pth, str){ 
                 if (str == undefined) {
-                    return __Topaz__.Filesystem.Path.new({native=topaz_filesystem__get_path_from_string(pth)});            
+                    return __Topaz__.Filesystem.Path.new({native:topaz_filesystem__get_path_from_string(pth)});            
                 } else {
-                    return __Topaz__.Filesystem.Path.new({native=topaz_filesystem__get_path_from_string(pth.native, str)});                        
+                    return __Topaz__.Filesystem.Path.new({native:topaz_filesystem__get_path_from_string(pth.native, str)});                        
                 }
             },
             
@@ -724,7 +810,7 @@ var Topaz = tclass({
                         
                         parent : {
                             get : function(){ 
-                                return __Topaz__.Filesystem.Path.new({native=topaz_filesystem_path__get_parent(impl)});
+                                return __Topaz__.Filesystem.Path.new({native:topaz_filesystem_path__get_parent(impl)});
                             }
                         },
                         
@@ -733,7 +819,7 @@ var Topaz = tclass({
                                 var out = [];
                                 var len = topaz_filesystem_path__get_child_count(impl);
                                 for(var i = 0; i < len; ++i) { 
-                                    var p = __Topaz__.Filesystem.Path.new({native=topaz_filesystem_path__get_nth_child(impl, i)});
+                                    var p = __Topaz__.Filesystem.Path.new({native:topaz_filesystem_path__get_nth_child(impl, i)});
                                     if (p != undefined) {
                                         out.push(p);
                                     }
@@ -748,12 +834,12 @@ var Topaz = tclass({
 
         var __RNG__ = tclass({
             inherits : __Native__,
-            define : function(this_class, this_, args){ 
+            define : function(this_, args, this_class){ 
     
                 var impl = this_.bindNative({
                     instance : args, 
                     nativeCreate : topaz_rng__create
-                }, args.seed);
+                }, [args.seed]);
     
                 
                 this_.interface({
@@ -779,14 +865,14 @@ var Topaz = tclass({
         });
 
         var __ViewManager__ = (tclass({
-            define : function(this_class, this_){ 
+            define : function(this_, args, this_class){ 
                 this_.interface({
                     mainDisplay : {
                         set : function(v){ 
                             topaz_view_manager__set_main(v.native);
                         },
                         get : function(){ 
-                            return __Topaz__.Display.new({native=topaz_view_manager__get_main()});
+                            return __Topaz__.Display.new({native:topaz_view_manager__get_main()});
                         }
                     },
     
@@ -804,7 +890,7 @@ var Topaz = tclass({
 
         var __Display__ =  tclass({
             inherits : __Native__,
-            define : function(this_class, this_, args) { 
+            define : function(this_, args, this_class) { 
                 var impl = this_.bindNative({
                     instance : args,
                     nativeCreate : topaz_view_manager__create_display()
@@ -842,7 +928,7 @@ var Topaz = tclass({
     
     
                     getFramebuffer : function(a){ 
-                        return __Topaz__.Framebuffer.new({native=topaz_display__get_framebuffer(impl, a)});
+                        return __Topaz__.Framebuffer.new({native:topaz_display__get_framebuffer(impl, a)});
                     },
     
                     useFramebuffer : function(a){ 
@@ -878,19 +964,19 @@ var Topaz = tclass({
     
                     camera2d : {
                         get : function(){ 
-                            return __Topaz__.Entity.new({native=topaz_display__get_camera_2d(impl)});
+                            return __Topaz__.Entity.new({native:topaz_display__get_camera_2d(impl)});
                         }
                     },
     
                     camera3d : {
                         get : function(){ 
-                            return __Topaz__.Entity.new({native=topaz_display__get_camera_3d(impl)});
+                            return __Topaz__.Entity.new({native:topaz_display__get_camera_3d(impl)});
                         }
                     },
     
                     framebuffer : {
                         get : function(){ 
-                            return __Topaz__.Framebuffer.new({native=topaz_display__get_main_framebuffer(impl)});
+                            return __Topaz__.Framebuffer.new({native:topaz_display__get_main_framebuffer(impl)});
                         }
                     }
                 });
@@ -899,7 +985,7 @@ var Topaz = tclass({
     
         var __Framebuffer__ = tclass({
             inherits : __Native__,
-            define : function(this_class, this_, args){ 
+            define : function(this_, args, this_class){ 
                 var impl = this_.bindNative({
                     instance : args
                 });
@@ -935,7 +1021,7 @@ var Topaz = tclass({
 
         var __Mesh__ = tclass({
             inherits : __Asset__,
-            define : function(this_class, this_, implPre){ 
+            define : function(this_, implPre, this_class){ 
                 var impl = this_.native;    
                 this_.interface({
                     vertexCount : {
@@ -1025,17 +1111,17 @@ var Topaz = tclass({
         });
 
         var __Input__ = tclass({
-            define : function(this_class, this_) { 
+            define : function(this_, args, this_class) { 
                 this_.interface({
                     mouse : {   
                         get : function(){ 
-                            return Vector.new({x=topaz_input__mouse_x(), y=topaz_input__mouse_y()});
+                            return Vector.new({x:topaz_input__mouse_x(), y:topaz_input__mouse_y()});
                         }
                     },
     
                     mouseDelta : {
                         get : function(){ 
-                            return Vector.new({x=topaz_input__mouse_delta_x(), y=topaz_input__mouse_delta_y()});
+                            return Vector.new({x:topaz_input__mouse_delta_x(), y:topaz_input__mouse_delta_y()});
                         } 
                     },
     
@@ -1100,12 +1186,12 @@ var Topaz = tclass({
 
 
         var __Audio__ = tclass({
-            define : function(this_class, this_){ 
+            define : function(this_, this_class){ 
                 var ps = tclass({
                     inherits : __Native__,
-                    define : function(this_class, this_, args) { 
+                    define : function(this_, args, this_class) { 
                         var impl = this_.bindNative({
-                            instance = args
+                            instance : args
                         });
     
     
@@ -1177,7 +1263,7 @@ var Topaz = tclass({
 
         var __Material__ = tclass({
             inherits : __Asset__,
-            define : function(this_class, this_){ 
+            define : function(this_, args, this_class){ 
                 var impl = this_.native;
                 this_.interface({
                     setProgramData : function(a, b){ 
@@ -1203,7 +1289,7 @@ var Topaz = tclass({
         
         var __Image__ = tclass({
             inherits : __Asset__,
-            define : function(this_class, this_){ 
+            define : function(this_, args, this_class){ 
                 var impl = this_.native;
                 this_.interface({
                     width : {
@@ -1239,7 +1325,7 @@ var Topaz = tclass({
         
         var __Data__ = tclass({
             inherits : __Asset__,
-            define : function(this_class, this_) { 
+            define : function(this_, args, this_class) { 
                 var impl = this_.native;
                 
                 this_.interface({
@@ -1272,7 +1358,7 @@ var Topaz = tclass({
         
         var __Sound__ = tclass({
             inherits : __Asset__,
-            define : function(this_class, this_){ 
+            define : function(this_, args, this_class){ 
                 var impl = this_.native;            
                 
                 this_.interface({
@@ -1303,18 +1389,18 @@ var Topaz = tclass({
         
         
         var __Resources__ = tclass({
-            define : function(this_class, this_){ 
+            define : function(this_, args, this_class){ 
                 var swtch = {};
-                swtch[TOPAZ.ASSET.TYPE.IMAGE] = function(i){return __Topaz__.Image.new({native=i})} 
-                swtch[TOPAZ.ASSET.TYPE.DATA] = function(i){return __Topaz__.Data.new({native=i})} 
-                swtch[TOPAZ.ASSET.TYPE.SOUND] = function(i){return __Topaz__.Sound.new({native=i})} 
-                swtch[TOPAZ.ASSET.TYPE.MATERIAL] = function(i){return __Topaz__.Material.new({native=i})} 
-                swtch[TOPAZ.ASSET.TYPE.MESH] = function(i){return __Topaz__.Mesh.new({native=i})} 
+                swtch[TOPAZ.ASSET.TYPE.IMAGE] = function(i){return __Topaz__.Image.new({native:i})} 
+                swtch[TOPAZ.ASSET.TYPE.DATA] = function(i){return __Topaz__.Data.new({native:i})} 
+                swtch[TOPAZ.ASSET.TYPE.SOUND] = function(i){return __Topaz__.Sound.new({native:i})} 
+                swtch[TOPAZ.ASSET.TYPE.MATERIAL] = function(i){return __Topaz__.Material.new({native:i})} 
+                swtch[TOPAZ.ASSET.TYPE.MESH] = function(i){return __Topaz__.Mesh.new({native:i})} 
 
                 var _rawAssetToInstance = function(impl) { 
                     if (impl == undefined) { return undefined; }
                     var fn = swtch[topaz_asset__get_type(impl)];
-                    if (fn == undefined) { return __Topaz__.Asset.new({native=impl}); }
+                    if (fn == undefined) { return __Topaz__.Asset.new({native:impl}); }
                     return fn(impl);
                 }
             
@@ -1368,7 +1454,7 @@ var Topaz = tclass({
         }).new();
         
         var __FontManager__ = tclass({
-            define : function(this_class, this_) { 
+            define : function(this_, args, this_class) { 
                 this_.interface({
                     registerFont : function(n){ 
                         topaz_font_manager__register_font(n);
@@ -1391,7 +1477,7 @@ var Topaz = tclass({
 
         var __Entity__ = tclass({
             inherits : __Native__,
-            define : function(this_class, this_, args)    { 
+            define : function(this_, args, this_class)    { 
                 this_.bindNative({
                     instance : args,
                     nativeCreate : topaz_entity__create
@@ -1417,7 +1503,7 @@ var Topaz = tclass({
                     nthChild : function(n){ 
                         var f = topaz_entity__get_nth_child(this_.native, n);
                         if (f.__ctx != undefined) { return f.__ctx };
-                        return this_class.new({native=f});                
+                        return this_class.new({native:f});                
                     },
                     
                     
@@ -1464,7 +1550,7 @@ var Topaz = tclass({
                         get : function() { 
                             var f = topaz_entity__get_parent(this_.native);
                             if (f.__ctx != undefined) { return f.__ctx; }
-                            return this_class.new({native=f});
+                            return this_class.new({native:f});
                         },
                         
                         set : function(v){ 
@@ -1475,14 +1561,14 @@ var Topaz = tclass({
                     query : function(name) { 
                         var f = topaz_entity__query(this_.native, name);
                         if (f.__ctx != undefined) { return f.ctx };
-                        return this_class.new({native=f});
+                        return this_class.new({native:f});
                     },
                     
                     
                     search : function(name){ 
                         var f = topaz_entity__search(this_.native, name);
                         if (f.__ctx != undefined) { return f.ctx };
-                        return this_class.new({native=f});                
+                        return this_class.new({native:f});                
                     },
                     
                     priority : {
@@ -1500,23 +1586,23 @@ var Topaz = tclass({
                     },
     
                     rotation : {
-                        get : function()  {return Vector.new({native=topaz_entity__get_rotation(this_.native)});}, 
-                        set : function(v) {Vector.pushstate(v);topaz_entity__set_rotation(this_.native, v.native);} 
+                        get : function()  {return Vector.new({native:topaz_entity__get_rotation(this_.native)});}, 
+                        set : function(v) {Vector.statepush(v);topaz_entity__set_rotation(this_.native, v.native);} 
                     },
 
     
                     position : {
-                        get : function()   {return Vector.new({native=topaz_entity__get_position(this_.native)}); }, 
-                        set : function(v)  {Vector.pushstate(v);topaz_entity__set_position(this_.native, v.native);} 
+                        get : function()   {return Vector.new({native:topaz_entity__get_position(this_.native)}); }, 
+                        set : function(v)  {Vector.statepush(v);topaz_entity__set_position(this_.native, v.native);} 
                     },
                     
                     scale : {
-                        get : function()  {return Vector.new({native=topaz_entity__get_scale(this_.native)});}, 
-                        set : function(v) {Vector.pushstate(v);topaz_entity__set_scale(this_.native, v.native);}
+                        get : function()  {return Vector.new({native:topaz_entity__get_scale(this_.native)});}, 
+                        set : function(v) {Vector.statepush(v);topaz_entity__set_scale(this_.native, v.native);}
                     },
                     
                     globalPosition : {
-                        get : function() {return Vector.new({native=topaz_entity__get_global_position(this_.native)});} 
+                        get : function() {return Vector.new({native:topaz_entity__get_global_position(this_.native)});} 
                     },
                     
                     isStepping : {
@@ -1559,7 +1645,7 @@ var Topaz = tclass({
                                 if (f.__ctx != undefined) {
                                     out.push(f.__ctx);
                                 } else {
-                                    out.push(__Topaz__.Component.new({native=f}));
+                                    out.push(__Topaz__.Component.new({native:f}));
                                 }
                             }
                             return out;
@@ -1580,7 +1666,7 @@ var Topaz = tclass({
                     queryComponent : function(tag) { 
                         var f = topaz_entity__query_component(this_.native, tag);
                         if (f.__ctx != undefined) { return f.__ctx; }
-                        return __Topaz__.Component({native=f});
+                        return __Topaz__.Component({native:f});
                     },
                 
                     removeComponent : function(c){ 
@@ -1626,14 +1712,14 @@ var Topaz = tclass({
 
 
         var __Component__ = tclass({
-            inherits = __Native__,
-            define : function(this_class, this_, args){ 
+            inherits : __Native__,
+            define : function(this_, args, this_class){ 
                 // some classes will inherit and overwrite the native instance, so a 
                 // var impl doesnt make sense.
                 this_.bindNative({
-                    instance = args,
-                    nativeCreate = topaz_component__create
-                }, args.tag);
+                    instance : args,
+                    nativeCreate : topaz_component__create
+                }, [args.tag]);
     
                 this_.interface({
                     destroy : function(){ 
@@ -1667,7 +1753,7 @@ var Topaz = tclass({
                         get : function(){ 
                             var f = topaz_component__get_host(this_.native);
                             if (f.__ctx != undefined) { return f.__ctx };
-                            return __Topaz__.Entity.new({native=f});
+                            return __Topaz__.Entity.new({native:f});
                         }
                     },
                     
@@ -1721,66 +1807,19 @@ var Topaz = tclass({
             }
         });
         
-        var __Color__ = tclass({
-            inherits = __Native__,
-            define : function(this_class, this_, args){ 
-                var impl = this_.bindNative({
-                    instance = args,
-                    nativeCreate = topaz_color__create
-                }, args.name);
-                topaz_color__set_from_string(impl, args.name);
-                
-                this_.interface({
-                    string =
-                    {
-                        get : function(){ 
-                            return topaz_color__to_hex_string(impl);
-                        },
 
-                        set : function(str){ 
-                            topaz_color__set_from_string(impl, str);
-                        }
-                    },
-                    r= {
-                        get : function() {return topaz_color__get_r(impl);}, 
-                        set : function(v){       topaz_color__set_r(impl, v);} 
-                    },
-                    
-                    g= {
-                        get : function() {return topaz_color__get_g(impl);}, 
-                        set : function(v){       topaz_color__set_g(impl, v);} 
-                    },
-                    
-                    b= {
-                        get : function() {return topaz_color__get_b(impl);}, 
-                        set : function(v){       topaz_color__set_b(impl, v);} 
-                    },
-                    
-                    a= {
-                        get : function() {return topaz_color__get_a(impl);}, 
-                        set : function(v){       topaz_color__set_a(impl, v);} 
-                    }
-                });
-            },
-
-
-            
-            toString : function(){ 
-                return 'RGBA: '+math.floor(this_.r*255)+','+math.floor(this_.g*255)+','+math.floor(this_.b*255)+':'+math.floor(this_.a*255);    
-            }   
-        });
         
         
         var __Text2D__ = tclass({
-            inherits = __Component__,
-            define : function(this_class, this_, args){ 
+            inherits :__Component__,
+            define : function(this_, args, this_class){ 
                 // whoops, the component constructor already made a generic component native.
                 // destroy it and make a real one
                 this_.native.__ctx.destroy();
                 
                 var impl = this_.bindNative({
-                    instance = args,
-                    nativeCreate = topaz_text2d__create
+                    instance : args,
+                    nativeCreate : topaz_text2d__create
                 });
                 
                 var fontState;
@@ -1800,7 +1839,7 @@ var Topaz = tclass({
                         }
                     },
                     
-                    size =  {
+                    size :  {
                         get : function()  {return this_.sizeState;},
                         set : function(v) { 
                             sizeState = v;
@@ -1809,10 +1848,12 @@ var Topaz = tclass({
                     },
                     
                     setColor : function(c) { 
+                        Color.statepush(c);
                         topaz_text2d__set_color(impl, c.native);
                     },
                     
                     setColorSection : function(from, to, c) { 
+                        Color.statepush(c);
                         topaz_text2d__set_color_section(impl, from, to, c.native);
                     },
                     
@@ -1833,18 +1874,18 @@ var Topaz = tclass({
                     },
                     
                     position : {
-                        get : function() {return Vector.new({native=topaz_text2d__get_position(impl)});}, 
-                        set : function(v){Vector.pushstate(v);topaz_text2d__set_position(impl, v.native);} 
+                        get : function() {return Vector.new({native:topaz_text2d__get_position(impl)});}, 
+                        set : function(v){Vector.statepush(v);topaz_text2d__set_position(impl, v.native);} 
                     },
                     
                     rotation : {
-                        get : function() {return Vector.new({native=topaz_text2d__get_rotation(impl)});},
-                        set : function(v){Vector.pushstate(v);topaz_text2d__set_rotation(impl, v.native);} 
+                        get : function() {return Vector.new({native:topaz_text2d__get_rotation(impl)});},
+                        set : function(v){Vector.statepush(v);topaz_text2d__set_rotation(impl, v.native);} 
                     },
                     
                     scale : {
-                        get : function() {return Vector.new({native=topaz_text2d__get_scale(impl)});}, 
-                        set : function(v){Vector.pushstate(v);topaz_text2d__set_scale(impl, v.native);} 
+                        get : function() {return Vector.new({native:topaz_text2d__get_scale(impl)});}, 
+                        set : function(v){Vector.statepush(v);topaz_text2d__set_scale(impl, v.native);} 
                     },
                     
                     setAttribute : function(a, b){ 
@@ -1860,19 +1901,19 @@ var Topaz = tclass({
         });
         
         var __Scheduler__ = tclass({
-            inherits = __Component__,
-            define : function(this_class, this_, args){ 
+            inherits :__Component__,
+            define : function(this_, args, this_class){ 
                 // whoops, the component constructor already made a generic component native.
                 // destroy it and make a real one
                 this_.native.__ctx.destroy();
                 
                 var impl = this_.bindNative({
-                    instance = args,
-                    nativeCreate = topaz_scheduler__create
-                }, args.type);
+                    instance : args,
+                    nativeCreate : topaz_scheduler__create
+                }, [args.type]);
                 
                 this_.interface({
-                    startTask = function(args){ 
+                    startTask : function(args){ 
                         if (args["taskName"] != undefined) {
                             topaz_scheduler__start_task(
                                 impl,
@@ -1924,15 +1965,15 @@ var Topaz = tclass({
         });
         
         var __StateControl__ = tclass({
-            inherits = __Component__,
-            define : function(this_class, this_, args){ 
+            inherits :__Component__,
+            define : function(this_, args, this_class){ 
                 // whoops, the component constructor already made a generic component native.
                 // destroy it and make a real one
                 this_.native.__ctx.destroy();
                 
                 var impl = this_.bindNative({
-                    instance = args,
-                    nativeCreate = topaz_state_control__create
+                    instance : args,
+                    nativeCreate : topaz_state_control__create
                 });
                 
                 this_.interface({
@@ -1970,15 +2011,15 @@ var Topaz = tclass({
         });
         
         var __Object2D__ = tclass({
-            inherits = __Component__,
-            define : function(this_class, this_, args){ 
+            inherits :__Component__,
+            define : function(this_, args, this_class){ 
                 // whoops, the component constructor already made a generic component native.
                 // destroy it and make a real one
                 this_.native.__ctx.destroy();
                 
                 var impl = this_.bindNative({
-                    instance = args,
-                    nativeCreate = topaz_oject2d__create
+                    instance : args,
+                    nativeCreate : topaz_oject2d__create
                 });
                 
                 this_class.setGroupInteraction = function(a, b, c){ 
@@ -2072,22 +2113,22 @@ var Topaz = tclass({
                     },
 
                     lastCollided : {
-                        get : function()  {return __Topaz__.Entity.new({native=topaz_object2d__get_last_collided(impl)});} 
+                        get : function()  {return __Topaz__.Entity.new({native:topaz_object2d__get_last_collided(impl)});} 
                     }
                 });                
             }
         });
         
         var __Shape2D__ = tclass({
-            inherits = __Component__,
-            define : function(this_class, this_, args){ 
+            inherits :__Component__,
+            define : function(this_, args, this_class){ 
                 // whoops, the component constructor already made a generic component native.
                 // destroy it and make a real one
                 this_.native.__ctx.destroy();
                 
                 var impl = this_.bindNative({
-                    instance = args,
-                    nativeCreate = topaz_shape2d__create
+                    instance : args,
+                    nativeCreate : topaz_shape2d__create
                 });
                 
                 var _lines;
@@ -2095,8 +2136,8 @@ var Topaz = tclass({
                 
                 this_.interface({
                     color : {
-                        get : function() {return __Color__.new({native=topaz_shape2d__get_color(impl)});}, 
-                        set : function(v){topaz_shape2d__set_color(impl, v.native);} 
+                        get : function() {return Color.new({native:topaz_shape2d__get_color(impl)});}, 
+                        set : function(v){Color.statepush(v);topaz_shape2d__set_color(impl, v.native);} 
                     },
 
 
@@ -2106,23 +2147,23 @@ var Topaz = tclass({
                     },
 
                     center : {
-                        get : function() {return Vector.new({native=topaz_shape2d__get_center(impl)});},
-                        set : function(v){Vector.pushstate(v);topaz_shape2d__set_center(impl, v.native);} 
+                        get : function() {return Vector.new({native:topaz_shape2d__get_center(impl)});},
+                        set : function(v){Vector.statepush(v);topaz_shape2d__set_center(impl, v.native);} 
                     },
 
                     position : {
-                        get : function() {return Vector.new({native=topaz_shape2d__get_position(impl)});},
-                        set : function(v){Vector.pushstate(v);topaz_shape2d__set_position(impl, v.native);} 
+                        get : function() {return Vector.new({native:topaz_shape2d__get_position(impl)});},
+                        set : function(v){Vector.statepush(v);topaz_shape2d__set_position(impl, v.native);} 
                     },
 
                     rotation : {
-                        get : function() {return Vector.new({native=topaz_shape2d__get_rotation(impl)});},
-                        set : function(v){Vector.pushstate(v);topaz_shape2d__set_rotation(impl, v.native);} 
+                        get : function() {return Vector.new({native:topaz_shape2d__get_rotation(impl)});},
+                        set : function(v){Vector.statepush(v);topaz_shape2d__set_rotation(impl, v.native);} 
                     },
 
                     scale : {
-                        get : function() {return Vector.new({native=topaz_shape2d__get_scale(impl)});}, 
-                        set : function(v){Vector.pushstate(v);topaz_shape2d__set_scale(impl, v.native);} 
+                        get : function() {return Vector.new({native:topaz_shape2d__get_scale(impl)});}, 
+                        set : function(v){Vector.statepush(v);topaz_shape2d__set_scale(impl, v.native);} 
                     },
 
                     lines : {
@@ -2176,32 +2217,32 @@ var Topaz = tclass({
         
         
         var __Shape3D__ = tclass({
-            inherits = __Component__,
-            define : function(this_class, this_, args){ 
+            inherits :__Component__,
+            define : function(this_, args, this_class){ 
                 // whoops, the component constructor already made a generic component native.
                 // destroy it and make a real one
                 this_.native.__ctx.destroy();
                 
                 var impl = this_.bindNative({
-                    instance = args,
-                    nativeCreate = topaz_shape3d__create
+                    instance : args,
+                    nativeCreate : topaz_shape3d__create
                 });
                 
                 
                 this_.interface({
                     position : {
-                        get : function() {return Vector.new({native=topaz_shape3d__get_position(impl)});},
-                        set : function(v){Vector.pushstate(v);topaz_shape3d__set_position(impl, v.native);} 
+                        get : function() {return Vector.new({native:topaz_shape3d__get_position(impl)});},
+                        set : function(v){Vector.statepush(v);topaz_shape3d__set_position(impl, v.native);} 
                     },
 
                     rotation : {
-                        get : function() {return Vector.new({native=topaz_shape3d__get_rotation(impl)});}, 
-                        set : function(v){Vector.pushstate(v);topaz_shape3d__set_rotation(impl, v.native);} 
+                        get : function() {return Vector.new({native:topaz_shape3d__get_rotation(impl)});}, 
+                        set : function(v){Vector.statepush(v);topaz_shape3d__set_rotation(impl, v.native);} 
                     },
 
                     scale : {
-                        get : function() {return Vector.new({native=topaz_shape3d__get_scale(impl)});},
-                        set : function(v){Vector.pushstate(v);topaz_shape3d__set_scale(impl, v.native);} 
+                        get : function() {return Vector.new({native:topaz_shape3d__get_scale(impl)});},
+                        set : function(v){Vector.statepush(v);topaz_shape3d__set_scale(impl, v.native);} 
                     },
 
                     setAttribute : function(a, b){ 
@@ -2239,15 +2280,15 @@ var Topaz = tclass({
         });
         
         var __Automation__ = tclass({
-            inherits = __Component__,
-            define : function(this_class, this_, args){ 
+            inherits :__Component__,
+            define : function(this_, args, this_class){ 
                 // whoops, the component constructor already made a generic component native.
                 // destroy it and make a real one
                 this_.native.__ctx.destroy();
                 
                 var impl = this_.bindNative({
-                    instance = args,
-                    nativeCreate = topaz_automation__create
+                    instance : args,
+                    nativeCreate : topaz_automation__create
                 });
                 
                 this_.interface({
@@ -2288,7 +2329,7 @@ var Topaz = tclass({
                     },
 
                     vectorAt : function(at) { 
-                        return Vector.new({native=topaz_automation__vector_at(impl, at)});
+                        return Vector.new({native:topaz_automation__vector_at(impl, at)});
                     },
 
                     at : function(a) { 
@@ -2296,7 +2337,7 @@ var Topaz = tclass({
                     },
 
                     vector : {
-                        get : function() {return Vector.new({native=topaz_automation__current_vector(impl)})},
+                        get : function() {return Vector.new({native:topaz_automation__current_vector(impl)})},
                     },
 
                     value : {
@@ -2338,10 +2379,10 @@ var Topaz = tclass({
         });
         
         var __Particle__ = tclass({
-            define : function(this_class, this_){ 
+            define : function(this_, args, this_class){ 
 
                 var impl = this_.bindNative({
-                    nativeCreate = topaz_particle__create
+                    nativeCreate : topaz_particle__create
                 });
                 
                 this_.interface({
@@ -2368,8 +2409,8 @@ var Topaz = tclass({
         });
         
         var __ParticleEmitter2D__  = tclass({
-            inherits = __Entity__,
-            define : function(this_class, this_) { 
+            inherits :__Entity__,
+            define : function(this_, args, this_class) { 
                 var impl = this_.native;
 
                 this_.interface({
@@ -2402,7 +2443,7 @@ var Topaz = tclass({
             log : topaz__log,
             toBase64 : topaz__to_base64,
             fromBase64 : function(f) { 
-                return __Topaz__.Data.new({native=topaz__from_base64(f)});
+                return __Topaz__.Data.new({native:topaz__from_base64(f)});
             },
             
             root : {
@@ -2455,7 +2496,7 @@ var Topaz = tclass({
                 var helper = function(obj, level) {
                     if (obj === undefined) return 'undefined';
                     if (obj === null) return 'null';
-                    if (!(typeof obj === 'object')) return ''+obj;
+                    if (!(typeof obj === 'object')) return '\''+obj + '\'';
                     if (checked.indexOf(obj) != -1) return '[Already Printed]'
                     checked.push(obj);
                     var strOut = '{\n';
@@ -2464,7 +2505,7 @@ var Topaz = tclass({
                     for(var i = 0; i < keys.length; ++i) {
                         var subStr = levelInv ? helper(obj[keys[i]], level+1) : obj[keys[i]];
                         for(var n = 0; n < level; ++n) strOut += '  ';
-                        strOut += '  \'' + keys[i] + '\' : \'' + subStr + '\',\n'; 
+                        strOut += '  \'' + keys[i] + '\' : ' + subStr + ',\n'; 
                     }
                     for(var n = 0; n < level; ++n) strOut += '  ';
                     strOut += '}';
@@ -2491,10 +2532,9 @@ var Topaz = tclass({
             Image       : {get : function(){return __Image__ }},
             Data        : {get : function(){return __Data__ }},
             Sound       : {get : function(){return __Sound__ }},
-            Color       : {get : function(){return __Color__ }},
             Text2D      : {get : function(){return __Text2D__ }},
             Scheduler   : {get : function(){return __Scheduler__ }},
-            StateControl= {get : function(){return __StateControl__ }},
+            StateControl: {get : function(){return __StateControl__ }},
             Object2D    : {get : function(){return __Object2D__ }},
             Shape2D     : {get : function(){return __Shape2D__ }},
             Shape3D     : {get : function(){return __Shape3D__ }},
@@ -2577,7 +2617,7 @@ var Topaz = tclass({
 //   have their autorun scripts run first.
 // - autorun scripts within the same package are run in order from 
 //   first marked to last marked.
-Topaz.Package = (function(){
+var Package = (function(){
     var packages = [];
     var packagesActive = [];
     var packageDB = {}; // indexed by string.

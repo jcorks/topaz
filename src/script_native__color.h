@@ -9,6 +9,22 @@ TSO_SCRIPT_API_FN(color_api__r_set) {
     TSO_NO_RETURN;
 }
 
+TSO_SCRIPT_API_FN(color_api__rgba_set) {
+    TSO_ASSERT_ARG_COUNT(5);
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_ARG_3;
+    TSO_ARG_4;
+    TSO_NATIVIZE(topazColor_t *, TSO_OBJECT_ID__COLOR);
+
+    native->r = (uint8_t)(int)(topaz_script_object_as_number(arg1) * 255);
+    native->g = (uint8_t)(int)(topaz_script_object_as_number(arg2) * 255);
+    native->b = (uint8_t)(int)(topaz_script_object_as_number(arg3) * 255);
+    native->a = (uint8_t)(int)(topaz_script_object_as_number(arg4) * 255);
+    TSO_NO_RETURN;
+}
+
 TSO_SCRIPT_API_FN(color_api__g_set) {
     TSO_ARG_0;
     TSO_ARG_1;
@@ -180,10 +196,20 @@ static topazScript_Object_t * color_api__cleanup(
 
 
 TSO_SCRIPT_API_FN(color_api__create) {
+    TSO_ASSERT_ARG_COUNT(4);
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_ARG_3;
     topazColor_t * colorPtr = calloc(1, sizeof(topazColor_t));
 
     // creates new object and sets native pointer
     TSO_OBJECT_NEW_VALUE(colorPtr, TSO_OBJECT_ID__COLOR, color_api__cleanup, colorPtr);
+
+    colorPtr->r = (uint8_t)(int)(topaz_script_object_as_number(arg0) * 255);
+    colorPtr->g = (uint8_t)(int)(topaz_script_object_as_number(arg1) * 255);
+    colorPtr->b = (uint8_t)(int)(topaz_script_object_as_number(arg2) * 255);
+    colorPtr->a = (uint8_t)(int)(topaz_script_object_as_number(arg3) * 255);
 
     return object;
 }
@@ -201,6 +227,8 @@ static void add_refs__color_api(topazScript_t * script, topazScriptManager_t * c
     TS_MAP_NATIVE_FN("topaz_color__set_g", color_api__g_set);
     TS_MAP_NATIVE_FN("topaz_color__set_b", color_api__b_set);
     TS_MAP_NATIVE_FN("topaz_color__set_a", color_api__a_set);
+
+    TS_MAP_NATIVE_FN("topaz_color__set_rgba", color_api__rgba_set);
 
     TS_MAP_NATIVE_FN("topaz_color__get_r", color_api__r_get);
     TS_MAP_NATIVE_FN("topaz_color__get_g", color_api__g_get);

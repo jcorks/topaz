@@ -31,7 +31,7 @@ var Rectangle = tclass({
     // to construct new instances. entclass is a reference to the output 
     // of tclass which can be used as a place for static class storage.
     // ent is the new instance being created.
-    define : function(entclass, ent) {
+    define : function(ent) {
         // The define function is called to initialize parameters of the 
         // entity that are private to its definition.
         //
@@ -47,7 +47,9 @@ var Rectangle = tclass({
         // By default, the center of a Shape2D is the top-left 
         // of the shape. Since rotation is about the center,
         // the set the center to one half of the rectangles span.
-        visual.center = Vector.new({x=100, y=100});
+        visual.center = Vector.new({x:100, y:100});
+
+
 
 
         // Even though the component has all the information 
@@ -57,8 +59,6 @@ var Rectangle = tclass({
         //
         ent.addComponent(visual);
 
-
-    
         // Along with components, every entity can have a custom set of 
         // update functions. The most common one is onStep() which is 
         // run every frame. Note how the props instance is the first 
@@ -73,10 +73,10 @@ var Rectangle = tclass({
             // The position, rotation, and scale properties are vector objects,
             // so to update them, you actually replace them with new vectors.
             const r = ent.rotation;
-            ent.rotation = Topaz.Vector({
-                x=r.x + 0.01,
-                y=r.y + 0.2,
-                z=r.z + 0.03
+            ent.rotation = Vector.new({
+                x:r.x + 0.01,
+                y:r.y + 0.2,
+                z:r.z + 0.03
             });
         }
 
@@ -108,7 +108,7 @@ var entity = Rectangle.new()
 // The color of any Shape2D can be assigned directly. 
 // The string can be a common color name, or a #RRGGBB/AA 
 // formatted hex string.
-entity.setColor(Topaz.Color.new('purple'));        
+entity.setColor(Color.new({name:'purple'}));        
 
 
 
@@ -117,7 +117,7 @@ entity.setColor(Topaz.Color.new('purple'));
 // of the Shape2D component already: topaz is inherently 
 // hierarchical: objects will use the position / rotation / scale 
 // of things that they are attached to. 
-entity.position = Vector.new({x=200, y=200});
+entity.position = Vector.new({x:200, y:200});
 
 
 // Even though we've created the our rectangle entity,
@@ -138,3 +138,4 @@ entity.position = Vector.new({x=200, y=200});
 // runtime efficiency for the program.
 //
 Topaz.root = entity;
+

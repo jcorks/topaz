@@ -40,8 +40,9 @@
 //
 //
 //
-var FruitBasket = {
-    CLASS : function(component) {
+const FruitBasket = tclass({
+    inherits : Topaz.Component,
+    define : function(component, args) {
         // Current amount of fruit in the basket.
         // We start the basket with a decent amount of fruit.
         //
@@ -49,132 +50,138 @@ var FruitBasket = {
         // the mount of fruit changes, it makes sense to make 
         // "amount" a private variable. Here, only this FruitBasket instance 
         // can touch "amount".
-        var amount = 5;
-
-        return {
-            // Like entities, components have props.
-            // We will be using them to define a full "public interface"
-            // for working with the basket.
-            props : {
-
-                // Adds a fruit to the basket from someone.
-                // For member functions, "this" will always refer to the component.
-                addFruitFrom : function(from) {
-
-                    amount++;
-
-                    // emitEvent() also supports a second argument: a source entity.
-                    // If theres an entity involved in the event, this argument 
-                    // can optionally be passed to be referred to in the notification.
-                    // All components have a "host" property that refers to 
-                    // the owning entity that holds the component if any.
-                    component.emitEvent('onAddFruit', from.host);
-                },
-
-                // Function to get the current amount of fruit left.
-                getFruitLeft : function() {
-                    return amount;
-                },
+        var amount = args.startingFruit;
 
 
+        // Here is where things get interesting:
+        // Any component can extend its functionality by adding 
+        // its own "events". An event is usually a response to 
+        // some action: when an event is emitted, any instance 
+        // subscribed to the event will receive a notification 
+        // that the event was emitted.
+        //
+        //
+        // Here we want to track 2 events: adding fruit and 
+        // removing fruit. The names of the functions defined here are the 
+        // names of the events to add.
+        component.installEvent('onAddFruit', function() {
+            Topaz.log('Fruit was added!');
+        });
 
-                // Function called when taking a fruit from the basket.
-                // It will only "work" if theres fruit in the basket, 
-                // which is checked.
-                removeFruit : function() {
-                    if (amount > 0) {
-                        amount--;
 
-                        // emitEvent() notifies the component that the event is occurring.
-                        component.emitEvent('onRemoveFruit');
-                    }
-                },
-        
-                // Simple way an outside instance can ask whether the 
-                // basket contains fruit.
-                isEmpty : function() {
-                    return amount == 0;
-                }
+        component.installEvent('onRemoveFruit', function() {
+            Topaz.log('Fruit was removed!');
+        });
+ 
 
+
+        component.interface({
+
+            // Adds a fruit to the basket from someone.
+            // For member functions, "this" will always refer to the component.
+            addFruitFrom : function(from) {
+
+                amount++;
+
+                // emitEvent() also supports a second argument: a source entity.
+                // If theres an entity involved in the event, this argument 
+                // can optionally be passed to be referred to in the notification.
+                // All components have a "host" property that refers to 
+                // the owning entity that holds the component if any.
+                component.emitEvent('onAddFruit', from.host);
+            },
+
+            // Function to get the current amount of fruit left.
+            getFruitLeft : function() {
+                return amount;
             },
 
 
-            // Here is where things get interesting:
-            // Any component can extend its functionality by adding 
-            // its own "events". An event is usually a response to 
-            // some action: when an event is emitted, any instance 
-            // subscribed to the event will receive a notification 
-            // that the event was emitted.
-            //
-            //
-            // Here we want to track 2 events: adding fruit and 
-            // removing fruit. The names of the functions defined here are the 
-            // names of the events to add.
-            events : {
 
-                // when the event is called, this base notification is always called.
-                onAddFruit : function() {
-                    Topaz.log('Fruit was added!');
-                },
+            // Function called when taking a fruit from the basket.
+            // It will only "work" if theres fruit in the basket, 
+            // which is checked.
+            removeFruit : function() {
+                if (amount > 0) {
+                    amount--;
 
-
-                onRemoveFruit : function() {
-                    Topaz.log('Fruit was removed!');
-                },
-            
+                    // emitEvent() notifies the component that the event is occurring.
+                    component.emitEvent('onRemoveFruit');
+                }
+            },
+    
+            // Simple way an outside instance can ask whether the 
+            // basket contains fruit.
+            isEmpty : function() {
+                return amount == 0;
             }
-        }
+
+          
+        });
     }
-}
+});
 
 
 // Now that we have defined a FruitBasket, we can define a Person 
 // to hold the basket. Every person has a name and a basket of 
 // their own.
-var Person = {
-    CLASS : function(ent){
+const Person = tclass({
+    inherits : Topaz.Entity,
+    define : function(ent) {
         // Like always, using the class name followed by parantheses is how 
         // one instantiates a class.
-        ent.basket = new Topaz.Component(FruitBasket);
+        var myBasket = FruitBasket.new({startingFruit:5});
+        var myName = 'No name!';
 
         // And since it is a component, we want to make sure to attach it 
         // so that the component gets updated.
-        ent.addComponent(ent.basket);
+        ent.addComponent(myBasket);
 
 
-        return {
-            props : {
-                // The basket owned by the person.
-                basket : ent.basket,
+        ent.interface({
+            // The basket owned by the person.
+            basket : {
+                get : function() {
+                    return myBasket;
+                }
+            },
 
-                // The person's own name.
-                myName : '',
+            // The person's own name.
+            firstName : {
+                get : function() {
+                    return myName;
+                },
 
-                // convenience function to remove fruit from 
-                // a persons own basket to give to another.
-                // The transaction is cancelled if the giver runs 
-                // out of fruit.
-                //
-                // As a note, when a props function is called, the "this" binding 
-                // is always the prefab function component/entity and can be used as an alternative 
-                // to the prefab function argument.
-                giveFruitTo : function(other, amount) {
-                    for(var i = 0; i < amount; ++i) {
-                        // Oh no! out of fruit, so abort
-                        if (this.basket.isEmpty()) return;
+                set : function(v) {
+                    myName = v;
+                }
+            },
 
-                        // Remove from this person's basket....
-                        this.basket.removeFruit();
+            // convenience function to remove fruit from 
+            // a persons own basket to give to another.
+            // The transaction is cancelled if the giver runs 
+            // out of fruit.
+            //
+            // As a note, when a props function is called, the "this" binding 
+            // is always the prefab function component/entity and can be used as an alternative 
+            // to the prefab function argument.
+            giveFruitTo : function(other, amount) {
+                for(var i = 0; i < amount; ++i) {
+                    // Oh no! out of fruit, so abort
+                    if (myBasket.isEmpty()) return;
 
-                        // ... and give to another person. The argument is 
-                        // who gave the fruit
-                        other.basket.addFruitFrom(this.basket);
-                    }
+                    // Remove from this person's basket....
+                    myBasket.removeFruit();
+
+                    // ... and give to another person. The argument is 
+                    // who gave the fruit
+                    other.basket.addFruitFrom(myBasket);
                 }
             }
-        }
+        
+        });
     }
-}
+});
 
 
 
@@ -182,12 +189,12 @@ var Person = {
 
 
 // Lets create our people involved
-var throcky = new Topaz.Entity(Person);
-var alex    = new Topaz.Entity(Person);
+var throcky = Person.new();
+var alex    = Person.new();
 
 // And assign names to them!
-throcky.myName = 'Throckmorton';
-   alex.myName = 'Alex';
+throcky.firstName = 'Throckmorton';
+   alex.firstName = 'Alex';
 
 
 // Up until now, we have registered the onAddFruit and onRemoveFruit 
@@ -205,7 +212,7 @@ alex.basket.installHook(
 
         // Often for debugging, its useful to use Topaz.log(), which 
         // will print a string to the system console.
-        Topaz.log(basket.host.myName + ' removed a fruit from their basket. ' + basket.getFruitLeft() + ' left.');
+        Topaz.log(basket.host.firstName + ' removed a fruit from their basket. ' + basket.getFruitLeft() + ' left.');
     }
 );
 
@@ -217,7 +224,7 @@ alex.basket.installHook(
 alex.basket.installHook(
     'onAddFruit',
     function(basket, other) {
-        Topaz.log(basket.host.myName + ' gained fruit, thanks to ' + other.myName +'! ' + basket.getFruitLeft() + ' total.');
+        Topaz.log(basket.host.firstName + ' gained fruit, thanks to ' + other.firstName +'! ' + basket.getFruitLeft() + ' total.');
     }
 );
 
