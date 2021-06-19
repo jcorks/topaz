@@ -7,14 +7,14 @@ var BaseClass = tclass({
     // inst: the "this" object, representing a new object being constructed.
     // argobj: optional constructor object / vaue
     //
-    define : function(classinst, inst, argobj) {
+    define : function(inst, argobj) {
     
         // inaccessible. Private to the "define" closure.
         var privateA = argobj.initialValue;
         
         // similarly functions are also part of this mechanic
         const privateFunction = function() {
-            privateA = privateA - 1;
+            privateA--;
         }
         
         
@@ -72,7 +72,7 @@ var SubClass = tclass({
     
     // same as before.
     // Notice how the argobj is optionally ommitted since its not used.
-    define : function(classinst, inst) {
+    define : function(inst) {
     
         // We can override base class methods by just redefining it.
         // Note that you can use only

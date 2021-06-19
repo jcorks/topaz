@@ -439,8 +439,8 @@ function tclass(d)
         if out.__class ~= nil then 
             getters = out.__class.getters;
             setters = out.__class.setters;
-            varnames  = out.__class.varnames;
-            mthnames = out.__class.mthnames;
+            varnames = {inherited=out.__class.varnames};
+            mthnames = {inherited=out.__class.mthnames};
         else 
             getters = {};
             setters = {};
@@ -481,14 +481,12 @@ function tclass(d)
             setmetatable(out, {});
             for k, v in pairs(obj) do
                 if type(v) == 'function' then
-                    if mthnames[k] == nil then 
-                        mthnames[k] = 'default';
-                    else 
-                        mthnames[k] = 'overidden';                    
-                    end
+                    mthnames[k] = 'function';
                     out[k] = v;
                 elseif type(v) == 'table' then 
                     makeprop(k, v);
+                else 
+                    error('tclass interfaces can only have getters/setters and methods.');
                 end
             end
         end
@@ -973,112 +971,7 @@ Topaz = tclass({
                 });
             end
         });
-        local __Vector__ = tclass({
-            inherits = __Native__,
-            define = function(thisclass, this, args)
-    
-                local impl = this.bindNative({
-                    instance = args,
-                    nativeCreate = topaz_vector__create
-                }, args.x, args.y, args.z);
-                
-                this.interface({
-                    getDistance = function(other)
-                        return topaz_vector__get_distance(impl, other.native);
-                    end,
-                    
-                    normalize = function()
-                        this.topaz_vector__normalize(impl);   
-                    end,
-                    
-                    cross = function(other)
-                        return __Topaz__.Vector.new({native=topaz_vector__cross(impl, other.native)});
-                    end,
-    
-                    floor = function()
-                        topaz_vector__floor(impl);
-                    end,
-                    
-                    rotationXDiff = function(other)
-                        return topaz_vector__rotation_x_diff(impl, other.native);
-                    end,
-                    
-                    rotationXDiffRelative = function(other)
-                        return topaz_vector__rotation_x_diff_relative(impl, other.native);
-                    end,
-                    
-                    rotationX = function() 
-                        return topaz_vector__rotation_x(impl);
-                    end,
-                    
-                    rotationYDiff = function(other) 
-                        return topaz_vector__rotation_y_diff(impl, other.native);
-                    end,
-                    
-                    rotationYDiffRelative = function(other)
-                        return topaz_vector__rotation_y_diff_relative(impl, other.native);
-                    end,
-                    
-                    rotationY = function()
-                        return topaz_vector__rotation_y(impl);
-                    end,
-                    
-                    rotationZDiff = function(other)
-                        return topaz_vector__rotation_z_diff(impl, other.native);
-                    end,
-                    
-                    rotationZDiffRelative = function(other)
-                        return topaz_vector__rotation_z_diff_relative(impl, other.native);
-                    end,
-                    
-                    rotationZ = function()
-                        return topaz_vector__rotation_z(impl);
-                    end,
-                    
-                    rotateX = function(val)
-                        topaz_vector__rotate_x(impl, val);
-                    end,
-                    
-                    rotateY = function(val)
-                        topaz_vector__rotate_y(impl, val);
-                    end,
-                    
-                    rotateZ = function(val)
-                        topaz_vector__rotate_z(impl, val);
-                    end,
-                    
-                    remove = function()
-                        topaz_vector__destroy(impl);
-                        impl = {};
-                    end,
-                    
-                    add = function(b)
-                        return __Topaz__.Vector.new({x=this.x + b.x, y=this.y + b.y, z=this.z + b.z});
-                    end,
-                    
-                    subtract = function(b)
-                        return __Topaz__.Vector.new({x=this.x - b.x, y=this.y - b.y, z=this.z - b.z});
-                    end,
-    
-                    multiply = function(b)
-                        return __Topaz__.Vector.new({x=this.x * b.x, y=this.y * b.y, z=this.z * b.z});
-                    end,
-                    
-                    divide = function(b)
-                        return __Topaz__.Vector.new({x=this.x / b.x, y=this.y / b.y, z=this.z / b.z});
-                    end,
-                    
-                    length = {get = function()return topaz_vector__get_length(impl)end},
-                    x = {get = function()return topaz_vector__get_x(impl);end, set = function(v)topaz_vector__set_x(impl, v);end},
-                    y = {get = function()return topaz_vector__get_y(impl);end, set = function(v)topaz_vector__set_y(impl, v);end},
-                    z = {get = function()return topaz_vector__get_z(impl);end, set = function(v)topaz_vector__set_z(impl, v);end}
-    
-                });        
-            end,
-            toString = function(this)
-                return '{'..this.x..','..this.y..',' ..this.z..'}';        
-            end
-        });
+
 
         local __Input__ = tclass({
             define = function(thisclass, this) 
@@ -1777,54 +1670,7 @@ Topaz = tclass({
             end
         });
         
-        local __Color__ = tclass({
-            inherits = __Native__,
-            define = function(thisclass, this, args)
-                local impl = this.bindNative({
-                    instance = args,
-                    nativeCreate = topaz_color__create
-                }, args.name);
-                topaz_color__set_from_string(impl, args.name);
-                
-                this.interface({
-                    string =
-                    {
-                        get = function()
-                            return topaz_color__to_hex_string(impl);
-                        end,
 
-                        set = function(str)
-                            topaz_color__set_from_string(impl, str);
-                        end
-                    },
-                    r= {
-                        get = function() return topaz_color__get_r(impl);end, 
-                        set = function(v)       topaz_color__set_r(impl, v);end
-                    },
-                    
-                    g= {
-                        get = function() return topaz_color__get_g(impl);end, 
-                        set = function(v)       topaz_color__set_g(impl, v);end
-                    },
-                    
-                    b= {
-                        get = function() return topaz_color__get_b(impl);end, 
-                        set = function(v)       topaz_color__set_b(impl, v);end
-                    },
-                    
-                    a= {
-                        get = function() return topaz_color__get_a(impl);end, 
-                        set = function(v)       topaz_color__set_a(impl, v);end
-                    }
-                });
-            end,
-
-
-            
-            toString = function()
-                return 'RGBA: '..math.floor(this.r*255)..','..math.floor(this.g*255)..','..math.floor(this.b*255)..':'..math.floor(this.a*255);    
-            end   
-        });
         
         
         local __Text2D__ = tclass({
@@ -1840,7 +1686,7 @@ Topaz = tclass({
                 });
                 
                 local fontState;
-                local fontSize;
+                local sizeState;
                 
                 this.interface({
                     text = {
@@ -2394,6 +2240,7 @@ Topaz = tclass({
         });
         
         local __Particle__ = tclass({
+            inherits = __Native__,
             define = function(thisclass, this)
 
                 local impl = this.bindNative({
@@ -2565,14 +2412,12 @@ Topaz = tclass({
             Audio       = {get = function()return __Audio__ end},
             Material    = {get = function()return __Material__ end},
             Entity      = {get = function()return __Entity__ end},
-            Vector      = {get = function()return __Vector__ end},
             Component   = {get = function()return __Component__ end},
             Resources   = {get = function()return __Resources__ end},
             FontManager = {get = function()return __FontManager__ end},
             Image       = {get = function()return __Image__ end},
             Data        = {get = function()return __Data__ end},
             Sound       = {get = function()return __Sound__ end},
-            Color       = {get = function()return __Color__ end},
             Text2D      = {get = function()return __Text2D__ end},
             Scheduler   = {get = function()return __Scheduler__ end},
             StateControl= {get = function()return __StateControl__ end},

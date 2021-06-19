@@ -47,7 +47,7 @@ var Rectangle = tclass({
         // By default, the center of a Shape2D is the top-left 
         // of the shape. Since rotation is about the center,
         // the set the center to one half of the rectangles span.
-        visual.center = Vector.new({x:100, y:100});
+        visual.center = {x:100, y:100};
 
 
 
@@ -73,11 +73,11 @@ var Rectangle = tclass({
             // The position, rotation, and scale properties are vector objects,
             // so to update them, you actually replace them with new vectors.
             const r = ent.rotation;
-            ent.rotation = Vector.new({
+            ent.rotation = {
                 x:r.x + 0.01,
                 y:r.y + 0.2,
                 z:r.z + 0.03
-            });
+            };
         }
 
 
@@ -108,7 +108,7 @@ var entity = Rectangle.new()
 // The color of any Shape2D can be assigned directly. 
 // The string can be a common color name, or a #RRGGBB/AA 
 // formatted hex string.
-entity.setColor(Color.new({name:'purple'}));        
+entity.setColor(Color.fromString('purple'));        
 
 
 
@@ -117,7 +117,7 @@ entity.setColor(Color.new({name:'purple'}));
 // of the Shape2D component already: topaz is inherently 
 // hierarchical: objects will use the position / rotation / scale 
 // of things that they are attached to. 
-entity.position = Vector.new({x:200, y:200});
+entity.position = {x:200, y:200};
 
 
 // Even though we've created the our rectangle entity,

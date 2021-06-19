@@ -1,10 +1,11 @@
 
 
-var Emitter = {
-    CLASS : function(ent) {
-        const emitter = new Topaz.ParticleEmitter2D();    
+var Emitter = tclass({
+    inherits : Topaz.Entity,
+    define : function(ent) {
+        const emitter = Topaz.ParticleEmitter2D.new();    
 
-        var a = new Topaz.Automation();
+        var a = Topaz.Automation.new();
         a.addKeyframe(0, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0);
         a.addKeyframe(0.5, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 0.5);
         a.addKeyframe(1, TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, 1);
@@ -32,7 +33,7 @@ var Emitter = {
         Topaz.Resources.loadAsset('png', 'base.png', 'example');
 
 
-        var particle = new Topaz.Particle();
+        var particle = Topaz.Particle.new();
         particle.image = 'example';
 
         particle.setAttribute(TOPAZ.RENDERER.ATTRIBUTE.ALPHA_RULE, TOPAZ.RENDERER.ALPHA_RULE.ALLOW);
@@ -75,20 +76,17 @@ var Emitter = {
 
 
         // FIXME
-        //props.emitter.position = new topaz.vector(200, 200);
         emitter.particle = particle;
         
         ent.attach(emitter);
 
-        return {
-            onStep : function(ent) {
-                emitter.emit(1);
-            }
+        ent.onStep = function(ent) {
+            emitter.emit(1);
         }
     }
-}
+});
 
 
-var v = new Topaz.Entity(Emitter);
-v.position = new Topaz.Vector(200, 200);
+var v = Emitter.new();
+v.position = {x:200, y:200};
 Topaz.root = v;

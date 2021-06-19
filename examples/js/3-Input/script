@@ -31,7 +31,7 @@ const Input_Poll = tclass({
         const visual = Topaz.Shape2D.new();
 
         // Set it to blue and make it 20x20
-        visual.color = Color.new({name:'blue'});
+        visual.color = Color.fromString('blue');
         visual.formRectangle(20, 20);
 
         // As shorthand for .addComponent(), you 
@@ -62,20 +62,20 @@ const Input_Poll = tclass({
                 // The add() function for vectors allows the creation 
                 // of a new vector by summing the x, y, and z components
                 // of the source vector and argument vector.
-                ent.position = Vector.add(ent.position, Vector.new({x:0, y:-1}));            
+                ent.position = Vector.add(ent.position, {x:0, y:-1});            
             }
 
             if (Topaz.Input.getState(TOPAZ.INPUT.KEY_down)) {
-                ent.position = Vector.add(ent.position, Vector.new({x:0, y:1}));            
+                ent.position = Vector.add(ent.position, {x:0, y:1});            
             }
 
             if (Topaz.Input.getState(TOPAZ.INPUT.KEY_left)) {
-                ent.position = Vector.add(ent.position, Vector.new({x:-1, y:0}));            
+                ent.position = Vector.add(ent.position, {x:-1, y:0});            
             }
 
 
             if (Topaz.Input.getState(TOPAZ.INPUT.KEY_right)) {
-                ent.position = Vector.add(ent.position, Vector.new({x:1, y:0}));            
+                ent.position = Vector.add(ent.position, {x:1, y:0});            
             }
 
             // The left/right/middle button can be polled using 
@@ -86,10 +86,10 @@ const Input_Poll = tclass({
                 // To poll position position, getState can be used. However,
                 // due to the commonality of this operation, the position 
                 // can be polled by just accessing Topaz.Input.mouseX / Y.
-                ent.position = Vector.new({
+                ent.position = {
                     x:Topaz.Input.mouse.x,
                     y:Topaz.Input.mouse.y
-                });
+                };
             }
         }
 
@@ -133,7 +133,7 @@ var Input_List = tclass({
         const visual = Topaz.Shape2D.new();
 
         // Here, we're using RGB hex notation to define our color.
-        visual.color = Color.new({name:'#ff0000'});
+        visual.color = Color.fromString('#ff0000');
         visual.formRectangle(20, 20);
         ent.components = [visual];
 
@@ -160,19 +160,19 @@ var Input_List = tclass({
             onActive : function(map, key) {
                 switch(key) {
                   case TOPAZ.INPUT.KEY_w:
-                    ent.position = Vector.add(ent.position, Vector.new({x:0, y:-1}));            
+                    ent.position = Vector.add(ent.position, {x:0, y:-1});            
                     break;
 
                   case TOPAZ.INPUT.KEY_s:
-                    ent.position = Vector.add(ent.position, Vector.new({x:0, y:1}));            
+                    ent.position = Vector.add(ent.position, {x:0, y:1});            
                     break;
 
                   case TOPAZ.INPUT.KEY_a:
-                    ent.position = Vector.add(ent.position, Vector.new({x:-1, y:0}));            
+                    ent.position = Vector.add(ent.position, {x:-1, y:0});            
                     break;
 
                   case TOPAZ.INPUT.KEY_d:
-                    ent.position = Vector.add(ent.position, Vector.new({x:1, y:0}));            
+                    ent.position = Vector.add(ent.position, {x:1, y:0});            
                     break;
                 }
             }
@@ -199,11 +199,11 @@ var Input_List = tclass({
                 if (clicking) {
                     switch(input) {
                       case TOPAZ.INPUT.POINTER_X:
-                        ent.position = Vector.new({x:value, y:ent.position.y});
+                        ent.position = {x:value, y:ent.position.y};
                         break;
 
                       case TOPAZ.INPUT.POINTER_Y:
-                        ent.position = Vector.new({x:ent.position.x, y:value});
+                        ent.position = {x:ent.position.x, y:value};
                         break;
 
                     }
@@ -237,4 +237,3 @@ manager.children = [
 
 // Finally, insert the base of the tree into topaz itself.
 Topaz.root = manager;
-debugger;

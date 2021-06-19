@@ -1,27 +1,27 @@
-var StringVisual = {
-    CLASS : function(ent) {
-        const visual = new Topaz.Text2D();    
+const StringVisual = tclass({
+    inherits : Topaz.Entity,
+    define : function(ent) {
+        const visual = Topaz.Text2D.new();    
         visual.font = 'MyFont';
         visual.size =  40;
 
 
-        const bg = new Topaz.Shape2D();
-        bg.color = new Topaz.Color('purple');
+        const bg = Topaz.Shape2D.new();
+        bg.color = Color.fromString('purple');
 
         ent.components = [bg, visual];
-        return {
-            props : {
-                setText : function(text) {
-                    visual.text = text;
-                    bg.formRectangle(
-                        visual.extentWidth,
-                        visual.extentHeight
-                    );
-                }
+
+        ent.interface({
+            setText : function(text) {
+                visual.text = text;
+                bg.formRectangle(
+                    visual.extentWidth,
+                    visual.extentHeight
+                );
             }
-        }
+        });
     }
-}
+});
 
 
 
@@ -36,12 +36,12 @@ Topaz.FontManager.registerFont('MyFont');
 
 
 
-var ent = new Topaz.Entity(StringVisual);
+var ent = StringVisual.new();
 ent.setText('Hello world!\nThis is text.');
 
 
 
-ent.position = new Topaz.Vector(200, 200);
+ent.position = {x:200, y:200};
 Topaz.root = ent;
 
 

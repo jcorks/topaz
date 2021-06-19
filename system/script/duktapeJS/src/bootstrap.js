@@ -379,8 +379,8 @@ var tclass = function(d) {
         }
         if (out == undefined) out = {};
         
-        var varnames = {};
-        var mthnames = {};
+        var varnames;
+        var mthnames;
         if (out.publicVars != undefined) {
             mthnames = {
                 inherited : out.publicMethods
@@ -405,7 +405,7 @@ var tclass = function(d) {
                 switch(typeof(v)) {
                   case 'function':
                     out[keys[i]] = v; 
-                    mthnames[keys[i]] = '';
+                    mthnames[keys[i]] = 'function';
                     break;
                     
                   case 'object':
@@ -460,6 +460,9 @@ var tclass = function(d) {
 const Vector = (function(){
     const statepush = function(v) {
         if (v.native == undefined) {
+            if (isNaN(v.x)) v.x = 0;
+            if (isNaN(v.y)) v.y = 0;
+            if (isNaN(v.z)) v.z = 0;
             v.native = topaz_vector__create(v.x, v.y, v.z);
         } else {
             topaz_vector__set_xyz(v.native, v.x, v.y, v.z);
@@ -471,34 +474,15 @@ const Vector = (function(){
         v.y = topaz_vector__get_y(v.native);
         v.z = topaz_vector__get_z(v.native);
     }
-    const cnew = function(inst) {
-        if (inst.native == undefined) {
-            const o = {
-                x : inst.x,
-                y : inst.y,
-                z : inst.z,
-                native : undefined
-            };
-            if (o.x == undefined) o.x = 0;
-            if (o.y == undefined) o.y = 0;
-            if (o.z == undefined) o.z = 0;
-            Object.seal(o);
-            return o;    
-        } else {
-            const o = {
-                x : topaz_vector__get_x(inst.native),
-                y : topaz_vector__get_y(inst.native),
-                z : topaz_vector__get_z(inst.native),
-                native : inst.native
-            };
-            Object.seal(o);
-            return o;    
-        }
-    }
+
     return {
         statepush : statepush,
         statepull : statepull,
-        new : cnew,
+        fromnative : function(native) {
+            const out = {native:native};
+            statepull(out);
+            return out;
+        },
         getDistance : function(a, b){ 
             statepush(a); statepush(b);
             return topaz_vector__get_distance(a.native, b.native);
@@ -593,19 +577,19 @@ const Vector = (function(){
 
         
         add : function(a, b){ 
-            return cnew({x:a.x + b.x, y:a.y + b.y, z:a.z + b.z});
+            return {x:a.x + b.x, y:a.y + b.y, z:a.z + b.z};
         },
         
         subtract : function(a, b){ 
-            return cnew({x:a.x - b.x, y:a.y - b.y, z:a.z - b.z});
+            return {x:a.x - b.x, y:a.y - b.y, z:a.z - b.z};
         },
 
         multiply : function(a, b){ 
-            return cnew({x:a.x * b.x, y:a.y * b.y, z:a.z * b.z});
+            return {x:a.x * b.x, y:a.y * b.y, z:a.z * b.z};
         },
         
         divide : function(a, b){ 
-            return cnew({x:a.x / b.x, y:a.y / b.y, z:a.z / b.z});
+            return {x:a.x / b.x, y:a.y / b.y, z:a.z / b.z};
         },
         
         length : function(a){
@@ -621,8 +605,14 @@ const Vector = (function(){
 // bound to it. When it interacts with 
 // the native context, a wrapper is added and the data syncd
 const Color = (function(){
+    const refColor = topaz_color__create(0, 0, 0, 0);
+
     const statepush = function(v) {
         if (v.native == undefined) {
+            if (isNaN(v.r)) v.r = 0;
+            if (isNaN(v.g)) v.g = 0;
+            if (isNaN(v.b)) v.b = 0;
+            if (isNaN(v.a)) v.a = 0;
             v.native = topaz_color__create(v.r, v.g, v.b, v.a);
         } else {
             topaz_color__set_rgba(v.native, v.r, v.g, v.b, v.a);
@@ -630,50 +620,33 @@ const Color = (function(){
     }
 
     const statepull = function(v) {
-        v.x = topaz_vector__get_x(v.native);
-        v.y = topaz_vector__get_y(v.native);
-
-        v.z = topaz_vector__get_z(v.native);
+        v.r = topaz_color__get_r(v.native);
+        v.g = topaz_color__get_g(v.native);
+        v.b = topaz_color__get_b(v.native);
+        v.a = topaz_color__get_a(v.native);
     }
-    const refColor = topaz_color__create(0, 0, 0, 0);
 
-    const cnew = function(inst) {
-        if (inst.native == undefined) {
-            const o = {
-                r : 0,
-                g : 0,
-                b : 0,
-                a : 0,
-                native : undefined
-            };
-            Object.seal(o);
-            if (inst.name != undefined) {
-                topaz_color__set_from_string(refColor, inst.name);
-                o.r = topaz_color__get_r(refColor);
-                o.g = topaz_color__get_g(refColor);
-                o.b = topaz_color__get_b(refColor);
-                o.a = topaz_color__get_a(refColor);
-            }            
-            return o;    
-        } else {
-            const o = {
-                r : topaz_color__get_r(inst.native),
-                g : topaz_color__get_g(inst.native),
-                b : topaz_color__get_b(inst.native),
-                a : topaz_color__get_a(inst.native),
-                native : inst.native
-            };
-            Object.seal(o);
-            return o;    
-        }
-    }
     return {
-        new : cnew,
+        fromnative : function(native) {
+            const out = {native:native};
+            statepull(out);
+            return out;
+        },
         statepush : statepush,
         statepull : statepull,
         asString : function(a) {
             statepush(a);
             return topaz_color__to_hex_string(a.native);
+        },
+
+        fromString : function(str) {
+            topaz_color__set_from_string(refColor, str);
+            return {
+                r: topaz_color__get_r(refColor),
+                g: topaz_color__get_g(refColor),
+                b: topaz_color__get_b(refColor),
+                a: topaz_color__get_a(refColor)
+            }
         }
     }
 })();
@@ -1115,13 +1088,13 @@ var Topaz = tclass({
                 this_.interface({
                     mouse : {   
                         get : function(){ 
-                            return Vector.new({x:topaz_input__mouse_x(), y:topaz_input__mouse_y()});
+                            return {x:topaz_input__mouse_x(), y:topaz_input__mouse_y()};
                         }
                     },
     
                     mouseDelta : {
                         get : function(){ 
-                            return Vector.new({x:topaz_input__mouse_delta_x(), y:topaz_input__mouse_delta_y()});
+                            return {x:topaz_input__mouse_delta_x(), y:topaz_input__mouse_delta_y()};
                         } 
                     },
     
@@ -1586,23 +1559,23 @@ var Topaz = tclass({
                     },
     
                     rotation : {
-                        get : function()  {return Vector.new({native:topaz_entity__get_rotation(this_.native)});}, 
+                        get : function()  {return Vector.fromnative(topaz_entity__get_rotation(this_.native));}, 
                         set : function(v) {Vector.statepush(v);topaz_entity__set_rotation(this_.native, v.native);} 
                     },
 
     
                     position : {
-                        get : function()   {return Vector.new({native:topaz_entity__get_position(this_.native)}); }, 
+                        get : function()   {return Vector.fromnative(topaz_entity__get_position(this_.native)); }, 
                         set : function(v)  {Vector.statepush(v);topaz_entity__set_position(this_.native, v.native);} 
                     },
                     
                     scale : {
-                        get : function()  {return Vector.new({native:topaz_entity__get_scale(this_.native)});}, 
+                        get : function()  {return Vector.fromnative(topaz_entity__get_scale(this_.native));}, 
                         set : function(v) {Vector.statepush(v);topaz_entity__set_scale(this_.native, v.native);}
                     },
                     
                     globalPosition : {
-                        get : function() {return Vector.new({native:topaz_entity__get_global_position(this_.native)});} 
+                        get : function() {return Vector.fromnative(topaz_entity__get_global_position(this_.native));} 
                     },
                     
                     isStepping : {
@@ -1823,7 +1796,7 @@ var Topaz = tclass({
                 });
                 
                 var fontState;
-                var fontSize;
+                var sizeState;
                 
                 this_.interface({
                     text : {
@@ -1874,17 +1847,17 @@ var Topaz = tclass({
                     },
                     
                     position : {
-                        get : function() {return Vector.new({native:topaz_text2d__get_position(impl)});}, 
+                        get : function() {return Vector.fromnative(topaz_text2d__get_position(impl));}, 
                         set : function(v){Vector.statepush(v);topaz_text2d__set_position(impl, v.native);} 
                     },
                     
                     rotation : {
-                        get : function() {return Vector.new({native:topaz_text2d__get_rotation(impl)});},
+                        get : function() {return Vector.fromnative(topaz_text2d__get_rotation(impl));},
                         set : function(v){Vector.statepush(v);topaz_text2d__set_rotation(impl, v.native);} 
                     },
                     
                     scale : {
-                        get : function() {return Vector.new({native:topaz_text2d__get_scale(impl)});}, 
+                        get : function() {return Vector.fromnative(topaz_text2d__get_scale(impl));}, 
                         set : function(v){Vector.statepush(v);topaz_text2d__set_scale(impl, v.native);} 
                     },
                     
@@ -2136,7 +2109,7 @@ var Topaz = tclass({
                 
                 this_.interface({
                     color : {
-                        get : function() {return Color.new({native:topaz_shape2d__get_color(impl)});}, 
+                        get : function() {return Color.fromnative(topaz_shape2d__get_color(impl));}, 
                         set : function(v){Color.statepush(v);topaz_shape2d__set_color(impl, v.native);} 
                     },
 
@@ -2147,22 +2120,22 @@ var Topaz = tclass({
                     },
 
                     center : {
-                        get : function() {return Vector.new({native:topaz_shape2d__get_center(impl)});},
+                        get : function() {return Vector.fromnative(topaz_shape2d__get_center(impl));},
                         set : function(v){Vector.statepush(v);topaz_shape2d__set_center(impl, v.native);} 
                     },
 
                     position : {
-                        get : function() {return Vector.new({native:topaz_shape2d__get_position(impl)});},
+                        get : function() {return Vector.fromnative(topaz_shape2d__get_position(impl));},
                         set : function(v){Vector.statepush(v);topaz_shape2d__set_position(impl, v.native);} 
                     },
 
                     rotation : {
-                        get : function() {return Vector.new({native:topaz_shape2d__get_rotation(impl)});},
+                        get : function() {return Vector.fromnative(topaz_shape2d__get_rotation(impl));},
                         set : function(v){Vector.statepush(v);topaz_shape2d__set_rotation(impl, v.native);} 
                     },
 
                     scale : {
-                        get : function() {return Vector.new({native:topaz_shape2d__get_scale(impl)});}, 
+                        get : function() {return Vector.fromnative(topaz_shape2d__get_scale(impl));}, 
                         set : function(v){Vector.statepush(v);topaz_shape2d__set_scale(impl, v.native);} 
                     },
 
@@ -2231,17 +2204,17 @@ var Topaz = tclass({
                 
                 this_.interface({
                     position : {
-                        get : function() {return Vector.new({native:topaz_shape3d__get_position(impl)});},
+                        get : function() {return Vector.fromnative(topaz_shape3d__get_position(impl));},
                         set : function(v){Vector.statepush(v);topaz_shape3d__set_position(impl, v.native);} 
                     },
 
                     rotation : {
-                        get : function() {return Vector.new({native:topaz_shape3d__get_rotation(impl)});}, 
+                        get : function() {return Vector.fromnative(topaz_shape3d__get_rotation(impl));}, 
                         set : function(v){Vector.statepush(v);topaz_shape3d__set_rotation(impl, v.native);} 
                     },
 
                     scale : {
-                        get : function() {return Vector.new({native:topaz_shape3d__get_scale(impl)});},
+                        get : function() {return Vector.fromnative(topaz_shape3d__get_scale(impl));},
                         set : function(v){Vector.statepush(v);topaz_shape3d__set_scale(impl, v.native);} 
                     },
 
@@ -2329,7 +2302,7 @@ var Topaz = tclass({
                     },
 
                     vectorAt : function(at) { 
-                        return Vector.new({native:topaz_automation__vector_at(impl, at)});
+                        return Vector.fromnative(topaz_automation__vector_at(impl, at));
                     },
 
                     at : function(a) { 
@@ -2337,7 +2310,7 @@ var Topaz = tclass({
                     },
 
                     vector : {
-                        get : function() {return Vector.new({native:topaz_automation__current_vector(impl)})},
+                        get : function() {return Vector.fromnative(topaz_automation__current_vector(impl))},
                     },
 
                     value : {
@@ -2379,6 +2352,7 @@ var Topaz = tclass({
         });
         
         var __Particle__ = tclass({
+            inherits : __Native__,
             define : function(this_, args, this_class){ 
 
                 var impl = this_.bindNative({
@@ -2411,8 +2385,13 @@ var Topaz = tclass({
         var __ParticleEmitter2D__  = tclass({
             inherits :__Entity__,
             define : function(this_, args, this_class) { 
-                var impl = this_.native;
-
+                // whoops, the component constructor already made a generic component native.
+                // destroy it and make a real one
+                this_.native.__ctx.remove();
+                
+                var impl = this_.bindNative({
+                    nativeCreate : topaz_particle_emitter_2d__create
+                });
                 this_.interface({
 
                     particle : {set : function(v){topaz_particle_emitter_2d__set_particle(impl, v.native);}}, 
