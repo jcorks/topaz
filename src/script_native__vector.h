@@ -29,6 +29,20 @@ TSO_SCRIPT_API_FN(vector_api__z_set) {
     TSO_NO_RETURN;
 }
 
+TSO_SCRIPT_API_FN(vector_api__xyz_set) {
+    TSO_ASSERT_ARG_COUNT(4);
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_ARG_3;
+    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
+
+    native->x = topaz_script_object_as_number(arg1);
+    native->y = topaz_script_object_as_number(arg2);
+    native->z = topaz_script_object_as_number(arg3);
+
+    TSO_NO_RETURN;
+}
 
 TSO_SCRIPT_API_FN(vector_api__x_get) {
     TSO_ARG_0;
@@ -372,6 +386,7 @@ static void add_refs__vector_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_vector__set_x", vector_api__x_set);
     TS_MAP_NATIVE_FN("topaz_vector__get_x", vector_api__x_get);
     TS_MAP_NATIVE_FN("topaz_vector__set_y", vector_api__y_set);
+    TS_MAP_NATIVE_FN("topaz_vector__set_xyz", vector_api__xyz_set);
     TS_MAP_NATIVE_FN("topaz_vector__get_y", vector_api__y_get);
     TS_MAP_NATIVE_FN("topaz_vector__set_z", vector_api__z_set);
     TS_MAP_NATIVE_FN("topaz_vector__get_z", vector_api__z_get);

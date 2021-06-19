@@ -1481,7 +1481,7 @@ Topaz = tclass({
                         get = function()
                             local children = {};
                             local len = topaz_entity__get_child_count(this.native);
-                            for i = 1, len do 
+                            for i = 0, len-1 do 
                                 table.append(children, topaz_entity__get_nth_child(this.native, i).__ctx);
                             end
                             return children;
@@ -1615,7 +1615,7 @@ Topaz = tclass({
                                 if f.__ctx ~= nil then
                                     table.append(out, f.__ctx);
                                 else 
-                                    out.push(__Topaz__.Component.new({native=f}));
+                                    table.append(out, __Topaz__.Component.new({native=f}));
                                 end
                             end
                             return out;
