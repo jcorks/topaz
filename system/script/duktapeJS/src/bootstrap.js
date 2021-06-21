@@ -371,11 +371,17 @@ var tclass = function(d) {
         d.declare(classinst);
     }
     
-    classinst.new = function(argobj, noseal) {
+    classinst.new = function(argobj, noseal, outsrc) {
         if (argobj == undefined) argobj = {};
-        var out = undefined;
+        var out = outsrc;
         if (d.inherits != undefined) {
-            out = d.inherits.new(argobj, true);
+            if (out == undefined) out = {};
+            if (d.inherits.length) {
+                for(var i = 0; i < d.inherits.length; ++i) 
+                    d.inherits[i].new(argobj, true, out);
+            } else {
+                d.inherits.new(argobj, true, out);
+            }
         }
         if (out == undefined) out = {};
         
