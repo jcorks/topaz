@@ -109,11 +109,11 @@ option(
     'ScriptBackend',
     type : 'combo',
 
-    value : 'gravity',
+    value : 'duktapeJS',
     choices : [
         'noScript',
         'duktapeJS',
-        'gravity'
+        'lua'
     ]
 )
 

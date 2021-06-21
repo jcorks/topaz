@@ -370,17 +370,57 @@ var tclass = function(d) {
     if (d.declare != undefined) {
         d.declare(classinst);
     }
+    const define = d.define;
+    const inherits = d.inherits;
+
+    // isa query data. since every inherited class has to 
+    // be declared first, all base classes will already have a proper 
+    // inheritsFrom. We take our base ones and add to it.
+    classinst.interfaces = [];
+    const allclass = classinst.interfaces;
+    if (inherits != undefined) {
+        const addbase = function(other) {
+            for(var n = 0; n < other.length; ++n) {
+                const g = other[n];
+                
+                var found = false;
+                for(var i = 0; i < allclass.length; ++i) {
+                    if (allclass[i] === g) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found == false)
+                    allclass.push(g);
+            }
+        }
+        if (inherits.length) {
+            for(var i = 0; i < inherits.length; ++i)
+                addbase(inherits[i].interfaces);
+        } else {
+            addbase(inherits.interfaces);
+        }
+    }    
+    allclass.push(classinst);
+    
+
+    // returns whether the isntance inherits from the given class.
+    const isa = function(d) {
+        for(var i = 0; i < allclass.length; ++i) 
+            if (allclass[i] === d) return true;
+        return false;
+    }
     
     classinst.new = function(argobj, noseal, outsrc) {
         if (argobj == undefined) argobj = {};
         var out = outsrc;
-        if (d.inherits != undefined) {
+        if (inherits != undefined) {
             if (out == undefined) out = {};
-            if (d.inherits.length) {
-                for(var i = 0; i < d.inherits.length; ++i) 
-                    d.inherits[i].new(argobj, true, out);
+            if (inherits.length) {
+                for(var i = 0; i < inherits.length; ++i) 
+                    inherits[i].new(argobj, true, out);
             } else {
-                d.inherits.new(argobj, true, out);
+                inherits.new(argobj, true, out);
             }
         }
         if (out == undefined) out = {};
@@ -435,7 +475,7 @@ var tclass = function(d) {
                 }
             }
         }
-        d.define(out, argobj, classinst);
+        define(out, argobj, classinst);
         delete out.interface;
 
         if (d.toString != undefined) {
@@ -452,6 +492,7 @@ var tclass = function(d) {
                     }
                 };
             }
+            out.isa = isa;
             delete out.publicMethods;
             delete out.publicVars;
 
@@ -656,7 +697,6 @@ const Color = (function(){
         }
     }
 })();
-
 
 
 var Topaz = tclass({

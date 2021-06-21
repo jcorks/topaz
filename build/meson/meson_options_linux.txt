@@ -19,7 +19,7 @@ option(
     type : 'combo',
 
 
-    value   : 'ogles2',
+    value   : 'ogl3',
     choices : [
         'ogles2',
         'ogl3',
@@ -34,7 +34,7 @@ option(
     type : 'combo',
 
 
-    value : 'ogles2',
+    value : 'ogl3',
     choices : [
         'ogles2',
         'ogl3',
@@ -109,11 +109,11 @@ option(
     'ScriptBackend',
     type : 'combo',
 
-    value : 'gravity',
+    value : 'duktapeJS',
     choices : [
         'noScript',
         'duktapeJS',
-        'gravity'
+        'lua'
     ]
 )
 

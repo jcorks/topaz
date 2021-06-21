@@ -138,4 +138,6 @@ entity.position = {x:200, y:200};
 // runtime efficiency for the program.
 //
 Topaz.root = entity;
-
+Topaz.log(entity.isa(Topaz.Entity));
+Topaz.log(entity.isa(Rectangle));
+Topaz.log(entity.isa(Topaz.Component));

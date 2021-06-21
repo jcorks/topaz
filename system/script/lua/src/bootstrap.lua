@@ -409,21 +409,73 @@ print(instance.publicValue)      --> 6
 
 function tclass(d) 
 
-    local data = {
-        inherits = d.inherits,
-        constructor = d.define
-    };
+    local inherits = d.inherits;
+    local define = d.define;
     
     local classinst = {};
     if d.declare ~= nil then 
         d.declare(classinst);
     end
     
-    classinst.new = function(args) 
+    -- isa query data. since every inherited class has to 
+    -- be declared first, all base classes will already have a proper 
+    -- inheritsFrom. We take our base ones and add to it.
+    local allclass = {};
+    
+    if inherits ~= nil then 
+        local addbase = function(other)
+
+            for n = 1, #other do 
+                local g = other[n]
+                
+                local found = false 
+                for i = 1, #allclass do 
+                    if allclass[i] == g then 
+                        found = true
+                        break                    
+                    end
+                end
+                if found == false then 
+
+                    table.insert(allclass, g)                
+                end
+            end
+        end
+        
+        if inherits[1]~=nil then
+            for i = 1, #inherits do 
+                addbase(inherits[i].interfaces);
+            end
+        else 
+            addbase(inherits.interfaces);
+        end
+    end
+    table.insert(allclass, classinst);
+    classinst.interfaces = allclass;
+    
+
+    
+
+    local isa = function(d) 
+        for i = 0, #allclass do 
+            if allclass[i] == d then return true end;        
+        end
+        return false
+    end
+    
+    
+    classinst.new = function(args, outsrc) 
         if args == nil then args = {} end
-        local out = nil;
-        if data.inherits ~= nil then
-            out = data.inherits.new(args);
+        local out = outsrc;
+        if inherits ~= nil then
+            if out == nil then out = {} end
+            if inherits[1] ~= nil then 
+                for i = 1, #inherits do 
+                    inherits[i].new(args, out);
+                end
+            else 
+                inherits.new(args, out);            
+            end
         end
         if (out == nil) then out = {} end
         
@@ -441,6 +493,9 @@ function tclass(d)
             setters = out.__class.setters;
             varnames = {inherited=out.__class.varnames};
             mthnames = {inherited=out.__class.mthnames};
+            out.__class.varnames = varnames;
+            out.__class.mthnames = mthnames;
+
         else 
             getters = {};
             setters = {};
@@ -489,6 +544,7 @@ function tclass(d)
                     error('tclass interfaces can only have getters/setters and methods.');
                 end
             end
+            out.isa = isa;
         end
         
         out.introspect = function()
@@ -502,7 +558,7 @@ function tclass(d)
         setmetatable(out, oldmt);
 
         -- actually define interface
-        data.constructor(out, args, classinst); 
+        define(out, args, classinst); 
         out.interface = nil;
         if out.__class == nil then 
             out.__class = {
@@ -1105,21 +1161,21 @@ Topaz = tclass({
                             local out = {};
                             local len = this.vertexCount-1;
                             for i = 0, len do
-                                table.append(out, topaz_mesh__get_vertex(impl, 0, i, 0));
-                                table.append(out, topaz_mesh__get_vertex(impl, 0, i, 1));
-                                table.append(out, topaz_mesh__get_vertex(impl, 0, i, 2));
+                                table.insert(out, topaz_mesh__get_vertex(impl, 0, i, 0));
+                                table.insert(out, topaz_mesh__get_vertex(impl, 0, i, 1));
+                                table.insert(out, topaz_mesh__get_vertex(impl, 0, i, 2));
             
-                                table.append(out, topaz_mesh__get_vertex(impl, 1, i, 0));
-                                table.append(out, topaz_mesh__get_vertex(impl, 1, i, 1));
-                                table.append(out, topaz_mesh__get_vertex(impl, 1, i, 2));
+                                table.insert(out, topaz_mesh__get_vertex(impl, 1, i, 0));
+                                table.insert(out, topaz_mesh__get_vertex(impl, 1, i, 1));
+                                table.insert(out, topaz_mesh__get_vertex(impl, 1, i, 2));
             
-                                table.append(out, topaz_mesh__get_vertex(impl, 2, i, 0));
-                                table.append(out, topaz_mesh__get_vertex(impl, 2, i, 1));
+                                table.insert(out, topaz_mesh__get_vertex(impl, 2, i, 0));
+                                table.insert(out, topaz_mesh__get_vertex(impl, 2, i, 1));
             
-                                table.append(out, topaz_mesh__get_vertex(impl, 3, i, 0));
-                                table.append(out, topaz_mesh__get_vertex(impl, 3, i, 1));
-                                table.append(out, topaz_mesh__get_vertex(impl, 3, i, 2));
-                                table.append(out, topaz_mesh__get_vertex(impl, 3, i, 3));
+                                table.insert(out, topaz_mesh__get_vertex(impl, 3, i, 0));
+                                table.insert(out, topaz_mesh__get_vertex(impl, 3, i, 1));
+                                table.insert(out, topaz_mesh__get_vertex(impl, 3, i, 2));
+                                table.insert(out, topaz_mesh__get_vertex(impl, 3, i, 3));
                             end      
                             
                             return out;
@@ -1132,21 +1188,21 @@ Topaz = tclass({
     
                     getVertex = function(i)
                         local out = {};
-                        table.append(out, topaz_mesh__get_vertex(impl, 0, i, 0));
-                        table.append(out, topaz_mesh__get_vertex(impl, 0, i, 1));
-                        table.append(out, topaz_mesh__get_vertex(impl, 0, i, 2));
+                        table.insert(out, topaz_mesh__get_vertex(impl, 0, i, 0));
+                        table.insert(out, topaz_mesh__get_vertex(impl, 0, i, 1));
+                        table.insert(out, topaz_mesh__get_vertex(impl, 0, i, 2));
                 
-                        table.append(out, topaz_mesh__get_vertex(impl, 1, i, 0));
-                        table.append(out, topaz_mesh__get_vertex(impl, 1, i, 1));
-                        table.append(out, topaz_mesh__get_vertex(impl, 1, i, 2));
+                        table.insert(out, topaz_mesh__get_vertex(impl, 1, i, 0));
+                        table.insert(out, topaz_mesh__get_vertex(impl, 1, i, 1));
+                        table.insert(out, topaz_mesh__get_vertex(impl, 1, i, 2));
                 
-                        table.append(out, topaz_mesh__get_vertex(impl, 2, i, 0));
-                        table.append(out, topaz_mesh__get_vertex(impl, 2, i, 1));
+                        table.insert(out, topaz_mesh__get_vertex(impl, 2, i, 0));
+                        table.insert(out, topaz_mesh__get_vertex(impl, 2, i, 1));
                 
-                        table.append(out, topaz_mesh__get_vertex(impl, 3, i, 0));
-                        table.append(out, topaz_mesh__get_vertex(impl, 3, i, 1));
-                        table.append(out, topaz_mesh__get_vertex(impl, 3, i, 2));
-                        table.append(out, topaz_mesh__get_vertex(impl, 3, i, 3));
+                        table.insert(out, topaz_mesh__get_vertex(impl, 3, i, 0));
+                        table.insert(out, topaz_mesh__get_vertex(impl, 3, i, 1));
+                        table.insert(out, topaz_mesh__get_vertex(impl, 3, i, 2));
+                        table.insert(out, topaz_mesh__get_vertex(impl, 3, i, 3));
                         return out;            
                     end,
     
@@ -1234,7 +1290,7 @@ Topaz = tclass({
                         local len = topaz_input__query_pad_count();
                         local out = {};
                         for i = 0, len-1 do
-                            table.append(out, input_api__query_pad_id(i));
+                            table.insert(out, input_api__query_pad_id(i));
                         end
                         return out;
                     end,
@@ -1409,7 +1465,7 @@ Topaz = tclass({
                             local bytes = {};
                             local len = topaz_data__get_byte_count(impl);
                             for i = 0, len-1 do
-                                table.append(bytes, topaz_data__get_nth_byte(impl, i));
+                                table.insert(bytes, topaz_data__get_nth_byte(impl, i));
                             end
                             return bytes;
                         end,
@@ -1438,8 +1494,8 @@ Topaz = tclass({
                             local out = {};
                             local len = this.sampleCount;
                             for i = 0, len-1 do
-                                table.append(out, topaz_sound__get_nth_sample_left(impl, i));
-                                table.append(out, topaz_sound__get_nth_sample_right(impl, i));
+                                table.insert(out, topaz_sound__get_nth_sample_left(impl, i));
+                                table.insert(out, topaz_sound__get_nth_sample_right(impl, i));
                             end
                             return out;
                         end,
@@ -1579,7 +1635,7 @@ Topaz = tclass({
                             local children = {};
                             local len = topaz_entity__get_child_count(this.native);
                             for i = 0, len-1 do 
-                                table.append(children, topaz_entity__get_nth_child(this.native, i).__ctx);
+                                table.insert(children, topaz_entity__get_nth_child(this.native, i).__ctx);
                             end
                             return children;
                         end,
@@ -1710,9 +1766,9 @@ Topaz = tclass({
                             for i = 1, len do
                                 local f = topaz_entity__get_nth_component(this.native, i-1);
                                 if f.__ctx ~= nil then
-                                    table.append(out, f.__ctx);
+                                    table.insert(out, f.__ctx);
                                 else 
-                                    table.append(out, __Topaz__.Component.new({native=f}));
+                                    table.insert(out, __Topaz__.Component.new({native=f}));
                                 end
                             end
                             return out;
@@ -2020,7 +2076,7 @@ Topaz = tclass({
                             local out = {};
                             local len = topaz_scheduler__get_task_count(impl);
                             for i = 0, len-1 do
-                                table.append(out, topaz_schedluer__get_task(impl, i));
+                                table.insert(out, topaz_schedluer__get_task(impl, i));
                             end
                             return out;
                         end
@@ -2174,8 +2230,8 @@ Topaz = tclass({
                         local len = topaz_object2d__get_collider_len(impl);
                         for i = 0, len-1 do
                             local pt = topaz_object2d__get_collider_point(impl, i);
-                            table.append(_collider, pt.x);
-                            table.append(_collider, pt.y);
+                            table.insert(_collider, pt.x);
+                            table.insert(_collider, pt.y);
                         end
                     end,
 
