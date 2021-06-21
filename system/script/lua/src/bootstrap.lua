@@ -2654,7 +2654,7 @@ Topaz = tclass({
                         strOut = strOut..'}';
                         return strOut;
                     else 
-                        return '<data>';            
+                        return tostring(obj);            
                     end
                     return '';
                 end

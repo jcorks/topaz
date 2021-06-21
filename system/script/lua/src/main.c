@@ -160,7 +160,7 @@ struct TOPAZLUA {
     // the script context to rely on the debug state properly. 
     topazArray_t * debugQueuedNotifications;
 
-    int debugOneOff;
+    int debugPaused;
 
     // for temporary string operations.
     topazString_t * spfString;
@@ -184,6 +184,52 @@ typedef struct {
     topazString_t * result;
 
 } DebugNotification;
+
+
+static void clear_debug_state(topazScript_DebugState_t * s) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(s->callstack);
+    for(i = 0; i < len; ++i) {
+        topazScript_CallstackFrame_t * frame = &topaz_array_at(s->callstack, topazScript_CallstackFrame_t, i);
+        topaz_string_destroy((topazString_t*)frame->filename);
+        topaz_string_destroy((topazString_t*)frame->functionName);
+        topaz_string_destroy((topazString_t*)frame->entityName);
+    }
+    topaz_array_set_size(s->callstack, 0);
+}
+
+
+static void debug_state_add_frame(topazScript_DebugState_t * s,
+    int lineNumber,
+    const char * filename,
+    const char * functionName
+) {
+    topazScript_CallstackFrame_t frame;
+    frame.lineNumber   = lineNumber;
+    frame.filename     = topaz_string_create_from_c_str("%s", filename);
+    frame.functionName = topaz_string_create_from_c_str("%s", functionName);
+    frame.entityName   = topaz_string_create();
+
+    topaz_array_push(s->callstack, frame);
+}
+
+
+static void topaz_lua_populate_stack(TOPAZLUA * ctx) {
+    clear_debug_state(&ctx->debugState);
+    
+    lua_Debug dbg;
+    int level = 0;
+    while(lua_getstack(ctx->lua, level, &dbg)) {
+        lua_getinfo(ctx->lua, "nSl", &dbg);
+        debug_state_add_frame(
+            &ctx->debugState,
+            dbg.currentline,
+            dbg.source,
+            dbg.name
+        );
+        level++;
+    }
+}
 
 
 
@@ -687,6 +733,8 @@ static void topaz_lua_fatal(void * udata, const char *msg) {
 
 
 
+
+
 static void * topaz_lua_create(topazScript_t * scr, topaz_t * ctx) {
     TOPAZLUA * out = calloc(1, sizeof(TOPAZLUA));
     out->debugState.callstack = topaz_array_create(sizeof(topazScript_CallstackFrame_t));
@@ -790,7 +838,7 @@ static topazScript_Object_t * topaz_lua_expression(
     lua_pop(ctx->lua, 1);
     return out;
 }
-/*
+
 
 static void topaz_lua_throw_error(
     topazScript_t * script, 
@@ -799,20 +847,21 @@ static void topaz_lua_throw_error(
 ) {
     TOPAZLUA * ctx = data;
     
+
     topazString_t * str = topaz_string_create();
     topaz_string_concat_printf(
         str,
-        "throw new Error('%s');",
+        "topaz threw an error: %s",
         topaz_array_get_size(args) ?
             topaz_string_get_c_str(topaz_script_object_as_string(topaz_array_at(args, topazScript_Object_t *, 0)))
         :
             "Internal native error."
     );
-    duk_eval_string(ctx->js, topaz_string_get_c_str(str));
-    duk_pop(ctx->js);
+    lua_pushstring(ctx->lua, topaz_string_get_c_str(str));
+    lua_error(ctx->lua);
     topaz_string_destroy(str);
 }
-*/
+
 
 
 typedef struct {
@@ -1524,9 +1573,52 @@ static void topaz_lua_debug_cooperate(TOPAZLUA * ctx, int block) {
 
     
     }
-    if (!block) return; // still receiving messages
+}
+
+static void topaz_lua_debug_send_command(
+    topazScript_t * scr, 
+    void * data, 
+    int cmd, 
+    const topazString_t * arg
+);
+
+
+static void topaz_lua_pause_trap(topazScript_t * src, TOPAZLUA * ctx) {
+    if (ctx->debugPaused) return;
+    ctx->debugPaused = TRUE;
     topaz_context_pause(ctx->ctx);
-    topaz_context_iterate(ctx->ctx);
+    topaz_script_notify_command(
+        src,
+        topazScript_DebugCommand_Pause,
+        topaz_string_create()
+    );
+    topaz_lua_get_traceback(ctx);
+    while(topaz_context_is_paused(ctx->ctx)) {
+        topaz_lua_debug_cooperate(ctx, 0);
+        topaz_context_iterate(ctx->ctx);
+        topaz_context_wait(ctx->ctx, 60);
+    }
+    ctx->debugPaused = FALSE;
+}
+
+static topazScript_Object_t * topaz_lua_global_method_debugger(
+    topazScript_t * src, 
+    topazArray_t * args, 
+    void * fnData
+) {
+    TOPAZLUA * ctx = fnData;
+
+    /*
+    topaz_lua_debug_send_command(
+        src,
+        fnData,
+        topazScript_DebugCommand_Pause,
+        TOPAZ_STR_CAST("")
+    );
+    */
+    topaz_script_notify_command(src, topazScript_DebugCommand_Pause, TOPAZ_STR_CAST(""));
+    topaz_lua_pause_trap(src, ctx);
+    return topaz_script_object_undefined(src);
 }
 
 
@@ -1538,6 +1630,32 @@ static void topaz_lua_debug_start(topazScript_t * scr, void * data) {
     ctx->lastCommandArgs = topaz_array_create(sizeof(topazString_t *));
 
 
+    topaz_lua_map_native_function(
+        scr, 
+        ctx, 
+
+
+        TOPAZ_STR_CAST("debugger"),
+        topaz_lua_global_method_debugger,                    
+        ctx
+    );
+    
+
+}
+
+static void topaz_lua_cooperate_update(topazSystem_Backend_t * backend, void * data) {
+    TOPAZLUABackend * b = data;
+    uint32_t i;
+    for(i = 0; i < topaz_array_get_size(b->instances); ++i) {
+        TOPAZLUA * ctx = topaz_array_at(b->instances, TOPAZLUA *, i);
+        if (ctx->isDebugging) {
+            topaz_lua_debug_cooperate(ctx, 0);
+            while(topaz_array_get_size(ctx->lastCommand))
+                topaz_lua_debug_cooperate(ctx, 0);
+
+            topaz_lua_push_notify(ctx);
+        }
+    }    
 }
 
 void topaz_lua_debug_send_command(
@@ -1548,11 +1666,17 @@ void topaz_lua_debug_send_command(
 ) {
     TOPAZLUA * ctx = data;
     switch(cmd) {
-      case topazScript_DebugCommand_Pause:
-        //topaz_lua_trans_command__pause(ctx->trans_ctx);
+      case topazScript_DebugCommand_Pause: {
+        topaz_lua_pause_trap(scr, ctx);        
         break;    
-
+      }
       case topazScript_DebugCommand_Resume:
+        topaz_context_resume(ctx->ctx);
+        topaz_script_notify_command(
+            scr,
+            topazScript_DebugCommand_Resume,
+            topaz_string_create()
+        );
         //topaz_lua_trans_command__resume(ctx->trans_ctx);
         break;    
 
@@ -1600,7 +1724,7 @@ void topaz_lua_debug_send_command(
 
 
         topazString_t * command = topaz_string_create_from_c_str(
-            "return(%s)",
+            "return(Topaz.objectToString(%s))",
             topaz_string_get_c_str(topaz_string_get_substr(
                 str, 
                 topaz_string_get_length(number)+1, // skip the :
@@ -1620,27 +1744,17 @@ void topaz_lua_debug_send_command(
     }
 }
 
-/*
+
+
+
 const topazScript_DebugState_t * topaz_lua_debug_get_state(topazScript_t * scr, void * data) {
     TOPAZLUA * ctx = data;
+    topaz_lua_populate_stack(ctx);
     return &ctx->debugState;
 }
-*/
 
-static void topaz_lua_cooperate_update(topazSystem_Backend_t * backend, void * data) {
-    TOPAZLUABackend * b = data;
-    uint32_t i;
-    for(i = 0; i < topaz_array_get_size(b->instances); ++i) {
-        TOPAZLUA * ctx = topaz_array_at(b->instances, TOPAZLUA *, i);
-        if (ctx->isDebugging) {
-            topaz_lua_debug_cooperate(ctx, 0);
-            while(topaz_array_get_size(ctx->lastCommand))
-                topaz_lua_debug_cooperate(ctx, 0);
 
-            topaz_lua_push_notify(ctx);
-        }
-    }    
-}
+
 
 
 static void NOOP(){};
@@ -1712,13 +1826,13 @@ void topaz_system_script_lua__backend(
     api->script_run = topaz_lua_run;
     api->script_expression = topaz_lua_expression;
     api->script_create_empty_object = topaz_lua_create_empty_object;
-    api->script_throw_error = NOOP;//topaz_lua_throw_error;
+    api->script_throw_error = topaz_lua_throw_error;
     api->script_bootstrap = topaz_lua_bootstrap;
 
 
     api->script_debug_start = topaz_lua_debug_start;
     api->script_debug_send_command = topaz_lua_debug_send_command;
-    api->script_debug_get_state = NOOP;//topaz_lua_debug_get_state;
+    api->script_debug_get_state = topaz_lua_debug_get_state;
 }
 
 
