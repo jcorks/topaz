@@ -1621,6 +1621,7 @@ static void topaz_duk_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) {
     if (!block) return; // still receiving messages
     topaz_context_pause(ctx->ctx);
     topaz_context_iterate(ctx->ctx);
+    topaz_context_wait(ctx->ctx, 60);
 }
 
 

@@ -4,6 +4,8 @@
 #include <topaz/containers/table.h>
 #include <topaz/containers/bin.h>
 #include <topaz/backends/filesystem.h>
+#include <topaz/modules/resources.h>
+#include <topaz/assets/data.h>
 #include <topaz/topaz.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -808,7 +810,7 @@ void topaz_script_notify_command(topazScript_t * s, int cmd, topazString_t * str
 }
 
 
-const topazString_t * topaz_script_apply_import_path(
+static const topazString_t * topaz_script_apply_import_path(
     topazScript_t * s,
     const topazString_t * path
 ) {
@@ -828,7 +830,7 @@ const topazString_t * topaz_script_apply_import_path(
 
 
 // Given a path to a file, keeps the directory portion of the path 
-void topaz_script_push_import_path(
+static void topaz_script_push_import_path(
     topazScript_t * s,
     const topazString_t * path
 ) {
@@ -839,23 +841,85 @@ void topaz_script_push_import_path(
     } 
     const topazFilesystem_Path_t * p = topaz_filesystem_get_path_from_string(
         topaz_context_get_filesystem(s->ctx),
-        current ? current : topaz_filesystem_get_path(topaz_context_get_filesystem(s->ctx), topazFilesystem_DefaultNode_Resources),
+        current ? NULL : topaz_filesystem_get_path(topaz_context_get_filesystem(s->ctx), topazFilesystem_DefaultNode_Resources),
         path
     );
+    
+    if (!p) return;
+    const topazFilesystem_Path_t * parent = topaz_filesystem_path_get_parent(p);
 
-    if (p) {
-        topaz_array_push(s->importPathStack, p);
+    if (parent) {
+        printf("PUSHING %s\n", topaz_string_get_c_str(topaz_filesystem_path_as_string(parent)));
+        topaz_array_push(s->importPathStack, parent);
     }
 }
 
 // Pops the current directory.
-void topaz_script_pop_import_path(
+static void topaz_script_pop_import_path(
     topazScript_t * s
 ) {
     if (topaz_array_get_size(s->importPathStack)) {
+        printf("poppin\n");
         topaz_array_set_size(s->importPathStack, topaz_array_get_size(s->importPathStack)-1);
     }     
 }
+
+
+
+int topaz_script_import(
+    topazScript_t * script,
+    const topazString_t * path
+) {
+
+    
+    topazResources_t * r = topaz_context_get_resources(script->ctx);
+    // first, raw path is used. This should handle any special files 
+    // and direct paths.
+    topazAsset_t * src = topaz_resources_load_asset(
+        r,
+        TOPAZ_STR_CAST("txt"),
+        path,
+        path
+    );
+
+
+    if (!src) {
+        const topazString_t * a = topaz_script_apply_import_path(script, path);
+        // if the raw path fails, use the relative interpreter path
+        src = a ? topaz_resources_load_asset(
+            r,
+            TOPAZ_STR_CAST("txt"),
+            a,
+            path
+        ) : NULL;
+        if (src) {
+            topaz_script_push_import_path(script, a);
+        }
+    } else {
+        topaz_script_push_import_path(script, path);
+    }
+
+
+    
+
+    if (src) {
+        topazString_t * srcStr = topaz_data_get_as_string(src);
+        topaz_script_run_once(
+            script,
+            path,
+            srcStr
+        );
+        topaz_string_destroy(srcStr);
+        topaz_script_pop_import_path(script);
+        return 1;
+    } else {
+        return 0;
+    }
+
+}
+
+
+
 
 
 

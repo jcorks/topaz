@@ -43,6 +43,7 @@ static topazFilesystem_Path_t * generate_path(
     out->parent = NULL;
     out->str = topaz_string_clone(path);
     out->children = topaz_array_create(sizeof(topazFilesystem_Path_t*));
+    topaz_table_insert(fs->allPaths, out->str, out);
     return out;
 }
 

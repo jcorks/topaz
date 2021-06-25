@@ -227,6 +227,18 @@ void topaz_script_run(
     const topazString_t * scriptData
 );
 
+/// Reads a script from the filesystem. If the script contains references to import 
+/// other scripts, it will do so relative to this imported directory.
+/// This gives a behavior similar to C/C++'s "include".
+/// Success is returned.
+int topaz_script_import(
+    /// The script context
+    topazScript_t * script,
+    /// The path to the script.
+    const topazString_t * path
+);
+
+
 /// Runs the given script logic within the given string,
 /// but will ignore the data if the sourceName has been 
 /// used for either topaz_script_run or topaz_script_run_once.

@@ -1015,7 +1015,7 @@ Topaz = tclass({
             define = function(this, args, thisclass)
                 local impl = this.bindNative({
                     instance = args,
-                    nativeCreate = topaz_view_manager__create_display()
+                    nativeCreate = topaz_view_manager__create_display
                 });
                 
                 this.interface({
@@ -1925,7 +1925,30 @@ Topaz = tclass({
                     
                     uninstallHandler = function(event, id)
                         topaz_component__uninstall_handler(this.native, event, id);
-                    end
+                    end,
+                    
+                    
+                    onStep = {set : function(v) 
+                            topaz_component__set_on_step(this.native, function() v() end);
+    
+                    end},
+    
+                    onDraw = {set : function(v)
+                            topaz_component__set_on_draw(this.native, function()v()end);
+                    end},
+                        
+                    onAttach = {set : function(v) 
+                            topaz_component__set_on_attach(this.native, function()v()end);
+                    end},
+    
+                    onDetach = {set : function(v) 
+                            topaz_component__set_on_detach(this.native, function()v()end);
+                    end},
+    
+                    onDestroy = {set : function(v)
+                            topaz_component__set_on_destroy(this.native, function()v()end);
+                    end}
+                    
                 });
             end
         });

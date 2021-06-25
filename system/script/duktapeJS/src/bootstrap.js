@@ -912,7 +912,7 @@ var Topaz = tclass({
             define : function(this_, args, this_class) { 
                 var impl = this_.bindNative({
                     instance : args,
-                    nativeCreate : topaz_view_manager__create_display()
+                    nativeCreate : topaz_view_manager__create_display
                 });
                 
                 this_.interface({
@@ -1821,7 +1821,29 @@ var Topaz = tclass({
                     
                     uninstallHandler : function(event, id){ 
                         topaz_component__uninstall_handler(this_.native, event, id);
-                    }
+                    },
+                    
+                    onStep : {set : function(v){ 
+                            topaz_component__set_on_step(this_.native, function(){ v() });
+    
+                    }},
+    
+                    onDraw : {set : function(v){ 
+                            topaz_component__set_on_draw(this_.native, function(){v()});
+                    }},
+                        
+                    onAttach : {set : function(v){ 
+                            topaz_component__set_on_attach(this_.native, function(){v()});
+                    }},
+    
+                    onDetach : {set : function(v){ 
+                            topaz_component__set_on_detach(this_.native, function(){v()});
+                    }},
+    
+                    onDestroy : {set : function(v){ 
+                            topaz_component__set_on_destroy(this_.native, function(){v()});
+                    }}
+
                 });
             }
         });

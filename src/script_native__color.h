@@ -196,22 +196,30 @@ static topazScript_Object_t * color_api__cleanup(
 
 
 TSO_SCRIPT_API_FN(color_api__create) {
-    TSO_ASSERT_ARG_COUNT(4);
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_ARG_2;
-    TSO_ARG_3;
-    topazColor_t * colorPtr = calloc(1, sizeof(topazColor_t));
+    if (topaz_array_get_size(args) == 4) {
+        TSO_ARG_0;
+        TSO_ARG_1;
+        TSO_ARG_2;
+        TSO_ARG_3;
+        topazColor_t * colorPtr = calloc(1, sizeof(topazColor_t));
 
-    // creates new object and sets native pointer
-    TSO_OBJECT_NEW_VALUE(colorPtr, TSO_OBJECT_ID__COLOR, color_api__cleanup, colorPtr);
+        // creates new object and sets native pointer
+        TSO_OBJECT_NEW_VALUE(colorPtr, TSO_OBJECT_ID__COLOR, color_api__cleanup, colorPtr);
 
-    colorPtr->r = (uint8_t)(int)(topaz_script_object_as_number(arg0) * 255);
-    colorPtr->g = (uint8_t)(int)(topaz_script_object_as_number(arg1) * 255);
-    colorPtr->b = (uint8_t)(int)(topaz_script_object_as_number(arg2) * 255);
-    colorPtr->a = (uint8_t)(int)(topaz_script_object_as_number(arg3) * 255);
+        colorPtr->r = (uint8_t)(int)(topaz_script_object_as_number(arg0) * 255);
+        colorPtr->g = (uint8_t)(int)(topaz_script_object_as_number(arg1) * 255);
+        colorPtr->b = (uint8_t)(int)(topaz_script_object_as_number(arg2) * 255);
+        colorPtr->a = (uint8_t)(int)(topaz_script_object_as_number(arg3) * 255);
 
-    return object;
+        return object;
+    } else {
+        topazColor_t * colorPtr = calloc(1, sizeof(topazColor_t));
+
+        // creates new object and sets native pointer
+        TSO_OBJECT_NEW_VALUE(colorPtr, TSO_OBJECT_ID__COLOR, color_api__cleanup, colorPtr);
+        
+        return object;    
+    }
 }
 
 

@@ -31,11 +31,14 @@ static int run_script(topaz_t * ctx, topazScript_t * script, const topazString_t
     return 1;   
 }
 
-int main() {
+int main(int argc, char ** argv) {
+    char * path = "script";
+    if (argc > 1)
+        path = argv[1];
+
     // Create the context and window
     topaz_t * ctx = topaz_context_create();
     topaz_view_manager_create_main_default(topaz_context_get_view_manager(ctx), TOPAZ_STR_CAST("Scripting"));
-
 
 
     // Creates a script instance. The permissions can 
@@ -64,8 +67,12 @@ int main() {
 
     // Optional
     run_script(ctx, script, TOPAZ_STR_CAST("preload"));
-    if (!run_script(ctx, script, TOPAZ_STR_CAST("script")))
+    if (!run_script(ctx, script, TOPAZ_STR_CAST(path))) {
+        topazString_t * message = topaz_string_create_from_c_str("Script \"%s\" could not be opened or was empty.", path);
+        topaz_console_print(console, message);
+        topaz_string_destroy(message);
         return 1;
+    }
 
     topaz_context_run(ctx);
 }
