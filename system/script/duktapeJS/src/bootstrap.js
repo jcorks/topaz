@@ -1773,6 +1773,16 @@ var Topaz = tclass({
                             var f = topaz_component__get_host(this_.native);
                             if (f.__ctx != undefined) { return f.__ctx };
                             return __Topaz__.Entity.new({native:f});
+                        },
+
+                        set : function(v) {
+                            const p = topaz_component__get_host(this_.native);
+                            if (p != undefined) {
+                                topaz_entity__remove_component(p, this_.native);
+                            }
+                            if (v != undefined || v != null) {
+                                topaz_entity__add_component(v.native, this_.native);
+                            }
                         }
                     },
                     
