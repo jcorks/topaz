@@ -827,14 +827,9 @@ Topaz = tclass({
         -- this external data and usually have little to no state 
         -- outside of this.
         local __Native__ = tclass({
-            declare = function(thisclass)
-                thisclass.uniqueObjectPool = 0;    
-            end,
             
             define = function(this, args, thisclass)
                 local impl = nil;
-                local id = thisclass.uniqueObjectPool;
-                thisclass.uniqueObjectPool = 1 + thisclass.uniqueObjectPool;       
                 
                 this.interface({
                     -- binds a native instance to this table. Will throw an error 
@@ -861,14 +856,6 @@ Topaz = tclass({
                         impl.__ctx = this;
                         return impl;
                     end,
-                    
-                    
-                    -- A unique id that identifies this instance.
-                    uniqueID = {
-                        get = function()
-                            return id;
-                        end            
-                    },
                     
                     
                     --Gets the external reference to this external class
@@ -1683,14 +1670,14 @@ Topaz = tclass({
                     
                     query = function(name) 
                         local f = topaz_entity__query(this.native, name);
-                        if f.__ctx ~= nil then return f.ctx end;
+                        if f.__ctx ~= nil then return f.__ctx end;
                         return thisclass.new({native=f});
                     end,
                     
                     
                     search = function(name)
                         local f = topaz_entity__search(this.native, name);
-                        if f.__ctx ~= nil then return f.ctx end;
+                        if f.__ctx ~= nil then return f.__ctx end;
                         return thisclass.new({native=f});                
                     end,
                     
@@ -2165,14 +2152,14 @@ Topaz = tclass({
                 
                 local impl = this.bindNative({
                     instance = args,
-                    nativeCreate = topaz_oject2d__create
+                    nativeCreate = topaz_object2d__create
                 });
                 
                 thisclass.setGroupInteraction = function(a, b, c)
                     topaz_object2d__set_group_interaction(a, b, c);
                 end
                 
-                local collider_;
+                local _collider;
                 
                 this.interface({
                     addVelocity = function(a, b) 
@@ -2599,7 +2586,11 @@ Topaz = tclass({
                 end,
 
                 get = function(e)
-                    
+                    local o = topaz__get_root();
+                    if o ~= nil 
+                        return o.__ctx;
+                    end
+                    return nil;
                 end
             },
             

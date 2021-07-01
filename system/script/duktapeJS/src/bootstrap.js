@@ -471,7 +471,7 @@ var tclass = function(d) {
                     break;
                     
                   default:
-                    throw new Error('tclass interfaces can only have getters/setters and methods.');
+                    throw new Error('tclass interfaces can only have getters/setters and methods. Bad argument: '+keys[i]);
                 }
             }
         }
@@ -707,15 +707,9 @@ var Topaz = tclass({
         // Instances of this_ class act as "shells" or interfaces for 
         // this_ external data and usually have little to no state 
         // outside of this_.
-        var __Native__ = tclass({
-            declare  : function(this_class){ 
-                this_class.uniqueObjectPool = 0;    
-            },
-            
+        var __Native__ = tclass({            
             define : function(this_, args, this_class){ 
                 var impl = undefined;
-                var id = this_class.uniqueObjectPool;
-                this_class.uniqueObjectPool = 1 + this_class.uniqueObjectPool;       
                 
                 this_.interface({
                     // binds a native instance to this_ table. Will throw an error 
@@ -760,12 +754,6 @@ var Topaz = tclass({
                     },
                     
                     
-                    // A unique id that identifies this_ instance.
-                    uniqueID : {
-                        get : function(){ 
-                            return id;
-                        }            
-                    },
                     
                     
                     //Gets the external reference to this_ external class
@@ -1579,14 +1567,14 @@ var Topaz = tclass({
                     
                     query : function(name) { 
                         var f = topaz_entity__query(this_.native, name);
-                        if (f.__ctx != undefined) { return f.ctx };
+                        if (f.__ctx != undefined) { return f.__ctx };
                         return this_class.new({native:f});
                     },
                     
                     
                     search : function(name){ 
                         var f = topaz_entity__search(this_.native, name);
-                        if (f.__ctx != undefined) { return f.ctx };
+                        if (f.__ctx != undefined) { return f.__ctx };
                         return this_class.new({native:f});                
                     },
                     
@@ -2060,14 +2048,14 @@ var Topaz = tclass({
                 
                 var impl = this_.bindNative({
                     instance : args,
-                    nativeCreate : topaz_oject2d__create
+                    nativeCreate : topaz_object2d__create
                 });
                 
                 this_class.setGroupInteraction = function(a, b, c){ 
                     topaz_object2d__set_group_interaction(a, b, c);
                 }
                 
-                var collider_;
+                var _collider;
                 
                 this_.interface({
                     addVelocity : function(a, b) { 
@@ -2498,8 +2486,11 @@ var Topaz = tclass({
                     return topaz__set_root(e.native)
                 },
 
-                get : function(e){ 
-                    
+                get : function(){ 
+                    var o = topaz__get_root();
+                    if (o) 
+                        return o.__ctx;
+                    return undefined;
                 }
             },
             
