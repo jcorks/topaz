@@ -1864,6 +1864,16 @@ Topaz = tclass({
                             local f = topaz_component__get_host(this.native);
                             if f.__ctx ~= nil then return f.__ctx end;
                             return __Topaz__.Entity.new({native=f});
+                        end,
+
+                        set = function(v)
+                            local p = topaz_component__get_host(this.native);
+                            if p ~= nil
+                                topaz_entity__remove_component(p, this.native);
+                            end
+                            if v ~= nil
+                                topaz_entity__add_component(v.native, this.native);
+                            end
                         end
                     },
                     

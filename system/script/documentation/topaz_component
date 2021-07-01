@@ -30,9 +30,8 @@ Boolean drawing
 /// Sets/Gets the tag for this entity. 
 String tag 
 
-/// Gets the entity that this component belongs to.
+/// Sets/Gets the entity that this component belongs to.
 /// See Topaz.Entity for how to attach components
-/// Read-only.
 Topaz.Entity host 
 
 
