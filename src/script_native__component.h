@@ -252,31 +252,26 @@ static int component_api_callback(topazComponent_t * c, void * data, topazEntity
     topazScript_t * script = handler->script;
     void * context = handler->manager;
     
-    topazScript_Object_t * a[2];
-    a[0] = TSO_OBJECT_FETCH_KEPT_NATIVE(c);
-
-    #ifdef TOPAZDC_DEBUG
-        assert(a[0] && "Base component responding to emission of event should always have a corresponding cached script object. This is indicative of engine error");
-    #endif
+    topazScript_Object_t * a[1];
 
     if (source) {
         topazScript_Object_t * sourceObject = TSO_OBJECT_FETCH_KEPT_NATIVE(source);
         if (sourceObject) {
-            a[1] = sourceObject;
+            a[0] = sourceObject;
         } else {
             TSO_OBJECT_NEW_VALUE(source, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
-            a[1] = object;
+            a[0] = object;
         }    
         topaz_script_object_reference_call(
             handler->fn, 
-            TOPAZ_ARRAY_CAST(&a, topazScript_Object_t *, 2)
+            TOPAZ_ARRAY_CAST(&a, topazScript_Object_t *, 1)
         );
         return 1;
     }
 
     topaz_script_object_reference_call(
         handler->fn, 
-        TOPAZ_ARRAY_CAST(&a, topazScript_Object_t *, 1)
+        topaz_array_empty()
     );
     return 1;
 }

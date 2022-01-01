@@ -14,5 +14,5 @@ TSO_SCRIPT_API_FN(script_api__import) {
 
 
 static void add_refs__script_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_script__import", script_api__import);
+    //TS_MAP_NATIVE_FN("topaz_script__import", script_api__import);
 }

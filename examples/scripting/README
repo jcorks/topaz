@@ -1,0 +1,40 @@
+The contents of this directory is dedicated to base topaz examples 
+written using the scripting backend built into topaz.
+
+Specifically, the examples have been rewritten in Matte, a language 
+created for scripting.
+
+
+Matte is a new, flexible, and expressive language bringing with
+it a well-rounded set of tools for maximum maintainability.
+
+More info on the project and its operation can be found 
+here: https://jcorks.github.io/Matte/
+
+
+Pros:
+ - Can quickly write small applications
+ - Familiar JS feel
+ - Object Oriented features like classes, operator overloading, etc.
+ - Full debugger support (breakpoints, stepping, scoped evaluation)
+Cons:
+ - It's "homemade" (by me) and lacks in speed
+ - Continually under development
+
+
+
+
+The C example for using scripts (examples/c/10-Scripts/)  
+can be used for all the example directories. The binary will need 
+to be copied to any directory to run the example.
+
+the "script" file is the default file that the driver will look for 
+and run.
+
+
+Each "script" file contains extensive comments and info regarding 
+how to use both topaz and how to navigate the scripting interface. The 
+info for each example builds off the previous, so reading in order, 
+starting with 1-Entity, can serve as a manual.
+
+

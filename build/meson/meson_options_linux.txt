@@ -109,11 +109,10 @@ option(
     'ScriptBackend',
     type : 'combo',
 
-    value : 'duktapeJS',
+    value : 'matte',
     choices : [
         'noScript',
-        'duktapeJS',
-        'lua'
+        'matte'
     ]
 )
 
