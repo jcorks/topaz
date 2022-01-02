@@ -86,14 +86,14 @@ endif
 # compile args
 compile_args = []
 if get_option('BuildMode') == 'Debug'
-    compile_args += ['-g',  '-Wall', '-DTOPAZDC_DEBUG']
+    compile_args += ['-g',  '-Wall', '-DTOPAZDC_DEBUG', '-DMATTE_DEBUG']
 endif 
 if get_option('BuildMode') == 'Release'
     compile_args += ['-O2']
 endif
 if get_option('BuildMode') == 'DebugSanitize'
     if cc.get_argument_syntax() == 'gcc'
-        compile_args += ['-g',  '-Wall', '-DTOPAZDC_DEBUG']
+        compile_args += ['-g',  '-Wall', '-DTOPAZDC_DEBUG', '-DMATTE_DEBUG']
     endif
     if host_machine.system() != 'windows' and host_machine.system().contains('mingw') == false and host_machine.cpu_family().contains('arm') == false and host_machine.cpu_family().contains('aarch64') == false
         compile_args += ['-fno-omit-frame-pointer', '-fsanitize=address']

@@ -219,6 +219,21 @@ TSO_SCRIPT_API_FN(topaz_api__from_base64) {
     return object;
 }
 
+TSO_SCRIPT_API_FN(topaz_api__debug) {
+    topazScriptManager_t * mgr = context;
+
+    topazConsole_t * console = topaz_context_get_console(mgr->ctx);
+    topaz_console_attach_script(console, script);
+    topaz_console_enable(console, TRUE);
+
+    topaz_script_enable_debugging(script);
+    topaz_script_debug_send_command(
+        script,
+        topazScript_DebugCommand_Pause,
+        TOPAZ_STR_CAST("")
+    );
+    TSO_NO_RETURN;
+}
 
 
 static void add_refs__topaz_api(topazScript_t * script, topazScriptManager_t * context) {
@@ -245,4 +260,5 @@ static void add_refs__topaz_api(topazScript_t * script, topazScriptManager_t * c
     TS_MAP_NATIVE_FN("topaz__log", topaz_api__log);
     TS_MAP_NATIVE_FN("topaz__to_base64", topaz_api__to_base64);
     TS_MAP_NATIVE_FN("topaz__from_base64", topaz_api__from_base64);
+    TS_MAP_NATIVE_FN("topaz__debug", topaz_api__debug);
 }

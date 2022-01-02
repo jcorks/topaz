@@ -15,17 +15,7 @@ handlers += {
         'system/script/matte/src/matte/src/matte_string.c',
         'system/script/matte/src/matte/src/matte_table.c',
         'system/script/matte/src/matte/src/matte_vm.c',
-        'system/script/matte/src/matte/src/rom/core/string.c',
-        'system/script/matte/src/matte/src/rom/makerom.c',
         'system/script/matte/src/matte/src/rom/native.c',
-        'system/script/matte/src/matte/src/rom/system/posix/async.c',
-        'system/script/matte/src/matte/src/rom/system/posix/consoleio.c',
-        'system/script/matte/src/matte/src/rom/system/posix/filesystem.c',
-        'system/script/matte/src/matte/src/rom/system/posix/memorybuffer.c',
-        'system/script/matte/src/matte/src/rom/system/posix/shared.c',
-        'system/script/matte/src/matte/src/rom/system/posix/socketio.c',
-        'system/script/matte/src/matte/src/rom/system/posix/time.c',
-        'system/script/matte/src/matte/src/rom/system/posix/utility.c'
     ],
     'shouldTest' : false
 }

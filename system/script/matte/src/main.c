@@ -43,6 +43,15 @@ DEALINGS IN THE SOFTWARE.
     #include <assert.h>
 #endif
 #include "./matte/src/matte.h"
+#include "./matte/src/matte_heap.h"
+#include "./matte/src/matte_vm.h"
+#include "./matte/src/matte_bytecode_stub.h"
+#include "./matte/src/matte_string.h"
+#include "./matte/src/matte_array.h"
+#include "./matte/src/matte_compiler.h"
+
+#include <stdlib.h>
+#include <string.h>
 
 #define PRESET_ARGS 5
 
@@ -105,6 +114,10 @@ typedef struct {
     int paused;
 
     int pendingCommand;
+    
+    int lastLine;
+    uint32_t lastFile;
+    int lastStacksize;
 
 
 
@@ -182,16 +195,16 @@ typedef struct {
 static topazString_t * topaz_matte_stack_where(TOPAZMATTE * ctx) {
     topazString_t * str = topaz_string_create();
     uint32_t i;
-    uint32_t len = matte_vm_get_stackframe_size(vm);
+    uint32_t len = matte_vm_get_stackframe_size(ctx->vm);
     for(i = 0; i < len; ++i) {
-        matteVMStackFrame_t frame = matte_vm_get_stackframe(vm, i);
+        matteVMStackFrame_t frame = matte_vm_get_stackframe(ctx->vm, i);
         uint32_t numinst;
         const matteBytecodeStubInstruction_t * inst = matte_bytecode_stub_get_instructions(frame.stub, &numinst);
 
         uint32_t fileid = matte_bytecode_stub_get_file_id(frame.stub);
-        const matteString_t * fileName = matte_vm_get_script_name_by_id(vm, fileid);
+        const matteString_t * fileName = matte_vm_get_script_name_by_id(ctx->vm, fileid);
 
-        if (i == stackframe) {
+        if (i == ctx->debugLevel) {
             topaz_string_concat_printf(str, " -> @%d:%s <%s>, line %d\n", i, matte_string_get_c_str(frame.prettyName), fileName ? matte_string_get_c_str(fileName) : "???", inst[frame.pc].lineNumber);
         } else {
             topaz_string_concat_printf(str, "    @%d:%s <%s>, line %d\n", i, matte_string_get_c_str(frame.prettyName), fileName ? matte_string_get_c_str(fileName) : "???", inst[frame.pc].lineNumber);
@@ -240,7 +253,6 @@ static void topaz_matte_object_finalizer(void * objectUserdata, void * functionU
                 tag->cfinalizerData
         );
     free(tag);
-    return 0;
 }
 
 
@@ -293,7 +305,7 @@ static void * topaz_matte_object_wrap(void * ctxSrc, matteValue_t val) {
 // creates a new topaz script object from a value on the duk stack
 static topazScript_Object_t * topaz_matte_value_to_tso(TOPAZMATTE * ctx, matteValue_t val) {    
     topazScript_Object_t * o = NULL;
-    switch(val.bin) {
+    switch(val.binID) {
       case MATTE_VALUE_TYPE_BOOLEAN:
         o = topaz_script_object_from_int(ctx->script, val.value.boolean);
         break;
@@ -302,7 +314,7 @@ static topazScript_Object_t * topaz_matte_value_to_tso(TOPAZMATTE * ctx, matteVa
         break;
 
       case MATTE_VALUE_TYPE_STRING:
-        o = topaz_script_object_from_string(ctx->script, TOPAZ_STR_CAST(matte_value_string_as_string_unsafe(matte_vm_get_heap(matte_get_vm(ctx->matte)), val)));
+        o = topaz_script_object_from_string(ctx->script, TOPAZ_STR_CAST(matte_string_get_c_str(matte_value_string_get_string_unsafe(matte_vm_get_heap(matte_get_vm(ctx->matte)), val))));
         break;
 
       case MATTE_VALUE_TYPE_OBJECT:
@@ -322,27 +334,27 @@ static topazScript_Object_t * topaz_matte_value_to_tso(TOPAZMATTE * ctx, matteVa
 
 // pushes the given object as a duktape object
 // on the top of the stack.
-static matteValue_t  topaz_matte_tso_to_value(TOPAZMATTE * ctx, topazScript_Object_t * o) {
+static matteValue_t topaz_matte_tso_to_value(TOPAZMATTE * ctx, topazScript_Object_t * o) {
     matteValue_t out = matte_heap_new_value(ctx->heap);
     switch(topaz_script_object_get_type(o)) {
 
       case topazScript_Object_Type_Integer:
-        matte_value_into_number(&out, topaz_script_object_as_int(o));
+        matte_value_into_number(ctx->heap, &out, topaz_script_object_as_int(o));
         break;
 
       case topazScript_Object_Type_Number:
-        matte_value_into_number(&out, topaz_script_object_as_number(o));
+        matte_value_into_number(ctx->heap, &out, topaz_script_object_as_number(o));
         break;
 
       case topazScript_Object_Type_String: {
         matteString_t * str = matte_string_create_from_c_str(topaz_string_get_c_str(topaz_script_object_as_string(o)));
-        matte_value_into_string(ctx->js, str);
+        matte_value_into_string(ctx->heap, &out, str);
         matte_string_destroy(str);
         break;
       }
       case topazScript_Object_Type_Reference: {
         TOPAZMATTEObjectTag * tag = topaz_script_object_get_api_data(o);
-        matte_value_into_copy(&out, tag->selfID);
+        matte_value_into_copy(ctx->heap, &out, tag->selfID);
         break;
       }
       default:;
@@ -431,10 +443,7 @@ static duk_ret_t topaz_matte_set_internal(duk_context * js) {
 
 
 */
-static duk_ret_t topaz_matte_native_function_internal(matteVM_t *, matteValue_t fn, const matteValue_t * args, void * userData) {
-    #ifdef TOPAZDC_DEBUG
-        int stackSize = duk_get_top(js);
-    #endif
+static matteValue_t topaz_matte_native_function_internal(matteVM_t * vm, matteValue_t fn, const matteValue_t * args, void * userData) {
     TOPAZMATTENativeFunction * src = userData;
     TOPAZMATTE * ctx = src->ctx;    
     topaz_script_native_function fnReal = src->userFunction;
@@ -443,34 +452,29 @@ static duk_ret_t topaz_matte_native_function_internal(matteVM_t *, matteValue_t 
 
     // convert all args to tso
     uint32_t i;
-    topazScript_Object_t * args[nargs];
+    topazScript_Object_t * argsD[PRESET_ARGS];
     for(i = 0; i < PRESET_ARGS; ++i) {
-        args[i] = topaz_matte_value_to_tso(ctx, i);
+        argsD[i] = topaz_matte_value_to_tso(ctx, args[i]);
     }
 
     // actually call the native fn
     topazScript_Object_t * res = fnReal(
         ctx->script,
-        TOPAZ_ARRAY_CAST(&args, topazScript_Object_t *, nargs),
+        TOPAZ_ARRAY_CAST(&argsD, topazScript_Object_t *, PRESET_ARGS),
         fnData
     );
 
-    #ifdef TOPAZDC_DEBUG 
-        assert(duk_get_top(js) == stackSize);
-    #endif
-
+    matteValue_t out = matte_heap_new_value(ctx->heap);
     // finally, push the tso result as a duk object 
     if (res) {
-        topaz_matte_object_push_tso(ctx, res);
+        out = topaz_matte_tso_to_value(ctx, res);
         topaz_script_object_destroy(res);
-    } else {
-        duk_push_undefined(ctx->js);
     }
-
-    for(i = 0; i < nargs; ++i) {
-        topaz_script_object_destroy(args[i]);
+    
+    for(i = 0; i < PRESET_ARGS; ++i) {
+        topaz_script_object_destroy(argsD[i]);
     }
-    return 1;
+    return out;
 }
 
 
@@ -479,11 +483,20 @@ static duk_ret_t topaz_matte_native_function_internal(matteVM_t *, matteValue_t 
 static void topaz_matte_fatal(matteVM_t * vm, uint32_t file, int lineNumber, matteValue_t value, void * udata) {
     TOPAZMATTE * ctx = udata;
     matteHeap_t * heap = matte_vm_get_heap(vm);
-    matteString_t * str = matte_value_string_as_string_unsafe(heap, matte_value_as_string(heap, value));
-    PERROR(ctx->ctx, topaz_string_create_from_c_str("TOPAZ-DUKTAPE FATAL ERROR: %s\n", matte_string_get_c_str(str)));
-
+    {
+        const matteString_t * str = matte_value_string_get_string_unsafe(heap, matte_value_object_access_string(heap, value, MATTE_VM_STR_CAST(vm, "detail")));
+        PERROR(ctx->ctx, topaz_string_create_from_c_str("Topaz Scripting error: (%s, line %d):\n%s\n", 
+            matte_string_get_c_str(matte_vm_get_script_name_by_id(vm, file)),
+            lineNumber,
+            matte_string_get_c_str(str)));
+    }
     topazString_t * str = topaz_matte_stack_where(ctx);
-    PERROR(ctx->ctx, str);
+    if (topaz_string_get_length(str)) {
+        PERROR(ctx->ctx, str);
+    } else {
+        matte_string_destroy(str);
+    }
+    
 }
 
 
@@ -511,6 +524,7 @@ static void * topaz_matte_create(topazScript_t * scr, topaz_t * ctx) {
     out->matte = matte_create();
     out->vm = matte_get_vm(out->matte);
     out->heap = matte_vm_get_heap(out->vm);
+    out->nativeFuncs = topaz_array_create(sizeof(void*));
     matte_vm_set_unhandled_callback(
         matte_get_vm(out->matte),
         topaz_matte_fatal,
@@ -522,11 +536,11 @@ static void * topaz_matte_create(topazScript_t * scr, topaz_t * ctx) {
     topaz_array_push(backend->instances, out);
 
     matteValue_t t = matte_heap_new_value(out->heap);
-    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST("a")); out->argNamesRaw[0] = t;
-    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST("b")); out->argNamesRaw[1] = t;
-    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST("c")); out->argNamesRaw[2] = t;
-    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST("d")); out->argNamesRaw[3] = t;
-    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST("e")); out->argNamesRaw[4] = t;
+    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST(out->vm, "a")); out->argNamesRaw[0] = t;
+    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST(out->vm, "b")); out->argNamesRaw[1] = t;
+    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST(out->vm, "c")); out->argNamesRaw[2] = t;
+    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST(out->vm, "d")); out->argNamesRaw[3] = t;
+    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST(out->vm, "e")); out->argNamesRaw[4] = t;
 
 
     return out;
@@ -568,7 +582,6 @@ static int topaz_matte_map_native_function(
     native->userFunction = fn;
     native->userData = userData;
 
-    int v = topaz_array_get_size(ctx->nativeFuncs);
     topaz_array_push(ctx->nativeFuncs, native);
 
     matte_vm_set_external_function_autoname(
@@ -583,14 +596,24 @@ static int topaz_matte_map_native_function(
 static void topaz_matte_run__error(const matteString_t * s, uint32_t line, uint32_t ch, void * userdata) {
     TOPAZMATTE * ctx = userdata;
     topazString_t * str = topaz_string_create();
-    topaz_string_concat_printf(str, "ERROR @ line %d, %d", line, ch);
-    topaz_string_concat_printf(str, " in \"%s\"\n", duk_to_string(ctx->js, -1));
+    topaz_string_concat_printf(str, "ERROR @ line %d, %d:\n%s\n", line, ch, matte_string_get_c_str(s));
     topaz_string_concat(str, topaz_matte_stack_where(ctx));
-    PERROR(ctx->ctx, str);
-    fflush(stdout);
-    topaz_string_destroy(str);
+    if (topaz_string_get_length(str)) {
+        PERROR(ctx->ctx, str);
+    }
 }
 
+static void topaz_matte_expression__error(matteVM_t * vm, matteVMDebugEvent_t event, uint32_t file, int lineNumber, matteValue_t value, void * userdata) {
+    if (event == MATTE_VM_DEBUG_EVENT__ERROR_RAISED) {
+        TOPAZMATTE * ctx = userdata;    
+        topazString_t * str = topaz_string_create();
+        topaz_string_concat_printf(str, "Error in expression: %s\n", matte_string_get_c_str(matte_value_string_get_string_unsafe(ctx->heap, matte_value_as_string(ctx->heap, value))));
+        topaz_string_concat(str, topaz_matte_stack_where(ctx));
+        if (topaz_string_get_length(str)) {
+            PERROR(ctx->ctx, str);
+        }
+    }   
+}
 static topazScript_Object_t * topaz_matte_expression(
     topazScript_t * script, 
     void * data,
@@ -599,21 +622,21 @@ static topazScript_Object_t * topaz_matte_expression(
 
     TOPAZMATTE * ctx = data;
 
-    if (!matte_v_get_stackframe_size(ctx->vm)) {
+    if (!matte_vm_get_stackframe_size(ctx->vm)) {
         topazString_t * str = topaz_string_create_from_c_str("Eval error: Cannot evaluate expression if there is no callstack currently active.");
         PERROR(ctx->ctx, str);
         return topaz_script_object_undefined(ctx->script);   
     }
     matteString_t * exprM = matte_string_create_from_c_str(topaz_string_get_c_str(expr));
-    topazScript_Object_t * out = topaz_matte_value_to_tso(expr);
+    topazScript_Object_t * out = topaz_matte_value_to_tso(
         ctx,
         matte_vm_run_scoped_debug_source(
             ctx->vm,
             exprM,
             0,
-            topaz_matte_run__error,
+            topaz_matte_expression__error,
             ctx
-        );
+        )
     );
 
     matte_string_destroy(exprM);
@@ -653,7 +676,7 @@ static void topaz_matte_run(
 
     uint32_t bytelen = 0;
     uint8_t * bytecode = matte_compiler_run(
-        topaz_string_get_c_str(sourceDataD),
+        (const uint8_t*)topaz_string_get_c_str(sourceDataD),
         topaz_string_get_length(sourceDataD),
         &bytelen,
         topaz_matte_run__error,
@@ -663,12 +686,12 @@ static void topaz_matte_run(
 
     if (!bytecode || !bytelen) {
         topazString_t * str = topaz_string_create_from_c_str("Could not compile source \"%s\"", topaz_string_get_c_str(sourceName));
-        PERROR(ctx->ctx, str)
+        PERROR(ctx->ctx, str);
         return;
     }
     
     matteString_t * name = matte_string_create_from_c_str("%s", topaz_string_get_c_str(sourceName));
-    uint32_t id = matte_vm_get_new_file_id(vm, name);
+    uint32_t id = matte_vm_get_new_file_id(ctx->vm, name);
 
     matteArray_t * stubs = matte_bytecode_stubs_from_bytecode(
         ctx->heap,
@@ -684,7 +707,7 @@ static void topaz_matte_run(
             ctx->vm,
             id,
             matte_heap_new_value(ctx->heap)
-        );
+        )
     );
 }
 
@@ -705,7 +728,7 @@ topazScript_Object_t * topaz_matte_create_empty_object(
     topazScript_Object_t * out = topaz_matte_value_to_tso(ctx, outp);
 
     // get the tag so we can add the finalizer
-    TOPAZMATTEObjectTag * tag = topaz_matte_object_get_tag_from_value(ctx->js, outp);
+    TOPAZMATTEObjectTag * tag = topaz_matte_object_get_tag_from_value(ctx, outp);
     tag->cfinalizer = cleanup;
     tag->cfinalizerData = cleanupData;
 
@@ -714,21 +737,44 @@ topazScript_Object_t * topaz_matte_create_empty_object(
 
 
 void topaz_matte_bootstrap(topazScript_t * script, void * n) {
+    #include "debug_bytes"
+
+    topaz_script_run(
+        script,
+        TOPAZ_STR_CAST("Topaz.DebugPrinter"),
+        TOPAZ_STR_CAST((char*)debug_bytes)
+    );
+
+    #include "constants_bytes"
+
+    topaz_script_run(
+        script,
+        TOPAZ_STR_CAST("Topaz.Constants"),
+        TOPAZ_STR_CAST((char*)constants_bytes)
+    );
+    #include "vector_bytes"
+
+    topaz_script_run(
+        script,
+        TOPAZ_STR_CAST("Topaz.Vector"),
+        TOPAZ_STR_CAST((char*)vector_bytes)
+    );
+    #include "color_bytes"
+
+    topaz_script_run(
+        script,
+        TOPAZ_STR_CAST("Topaz.Color"),
+        TOPAZ_STR_CAST((char*)color_bytes)
+    );
+
     #include "bootstrap_bytes"
 
-    #ifdef TOPAZDC_DEBUG
-        topaz_script_run(
-            script,
-            TOPAZ_STR_CAST("TOPAZ_BOOTSTRAP.mt"),
-            TOPAZ_STR_CAST((char*)bootstrap_bytes)
-        );
-    #else
-        topaz_matte_run(
-            script, n,
-            TOPAZ_STR_CAST("[internal]"),
-            TOPAZ_STR_CAST((char*)bootstrap_bytes)
-        );
-    #endif
+    topaz_script_run(
+        script,
+        TOPAZ_STR_CAST("Topaz.Core"),
+        TOPAZ_STR_CAST((char*)bootstrap_bytes)
+    );
+
 }
 
 
@@ -758,7 +804,7 @@ void topaz_matte_bootstrap(topazScript_t * script, void * n) {
  
 static void * topaz_matte_object_reference_create_from_reference(topazScript_Object_t * o, void * ctxSrc, topazScript_Object_t * from, void * fromData) {
     TOPAZMATTE * ctx = ctxSrc;
-    matteValue_t val = topaz_matte_object_push_to_top_from_tag(fromData);
+    matteValue_t val = topaz_matte_tso_to_value(ctx, fromData);
     return topaz_matte_object_wrap(ctx, val);
 }
 
@@ -775,7 +821,7 @@ static void topaz_matte_object_reference_destroy(topazScript_Object_t * o, void 
 
 static int topaz_matte_object_reference_get_feature_mask(topazScript_Object_t * o, void * tagSrc) {
     TOPAZMATTEObjectTag * t = tagSrc;
-
+    int out = 0;
     if (t->selfID.binID == MATTE_VALUE_TYPE_FUNCTION) {
         out |= topazScript_Object_Feature_Callable;
     } else if (t->selfID.binID == MATTE_VALUE_TYPE_OBJECT) {
@@ -811,7 +857,7 @@ static void topaz_matte_object_reference_unref(topazScript_Object_t * o, void * 
     tag->refCount--;
 
     if (tag->refCount == 0) {
-        matte_value_object_pop_lock(topaz_matte_object_value_from_tag(tag));
+        matte_value_object_pop_lock(tag->ctx->heap, topaz_matte_object_value_from_tag(tag));
     }
 
 }
@@ -819,20 +865,20 @@ static void topaz_matte_object_reference_unref(topazScript_Object_t * o, void * 
 
 
 
-static topazScript_Object_t * topaz_matte_object_reference_call(topazScript_Object_t * o, const topazArray_t * args, void * data) {
+static topazScript_Object_t * topaz_matte_object_reference_call(topazScript_Object_t * o, const topazArray_t * argsIn, void * data) {
     TOPAZMATTEObjectTag * tag = data;
     TOPAZMATTE * ctx = tag->ctx;
 
     // assumes callable
     matteValue_t v = topaz_matte_object_value_from_tag(tag);
 
-    assert(len <= PRESET_ARGS);
 
 
     uint32_t i = 0;
-    uint32_t len = topaz_array_get_size(args);
+    uint32_t len = topaz_array_get_size(argsIn);
+    assert(len <= PRESET_ARGS);
     for(; i < len; ++i) {
-        topazScript_Object_t * o = topaz_array_at(args, topazScript_Object_t *, i);
+        topazScript_Object_t * o = topaz_array_at(argsIn, topazScript_Object_t *, i);
         ctx->argsRaw[i] = topaz_matte_tso_to_value(
             tag->ctx, 
             o
@@ -841,15 +887,14 @@ static topazScript_Object_t * topaz_matte_object_reference_call(topazScript_Obje
     matteArray_t argNames = MATTE_ARRAY_CAST(ctx->argNamesRaw, sizeof(matteValue_t), len);
     matteArray_t args = MATTE_ARRAY_CAST(ctx->argsRaw, sizeof(matteValue_t), len);
 
-    duk_call(tag->ctx->js, len);
     topazScript_Object_t * out = topaz_matte_value_to_tso(
         tag->ctx,
         matte_vm_call(
-            ctx->cm,
+            ctx->vm,
             v,
             &args,
-            &argsNames,
-            MATTE_VM_STR_CAST("topaz-call")
+            &argNames,
+            MATTE_VM_STR_CAST(ctx->vm, "topaz-call")
         )
     );
  
@@ -878,7 +923,7 @@ static topazScript_Object_t * topaz_matte_object_reference_array_get_nth(
 
 static int topaz_matte_object_reference_array_get_count(topazScript_Object_t * o, void * tagSrc) {
     TOPAZMATTEObjectTag * tag = tagSrc;
-    int len = matte_value_object_get_key_count(tag->selfID);
+    int len = matte_value_object_get_key_count(tag->ctx->heap, tag->selfID);
 
     return len;
 }
@@ -905,7 +950,7 @@ void topaz_matte_object_reference_to_string(
     topaz_string_concat_printf(
         str,
         matte_string_get_c_str(
-            matte_value_string_as_string_unsafe(
+            matte_value_string_get_string_unsafe(
                 tag->ctx->heap,
                 strc
             )
@@ -927,94 +972,26 @@ void topaz_matte_object_reference_to_string(
 
 #define DUKTAPE_COMMAND__GET_CALLSTACK 256
 
-static void topaz_matte_trans_command__pause(duk_trans_dvalue_ctx * ctxT) {
-    TOPAZMATTE * ctx = ctxT->userData;
-    ctx->paused = 1;
+static void topaz_matte_trans_command__pause(TOPAZMATTE * ctx) {
+    ctx->pendingCommand = topazScript_DebugCommand_Pause;
 }
 
 
 
-static void topaz_matte_trans_command__resume(duk_trans_dvalue_ctx * ctxT) {
-    TOPAZMATTE * ctx = ctxT->userData;
-    ctx->paused = 0;
+static void topaz_matte_trans_command__resume(TOPAZMATTE * ctx) {
+    ctx->pendingCommand = topazScript_DebugCommand_Resume;
 }
 
-static void topaz_matte_trans_command__step_into(duk_trans_dvalue_ctx * ctxT) {
-    TOPAZMATTE * ctx = ctxT->userData;
+static void topaz_matte_trans_command__step_into(TOPAZMATTE * ctx) {
 
     ctx->pendingCommand = topazScript_DebugCommand_StepInto;                 
-    break;
 }
 
 
+static void topaz_matte_trans_command__step_over(TOPAZMATTE * ctx) {
 
-static void topaz_matte_trans_command__step_over(duk_trans_dvalue_ctx * ctxT) {
-    TOPAZMATTE * ctx = ctxT->userData;
-
-    duk_trans_dvalue_send_req(ctxT);
-    duk_trans_dvalue_send_integer(ctxT, 0x15);  
-    duk_trans_dvalue_send_eom(ctxT);
-    //printf("sent step over request\n");
-
-    topazScript_DebugCommand_t c = topazScript_DebugCommand_StepOver;
-    topaz_array_push(ctx->lastCommand, c);    
+    ctx->pendingCommand = topazScript_DebugCommand_StepOver;                 
 }
-
-static void topaz_matte_trans_command__add_breakpoint(duk_trans_dvalue_ctx * ctxT, const topazString_t * filename, int line) {
-    TOPAZMATTE * ctx = ctxT->userData;
-
-    duk_trans_dvalue_send_req(ctxT);
-    duk_trans_dvalue_send_integer(ctxT, 0x18);  
-    duk_trans_dvalue_send_string(ctxT, topaz_string_get_c_str(filename));
-    duk_trans_dvalue_send_integer(ctxT, line);
-    duk_trans_dvalue_send_eom(ctxT);
-    //printf("sent add break request\n");
-
-    topazScript_DebugCommand_t c = topazScript_DebugCommand_AddBreakpoint;
-    topaz_array_push(ctx->lastCommand, c);    
-}
-
-static void topaz_matte_trans_command__delete_breakpoint(duk_trans_dvalue_ctx * ctxT, int index) {
-    TOPAZMATTE * ctx = ctxT->userData;
-
-    // assumes that we're keeping track of the debug indices correctly.
-    if (index >= 0 && index < topaz_array_get_size(ctx->debugBreakpoints)) {
-        int id = topaz_array_at(ctx->debugBreakpoints, int, index);
-        topaz_array_remove(ctx->debugBreakpoints, index);
-        topaz_array_push(ctx->debugRemoveBreakpoint, id);
-    }
-
-
-    duk_trans_dvalue_send_req(ctxT);
-    duk_trans_dvalue_send_integer(ctxT, 0x19);  
-    duk_trans_dvalue_send_integer(ctxT, index);  
-    duk_trans_dvalue_send_eom(ctxT);
-    //printf("sent breakpoint delete request %d\n", index);
-
-    topazScript_DebugCommand_t c = topazScript_DebugCommand_RemoveBreakpoint;
-    topaz_array_push(ctx->lastCommand, c);    
-
-}
-
-static void topaz_matte_trans_command__eval(duk_trans_dvalue_ctx * ctxT, const topazString_t * eval, int callstackLevel) {
-    TOPAZMATTE * ctx = ctxT->userData;
-
-    duk_trans_dvalue_send_req(ctxT);
-    duk_trans_dvalue_send_integer(ctxT, 0x1e);  
-    duk_trans_dvalue_send_integer(ctxT, callstackLevel);
-    topazString_t * command = topaz_string_create_from_c_str("Topaz.objectToString(");
-    topaz_string_concat(command, eval);
-    topaz_string_concat(command, TOPAZ_STR_CAST(")"));
-    duk_trans_dvalue_send_string(ctxT, topaz_string_get_c_str(command));
-    topaz_string_destroy(command);
-    duk_trans_dvalue_send_eom(ctxT);
-    //printf("sent eval request\n");
-
-
-    topazScript_DebugCommand_t c = topazScript_DebugCommand_ScopedEval;
-    topaz_array_push(ctx->lastCommand, c);    
-}
-
 
 
 
@@ -1047,13 +1024,18 @@ static void debug_state_add_frame(topazScript_DebugState_t * s,
     topaz_array_push(s->callstack, frame);
 }
 
-static void debug_populate_state(topazScript_DebugState_t * s, matteVM_t * vm) {
+static void debug_populate_state(TOPAZMATTE * ctx) {
+    matteVM_t *vm = ctx->vm;
+    topazScript_DebugState_t * s = &ctx->debugState;
+    
+    
     clear_debug_state(s);
     uint32_t i;
     uint32_t len = matte_vm_get_stackframe_size(vm);
     for(i = 0; i < len; ++i) {
-        matteVMStackFrame_t frame = matte_vm_get_stackframe(vm, 0);
-        matteBytecodeStubInstruction_t inst = matte_bytecode_stub_get_instructions(frame.stub)[frame.pc];
+        uint32_t ct;
+        matteVMStackFrame_t frame = matte_vm_get_stackframe(vm, i);
+        matteBytecodeStubInstruction_t inst = matte_bytecode_stub_get_instructions(frame.stub, &ct)[frame.pc];
         debug_state_add_frame(
             s,
             inst.lineNumber,
@@ -1066,18 +1048,17 @@ static void debug_populate_state(topazScript_DebugState_t * s, matteVM_t * vm) {
                 )
             ),
 
-            matte_string_get_c_str(frame.prettyName);            
+            matte_string_get_c_str(frame.prettyName)
         );
-    }
-}
+        if (i == 0) {
+            ctx->lastLine = inst.lineNumber;
+            ctx->lastFile = matte_bytecode_stub_get_file_id(
+                frame.stub
+            );
+            ctx->lastStacksize = len;
+        }
 
-// queues a notification. Ownership of the string 
-static void topaz_matte_debug_queue_notify(TOPAZMATTE * ctx, int cmd, topazString_t * str) {
-    topaz_script_notify_command(
-        ctx->script, 
-        cmd,            
-        str
-    );
+    }
 }
 
 
@@ -1282,7 +1263,7 @@ static void topaz_matte_trans_cooperate(duk_trans_dvalue_ctx * ctxT, int block) 
 
 static void topaz_matte_debug_trap(TOPAZMATTE * ctx) {
     ctx->debugLevel = 0;
-    debug_populate_state(&ctx->debugState);
+    debug_populate_state(ctx);
     while(ctx->pendingCommand == topazScript_DebugCommand_Pause) {
         topaz_context_pause(ctx->ctx);
         topaz_context_iterate(ctx->ctx);
@@ -1291,32 +1272,62 @@ static void topaz_matte_debug_trap(TOPAZMATTE * ctx) {
 
 }
 static void topaz_matte_debug_callback(
-    matteVM_t *, 
+    matteVM_t * vm, 
     matteVMDebugEvent_t event, 
     uint32_t file, 
     int lineNumber, 
     matteValue_t value, 
     void * data
 ) {
+    if (event == MATTE_VM_DEBUG_EVENT__ERROR_RAISED) return;
     TOPAZMATTE * ctx = data;
     switch(ctx->pendingCommand) {
       case topazScript_DebugCommand_Pause:
+        ctx->debugLevel = 0;
+        debug_populate_state(ctx);
+
+        topaz_script_notify_command(
+            ctx->script, 
+            topazScript_DebugCommand_Pause,            
+            TOPAZ_STR_CAST("")
+        );
         topaz_matte_debug_trap(ctx);
+
+
         break;
       case topazScript_DebugCommand_Resume:
+        topaz_script_notify_command(
+            ctx->script, 
+            topazScript_DebugCommand_Resume,            
+            TOPAZ_STR_CAST("")
+        );
+
         break;
 
       case topazScript_DebugCommand_StepInto:
         //initial step into should have populated lastLine / lastFileID
         if (lineNumber != ctx->lastLine ||
-            file       != ctx->lastFileID) {
-            topaz_matte_debug_queue_notify(
-                ctx,
-                topazScript_DebugCommand_Pause,
+            file       != ctx->lastFile) {
+            topaz_script_notify_command(
+                ctx->script,
+                topazScript_DebugCommand_StepInto,
                 topaz_string_create()
             );
         }
+        break;
 
+      case topazScript_DebugCommand_StepOver:
+        //initial step into should have populated lastLine / lastFileID
+        if (lineNumber != ctx->lastLine ||
+            file       != ctx->lastFile &&
+            matte_vm_get_stackframe_size(ctx->vm) <= ctx->lastStacksize) {
+            topaz_script_notify_command(
+                ctx->script,
+                topazScript_DebugCommand_StepOver,
+                topaz_string_create()
+            );
+        }
+        break;
     
 
 
@@ -1331,7 +1342,7 @@ static void topaz_matte_debug_start(topazScript_t * scr, void * data) {
     TOPAZMATTE * ctx = data;
     ctx->isDebugging = TRUE;
     matte_vm_set_debug_callback(
-        vm,
+        ctx->vm,
         topaz_matte_debug_callback,
         ctx
     );
@@ -1346,19 +1357,19 @@ void topaz_matte_debug_send_command(
     TOPAZMATTE * ctx = data;
     switch(cmd) {
       case topazScript_DebugCommand_Pause:
-        topaz_matte_trans_command__pause(ctx->trans_ctx);
+        topaz_matte_trans_command__pause(ctx);
         break;    
 
       case topazScript_DebugCommand_Resume:
-        topaz_matte_trans_command__resume(ctx->trans_ctx);
+        topaz_matte_trans_command__resume(ctx);
         break;    
 
       case topazScript_DebugCommand_StepInto:
-        topaz_matte_trans_command__step_into(ctx->trans_ctx);
+        topaz_matte_trans_command__step_into(ctx);
         break;
 
       case topazScript_DebugCommand_StepOver:
-        //topaz_matte_trans_command__step_over(ctx->trans_ctx);
+        topaz_matte_trans_command__step_over(ctx);
         break;
 
       case topazScript_DebugCommand_AddBreakpoint: {
@@ -1378,7 +1389,7 @@ void topaz_matte_debug_send_command(
         uint32_t len = topaz_array_get_size(ctx->debugBreakpoints);
         for(i = 0; i < len; ++i) {
             if (topaz_array_at(ctx->debugBreakpoints, int, i) == id) {
-                topaz_matte_trans_command__delete_breakpoint(ctx->trans_ctx, i);
+                //topaz_matte_trans_command__delete_breakpoint(ctx->trans_ctx, i);
                 return;
             }
         } 
@@ -1396,21 +1407,26 @@ void topaz_matte_debug_send_command(
             topaz_string_get_length(number)+1, // skip the :
             topaz_string_get_length(str)-1
         );
-        if (!matte_v_get_stackframe_size(ctx->vm)) {
+        if (!matte_vm_get_stackframe_size(ctx->vm)) {
             topazString_t * str = topaz_string_create_from_c_str("Eval error: Cannot evaluate expression if there is no callstack currently active.");
             PERROR(ctx->ctx, str);
             return topaz_script_object_undefined(ctx->script);   
         }
-        matteString_t * exprM = matte_string_create_from_c_str(topaz_string_get_c_str(str));
-        topazScript_Object_t * out = topaz_matte_value_to_tso(expr);
-            ctx,
+        matteString_t * exprM = matte_string_create_from_c_str("return (import(module:'Topaz.DebugPrinter'))(o:%s);", topaz_string_get_c_str(command));
+        matteValue_t result = 
             matte_vm_run_scoped_debug_source(
                 ctx->vm,
                 exprM,
                 scope,
-                topaz_matte_run__error,
+                topaz_matte_expression__error,
                 ctx
             );
+        
+
+        topaz_script_notify_command(
+            ctx->script,
+            topazScript_DebugCommand_ScopedEval,
+            topaz_string_create_from_c_str("%s", matte_string_get_c_str(matte_value_string_get_string_unsafe(ctx->heap, matte_value_as_string(ctx->heap, result))))
         );
 
         matte_string_destroy(exprM);

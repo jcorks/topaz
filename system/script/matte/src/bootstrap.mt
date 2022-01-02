@@ -1,596 +1,13 @@
-<@> TOPAZ = {
-    INPUT : {
-        NOT_AN_INPUT : 0,
-        KEY_0: 1, ///< 0
-        KEY_1: 2, ///< 1
-        KEY_2: 3, ///< 2
-        KEY_3: 4, ///< 3
-        KEY_4: 5, ///< 4
-        KEY_5: 6, ///< 5
-        KEY_6: 7, ///< 6
-        KEY_7: 8, ///< 7
-        KEY_8: 9, ///< 8
-        KEY_9: 10, ///< 9
-        KEY_a: 11, ///< a
-        KEY_b: 12, ///< b
-        KEY_c: 13, ///< c
-        KEY_d: 14, ///< d
-        KEY_e: 15, ///< e
-        KEY_f: 16, ///< f
-        KEY_g: 17, ///< g
-        KEY_h: 18, ///< h
-        KEY_i: 19, ///< i
-        KEY_j: 20, ///< j
-        KEY_k: 21, ///< k
-        KEY_l: 22, ///< l
-        KEY_m: 23, ///< m
-        KEY_n: 24, ///< n
-        KEY_o: 25, ///< o
-        KEY_p: 26, ///< p
-        KEY_q: 27, ///< q
-        KEY_r: 28, ///< r
-        KEY_s: 29, ///< s
-        KEY_t: 30, ///< t
-        KEY_u: 31, ///< u
-        KEY_v: 32, ///< v
-        KEY_w: 33, ///< w
-        KEY_x: 34, ///< x
-        KEY_y: 35, ///< y
-        KEY_z: 36, ///< z
-        KEY_lshift: 37, ///< Left shift key
-        KEY_rshift: 38, ///< Right shift key
-        KEY_lctrl: 39,  ///< Left control key
-        KEY_rctrl: 40,  ///< Right control key
-        KEY_lalt: 41,   ///< Left alt key
-        KEY_ralt: 42,   ///< Right alt key
-        KEY_tab: 43,    ///< Tab
-        KEY_F1: 44,     ///< F1
-        KEY_F2: 45,     ///< F2
-        KEY_F3: 46,     ///< F3
-        KEY_F4: 47,     ///< F4
-        KEY_F5: 48,     ///< F5
-        KEY_F6: 49,     ///< F6
-        KEY_F7: 50,     ///< F7
-        KEY_F8: 51,     ///< F8
-        KEY_F9: 52,     ///< F9
-        KEY_F10: 53,    ///< F10
-        KEY_F11: 54,    ///< F11
-        KEY_F12: 55,    ///< F12
-        KEY_up: 100,     ///< Up arrow
-        KEY_down: 101,   ///< Down arrow
-        KEY_left: 102,   ///< Left arrow
-        KEY_right: 103,  ///< Right arrow
-        KEY_minus: 104,  ///< -
-        KEY_equal: 105,  ///< = 
-        KEY_backspace: 106,  ///< Backspace
-        KEY_grave: 107,  ///< `
-        KEY_esc: 108,    ///< Escape
-        KEY_home: 109,   ///< Home key
-        KEY_pageUp: 110, ///< Page up key
-        KEY_pageDown: 111,  ///< Page down key
-        KEY_end: 112,    ///< End key
-        KEY_backslash: 113, ///< '\'
-        KEY_lbracket: 114, ///< [
-        KEY_rbracket: 115, ///< ]
-        KEY_semicolon: 116, ///< ;
-        KEY_apostrophe: 117, ///< '
-        KEY_frontslash: 118, ///< /
-        KEY_enter: 119, ///< Enter
-        KEY_delete: 120, ///< Delete
-        KEY_numpad0: 121, ///< Numpad 0
-        KEY_numpad1: 122, ///< Numpad 1
-        KEY_numpad2: 123, ///< Numpad 2
-        KEY_numpad3: 124, ///< Numpad 3
-        KEY_numpad4: 125, ///< Numpad 4
-        KEY_numpad5: 126, ///< Numpad 5
-        KEY_numpad6: 127, ///< Numpad 6
-        KEY_numpad7: 128, ///< Numpad 7
-        KEY_numpad8: 129, ///< Numpad 8
-        KEY_numpad9: 130, ///< Numpad 9
-        KEY_prtscr: 131, ///< Print screen button
-        KEY_lsuper: 132, ///< Left Super key (Windows key)
-        KEY_rsuper: 133, ///< Right Super key (Windows key)
-        KEY_space: 134,  ///< Space
-        KEY_insert: 135, ///< Insert key
-        KEY_comma: 136, ///< ,
-        KEY_period: 137 , ///< .
-        KEY_world1: 138, /// I8n key0
-        KEY_world2: 139, /// I8n key1
-        KEY_world3: 140, /// I8n key2
-        KEY_world4: 141, /// I8n key3
-        KEY_world5: 142, /// I8n key4
-        KEY_world6: 143, /// I8n key5
-        KEY_world7: 144, /// I8n key6
-        KEY_world8: 145, /// I8n key7
-        KEY_world9: 146, /// I8n key8
-    
-        POINTER_0: 256, ///< Left click
-        POINTER_1: 257, ///< Right click
-        POINTER_2: 258, ///< Middle click
-    
-        POINTER_X: 259, ///< Horizontal axis. Usually for the X axis of the pointer
-        POINTER_Y: 260, ///< Horizontal axis. Usually for the X axis of the pointer
-        POINTER_Wheel: 261, ///< Mouse wheel.
-    
-        PAD_a: 300,     ///< Button 0
-        PAD_b: 301,     ///< Button 1
-        PAD_c: 302,     ///< Button 2
-        PAD_x: 303,     ///< Button 3
-        PAD_y: 304,     ///< Button 4
-        PAD_r: 305,     ///< Button 5
-        PAD_l: 306,     ///< Button 6
-        PAD_r2: 307,    ///< Button 7
-        PAD_l2: 308,    ///< Button 8
-        PAD_r3: 309,    ///< Button 9
-        PAD_l3: 310,    ///< Button 10
-        PAD_start: 311,    ///< Button 11
-        PAD_select: 312,///< Button 12
-        PAD_b13: 313,///< Button 13
-        PAD_b14: 314,///< Button 14
-        PAD_b15: 315,///< Button 15
-        PAD_b16: 316,///< Button 16
-        PAD_b17: 317,///< Button 17
-        PAD_b18: 318,///< Button 18
-        PAD_b19: 319,///< Button 19
-        PAD_b20: 320,///< Button 20
-        PAD_b21: 321,///< Button 21
-        PAD_b22: 322,///< Button 22
-        PAD_b23: 323,///< Button 23
-        PAD_b24: 324,///< Button 24
-        PAD_b25: 325,///< Button 25
-        PAD_b26: 326,///< Button 26
-        PAD_b27: 327,///< Button 27
-        PAD_b28: 328,///< Button 28
-        PAD_b29: 329,///< Button 29
-        PAD_b30: 330,///< Button 30
-        PAD_b31: 331,///< Button 31
-        PAD_b32: 332,///< Button 32
-    
-        PAD_axisX: 400, ///< X button
-        PAD_axisY: 401, ///< Y button
-        PAD_axisZ: 402, ///< Z button
-        PAD_axisX2: 403,///< X2 button 
-        PAD_axisY2: 404,///< Y2 button
-        PAD_axisZ2: 405,///< Z2 button
-        PAD_axisX3: 406,///< X3 button
-        PAD_axisY3: 407,///< Y3 button
-        PAD_axisZ3: 408,///< Z3 button
-        PAD_axisX4: 409,///< X4 button
-        PAD_axisY4: 410,///< Y4 button
-        PAD_axisZ4: 411,///< Z4 button
-        PAD_axisX5: 412,///< X4 button
-        PAD_axisY5: 413,///< Y4 button
-        PAD_axisZ5: 414,///< Z4 button
-        PAD_axisX6: 415,///< X4 button
-        PAD_axisY6: 416,///< Y4 button
-        PAD_axisZ6: 417,///< Z4 button
-    
-        PAD_axisR: 450,   
-        PAD_axisL: 451,    
-        PAD_axisR2: 452,    
-        PAD_axisL2: 453,    
-        PAD_axisR3: 454,    
-        PAD_axisL3: 455,    
-        PAD_axisR4: 456,    
-        PAD_axisL4: 457,    
-    
-        PAD_options: 511,
-        COUNT: 512
-    },
+<@>TOPAZ = import(module:'Topaz.Constants');
+<@>Vector = import(module:'Topaz.Vector');
+<@>Color = import(module:'Topaz.Color');
 
-  
-    RENDERER : {
-        ATTRIBUTE : {
-            PRIMITIVE : 0,
-            ALPHA_RULE : 1,
-            DEPTH_TEST : 2,
-            ETCH_RULE : 3,
-            TEXTURE_FILTER_HINT : 4
-        },
-        
-        PRIMITIVE : {
-            TRIANGLE : 0,
-            LINE : 1
-        },
-
-        ETCH_RULE : {
-            NO_ETCHING : 0,
-            DEFINE : 1,
-            UNDEFINE : 2,
-            IN : 3,
-            OUT : 4
-        },
-        
-        DEPTH_TEST : {
-            LESS : 0,
-            LEQ : 1,
-            GREATER : 2,
-            GEQ : 3,
-            EQUAL : 4,
-            NONE : 5
-        },
-
-        ALPHA_RULE : {
-            ALLOW : 0,
-            OPAQUE : 1,
-            TRANSLUCENT : 2,
-            INVISIBLE : 3,
-        },
-        
-        TEXTURE_FILTER_HINT : {
-            LINEAR : 0,
-            NONE : 1,
-        },
-        
-        LAYER : {
-            COLOR : 1,
-            DEPTH : 2,
-            ETCH : 4,
-            ALL  : 7
-        }
-
-    },
-    
-    ASSET : { 
-        TYPE : {
-            NONE : 0,
-            IMAGE : 1,
-            SOUND : 2,
-            MATERIAL : 3,
-            PARTICLE : 4,
-            DATA : 5,
-            MESH : 6
-        }
-    },
-    
-    
-    PARTICLE : {
-        PROPERTY : {
-            DURATION : 0,
-            SCALE_X : 1,
-            SCALE_Y : 2,
-            SCALE_MULTIPLIER : 3,
-            ROTATION : 4,
-            DIRECTION : 5,
-            SPEED_X : 6,
-            SPEED_Y : 7,
-            RED : 8,
-            GREEN : 9,
-            BLUE : 10,
-            ALPHA : 11,
-        }
-    },
-    
-    FILESYSTEM : {
-        DEFAULT_NODE : {
-            RESOURCES : 0,
-            TOPAZ : 1,
-            USER_DATA : 2
-        },
-    
-    },
-    
-    AUTOMATION : {
-        FUNCTION : {
-            NONE : 0,
-            LINEAR : 1,
-            ACCEL : 2,
-            SLOW : 3,
-            SOFT_ACCEL : 4,
-            SOFT_SLOW : 5,
-            RANDOM : 6    
-        }      
-    },
+<@>topaz__debug = getExternalFunction(name:'topaz__debug');
+topaz__debug();
 
 
-    SHAPE3D : {
-        TEXTURE : {
-            SLOT_0 : 0,
-            SLOT_1 : 1,
-            SLOT_2 : 2
-        }
-    },
-
-
-    OBJECT2D : {
-        GROUP : {
-            A : 0,
-            B : 1,
-            C : 2,
-            D : 3,
-            E : 4,
-            F : 5,
-            G : 6,
-            H : 7,
-            I : 8,
-            J : 9,
-            K : 10,
-            L : 11,
-            M : 12,
-            N : 13,
-            O : 14,
-            P : 15,
-            Q : 16,
-            R : 17,
-            S : 18,
-            T : 19,
-            U : 20,
-            V : 21,
-            W : 22,
-            X : 23,
-            Y : 24,
-            Z : 25
-        }
-    },
-    
-    SCHEDULER : {
-        MODE : {
-            TIME : 0,
-            FRAME : 1
-        }
-    },
-    
-    DISPLAY : {
-        VIEW_POLICY : {
-            NONE      : 0,
-            MATCH_SIZE : 1
-        },
-
-        PARAMETER : {
-            X : 0,
-            Y : 1,
-            WIDTH : 2,
-            HEIGHT : 3,
-            SHOW : 4,
-            FULLSCREEN : 5,
-            LOCK_CLIENT_RESIZE : 6,
-            LOCK_CLIENT_POSITION : 7,
-            VIEW_POLICY : 8,
-            INPUT_FOCUS : 9
-        },
-        
-        FRAMEBUFFER : {
-            A : 0,
-            B : 1,
-            C : 2,
-            D : 3
-        }
-    },
-    
-
-};
-
-
-<@>Vector = ::<={
-    <@>topaz_vector__create = getExternalFunction(name:'topaz_vector__create');
-    <@>topaz_vector__set_xyz = getExternalFunction(name:'topaz_vector__set_xyz');
-    <@>topaz_vector__get_x = getExternalFunction(name:'topaz_vector__get_x');
-    <@>topaz_vector__get_y = getExternalFunction(name:'topaz_vector__get_y');
-    <@>topaz_vector__get_z = getExternalFunction(name:'topaz_vector__get_z');
-    <@>topaz_vector__get_distance = getExternalFunction(name:'topaz_vector__get_distance');
-    <@>topaz_vector__normalize = getExternalFunction(name:'topaz_vector__normalize');
-    <@>topaz_vector__cross = getExternalFunction(name:'topaz_vector__cross');
-    <@>topaz_vector__floor = getExternalFunction(name:'topaz_vector__floor');
-    <@>topaz_vector__rotation_x_diff = getExternalFunction(name:'topaz_vector__rotation_x_diff');
-    <@>topaz_vector__rotation_x_diff_relative = getExternalFunction(name:'topaz_vector__rotation_x_diff_relative');
-    <@>topaz_vector__rotation_y_diff = getExternalFunction(name:'topaz_vector__rotation_y_diff');
-    <@>topaz_vector__rotation_y_diff_relative = getExternalFunction(name:'topaz_vector__rotation_y_diff_relative');
-    <@>topaz_vector__rotation_z_diff = getExternalFunction(name:'topaz_vector__rotation_z_diff');
-    <@>topaz_vector__rotation_z_diff_relative = getExternalFunction(name:'topaz_vector__rotation_z_diff_relative');
-    <@>topaz_vector__rotation_x = getExternalFunction(name:'topaz_vector__rotation_x');
-    <@>topaz_vector__rotation_y = getExternalFunction(name:'topaz_vector__rotation_y');
-    <@>topaz_vector__rotation_z = getExternalFunction(name:'topaz_vector__rotation_z');
-    <@>topaz_vector__rotate_x = getExternalFunction(name:'topaz_vector__rotate_x');
-    <@>topaz_vector__rotate_y = getExternalFunction(name:'topaz_vector__rotate_y');
-    <@>topaz_vector__rotate_z = getExternalFunction(name:'topaz_vector__rotate_z');
-    <@>topaz_vector__get_length = getExternalFunction(name:'topaz_vector__get_length');
-
-    <@>statepush = ::(v) {
-        if (v.native == empty) ::<={
-            if (introspect.isNaN(value:v.x)) v.x = 0;
-            if (introspect.isNaN(value:v.y)) v.y = 0;
-            if (introspect.isNaN(value:v.z)) v.z = 0;
-            v.native = topaz_vector__create(a:v.x, b:v.y, c:v.z);
-        } else ::<={
-            topaz_vector__set_xyz(a:v.native, b:v.x, c:v.y, d:v.z);
-        };
-    };
-
-    <@>statepull = ::(v) {
-        v.x = topaz_vector__get_x(a:v.native);
-        v.y = topaz_vector__get_y(a:v.native);
-        v.z = topaz_vector__get_z(a:v.native);
-    };
-
-    return {
-        statepush : statepush,
-        statepull : statepull,
-        fromnative ::(native) {
-            <@>out = {native:native};
-            statepull(v:out);
-            return out;
-        },
-        getDistance ::(from, to){ 
-            statepush(v:from); statepush(v:to);
-            return topaz_vector__get_distance(a:from.native, b:to.native);
-        },
-        
-        normalize ::(value){ 
-            statepush(v:value);
-            topaz_vector__normalize(a:value.native);   
-            statepull(v:value);
-        },
-        
-        cross ::(a, b){ 
-            statepush(v:a);
-            statepush(v:b);
-            @out = {native:topaz_vector__cross(a:a.native, b:b.native)};
-            statepull(v:out);
-            return out;
-        },
-
-        floor ::(value){ 
-            statepush(v:value);
-            topaz_vector__floor(a:value.native);
-            statepull(v:value);
-        },
-        
-        rotationXDiff ::(from, to){ 
-            statepush(v:from);
-            statepush(v:to);
-            return topaz_vector__rotation_x_diff(a:from.native, b:to.native);
-        },
-        
-        rotationXDiffRelative ::(from, to){ 
-            statepush(v:from);
-            statepush(v:to);
-            return topaz_vector__rotation_x_diff_relative(a:from.native, b:to.native);
-        },
-        
-        rotationX ::(of) { 
-            statepush(v:of);
-            return topaz_vector__rotation_x(a:of.native);
-        },
-        
-        rotationYDiff ::(from, to) { 
-            statepush(v:from);
-            statepush(v:to);
-            return topaz_vector__rotation_y_diff(a:from.native, b:to.native);
-        },
-        
-        rotationYDiffRelative ::(from, to){ 
-            statepush(v:from);
-            statepush(v:to);
-            return topaz_vector__rotation_y_diff_relative(a:from.native, b:to.native);
-        },
-        
-        rotationY : ::(of){ 
-            statepush(v:of);
-            return topaz_vector__rotation_y(a:of.native);
-        },
-        
-        rotationZDiff : ::(from, to){
-            statepush(v:from);
-            statepush(v:to); 
-            return topaz_vector__rotation_z_diff(a:from.native, b:bof.native);
-        },
-        
-        rotationZDiffRelative : ::(from, to){
-            statepush(v:from);
-            statepush(v:to);
-            return topaz_vector__rotation_z_diff_relative(a:from.native, b:to.native);
-        },
-        
-        rotationZ : ::(of){ 
-            statepush(v:of);
-            return topaz_vector__rotation_z(a:of.native);
-        },
-        
-        rotateX : ::(vector, val){ 
-            statepush(v:vector);
-            topaz_vector__rotate_x(a:vector.native, b:val);
-            statepull(v:vector);
-        },
-        
-        rotateY : ::(vector, val){ 
-            statepush(v:vector);
-            topaz_vector__rotate_y(a:vector.native, b:val);
-            statepull(v:vector);
-        },
-        
-        rotateZ : ::(vector, val){ 
-            statepush(v:vector);
-            topaz_vector__rotate_y(a:vector.native, b:val);
-            statepull(v:vector);
-        },
-
-        
-        add : ::(a, b){ 
-            return {x:a.x + b.x, y:a.y + b.y, z:a.z + b.z};
-        },
-        
-        subtract : ::(a, b){ 
-            return {x:a.x - b.x, y:a.y - b.y, z:a.z - b.z};
-        },
-
-        multiply : ::(a, b){ 
-            return {x:a.x * b.x, y:a.y * b.y, z:a.z * b.z};
-        },
-        
-        divide : ::(a, b){ 
-            return {x:a.x / b.x, y:a.y / b.y, z:a.z / b.z};
-        },
-        
-        length : ::(vector){
-            statepush(v:vector);
-            return topaz_vector__get_length(a:vector.native)
-        }
-    }
-})();
-
-
-// similar to vector, color is a "light object" where 
-// the state is held in-script and no real methods are 
-// bound to it. When it interacts with 
-// the native context, a wrapper is added and the data syncd
-<@>Color = (::(){
-    <@>topaz_color__create = getExternalFunction(name:'topaz_color__create');
-    <@>topaz_color__set_rgba = getExternalFunction(name:'topaz_color__set_rgba');
-    <@>topaz_color__get_r = getExternalFunction(name:'topaz_color__get_r');
-    <@>topaz_color__get_g = getExternalFunction(name:'topaz_color__get_g');
-    <@>topaz_color__get_b = getExternalFunction(name:'topaz_color__get_b');
-    <@>topaz_color__get_a = getExternalFunction(name:'topaz_color__get_a');
-    <@>topaz_color__to_hex_string = getExternalFunction(name:'topaz_color__to_hex_string');
-    <@>topaz_color__set_from_string = getExternalFunction(name:'topaz_color__set_from_string');
-
-    <@>refColor = topaz_color__create(0, 0, 0, 0);
-
-    <@>statepush = ::(v) {
-        if (v.native == empty) ::<={
-            if (introspect.isNaN(value:v.r)) v.r = 0;
-            if (introspect.isNaN(value:v.g)) v.g = 0;
-            if (introspect.isNaN(value:v.b)) v.b = 0;
-            if (introspect.isNaN(value:v.a)) v.a = 0;
-            v.native = topaz_color__create(a:v.r, b:v.g, c:v.b, d:v.a);
-        } else ::<={
-            topaz_color__set_rgba(a:v.native, b:v.r, c:v.g, d:v.b, e:v.a);
-        };
-    }
-
-    <@>statepull = ::(v) {
-        v.r = topaz_color__get_r(a:v.native);
-        v.g = topaz_color__get_g(a:v.native);
-        v.b = topaz_color__get_b(a:v.native);
-        v.a = topaz_color__get_a(a:v.native);
-    }
-
-    return {
-        fromnative : ::(native) {
-            <@>out = {native:native};
-            statepull(v:out);
-            return out;
-        },
-        statepush : statepush,
-        statepull : statepull,
-        asString : ::(color) {
-            statepush(v:color);
-            return topaz_color__to_hex_string(a:color.native);
-        },
-
-        from : ::(string) {
-            topaz_color__set_from_string(a:refColor, b:string);
-            return {
-                r: topaz_color__get_r(a:refColor),
-                g: topaz_color__get_g(a:refColor),
-                b: topaz_color__get_b(a:refColor),
-                a: topaz_color__get_a(a:refColor)
-            }
-        }
-    }
-})();
-
-
-@Topaz = class({
+@class = import(module:'Matte.Core.Class');
+@Topaz = class(info:{
     define : ::(this){ 
         @__Topaz__ = this;
 
@@ -610,35 +27,32 @@
                     // a preexisting native reference.
                     bindNative ::(native, nativeCreate, args) { 
                         
-                        if (data.instance == empty) ::<={ 
-                            impl = empty;                     
-                        } else ::<={
-                            impl = data.instance.native;
-                        };
+                        impl = native;
                         
                         
-                        if (impl == empty && data.nativeCreate != empty) ::<={ 
-                            if (args == empty) {
-                                impl = data.nativeCreate();
+                        if (impl == empty && nativeCreate != empty) ::<={ 
+                            if (args == empty) ::<={
+                                impl = nativeCreate();
                             } else ::<={
-                                switch(args.length) {
-                                  case 1:
-                                    impl = data.nativeCreate(a:args[0]);
-                                    break;
-                                  case 2:
-                                    impl = data.nativeCreate(a:args[0], b:args[1]);
-                                    break;
-                                  case 3:
-                                    impl = data.nativeCreate(a:args[0], b:args[1], c:args[2]);
-                                    break;
-                                  defaul:
-                                    error(detail:'Too many arguments to dispatch native create call');
-                                }
-                            }
+                                match(args.length) {
+                                  (1): ::<={
+                                    impl = nativeCreate(a:args[0]);
+                                  },
+                                  
+                                  (2): ::<={
+                                    impl = nativeCreate(a:args[0], b:args[1]);
+                                  },
+                                  
+                                  (3): ::<={
+                                    impl = nativeCreate(a:args[0], b:args[1], c:args[2]);
+                                  },
+                                  default:
+                                    error(detail:'Too many arguments to dispatch native create call')
+                                };
+                            };
                         };
-                        if (impl == empty) ::<={
+                        when (impl == empty) ::<={
                             error(detail:'Topaz.Native instance cannot have a empty native reference.');
-                            return;
                         };
                         impl.__ctx = this;
                         return impl;
@@ -675,7 +89,7 @@
                             instance : type
                         );
                         return this;
-                    });
+                    };
 
                     this.interface = {
                         type : {
@@ -687,7 +101,7 @@
                             get : ::()   {return topaz_asset__get_name(a:impl);},
                             set : ::(value)  {      topaz_asset__set_name(a:impl, b:value);} 
                         }
-                    });
+                    };
                 }
             });
         };
@@ -705,11 +119,8 @@
                 },
                 
                 getPathFromString : ::(pth, str){ 
-                    if (str == empty) {
-                        return __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path_from_string(a:pth));            
-                    } else {
-                        return __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path_from_string(a:pth.native, b:str));                        
-                    }
+                    when (str == empty) __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path_from_string(a:pth));            
+                    return              __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path_from_string(a:pth.native, b:str));                        
                 },
                 
                 Path : class(info:{
@@ -739,8 +150,8 @@
                                 get ::{ 
                                     @out = [];
                                     @len = topaz_filesystem_path__get_child_count(a:impl);
-                                    for(in:[0, len], ::(i) { 
-                                        @p = __Topaz__.Filesystem.Path.new(native:topaz_filesystem_path__get_nth_child(a:impl, i));
+                                    for(in:[0, len], do:::(i) { 
+                                        @p = __Topaz__.Filesystem.Path.new(native:topaz_filesystem_path__get_nth_child(a:impl, b:i));
                                         if (p != empty) ::<= {
                                             out[i] = p;
                                         };
@@ -755,6 +166,7 @@
         };
 
         @__RNG__ = ::<={
+            <@>topaz_rng__create = getExternalFunction(name:'topaz_rng__create');
             <@>topaz_rng__set_seed = getExternalFunction(name:'topaz_rng__set_seed');
             <@>topaz_rng__next_int = getExternalFunction(name:'topaz_rng__next_int');
             <@>topaz_rng__next_value = getExternalFunction(name:'topaz_rng__next_value');
@@ -861,8 +273,8 @@
                         },
         
                         resize : ::(width, height){ 
-                            topaz_display__set_parameter(a:impl, b:2, w);
-                            topaz_display__set_parameter(a:impl, b:3, h);
+                            topaz_display__set_parameter(a:impl, b:2, c:width);
+                            topaz_display__set_parameter(a:impl, b:3, c:width);
                         },
         
                         addParameterCallback : ::(func){ 
@@ -899,7 +311,7 @@
                         },
         
                         captureMainFramebuffer : ::(capture){ 
-                            topaz_display__capture_main_framebuffer(a:impl, b:a.native);
+                            topaz_display__capture_main_framebuffer(a:impl, b:capture.native);
                         },
         
                         width : {
@@ -989,7 +401,7 @@
             });
         };
 
-        @__Mesh__ = ::=<{
+        @__Mesh__ = ::<={
             <@>topaz_mesh__get_vertex_count = getExternalFunction(name:'topaz_mesh__get_vertex_count');
             <@>topaz_mesh__set_vertex_count = getExternalFunction(name:'topaz_mesh__set_vertex_count');
             <@>topaz_mesh__get_vertex = getExternalFunction(name:'topaz_mesh__get_vertex');
@@ -998,7 +410,8 @@
             <@>topaz_mesh__set_object = getExternalFunction(name:'topaz_mesh__set_object');
             <@>topaz_mesh__remove_object = getExternalFunction(name:'topaz_mesh__remove_object');
             <@>topaz_mesh__set_object = getExternalFunction(name:'topaz_mesh__set_object');
-
+            <@>topaz_mesh__define_vertices = getExternalFunction(name:'topaz_mesh__define_vertices');
+            <@>topaz_mesh__get_object_count = getExternalFunction(name:'topaz_mesh__get_object_count');
 
             return class(info:{
                 inherits : [__Asset__],
@@ -1018,9 +431,9 @@
                             
                             get : ::(){ 
                                 @out = {};
-                                @len = this_.vertexCount-1;
+                                @len = this.vertexCount-1;
                                 @iter = 0;
-                                for(in:[0, len], ::(i){
+                                for(in:[0, len], do:::(i){
                                     out[iter] = topaz_mesh__get_vertex(a:impl, b:0, c:i, d:0); iter+=1;
                                     out[iter] = topaz_mesh__get_vertex(a:impl, b:0, c:i, d:1); iter+=1;
                                     out[iter] = topaz_mesh__get_vertex(a:impl, b:0, c:i, d:2); iter+=1;
@@ -1069,7 +482,7 @@
         
                         addObject : ::(object){ 
                             topaz_mesh__add_object(a:impl);
-                            if (obj != empty) ::<={
+                            if (object != empty) ::<={
                                 topaz_mesh__set_object(a:this.objectCount-1, b:object);
                             };
                         },
@@ -1182,7 +595,7 @@
                             topaz_input__remove_unicode_listener(a:id);
                         }
                 
-                    })
+                    };
                 }
             }).new();
         };
@@ -1252,7 +665,7 @@
                             };
                         }
                     });
-                    this_.interface({
+                    this.interface = {
                         // get class ref
                         PlaybackSound : {
                             get : ::(){ 
@@ -1279,7 +692,7 @@
                         channelSetPanning : ::(channel, panning) { 
                             topaz_audio__channel_set_panning(a:channel, b:panning);
                         }
-                    })
+                    };
                 }
             }).new();
         };
@@ -1313,8 +726,8 @@
         
                     };
                 }
-            };
-        });
+            });
+        };
         
         @__Image__ = ::<={
             <@>topaz_image__get_width = getExternalFunction(name:'topaz_image__get_width');
@@ -1418,8 +831,8 @@
                             get : ::()  { 
                                 @out = [];
                                 @iter = 0;
-                                @len = this_.sampleCount;
-                                for([0, len], do:::(i) {
+                                @len = this.sampleCount;
+                                for(in:[0, len], do:::(i) {
                                     out[iter] = topaz_sound__get_nth_sample_left(a:impl,  b:i); iter+=1;
                                     out[iter] = topaz_sound__get_nth_sample_right(b:impl, b:i); iter+=1;
                                 });
@@ -1459,31 +872,31 @@
                     swtch[TOPAZ.ASSET.TYPE.MESH] = ::(i){return __Topaz__.Mesh.new(native:i);};
 
                     @_rawAssetToInstance = ::(impl) { 
-                        when(impl == empty) empty
-                        @fn = swtch[topaz_asset__get_type(impl)];
+                        when(impl == empty) empty;
+                        @fn = swtch[topaz_asset__get_type(a:impl)];
                         when(fn == empty) __Topaz__.Asset.new(native:impl);
-                        return fn(impl);
+                        return fn(i:impl);
                     };
                 
                 
-                    this_.interface = {
+                    this.interface = {
                         fetchAsset : ::(type, name){ 
-                            return _rawAssetToInstance(topaz_resources__fetch_asset(a:type, b:name));
+                            return _rawAssetToInstance(impl:topaz_resources__fetch_asset(a:type, b:name));
                         },
 
                         createAsset : ::(type) { 
-                            return _rawAssetToInstance(topaz_resources__create_asset(a:type));
+                            return _rawAssetToInstance(impl:topaz_resources__create_asset(a:type));
                         },
 
                         loadAsset : ::(extension, path, name) { 
-                            return _rawAssetToInstance(topaz_resources__load_asset(a:ext, b:path, c:name));
+                            return _rawAssetToInstance(impl:topaz_resources__load_asset(a:extension, b:path, c:name));
                         },
 
                         loadAssetData : ::(extension, data, name) { 
-                            return _rawAssetToInstance(topaz_resources__load_asset_data(a:extension, b:data, c:name));
+                            return _rawAssetToInstance(impl:topaz_resources__load_asset_data(a:extension, b:data, c:name));
                         },
                         loadAssetBase64 : ::(extension, base64, name) { 
-                            return _rawAssetToInstance(topaz_resources__load_asset_base64(a:ext, b:base64, c:name));
+                            return _rawAssetToInstance(impl:topaz_resources__load_asset_base64(a:extension, b:base64, c:name));
                         },
 
 
@@ -1582,8 +995,9 @@
             <@>topaz_entity__set_on_pre_step = getExternalFunction(name:'topaz_entity__set_on_pre_step');
             <@>topaz_entity__set_on_pre_draw = getExternalFunction(name:'topaz_entity__set_on_pre_draw');
             <@>topaz_entity__set_on_attach = getExternalFunction(name:'topaz_entity__set_on_attach');
+            <@>topaz_entity__set_on_detach = getExternalFunction(name:'topaz_entity__set_on_detach');
             <@>topaz_entity__set_on_remove = getExternalFunction(name:'topaz_entity__set_on_remove');
-
+            <@>topaz_entity__create = getExternalFunction(name:'topaz_entity__create');
 
 
             return class(info: {
@@ -1625,16 +1039,16 @@
                             get : ::(){ 
                                 @children = [];
                                 @len = topaz_entity__get_child_count(a:this.native);
-                                for(in:[0, i < len; ++i) { 
-                                    children[i] = topaz_entity__get_nth_child(a:this.native, b:i).__ctx);
-                                }
+                                for(in:[0, len], do:::(i) { 
+                                    children[i] = topaz_entity__get_nth_child(a:this.native, b:i).__ctx;
+                                });
                                 return children;
                             },
                             
                             set : ::(c){ 
                                 loop(func:::{
                                     when(topaz_entity__get_child_count(a:this.native) == 0) false;
-                                    topaz_entity__detach(topaz_entity__get_nth_child(a:this.native, b:0));
+                                    topaz_entity__detach(a:topaz_entity__get_nth_child(a:this.native, b:0));
                                     return true;
                                 });
                                     
@@ -1669,20 +1083,20 @@
                                 return this.class.new(native:f);
                             },
                             
-                            set : ::(v){ 
-                                topaz_entity__attach(v.native, this.native);
+                            set : ::(value){ 
+                                topaz_entity__attach(a:value.native, b:this.native);
                             }
                         },
                         
                         query : ::(name) { 
-                            @f = topaz_entity__query(this.native, name);
+                            @f = topaz_entity__query(a:this.native, b:name);
                             when (f.__ctx != empty) f.__ctx;
                             return this.class.new(native:f);
                         },
                         
                         
                         search : ::(name){ 
-                            @f = topaz_entity__search(this.native, name);
+                            @f = topaz_entity__search(a:this.native, b:name);
                             when (f.__ctx != empty) f.__ctx;
                             return this.class.new(native:f);
                         },
@@ -1714,7 +1128,7 @@
                         
                         scale : {
                             get : ::()  {return Vector.fromnative(native:topaz_entity__get_scale(a:this.native));}, 
-                            set : ::(value) {Vector.statepush(v);topaz_entity__set_scale(a:this.native, b:value.native);}
+                            set : ::(value) {Vector.statepush(v:value);topaz_entity__set_scale(a:this.native, b:value.native);}
                         },
                         
                         globalPosition : {
@@ -1726,7 +1140,7 @@
                         },
                         
                         isDrawing : {
-                            get : ::() {return topaz_entity__is_drawing(a:this.native) } 
+                            get : ::() {return topaz_entity__is_drawing(a:this.native); } 
                         },
                         
                         stepping : {
@@ -1769,8 +1183,8 @@
                                     return true;
                                 });
         
-                                for(in:[0, introspect.length(of:c)], do:::(i) {
-                                    topaz_entity__add_component(a:this.native, b:c[i].native);
+                                for(in:[0, introspect.length(of:value)], do:::(i) {
+                                    topaz_entity__add_component(a:this.native, b:value[i].native);
                                 });
                             }
                         },
@@ -1819,7 +1233,7 @@
         
         
                     
-                    );        
+                    };        
                 }    
             });
         };
@@ -1841,7 +1255,7 @@
             <@>topaz_component__emit_event = getExternalFunction(name:'topaz_component__emit_event');
             <@>topaz_component__can_handle_event = getExternalFunction(name:'topaz_component__can_handle_event');
             <@>topaz_component__install_event = getExternalFunction(name:'topaz_component__install_event');
-            <@>topaz_component__uninstall_event = getExternalFunction(name:'topaz_component__uninstall_event')l
+            <@>topaz_component__uninstall_event = getExternalFunction(name:'topaz_component__uninstall_event');
             <@>topaz_component__install_hook = getExternalFunction(name:'topaz_component__install_hook');
             <@>topaz_component__uninstall_hook = getExternalFunction(name:'topaz_component__uninstall_hook');
             <@>topaz_component__install_handler = getExternalFunction(name:'topaz_component__install_handler');
@@ -1851,6 +1265,7 @@
             <@>topaz_component__set_on_attach = getExternalFunction(name:'topaz_component__set_on_attach');
             <@>topaz_component__set_on_detach = getExternalFunction(name:'topaz_component__set_on_detach');
             <@>topaz_component__set_on_destroy = getExternalFunction(name:'topaz_component__set_on_destroy');
+            <@>topaz_component__create = getExternalFunction(name:'topaz_component__create');
             return class(info:{
                 inherits : [__Native__],
                 define : ::(this){ 
@@ -1861,7 +1276,7 @@
                             instance : native,
                             nativeCreate : topaz_component__create,
                             args: [tag]
-                        });
+                        );
                         return this;
                     };
         
@@ -1902,21 +1317,21 @@
 
                             set : ::(v) {
                                 <@>p = topaz_component__get_host(a:this.native);
-                                if (p != empty) {
+                                if (p != empty) ::<={
                                     topaz_entity__remove_component(a:p, b:this.native);
-                                }
-                                if (v != empty) {
+                                };
+                                if (v != empty) ::<={
                                     topaz_entity__add_component(a:v.native, b:this.native);
-                                }
+                                };
                             }
                         },
                         
                         emit : ::(event, source){ 
-                            if (source == empty) {
+                            if (source == empty) ::<={
                                 return topaz_component__emit_event_anonymous(a:this.native, b:event);
-                            } else {
+                            } else ::<={
                                 return topaz_component__emit_event(a:this.native, b:event, c:source.native);
-                            }
+                            };
                         },
                         
                         canHandleEvent : ::(name){ 
@@ -1924,12 +1339,7 @@
                         },
                         
                         installEvent : ::(event, callback){ 
-                            @cb;
-                            if (callback != empty) {
-                                cb = callback;
-                            } else { 
-                                cb = ::(source){}; 
-                            }
+                            @cb = if (callback != empty) callback else ::(source){}; 
                                 
                             topaz_component__install_event(a:this.native, b:event, c:cb);
                         },
@@ -1983,6 +1393,7 @@
         
         
         @__Text2D__ = ::<={
+            <@>topaz_text2d__create = getExternalFunction(name:'topaz_text2d__create');
             <@>topaz_text2d__get_text = getExternalFunction(name:'topaz_text2d__get_text');
             <@>topaz_text2d__set_text = getExternalFunction(name:'topaz_text2d__set_text');
             <@>topaz_text2d__set_font = getExternalFunction(name:'topaz_text2d__set_font');
@@ -2023,7 +1434,7 @@
                     this.interface = {
                         text : {
                             get : ::() {return topaz_text2d__get_text(a:impl);},
-                            set : ::(value){ topaz_text2d__set_text(a:impl, v);} 
+                            set : ::(value){ topaz_text2d__set_text(a:impl, b:value);} 
                         },
                         
                         font : {
@@ -2074,12 +1485,12 @@
                         },
                         
                         rotation : {
-                            get : ::() {return Vector.fromnative(topaz_text2d__get_rotation(a:impl));},
+                            get : ::() {return Vector.fromnative(native:topaz_text2d__get_rotation(a:impl));},
                             set : ::(value){Vector.statepush(v:value);topaz_text2d__set_rotation(a:impl, b:value.native);} 
                         },
                         
                         scale : {
-                            get : ::() {return Vector.fromnative(topaz_text2d__get_scale(a:impl));}, 
+                            get : ::() {return Vector.fromnative(native:topaz_text2d__get_scale(a:impl));}, 
                             set : ::(value){Vector.statepush(v:value);topaz_text2d__set_scale(a:impl, b:value.native);} 
                         },
                         
@@ -2090,13 +1501,14 @@
                         getAttribute : ::(attribute){ 
                             return topaz_text2d__get_attribute(a:impl, b:attribute);
                         }
-                    });
+                    };
 
                 }
             });
         };
 
         @__Scheduler__ = ::<={
+            <@>topaz_scheduler__create = getExternalFunction(name:'topaz_scheduler__create');
             <@>topaz_scheduler__start_task = getExternalFunction(name:'topaz_scheduler__start_task');
             <@>topaz_scheduler__start_task_simple = getExternalFunction(name:'topaz_scheduler__start_task_simple');
             <@>topaz_scheduler__end_task = getExternalFunction(name:'topaz_scheduler__end_task');
@@ -2170,56 +1582,68 @@
                                 return out;
                             }
                         }
-                    });
+                    };
                 } 
             });
         };
-        @__StateControl__ = tclass({
-            inherits :[__Component__],
-            define : ::(this_, args, this_class){ 
-                // whoops, the component constructor already made a generic component native.
-                // destroy it and make a real one
-                impl.__ctx.destroy();
-                
-                @impl = this_.bindNative({
-                    instance : args,
-                    nativeCreate : topaz_state_control__create
-                });
-                
-                this_.interface({
-                    add : ::(name, state){ 
-                        topaz_state_control__add(impl, state.state, state.onStep, state.onDraw, state.onInit);
-                    },
+        @__StateControl__ = ::<={
+            <@>topaz_state_control__create = getExternalFunction(name:'topaz_state_control__create');
+            <@>topaz_state_control__add = getExternalFunction(name:'topaz_state_control__add');
+            <@>topaz_state_control__remove = getExternalFunction(name:'topaz_state_control__remove');
+            <@>topaz_state_control__execute = getExternalFunction(name:'topaz_state_control__execute');
+            <@>topaz_state_control__halt = getExternalFunction(name:'topaz_state_control__halt');
+            <@>topaz_state_control__is_halted = getExternalFunction(name:'topaz_state_control__is_halted');
+            <@>topaz_state_control__get_current = getExternalFunction(name:'topaz_state_control__get_current');
+            return class(info:{
+                inherits :[__Component__],
+                define : ::(this){ 
+                    @impl;
+                    this.constructor = ::(native) {
+                        // whoops, the component constructor already made a generic component native.
+                        // destroy it and make a real one
+                        this.native.__ctx.destroy();
+
+                        impl = this.bindNative(
+                            instance : native,
+                            nativeCreate : topaz_state_control__create
+                        );
+                        return this;
+                    };
                     
-                    remove : ::(name){ 
-                        topaz_state_control__remove(impl, name);
-                    },
-                    
-                    execute : ::(name){ 
-                        topaz_state_control__execute(impl, name);
-                    },
-                    
-                    halt : ::(){ 
-                        topaz_state_control__halt(impl)
-                    },
-                    
-                    isHalted : {
-                        get : ::(){ 
-                            return topaz_state_control__is_halted(impl);
+                    this.interface = {
+                        add : ::(name, onStep, onDraw, onInit){ 
+                            topaz_state_control__add(a:impl, b:name, c:onStep, d:onDraw, e:onInit);
                         },
-                    },
-                    
-                    state : {
-                        get : ::(){ 
-                            return topaz_state_control__get_current(impl);
+                        
+                        remove : ::(name){ 
+                            topaz_state_control__remove(a:impl, b:name);
                         },
-                    }                    
-                    
-                           
-                });
-            }
-        });
-        
+                        
+                        execute : ::(name){ 
+                            topaz_state_control__execute(a:impl, b:name);
+                        },
+                        
+                        halt : ::(){ 
+                            topaz_state_control__halt(a:impl);
+                        },
+                        
+                        isHalted : {
+                            get : ::(){ 
+                                return topaz_state_control__is_halted(a:impl);
+                            }
+                        },
+                        
+                        state : {
+                            get : ::(){ 
+                                return topaz_state_control__get_current(a:impl);
+                            }
+                        }                    
+                        
+                               
+                    };
+                }
+            });
+        };
         @__Object2D__ = ::<={
             <@>topaz_object2d__create = getExternalFunction(name:'topaz_object2d__create');
             <@>topaz_object2d__add_velocity = getExternalFunction(name:'topaz_object2d__add_velocity');
@@ -2248,115 +1672,116 @@
             <@>topaz_object2d__get_last_collided = getExternalFunction(name:'topaz_object2d__get_last_collided');
             <@>topaz_object2d__get_collider_point = getExternalFunction(name:'topaz_object2d__get_collider_point');
             return class(info:{
-            inherits :[__Component__],
-            define : ::(this){ 
-                @impl;
-                this.constructor = ::(native) {
-                    // whoops, the component constructor already made a generic component native.
-                    // destroy it and make a real one
-                    this.native.__ctx.destroy();
+                inherits :[__Component__],
+                define : ::(this){ 
+                    @impl;
+                    this.constructor = ::(native) {
+                        // whoops, the component constructor already made a generic component native.
+                        // destroy it and make a real one
+                        this.native.__ctx.destroy();
 
-                    impl = this.bindNative(
-                        instance : native,
-                        nativeCreate : topaz_object2d__create
-                    );
-                    return this;
-                };
-                
-                
-                @_collider;
-                
-                this.interface = {
-                    addVelocity : ::(amount, direction) { 
-                        topaz_object2d__add_velocity(a:impl, b:amount, c:direction);
-                    },
+                        impl = this.bindNative(
+                            instance : native,
+                            nativeCreate : topaz_object2d__create
+                        );
+                        return this;
+                    };
+                    
+                    
+                    @_collider;
+                    
+                    this.interface = {
+                        addVelocity : ::(amount, direction) { 
+                            topaz_object2d__add_velocity(a:impl, b:amount, c:direction);
+                        },
 
-                    addVelocityTowards : ::(amount, target, offset) { 
-                        topaz_object2d__add_velocity_towards(a:impl, b:amount, c:target, d:offset);
-                    },
+                        addVelocityTowards : ::(amount, target, offset) { 
+                            topaz_object2d__add_velocity_towards(a:impl, b:amount, c:target, d:offset);
+                        },
 
-                    setVelocity : ::(amount, direction) { 
-                        topaz_object2d__set_velocity(a:impl, b:amount, c:direction);
-                    },
+                        setVelocity : ::(amount, direction) { 
+                            topaz_object2d__set_velocity(a:impl, b:amount, c:direction);
+                        },
 
-                    setVelocityTowards : ::(amount, target, offset) { 
-                        topaz_object2d__set_velocity_towards(a:impl, b:amount, c:target, d:offset);
-                    },
-
-
+                        setVelocityTowards : ::(amount, target, offset) { 
+                            topaz_object2d__set_velocity_towards(a:impl, b:amount, c:target, d:offset);
+                        },
 
 
-                    frictionX : {
-                        get : ::()  {return topaz_object2d__get_friction_x(a:impl);}, 
-                        set : ::(value) {topaz_object2d__set_friction_x(a:impl, b:value);} 
-                    },
 
-                    frictionY : {
-                        get : ::()  {return topaz_object2d__get_friction_y(a:impl);},
-                        set : ::(value) {topaz_object2d__set_friction_y(a:impl, b:value);} 
-                    },
 
-                    direction : {
-                        get : ::()  {return topaz_object2d__get_direction(a:impl);},
-                        set : ::(value){ 
-                            topaz_object2d__set_velocity(
-                                a:impl,
-                                b:topaz_object2d__get_speed(a:impl),
-                                c:value
-                            );
+                        frictionX : {
+                            get : ::()  {return topaz_object2d__get_friction_x(a:impl);}, 
+                            set : ::(value) {topaz_object2d__set_friction_x(a:impl, b:value);} 
+                        },
+
+                        frictionY : {
+                            get : ::()  {return topaz_object2d__get_friction_y(a:impl);},
+                            set : ::(value) {topaz_object2d__set_friction_y(a:impl, b:value);} 
+                        },
+
+                        direction : {
+                            get : ::()  {return topaz_object2d__get_direction(a:impl);},
+                            set : ::(value){ 
+                                topaz_object2d__set_velocity(
+                                    a:impl,
+                                    b:topaz_object2d__get_speed(a:impl),
+                                    c:value
+                                );
+                            }
+                        },
+
+                        halt : ::() {topaz_object2d__halt(a:impl);},
+                        resetMotion : ::() {topaz_object2d__reset_motion(a:impl);},
+
+                        velocityX : {
+                            get : ::()  {return topaz_object2d__get_velocity_x(a:impl);},
+                            set : ::(value) {topaz_object2d__set_velocity_x(a:impl, b:value);} 
+                        },
+
+                        velocityY : {
+                            get : ::()  {return topaz_object2d__get_velocity_y(a:impl);},
+                            set : ::(value) {topaz_object2d__set_velocity_y(a:impl, b:value);} 
+                        },
+
+                        speed : {
+                            get : ::()  {return topaz_object2d__get_speed(a:impl);},
+                            set : ::(value) {topaz_object2d__set_speed(a:impl, b:value);} 
+                        },
+
+                        nextPosition : {
+                            get : ::()  {return topaz_object2d__get_next_position(a:impl);} 
+                        },
+
+                        group : {
+                            get : ::()  {return topaz_object2d__get_group(a:impl);}, 
+                            set : ::(value) {topaz_object2d__set_group(a:impl, b:value);} 
+                        },
+
+                        collider : {
+                            get : ::()  {return _collider; },
+                            set : ::(value) {_collider=value; topaz_object2d__set_collider(a:impl, b:value);} 
+                        },
+
+                        setColliderRadial : ::(radius, numIterations) { 
+                            topaz_object2d__set_collider_radial(a:impl, b:radius, c:numIterations);
+                            _collider = [];
+                            @iter = 0;
+                            @len = topaz_object2d__get_collider_len(a:impl);
+                            for(in:[0, len], do:::(i) {
+                                @pt = topaz_object2d__get_collider_point(a:impl, b:i);
+                                _collider[iter] = pt.x; iter += 1;
+                                _collider[iter] = pt.y; iter += 1;
+                            });
+                        },
+
+                        lastCollided : {
+                            get : ::()  {return __Topaz__.Entity.new(native:topaz_object2d__get_last_collided(a:impl));} 
                         }
-                    },
-
-                    halt : ::() {topaz_object2d__halt(a:impl);},
-                    resetMotion : ::() {topaz_object2d__reset_motion(a:impl);},
-
-                    velocityX : {
-                        get : ::()  {return topaz_object2d__get_velocity_x(a:impl);},
-                        set : ::(value) {topaz_object2d__set_velocity_x(a:impl, b:value);} 
-                    },
-
-                    velocityY : {
-                        get : ::()  {return topaz_object2d__get_velocity_y(a:impl);},
-                        set : ::(value) {topaz_object2d__set_velocity_y(a:impl, b:value);} 
-                    },
-
-                    speed : {
-                        get : ::()  {return topaz_object2d__get_speed(a:impl);},
-                        set : ::(value) {topaz_object2d__set_speed(a:impl, b:value);} 
-                    },
-
-                    nextPosition : {
-                        get : ::()  {return topaz_object2d__get_next_position(a:impl);} 
-                    },
-
-                    group : {
-                        get : ::()  {return topaz_object2d__get_group(a:impl);}, 
-                        set : ::(value) {topaz_object2d__set_group(a:impl, b:value);} 
-                    },
-
-                    collider : {
-                        get : ::()  {return _collider; },
-                        set : ::(value) {_collider=value; topaz_object2d__set_collider(a:impl, b:value);} 
-                    },
-
-                    setColliderRadial : ::(radius, numIterations) { 
-                        topaz_object2d__set_collider_radial(a:impl, b:radius, c:numIterations);
-                        _collider = [];
-                        @iter = 0;
-                        @len = topaz_object2d__get_collider_len(a:impl);
-                        for(in:[0, len], do:::(i) {
-                            @pt = topaz_object2d__get_collider_point(a:impl, b:i);
-                            _collider[iter] = pt.x; iter += 1;
-                            _collider[iter] = pt.y; iter += 1;
-                        });
-                    },
-
-                    lastCollided : {
-                        get : ::()  {return __Topaz__.Entity.new(native:topaz_object2d__get_last_collided(a:impl));} 
-                    }
-                };                
-            }
-        });
+                    };                
+                }
+            });
+        };
         <@>topaz_object2d__set_group_interaction = getExternalFunction(name:'topaz_object2d__set_group_interaction');
         __Object2D__.setGroupInteraction = ::(groupA, groupB, interact){ 
             topaz_object2d__set_group_interaction(a:groupA, b:groupB, c:interact);
@@ -2407,34 +1832,34 @@
                     
                     this.interface = {
                         color : {
-                            get : ::() {return Color.fromnative(topaz_shape2d__get_color(a:impl));}, 
-                            set : ::(value){Color.statepush(v);topaz_shape2d__set_color(a:impl, v.native);} 
+                            get : ::() {return Color.fromnative(native:topaz_shape2d__get_color(a:impl));}, 
+                            set : ::(value){Color.statepush(v:value);topaz_shape2d__set_color(a:impl, b:value.native);} 
                         },
 
 
                         animSpeed : {
                             get : ::() {return topaz_shape2d__get_anim_speed(a:impl);},
-                            set : ::(value){topaz_shape2d__set_anim_speed(a:impl, v);} 
+                            set : ::(value){topaz_shape2d__set_anim_speed(a:impl, b:value);} 
                         },
 
                         center : {
-                            get : ::() {return Vector.fromnative(topaz_shape2d__get_center(a:impl));},
-                            set : ::(value){Vector.statepush(v);topaz_shape2d__set_center(a:impl, b:value.native);} 
+                            get : ::() {return Vector.fromnative(native:topaz_shape2d__get_center(a:impl));},
+                            set : ::(value){Vector.statepush(v:value);topaz_shape2d__set_center(a:impl, b:value.native);} 
                         },
 
                         position : {
-                            get : ::() {return Vector.fromnative(topaz_shape2d__get_position(a:impl));},
-                            set : ::(value){Vector.statepush(v);topaz_shape2d__set_position(a:impl, b:value.native);} 
+                            get : ::() {return Vector.fromnative(native:topaz_shape2d__get_position(a:impl));},
+                            set : ::(value){Vector.statepush(v:value);topaz_shape2d__set_position(a:impl, b:value.native);} 
                         },
 
                         rotation : {
-                            get : ::() {return Vector.fromnative(topaz_shape2d__get_rotation(a:impl));},
-                            set : ::(value){Vector.statepush(v);topaz_shape2d__set_rotation(a:impl, b:value.native);} 
+                            get : ::() {return Vector.fromnative(native:topaz_shape2d__get_rotation(a:impl));},
+                            set : ::(value){Vector.statepush(v:value);topaz_shape2d__set_rotation(a:impl, b:value.native);} 
                         },
 
                         scale : {
-                            get : ::() {return Vector.fromnative(topaz_shape2d__get_scale(a:impl));}, 
-                            set : ::(value){Vector.statepush(v);topaz_shape2d__set_scale(a:impl, b:value.native);} 
+                            get : ::() {return Vector.fromnative(native:topaz_shape2d__get_scale(a:impl));}, 
+                            set : ::(value){Vector.statepush(v:value);topaz_shape2d__set_scale(a:impl, b:value.native);} 
                         },
 
                         lines : {
@@ -2613,7 +2038,7 @@
                     
                     this.interface = {
                         addKeyframe : ::(value, function, offset){ 
-                            topaz_automation__add_keyframe(a:impl, b:value, c:fn, d:offset);
+                            topaz_automation__add_keyframe(a:impl, b:value, c:function, d:offset);
                         },
 
                         addVectorKeyframe : ::(value, function, offset){ 
@@ -2657,20 +2082,20 @@
                         },
 
                         vector : {
-                            get : ::() {return Vector.fromnative(name:topaz_automation__current_vector(a:impl))},
+                            get : ::() {return Vector.fromnative(native:topaz_automation__current_vector(a:impl));}
                         },
 
                         value : {
-                            get : ::() {return topaz_automation__current(a:impl);},
+                            get : ::() {return topaz_automation__current(a:impl);}
                         },
 
                         string : {
                             get : ::() {return topaz_automation__to_string(a:impl);},
-                            set : ::(value) {return topaz_automation__set_from_string(a:impl, v);},
+                            set : ::(value) {return topaz_automation__set_from_string(a:impl, b:value);}
                         },
 
                         length : {
-                            get : ::() {return topaz_automation__get_length(a:impl);},
+                            get : ::() {return topaz_automation__get_length(a:impl);}
                         },
 
                         durationFrames : {
@@ -2682,17 +2107,17 @@
                         },
 
                         duration : {
-                            get : ::() {return topaz_automation__get_duration(a:impl);},
+                            get : ::() {return topaz_automation__get_duration(a:impl);}
                         },
 
                         looped : {
                             get : ::() {return topaz_automation__get_looped(a:impl);},
-                            set : ::(value) {return topaz_automation__set_looped(a:impl, b:value);},
+                            set : ::(value) {return topaz_automation__set_looped(a:impl, b:value);}
                         },
 
                         speed : {
                             get : ::() {return topaz_automation__get_speed(a:impl);},
-                            set : ::(value) {return topaz_automation__set_speed(a:impl, b:value);},
+                            set : ::(value) {return topaz_automation__set_speed(a:impl, b:value);}
                         }
                     };
                 }
@@ -2733,11 +2158,11 @@
                         },
 
                         setFunction : ::(property, value) { 
-                            topaz_particle__set_function::(a:impl, b:property, c:value);
+                            topaz_particle__set_function(a:impl, b:property, c:value);
                         },
 
-                        string : {get : ::() {return topaz_particle__to_string(a:impl)}, set : ::(value){topaz_particle__set_from_string(a:impl, b:value);}}, 
-                        image :  {set : ::(value) {return topaz_particle__set_image(a:impl, b:value)}}
+                        string : {get : ::() {return topaz_particle__to_string(a:impl);}, set : ::(value){topaz_particle__set_from_string(a:impl, b:value);}}, 
+                        image :  {set : ::(value) {return topaz_particle__set_image(a:impl, b:value);}}
                     };
                 }        
             });
@@ -2769,7 +2194,7 @@
 
                         emit : ::(amount){ 
                             topaz_particle_emitter_2d__emit(a:impl, b:amount);
-                        },
+                        }
                     };
                 }
             });
@@ -2787,6 +2212,7 @@
         <@>topaz__get_root = getExternalFunction(name:'topaz__get_root');
         <@>topaz__is_paused = getExternalFunction(name:'topaz__is_paused');
         <@>topaz__get_time = getExternalFunction(name:'topaz__get_time');
+        <@>topaz__get_version_minor = getExternalFunction(name:'topaz__get_version_minor');
         <@>topaz__get_version_micro = getExternalFunction(name:'topaz__get_version_micro');
         <@>topaz__get_version_major = getExternalFunction(name:'topaz__get_version_major');
         this.interface = {
@@ -2808,10 +2234,13 @@
             fromBase64 : ::(string) { 
                 return __Topaz__.Data.new(native:topaz__from_base64(a:string));
             },
+            debug ::{
+                topaz__debug();
+            },
             
             root : {
                 set : ::(entity){ 
-                    return topaz__set_root(a:entity.native)
+                    return topaz__set_root(a:entity.native);
                 },
 
                 get : ::(){ 
@@ -2856,26 +2285,26 @@
             
             objectToString : ::(obj, levelSrc) {
                 @checked = [];
-                @levelG = levelSrc ? levelSrc : 10;
+                @levelG = if (levelSrc != 0) levelSrc else 10;
                 @helper = ::(obj, level) {
                     when (obj == empty) 'empty';
                     when (!(introspect.type(of:obj) == Object)) '\''+obj + '\'';
-                    when (checked[obj] != empty) return '[Already Printed]';
+                    when (checked[obj] != empty) '[Already Printed]';
                     checked[obj] = true;
                     @strOut = '{\n';
                     @keys = introspect.keys(of:obj);
                     @levelInv = levelG - level;
                     for(in:[0, introspect.length(of:keys)], do:::(i) {
-                        @subStr = if (levelInv != 0) helper(obj[keys[i]], level+1) else obj[keys[i]];
+                        @subStr = if (levelInv != 0) helper(obj:obj[keys[i]], level:level+1) else obj[keys[i]];
                         for(in:[0, level], do:::(n) {strOut += '  ';});
                         strOut += '  \'' + keys[i] + '\' : ' + subStr + ',\n'; 
                     });
                     for(in:[0, level], do:::(n){strOut += '  ';});
                     strOut += '}';
                     return strOut;
-                }
+                };
                 
-                return helper(obj, 0) + '\n';
+                return helper(obj:obj, level:0) + '\n';
             },
     
             Filesystem  : {get : ::(){return __Filesystem__; }},
@@ -2904,9 +2333,10 @@
             Automation  : {get : ::(){return __Automation__; }},
             Particle    : {get : ::(){return __Particle__; }},
             ParticleEmitter2D : {get : ::(){return __ParticleEmitter2D__; }}
-       });
+       };
     }
 }).new();
+return Topaz;
 
 /////////////////////////////////
 ///// EXTENSION: packages
@@ -3219,7 +2649,7 @@
         },
 
 
-        /*
+        
         Package Builder for formatVersion 1.
         This program looks for "setup_package.json", which consists of a file 
         familiar in format to a topaz package. However, instead of assetBase64,
@@ -3230,7 +2660,7 @@
         If debug is true for the package, the all assetFile's will be changed to 
         absolute assetPaths in the resultant package. This will make it quicker to debug
         source files, since they will always point to the filesystem asset.
-        */
+        
         makePackage : ::(path) {
             @allPackages = [];
             @output = (::() {
