@@ -53,7 +53,6 @@ static void script_state_control__on_init(topazComponent_t * component, void * d
 
 
 TSO_SCRIPT_API_FN(state_control_api__add) {
-    TSO_ASSERT_ARG_COUNT(5);
     TSO_ARG_0;
     TSO_ARG_1; // state name 
 
@@ -99,7 +98,6 @@ TSO_SCRIPT_API_FN(state_control_api__add) {
 
 
 TSO_SCRIPT_API_FN(state_control_api__remove) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1; // state name 
 
@@ -115,7 +113,6 @@ TSO_SCRIPT_API_FN(state_control_api__remove) {
 
 
 TSO_SCRIPT_API_FN(state_control_api__execute) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1; // state name 
 
@@ -130,7 +127,6 @@ TSO_SCRIPT_API_FN(state_control_api__execute) {
 }
 
 TSO_SCRIPT_API_FN(state_control_api__halt) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__STATECONTROL);
@@ -145,7 +141,6 @@ TSO_SCRIPT_API_FN(state_control_api__halt) {
 
 
 TSO_SCRIPT_API_FN(state_control_api__is_halted) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__STATECONTROL);
@@ -159,7 +154,6 @@ TSO_SCRIPT_API_FN(state_control_api__is_halted) {
 }
 
 TSO_SCRIPT_API_FN(state_control_api__get_current) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__STATECONTROL);
@@ -176,13 +170,13 @@ TSO_SCRIPT_API_FN(state_control_api__get_current) {
 
 
 static void add_refs__state_control_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_state_control__create", state_control_api__create);
-    TS_MAP_NATIVE_FN("topaz_state_control__add", state_control_api__add);
-    TS_MAP_NATIVE_FN("topaz_state_control__remove", state_control_api__remove);
-    TS_MAP_NATIVE_FN("topaz_state_control__execute", state_control_api__execute);
-    TS_MAP_NATIVE_FN("topaz_state_control__halt", state_control_api__halt);
-    TS_MAP_NATIVE_FN("topaz_state_control__is_halted", state_control_api__is_halted);
-    TS_MAP_NATIVE_FN("topaz_state_control__get_current", state_control_api__get_current);
+    TS_MAP_NATIVE_FN("topaz_state_control__create", state_control_api__create, 0);
+    TS_MAP_NATIVE_FN("topaz_state_control__add", state_control_api__add, 5);
+    TS_MAP_NATIVE_FN("topaz_state_control__remove", state_control_api__remove, 2);
+    TS_MAP_NATIVE_FN("topaz_state_control__execute", state_control_api__execute, 2);
+    TS_MAP_NATIVE_FN("topaz_state_control__halt", state_control_api__halt, 1);
+    TS_MAP_NATIVE_FN("topaz_state_control__is_halted", state_control_api__is_halted, 1);
+    TS_MAP_NATIVE_FN("topaz_state_control__get_current", state_control_api__get_current, 1);
 
 
 

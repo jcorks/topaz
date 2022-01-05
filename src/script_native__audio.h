@@ -3,7 +3,6 @@
 
 
 TSO_SCRIPT_API_FN(audio_api__play_sound) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
 
@@ -23,7 +22,6 @@ TSO_SCRIPT_API_FN(audio_api__play_sound) {
 
 
 TSO_SCRIPT_API_FN(audio_api__channel_halt) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     
     topazAudio_t * audio = topaz_context_get_audio(((topazScriptManager_t*)context)->ctx);
@@ -37,7 +35,6 @@ TSO_SCRIPT_API_FN(audio_api__channel_halt) {
 
 
 TSO_SCRIPT_API_FN(audio_api__channel_set_volume) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     
@@ -53,7 +50,6 @@ TSO_SCRIPT_API_FN(audio_api__channel_set_volume) {
 
 
 TSO_SCRIPT_API_FN(audio_api__channel_set_panning) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     
@@ -69,7 +65,6 @@ TSO_SCRIPT_API_FN(audio_api__channel_set_panning) {
 
 
 TSO_SCRIPT_API_FN(audio_api__playback_set_volume) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     
@@ -84,7 +79,6 @@ TSO_SCRIPT_API_FN(audio_api__playback_set_volume) {
 }
 
 TSO_SCRIPT_API_FN(audio_api__playback_set_panning) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     
@@ -99,7 +93,6 @@ TSO_SCRIPT_API_FN(audio_api__playback_set_panning) {
 }
 
 TSO_SCRIPT_API_FN(audio_api__playback_set_repeat) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     
@@ -114,7 +107,6 @@ TSO_SCRIPT_API_FN(audio_api__playback_set_repeat) {
 }
 
 TSO_SCRIPT_API_FN(audio_api__playback_seek) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     
@@ -130,7 +122,6 @@ TSO_SCRIPT_API_FN(audio_api__playback_seek) {
 
 
 TSO_SCRIPT_API_FN(audio_api__playback_stop) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     
     topazAudio_t * audio = topaz_context_get_audio(((topazScriptManager_t*)context)->ctx);
@@ -143,7 +134,6 @@ TSO_SCRIPT_API_FN(audio_api__playback_stop) {
 }
 
 TSO_SCRIPT_API_FN(audio_api__playback_resume) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     
     topazAudio_t * audio = topaz_context_get_audio(((topazScriptManager_t*)context)->ctx);
@@ -156,7 +146,6 @@ TSO_SCRIPT_API_FN(audio_api__playback_resume) {
 }
 
 TSO_SCRIPT_API_FN(audio_api__playback_pause) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     
     topazAudio_t * audio = topaz_context_get_audio(((topazScriptManager_t*)context)->ctx);
@@ -183,15 +172,15 @@ TSO_SCRIPT_API_FN(audio_api__playback_pause) {
 
 static void add_refs__audio_api(topazScript_t * script, topazScriptManager_t * context) {
 
-    TS_MAP_NATIVE_FN("topaz_audio__play_sound", audio_api__play_sound);
-    TS_MAP_NATIVE_FN("topaz_audio__channel_halt", audio_api__channel_halt);
-    TS_MAP_NATIVE_FN("topaz_audio__channel_set_volume", audio_api__channel_set_volume);
-    TS_MAP_NATIVE_FN("topaz_audio__channel_set_panning", audio_api__channel_set_panning);
-    TS_MAP_NATIVE_FN("topaz_audio__playback_set_volume", audio_api__playback_set_volume);
-    TS_MAP_NATIVE_FN("topaz_audio__playback_set_panning", audio_api__playback_set_panning);
-    TS_MAP_NATIVE_FN("topaz_audio__playback_set_repeat", audio_api__playback_set_repeat);
-    TS_MAP_NATIVE_FN("topaz_audio__playback_seek", audio_api__playback_seek);
-    TS_MAP_NATIVE_FN("topaz_audio__playback_stop", audio_api__playback_stop);
-    TS_MAP_NATIVE_FN("topaz_audio__playback_pause", audio_api__playback_pause);
-    TS_MAP_NATIVE_FN("topaz_audio__playback_resume", audio_api__playback_resume);
+    TS_MAP_NATIVE_FN("topaz_audio__play_sound", audio_api__play_sound, 2);
+    TS_MAP_NATIVE_FN("topaz_audio__channel_halt", audio_api__channel_halt, 1);
+    TS_MAP_NATIVE_FN("topaz_audio__channel_set_volume", audio_api__channel_set_volume, 2);
+    TS_MAP_NATIVE_FN("topaz_audio__channel_set_panning", audio_api__channel_set_panning, 2);
+    TS_MAP_NATIVE_FN("topaz_audio__playback_set_volume", audio_api__playback_set_volume, 2);
+    TS_MAP_NATIVE_FN("topaz_audio__playback_set_panning", audio_api__playback_set_panning, 2);
+    TS_MAP_NATIVE_FN("topaz_audio__playback_set_repeat", audio_api__playback_set_repeat, 2);
+    TS_MAP_NATIVE_FN("topaz_audio__playback_seek", audio_api__playback_seek, 2);
+    TS_MAP_NATIVE_FN("topaz_audio__playback_stop", audio_api__playback_stop, 1);
+    TS_MAP_NATIVE_FN("topaz_audio__playback_pause", audio_api__playback_pause, 1);
+    TS_MAP_NATIVE_FN("topaz_audio__playback_resume", audio_api__playback_resume, 1);
 }

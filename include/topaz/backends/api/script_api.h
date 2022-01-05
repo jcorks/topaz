@@ -193,7 +193,7 @@ struct topazScriptAPI_t {
 
     void *(*script_create)             (topazScript_t *, topaz_t *);
     void  (*script_destroy)            (topazScript_t *, void *);
-    int   (*script_map_native_function)(topazScript_t *, void *, const topazString_t *, topaz_script_native_function, void * userData);
+    int   (*script_map_native_function)(topazScript_t *, void *, const topazString_t *, uint8_t, topaz_script_native_function, void * userData);
     void  (*script_run)                (topazScript_t *, void *, const topazString_t * sourceName, const topazString_t * scriptData);
     topazScript_Object_t * (*script_expression) (topazScript_t *, void *, const topazString_t *);
     topazScript_Object_t * (*script_create_empty_object) (topazScript_t *, void *, topaz_script_native_function, void *);

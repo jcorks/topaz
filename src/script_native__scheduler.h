@@ -2,7 +2,6 @@
 #include <topaz/transform.h>
 
 TSO_SCRIPT_API_FN(scheduler_api__create) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     topazComponent_t * component = topaz_scheduler_create(
         ((topazScriptManager_t*)context)->ctx,
@@ -33,7 +32,6 @@ static void script_scheduler_callback(topazComponent_t * component, void * data)
 }
 
 TSO_SCRIPT_API_FN(scheduler_api__start_task) {
-    TSO_ASSERT_ARG_COUNT(5);
     TSO_ARG_0;
     TSO_ARG_1; // taskname
     TSO_ARG_2; // interval
@@ -67,7 +65,6 @@ TSO_SCRIPT_API_FN(scheduler_api__start_task) {
 
 
 TSO_SCRIPT_API_FN(scheduler_api__start_task_simple) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1; // interval
     TSO_ARG_2; // callback
@@ -99,7 +96,6 @@ TSO_SCRIPT_API_FN(scheduler_api__start_task_simple) {
 
 
 TSO_SCRIPT_API_FN(scheduler_api__end_task) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SCHEDULER);
@@ -113,7 +109,6 @@ TSO_SCRIPT_API_FN(scheduler_api__end_task) {
 
 
 TSO_SCRIPT_API_FN(scheduler_api__get_task_count) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SCHEDULER);
     return topaz_script_object_from_int(
@@ -124,7 +119,6 @@ TSO_SCRIPT_API_FN(scheduler_api__get_task_count) {
 
 
 TSO_SCRIPT_API_FN(scheduler_api__get_task) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SCHEDULER);
@@ -144,7 +138,6 @@ TSO_SCRIPT_API_FN(scheduler_api__get_task) {
 
 
 TSO_SCRIPT_API_FN(scheduler_api__pause) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SCHEDULER);
 
@@ -153,7 +146,6 @@ TSO_SCRIPT_API_FN(scheduler_api__pause) {
 }
 
 TSO_SCRIPT_API_FN(scheduler_api__resume) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SCHEDULER);
 
@@ -168,7 +160,6 @@ TSO_SCRIPT_API_FN(scheduler_api__resume) {
 
 
 TSO_SCRIPT_API_FN(scheduler_api__get_task_interval_remaining) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SCHEDULER);
@@ -181,15 +172,15 @@ TSO_SCRIPT_API_FN(scheduler_api__get_task_interval_remaining) {
 
 
 static void add_refs__scheduler_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_scheduler__create", scheduler_api__create);
-    TS_MAP_NATIVE_FN("topaz_scheduler__start_task", scheduler_api__start_task);
-    TS_MAP_NATIVE_FN("topaz_scheduler__start_task_simple", scheduler_api__start_task_simple);
+    TS_MAP_NATIVE_FN("topaz_scheduler__create", scheduler_api__create, 1);
+    TS_MAP_NATIVE_FN("topaz_scheduler__start_task", scheduler_api__start_task, 5);
+    TS_MAP_NATIVE_FN("topaz_scheduler__start_task_simple", scheduler_api__start_task_simple, 3);
 
 
-    TS_MAP_NATIVE_FN("topaz_scheduler__end_task", scheduler_api__end_task);
-    TS_MAP_NATIVE_FN("topaz_scheduler__get_task_count", scheduler_api__get_task_count);
-    TS_MAP_NATIVE_FN("topaz_scheduler__get_task", scheduler_api__get_task);
-    TS_MAP_NATIVE_FN("topaz_scheduler__pause", scheduler_api__pause);
-    TS_MAP_NATIVE_FN("topaz_scheduler__resume", scheduler_api__resume);
-    TS_MAP_NATIVE_FN("topaz_scheduler__get_task_interval_remaining", scheduler_api__get_task_interval_remaining);
+    TS_MAP_NATIVE_FN("topaz_scheduler__end_task", scheduler_api__end_task, 2);
+    TS_MAP_NATIVE_FN("topaz_scheduler__get_task_count", scheduler_api__get_task_count, 1);
+    TS_MAP_NATIVE_FN("topaz_scheduler__get_task", scheduler_api__get_task, 2);
+    TS_MAP_NATIVE_FN("topaz_scheduler__pause", scheduler_api__pause, 1);
+    TS_MAP_NATIVE_FN("topaz_scheduler__resume", scheduler_api__resume, 1);
+    TS_MAP_NATIVE_FN("topaz_scheduler__get_task_interval_remaining", scheduler_api__get_task_interval_remaining, 2);
 }

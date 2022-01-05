@@ -10,7 +10,6 @@ TSO_SCRIPT_API_FN(color_api__r_set) {
 }
 
 TSO_SCRIPT_API_FN(color_api__rgba_set) {
-    TSO_ASSERT_ARG_COUNT(5);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -183,7 +182,7 @@ TSO_SCRIPT_API_FN(color_api__set_from_string) {
 
 static topazScript_Object_t * color_api__cleanup(
     topazScript_t * script, 
-    const topazArray_t * args, 
+    topazScript_Object_t ** args,
     void * userData
 ) {
     free(userData);
@@ -196,7 +195,14 @@ static topazScript_Object_t * color_api__cleanup(
 
 
 TSO_SCRIPT_API_FN(color_api__create) {
-    if (topaz_array_get_size(args) == 4) {
+    if (args == NULL) {
+        topazColor_t * colorPtr = calloc(1, sizeof(topazColor_t));
+
+        // creates new object and sets native pointer
+        TSO_OBJECT_NEW_VALUE(colorPtr, TSO_OBJECT_ID__COLOR, color_api__cleanup, colorPtr);
+        return object;
+
+    } else {
         TSO_ARG_0;
         TSO_ARG_1;
         TSO_ARG_2;
@@ -210,49 +216,42 @@ TSO_SCRIPT_API_FN(color_api__create) {
         colorPtr->g = (uint8_t)(int)(topaz_script_object_as_number(arg1) * 255);
         colorPtr->b = (uint8_t)(int)(topaz_script_object_as_number(arg2) * 255);
         colorPtr->a = (uint8_t)(int)(topaz_script_object_as_number(arg3) * 255);
-
         return object;
-    } else {
-        topazColor_t * colorPtr = calloc(1, sizeof(topazColor_t));
-
-        // creates new object and sets native pointer
-        TSO_OBJECT_NEW_VALUE(colorPtr, TSO_OBJECT_ID__COLOR, color_api__cleanup, colorPtr);
-        
-        return object;    
     }
+
 }
 
 
 static void add_refs__color_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_color__create", color_api__create);
+    TS_MAP_NATIVE_FN("topaz_color__create", color_api__create, 4);
 
     // member functions
-    TS_MAP_NATIVE_FN("topaz_color__to_hex_string", color_api__to_hex_string);
-    TS_MAP_NATIVE_FN("topaz_color__set_from_string", color_api__set_from_string);
+    TS_MAP_NATIVE_FN("topaz_color__to_hex_string", color_api__to_hex_string, 1);
+    TS_MAP_NATIVE_FN("topaz_color__set_from_string", color_api__set_from_string, 2);
     
     
-    TS_MAP_NATIVE_FN("topaz_color__set_r", color_api__r_set);
-    TS_MAP_NATIVE_FN("topaz_color__set_g", color_api__g_set);
-    TS_MAP_NATIVE_FN("topaz_color__set_b", color_api__b_set);
-    TS_MAP_NATIVE_FN("topaz_color__set_a", color_api__a_set);
+    TS_MAP_NATIVE_FN("topaz_color__set_r", color_api__r_set, 2);
+    TS_MAP_NATIVE_FN("topaz_color__set_g", color_api__g_set, 2);
+    TS_MAP_NATIVE_FN("topaz_color__set_b", color_api__b_set, 2);
+    TS_MAP_NATIVE_FN("topaz_color__set_a", color_api__a_set, 2);
 
-    TS_MAP_NATIVE_FN("topaz_color__set_rgba", color_api__rgba_set);
+    TS_MAP_NATIVE_FN("topaz_color__set_rgba", color_api__rgba_set, 5);
 
-    TS_MAP_NATIVE_FN("topaz_color__get_r", color_api__r_get);
-    TS_MAP_NATIVE_FN("topaz_color__get_g", color_api__g_get);
-    TS_MAP_NATIVE_FN("topaz_color__get_b", color_api__b_get);
-    TS_MAP_NATIVE_FN("topaz_color__get_a", color_api__a_get);
+    TS_MAP_NATIVE_FN("topaz_color__get_r", color_api__r_get, 1);
+    TS_MAP_NATIVE_FN("topaz_color__get_g", color_api__g_get, 1);
+    TS_MAP_NATIVE_FN("topaz_color__get_b", color_api__b_get, 1);
+    TS_MAP_NATIVE_FN("topaz_color__get_a", color_api__a_get, 1);
 
 
-    TS_MAP_NATIVE_FN("topaz_color__set_r_int", color_api__r_int_set);
-    TS_MAP_NATIVE_FN("topaz_color__set_g_int", color_api__g_int_set);
-    TS_MAP_NATIVE_FN("topaz_color__set_b_int", color_api__b_int_set);
-    TS_MAP_NATIVE_FN("topaz_color__set_a_int", color_api__a_int_set);
+    TS_MAP_NATIVE_FN("topaz_color__set_r_int", color_api__r_int_set, 2);
+    TS_MAP_NATIVE_FN("topaz_color__set_g_int", color_api__g_int_set, 2);
+    TS_MAP_NATIVE_FN("topaz_color__set_b_int", color_api__b_int_set, 2);
+    TS_MAP_NATIVE_FN("topaz_color__set_a_int", color_api__a_int_set, 2);
     
-    TS_MAP_NATIVE_FN("topaz_color__get_r_int", color_api__r_int_get);
-    TS_MAP_NATIVE_FN("topaz_color__get_g_int", color_api__g_int_get);
-    TS_MAP_NATIVE_FN("topaz_color__get_b_int", color_api__b_int_get);
-    TS_MAP_NATIVE_FN("topaz_color__get_a_int", color_api__a_int_get);
+    TS_MAP_NATIVE_FN("topaz_color__get_r_int", color_api__r_int_get, 1);
+    TS_MAP_NATIVE_FN("topaz_color__get_g_int", color_api__g_int_get, 1);
+    TS_MAP_NATIVE_FN("topaz_color__get_b_int", color_api__b_int_get, 1);
+    TS_MAP_NATIVE_FN("topaz_color__get_a_int", color_api__a_int_get, 1);
 
     
     

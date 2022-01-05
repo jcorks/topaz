@@ -10,7 +10,6 @@ TSO_SCRIPT_API_FN(object2d_api__create) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__add_velocity) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -25,7 +24,6 @@ TSO_SCRIPT_API_FN(object2d_api__add_velocity) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__add_velocity_towards) {
-    TSO_ASSERT_ARG_COUNT(4);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -43,7 +41,6 @@ TSO_SCRIPT_API_FN(object2d_api__add_velocity_towards) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__set_velocity) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -59,7 +56,6 @@ TSO_SCRIPT_API_FN(object2d_api__set_velocity) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__set_velocity_towards) {
-    TSO_ASSERT_ARG_COUNT(4);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -77,7 +73,6 @@ TSO_SCRIPT_API_FN(object2d_api__set_velocity_towards) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__set_friction_x) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
@@ -87,7 +82,6 @@ TSO_SCRIPT_API_FN(object2d_api__set_friction_x) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__set_friction_y) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
@@ -97,7 +91,6 @@ TSO_SCRIPT_API_FN(object2d_api__set_friction_y) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__get_friction_x) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
 
@@ -105,7 +98,6 @@ TSO_SCRIPT_API_FN(object2d_api__get_friction_x) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__get_friction_y) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
 
@@ -113,7 +105,6 @@ TSO_SCRIPT_API_FN(object2d_api__get_friction_y) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__get_direction) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
 
@@ -121,7 +112,6 @@ TSO_SCRIPT_API_FN(object2d_api__get_direction) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__halt) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
 
@@ -130,7 +120,6 @@ TSO_SCRIPT_API_FN(object2d_api__halt) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__reset_motion) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
 
@@ -139,7 +128,6 @@ TSO_SCRIPT_API_FN(object2d_api__reset_motion) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__set_velocity_x) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
@@ -149,7 +137,6 @@ TSO_SCRIPT_API_FN(object2d_api__set_velocity_x) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__set_velocity_y) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
@@ -159,7 +146,6 @@ TSO_SCRIPT_API_FN(object2d_api__set_velocity_y) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__get_velocity_x) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
 
@@ -167,7 +153,6 @@ TSO_SCRIPT_API_FN(object2d_api__get_velocity_x) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__get_velocity_y) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
 
@@ -175,7 +160,6 @@ TSO_SCRIPT_API_FN(object2d_api__get_velocity_y) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__set_speed) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
@@ -185,7 +169,6 @@ TSO_SCRIPT_API_FN(object2d_api__set_speed) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__get_speed) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
 
@@ -207,7 +190,6 @@ TSO_SCRIPT_API_FN(object2d_api__get_next_position) {
 
 
 TSO_SCRIPT_API_FN(object2d_api__set_group) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
@@ -218,7 +200,6 @@ TSO_SCRIPT_API_FN(object2d_api__set_group) {
 
 
 TSO_SCRIPT_API_FN(object2d_api__get_group) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
 
@@ -227,7 +208,6 @@ TSO_SCRIPT_API_FN(object2d_api__get_group) {
 
 
 TSO_SCRIPT_API_FN(object2d_api__set_group_interaction) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -244,7 +224,6 @@ TSO_SCRIPT_API_FN(object2d_api__set_group_interaction) {
 
 
 TSO_SCRIPT_API_FN(object2d_api__set_collider) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
@@ -269,7 +248,6 @@ TSO_SCRIPT_API_FN(object2d_api__set_collider) {
 
 
 TSO_SCRIPT_API_FN(object2d_api__set_collider_radial) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -286,14 +264,12 @@ TSO_SCRIPT_API_FN(object2d_api__set_collider_radial) {
 
 
 TSO_SCRIPT_API_FN(object2d_api__get_collider_len) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
     return topaz_script_object_from_int(script, topaz_array_get_size(topaz_object2d_get_collider(native)));
 }
 
 TSO_SCRIPT_API_FN(object2d_api__get_collider_point) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
@@ -312,7 +288,6 @@ TSO_SCRIPT_API_FN(object2d_api__get_collider_point) {
 }
 
 TSO_SCRIPT_API_FN(object2d_api__get_last_collided) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
 
@@ -326,37 +301,37 @@ TSO_SCRIPT_API_FN(object2d_api__get_last_collided) {
 }
 
 static void add_refs__object2d_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_object2d__create", object2d_api__create);
-    TS_MAP_NATIVE_FN("topaz_object2d__add_velocity", object2d_api__add_velocity);
-    TS_MAP_NATIVE_FN("topaz_object2d__add_velocity_towards", object2d_api__add_velocity_towards);
-    TS_MAP_NATIVE_FN("topaz_object2d__set_velocity", object2d_api__set_velocity);
-    TS_MAP_NATIVE_FN("topaz_object2d__set_velocity_towards", object2d_api__set_velocity_towards);
+    TS_MAP_NATIVE_FN("topaz_object2d__create", object2d_api__create, 0);
+    TS_MAP_NATIVE_FN("topaz_object2d__add_velocity", object2d_api__add_velocity, 3);
+    TS_MAP_NATIVE_FN("topaz_object2d__add_velocity_towards", object2d_api__add_velocity_towards, 4);
+    TS_MAP_NATIVE_FN("topaz_object2d__set_velocity", object2d_api__set_velocity, 3);
+    TS_MAP_NATIVE_FN("topaz_object2d__set_velocity_towards", object2d_api__set_velocity_towards, 4);
 
 
-    TS_MAP_NATIVE_FN("topaz_object2d__set_friction_x", object2d_api__set_friction_x);
-    TS_MAP_NATIVE_FN("topaz_object2d__set_friction_y", object2d_api__set_friction_y);
-    TS_MAP_NATIVE_FN("topaz_object2d__get_friction_x", object2d_api__get_friction_x);
-    TS_MAP_NATIVE_FN("topaz_object2d__get_friction_y", object2d_api__get_friction_y);
-    TS_MAP_NATIVE_FN("topaz_object2d__get_direction", object2d_api__get_direction);
+    TS_MAP_NATIVE_FN("topaz_object2d__set_friction_x", object2d_api__set_friction_x, 2);
+    TS_MAP_NATIVE_FN("topaz_object2d__set_friction_y", object2d_api__set_friction_y, 2);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_friction_x", object2d_api__get_friction_x, 1);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_friction_y", object2d_api__get_friction_y, 1);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_direction", object2d_api__get_direction, 1);
 
-    TS_MAP_NATIVE_FN("topaz_object2d__halt", object2d_api__halt);
-    TS_MAP_NATIVE_FN("topaz_object2d__reset_motion", object2d_api__reset_motion);
-    TS_MAP_NATIVE_FN("topaz_object2d__set_velocity_x", object2d_api__set_velocity_x);
-    TS_MAP_NATIVE_FN("topaz_object2d__set_velocity_y", object2d_api__set_velocity_y);
-    TS_MAP_NATIVE_FN("topaz_object2d__get_velocity_x", object2d_api__get_velocity_x);
-    TS_MAP_NATIVE_FN("topaz_object2d__get_velocity_y", object2d_api__get_velocity_y);
-    TS_MAP_NATIVE_FN("topaz_object2d__set_speed", object2d_api__set_speed);
-    TS_MAP_NATIVE_FN("topaz_object2d__get_speed", object2d_api__get_speed);
-    TS_MAP_NATIVE_FN("topaz_object2d__get_next_position", object2d_api__get_next_position);
+    TS_MAP_NATIVE_FN("topaz_object2d__halt", object2d_api__halt, 1);
+    TS_MAP_NATIVE_FN("topaz_object2d__reset_motion", object2d_api__reset_motion, 1);
+    TS_MAP_NATIVE_FN("topaz_object2d__set_velocity_x", object2d_api__set_velocity_x, 2);
+    TS_MAP_NATIVE_FN("topaz_object2d__set_velocity_y", object2d_api__set_velocity_y, 2);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_velocity_x", object2d_api__get_velocity_x, 1);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_velocity_y", object2d_api__get_velocity_y, 1);
+    TS_MAP_NATIVE_FN("topaz_object2d__set_speed", object2d_api__set_speed, 2);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_speed", object2d_api__get_speed, 1);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_next_position", object2d_api__get_next_position, 1);
 
-    TS_MAP_NATIVE_FN("topaz_object2d__get_group", object2d_api__get_group);
-    TS_MAP_NATIVE_FN("topaz_object2d__set_group", object2d_api__set_group);
-    TS_MAP_NATIVE_FN("topaz_object2d__set_group_interaction", object2d_api__set_group_interaction);
-    TS_MAP_NATIVE_FN("topaz_object2d__set_collider", object2d_api__set_collider);
-    TS_MAP_NATIVE_FN("topaz_object2d__set_collider_radial", object2d_api__set_collider_radial);
-    TS_MAP_NATIVE_FN("topaz_object2d__get_collider_len",   object2d_api__get_collider_len);
-    TS_MAP_NATIVE_FN("topaz_object2d__get_collider_point", object2d_api__get_collider_point);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_group", object2d_api__get_group, 1);
+    TS_MAP_NATIVE_FN("topaz_object2d__set_group", object2d_api__set_group, 2);
+    TS_MAP_NATIVE_FN("topaz_object2d__set_group_interaction", object2d_api__set_group_interaction, 3);
+    TS_MAP_NATIVE_FN("topaz_object2d__set_collider", object2d_api__set_collider, 2);
+    TS_MAP_NATIVE_FN("topaz_object2d__set_collider_radial", object2d_api__set_collider_radial, 3);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_collider_len",   object2d_api__get_collider_len, 1);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_collider_point", object2d_api__get_collider_point, 2);
 
-    TS_MAP_NATIVE_FN("topaz_object2d__get_last_collided", object2d_api__get_last_collided);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_last_collided", object2d_api__get_last_collided, 1);
 
 }

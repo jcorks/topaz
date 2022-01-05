@@ -10,15 +10,14 @@ static void script_input_on_press(topazInput_t * i, int input, void * data) {
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(l->obj, TOPAZ_STR_CAST("onPress"));
     topazScript_Object_t * arg = topaz_script_object_from_int(l->script, input);
 
-    topazScript_Object_t * args[2] = {
-        l->obj,
+    topazScript_Object_t * args[1] = {
         arg
     };
 
     topaz_script_object_destroy(
         topaz_script_object_reference_call(
             fn, 
-            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 2)
+            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 1)
         )
     );
     topaz_script_object_destroy(arg);
@@ -27,8 +26,7 @@ static void script_input_on_press(topazInput_t * i, int input, void * data) {
 static void script_input_on_active(topazInput_t * i, int input, float value, void * data) {
     ScriptInputListener * l = data;
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(l->obj, TOPAZ_STR_CAST("onActive"));
-    topazScript_Object_t * args[3] = {
-        l->obj,
+    topazScript_Object_t * args[2] = {
         topaz_script_object_from_int(l->script, input),
         topaz_script_object_from_number(l->script, value),
     };
@@ -36,27 +34,26 @@ static void script_input_on_active(topazInput_t * i, int input, float value, voi
     topaz_script_object_destroy(
         topaz_script_object_reference_call(
             fn, 
-            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 3)
+            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 2)
         )
     );
 
+    topaz_script_object_destroy(args[0]);
     topaz_script_object_destroy(args[1]);
-    topaz_script_object_destroy(args[2]);
 }
 
 static void script_input_on_release(topazInput_t * i, int input, void * data) {
     ScriptInputListener * l = data;
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(l->obj, TOPAZ_STR_CAST("onRelease"));
     topazScript_Object_t * arg = topaz_script_object_from_int(l->script, input);
-    topazScript_Object_t * args[2] = {
-        l->obj,
+    topazScript_Object_t * args[1] = {
         arg
     };
 
     topaz_script_object_destroy(
         topaz_script_object_reference_call(
             fn, 
-            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 2)
+            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 1)
         )
     );
     topaz_script_object_destroy(arg);
@@ -65,8 +62,7 @@ static void script_input_on_release(topazInput_t * i, int input, void * data) {
 static void script_input_on_update(topazInput_t * i, int input, float value, void * data) {
     ScriptInputListener * l = data;
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(l->obj, TOPAZ_STR_CAST("onUpdate"));
-    topazScript_Object_t * args[3] = {
-        l->obj,
+    topazScript_Object_t * args[2] = {
         topaz_script_object_from_int(l->script, input),
         topaz_script_object_from_number(l->script, value),
     };
@@ -75,11 +71,11 @@ static void script_input_on_update(topazInput_t * i, int input, float value, voi
     topaz_script_object_destroy(
         topaz_script_object_reference_call(
             fn, 
-            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 3)
+            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 2)
         )
     );
+    topaz_script_object_destroy(args[0]);
     topaz_script_object_destroy(args[1]);
-    topaz_script_object_destroy(args[2]);
 }
 
 static void script_input_on_new_unicode(topazInput_t * i, int input, void * data) {
@@ -88,14 +84,13 @@ static void script_input_on_new_unicode(topazInput_t * i, int input, void * data
     topazScript_Object_t * arg = topaz_script_object_from_int(l->script, input);
 
     topazScript_Object_t * args[2] = {
-        l->obj,
         arg
     };
 
     topaz_script_object_destroy(
         topaz_script_object_reference_call(
             fn, 
-            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 2)
+            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 1)
         )
     );
     topaz_script_object_destroy(arg);
@@ -128,7 +123,6 @@ static int is_prop_undefined(topazScript_Object_t * obj, const char * name) {
 
 
 TSO_SCRIPT_API_FN(input_api__add_keyboard_listener) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
 
@@ -157,7 +151,6 @@ TSO_SCRIPT_API_FN(input_api__add_keyboard_listener) {
 
 
 TSO_SCRIPT_API_FN(input_api__add_pointer_listener) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
 
@@ -185,7 +178,6 @@ TSO_SCRIPT_API_FN(input_api__add_pointer_listener) {
 }
 
 TSO_SCRIPT_API_FN(input_api__add_pad_listener) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
@@ -213,7 +205,6 @@ TSO_SCRIPT_API_FN(input_api__add_pad_listener) {
 }
 
 TSO_SCRIPT_API_FN(input_api__add_mapped_listener) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
@@ -244,7 +235,6 @@ TSO_SCRIPT_API_FN(input_api__add_mapped_listener) {
 }
 
 TSO_SCRIPT_API_FN(input_api__remove_listener) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
 
@@ -265,7 +255,6 @@ TSO_SCRIPT_API_FN(input_api__remove_listener) {
 
 
 TSO_SCRIPT_API_FN(input_api__get_state) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
     return topaz_script_object_from_number(
@@ -278,7 +267,6 @@ TSO_SCRIPT_API_FN(input_api__get_state) {
 }
 
 TSO_SCRIPT_API_FN(input_api__get_pad_state) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
@@ -293,7 +281,6 @@ TSO_SCRIPT_API_FN(input_api__get_pad_state) {
 }
 
 TSO_SCRIPT_API_FN(input_api__get_mapped_state) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
     return topaz_script_object_from_number(
@@ -307,7 +294,6 @@ TSO_SCRIPT_API_FN(input_api__get_mapped_state) {
 
 
 TSO_SCRIPT_API_FN(input_api__set_deadzone) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -335,7 +321,6 @@ TSO_SCRIPT_API_FN(input_api__query_pad_count) {
 }
 
 TSO_SCRIPT_API_FN(input_api__query_pad_id) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
@@ -359,7 +344,6 @@ TSO_SCRIPT_API_FN(input_api__query_pad_id) {
 
 
 TSO_SCRIPT_API_FN(input_api__add_unicode_listener) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
 
@@ -381,7 +365,6 @@ TSO_SCRIPT_API_FN(input_api__add_unicode_listener) {
 
 
 TSO_SCRIPT_API_FN(input_api__remove_unicode_listener) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
 
@@ -462,28 +445,28 @@ TSO_SCRIPT_API_FN(input_api__mouse_wheel) {
 
 
 static void add_refs__input_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_input__add_keyboard_listener", input_api__add_keyboard_listener);
-    TS_MAP_NATIVE_FN("topaz_input__add_pointer_listener",  input_api__add_pointer_listener);
-    TS_MAP_NATIVE_FN("topaz_input__add_pad_listener",      input_api__add_pad_listener);
-    TS_MAP_NATIVE_FN("topaz_input__add_mapped_listener",   input_api__add_mapped_listener);
-    TS_MAP_NATIVE_FN("topaz_input__remove_listener",       input_api__remove_listener);    
+    TS_MAP_NATIVE_FN("topaz_input__add_keyboard_listener", input_api__add_keyboard_listener, 1);
+    TS_MAP_NATIVE_FN("topaz_input__add_pointer_listener",  input_api__add_pointer_listener, 1);
+    TS_MAP_NATIVE_FN("topaz_input__add_pad_listener",      input_api__add_pad_listener, 2);
+    TS_MAP_NATIVE_FN("topaz_input__add_mapped_listener",   input_api__add_mapped_listener, 2);
+    TS_MAP_NATIVE_FN("topaz_input__remove_listener",       input_api__remove_listener, 1);    
 
-    TS_MAP_NATIVE_FN("topaz_input__get_state", input_api__get_state);
-    TS_MAP_NATIVE_FN("topaz_input__get_pad_state", input_api__get_pad_state);
-    TS_MAP_NATIVE_FN("topaz_input__get_mapped_state", input_api__get_mapped_state);
+    TS_MAP_NATIVE_FN("topaz_input__get_state", input_api__get_state, 1);
+    TS_MAP_NATIVE_FN("topaz_input__get_pad_state", input_api__get_pad_state, 2);
+    TS_MAP_NATIVE_FN("topaz_input__get_mapped_state", input_api__get_mapped_state, 1);
 
-    TS_MAP_NATIVE_FN("topaz_input__set_deadzone", input_api__set_deadzone);
-    TS_MAP_NATIVE_FN("topaz_input__query_pad_count", input_api__query_pad_count);
-    TS_MAP_NATIVE_FN("topaz_input__query_pad_id", input_api__query_pad_id);
+    TS_MAP_NATIVE_FN("topaz_input__set_deadzone", input_api__set_deadzone, 3);
+    TS_MAP_NATIVE_FN("topaz_input__query_pad_count", input_api__query_pad_count, 0);
+    TS_MAP_NATIVE_FN("topaz_input__query_pad_id", input_api__query_pad_id, 1);
 
-    TS_MAP_NATIVE_FN("topaz_input__add_unicode_listener", input_api__add_unicode_listener);
-    TS_MAP_NATIVE_FN("topaz_input__remove_unicode_listener", input_api__remove_unicode_listener);
+    TS_MAP_NATIVE_FN("topaz_input__add_unicode_listener", input_api__add_unicode_listener, 1);
+    TS_MAP_NATIVE_FN("topaz_input__remove_unicode_listener", input_api__remove_unicode_listener, 1);
 
-    TS_MAP_NATIVE_FN("topaz_input__mouse_x", input_api__mouse_x);
-    TS_MAP_NATIVE_FN("topaz_input__mouse_y", input_api__mouse_y);
-    TS_MAP_NATIVE_FN("topaz_input__mouse_delta_x", input_api__mouse_delta_x);
-    TS_MAP_NATIVE_FN("topaz_input__mouse_delta_y", input_api__mouse_delta_y);
-    TS_MAP_NATIVE_FN("topaz_input__mouse_wheel", input_api__mouse_wheel); 
+    TS_MAP_NATIVE_FN("topaz_input__mouse_x", input_api__mouse_x, 0);
+    TS_MAP_NATIVE_FN("topaz_input__mouse_y", input_api__mouse_y, 0);
+    TS_MAP_NATIVE_FN("topaz_input__mouse_delta_x", input_api__mouse_delta_x, 0);
+    TS_MAP_NATIVE_FN("topaz_input__mouse_delta_y", input_api__mouse_delta_y, 0);
+    TS_MAP_NATIVE_FN("topaz_input__mouse_wheel", input_api__mouse_wheel, 0); 
 
 }
 

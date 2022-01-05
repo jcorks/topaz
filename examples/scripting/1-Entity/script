@@ -1,9 +1,12 @@
-// All topaz symbols are contained within the module "Topaz".
-// It needs to be pulled in before accessing its features.
-<@>Topaz = import(module:'Topaz');
-
 // We'll also need the language class module as well
 <@>class = import(module:'Matte.Core.Class');
+
+
+// All topaz symbols are contained within the module "Topaz".
+// It needs to be pulled in before accessing its features.
+<@>Topaz = import(module:'Topaz.Core');
+<@>Color = import(module:'Topaz.Color');
+
 
 
 // In JS, topaz implements its entities as "tclass" objects, which are class objects
@@ -67,7 +70,6 @@
         // run every frame. Note how the props instance is the first 
         // argument like with onReady().
         this.onStep = ::{
-
             // Every entity has built-in properties, such as 
             // position, rotation, and scale.
             // Here, we add 0.001, 0.002, and 0.003 degrees to the x, y, and z 
@@ -75,13 +77,13 @@
             //
             // The position, rotation, and scale properties are vector objects,
             // so to update them, you actually replace them with new vectors.
-            <@>r = ent.rotation;
-            ent.rotation = {
+            <@>r = this.rotation;
+            this.rotation = {
                 x:r.x + 0.01,
                 y:r.y + 0.2,
                 z:r.z + 0.03
             };
-        }
+        };
 
 
         // Every prefab object for entities is expected 
@@ -89,7 +91,7 @@
         // is the main way that you as a user will refer to public members.
         // when instantiated, props' properties will be copied to 
         // the entity instance.
-        ent.interface = {
+        this.interface = {
             // Here we'll set up a public function to modify the color 
             // of the object.
             setColor ::(value) {
@@ -106,12 +108,12 @@
 //
 
 // This instantiates the entity we've defined based on its prefab as a "blueprint".
-var entity = Rectangle.new()
+@entity = Rectangle.new();
 
 // The color of any Shape2D can be assigned directly. 
 // The string can be a common color name, or a #RRGGBB/AA 
 // formatted hex string.
-entity.setColor(value:Color.fromString('purple'));        
+entity.setColor(value:Color.parse(string:'purple'));        
 
 
 

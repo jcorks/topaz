@@ -24,9 +24,9 @@ return ::<={
 
     <@>statepush = ::(v) {
         if (v.native == empty) ::<={
-            if (introspect.isNaN(value:v.x)) v.x = 0;
-            if (introspect.isNaN(value:v.y)) v.y = 0;
-            if (introspect.isNaN(value:v.z)) v.z = 0;
+            if (v.x == empty || introspect.isNaN(value:v.x)) v.x = 0;
+            if (v.y == empty || introspect.isNaN(value:v.y)) v.y = 0;
+            if (v.z == empty || introspect.isNaN(value:v.z)) v.z = 0;
             v.native = topaz_vector__create(a:v.x, b:v.y, c:v.z);
         } else ::<={
             topaz_vector__set_xyz(a:v.native, b:v.x, c:v.y, d:v.z);
@@ -143,18 +143,26 @@ return ::<={
 
         
         add : ::(a, b){ 
+            statepush(v:a);
+            statepush(v:b);
             return {x:a.x + b.x, y:a.y + b.y, z:a.z + b.z};
         },
         
         subtract : ::(a, b){ 
+            statepush(v:a);
+            statepush(v:b);
             return {x:a.x - b.x, y:a.y - b.y, z:a.z - b.z};
         },
 
         multiply : ::(a, b){ 
+            statepush(v:a);
+            statepush(v:b);
             return {x:a.x * b.x, y:a.y * b.y, z:a.z * b.z};
         },
         
         divide : ::(a, b){ 
+            statepush(v:a);
+            statepush(v:b);
             return {x:a.x / b.x, y:a.y / b.y, z:a.z / b.z};
         },
         

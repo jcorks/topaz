@@ -7,7 +7,7 @@
 //
 // 
 // 
-<@>Topaz = import(module:'Topaz');
+<@>Topaz = import(module:'Topaz.Core');
 <@>class = import(module:'Matte.Core.Class');
 
 
@@ -43,8 +43,9 @@
 //
 //
 //
-const FruitBasket = class(info:{
-    inherits : Topaz.Component,
+<@>FruitBasket = class(info:{
+    name : 'FruitBasket',        
+    inherits : [Topaz.Component],
     define ::(this) {
         // Current amount of fruit in the basket.
         // We start the basket with a decent amount of fruit.
@@ -88,7 +89,7 @@ const FruitBasket = class(info:{
  
 
 
-        component.interface = {
+        this.interface = {
 
             // Adds a fruit to the basket from someone.
             // For member functions, "this" will always refer to the component.
@@ -101,7 +102,7 @@ const FruitBasket = class(info:{
                 // can optionally be passed to be referred to in the notification.
                 // All components have a "host" property that refers to 
                 // the owning entity that holds the component if any.
-                component.emitEvent(event:'onAddFruit', source:from.host);
+                this.emit(event:'onAddFruit', source:from.host);
             },
 
             // Function to get the current amount of fruit left.
@@ -119,7 +120,7 @@ const FruitBasket = class(info:{
                     amount-=1;
 
                     // emitEvent() notifies the component that the event is occurring.
-                    component.emit(event:'onRemoveFruit');
+                    this.emit(event:'onRemoveFruit');
                 };
             },
     
@@ -138,35 +139,36 @@ const FruitBasket = class(info:{
 // Now that we have defined a FruitBasket, we can define a Person 
 // to hold the basket. Every person has a name and a basket of 
 // their own.
-const Person = class({
-    inherits : Topaz.Entity,
-    define : function(ent) {
+<@>Person = class(info:{
+    name : 'Person',        
+    inherits : [Topaz.Entity],
+    define : ::(this) {
         // Like always, using the class name followed by parantheses is how 
         // one instantiates a class.
-        var myBasket = FruitBasket.new({startingFruit:5});
-        var myName = 'No name!';
+        @myBasket = FruitBasket.new(startingFruit:5);
+        @myName = 'No name!';
 
         // And since it is a component, we want to make sure to attach it 
         // so that the component gets updated.
-        ent.addComponent(myBasket);
+        this.add(component:myBasket);
 
 
-        ent.interface({
+        this.interface = {
             // The basket owned by the person.
             basket : {
-                get : function() {
+                get :: {
                     return myBasket;
                 }
             },
 
             // The person's own name.
             firstName : {
-                get : function() {
+                get :: {
                     return myName;
                 },
 
-                set : function(v) {
-                    myName = v;
+                set ::(value) {
+                    myName = value;
                 }
             },
 
@@ -182,19 +184,19 @@ const Person = class({
                 listen(to:::{
                     for(in:[0, amount], do:::(i) {
                         // Oh no! out of fruit, so abort
-                        when(myBasket.isEmpty()) send(empty);
+                        when(myBasket.isEmpty()) send(message:empty);
 
                         // Remove from this person's basket....
                         myBasket.removeFruit();
 
                         // ... and give to another person. The argument is 
-                        // who gave the fruit
+                        // who gave the fruit                        
                         to.basket.addFruit(from:myBasket);
                     });
                 });
             }
         
-        });
+        };
     }
 });
 
@@ -204,8 +206,8 @@ const Person = class({
 
 
 // Lets create our people involved
-var throcky = Person.new();
-var alex    = Person.new();
+@throcky = Person.new();
+@alex    = Person.new();
 
 // And assign names to them!
 throcky.firstName = 'Throckmorton';
@@ -224,10 +226,9 @@ alex.basket.installHook(
 
     // The closure to run.
     callback:::(source) {
-
         // Often for debugging, its useful to use Topaz.log(), which 
         // will print a string to the system console.
-        Topaz.log(message:source.host.firstName + ' removed a fruit from their basket. ' + source.getFruitLeft() + ' left.');
+        Topaz.log(message:alex.firstName + ' removed a fruit from their basket. ' + alex.basket.getFruitLeft() + ' left.');
     }
 );
 
@@ -239,7 +240,7 @@ alex.basket.installHook(
 alex.basket.installHook(
     event: 'onAddFruit',
     callback:::(source) {
-        Topaz.log(message:basket.host.firstName + ' gained fruit, thanks to ' + other.firstName +'! ' + basket.getFruitLeft() + ' total.');
+        Topaz.log(message:alex.firstName + ' gained fruit, thanks to ' + source.firstName +'! ' + alex.basket.getFruitLeft() + ' total.');
     }
 );
 

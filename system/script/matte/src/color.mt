@@ -46,7 +46,7 @@ return ::<={
             return topaz_color__to_hex_string(a:color.native);
         },
 
-        from : ::(string) {
+        parse : ::(string) {
             topaz_color__set_from_string(a:refColor, b:string);
             return {
                 r: topaz_color__get_r(a:refColor),

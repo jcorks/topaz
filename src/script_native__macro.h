@@ -12,7 +12,7 @@ static void script_error(topazScript_t * src, const char * message) {
 
 
 static void * script_create_native_object(topazScript_t * script, topaz_script_native_function create, void ** nativeRef, void * context) {
-    topazScript_Object_t * obj = create(script, TOPAZ_ARRAY_CAST(NULL, void*, 0), context);
+    topazScript_Object_t * obj = create(script, NULL, context);
     int unused;
     *nativeRef = topaz_script_object_reference_get_native_data(obj, &unused);
     return obj;
@@ -21,7 +21,7 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 
 
 // main macro for defining functions
-#define TSO_SCRIPT_API_FN(__name__) static topazScript_Object_t * __name__(topazScript_t * script, const topazArray_t * args, void * context)
+#define TSO_SCRIPT_API_FN(__name__) static topazScript_Object_t * __name__(topazScript_t * script, topazScript_Object_t ** args, void * context)
 
 
 
@@ -50,18 +50,15 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 #define TSO_OBJECT_UNKEEP_REF(__obj__, __native__) topaz_script_object_reference_unref(__obj__); topazScript_Object_t * o__ = topaz_table_find(((topazScriptManager_t*)context)->lookupRefs, __native__); if (o__) topaz_script_object_destroy(o__); 
 
 
-// Ensures that, past this point, AT LEAST the given number of args is 
-// passed to this function. If not, an error is "thrown"
-#define TSO_ASSERT_ARG_COUNT(__count__) if (topaz_array_get_size(args) < __count__){script_error(script, "Insufficient arguments given to native function."); return topaz_script_object_undefined(script);}
 
 // Retrieves and stores the given args
-#define TSO_ARG_0 topazScript_Object_t * arg0 = topaz_array_at(args, topazScript_Object_t *, 0);
-#define TSO_ARG_1 topazScript_Object_t * arg1 = topaz_array_at(args, topazScript_Object_t *, 1);
-#define TSO_ARG_2 topazScript_Object_t * arg2 = topaz_array_at(args, topazScript_Object_t *, 2);
-#define TSO_ARG_3 topazScript_Object_t * arg3 = topaz_array_at(args, topazScript_Object_t *, 3);
-#define TSO_ARG_4 topazScript_Object_t * arg4 = topaz_array_at(args, topazScript_Object_t *, 4);
-#define TSO_ARG_5 topazScript_Object_t * arg5 = topaz_array_at(args, topazScript_Object_t *, 5);
-#define TSO_ARG_6 topazScript_Object_t * arg6 = topaz_array_at(args, topazScript_Object_t *, 6);
+#define TSO_ARG_0 topazScript_Object_t * arg0 = args[0];
+#define TSO_ARG_1 topazScript_Object_t * arg1 = args[1];
+#define TSO_ARG_2 topazScript_Object_t * arg2 = args[2];
+#define TSO_ARG_3 topazScript_Object_t * arg3 = args[3];
+#define TSO_ARG_4 topazScript_Object_t * arg4 = args[4];
+#define TSO_ARG_5 topazScript_Object_t * arg5 = args[5];
+#define TSO_ARG_6 topazScript_Object_t * arg6 = args[6];
 
 // Retrieves argN as a native object of the given type.
 // If it is not the given type, an error is "thrown".
@@ -77,7 +74,7 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 #define TSO_NO_RETURN return NULL;
 
 // macro for assigning a native function
-#define TS_MAP_NATIVE_FN(__name__, __fn__) topaz_script_map_native_function(script, TOPAZ_STR_CAST(__name__), __fn__, context)
+#define TS_MAP_NATIVE_FN(__name__, __fn__, __ct__) topaz_script_map_native_function(script, TOPAZ_STR_CAST(__name__), __ct__, __fn__, context)
 
 
 

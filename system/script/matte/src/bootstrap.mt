@@ -3,10 +3,10 @@
 <@>Color = import(module:'Topaz.Color');
 
 <@>topaz__debug = getExternalFunction(name:'topaz__debug');
-topaz__debug();
 
 
 @class = import(module:'Matte.Core.Class');
+
 @Topaz = class(info:{
     define : ::(this){ 
         @__Topaz__ = this;
@@ -15,7 +15,9 @@ topaz__debug();
         // Instances of this_ class act as "shells" or interfaces for 
         // this_ external data and usually have little to no state 
         // outside of this_.
-        @__Native__ = class(info:{            
+        @instanceID = 0;
+        @__Native__ = class(info:{    
+            name : 'Topaz.Native',        
             define : ::(this){ 
                 @impl = empty;
                 
@@ -25,16 +27,15 @@ topaz__debug();
                     // mechanisms: 1) instData.nativeCreate is a native function that can { 
                     // return a new object for us to use or 2) instData.instance contains 
                     // a preexisting native reference.
-                    bindNative ::(native, nativeCreate, args) { 
-                        
-                        impl = native;
+                    bindNative ::(instance, nativeCreate, args) { 
+                        impl = instance;
                         
                         
                         if (impl == empty && nativeCreate != empty) ::<={ 
                             if (args == empty) ::<={
                                 impl = nativeCreate();
                             } else ::<={
-                                match(args.length) {
+                                match(introspect.keycount(of:args)) {
                                   (1): ::<={
                                     impl = nativeCreate(a:args[0]);
                                   },
@@ -55,6 +56,8 @@ topaz__debug();
                             error(detail:'Topaz.Native instance cannot have a empty native reference.');
                         };
                         impl.__ctx = this;
+                        impl.__id = instanceID;
+                        instanceID+=1;
                         return impl;
                     },
                     
@@ -73,33 +76,30 @@ topaz__debug();
         });
 
         // Must be separate since Topaz inherit from the asset ahead of time before Topaz is computed.
+        <@>topaz_asset__get_type = getExternalFunction(name:'topaz_asset__get_type');
         @__Asset__ = ::<={
-            <@>topaz_asset__get_type = getExternalFunction(name:'topaz_asset__get_type');
-            <@>topaz_asset__set_type = getExternalFunction(name:'topaz_asset__set_type');
             <@>topaz_asset__get_name = getExternalFunction(name:'topaz_asset__get_name');
-            <@>topaz_asset__set_name = getExternalFunction(name:'topaz_asset__set_name');
 
             return class(info:{
+                name : 'Topaz.Asset',        
                 inherits : [__Native__],
                 define : ::(this) { 
                     @impl;
                     
-                    this.constructor = ::(type) {
+                    this.constructor = ::(native) {
                         impl = this.bindNative(
-                            instance : type
+                            instance : native
                         );
                         return this;
                     };
 
                     this.interface = {
                         type : {
-                            get : ::()   {return topaz_asset__get_type(a:impl);},
-                            set : ::(value)  {       topaz_asset__set_type(a:impl, b:value);}
+                            get : ::()   {return topaz_asset__get_type(a:impl);}
                         },
 
                         name : {
-                            get : ::()   {return topaz_asset__get_name(a:impl);},
-                            set : ::(value)  {      topaz_asset__set_name(a:impl, b:value);} 
+                            get : ::()   {return topaz_asset__get_name(a:impl);}
                         }
                     };
                 }
@@ -124,6 +124,7 @@ topaz__debug();
                 },
                 
                 Path : class(info:{
+                    name : 'Topaz.Filesystem.Path',        
                     inherits : [__Native__],
                     define   : ::(this){ 
                         @impl;
@@ -172,6 +173,7 @@ topaz__debug();
             <@>topaz_rng__next_value = getExternalFunction(name:'topaz_rng__next_value');
 
             return class(info:{
+                name : 'Topaz.RNG',        
                 inherits : [__Native__],
                 define : ::(this){ 
         
@@ -179,7 +181,7 @@ topaz__debug();
                     
                     this.constructor = ::(native, seed) {
                         impl = this.bindNative(
-                            native : native,
+                            instance : native,
                             nativeCreate : topaz_rng__create,
                             args : [seed]
                         );
@@ -215,6 +217,7 @@ topaz__debug();
             <@> topaz_view_manager__set_clipboard_from_string = getExternalFunction(name:'topaz_view_manager__set_clipboard_from_string');
             <@> topaz_view_manager__get_clipboard_as_string = getExternalFunction(name:'topaz_view_manager__get_clipboard_as_string');
             return class(info:{
+                name : 'Topaz.ViewManager',        
                 define ::(this) { 
 
                     this.interface = {
@@ -247,7 +250,6 @@ topaz__debug();
             <@>topaz_display__add_close_callback = getExternalFunction(name:'topaz_display__add_close_callback');
             <@>topaz_display__remove_callback = getExternalFunction(name:'topaz_display__remove_callback');
             <@>topaz_display__get_parameter = getExternalFunction(name:'topaz_display__get_parameter');
-            <@>topaz_display__set_parameter = getExternalFunction(name:'topaz_display__set_parameter');
             <@>topaz_display__get_framebuffer = getExternalFunction(name:'topaz_display__get_framebuffer');
             <@>topaz_display__use_framebuffer = getExternalFunction(name:'topaz_display__use_framebuffer');
             <@>topaz_display__clear_main_framebuffer = getExternalFunction(name:'topaz_display__clear_main_framebuffer');
@@ -256,6 +258,7 @@ topaz__debug();
             <@>topaz_display__get_camera_3d = getExternalFunction(name:'topaz_display__get_camera_3d');
             <@>topaz_display__get_main_framebuffer = getExternalFunction(name:'topaz_display__get_main_framebuffer');
             return class(info:{
+                name : 'Topaz.Display',        
                 inherits : [__Native__],
                 define : ::(this) { 
                     @impl;
@@ -362,6 +365,7 @@ topaz__debug();
             <@>topaz_framebuffer__get_filtered_hint = getExternalFunction(name:'topaz_framebuffer__get_filtered_hint');
             <@>topaz_framebuffer__set_filtered_hint = getExternalFunction(name:'topaz_framebuffer__set_filtered_hint');
             return class(info:{
+                name : 'Topaz.Framebuffer',        
                 inherits : [__Native__],
                 define : ::(this) { 
                     @impl;
@@ -409,14 +413,19 @@ topaz__debug();
             <@>topaz_mesh__add_object = getExternalFunction(name:'topaz_mesh__add_object');
             <@>topaz_mesh__set_object = getExternalFunction(name:'topaz_mesh__set_object');
             <@>topaz_mesh__remove_object = getExternalFunction(name:'topaz_mesh__remove_object');
-            <@>topaz_mesh__set_object = getExternalFunction(name:'topaz_mesh__set_object');
             <@>topaz_mesh__define_vertices = getExternalFunction(name:'topaz_mesh__define_vertices');
             <@>topaz_mesh__get_object_count = getExternalFunction(name:'topaz_mesh__get_object_count');
 
             return class(info:{
+                name : 'Topaz.Mesh',        
                 inherits : [__Asset__],
                 define : ::(this){ 
-                    @impl = this.native;    
+                    @impl;
+                    this.constructor = ::(native){
+                        this[__Asset__].constructor(native:native);
+                        impl = this.native;
+                        return this;
+                    };    
                     this.interface = {
                         vertexCount : {
                             get : ::()       {return topaz_mesh__get_vertex_count(a:impl);},
@@ -493,12 +502,12 @@ topaz__debug();
                             }
                         },
         
-                        removeObject : ::(i){ 
-                            topaz_mesh__remove_object(a:impl, b:i);
+                        removeObject : ::(index){ 
+                            topaz_mesh__remove_object(a:impl, b:index);
                         },
         
-                        setObject : ::(i, value){ 
-                            topaz_mesh__set_object(a:impl, b:i, v:value);
+                        setObject : ::(index, value){ 
+                            topaz_mesh__set_object(a:impl, b:index, c:value);
                         }
                     };
                 }
@@ -514,18 +523,19 @@ topaz__debug();
             <@>topaz_input__add_keyboard_listener = getExternalFunction(name:'topaz_input__add_keyboard_listener');
             <@>topaz_input__add_pad_listener = getExternalFunction(name:'topaz_input__add_pad_listener');
             <@>topaz_input__add_pointer_listener = getExternalFunction(name:'topaz_input__add_pointer_listener');
-            <@>topaz_input__add_mappded_listener = getExternalFunction(name:'topaz_input__add_mappded_listener');
+            <@>topaz_input__add_mapped_listener = getExternalFunction(name:'topaz_input__add_mapped_listener');
             <@>topaz_input__remove_listener = getExternalFunction(name:'topaz_input__remove_listener');
             <@>topaz_input__get_state = getExternalFunction(name:'topaz_input__get_state');
             <@>topaz_input__get_pad_state = getExternalFunction(name:'topaz_input__get_pad_state');
             <@>topaz_input__get_mapped_state = getExternalFunction(name:'topaz_input__get_mapped_state');
             <@>topaz_input__set_deadzone = getExternalFunction(name:'topaz_input__set_deadzone');
             <@>topaz_input__query_pad_count = getExternalFunction(name:'topaz_input__query_pad_count');
-            <@>input_api__query_pad_id = getExternalFunction(name:'input_api__query_pad_id');
+            <@>topaz_input__query_pad_id = getExternalFunction(name:'topaz_input__query_pad_id');
             <@>topaz_input__add_unicode_listener = getExternalFunction(name:'topaz_input__add_unicode_listener');
             <@>topaz_input__remove_unicode_listener = getExternalFunction(name:'topaz_input__remove_unicode_listener');
 
             return class(info:{
+                name : 'Topaz.Input',        
                 define : ::(this) { 
                     this.interface = {
                         mouse : {   
@@ -545,17 +555,37 @@ topaz__debug();
                         },
         
         
-                        addKeyboardListener : ::(listener) { 
-                            return topaz_input__add_keyboard_listener(a:listener);
+                        addKeyboardListener : ::(onPress, onActive, onRelease, onUpdate) { 
+                            @onPressA   = if (onPress)   ::(a){onPress(input:a);} else empty;
+                            @onActiveA  = if (onActive)  ::(a, b){onActive(input:a, value:b);} else empty;
+                            @onReleaseA = if (onRelease) ::(a){onRelease(input:a);} else empty;
+                            @onUpdateA  = if (onUpdate)  ::(a, b){onUpdate(input:a, value:b);} else empty; 
+                                                     
+                            return topaz_input__add_keyboard_listener(a:{onPress:onPressA, onActive:onActiveA, onRelease:onReleaseA, onUpdate:onUpdateA});
                         },
-                        addPadListener : ::(listener, pad) { 
-                            return topaz_input__add_pad_listener(a:listener, b:pad);
+                        addPadListener : ::(onPress, onActive, onRelease, onUpdate, pad) { 
+                            @onPressA   = if (onPress)   ::(a){onPress(input:a);} else empty;
+                            @onActiveA  = if (onActive)  ::(a, b){onActive(input:a, value:b);} else empty;
+                            @onReleaseA = if (onRelease) ::(a){onRelease(input:a);} else empty;
+                            @onUpdateA  = if (onUpdate)  ::(a, b){onUpdate(input:a, value:b);} else empty; 
+
+                            return topaz_input__add_pad_listener(a:{onPress:onPressA, onActive:onActiveA, onRelease:onReleaseA, onUpdate:onUpdateA}, b:pad);
                         },
-                        addPointerListener : ::(listener) { 
-                            return topaz_input__add_pointer_listener(a:listener);
+                        addPointerListener : ::(onPress, onActive, onRelease, onUpdate) { 
+                            @onPressA   = if (onPress)   ::(a){onPress(input:a);} else empty;
+                            @onActiveA  = if (onActive)  ::(a, b){onActive(input:a, value:b);} else empty;
+                            @onReleaseA = if (onRelease) ::(a){onRelease(input:a);} else empty;
+                            @onUpdateA  = if (onUpdate)  ::(a, b){onUpdate(input:a, value:b);} else empty; 
+
+                            return topaz_input__add_pointer_listener(a:{onPress:onPressA, onActive:onActiveA, onRelease:onReleaseA, onUpdate:onUpdateA});
                         },
-                        addMappedListener : ::(listener, name) { 
-                            return topaz_input__add_mappded_listener(a:listener, b:name);
+                        addMappedListener : ::(onPress, onActive, onRelease, onUpdate, name) { 
+                            @onPressA   = if (onPress)   ::(a){onPress(input:a);} else empty;
+                            @onActiveA  = if (onActive)  ::(a, b){onActive(input:a, value:b);} else empty;
+                            @onReleaseA = if (onRelease) ::(a){onRelease(input:a);} else empty;
+                            @onUpdateA  = if (onUpdate)  ::(a, b){onUpdate(input:a, value:b);} else empty; 
+
+                            return topaz_input__add_mapped_listener(a:{onPress:onPressA, onActive:onActiveA, onRelease:onReleaseA, onUpdate:onUpdateA}, b:name);
                         },
                         removeListener : ::(id) { 
                             topaz_input__remove_listener(a:id);
@@ -582,7 +612,7 @@ topaz__debug();
                             @len = topaz_input__query_pad_count();
                             @out = [];
                             for(in:[0, len], do:::(i) {
-                                out[i] = input_api__query_pad_id(a:i);
+                                out[i] = topaz_input__query_pad_id(a:i);
                             });
                             return out;
                         },
@@ -617,8 +647,10 @@ topaz__debug();
 
 
             return class(info:{
+                name : 'Topaz.Audio',        
                 define : ::(this){ 
                     @ps = class(info:{
+                        name : 'Topaz.Audio.PlaybackSound',        
                         inherits : [__Native__],
                         define : ::(this) { 
                             @impl;
@@ -703,9 +735,15 @@ topaz__debug();
             <@>topaz_material__clear_sources = getExternalFunction(name:'topaz_material__clear_sources');
             <@>topaz_material__set_program_source = getExternalFunction(name:'topaz_material__set_program_source');
             return class(info:{
+                name : 'Topaz.Material',        
                 inherits : [__Asset__],
                 define : ::(this){ 
-                    @impl = this.native;
+                    @impl;
+                    this.constructor = ::(native) {
+                        this[__Asset__].constructor(native:native);
+                        impl = this.native;
+                        return this;
+                    };
                     this.interface = {
                         setProgramData : ::(index, value){ 
                             topaz_material__set_program_data(a:impl, b:index, c:value);
@@ -720,7 +758,7 @@ topaz__debug();
                         },
         
                         setProgramSource : ::(language, vertexShader, fragmentShader){ 
-                            topaz_material__set_program_source(a:impl, b:vertexShader, c:fragmentShader); 
+                            topaz_material__set_program_source(a:impl, b:language, c:vertexShader, d:fragmentShader); 
                         }
         
         
@@ -738,9 +776,15 @@ topaz__debug();
             <@>topaz_image__remove_frame = getExternalFunction(name:'topaz_image__remove_frame');
             <@>topaz_image__frame_set_rgba = getExternalFunction(name:'topaz_image__frame_set_rgba');
             return class(info:{
+                name : 'Topaz.Image',        
                 inherits : [__Asset__],
                 define : ::(this){ 
-                    @impl = this.native;
+                    @impl;
+                    this.constructor = ::(native) {
+                        this[__Asset__].constructor(native:native);
+                        impl = this.native;
+                        return this;
+                    };
                     this.interface = {
                         width : {
                             get : ::()   {return topaz_image__get_width(a:impl);} 
@@ -776,14 +820,18 @@ topaz__debug();
         @__Data__ = ::<={
             <@>topaz_data__get_byte_count = getExternalFunction(name:'topaz_data__get_byte_count');
             <@>topaz_data__get_as_string = getExternalFunction(name:'topaz_data__get_as_string');
-            <@>topaz_data__get_byte_count = getExternalFunction(name:'topaz_data__get_byte_count');
             <@>topaz_data__get_nth_byte = getExternalFunction(name:'topaz_data__get_nth_byte');
             <@>topaz_data__set = getExternalFunction(name:'topaz_data__set');
             return class(info:{
+                name : 'Topaz.Data',        
                 inherits : [__Asset__],
-                define : ::(this_, args, this_class) { 
-                    @impl = this.native;
-                    
+                define : ::(this) { 
+                    @impl;
+                    this.constructor = ::(native){
+                        this[__Asset__].constructor(native:native);
+                        impl = this.native;
+                        return this;
+                    };
                     this.interface = {
                         byteCount : {
                             get : ::()   {return topaz_data__get_byte_count(a:impl);} 
@@ -818,6 +866,7 @@ topaz__debug();
             <@>topaz_sound__get_nth_sample_right = getExternalFunction(name:'topaz_sound__get_nth_sample_right');
             <@>topaz_sound__set_samples = getExternalFunction(name:'topaz_sound__set_samples');
             return class(info: {
+                name : 'Topaz.Sound',        
                 inherits : [__Asset__],
                 define : ::(this){ 
                     @impl = this.native;            
@@ -851,7 +900,6 @@ topaz__debug();
         
         
         @__Resources__ = ::<={
-            <@>topaz_asset__get_type = getExternalFunction(name:'topaz_asset__get_type');
             <@>topaz_resources__fetch_asset = getExternalFunction(name:'topaz_resources__fetch_asset');
             <@>topaz_resources__create_asset = getExternalFunction(name:'topaz_resources__create_asset');
             <@>topaz_resources__load_asset = getExternalFunction(name:'topaz_resources__load_asset');
@@ -863,6 +911,7 @@ topaz__debug();
             <@>topaz_resources__get_path = getExternalFunction(name:'topaz_resources__get_path');
             <@>topaz_resources__set_path = getExternalFunction(name:'topaz_resources__set_path');
             return class(info:{
+                name : 'Topaz.Resources',        
                 define : ::(this){ 
                     @swtch = {};
                     swtch[TOPAZ.ASSET.TYPE.IMAGE] = ::(i){return __Topaz__.Image.new(native:i);}; 
@@ -932,6 +981,7 @@ topaz__debug();
             <@>topaz_font_manager__preload_glyphs = getExternalFunction(name:'topaz_font_manager__preload_glyphs');
             <@>topaz_font_manager__unregister_font = getExternalFunction(name:'topaz_font_manager__unregister_font');
             return class(info:{
+                name : 'Topaz.FontManager',        
                 define : ::(this) { 
                     this.interface = {
                         registerFont : ::(name){ 
@@ -952,6 +1002,8 @@ topaz__debug();
 
 
                 
+        <@>topaz_entity__remove_component = getExternalFunction(name:'topaz_entity__remove_component');
+        <@>topaz_entity__add_component = getExternalFunction(name:'topaz_entity__add_component');
 
         @__Entity__ = ::<={
             <@>topaz_entity__is_valid = getExternalFunction(name:'topaz_entity__is_valid');
@@ -984,11 +1036,9 @@ topaz__debug();
             <@>topaz_entity__set_stepping = getExternalFunction(name:'topaz_entity__set_stepping');
             <@>topaz_entity__get_name = getExternalFunction(name:'topaz_entity__get_name');
             <@>topaz_entity__set_name = getExternalFunction(name:'topaz_entity__set_name');
-            <@>topaz_entity__add_component = getExternalFunction(name:'topaz_entity__add_component');
             <@>topaz_entity__add_component_after = getExternalFunction(name:'topaz_entity__add_component_after');
             <@>topaz_entity__get_component_count = getExternalFunction(name:'topaz_entity__get_component_count');
             <@>topaz_entity__get_nth_component = getExternalFunction(name:'topaz_entity__get_nth_component');
-            <@>topaz_entity__remove_component = getExternalFunction(name:'topaz_entity__remove_component');
             <@>topaz_entity__query_component = getExternalFunction(name:'topaz_entity__query_component');
             <@>topaz_entity__set_on_step = getExternalFunction(name:'topaz_entity__set_on_step');
             <@>topaz_entity__set_on_draw = getExternalFunction(name:'topaz_entity__set_on_draw');
@@ -1001,13 +1051,18 @@ topaz__debug();
 
 
             return class(info: {
+                name : 'Topaz.Entity',        
                 inherits : [__Native__],
                 define : ::(this)    { 
+                    this.bindNative(
+                        nativeCreate : topaz_entity__create
+                    );
                     this.constructor = ::(native){
-                        this.bindNative(
-                            instance : native,
-                            nativeCreate : topaz_entity__create
-                        );
+                        if (native != empty) ::<={
+                            this.bindNative(
+                                instance : native
+                            );                        
+                        };
                         return this;
                     };
                     
@@ -1045,15 +1100,15 @@ topaz__debug();
                                 return children;
                             },
                             
-                            set : ::(c){ 
+                            set : ::(value){ 
                                 loop(func:::{
                                     when(topaz_entity__get_child_count(a:this.native) == 0) false;
                                     topaz_entity__detach(a:topaz_entity__get_nth_child(a:this.native, b:0));
                                     return true;
                                 });
                                     
-                                for(in:[0, introspect.length(of:c)], do:::(i) {
-                                    topaz_entity__attach(a:this.native, b:c[i].native);
+                                for(in:[0, introspect.keycount(of:value)], do:::(i) {
+                                    topaz_entity__attach(a:this.native, b:value[i].native);
                                 });
                             }
                         },
@@ -1183,7 +1238,7 @@ topaz__debug();
                                     return true;
                                 });
         
-                                for(in:[0, introspect.length(of:value)], do:::(i) {
+                                for(in:[0, introspect.keycount(of:value)], do:::(i) {
                                     topaz_entity__add_component(a:this.native, b:value[i].native);
                                 });
                             }
@@ -1240,7 +1295,7 @@ topaz__debug();
 
         @__Component__ = ::<= {
             <@>topaz_component__destroy = getExternalFunction(name:'topaz_component__destroy');
-            <@>topaz_component__run = getExternalFunction(name:'topaz_component__run');
+            <@>topaz_component__step = getExternalFunction(name:'topaz_component__step');
             <@>topaz_component__draw = getExternalFunction(name:'topaz_component__draw');
             <@>topaz_component__get_stepping = getExternalFunction(name:'topaz_component__get_stepping');
             <@>topaz_component__set_stepping = getExternalFunction(name:'topaz_component__set_stepping');
@@ -1249,8 +1304,6 @@ topaz__debug();
             <@>topaz_component__get_tag = getExternalFunction(name:'topaz_component__get_tag');
             <@>topaz_component__set_tag = getExternalFunction(name:'topaz_component__set_tag');
             <@>topaz_component__get_host = getExternalFunction(name:'topaz_component__get_host');
-            <@>topaz_entity__remove_component = getExternalFunction(name:'topaz_entity__remove_component');
-            <@>topaz_entity__add_component = getExternalFunction(name:'topaz_entity__add_component');
             <@>topaz_component__emit_event_anonymous = getExternalFunction(name:'topaz_component__emit_event_anonymous');
             <@>topaz_component__emit_event = getExternalFunction(name:'topaz_component__emit_event');
             <@>topaz_component__can_handle_event = getExternalFunction(name:'topaz_component__can_handle_event');
@@ -1266,19 +1319,30 @@ topaz__debug();
             <@>topaz_component__set_on_detach = getExternalFunction(name:'topaz_component__set_on_detach');
             <@>topaz_component__set_on_destroy = getExternalFunction(name:'topaz_component__set_on_destroy');
             <@>topaz_component__create = getExternalFunction(name:'topaz_component__create');
+            <@>nativeToE = ::(native) {
+                when (native.__ctx != empty) native.__ctx;
+                return __Entity__.new(native:native);
+            };
             return class(info:{
+                name : 'Topaz.Component',        
                 inherits : [__Native__],
                 define : ::(this){ 
+                    this.bindNative(
+                        nativeCreate : topaz_component__create
+                    );
+
                     // some classes will inherit and overwrite the native instance, so a 
                     // @impl doesnt make sense.
                     this.constructor = ::(native, tag) {
-                        this.bindNative(
-                            instance : native,
-                            nativeCreate : topaz_component__create,
-                            args: [tag]
-                        );
+                        if (native != empty) ::<= {
+                            this.bindNative(
+                                instance : native,
+                                args: [tag]
+                            );
+                        };
                         return this;
                     };
+                    
         
                     this.interface = {
                         destroy : ::(){ 
@@ -1286,7 +1350,7 @@ topaz__debug();
                         },
                         
                         step : ::(){ 
-                            topaz_component__run(a:this.native);
+                            topaz_component__step(a:this.native);
                         },
                         
                         draw : ::(){ 
@@ -1310,9 +1374,7 @@ topaz__debug();
                         
                         host : {
                             get : ::(){ 
-                                @f = topaz_component__get_host(a:this.native);
-                                when (f.__ctx != empty) f.__ctx;
-                                return __Topaz__.Entity.new(native:f);
+                                return nativeToE(native:topaz_component__get_host(a:this.native));
                             },
 
                             set : ::(v) {
@@ -1339,8 +1401,7 @@ topaz__debug();
                         },
                         
                         installEvent : ::(event, callback){ 
-                            @cb = if (callback != empty) callback else ::(source){}; 
-                                
+                            @cb = if (callback != empty) ::(a){callback(source:nativeToE(native:a));} else ::(a){};                                 
                             topaz_component__install_event(a:this.native, b:event, c:cb);
                         },
                         
@@ -1349,7 +1410,8 @@ topaz__debug();
                         },
                         
                         installHook : ::(event, callback){ 
-                            return topaz_component__install_hook(a:this.native, b:event, c:callback);
+                            @cb = if (callback != empty) ::(a){callback(source:nativeToE(native:a));} else ::(a){};                                 
+                            return topaz_component__install_hook(a:this.native, b:event, c:cb);
                         },
                         
                         uninstallHook : ::(event, id){ 
@@ -1357,7 +1419,8 @@ topaz__debug();
                         },
                         
                         installHandler : ::(event, callback){ 
-                            return topaz_component__install_handler(a:this.native, b:event, c:callback);
+                            @cb = if (callback != empty) ::(a){callback(source:nativeToE(native:a));} else ::(a){};                                 
+                            return topaz_component__install_handler(a:this.native, b:event, c:cb);
                         },
                         
                         uninstallHandler : ::(event, id){ 
@@ -1413,6 +1476,7 @@ topaz__debug();
             <@>topaz_text2d__get_attribute = getExternalFunction(name:'topaz_text2d__get_attribute');
 
             return class(info:{
+                name : 'Topaz.Text2D',        
                 inherits :[__Component__],
                 define : ::(this){ 
                     @impl;
@@ -1439,16 +1503,16 @@ topaz__debug();
                         
                         font : {
                             get : ::()  {return fontState;},
-                            set : ::(v) { 
-                                fontState = v;
+                            set : ::(value) { 
+                                fontState = value;
                                 topaz_text2d__set_font(a:impl, b:fontState, c:sizeState);
                             }
                         },
                         
                         size :  {
                             get : ::()  {return sizeState;},
-                            set : ::(v) { 
-                                sizeState = v;
+                            set : ::(value) { 
+                                sizeState = value;
                                 topaz_text2d__set_font(a:impl, b:fontState, c:sizeState);
                             }
                         },
@@ -1516,12 +1580,13 @@ topaz__debug();
             <@>topaz_scheduler__resume = getExternalFunction(name:'topaz_scheduler__resume');
             <@>topaz_scheduler__get_task_interval_remaining = getExternalFunction(name:'topaz_scheduler__get_task_interval_remaining');
             <@>topaz_scheduler__get_task_count = getExternalFunction(name:'topaz_scheduler__get_task_count');
-            <@>topaz_schedluer__get_task = getExternalFunction(name:'topaz_schedluer__get_task');
+            <@>topaz_scheduler__get_task = getExternalFunction(name:'topaz_scheduler__get_task');
 
 
             return class(info:{
+                name : 'Topaz.Scheduler',        
                 inherits :[__Component__],
-                define : ::(this_, args, this_class){ 
+                define : ::(this){ 
                     @impl;
                     this.constructor = ::(native) {
                         // whoops, the component constructor already made a generic component native.
@@ -1577,7 +1642,7 @@ topaz__debug();
                                 @out = [];
                                 @len = topaz_scheduler__get_task_count(a:impl);
                                 for(in:[0, len], do:::(i) {
-                                    out[i] = topaz_schedluer__get_task(a:impl, b:i);
+                                    out[i] = topaz_scheduler__get_task(a:impl, b:i);
                                 });
                                 return out;
                             }
@@ -1595,6 +1660,7 @@ topaz__debug();
             <@>topaz_state_control__is_halted = getExternalFunction(name:'topaz_state_control__is_halted');
             <@>topaz_state_control__get_current = getExternalFunction(name:'topaz_state_control__get_current');
             return class(info:{
+                name : 'Topaz.StateControl',        
                 inherits :[__Component__],
                 define : ::(this){ 
                     @impl;
@@ -1672,6 +1738,7 @@ topaz__debug();
             <@>topaz_object2d__get_last_collided = getExternalFunction(name:'topaz_object2d__get_last_collided');
             <@>topaz_object2d__get_collider_point = getExternalFunction(name:'topaz_object2d__get_collider_point');
             return class(info:{
+                name : 'Topaz.Object2D',        
                 inherits :[__Component__],
                 define : ::(this){ 
                     @impl;
@@ -1808,14 +1875,15 @@ topaz__debug();
             <@>topaz_shape2d__form_rectangle = getExternalFunction(name:'topaz_shape2d__form_rectangle');
             <@>topaz_shape2d__form_image = getExternalFunction(name:'topaz_shape2d__form_image');
             <@>topaz_shape2d__form_image_frame = getExternalFunction(name:'topaz_shape2d__form_image_frame');
-            <@>topaz_shape2d__form_image = getExternalFunction(name:'topaz_shape2d__form_image');
             <@>topaz_shape2d__form_radial = getExternalFunction(name:'topaz_shape2d__form_radial');
 
             return class(info:{
+                name : 'Topaz.Shape2D',        
                 inherits :[__Component__],
                 define : ::(this){ 
                     @impl;
                     this.constructor = ::(native) {
+                        this[__Component__].constructor(native:native);
                         // whoops, the component constructor already made a generic component native.
                         // destroy it and make a real one
                         this.native.__ctx.destroy();
@@ -1928,8 +1996,9 @@ topaz__debug();
             <@>topaz_shape3d__set_material = getExternalFunction(name:'topaz_shape3d__set_material');
 
             return class(info:{
+                name : 'Topaz.Shape3D',        
                 inherits :[__Component__],
-                define : ::(this_, args, this_class){ 
+                define : ::(this){ 
                     @impl;
                     this.constructor = ::(native) {
                         // whoops, the component constructor already made a generic component native.
@@ -2020,8 +2089,9 @@ topaz__debug();
             <@>topaz_automation__get_speed = getExternalFunction(name:'topaz_automation__get_speed');
 
             return class(info:{
+                name : 'Topaz.Automation',        
                 inherits :[__Component__],
-                define : ::(this_, args, this_class){ 
+                define : ::(this){ 
                     @impl;
                     this.constructor = ::(native) {
                         // whoops, the component constructor already made a generic component native.
@@ -2133,6 +2203,7 @@ topaz__debug();
             <@>topaz_particle__set_image = getExternalFunction(name:'topaz_particle__set_image');
             <@>topaz_particle__create = getExternalFunction(name:'topaz_particle__create');
             return class(info:{
+                name : 'Topaz.Particle',        
                 inherits : [__Native__],
                 define : ::(this){ 
 
@@ -2173,13 +2244,14 @@ topaz__debug();
             <@>topaz_particle_emitter_2d__set_independent = getExternalFunction(name:'topaz_particle_emitter_2d__set_independent');
             <@>topaz_particle_emitter_2d__emit = getExternalFunction(name:'topaz_particle_emitter_2d__emit');
             return class( info:{
+                name : 'Topaz.ParticleEmitter2D',        
                 inherits :[__Entity__],
                 define : ::(this) { 
                     @impl;
                     this.constructor = ::(native) {
                         // whoops, the component constructor already made a generic component native.
                         // destroy it and make a real one
-                        this.native.__ctx.destroy();
+                        //this.native.__ctx.destroy();
 
                         impl = this.bindNative(
                             instance : native,
@@ -2229,7 +2301,7 @@ topaz__debug();
             attachPostManagerUnpausable : ::(value){topaz__attach_post_manager_unpausable(a:value.native);},        
             quit : getExternalFunction(name:'topaz__quit'),
             wait ::(FPS) {topaz__wait(a:FPS);},
-            log ::(message, newline) {topaz__log(a:message, b:newline);},
+            log ::(message, newline) {topaz__log(a:message, b:if(newline == empty) true else newline);},
             toBase64 ::(bytes) {topaz__to_base64(a:bytes);},
             fromBase64 : ::(string) { 
                 return __Topaz__.Data.new(native:topaz__from_base64(a:string));
@@ -2239,8 +2311,8 @@ topaz__debug();
             },
             
             root : {
-                set : ::(entity){ 
-                    return topaz__set_root(a:entity.native);
+                set : ::(value){ 
+                    return topaz__set_root(a:value.native);
                 },
 
                 get : ::(){ 

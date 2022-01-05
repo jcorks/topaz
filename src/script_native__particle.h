@@ -6,7 +6,7 @@
 
 static topazScript_Object_t * particle_api__cleanup(
     topazScript_t * script, 
-    const topazArray_t * args, 
+    topazScript_Object_t ** args,
     void * userData
 ) {
     topaz_particle_destroy(userData);
@@ -26,14 +26,12 @@ TSO_SCRIPT_API_FN(particle_api__create) {
 }
 
 TSO_SCRIPT_API_FN(particle_api__to_string) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazParticle_t *, TSO_OBJECT_ID__PARTICLE);
 
     return topaz_script_object_from_string(script, topaz_particle_to_string(native));    
 }
 TSO_SCRIPT_API_FN(particle_api__set_from_string) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazParticle_t *, TSO_OBJECT_ID__PARTICLE);
@@ -44,7 +42,6 @@ TSO_SCRIPT_API_FN(particle_api__set_from_string) {
 
 
 TSO_SCRIPT_API_FN(particle_api__set_image) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazParticle_t *, TSO_OBJECT_ID__PARTICLE);
@@ -53,7 +50,6 @@ TSO_SCRIPT_API_FN(particle_api__set_image) {
     TSO_NO_RETURN; 
 }
 TSO_SCRIPT_API_FN(particle_api__get_attribute) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazParticle_t *, TSO_OBJECT_ID__PARTICLE);
@@ -70,7 +66,6 @@ TSO_SCRIPT_API_FN(particle_api__get_attribute) {
 }
 
 TSO_SCRIPT_API_FN(particle_api__set_attribute) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -86,7 +81,6 @@ TSO_SCRIPT_API_FN(particle_api__set_attribute) {
     TSO_NO_RETURN;
 }
 TSO_SCRIPT_API_FN(particle_api__set_noise_min) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -100,7 +94,6 @@ TSO_SCRIPT_API_FN(particle_api__set_noise_min) {
     TSO_NO_RETURN; 
 }
 TSO_SCRIPT_API_FN(particle_api__set_noise_max) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -114,7 +107,6 @@ TSO_SCRIPT_API_FN(particle_api__set_noise_max) {
     TSO_NO_RETURN; 
 }
 TSO_SCRIPT_API_FN(particle_api__set_function) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -132,17 +124,17 @@ TSO_SCRIPT_API_FN(particle_api__set_function) {
 
 
 static void add_refs__particle_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_particle__create", particle_api__create);
+    TS_MAP_NATIVE_FN("topaz_particle__create", particle_api__create, 0);
 
     // member functions
-    TS_MAP_NATIVE_FN("topaz_particle__to_string", particle_api__to_string);
-    TS_MAP_NATIVE_FN("topaz_particle__set_from_string", particle_api__set_from_string);
-    TS_MAP_NATIVE_FN("topaz_particle__set_image", particle_api__set_image);
-    TS_MAP_NATIVE_FN("topaz_particle__set_attribute", particle_api__set_attribute);
-    TS_MAP_NATIVE_FN("topaz_particle__get_attribute", particle_api__get_attribute);
-    TS_MAP_NATIVE_FN("topaz_particle__set_noise_min", particle_api__set_noise_min);
-    TS_MAP_NATIVE_FN("topaz_particle__set_noise_max", particle_api__set_noise_max);
-    TS_MAP_NATIVE_FN("topaz_particle__set_function", particle_api__set_function);
+    TS_MAP_NATIVE_FN("topaz_particle__to_string", particle_api__to_string, 1);
+    TS_MAP_NATIVE_FN("topaz_particle__set_from_string", particle_api__set_from_string, 2);
+    TS_MAP_NATIVE_FN("topaz_particle__set_image", particle_api__set_image, 2);
+    TS_MAP_NATIVE_FN("topaz_particle__set_attribute", particle_api__set_attribute, 3);
+    TS_MAP_NATIVE_FN("topaz_particle__get_attribute", particle_api__get_attribute, 2);
+    TS_MAP_NATIVE_FN("topaz_particle__set_noise_min", particle_api__set_noise_min, 3);
+    TS_MAP_NATIVE_FN("topaz_particle__set_noise_max", particle_api__set_noise_max, 3);
+    TS_MAP_NATIVE_FN("topaz_particle__set_function", particle_api__set_function, 3);
 
     
 }

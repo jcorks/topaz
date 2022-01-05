@@ -17,19 +17,19 @@ typedef struct {
 static void topaz_script_entity__on_attach(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = scr->onAttach;
     if (!fn) return;
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
 }
 
 static void topaz_script_entity__on_detach(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = scr->onDetach;
     if (!fn) return;
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
 }
 
 static void topaz_script_entity__on_remove(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = scr->onRemove;
     if (!fn) return;
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
     topaz_script_object_reference_unref(scr->self);
     void * context = scr->manager;
     TSO_OBJECT_UNKEEP_REF(scr->self, e);
@@ -39,25 +39,25 @@ static void topaz_script_entity__on_remove(topazEntity_t * e, TopazScriptEntity 
 static void topaz_script_entity__on_pre_step(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = scr->onPreStep;
     if (!fn) return;
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
 }
 
 static void topaz_script_entity__on_step(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = scr->onStep;
     if (!fn) return;
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
 }
 
 static void topaz_script_entity__on_pre_draw(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = scr->onPreDraw;
     if (!fn) return;
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
 }
 
 static void topaz_script_entity__on_draw(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = scr->onDraw;
     if (!fn) return;
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
+    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
 }
 
 
@@ -126,7 +126,6 @@ TSO_SCRIPT_API_FN(entity_api__get_child_count) {
 }
 
 TSO_SCRIPT_API_FN(entity_api__get_nth_child) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
@@ -158,7 +157,6 @@ TSO_SCRIPT_API_FN(entity_api__draw) {
 }
 
 TSO_SCRIPT_API_FN(entity_api__attach) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
@@ -308,7 +306,6 @@ TSO_SCRIPT_API_FN(entity_api__get_parent) {
 }
 
 TSO_SCRIPT_API_FN(entity_api__query) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
@@ -323,7 +320,6 @@ TSO_SCRIPT_API_FN(entity_api__query) {
 }
 
 TSO_SCRIPT_API_FN(entity_api__search) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
@@ -340,7 +336,6 @@ TSO_SCRIPT_API_FN(entity_api__search) {
 
 
 TSO_SCRIPT_API_FN(entity_api__set_priority) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
@@ -402,7 +397,6 @@ TSO_SCRIPT_API_FN(entity_api__get_scale) {
 
 
 TSO_SCRIPT_API_FN(entity_api__set_rotation) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
@@ -413,7 +407,6 @@ TSO_SCRIPT_API_FN(entity_api__set_rotation) {
 }
 
 TSO_SCRIPT_API_FN(entity_api__set_position) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
@@ -424,7 +417,6 @@ TSO_SCRIPT_API_FN(entity_api__set_position) {
 }
 
 TSO_SCRIPT_API_FN(entity_api__set_scale) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
@@ -459,7 +451,6 @@ TSO_SCRIPT_API_FN(entity_api__is_drawing) {
 }
 
 TSO_SCRIPT_API_FN(entity_api__set_stepping) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
@@ -468,7 +459,6 @@ TSO_SCRIPT_API_FN(entity_api__set_stepping) {
 }
 
 TSO_SCRIPT_API_FN(entity_api__set_drawing) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
@@ -492,7 +482,6 @@ TSO_SCRIPT_API_FN(entity_api__get_drawing) {
 
 
 TSO_SCRIPT_API_FN(entity_api__set_name) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
@@ -510,54 +499,54 @@ TSO_SCRIPT_API_FN(entity_api__get_name) {
 
 static void add_refs__entity_api(topazScript_t * script, topazScriptManager_t * context) {
 
-    TS_MAP_NATIVE_FN("topaz_entity__create", entity_api__create);
-    TS_MAP_NATIVE_FN("topaz_entity__null", entity_api__null);
+    TS_MAP_NATIVE_FN("topaz_entity__create", entity_api__create, 0);
+    TS_MAP_NATIVE_FN("topaz_entity__null", entity_api__null, 0);
 
     // member functions
-    TS_MAP_NATIVE_FN("topaz_entity__is_valid", entity_api__is_valid);
-    TS_MAP_NATIVE_FN("topaz_entity__remove", entity_api__remove);
-    TS_MAP_NATIVE_FN("topaz_entity__get_child_count", entity_api__get_child_count);
-    TS_MAP_NATIVE_FN("topaz_entity__get_nth_child", entity_api__get_nth_child);
-    TS_MAP_NATIVE_FN("topaz_entity__step", entity_api__step);
-    TS_MAP_NATIVE_FN("topaz_entity__draw", entity_api__draw);
-    TS_MAP_NATIVE_FN("topaz_entity__attach", entity_api__attach);
-    TS_MAP_NATIVE_FN("topaz_entity__detach", entity_api__detach);
-    TS_MAP_NATIVE_FN("topaz_entity__get_parent", entity_api__get_parent);
-    TS_MAP_NATIVE_FN("topaz_entity__query", entity_api__query);
-    TS_MAP_NATIVE_FN("topaz_entity__search", entity_api__search);
+    TS_MAP_NATIVE_FN("topaz_entity__is_valid", entity_api__is_valid, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__remove", entity_api__remove, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__get_child_count", entity_api__get_child_count, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__get_nth_child", entity_api__get_nth_child, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__step", entity_api__step, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__draw", entity_api__draw, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__attach", entity_api__attach, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__detach", entity_api__detach, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__get_parent", entity_api__get_parent, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__query", entity_api__query, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__search", entity_api__search, 2);
 
-    TS_MAP_NATIVE_FN("topaz_entity__set_priority", entity_api__set_priority);
-    TS_MAP_NATIVE_FN("topaz_entity__set_priority_last", entity_api__set_priority_last);
-    TS_MAP_NATIVE_FN("topaz_entity__set_priority_first", entity_api__set_priority_first);
-    TS_MAP_NATIVE_FN("topaz_entity__get_priority", entity_api__get_priority);
+    TS_MAP_NATIVE_FN("topaz_entity__set_priority", entity_api__set_priority, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__set_priority_last", entity_api__set_priority_last, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__set_priority_first", entity_api__set_priority_first, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__get_priority", entity_api__get_priority, 1);
 
     // copy of vector as a value; no references
-    TS_MAP_NATIVE_FN("topaz_entity__get_rotation", entity_api__get_rotation);
-    TS_MAP_NATIVE_FN("topaz_entity__get_position", entity_api__get_position);
-    TS_MAP_NATIVE_FN("topaz_entity__get_scale", entity_api__get_scale);
+    TS_MAP_NATIVE_FN("topaz_entity__get_rotation", entity_api__get_rotation, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__get_position", entity_api__get_position, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__get_scale", entity_api__get_scale, 1);
 
-    TS_MAP_NATIVE_FN("topaz_entity__set_rotation", entity_api__set_rotation);
-    TS_MAP_NATIVE_FN("topaz_entity__set_position", entity_api__set_position);
-    TS_MAP_NATIVE_FN("topaz_entity__set_scale", entity_api__set_scale);
+    TS_MAP_NATIVE_FN("topaz_entity__set_rotation", entity_api__set_rotation, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__set_position", entity_api__set_position, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__set_scale", entity_api__set_scale, 2);
 
-    TS_MAP_NATIVE_FN("topaz_entity__get_global_position", entity_api__get_global_position);
-    TS_MAP_NATIVE_FN("topaz_entity__is_stepping", entity_api__is_stepping);
-    TS_MAP_NATIVE_FN("topaz_entity__is_drawing", entity_api__is_drawing);
-    TS_MAP_NATIVE_FN("topaz_entity__set_stepping", entity_api__set_stepping);
-    TS_MAP_NATIVE_FN("topaz_entity__set_drawing", entity_api__set_drawing);
-    TS_MAP_NATIVE_FN("topaz_entity__get_stepping", entity_api__get_stepping);
-    TS_MAP_NATIVE_FN("topaz_entity__get_drawing", entity_api__get_drawing);
+    TS_MAP_NATIVE_FN("topaz_entity__get_global_position", entity_api__get_global_position, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__is_stepping", entity_api__is_stepping, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__is_drawing", entity_api__is_drawing, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__set_stepping", entity_api__set_stepping, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__set_drawing", entity_api__set_drawing, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__get_stepping", entity_api__get_stepping, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__get_drawing", entity_api__get_drawing, 1);
 
-    TS_MAP_NATIVE_FN("topaz_entity__set_on_attach", entity_api__set_on_attach);
-    TS_MAP_NATIVE_FN("topaz_entity__set_on_detach", entity_api__set_on_detach);
-    TS_MAP_NATIVE_FN("topaz_entity__set_on_remove", entity_api__set_on_remove);
-    TS_MAP_NATIVE_FN("topaz_entity__set_on_step", entity_api__set_on_step);
-    TS_MAP_NATIVE_FN("topaz_entity__set_on_draw", entity_api__set_on_draw);
-    TS_MAP_NATIVE_FN("topaz_entity__set_on_pre_step", entity_api__set_on_pre_step);
-    TS_MAP_NATIVE_FN("topaz_entity__set_on_pre_draw", entity_api__set_on_pre_draw);
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_attach", entity_api__set_on_attach, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_detach", entity_api__set_on_detach, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_remove", entity_api__set_on_remove, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_step", entity_api__set_on_step, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_draw", entity_api__set_on_draw, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_pre_step", entity_api__set_on_pre_step, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__set_on_pre_draw", entity_api__set_on_pre_draw, 2);
 
 
-    TS_MAP_NATIVE_FN("topaz_entity__set_name", entity_api__set_name);
-    TS_MAP_NATIVE_FN("topaz_entity__get_name", entity_api__get_name);
+    TS_MAP_NATIVE_FN("topaz_entity__set_name", entity_api__set_name, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__get_name", entity_api__get_name, 1);
 
 }

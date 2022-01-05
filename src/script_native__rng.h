@@ -42,7 +42,7 @@ TSO_SCRIPT_API_FN(rng_api__next_value) {
 
 static topazScript_Object_t * rng_api__cleanup(
     topazScript_t * script, 
-    const topazArray_t * args, 
+    topazScript_Object_t ** args,
     void * userData
 ) {
     free(userData);
@@ -54,9 +54,9 @@ static topazScript_Object_t * rng_api__cleanup(
 
 TSO_SCRIPT_API_FN(rng_api__create) {
     topazRNG_t * ptr = topaz_rng_create();
+    TSO_ARG_0;
 
-    if (topaz_array_get_size(args) == 1) { // from string
-        TSO_ARG_0;
+    if (topaz_script_object_get_type(arg0) != topazScript_Object_Type_Undefined) { // from string
         topaz_rng_set_seed(ptr, rng_str_to_seed(topaz_script_object_as_string(arg0)));        
     } 
 
@@ -72,11 +72,11 @@ TSO_SCRIPT_API_FN(rng_api__create) {
 
 
 static void add_refs__rng_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_rng__create", rng_api__create);
+    TS_MAP_NATIVE_FN("topaz_rng__create", rng_api__create, 1);
     
-    TS_MAP_NATIVE_FN("topaz_rng__set_seed", rng_api__set_seed);
-    TS_MAP_NATIVE_FN("topaz_rng__next_int", rng_api__next_int);
-    TS_MAP_NATIVE_FN("topaz_rng__next_value", rng_api__next_value);
+    TS_MAP_NATIVE_FN("topaz_rng__set_seed", rng_api__set_seed, 2);
+    TS_MAP_NATIVE_FN("topaz_rng__next_int", rng_api__next_int, 1);
+    TS_MAP_NATIVE_FN("topaz_rng__next_value", rng_api__next_value, 1);
 }
 
 

@@ -1,43 +1,47 @@
-const StringVisual = tclass({
-    inherits : Topaz.Entity,
-    define : function(ent) {
-        const visual = Topaz.Text2D.new();    
+<@>Topaz = import(module:'Topaz.Core');
+<@>Color = import(module:'Topaz.Color');
+<@>class = import(module:'Matte.Core.Class');
+
+<@>StringVisual = class(info:{
+    inherits : [Topaz.Entity],
+    define ::(this) {
+        @visual = Topaz.Text2D.new();    
         visual.font = 'MyFont';
         visual.size =  40;
 
 
-        const bg = Topaz.Shape2D.new();
-        bg.color = Color.fromString('purple');
+        @bg = Topaz.Shape2D.new();
+        bg.color = Color.parse(string:'purple');
 
-        ent.components = [bg, visual];
+        this.components = [bg, visual];
 
-        ent.interface({
-            setText : function(text) {
+        this.interface = {
+            update::(text) {
                 visual.text = text;
                 bg.formRectangle(
-                    visual.extentWidth,
-                    visual.extentHeight
+                    width:visual.extentWidth,
+                    height:visual.extentHeight
                 );
             }
-        });
+        };
     }
 });
 
 
 
 Topaz.Resources.loadAsset(
-    "", // asset extension,
-    "PublicSans-Regular.ttf",
-    "MyFont"
+    extension:"", // asset extension,
+    path:"PublicSans-Regular.ttf",
+    name:"MyFont"
 );
 
 
-Topaz.FontManager.registerFont('MyFont');
+Topaz.FontManager.registerFont(name:'MyFont');
 
 
 
-var ent = StringVisual.new();
-ent.setText('Hello world!\nThis is text.');
+@ent = StringVisual.new();
+ent.update(text:'Hello world!\nThis is text.');
 
 
 

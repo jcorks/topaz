@@ -17,7 +17,7 @@ TSO_SCRIPT_API_FN(asset_api__get_type) {
 
 static void add_refs__asset_api(topazScript_t * script, topazScriptManager_t * context) {
 
-    TS_MAP_NATIVE_FN("topaz_asset__get_name", asset_api__get_name);
-    TS_MAP_NATIVE_FN("topaz_asset__get_type", asset_api__get_type);
+    TS_MAP_NATIVE_FN("topaz_asset__get_name", asset_api__get_name, 1);
+    TS_MAP_NATIVE_FN("topaz_asset__get_type", asset_api__get_type, 1);
 
 }

@@ -3,14 +3,12 @@
 
 
 TSO_SCRIPT_API_FN(image_api__get_width) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__IMAGE);   
     return topaz_script_object_from_int(script, topaz_image_get_width(native));
 }
 
 TSO_SCRIPT_API_FN(image_api__get_height) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__IMAGE);   
     return topaz_script_object_from_int(script, topaz_image_get_height(native));
@@ -18,7 +16,6 @@ TSO_SCRIPT_API_FN(image_api__get_height) {
 
 
 TSO_SCRIPT_API_FN(image_api__resize) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -36,7 +33,6 @@ TSO_SCRIPT_API_FN(image_api__resize) {
 
 
 TSO_SCRIPT_API_FN(image_api__add_frame) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__IMAGE);   
@@ -47,7 +43,6 @@ TSO_SCRIPT_API_FN(image_api__add_frame) {
 
 
 TSO_SCRIPT_API_FN(image_api__remove_frame) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
 
@@ -59,7 +54,6 @@ TSO_SCRIPT_API_FN(image_api__remove_frame) {
 
 
 TSO_SCRIPT_API_FN(image_api__get_frame_count) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__IMAGE);   
@@ -68,7 +62,6 @@ TSO_SCRIPT_API_FN(image_api__get_frame_count) {
 
 
 TSO_SCRIPT_API_FN(image_api__frame_set_rgba) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -120,14 +113,14 @@ TSO_SCRIPT_API_FN(image_api__frame_set_rgba) {
 
 static void add_refs__image_api(topazScript_t * script, topazScriptManager_t * context) {
     // member functions
-    TS_MAP_NATIVE_FN("topaz_image__get_width", image_api__get_width);
-    TS_MAP_NATIVE_FN("topaz_image__get_height", image_api__get_height);
+    TS_MAP_NATIVE_FN("topaz_image__get_width", image_api__get_width, 1);
+    TS_MAP_NATIVE_FN("topaz_image__get_height", image_api__get_height, 1);
 
-    TS_MAP_NATIVE_FN("topaz_image__resize", image_api__resize);
-    TS_MAP_NATIVE_FN("topaz_image__add_frame", image_api__add_frame);
-    TS_MAP_NATIVE_FN("topaz_image__remove_frame", image_api__remove_frame);
-    TS_MAP_NATIVE_FN("topaz_image__get_frame_count", image_api__get_frame_count);
-    TS_MAP_NATIVE_FN("topaz_image__frame_set_rgba", image_api__frame_set_rgba);
+    TS_MAP_NATIVE_FN("topaz_image__resize", image_api__resize, 3);
+    TS_MAP_NATIVE_FN("topaz_image__add_frame", image_api__add_frame, 1);
+    TS_MAP_NATIVE_FN("topaz_image__remove_frame", image_api__remove_frame, 2);
+    TS_MAP_NATIVE_FN("topaz_image__get_frame_count", image_api__get_frame_count, 1);
+    TS_MAP_NATIVE_FN("topaz_image__frame_set_rgba", image_api__frame_set_rgba, 3);
     //TS_MAP_NATIVE_FN("topaz_image__frame_get_rgba", image_api__frame_get_rgba);
     
 

@@ -1,7 +1,6 @@
 #include <topaz/assets/material.h>
 
 TSO_SCRIPT_API_FN(material_api__set_program_data) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -17,7 +16,6 @@ TSO_SCRIPT_API_FN(material_api__set_program_data) {
 }
 
 TSO_SCRIPT_API_FN(material_api__get_program_data) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__MATERIAL);   
@@ -33,7 +31,6 @@ TSO_SCRIPT_API_FN(material_api__get_program_data) {
 }
 
 TSO_SCRIPT_API_FN(material_api__set_program_source) {
-    TSO_ASSERT_ARG_COUNT(4);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -53,7 +50,6 @@ TSO_SCRIPT_API_FN(material_api__set_program_source) {
 
 
 TSO_SCRIPT_API_FN(material_api__clear_sources) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__MATERIAL);   
 
@@ -67,10 +63,10 @@ static void add_refs__material_api(topazScript_t * script, topazScriptManager_t 
     // member functions
     
     // set / get on a per-float basis and hope performance would be too bad
-    TS_MAP_NATIVE_FN("topaz_material__set_program_data", material_api__set_program_data);
-    TS_MAP_NATIVE_FN("topaz_material__get_program_data", material_api__get_program_data);
+    TS_MAP_NATIVE_FN("topaz_material__set_program_data", material_api__set_program_data, 3);
+    TS_MAP_NATIVE_FN("topaz_material__get_program_data", material_api__get_program_data, 2);
 
-    TS_MAP_NATIVE_FN("topaz_material__set_program_source", material_api__set_program_source);
-    TS_MAP_NATIVE_FN("topaz_material__clear_sources", material_api__clear_sources);
+    TS_MAP_NATIVE_FN("topaz_material__set_program_source", material_api__set_program_source, 4);
+    TS_MAP_NATIVE_FN("topaz_material__clear_sources", material_api__clear_sources, 1);
     
 }

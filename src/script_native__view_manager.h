@@ -3,7 +3,6 @@
 #include <topaz/camera.h>
 
 TSO_SCRIPT_API_FN(view_manager_api__set_main) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
 
@@ -36,7 +35,6 @@ TSO_SCRIPT_API_FN(view_manager_api__get_clipboard_as_string) {
 }
 
 TSO_SCRIPT_API_FN(view_manager_api__set_clipboard_from_string) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     
 
@@ -53,7 +51,6 @@ TSO_SCRIPT_API_FN(view_manager_api__set_clipboard_from_string) {
 
 
 TSO_SCRIPT_API_FN(display_api__destroy) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
     topaz_script_object_reference_set_native_data(arg0, NULL, 0);    
@@ -70,7 +67,6 @@ TSO_SCRIPT_API_FN(view_manager_api__create_display) {
 }
 
 TSO_SCRIPT_API_FN(display_api__get_parameter) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
@@ -85,7 +81,6 @@ TSO_SCRIPT_API_FN(display_api__get_parameter) {
 }
 
 TSO_SCRIPT_API_FN(display_api__is_parameter_modifiable) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
@@ -101,7 +96,6 @@ TSO_SCRIPT_API_FN(display_api__is_parameter_modifiable) {
 
 
 TSO_SCRIPT_API_FN(display_api__set_parameter) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -155,7 +149,6 @@ static void script_close_callback(topazDisplay_t * d, void * data) {
 
 
 TSO_SCRIPT_API_FN(display_api__add_parameter_callback) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
@@ -182,7 +175,6 @@ TSO_SCRIPT_API_FN(display_api__add_parameter_callback) {
 
 
 TSO_SCRIPT_API_FN(display_api__add_close_callback) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
@@ -208,7 +200,6 @@ TSO_SCRIPT_API_FN(display_api__add_close_callback) {
 
 
 TSO_SCRIPT_API_FN(display_api__remove_callback) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
@@ -225,7 +216,6 @@ TSO_SCRIPT_API_FN(display_api__remove_callback) {
 
 
 TSO_SCRIPT_API_FN(display_api__get_camera_2d) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
     topazEntity_t * out = topaz_display_get_2d_camera(native);
@@ -234,7 +224,6 @@ TSO_SCRIPT_API_FN(display_api__get_camera_2d) {
 }
 
 TSO_SCRIPT_API_FN(display_api__get_camera_3d) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
     topazEntity_t * out = topaz_display_get_3d_camera(native);
@@ -243,7 +232,6 @@ TSO_SCRIPT_API_FN(display_api__get_camera_3d) {
 }
 
 TSO_SCRIPT_API_FN(display_api__get_framebuffer) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
@@ -255,7 +243,6 @@ TSO_SCRIPT_API_FN(display_api__get_framebuffer) {
     return object;
 }
 TSO_SCRIPT_API_FN(display_api__use_framebuffer) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
@@ -269,7 +256,6 @@ TSO_SCRIPT_API_FN(display_api__use_framebuffer) {
 }
 
 TSO_SCRIPT_API_FN(display_api__get_main_framebuffer) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
     
@@ -280,7 +266,6 @@ TSO_SCRIPT_API_FN(display_api__get_main_framebuffer) {
 
 
 TSO_SCRIPT_API_FN(display_api__clear_main_framebuffer) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
@@ -294,7 +279,6 @@ TSO_SCRIPT_API_FN(display_api__clear_main_framebuffer) {
 }
 
 TSO_SCRIPT_API_FN(display_api__capture_main_framebuffer) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
@@ -309,7 +293,6 @@ TSO_SCRIPT_API_FN(display_api__capture_main_framebuffer) {
 }
 
 TSO_SCRIPT_API_FN(framebuffer_api__get_width) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazRenderer_Framebuffer_t *, TSO_OBJECT_ID__FRAMEBUFFER);
 
@@ -320,7 +303,6 @@ TSO_SCRIPT_API_FN(framebuffer_api__get_width) {
 }
 
 TSO_SCRIPT_API_FN(framebuffer_api__get_height) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazRenderer_Framebuffer_t *, TSO_OBJECT_ID__FRAMEBUFFER);
 
@@ -332,7 +314,6 @@ TSO_SCRIPT_API_FN(framebuffer_api__get_height) {
 
 
 TSO_SCRIPT_API_FN(framebuffer_api__resize) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -346,7 +327,6 @@ TSO_SCRIPT_API_FN(framebuffer_api__resize) {
 }
 
 TSO_SCRIPT_API_FN(framebuffer_api__get_filtered_hint) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazRenderer_Framebuffer_t *, TSO_OBJECT_ID__FRAMEBUFFER);
     
@@ -358,7 +338,6 @@ TSO_SCRIPT_API_FN(framebuffer_api__get_filtered_hint) {
 
 
 TSO_SCRIPT_API_FN(framebuffer_api__set_filtered_hint) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazRenderer_Framebuffer_t *, TSO_OBJECT_ID__FRAMEBUFFER);
@@ -373,34 +352,34 @@ TSO_SCRIPT_API_FN(framebuffer_api__set_filtered_hint) {
 
 
 static void add_refs__view_manager_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_view_manager__set_main", view_manager_api__set_main);
-    TS_MAP_NATIVE_FN("topaz_view_manager__get_main", view_manager_api__get_main);
-    TS_MAP_NATIVE_FN("topaz_view_manager__get_clipboard_as_string", view_manager_api__get_clipboard_as_string);
-    TS_MAP_NATIVE_FN("topaz_view_manager__set_clipboard_from_string", view_manager_api__set_clipboard_from_string);
-    TS_MAP_NATIVE_FN("topaz_view_manager__create_display", view_manager_api__create_display);
+    TS_MAP_NATIVE_FN("topaz_view_manager__set_main", view_manager_api__set_main, 1);
+    TS_MAP_NATIVE_FN("topaz_view_manager__get_main", view_manager_api__get_main, 0);
+    TS_MAP_NATIVE_FN("topaz_view_manager__get_clipboard_as_string", view_manager_api__get_clipboard_as_string, 0);
+    TS_MAP_NATIVE_FN("topaz_view_manager__set_clipboard_from_string", view_manager_api__set_clipboard_from_string, 1);
+    TS_MAP_NATIVE_FN("topaz_view_manager__create_display", view_manager_api__create_display, 0);
 
 
-    TS_MAP_NATIVE_FN("topaz_display__destroy", display_api__destroy);
-    TS_MAP_NATIVE_FN("topaz_display__get_parameter", display_api__get_parameter);
-    TS_MAP_NATIVE_FN("topaz_display__set_parameter", display_api__set_parameter);
-    TS_MAP_NATIVE_FN("topaz_display__is_parameter_modifiable", display_api__is_parameter_modifiable);
+    TS_MAP_NATIVE_FN("topaz_display__destroy", display_api__destroy, 1);
+    TS_MAP_NATIVE_FN("topaz_display__get_parameter", display_api__get_parameter, 2);
+    TS_MAP_NATIVE_FN("topaz_display__set_parameter", display_api__set_parameter, 3);
+    TS_MAP_NATIVE_FN("topaz_display__is_parameter_modifiable", display_api__is_parameter_modifiable, 2);
 
-    TS_MAP_NATIVE_FN("topaz_display__add_parameter_callback", display_api__add_parameter_callback);
-    TS_MAP_NATIVE_FN("topaz_display__add_close_callback", display_api__add_close_callback);
-    TS_MAP_NATIVE_FN("topaz_display__remove_callback", display_api__remove_callback);
-    TS_MAP_NATIVE_FN("topaz_display__get_camera_2d", display_api__get_camera_2d);
-    TS_MAP_NATIVE_FN("topaz_display__get_camera_3d", display_api__get_camera_3d);
-    TS_MAP_NATIVE_FN("topaz_display__get_framebuffer", display_api__get_framebuffer);
-    TS_MAP_NATIVE_FN("topaz_display__use_framebuffer", display_api__use_framebuffer);
-    TS_MAP_NATIVE_FN("topaz_display__get_main_framebuffer", display_api__get_main_framebuffer);
-    TS_MAP_NATIVE_FN("topaz_display__clear_main_framebuffer", display_api__clear_main_framebuffer);
-    TS_MAP_NATIVE_FN("topaz_display__capture_main_framebuffer", display_api__capture_main_framebuffer);
+    TS_MAP_NATIVE_FN("topaz_display__add_parameter_callback", display_api__add_parameter_callback, 2);
+    TS_MAP_NATIVE_FN("topaz_display__add_close_callback", display_api__add_close_callback, 2);
+    TS_MAP_NATIVE_FN("topaz_display__remove_callback", display_api__remove_callback, 2);
+    TS_MAP_NATIVE_FN("topaz_display__get_camera_2d", display_api__get_camera_2d, 1);
+    TS_MAP_NATIVE_FN("topaz_display__get_camera_3d", display_api__get_camera_3d, 1);
+    TS_MAP_NATIVE_FN("topaz_display__get_framebuffer", display_api__get_framebuffer, 2);
+    TS_MAP_NATIVE_FN("topaz_display__use_framebuffer", display_api__use_framebuffer, 2);
+    TS_MAP_NATIVE_FN("topaz_display__get_main_framebuffer", display_api__get_main_framebuffer, 1);
+    TS_MAP_NATIVE_FN("topaz_display__clear_main_framebuffer", display_api__clear_main_framebuffer, 2);
+    TS_MAP_NATIVE_FN("topaz_display__capture_main_framebuffer", display_api__capture_main_framebuffer, 2);
 
-    TS_MAP_NATIVE_FN("topaz_framebuffer__get_width", framebuffer_api__get_width);
-    TS_MAP_NATIVE_FN("topaz_framebuffer__get_height", framebuffer_api__get_height);
-    TS_MAP_NATIVE_FN("topaz_framebuffer__set_filtered_hint", framebuffer_api__set_filtered_hint);
-    TS_MAP_NATIVE_FN("topaz_framebuffer__get_filtered_hint", framebuffer_api__get_filtered_hint);
-    TS_MAP_NATIVE_FN("topaz_framebuffer__resize", framebuffer_api__resize);
+    TS_MAP_NATIVE_FN("topaz_framebuffer__get_width", framebuffer_api__get_width, 1);
+    TS_MAP_NATIVE_FN("topaz_framebuffer__get_height", framebuffer_api__get_height, 1);
+    TS_MAP_NATIVE_FN("topaz_framebuffer__set_filtered_hint", framebuffer_api__set_filtered_hint, 2);
+    TS_MAP_NATIVE_FN("topaz_framebuffer__get_filtered_hint", framebuffer_api__get_filtered_hint, 1);
+    TS_MAP_NATIVE_FN("topaz_framebuffer__resize", framebuffer_api__resize, 3);
     
 
    

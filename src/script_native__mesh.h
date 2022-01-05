@@ -3,7 +3,6 @@
 
 
 TSO_SCRIPT_API_FN(mesh_api__get_vertex_count) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__MESH);   
 
@@ -16,7 +15,6 @@ TSO_SCRIPT_API_FN(mesh_api__get_vertex_count) {
 
 
 TSO_SCRIPT_API_FN(mesh_api__set_vertex_count) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__MESH);   
@@ -28,7 +26,6 @@ TSO_SCRIPT_API_FN(mesh_api__set_vertex_count) {
 }
 
 TSO_SCRIPT_API_FN(mesh_api__define_vertices) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__MESH);
@@ -49,7 +46,6 @@ TSO_SCRIPT_API_FN(mesh_api__define_vertices) {
     TSO_NO_RETURN;
 }
 TSO_SCRIPT_API_FN(mesh_api__get_vertex) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1; // vertex
     TSO_ARG_2; // attribute 
@@ -78,7 +74,6 @@ TSO_SCRIPT_API_FN(mesh_api__get_vertex) {
     );
 }
 TSO_SCRIPT_API_FN(mesh_api__set_vertex) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1; // vertex
     TSO_ARG_2; // data array
@@ -141,7 +136,6 @@ TSO_SCRIPT_API_FN(mesh_api__set_vertex) {
 
 
 TSO_SCRIPT_API_FN(mesh_api__add_object) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__MESH);   
 
@@ -150,7 +144,6 @@ TSO_SCRIPT_API_FN(mesh_api__add_object) {
     TSO_NO_RETURN;
 }
 TSO_SCRIPT_API_FN(mesh_api__get_object_count) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__MESH);   
 
@@ -162,7 +155,6 @@ TSO_SCRIPT_API_FN(mesh_api__get_object_count) {
 }
 
 TSO_SCRIPT_API_FN(mesh_api__remove_object) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__MESH);   
@@ -177,7 +169,6 @@ TSO_SCRIPT_API_FN(mesh_api__remove_object) {
 }
 
 TSO_SCRIPT_API_FN(mesh_api__set_object) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -205,16 +196,16 @@ TSO_SCRIPT_API_FN(mesh_api__set_object) {
 
 
 static void add_refs__mesh_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_mesh__get_vertex_count", mesh_api__get_vertex_count);
-    TS_MAP_NATIVE_FN("topaz_mesh__set_vertex_count", mesh_api__set_vertex_count);
-    TS_MAP_NATIVE_FN("topaz_mesh__define_vertices", mesh_api__define_vertices);
-    TS_MAP_NATIVE_FN("topaz_mesh__get_vertex", mesh_api__get_vertex);
-    TS_MAP_NATIVE_FN("topaz_mesh__set_vertex", mesh_api__set_vertex);
+    TS_MAP_NATIVE_FN("topaz_mesh__get_vertex_count", mesh_api__get_vertex_count, 1);
+    TS_MAP_NATIVE_FN("topaz_mesh__set_vertex_count", mesh_api__set_vertex_count, 2);
+    TS_MAP_NATIVE_FN("topaz_mesh__define_vertices", mesh_api__define_vertices, 2);
+    TS_MAP_NATIVE_FN("topaz_mesh__get_vertex", mesh_api__get_vertex, 2);
+    TS_MAP_NATIVE_FN("topaz_mesh__set_vertex", mesh_api__set_vertex, 3);
 
-    TS_MAP_NATIVE_FN("topaz_mesh__add_object", mesh_api__add_object);
-    TS_MAP_NATIVE_FN("topaz_mesh__get_object_count", mesh_api__get_object_count);
-    TS_MAP_NATIVE_FN("topaz_mesh__remove_object", mesh_api__remove_object);
-    TS_MAP_NATIVE_FN("topaz_mesh__set_object", mesh_api__set_object);
+    TS_MAP_NATIVE_FN("topaz_mesh__add_object", mesh_api__add_object, 1);
+    TS_MAP_NATIVE_FN("topaz_mesh__get_object_count", mesh_api__get_object_count, 1);
+    TS_MAP_NATIVE_FN("topaz_mesh__remove_object", mesh_api__remove_object, 2);
+    TS_MAP_NATIVE_FN("topaz_mesh__set_object", mesh_api__set_object, 3);
 
 
 }

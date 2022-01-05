@@ -63,7 +63,6 @@ typedef struct {
 } TSOCHandlerData;
 
 TSO_SCRIPT_API_FN(component_api__create) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     topazComponent_t * component = topaz_component_create(topaz_script_object_as_string(arg0), ((topazScriptManager_t*)context)->ctx);
     // creates new object and sets native pointer
@@ -95,7 +94,6 @@ TSO_SCRIPT_API_FN(component_api__create) {
 }
 
 TSO_SCRIPT_API_FN(component_api__destroy) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     topaz_component_destroy(native);    
@@ -103,7 +101,6 @@ TSO_SCRIPT_API_FN(component_api__destroy) {
 }
 
 TSO_SCRIPT_API_FN(component_api__step) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     topaz_component_step(native);
@@ -111,7 +108,6 @@ TSO_SCRIPT_API_FN(component_api__step) {
 }
 
 TSO_SCRIPT_API_FN(component_api__draw) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     topaz_component_draw(native);
@@ -119,7 +115,6 @@ TSO_SCRIPT_API_FN(component_api__draw) {
 }
 
 TSO_SCRIPT_API_FN(component_api__set_stepping) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
@@ -128,7 +123,6 @@ TSO_SCRIPT_API_FN(component_api__set_stepping) {
 }
 
 TSO_SCRIPT_API_FN(component_api__set_drawing) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
@@ -138,14 +132,12 @@ TSO_SCRIPT_API_FN(component_api__set_drawing) {
 
 
 TSO_SCRIPT_API_FN(component_api__get_stepping) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     return topaz_script_object_from_int(script, topaz_component_get_stepping(native));
 }
 
 TSO_SCRIPT_API_FN(component_api__get_drawing) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     return topaz_script_object_from_int(script, topaz_component_get_drawing(native));
@@ -153,7 +145,6 @@ TSO_SCRIPT_API_FN(component_api__get_drawing) {
 
 
 TSO_SCRIPT_API_FN(component_api__set_tag) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
@@ -163,7 +154,6 @@ TSO_SCRIPT_API_FN(component_api__set_tag) {
 
 
 TSO_SCRIPT_API_FN(component_api__get_tag) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     return topaz_script_object_from_string(script, topaz_component_get_tag(native));
@@ -171,7 +161,6 @@ TSO_SCRIPT_API_FN(component_api__get_tag) {
 
 
 TSO_SCRIPT_API_FN(component_api__get_host) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     topazEntity_t * out = topaz_component_get_host(native);
@@ -194,7 +183,6 @@ TSO_SCRIPT_API_FN(component_api__null) {
 
 
 TSO_SCRIPT_API_FN(component_api__emit_event) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1; // event name
     TSO_ARG_2; // entity
@@ -213,7 +201,6 @@ TSO_SCRIPT_API_FN(component_api__emit_event) {
 }
 
 TSO_SCRIPT_API_FN(component_api__emit_event_anonymous) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1; // event name
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
@@ -230,7 +217,6 @@ TSO_SCRIPT_API_FN(component_api__emit_event_anonymous) {
 }
 
 TSO_SCRIPT_API_FN(component_api__can_handle_event) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
@@ -278,7 +264,6 @@ static int component_api_callback(topazComponent_t * c, void * data, topazEntity
 
 
 TSO_SCRIPT_API_FN(component_api__install_event) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -310,7 +295,6 @@ TSO_SCRIPT_API_FN(component_api__install_event) {
 
 
 TSO_SCRIPT_API_FN(component_api__uninstall_event) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
@@ -326,7 +310,6 @@ TSO_SCRIPT_API_FN(component_api__uninstall_event) {
 
 
 TSO_SCRIPT_API_FN(component_api__install_hook) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -362,7 +345,6 @@ TSO_SCRIPT_API_FN(component_api__install_hook) {
 
 
 TSO_SCRIPT_API_FN(component_api__uninstall_hook) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -380,7 +362,6 @@ TSO_SCRIPT_API_FN(component_api__uninstall_hook) {
 
 
 TSO_SCRIPT_API_FN(component_api__install_handler) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -416,7 +397,6 @@ TSO_SCRIPT_API_FN(component_api__install_handler) {
 
 
 TSO_SCRIPT_API_FN(component_api__uninstall_handler) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -529,7 +509,6 @@ TSO_SCRIPT_API_FN(component_api__set_on_destroy) {
 // entity
 
 TSO_SCRIPT_API_FN(entity_api__add_component) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE( topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);
@@ -544,7 +523,6 @@ TSO_SCRIPT_API_FN(entity_api__add_component) {
 }
 
 TSO_SCRIPT_API_FN(entity_api__add_component_after) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE( topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);
@@ -560,7 +538,6 @@ TSO_SCRIPT_API_FN(entity_api__add_component_after) {
 
 
 TSO_SCRIPT_API_FN(entity_api__get_component_count) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);
 
@@ -569,7 +546,6 @@ TSO_SCRIPT_API_FN(entity_api__get_component_count) {
 }
 
 TSO_SCRIPT_API_FN(entity_api__get_nth_component) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);
@@ -592,7 +568,6 @@ TSO_SCRIPT_API_FN(entity_api__get_nth_component) {
 
 
 TSO_SCRIPT_API_FN(entity_api__query_component) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);
@@ -610,7 +585,6 @@ TSO_SCRIPT_API_FN(entity_api__query_component) {
 }
 
 TSO_SCRIPT_API_FN(entity_api__remove_component) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);
@@ -624,41 +598,41 @@ TSO_SCRIPT_API_FN(entity_api__remove_component) {
 
 
 static void add_refs__component_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_component__create", component_api__create);
-    TS_MAP_NATIVE_FN("topaz_component__destroy", component_api__destroy);
+    TS_MAP_NATIVE_FN("topaz_component__create", component_api__create, 1);
+    TS_MAP_NATIVE_FN("topaz_component__destroy", component_api__destroy, 1);
 
 
     // attach / detach are removed for simplicity.
     // use topaz_entity__add/remove_component instead.
-    TS_MAP_NATIVE_FN("topaz_component__step", component_api__step);
-    TS_MAP_NATIVE_FN("topaz_component__draw", component_api__draw);
+    TS_MAP_NATIVE_FN("topaz_component__step", component_api__step, 1);
+    TS_MAP_NATIVE_FN("topaz_component__draw", component_api__draw, 1);
 
 
-    TS_MAP_NATIVE_FN("topaz_component__get_stepping", component_api__get_stepping);
-    TS_MAP_NATIVE_FN("topaz_component__get_drawing", component_api__get_drawing);
-    TS_MAP_NATIVE_FN("topaz_component__set_stepping", component_api__set_stepping);
-    TS_MAP_NATIVE_FN("topaz_component__set_drawing", component_api__set_drawing);
-    TS_MAP_NATIVE_FN("topaz_component__set_tag", component_api__set_tag);
-    TS_MAP_NATIVE_FN("topaz_component__get_tag", component_api__get_tag);
-    TS_MAP_NATIVE_FN("topaz_component__get_host", component_api__get_host);
-    TS_MAP_NATIVE_FN("topaz_component__null", component_api__null);
+    TS_MAP_NATIVE_FN("topaz_component__get_stepping", component_api__get_stepping, 1);
+    TS_MAP_NATIVE_FN("topaz_component__get_drawing", component_api__get_drawing, 1);
+    TS_MAP_NATIVE_FN("topaz_component__set_stepping", component_api__set_stepping, 2);
+    TS_MAP_NATIVE_FN("topaz_component__set_drawing", component_api__set_drawing, 2);
+    TS_MAP_NATIVE_FN("topaz_component__set_tag", component_api__set_tag, 2);
+    TS_MAP_NATIVE_FN("topaz_component__get_tag", component_api__get_tag, 1);
+    TS_MAP_NATIVE_FN("topaz_component__get_host", component_api__get_host, 1);
+    TS_MAP_NATIVE_FN("topaz_component__null", component_api__null, 0);
 
-    TS_MAP_NATIVE_FN("topaz_component__emit_event", component_api__emit_event);
-    TS_MAP_NATIVE_FN("topaz_component__emit_event_anonymous", component_api__emit_event_anonymous);
-    TS_MAP_NATIVE_FN("topaz_component__can_handle_event", component_api__can_handle_event);
+    TS_MAP_NATIVE_FN("topaz_component__emit_event", component_api__emit_event, 3);
+    TS_MAP_NATIVE_FN("topaz_component__emit_event_anonymous", component_api__emit_event_anonymous, 2);
+    TS_MAP_NATIVE_FN("topaz_component__can_handle_event", component_api__can_handle_event, 2);
 
-    TS_MAP_NATIVE_FN("topaz_component__install_event", component_api__install_event);
-    TS_MAP_NATIVE_FN("topaz_component__uninstall_event", component_api__uninstall_event);
-    TS_MAP_NATIVE_FN("topaz_component__install_hook", component_api__install_hook);
-    TS_MAP_NATIVE_FN("topaz_component__uninstall_hook", component_api__uninstall_hook);
-    TS_MAP_NATIVE_FN("topaz_component__install_handler", component_api__install_handler);
-    TS_MAP_NATIVE_FN("topaz_component__uninstall_handler", component_api__uninstall_handler);
+    TS_MAP_NATIVE_FN("topaz_component__install_event", component_api__install_event, 3);
+    TS_MAP_NATIVE_FN("topaz_component__uninstall_event", component_api__uninstall_event, 2);
+    TS_MAP_NATIVE_FN("topaz_component__install_hook", component_api__install_hook, 3);
+    TS_MAP_NATIVE_FN("topaz_component__uninstall_hook", component_api__uninstall_hook, 3);
+    TS_MAP_NATIVE_FN("topaz_component__install_handler", component_api__install_handler, 3);
+    TS_MAP_NATIVE_FN("topaz_component__uninstall_handler", component_api__uninstall_handler, 3);
 
-    TS_MAP_NATIVE_FN("topaz_component__set_on_attach", component_api__set_on_attach);
-    TS_MAP_NATIVE_FN("topaz_component__set_on_detach", component_api__set_on_detach);
-    TS_MAP_NATIVE_FN("topaz_component__set_on_destroy", component_api__set_on_destroy);
-    TS_MAP_NATIVE_FN("topaz_component__set_on_step", component_api__set_on_step);
-    TS_MAP_NATIVE_FN("topaz_component__set_on_draw", component_api__set_on_draw);
+    TS_MAP_NATIVE_FN("topaz_component__set_on_attach", component_api__set_on_attach, 2);
+    TS_MAP_NATIVE_FN("topaz_component__set_on_detach", component_api__set_on_detach, 2);
+    TS_MAP_NATIVE_FN("topaz_component__set_on_destroy", component_api__set_on_destroy, 2);
+    TS_MAP_NATIVE_FN("topaz_component__set_on_step", component_api__set_on_step, 2);
+    TS_MAP_NATIVE_FN("topaz_component__set_on_draw", component_api__set_on_draw, 2);
 
 
 
@@ -668,11 +642,11 @@ static void add_refs__component_api(topazScript_t * script, topazScriptManager_t
     // component-relevant functions of the entity api are defined here 
     // since it requires the component wrapper creation function.
 
-    TS_MAP_NATIVE_FN("topaz_entity__add_component", entity_api__add_component);
-    TS_MAP_NATIVE_FN("topaz_entity__add_component_after", entity_api__add_component_after);
-    TS_MAP_NATIVE_FN("topaz_entity__get_component_count", entity_api__get_component_count);
-    TS_MAP_NATIVE_FN("topaz_entity__get_nth_component", entity_api__get_nth_component);
-    TS_MAP_NATIVE_FN("topaz_entity__query_component", entity_api__query_component);
-    TS_MAP_NATIVE_FN("topaz_entity__remove_component", entity_api__remove_component);
+    TS_MAP_NATIVE_FN("topaz_entity__add_component", entity_api__add_component, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__add_component_after", entity_api__add_component_after, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__get_component_count", entity_api__get_component_count, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__get_nth_component", entity_api__get_nth_component, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__query_component", entity_api__query_component, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__remove_component", entity_api__remove_component, 2);
 
 }

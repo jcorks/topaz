@@ -150,13 +150,17 @@ static const topazString_t * stackframe_to_string(
 
     topaz_string_concat_printf(
         out, 
-        "[%d]  %s()  %s:%d",
+        "[%d] %s%s%s:%d",
         level,
 
         topaz_string_get_length(frame->functionName) ? 
             topaz_string_get_c_str(frame->functionName)
         :   
-            "<unnamed function>",
+            "",
+        topaz_string_get_length(frame->functionName) ? 
+            "() "
+        :   
+            "",
 
         topaz_string_get_length(frame->filename) ? 
             topaz_string_get_c_str(frame->filename) 
@@ -188,7 +192,9 @@ static void console_print_debug_state(
         topaz_console_print_message(console, topaz_string_create_from_c_str("[Callstack empty or unknown.]"), topazConsole_MessageType_Error);
         return;
     }
-
+    if (console->debugLevel >= topaz_array_get_size(state->callstack)) {
+        console->debugLevel = 0;
+    }  
 
     #define LINES_FROM_CENTER 10
     // first print source.
@@ -299,20 +305,39 @@ static void command_debug_response(
     switch(command) {
       case topazScript_DebugCommand_Pause:
         topaz_console_display_clear(console->display);
-        console_print_debug_state(
-            console,
-            state
-        );
+
 
 
         if (!topaz_string_get_length(result)) {
+            console_print_debug_state(
+                console,
+                state
+            );
             topaz_console_print(console, TOPAZ_STR_CAST(""));
             topaz_console_print(console, TOPAZ_STR_CAST("Debugging context pause."));
             topaz_console_print(console, TOPAZ_STR_CAST(""));
         } else {
+            
+            sscanf(topaz_string_get_c_str(result), "%dL", &console->debugLevel);
+            int i;
+            int iter = 0;
+            for(i = 0; i < topaz_string_get_length(result); ++i) {
+                if (topaz_string_get_char(result, i) == 'L') {
+                    iter = i + 1;
+                    break;
+                };
+            }
+            console_print_debug_state(
+                console,
+                state
+            );
+            
             topaz_console_print(console, TOPAZ_STR_CAST(""));
             topaz_console_print(console, TOPAZ_STR_CAST("Debugging context pause."));
-            topaz_console_print_message(console, result, topazConsole_MessageType_Error);
+            if (iter < topaz_string_get_length(result)) {
+                const topazString_t * message = topaz_string_get_substr(result, iter, topaz_string_get_length(result)-1);
+                topaz_console_print_message(console, message, topazConsole_MessageType_Error);
+            }
             topaz_console_print(console, TOPAZ_STR_CAST(""));
         }
         break;

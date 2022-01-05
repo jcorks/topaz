@@ -3,7 +3,6 @@
 
 
 TSO_SCRIPT_API_FN(sound_api__get_nth_sample_left) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__SOUND);   
@@ -16,7 +15,6 @@ TSO_SCRIPT_API_FN(sound_api__get_nth_sample_left) {
 }
 
 TSO_SCRIPT_API_FN(sound_api__get_nth_sample_right) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__SOUND);   
@@ -28,7 +26,6 @@ TSO_SCRIPT_API_FN(sound_api__get_nth_sample_right) {
     return topaz_script_object_from_int(script, topaz_array_at(topaz_sound_get_samples(native), topazSound_Sample_t, n).rightSample);
 }
 TSO_SCRIPT_API_FN(sound_api__get_sample_count) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__SOUND);   
     return topaz_script_object_from_int(script, topaz_sound_get_sample_count(native));
@@ -36,7 +33,6 @@ TSO_SCRIPT_API_FN(sound_api__get_sample_count) {
 
 
 TSO_SCRIPT_API_FN(sound_api__is_in_use) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__SOUND);   
     return topaz_script_object_from_int(script, topaz_sound_is_in_use(native));
@@ -45,7 +41,6 @@ TSO_SCRIPT_API_FN(sound_api__is_in_use) {
 
 
 TSO_SCRIPT_API_FN(sound_api__set_samples) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__SOUND);   
@@ -75,11 +70,11 @@ TSO_SCRIPT_API_FN(sound_api__set_samples) {
 
 static void add_refs__sound_api(topazScript_t * script, topazScriptManager_t * context) {
     // member functions
-    TS_MAP_NATIVE_FN("topaz_sound__get_nth_sample_left", sound_api__get_nth_sample_left);
-    TS_MAP_NATIVE_FN("topaz_sound__get_nth_sample_right", sound_api__get_nth_sample_right);
-    TS_MAP_NATIVE_FN("topaz_sound__get_sample_count", sound_api__get_sample_count);
-    TS_MAP_NATIVE_FN("topaz_sound__set_samples", sound_api__set_samples);
-    TS_MAP_NATIVE_FN("topaz_sound__is_in_use", sound_api__is_in_use);
+    TS_MAP_NATIVE_FN("topaz_sound__get_nth_sample_left", sound_api__get_nth_sample_left, 2);
+    TS_MAP_NATIVE_FN("topaz_sound__get_nth_sample_right", sound_api__get_nth_sample_right, 2);
+    TS_MAP_NATIVE_FN("topaz_sound__get_sample_count", sound_api__get_sample_count, 1);
+    TS_MAP_NATIVE_FN("topaz_sound__set_samples", sound_api__set_samples, 2);
+    TS_MAP_NATIVE_FN("topaz_sound__is_in_use", sound_api__is_in_use, 1);
 
     
 

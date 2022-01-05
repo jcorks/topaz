@@ -64,7 +64,6 @@ TSO_SCRIPT_API_FN(topaz_api__get_root) {
 }
 
 TSO_SCRIPT_API_FN(topaz_api__set_root) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
     topazScriptManager_t * mgr = context;
@@ -73,7 +72,6 @@ TSO_SCRIPT_API_FN(topaz_api__set_root) {
 }
 
 TSO_SCRIPT_API_FN(topaz_api__attach_pre_manager) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
     topazScriptManager_t * mgr = context;
@@ -82,7 +80,6 @@ TSO_SCRIPT_API_FN(topaz_api__attach_pre_manager) {
 }
 
 TSO_SCRIPT_API_FN(topaz_api__attach_pre_manager_unpausable) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
     topazScriptManager_t * mgr = context;
@@ -92,7 +89,6 @@ TSO_SCRIPT_API_FN(topaz_api__attach_pre_manager_unpausable) {
 
 
 TSO_SCRIPT_API_FN(topaz_api__attach_post_manager) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
     topazScriptManager_t * mgr = context;
@@ -101,7 +97,6 @@ TSO_SCRIPT_API_FN(topaz_api__attach_post_manager) {
 }
 
 TSO_SCRIPT_API_FN(topaz_api__attach_post_manager_unpausable) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
     topazScriptManager_t * mgr = context;
@@ -118,7 +113,6 @@ TSO_SCRIPT_API_FN(topaz_api__quit) {
 }
 
 TSO_SCRIPT_API_FN(topaz_api__wait) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     topazScriptManager_t * mgr = context;
     topaz_context_wait(mgr->ctx, topaz_script_object_as_number(arg0));
@@ -145,31 +139,22 @@ TSO_SCRIPT_API_FN(topaz_api__get_version_minor) {
 
 TSO_SCRIPT_API_FN(topaz_api__log) {
     int newline = TRUE;
-    switch(topaz_array_get_size(args)) {
-      case 0: break;
-      case 2: {
-          TSO_ARG_1;
-          newline = topaz_script_object_as_int(arg1);
-      }
-
-      case 1: {
-        TSO_ARG_0;
-        topazScriptManager_t * mgr = context;
-        topazConsole_t * c = topaz_context_get_console(mgr->ctx);
-        if (newline) 
-            topaz_console_print(c, topaz_script_object_as_string(arg0));
-        else {
-            topazColor_t col;
-            col.r = col.g = col.a = col.b = 255;
-            topaz_console_add_text_color(c, topaz_script_object_as_string(arg0), &col);        
-        }
-      }
+    TSO_ARG_1;
+    newline = topaz_script_object_as_int(arg1);
+    TSO_ARG_0;
+    topazScriptManager_t * mgr = context;
+    topazConsole_t * c = topaz_context_get_console(mgr->ctx);
+    if (newline) 
+        topaz_console_print(c, topaz_script_object_as_string(arg0));
+    else {
+        topazColor_t col;
+        col.r = col.g = col.a = col.b = 255;
+        topaz_console_add_text_color(c, topaz_script_object_as_string(arg0), &col);        
     }
     TSO_NO_RETURN;
 }
 
 TSO_SCRIPT_API_FN(topaz_api__to_base64) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     if (topaz_script_object_reference_get_feature_mask(arg0) & topazScript_Object_Feature_Array) {
@@ -192,7 +177,6 @@ TSO_SCRIPT_API_FN(topaz_api__to_base64) {
 
 
 TSO_SCRIPT_API_FN(topaz_api__from_base64) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     uint32_t size;
@@ -230,35 +214,35 @@ TSO_SCRIPT_API_FN(topaz_api__debug) {
     topaz_script_debug_send_command(
         script,
         topazScript_DebugCommand_Pause,
-        TOPAZ_STR_CAST("")
+        TOPAZ_STR_CAST("script")
     );
     TSO_NO_RETURN;
 }
 
 
 static void add_refs__topaz_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz__run", topaz_api__run);
-    TS_MAP_NATIVE_FN("topaz__pause", topaz_api__pause);
-    TS_MAP_NATIVE_FN("topaz__pause_now", topaz_api__pause_now);
-    TS_MAP_NATIVE_FN("topaz__resume", topaz_api__resume);
-    TS_MAP_NATIVE_FN("topaz__iterate", topaz_api__iterate);
-    TS_MAP_NATIVE_FN("topaz__step", topaz_api__step);
-    TS_MAP_NATIVE_FN("topaz__draw", topaz_api__draw);
-    TS_MAP_NATIVE_FN("topaz__is_paused", topaz_api__is_paused);
-    TS_MAP_NATIVE_FN("topaz__get_root", topaz_api__get_root);
-    TS_MAP_NATIVE_FN("topaz__set_root", topaz_api__set_root);
-    TS_MAP_NATIVE_FN("topaz__attach_pre_manager", topaz_api__attach_pre_manager);
-    TS_MAP_NATIVE_FN("topaz__attach_pre_manager_unpausable", topaz_api__attach_pre_manager_unpausable);
-    TS_MAP_NATIVE_FN("topaz__attach_post_manager", topaz_api__attach_post_manager);
-    TS_MAP_NATIVE_FN("topaz__attach_post_manager_unpausable", topaz_api__attach_post_manager_unpausable);
-    TS_MAP_NATIVE_FN("topaz__quit", topaz_api__quit);
-    TS_MAP_NATIVE_FN("topaz__wait", topaz_api__wait);
-    TS_MAP_NATIVE_FN("topaz__get_time", topaz_api__get_time);
-    TS_MAP_NATIVE_FN("topaz__get_version_micro", topaz_api__get_version_micro);
-    TS_MAP_NATIVE_FN("topaz__get_version_minor", topaz_api__get_version_minor);
-    TS_MAP_NATIVE_FN("topaz__get_version_major", topaz_api__get_version_major);
-    TS_MAP_NATIVE_FN("topaz__log", topaz_api__log);
-    TS_MAP_NATIVE_FN("topaz__to_base64", topaz_api__to_base64);
-    TS_MAP_NATIVE_FN("topaz__from_base64", topaz_api__from_base64);
-    TS_MAP_NATIVE_FN("topaz__debug", topaz_api__debug);
+    TS_MAP_NATIVE_FN("topaz__run", topaz_api__run, 0);
+    TS_MAP_NATIVE_FN("topaz__pause", topaz_api__pause, 0);
+    TS_MAP_NATIVE_FN("topaz__pause_now", topaz_api__pause_now, 0);
+    TS_MAP_NATIVE_FN("topaz__resume", topaz_api__resume, 0);
+    TS_MAP_NATIVE_FN("topaz__iterate", topaz_api__iterate, 0);
+    TS_MAP_NATIVE_FN("topaz__step", topaz_api__step, 0);
+    TS_MAP_NATIVE_FN("topaz__draw", topaz_api__draw, 0);
+    TS_MAP_NATIVE_FN("topaz__is_paused", topaz_api__is_paused, 0);
+    TS_MAP_NATIVE_FN("topaz__get_root", topaz_api__get_root, 0);
+    TS_MAP_NATIVE_FN("topaz__set_root", topaz_api__set_root, 1);
+    TS_MAP_NATIVE_FN("topaz__attach_pre_manager", topaz_api__attach_pre_manager, 1);
+    TS_MAP_NATIVE_FN("topaz__attach_pre_manager_unpausable", topaz_api__attach_pre_manager_unpausable, 1);
+    TS_MAP_NATIVE_FN("topaz__attach_post_manager", topaz_api__attach_post_manager, 1);
+    TS_MAP_NATIVE_FN("topaz__attach_post_manager_unpausable", topaz_api__attach_post_manager_unpausable, 1);
+    TS_MAP_NATIVE_FN("topaz__quit", topaz_api__quit, 0);
+    TS_MAP_NATIVE_FN("topaz__wait", topaz_api__wait, 1);
+    TS_MAP_NATIVE_FN("topaz__get_time", topaz_api__get_time, 0);
+    TS_MAP_NATIVE_FN("topaz__get_version_micro", topaz_api__get_version_micro, 0);
+    TS_MAP_NATIVE_FN("topaz__get_version_minor", topaz_api__get_version_minor, 0);
+    TS_MAP_NATIVE_FN("topaz__get_version_major", topaz_api__get_version_major, 0);
+    TS_MAP_NATIVE_FN("topaz__log", topaz_api__log, 2);
+    TS_MAP_NATIVE_FN("topaz__to_base64", topaz_api__to_base64, 1);
+    TS_MAP_NATIVE_FN("topaz__from_base64", topaz_api__from_base64, 1);
+    TS_MAP_NATIVE_FN("topaz__debug", topaz_api__debug, 0);
 }

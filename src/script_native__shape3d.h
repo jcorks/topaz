@@ -11,7 +11,6 @@ TSO_SCRIPT_API_FN(shape3d_api__create) {
 
 
 TSO_SCRIPT_API_FN(shape3d_api__set_texture) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -25,7 +24,6 @@ TSO_SCRIPT_API_FN(shape3d_api__set_texture) {
 
 
 TSO_SCRIPT_API_FN(shape3d_api__set_sample_framebuffer) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE3D);   
@@ -37,7 +35,6 @@ TSO_SCRIPT_API_FN(shape3d_api__set_sample_framebuffer) {
 
 
 TSO_SCRIPT_API_FN(shape3d_api__set_mesh) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE3D);   
@@ -48,7 +45,6 @@ TSO_SCRIPT_API_FN(shape3d_api__set_mesh) {
 }
 
 TSO_SCRIPT_API_FN(shape3d_api__set_material) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE3D);   
@@ -62,7 +58,6 @@ TSO_SCRIPT_API_FN(shape3d_api__set_material) {
 
 
 TSO_SCRIPT_API_FN(shape3d_api__get_attribute) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE3D);
@@ -79,7 +74,6 @@ TSO_SCRIPT_API_FN(shape3d_api__get_attribute) {
 }
 
 TSO_SCRIPT_API_FN(shape3d_api__set_attribute) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -132,7 +126,6 @@ TSO_SCRIPT_API_FN(shape3d_api__get_scale) {
 
 
 TSO_SCRIPT_API_FN(shape3d_api__set_rotation) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
@@ -143,7 +136,6 @@ TSO_SCRIPT_API_FN(shape3d_api__set_rotation) {
 }
 
 TSO_SCRIPT_API_FN(shape3d_api__set_position) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
@@ -154,7 +146,6 @@ TSO_SCRIPT_API_FN(shape3d_api__set_position) {
 }
 
 TSO_SCRIPT_API_FN(shape3d_api__set_scale) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
@@ -168,23 +159,23 @@ TSO_SCRIPT_API_FN(shape3d_api__set_scale) {
 
 
 static void add_refs__shape3d_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_shape3d__create", shape3d_api__create);
+    TS_MAP_NATIVE_FN("topaz_shape3d__create", shape3d_api__create, 0);
 
-    TS_MAP_NATIVE_FN("topaz_shape3d__set_texture", shape3d_api__set_texture);
-    TS_MAP_NATIVE_FN("topaz_shape3d__set_sample_framebuffer", shape3d_api__set_sample_framebuffer);
-    TS_MAP_NATIVE_FN("topaz_shape3d__set_mesh", shape3d_api__set_mesh);
-    TS_MAP_NATIVE_FN("topaz_shape3d__set_material", shape3d_api__set_material);
+    TS_MAP_NATIVE_FN("topaz_shape3d__set_texture", shape3d_api__set_texture, 3);
+    TS_MAP_NATIVE_FN("topaz_shape3d__set_sample_framebuffer", shape3d_api__set_sample_framebuffer, 2);
+    TS_MAP_NATIVE_FN("topaz_shape3d__set_mesh", shape3d_api__set_mesh, 2);
+    TS_MAP_NATIVE_FN("topaz_shape3d__set_material", shape3d_api__set_material, 2);
 
-    TS_MAP_NATIVE_FN("topaz_shape3d__set_attribute", shape3d_api__set_attribute);
-    TS_MAP_NATIVE_FN("topaz_shape3d__get_attribute", shape3d_api__get_attribute);
+    TS_MAP_NATIVE_FN("topaz_shape3d__set_attribute", shape3d_api__set_attribute, 3);
+    TS_MAP_NATIVE_FN("topaz_shape3d__get_attribute", shape3d_api__get_attribute, 2);
 
     // replacement of transform with rotation / position / scale
-    TS_MAP_NATIVE_FN("topaz_shape3d__get_position", shape3d_api__get_position);
-    TS_MAP_NATIVE_FN("topaz_shape3d__get_rotation", shape3d_api__get_rotation);
-    TS_MAP_NATIVE_FN("topaz_shape3d__get_scale",    shape3d_api__get_scale);
-    TS_MAP_NATIVE_FN("topaz_shape3d__set_position", shape3d_api__set_position);
-    TS_MAP_NATIVE_FN("topaz_shape3d__set_rotation", shape3d_api__set_rotation);
-    TS_MAP_NATIVE_FN("topaz_shape3d__set_scale",    shape3d_api__set_scale);
+    TS_MAP_NATIVE_FN("topaz_shape3d__get_position", shape3d_api__get_position, 1);
+    TS_MAP_NATIVE_FN("topaz_shape3d__get_rotation", shape3d_api__get_rotation, 1);
+    TS_MAP_NATIVE_FN("topaz_shape3d__get_scale",    shape3d_api__get_scale, 1);
+    TS_MAP_NATIVE_FN("topaz_shape3d__set_position", shape3d_api__set_position, 2);
+    TS_MAP_NATIVE_FN("topaz_shape3d__set_rotation", shape3d_api__set_rotation, 2);
+    TS_MAP_NATIVE_FN("topaz_shape3d__set_scale",    shape3d_api__set_scale, 2);
 
     
 }

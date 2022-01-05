@@ -10,14 +10,12 @@ TSO_SCRIPT_API_FN(text2d_api__create) {
 }
 
 TSO_SCRIPT_API_FN(text2d_api__get_text) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);
     return topaz_script_object_from_string(script, topaz_text2d_get_text(native));
 }
 
 TSO_SCRIPT_API_FN(text2d_api__set_font) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -31,7 +29,6 @@ TSO_SCRIPT_API_FN(text2d_api__set_font) {
 }
 
 TSO_SCRIPT_API_FN(text2d_api__set_text) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);   
@@ -44,7 +41,6 @@ TSO_SCRIPT_API_FN(text2d_api__set_text) {
 
 
 TSO_SCRIPT_API_FN(text2d_api__get_attribute) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);
@@ -61,7 +57,6 @@ TSO_SCRIPT_API_FN(text2d_api__get_attribute) {
 }
 
 TSO_SCRIPT_API_FN(text2d_api__set_attribute) {
-    TSO_ASSERT_ARG_COUNT(3);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -80,21 +75,18 @@ TSO_SCRIPT_API_FN(text2d_api__set_attribute) {
 
 
 TSO_SCRIPT_API_FN(text2d_api__get_extent_width) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);
     return topaz_script_object_from_number(script, topaz_text2d_get_extent_width(native));
 }
 
 TSO_SCRIPT_API_FN(text2d_api__get_extent_height) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);
     return topaz_script_object_from_number(script, topaz_text2d_get_extent_height(native));
 }
 
 TSO_SCRIPT_API_FN(text2d_api__get_char_x) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);
@@ -102,7 +94,6 @@ TSO_SCRIPT_API_FN(text2d_api__get_char_x) {
 }
 
 TSO_SCRIPT_API_FN(text2d_api__get_char_y) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);
@@ -110,7 +101,6 @@ TSO_SCRIPT_API_FN(text2d_api__get_char_y) {
 }
 
 TSO_SCRIPT_API_FN(text2d_api__set_color) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);
@@ -120,7 +110,6 @@ TSO_SCRIPT_API_FN(text2d_api__set_color) {
 }
 
 TSO_SCRIPT_API_FN(text2d_api__set_color_section) {
-    TSO_ASSERT_ARG_COUNT(4);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -168,7 +157,6 @@ TSO_SCRIPT_API_FN(text2d_api__get_scale) {
 
 
 TSO_SCRIPT_API_FN(text2d_api__set_rotation) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);   
@@ -179,7 +167,6 @@ TSO_SCRIPT_API_FN(text2d_api__set_rotation) {
 }
 
 TSO_SCRIPT_API_FN(text2d_api__set_position) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);   
@@ -190,7 +177,6 @@ TSO_SCRIPT_API_FN(text2d_api__set_position) {
 }
 
 TSO_SCRIPT_API_FN(text2d_api__set_scale) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);   
@@ -202,30 +188,30 @@ TSO_SCRIPT_API_FN(text2d_api__set_scale) {
 
 
 static void add_refs__text2d_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_text2d__create", text2d_api__create);
-    TS_MAP_NATIVE_FN("topaz_text2d__get_text", text2d_api__get_text);
-    TS_MAP_NATIVE_FN("topaz_text2d__set_text", text2d_api__set_text);
-    TS_MAP_NATIVE_FN("topaz_text2d__set_font", text2d_api__set_font);
+    TS_MAP_NATIVE_FN("topaz_text2d__create", text2d_api__create, 0);
+    TS_MAP_NATIVE_FN("topaz_text2d__get_text", text2d_api__get_text, 1);
+    TS_MAP_NATIVE_FN("topaz_text2d__set_text", text2d_api__set_text, 2);
+    TS_MAP_NATIVE_FN("topaz_text2d__set_font", text2d_api__set_font, 3);
 
-    TS_MAP_NATIVE_FN("topaz_text2d__get_attribute", text2d_api__get_attribute);
-    TS_MAP_NATIVE_FN("topaz_text2d__set_attribute", text2d_api__set_attribute);
+    TS_MAP_NATIVE_FN("topaz_text2d__get_attribute", text2d_api__get_attribute, 2);
+    TS_MAP_NATIVE_FN("topaz_text2d__set_attribute", text2d_api__set_attribute, 3);
 
 
-    TS_MAP_NATIVE_FN("topaz_text2d__get_extent_width", text2d_api__get_extent_width);
-    TS_MAP_NATIVE_FN("topaz_text2d__get_extent_height", text2d_api__get_extent_height);
-    TS_MAP_NATIVE_FN("topaz_text2d__get_char_x", text2d_api__get_char_x);
-    TS_MAP_NATIVE_FN("topaz_text2d__get_char_y", text2d_api__get_char_y);
+    TS_MAP_NATIVE_FN("topaz_text2d__get_extent_width", text2d_api__get_extent_width, 1);
+    TS_MAP_NATIVE_FN("topaz_text2d__get_extent_height", text2d_api__get_extent_height, 1);
+    TS_MAP_NATIVE_FN("topaz_text2d__get_char_x", text2d_api__get_char_x, 2);
+    TS_MAP_NATIVE_FN("topaz_text2d__get_char_y", text2d_api__get_char_y, 2);
 
-    TS_MAP_NATIVE_FN("topaz_text2d__set_color", text2d_api__set_color);
-    TS_MAP_NATIVE_FN("topaz_text2d__set_color_section", text2d_api__set_color_section);
+    TS_MAP_NATIVE_FN("topaz_text2d__set_color", text2d_api__set_color, 2);
+    TS_MAP_NATIVE_FN("topaz_text2d__set_color_section", text2d_api__set_color_section, 4);
 
 
     // replacement of transform with rotation / position / scale
-    TS_MAP_NATIVE_FN("topaz_text2d__get_position", text2d_api__get_position);
-    TS_MAP_NATIVE_FN("topaz_text2d__get_rotation", text2d_api__get_rotation);
-    TS_MAP_NATIVE_FN("topaz_text2d__get_scale",    text2d_api__get_scale);
-    TS_MAP_NATIVE_FN("topaz_text2d__set_position", text2d_api__set_position);
-    TS_MAP_NATIVE_FN("topaz_text2d__set_rotation", text2d_api__set_rotation);
-    TS_MAP_NATIVE_FN("topaz_text2d__set_scale",    text2d_api__set_scale);
+    TS_MAP_NATIVE_FN("topaz_text2d__get_position", text2d_api__get_position, 1);
+    TS_MAP_NATIVE_FN("topaz_text2d__get_rotation", text2d_api__get_rotation, 1);
+    TS_MAP_NATIVE_FN("topaz_text2d__get_scale",    text2d_api__get_scale, 1);
+    TS_MAP_NATIVE_FN("topaz_text2d__set_position", text2d_api__set_position, 2);
+    TS_MAP_NATIVE_FN("topaz_text2d__set_rotation", text2d_api__set_rotation, 2);
+    TS_MAP_NATIVE_FN("topaz_text2d__set_scale",    text2d_api__set_scale, 2);
 
 }

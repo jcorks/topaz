@@ -17,7 +17,6 @@ TSO_SCRIPT_API_FN(automation_api__create) {
 
 
 TSO_SCRIPT_API_FN(automation_api__add_keyframe) {
-    TSO_ASSERT_ARG_COUNT(4);
     TSO_ARG_0;
     TSO_ARG_1; // value
     TSO_ARG_2; // lerpfn
@@ -36,7 +35,6 @@ TSO_SCRIPT_API_FN(automation_api__add_keyframe) {
 
 
 TSO_SCRIPT_API_FN(automation_api__add_vector_keyframe) {
-    TSO_ASSERT_ARG_COUNT(4);
     TSO_ARG_0;
     TSO_ARG_1; // value
     TSO_ARG_2; // lerpfn
@@ -56,7 +54,6 @@ TSO_SCRIPT_API_FN(automation_api__add_vector_keyframe) {
 
 
 TSO_SCRIPT_API_FN(automation_api__clear) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
@@ -68,7 +65,6 @@ TSO_SCRIPT_API_FN(automation_api__clear) {
 }
 
 TSO_SCRIPT_API_FN(automation_api__add_automation) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
 
@@ -84,7 +80,6 @@ TSO_SCRIPT_API_FN(automation_api__add_automation) {
 }
 
 TSO_SCRIPT_API_FN(automation_api__blend) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
 
@@ -101,7 +96,6 @@ TSO_SCRIPT_API_FN(automation_api__blend) {
 
 
 TSO_SCRIPT_API_FN(automation_api__smooth) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
@@ -115,7 +109,6 @@ TSO_SCRIPT_API_FN(automation_api__smooth) {
 
 
 TSO_SCRIPT_API_FN(automation_api__add_from_string) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
 
@@ -131,7 +124,6 @@ TSO_SCRIPT_API_FN(automation_api__add_from_string) {
 
 
 TSO_SCRIPT_API_FN(automation_api__get_length) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
@@ -146,7 +138,6 @@ TSO_SCRIPT_API_FN(automation_api__get_length) {
 }
 
 TSO_SCRIPT_API_FN(automation_api__skip_to) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
 
@@ -164,7 +155,6 @@ TSO_SCRIPT_API_FN(automation_api__skip_to) {
 
 
 TSO_SCRIPT_API_FN(automation_api__set_duration_frames) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
 
@@ -181,7 +171,6 @@ TSO_SCRIPT_API_FN(automation_api__set_duration_frames) {
 }
 
 TSO_SCRIPT_API_FN(automation_api__set_duration_seconds) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
 
@@ -198,7 +187,6 @@ TSO_SCRIPT_API_FN(automation_api__set_duration_seconds) {
 }
 
 TSO_SCRIPT_API_FN(automation_api__get_duration) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
@@ -214,7 +202,6 @@ TSO_SCRIPT_API_FN(automation_api__get_duration) {
 
 
 TSO_SCRIPT_API_FN(automation_api__set_looped) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
 
@@ -232,7 +219,6 @@ TSO_SCRIPT_API_FN(automation_api__set_looped) {
 
 
 TSO_SCRIPT_API_FN(automation_api__get_looped) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
@@ -246,7 +232,6 @@ TSO_SCRIPT_API_FN(automation_api__get_looped) {
 }
 
 TSO_SCRIPT_API_FN(automation_api__set_speed) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
 
@@ -264,7 +249,6 @@ TSO_SCRIPT_API_FN(automation_api__set_speed) {
 
 
 TSO_SCRIPT_API_FN(automation_api__get_speed) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
@@ -278,7 +262,6 @@ TSO_SCRIPT_API_FN(automation_api__get_speed) {
 }
 
 TSO_SCRIPT_API_FN(automation_api__pause) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
@@ -291,7 +274,6 @@ TSO_SCRIPT_API_FN(automation_api__pause) {
 
 
 TSO_SCRIPT_API_FN(automation_api__resume) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
@@ -303,7 +285,6 @@ TSO_SCRIPT_API_FN(automation_api__resume) {
 }
 
 TSO_SCRIPT_API_FN(automation_api__to_string) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
@@ -317,7 +298,6 @@ TSO_SCRIPT_API_FN(automation_api__to_string) {
 }
 
 TSO_SCRIPT_API_FN(automation_api__set_from_string) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
 
@@ -334,7 +314,6 @@ TSO_SCRIPT_API_FN(automation_api__set_from_string) {
 }
 
 TSO_SCRIPT_API_FN(automation_api__vector_at) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
 
@@ -353,7 +332,6 @@ TSO_SCRIPT_API_FN(automation_api__vector_at) {
 
 
 TSO_SCRIPT_API_FN(automation_api__at) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
 
@@ -375,7 +353,6 @@ TSO_SCRIPT_API_FN(automation_api__at) {
 
 
 TSO_SCRIPT_API_FN(automation_api__current_vector) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
@@ -390,7 +367,6 @@ TSO_SCRIPT_API_FN(automation_api__current_vector) {
 
 
 TSO_SCRIPT_API_FN(automation_api__current) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
@@ -411,30 +387,30 @@ TSO_SCRIPT_API_FN(automation_api__current) {
 
 
 static void add_refs__automation_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_automation__create", automation_api__create);
-    TS_MAP_NATIVE_FN("topaz_automation__add_keyframe", automation_api__add_keyframe);
-    TS_MAP_NATIVE_FN("topaz_automation__add_vector_keyframe", automation_api__add_vector_keyframe);
-    TS_MAP_NATIVE_FN("topaz_automation__clear", automation_api__clear);
-    TS_MAP_NATIVE_FN("topaz_automation__add_automation", automation_api__add_automation);
-    TS_MAP_NATIVE_FN("topaz_automation__blend", automation_api__blend);
-    TS_MAP_NATIVE_FN("topaz_automation__smooth", automation_api__smooth);
-    TS_MAP_NATIVE_FN("topaz_automation__add_from_string", automation_api__add_from_string);
-    TS_MAP_NATIVE_FN("topaz_automation__get_length", automation_api__get_length);
-    TS_MAP_NATIVE_FN("topaz_automation__skip_to", automation_api__skip_to);
-    TS_MAP_NATIVE_FN("topaz_automation__set_duration_seconds", automation_api__set_duration_seconds);
-    TS_MAP_NATIVE_FN("topaz_automation__set_duration_frames", automation_api__set_duration_frames);
-    TS_MAP_NATIVE_FN("topaz_automation__get_duration", automation_api__get_duration);
-    TS_MAP_NATIVE_FN("topaz_automation__set_looped", automation_api__set_looped);
-    TS_MAP_NATIVE_FN("topaz_automation__get_looped", automation_api__get_looped);
-    TS_MAP_NATIVE_FN("topaz_automation__set_speed", automation_api__set_speed);
-    TS_MAP_NATIVE_FN("topaz_automation__get_speed", automation_api__get_speed);
-    TS_MAP_NATIVE_FN("topaz_automation__pause", automation_api__pause);
-    TS_MAP_NATIVE_FN("topaz_automation__resume", automation_api__resume);
-    TS_MAP_NATIVE_FN("topaz_automation__to_string", automation_api__to_string);
-    TS_MAP_NATIVE_FN("topaz_automation__set_from_string", automation_api__set_from_string);
-    TS_MAP_NATIVE_FN("topaz_automation__vector_at", automation_api__vector_at);
-    TS_MAP_NATIVE_FN("topaz_automation__at", automation_api__at);
-    TS_MAP_NATIVE_FN("topaz_automation__current_vector", automation_api__current_vector);
-    TS_MAP_NATIVE_FN("topaz_automation__current", automation_api__current);
+    TS_MAP_NATIVE_FN("topaz_automation__create", automation_api__create, 0);
+    TS_MAP_NATIVE_FN("topaz_automation__add_keyframe", automation_api__add_keyframe, 4);
+    TS_MAP_NATIVE_FN("topaz_automation__add_vector_keyframe", automation_api__add_vector_keyframe, 4);
+    TS_MAP_NATIVE_FN("topaz_automation__clear", automation_api__clear, 1);
+    TS_MAP_NATIVE_FN("topaz_automation__add_automation", automation_api__add_automation, 2);
+    TS_MAP_NATIVE_FN("topaz_automation__blend", automation_api__blend, 2);
+    TS_MAP_NATIVE_FN("topaz_automation__smooth", automation_api__smooth, 1);
+    TS_MAP_NATIVE_FN("topaz_automation__add_from_string", automation_api__add_from_string, 2);
+    TS_MAP_NATIVE_FN("topaz_automation__get_length", automation_api__get_length, 1);
+    TS_MAP_NATIVE_FN("topaz_automation__skip_to", automation_api__skip_to, 2);
+    TS_MAP_NATIVE_FN("topaz_automation__set_duration_seconds", automation_api__set_duration_seconds, 2);
+    TS_MAP_NATIVE_FN("topaz_automation__set_duration_frames", automation_api__set_duration_frames, 2);
+    TS_MAP_NATIVE_FN("topaz_automation__get_duration", automation_api__get_duration, 1);
+    TS_MAP_NATIVE_FN("topaz_automation__set_looped", automation_api__set_looped, 2);
+    TS_MAP_NATIVE_FN("topaz_automation__get_looped", automation_api__get_looped, 1);
+    TS_MAP_NATIVE_FN("topaz_automation__set_speed", automation_api__set_speed, 2);
+    TS_MAP_NATIVE_FN("topaz_automation__get_speed", automation_api__get_speed, 1);
+    TS_MAP_NATIVE_FN("topaz_automation__pause", automation_api__pause, 1);
+    TS_MAP_NATIVE_FN("topaz_automation__resume", automation_api__resume, 1);
+    TS_MAP_NATIVE_FN("topaz_automation__to_string", automation_api__to_string, 1);
+    TS_MAP_NATIVE_FN("topaz_automation__set_from_string", automation_api__set_from_string, 1);
+    TS_MAP_NATIVE_FN("topaz_automation__vector_at", automation_api__vector_at, 2);
+    TS_MAP_NATIVE_FN("topaz_automation__at", automation_api__at, 2);
+    TS_MAP_NATIVE_FN("topaz_automation__current_vector", automation_api__current_vector, 1);
+    TS_MAP_NATIVE_FN("topaz_automation__current", automation_api__current, 1);
     
 }

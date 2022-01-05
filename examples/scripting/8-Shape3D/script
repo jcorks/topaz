@@ -1,37 +1,46 @@
-var mesh = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.MESH, 'testMesh');
+<@>Topaz = import(module:'Topaz.Core');
+<@>TOPAZ = import(module:'Topaz.Constants');
+<@>class = import(module:'Matte.Core.Class');
+
+
+@mesh = Topaz.Resources.fetchAsset(type:TOPAZ.ASSET.TYPE.MESH, name:'testMesh');
 mesh.vertices = [
    -1,-1, 0,    0, 1, 0,    0, 0,    1, 0, 1, 1,
     1,-1, 0,    0, 1, 0,    1, 0,    1, 0, 1, 1,
     1, 1, 0,    0, 1, 0,    1, 1,    1, 0, 1, 1,
-   -1, 1, 0,    0, 1, 0,    0, 1,    1, 0, 1, 1,
+   -1, 1, 0,    0, 1, 0,    0, 1,    1, 0, 1, 1
 ];
 
 mesh.addObject();
-mesh.setObject(0, [
-    0, 1, 2,
-    2, 3, 0
-]);
+mesh.setObject(
+    index:0, 
+    value:[
+        0, 1, 2,
+        2, 3, 0
+    ]
+);
 
-var material = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.MATERIAL, 'testMaterial');
+@material = Topaz.Resources.fetchAsset(type:TOPAZ.ASSET.TYPE.MATERIAL, name:'testMaterial');
 material.setProgramSource(
-    'GLSL ES2',
-    Topaz.Resources.loadAsset('', 'vertex_es2.glsl', 'vertex_es2.glsl').string,             
-    Topaz.Resources.loadAsset('',   'frag_es2.glsl',   'frag_es2.glsl').string
+    language:'GLSL ES2',
+    vertexShader  :Topaz.Resources.loadAsset(extension:'', path:'vertex_es2.glsl', name:'vertex_es2.glsl').string,             
+    fragmentShader:Topaz.Resources.loadAsset(extension:'', path:'frag_es2.glsl',   name:'frag_es2.glsl').string
 );
 
 material.setProgramSource(
-    'GLSL',
-    Topaz.Resources.loadAsset('', 'vertex.glsl', 'vertex.glsl').string,             
-    Topaz.Resources.loadAsset('',   'frag.glsl',   'frag.glsl').string
+    language:'GLSL',
+    vertexShader  :Topaz.Resources.loadAsset(extension:'', path:'vertex.glsl', name:'vertex.glsl').string,             
+    fragmentShader:Topaz.Resources.loadAsset(extension:'', path:'frag.glsl',   name:'frag.glsl').string
 );
 
 
 
-var tex = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.IMAGE, 'testTex');
-tex.resize(2, 2);
+@tex = Topaz.Resources.fetchAsset(type:TOPAZ.ASSET.TYPE.IMAGE, name:'testTex');
+tex.resize(width:2, height:2);
 tex.addFrame();
-tex.setRGBA(0, 
-    [
+tex.setRGBA(
+    index:0, 
+    rgbaData:[
         255,   0,   0, 255,
         0,   255,   0, 255,
         0,     0, 255, 255,
@@ -43,41 +52,41 @@ tex.setRGBA(0,
 
 
 
-const Example3D = tclass({
-    inherits : Topaz.Entity,
-    define : function(ent) {
-        const v = Topaz.Shape3D.new();
+<@>Example3D = class(info:{
+    inherits : [Topaz.Entity],
+    define ::(this) {
+        <@>v = Topaz.Shape3D.new();
         v.material = material;
         v.mesh = mesh;
-        v.setTexture(0, tex);
+        v.setTexture(slot:0, texture:tex);
         v.setAttribute(
-            TOPAZ.RENDERER.ATTRIBUTE.TEXTURE_FILTER_HINT, 
-            TOPAZ.RENDERER.TEXTURE_FILTER_HINT.NONE
+            attribute: TOPAZ.RENDERER.ATTRIBUTE.TEXTURE_FILTER_HINT, 
+            value:     TOPAZ.RENDERER.TEXTURE_FILTER_HINT.NONE
         );
 
-        var stepper = 0;
+        @stepper = 0;
         
 
-        ent.components = [v];
+        this.components = [v];
 
 
-        ent.onStep = function() {
+        this.onStep = ::{
             stepper += 0.1;
             // special shorthand
-            ent.rotation = {
+            this.rotation = {
                 x:stepper, 
                 y:stepper*3, 
                 z:stepper*8
             };
-        }
+        };
     }
 });
 
 
-const a = Example3D.new();
+@a = Example3D.new();
 a.position = {x:0, y:0, z:-4};
 
-const b = Example3D.new();
+@b = Example3D.new();
 b.position = {x:2, y:0, z:1};
 b.scale = {x:0.7, y:0.3, z:0.3};
 

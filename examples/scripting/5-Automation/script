@@ -1,99 +1,106 @@
-const Rectangle = tclass({
-    inherits : Topaz.Entity,
-    define : function(ent){
-        const v = Topaz.Shape2D.new();
-        v.formRectangle(30, 30);
+<@>Topaz  = import(module:'Topaz.Core');
+<@>TOPAZ  = import(module:'Topaz.Constants');
+<@>Vector = import(module:'Topaz.Vector');
+<@>Color  = import(module:'Topaz.Color');
+<@>class  = import(module:'Matte.Core.Class');
+
+<@> Rectangle = class(info:{
+    name : 'Rectangle',
+    inherits : [Topaz.Entity],
+    define ::(this){
+        <@>v = Topaz.Shape2D.new();
+        v.formRectangle(width:30, height:30);
         v.center = {x:15, y:15};
 
 
-        const a = Topaz.Automation.new();
-        a.installHook('on-anim-end', function(){
-            Topaz.log('Animation reset!');
+        <@>a = Topaz.Automation.new();
+        a.installHook(event:'on-anim-end', callback:::(source) {
+            Topaz.log(message:'Animation reset!');
         });
         a.durationSeconds = 4;
         a.looped = true;
 
 
-        Topaz.Input.addKeyboardListener({
-            onPress : function(map, key) {
-                switch(key) {
-                  case TOPAZ.INPUT.KEY_space:
+        Topaz.Input.addKeyboardListener(
+            onPress :::(input) {
+                match(input) {
+                  (TOPAZ.INPUT.KEY_space):::<={
                     a.speed += 0.25;
-                    break;
+                  },
 
-                  case TOPAZ.INPUT.KEY_backspace:
-                    if (a.speed > 0) {
+                  (TOPAZ.INPUT.KEY_backspace):::<={
+                    if (a.speed > 0) ::<={
                         a.speed -= 0.25;
-                    } else {
+                    } else ::<={
                         a.speed = 0;
-                    }
-                    break;
-                }
+                    };
+                  }
+                };
             }
-        });
+        );
 
 
-        ent.components = [a, v];
+        this.components = [a, v];
 
-        ent.onStep = function(){
-            const r = ent.position;
-            ent.position = {x:100+a.value, y:r.y};
-        }
-        ent.interface({
+        this.onStep = ::{
+            <@>r = this.position;
+            this.position = {x:100+a.value, y:r.y};
+        };
+        this.interface = {
             anim : {
-                get : function(){return a;}
+                get ::{return a;}
             },
 
             visual : {
-                get : function(){return v;}
+                get ::{return v;}
             }
-        });
+        };
     }
 });
 
 
-const RectangleLinear = tclass({
-    inherits : Rectangle,
-    define : function(ent) {
-        ent.visual.color = Color.fromString('purple');
-        ent.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE, 0);
-        ent.anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.LINEAR, 0.5);
-        ent.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.LINEAR, 1);
+<@> RectangleLinear = class(info:{
+    inherits : [Rectangle],
+    define ::(this) {
+        this.visual.color = Color.parse(string:'purple');
+        this.anim.addKeyframe(value:0,   function:TOPAZ.AUTOMATION.FUNCTION.NONE,   offset:0);
+        this.anim.addKeyframe(value:200, function:TOPAZ.AUTOMATION.FUNCTION.LINEAR, offset:0.5);
+        this.anim.addKeyframe(value:0,   function:TOPAZ.AUTOMATION.FUNCTION.LINEAR, offset:1);
 
-        ent.position = {x:100, y:100};
+        this.position = {x:100, y:100};
     }
 });
 
-var RectangleAccel = tclass({
-    inherits : Rectangle,
-    define : function(ent) {
-        ent.visual.color = Color.fromString('blue');
-        ent.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE,   0);
-        ent.anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.ACCEL, 0.5);
-        ent.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.ACCEL, 1);
+<@>RectangleAccel = class(info:{
+    inherits : [Rectangle],
+    define ::(this) {
+        this.visual.color = Color.parse(string:'blue');
+        this.anim.addKeyframe(value:0,   function:TOPAZ.AUTOMATION.FUNCTION.NONE,  offset:0);
+        this.anim.addKeyframe(value:200, function:TOPAZ.AUTOMATION.FUNCTION.ACCEL, offset:0.5);
+        this.anim.addKeyframe(value:0,   function:TOPAZ.AUTOMATION.FUNCTION.ACCEL, offset:1);
 
-        ent.position = {x:100, y:200};
+        this.position = {x:100, y:200};
 
     }
 });
 
-var RectangleSlow = tclass({
-    inherits : Rectangle,
-    define : function(ent) {
-        ent.visual.color = Color.fromString('red');
-        ent.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.NONE,       0);
-        ent.anim.addKeyframe(200, TOPAZ.AUTOMATION.FUNCTION.SLOW, 0.5);
-        ent.anim.addKeyframe(0,   TOPAZ.AUTOMATION.FUNCTION.SLOW, 1);
+<@>RectangleSlow = class(info:{
+    inherits : [Rectangle],
+    define ::(this) {
+        this.visual.color = Color.parse(string:'red');
+        this.anim.addKeyframe(value:0,   function:TOPAZ.AUTOMATION.FUNCTION.NONE, offset:0);
+        this.anim.addKeyframe(value:200, function:TOPAZ.AUTOMATION.FUNCTION.SLOW, offset:0.5);
+        this.anim.addKeyframe(value:0,   function:TOPAZ.AUTOMATION.FUNCTION.SLOW, offset:1);
 
 
-        ent.position = {x:100, y:300};
+        this.position = {x:100, y:300};
     }
 });
 
 
 
-(function(){
-    const root = Topaz.Entity.new();
+::<= {
+    <@>root = Topaz.Entity.new();
     root.children = [
         RectangleLinear.new(),
         RectangleAccel.new(),
@@ -101,4 +108,4 @@ var RectangleSlow = tclass({
     ];
 
     Topaz.root = root;
-})();
+};

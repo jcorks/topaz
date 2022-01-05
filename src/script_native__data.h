@@ -3,7 +3,6 @@
 
 
 TSO_SCRIPT_API_FN(data_api__set) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__DATA);   
@@ -30,7 +29,6 @@ TSO_SCRIPT_API_FN(data_api__set) {
 
 
 TSO_SCRIPT_API_FN(data_api__get_as_string) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__DATA);   
     topazString_t * str = topaz_data_get_as_string(native);
@@ -40,7 +38,6 @@ TSO_SCRIPT_API_FN(data_api__get_as_string) {
 }
 
 TSO_SCRIPT_API_FN(data_api__get_byte_count) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__DATA);   
     const topazArray_t * arr = topaz_data_get_as_bytes(native);
@@ -48,7 +45,6 @@ TSO_SCRIPT_API_FN(data_api__get_byte_count) {
 }
 
 TSO_SCRIPT_API_FN(data_api__get_nth_byte) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__DATA);   
@@ -66,8 +62,8 @@ TSO_SCRIPT_API_FN(data_api__get_nth_byte) {
 
 static void add_refs__data_api(topazScript_t * script, topazScriptManager_t * context) {
     // member functions
-    TS_MAP_NATIVE_FN("topaz_data__set", data_api__set);
-    TS_MAP_NATIVE_FN("topaz_data__get_byte_count", data_api__get_byte_count);
-    TS_MAP_NATIVE_FN("topaz_data__get_nth_byte", data_api__get_nth_byte);
-    TS_MAP_NATIVE_FN("topaz_data__get_as_string", data_api__get_as_string);
+    TS_MAP_NATIVE_FN("topaz_data__set", data_api__set, 1);
+    TS_MAP_NATIVE_FN("topaz_data__get_byte_count", data_api__get_byte_count, 1);
+    TS_MAP_NATIVE_FN("topaz_data__get_nth_byte", data_api__get_nth_byte, 2);
+    TS_MAP_NATIVE_FN("topaz_data__get_as_string", data_api__get_as_string, 1);
 }

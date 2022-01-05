@@ -8,8 +8,11 @@
 // This example demonstrates the 2 main methods to get
 // input information: Polling and Event Listening.
 //
-<@>Topaz = import(module:'Topaz');
-<@>class = import(module:'Matte.Core.Class');
+<@>Topaz  = import(module:'Topaz.Core');
+<@>TOPAZ  = import(module:'Topaz.Constants');
+<@>class  = import(module:'Matte.Core.Class');
+<@>Color  = import(module:'Topaz.Color');
+<@>Vector = import(module:'Topaz.Vector');
 
 //
 //
@@ -27,6 +30,7 @@
 // will use a blue rectangle to show itself onscreen and will 
 // respond to the arrow keys and right-click + dragging.
 <@>Input_Poll = class(info:{
+    name : 'Input_Poll',
     inherits : [Topaz.Entity],
     define ::(this) {
         // Since we are making the shape once and not modifying it,
@@ -34,7 +38,7 @@
         <@>visual = Topaz.Shape2D.new();
 
         // Set it to blue and make it 20x20
-        visual.color = Color.fromString(value:'blue');
+        visual.color = Color.parse(string:'blue');
         visual.formRectangle(width:20, height:20);
 
         // As shorthand for .addComponent(), you 
@@ -42,9 +46,9 @@
         // the "components" property equal to an array
         // of the component references. It tends to be 
         // visually more compact while still very readable.
-        ent.components = [visual];
+        this.components = [visual];
 
-        ent.onStep = ::{
+        this.onStep = ::{
 
             // For the polling method, the accuracy is dependent 
             // on how often input is re-polled. For both convenience
@@ -61,40 +65,40 @@
             // position vector by adding "1" to it in the direction 
             // that corresponds to the arrow.
 
-            if (Topaz.Input.getState(TOPAZ.INPUT.KEY_up)) {
+            if (Topaz.Input.getState(input:TOPAZ.INPUT.KEY_up)) ::<={
                 // The add() function for vectors allows the creation 
                 // of a new vector by summing the x, y, and z components
                 // of the source vector and argument vector.
-                ent.position = Vector.add(ent.position, {x:0, y:-1});            
-            }
+                this.position = Vector.add(a:this.position, b:{x:0, y:-1});            
+            };
 
-            if (Topaz.Input.getState(TOPAZ.INPUT.KEY_down)) {
-                ent.position = Vector.add(ent.position, {x:0, y:1});            
-            }
+            if (Topaz.Input.getState(input:TOPAZ.INPUT.KEY_down)) ::<={
+                this.position = Vector.add(a:this.position, b:{x:0, y:1});            
+            };
 
-            if (Topaz.Input.getState(TOPAZ.INPUT.KEY_left)) {
-                ent.position = Vector.add(ent.position, {x:-1, y:0});            
-            }
+            if (Topaz.Input.getState(input:TOPAZ.INPUT.KEY_left)) ::<={
+                this.position = Vector.add(a:this.position, b:{x:-1, y:0});            
+            };
 
 
-            if (Topaz.Input.getState(TOPAZ.INPUT.KEY_right)) {
-                ent.position = Vector.add(ent.position, {x:1, y:0});            
-            }
+            if (Topaz.Input.getState(input:TOPAZ.INPUT.KEY_right)) ::<={
+                this.position = Vector.add(a:this.position, b:{x:1, y:0});            
+            };
 
             // The left/right/middle button can be polled using 
             // the Topaz.Key.topazPointer_* inputs.
             // All inputs for the mouse+keyboard can use the getState() function.
-            if (Topaz.Input.getState(TOPAZ.INPUT.POINTER_1)) {
+            if (Topaz.Input.getState(input:TOPAZ.INPUT.POINTER_1)) ::<={
 
                 // To poll position position, getState can be used. However,
                 // due to the commonality of this operation, the position 
                 // can be polled by just accessing Topaz.Input.mouseX / Y.
-                ent.position = {
+                this.position = {
                     x:Topaz.Input.mouse.x,
                     y:Topaz.Input.mouse.y
                 };
-            }
-        }
+            };
+        };
 
         // We won't be using any persistent, public props, so there will 
         // be no interface call.
@@ -124,21 +128,22 @@
 //
 // To contrast it with the previous entity, this one 
 // is a red square controlled with W, A, S, D + left click.
-var Input_List = tclass({
-    inherits : Topaz.Entity,
-    define : function(ent) {
+@Input_List = class(info:{
+    name : 'Input_List',
+    inherits : [Topaz.Entity],
+    define ::(this) {
         // This will hold the state of whether the event 
         // listener detected a clicking state. When its pressed,
         // its updated to 1, but when released its updated to 0.
-        var clicking = false;
+        @clicking = false;
 
         // Same story as the first prefab!
         <@>visual = Topaz.Shape2D.new();
 
         // Here, we're using RGB hex notation to define our color.
-        visual.color = Color.fromString('#ff0000');
-        visual.formRectangle(20, 20);
-        ent.components = [visual];
+        visual.color = Color.parse(string:'#ff0000');
+        visual.formRectangle(width:20, height:20);
+        this.components = [visual];
 
 
 
@@ -155,64 +160,64 @@ var Input_List = tclass({
         // This listener is mapped to the onActive event, which 
         // is every frame that an input is non-zero. This is 
         // convenient for when buttons are held.
-        Topaz.Input.addKeyboardListener({
+        Topaz.Input.addKeyboardListener(
 
             // Here is the onActive property.
             // The funcion mapped takes 2 arguments: the map itself 
             // we passed in, and the input id that is active.
-            onActive : function(map, key) {
-                switch(key) {
-                  case TOPAZ.INPUT.KEY_w:
-                    ent.position = Vector.add(ent.position, {x:0, y:-1});            
-                    break;
+            onActive :::(input, value) {
+                match(input) {
+                  (TOPAZ.INPUT.KEY_w):::<={
+                    this.position = Vector.add(a:this.position, b:{x:0, y:-1});            
+                  },
 
-                  case TOPAZ.INPUT.KEY_s:
-                    ent.position = Vector.add(ent.position, {x:0, y:1});            
-                    break;
+                  (TOPAZ.INPUT.KEY_s):::<={
+                    this.position = Vector.add(a:this.position, b:{x:0, y:1});            
+                  },
 
-                  case TOPAZ.INPUT.KEY_a:
-                    ent.position = Vector.add(ent.position, {x:-1, y:0});            
-                    break;
+                  (TOPAZ.INPUT.KEY_a):::<={
+                    this.position = Vector.add(a:this.position, b:{x:-1, y:0});            
+                  },
+                    
 
-                  case TOPAZ.INPUT.KEY_d:
-                    ent.position = Vector.add(ent.position, {x:1, y:0});            
-                    break;
-                }
+                  (TOPAZ.INPUT.KEY_d):::<={
+                    this.position = Vector.add(a:this.position, b:{x:1, y:0});            
+                  }
+                };
             }
-        });
+        );
 
         // Similar to adding a keyboard listener, pointer 
         // listeners will respond only to mouse events.
-        Topaz.Input.addPointerListener({
+        Topaz.Input.addPointerListener(
 
             // The onUpdate event respondes to any time the 
             // device sends a new event to topaz.
-            onUpdate : function(map, input, value) {
+            onUpdate :::(input, value) {
 
                 // The clicking state will by set here to detect when to apply the 
                 // x / y position change
-                if (input == TOPAZ.INPUT.POINTER_0) {
+                if (input == TOPAZ.INPUT.POINTER_0) ::<={
                     clicking = value > 0;
-                }
+                };
 
                 // If the clicking state is active, then we check to 
                 // see if the event we're receiving is an X / Y update 
                 // event for the pointer. If it is, replace the component 
                 // in question with the raw value.
-                if (clicking) {
-                    switch(input) {
-                      case TOPAZ.INPUT.POINTER_X:
-                        ent.position = {x:value, y:ent.position.y};
-                        break;
+                if (clicking) ::<={
+                    match(input) {
+                      (TOPAZ.INPUT.POINTER_X):::<={
+                        this.position = {x:value, y:this.position.y};
+                      },
 
-                      case TOPAZ.INPUT.POINTER_Y:
-                        ent.position = {x:ent.position.x, y:value};
-                        break;
-
-                    }
-                }
+                      (TOPAZ.INPUT.POINTER_Y):::<={
+                        this.position = {x:this.position.x, y:value};
+                      }
+                    };
+                };
             }
-        });
+        );
 
         // if no public special properties are needed, interface does not need to be called
     }
@@ -223,7 +228,7 @@ var Input_List = tclass({
 // it is helpful to establish a basic "entity tree".
 // Here, our root is an empty object whose job is purely
 // to manage the input example entities we defined above.
-var manager = Topaz.Entity.new();
+@manager = Topaz.Entity.new();
 
 
 // Next, we'll instantiate those entities 

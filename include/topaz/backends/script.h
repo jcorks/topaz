@@ -101,8 +101,9 @@ typedef topazScript_Object_t * (*topaz_script_native_function)(
     topazScript_t * script, 
 
     /// The arguments passed to the function from 
-    /// the scripting context. Each argument is a topazScript_Object_t *.
-    const topazArray_t * args, 
+    /// the scripting context. Each argument is a topazScript_Object_t *
+    /// The count always matches the bound native argument count.
+    topazScript_Object_t **, 
 
     /// Data bound to the function.
     void * userData
@@ -205,6 +206,11 @@ int topaz_script_map_native_function(
     /// The symbol name to refer to the native function by.
     /// Must follow scripting language-dependent restrictions.
     const topazString_t * localSymbolName,
+
+    /// The number of arguments the function will have when called.
+    /// The script context MUST pass this number of arguments or an error will be 
+    /// thrown.
+    uint8_t argumentCount,
 
     /// The native function to call when the scripting dummy 
     /// function is called.

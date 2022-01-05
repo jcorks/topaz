@@ -2,7 +2,6 @@
 
 
 TSO_SCRIPT_API_FN(filesystem_api__get_path) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
 
     topazFilesystem_t * fs = topaz_context_get_filesystem(((topazScriptManager_t*)context)->ctx);
@@ -27,11 +26,12 @@ TSO_SCRIPT_API_FN(filesystem_api__get_path) {
 
 
 TSO_SCRIPT_API_FN(filesystem_api__get_path_from_string) {
-    TSO_ASSERT_ARG_COUNT(1);
+    TSO_ARG_0;
+    TSO_ARG_1;
 
 
-    if (topaz_array_get_size(args) == 1) {
-        TSO_ARG_0;
+    if (topaz_script_object_get_type(arg0) == topazScript_Object_Type_Undefined) {
+
         topazFilesystem_t * fs = topaz_context_get_filesystem(((topazScriptManager_t*)context)->ctx);
         const topazFilesystem_Path_t * ptr = topaz_filesystem_get_path_from_string(
             fs,
@@ -50,8 +50,6 @@ TSO_SCRIPT_API_FN(filesystem_api__get_path_from_string) {
         return object;
                 
     } else {
-        TSO_ARG_0;
-        TSO_ARG_1;
         TSO_NATIVIZE(topazFilesystem_Path_t *, TSO_OBJECT_ID__FILESYSTEM_PATH);
 
         topazFilesystem_t * fs = topaz_context_get_filesystem(((topazScriptManager_t*)context)->ctx);
@@ -74,7 +72,6 @@ TSO_SCRIPT_API_FN(filesystem_api__get_path_from_string) {
 
 
 TSO_SCRIPT_API_FN(filesystem_api_path__as_string) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazFilesystem_Path_t *, TSO_OBJECT_ID__FILESYSTEM_PATH);
 
@@ -86,7 +83,6 @@ TSO_SCRIPT_API_FN(filesystem_api_path__as_string) {
 }
 
 TSO_SCRIPT_API_FN(filesystem_api_path__get_parent) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazFilesystem_Path_t *, TSO_OBJECT_ID__FILESYSTEM_PATH);
 
@@ -107,7 +103,6 @@ TSO_SCRIPT_API_FN(filesystem_api_path__get_parent) {
 
 
 TSO_SCRIPT_API_FN(filesystem_api_path__get_child_count) {
-    TSO_ASSERT_ARG_COUNT(1);
     TSO_ARG_0;
     TSO_NATIVIZE(topazFilesystem_Path_t *, TSO_OBJECT_ID__FILESYSTEM_PATH);
 
@@ -120,7 +115,6 @@ TSO_SCRIPT_API_FN(filesystem_api_path__get_child_count) {
 
 
 TSO_SCRIPT_API_FN(filesystem_api_path__get_nth_child) {
-    TSO_ASSERT_ARG_COUNT(2);
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazFilesystem_Path_t *, TSO_OBJECT_ID__FILESYSTEM_PATH);
@@ -146,13 +140,13 @@ TSO_SCRIPT_API_FN(filesystem_api_path__get_nth_child) {
 
 
 static void add_refs__filesystem_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_filesystem__get_path", filesystem_api__get_path);
-    TS_MAP_NATIVE_FN("topaz_filesystem__get_path_from_string", filesystem_api__get_path_from_string);
+    TS_MAP_NATIVE_FN("topaz_filesystem__get_path", filesystem_api__get_path, 1);
+    TS_MAP_NATIVE_FN("topaz_filesystem__get_path_from_string", filesystem_api__get_path_from_string, 1);
 
-    TS_MAP_NATIVE_FN("topaz_filesystem_path__as_string", filesystem_api_path__as_string);
-    TS_MAP_NATIVE_FN("topaz_filesystem_path__get_parent", filesystem_api_path__get_parent);
-    TS_MAP_NATIVE_FN("topaz_filesystem_path__get_child_count", filesystem_api_path__get_child_count);
-    TS_MAP_NATIVE_FN("topaz_filesystem_path__get_nth_child", filesystem_api_path__get_nth_child);
+    TS_MAP_NATIVE_FN("topaz_filesystem_path__as_string", filesystem_api_path__as_string, 1);
+    TS_MAP_NATIVE_FN("topaz_filesystem_path__get_parent", filesystem_api_path__get_parent, 1);
+    TS_MAP_NATIVE_FN("topaz_filesystem_path__get_child_count", filesystem_api_path__get_child_count, 1);
+    TS_MAP_NATIVE_FN("topaz_filesystem_path__get_nth_child", filesystem_api_path__get_nth_child, 2);
 
     // reading / writing need to be done via resources.
 }

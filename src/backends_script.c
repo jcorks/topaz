@@ -159,6 +159,7 @@ topazScriptAPI_t topaz_script_get_api(topazScript_t *);
 int topaz_script_map_native_function(
     topazScript_t * s,
     const topazString_t * localSymbolName,
+    uint8_t argumentCount,
     topaz_script_native_function fn,
     void * userData
 ) {
@@ -166,6 +167,7 @@ int topaz_script_map_native_function(
     return s->api.script_map_native_function(
         s, s->implementationData,
         localSymbolName,
+        argumentCount,
         fn,
         userData
     );
