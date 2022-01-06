@@ -1,6 +1,6 @@
-<@>Topaz = import(module:'Topaz.Core');
-<@>TOPAZ = import(module:'Topaz.Constants');
-<@>class = import(module:'Matte.Core.Class');
+@:Topaz = import(module:'Topaz.Core');
+@:TOPAZ = import(module:'Topaz.Constants');
+@:class = import(module:'Matte.Core.Class');
 
 
 @mesh = Topaz.Resources.fetchAsset(type:TOPAZ.ASSET.TYPE.MESH, name:'testMesh');
@@ -52,10 +52,10 @@ tex.setRGBA(
 
 
 
-<@>Example3D = class(info:{
+@:Example3D = class(
     inherits : [Topaz.Entity],
-    define ::(this) {
-        <@>v = Topaz.Shape3D.new();
+    define:::(this) {
+        @:v = Topaz.Shape3D.new();
         v.material = material;
         v.mesh = mesh;
         v.setTexture(slot:0, texture:tex);
@@ -80,7 +80,7 @@ tex.setRGBA(
             };
         };
     }
-});
+);
 
 
 @a = Example3D.new();

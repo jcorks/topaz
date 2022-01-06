@@ -4,10 +4,10 @@
 @:Color  = import(module:'Topaz.Color');
 @:class  = import(module:'Matte.Core.Class');
 
-@: Rectangle = class(info:{
+@: Rectangle = class(
     name : 'Rectangle',
     inherits : [Topaz.Entity],
-    define ::(this){
+    define:::(this){
         @:v = Topaz.Shape2D.new();
         v.formRectangle(width:30, height:30);
         v.center = {x:15, y:15};
@@ -56,12 +56,12 @@
             }
         };
     }
-});
+);
 
 
-@: RectangleLinear = class(info:{
+@: RectangleLinear = class(
     inherits : [Rectangle],
-    define ::(this) {
+    define:::(this) {
         this.visual.color = Color.parse(string:'purple');
         this.anim.addKeyframe(value:0,   function:TOPAZ.AUTOMATION.FUNCTION.NONE,   offset:0);
         this.anim.addKeyframe(value:200, function:TOPAZ.AUTOMATION.FUNCTION.LINEAR, offset:0.5);
@@ -69,11 +69,11 @@
 
         this.position = {x:100, y:100};
     }
-});
+);
 
-@:RectangleAccel = class(info:{
+@:RectangleAccel = class(
     inherits : [Rectangle],
-    define ::(this) {
+    define:::(this) {
         this.visual.color = Color.parse(string:'blue');
         this.anim.addKeyframe(value:0,   function:TOPAZ.AUTOMATION.FUNCTION.NONE,  offset:0);
         this.anim.addKeyframe(value:200, function:TOPAZ.AUTOMATION.FUNCTION.ACCEL, offset:0.5);
@@ -82,11 +82,11 @@
         this.position = {x:100, y:200};
 
     }
-});
+);
 
-@:RectangleSlow = class(info:{
+@:RectangleSlow = class(
     inherits : [Rectangle],
-    define ::(this) {
+    define:::(this) {
         this.visual.color = Color.parse(string:'red');
         this.anim.addKeyframe(value:0,   function:TOPAZ.AUTOMATION.FUNCTION.NONE, offset:0);
         this.anim.addKeyframe(value:200, function:TOPAZ.AUTOMATION.FUNCTION.SLOW, offset:0.5);
@@ -95,7 +95,7 @@
 
         this.position = {x:100, y:300};
     }
-});
+);
 
 
 

@@ -7,8 +7,8 @@
 //
 // 
 // 
-<@>Topaz = import(module:'Topaz.Core');
-<@>class = import(module:'Matte.Core.Class');
+@:Topaz = import(module:'Topaz.Core');
+@:class = import(module:'Matte.Core.Class');
 
 
 // Here, we're going to make a component and an entity 
@@ -43,10 +43,10 @@
 //
 //
 //
-<@>FruitBasket = class(info:{
+@:FruitBasket = class(
     name : 'FruitBasket',        
     inherits : [Topaz.Component],
-    define ::(this) {
+    define:::(this) {
         // Current amount of fruit in the basket.
         // We start the basket with a decent amount of fruit.
         //
@@ -133,13 +133,13 @@
           
         };
     }
-});
+);
 
 
 // Now that we have defined a FruitBasket, we can define a Person 
 // to hold the basket. Every person has a name and a basket of 
 // their own.
-<@>Person = class(info:{
+@:Person = class(
     name : 'Person',        
     inherits : [Topaz.Entity],
     define : ::(this) {
@@ -198,7 +198,7 @@
         
         };
     }
-});
+);
 
 
 

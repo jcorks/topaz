@@ -29,10 +29,10 @@
 // To demonstrate the effect of input, this example entity 
 // will use a blue rectangle to show itself onscreen and will 
 // respond to the arrow keys and right-click + dragging.
-@:Input_Poll = class(info:{
+@:Input_Poll = class(
     name : 'Input_Poll',
     inherits : [Topaz.Entity],
-    define ::(this) {
+    define:::(this) {
         // Since we are making the shape once and not modifying it,
         // theres no need to keep the component around.
         @:visual = Topaz.Shape2D.new();
@@ -103,7 +103,7 @@
         // We won't be using any persistent, public props, so there will 
         // be no interface call.
     }
-});
+);
 
 
 // This prefab demonstrates the usage of event listening.
@@ -128,10 +128,10 @@
 //
 // To contrast it with the previous entity, this one 
 // is a red square controlled with W, A, S, D + left click.
-@Input_List = class(info:{
+@Input_List = class(
     name : 'Input_List',
     inherits : [Topaz.Entity],
-    define ::(this) {
+    define:::(this) {
         // This will hold the state of whether the event 
         // listener detected a clicking state. When its pressed,
         // its updated to 1, but when released its updated to 0.
@@ -221,7 +221,7 @@
 
         // if no public special properties are needed, interface does not need to be called
     }
-});
+);
 
 
 // Since our example is going to use multiple entities,

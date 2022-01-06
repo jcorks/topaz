@@ -1,9 +1,9 @@
 @:Topaz = import(module:'Topaz.Core');
 @:class = import(module:'Matte.Core.Class');
 @:TOPAZ = import(module:'Topaz.Constants');
-@:Emitter = class(info:{
+@:Emitter = class(
     inherits : [Topaz.Entity],
-    define ::(this) {
+    define:::(this) {
         @:emitter = Topaz.ParticleEmitter2D.new();    
 
         @a = Topaz.Automation.new();
@@ -85,7 +85,7 @@
             emitter.emit(amount:1);
         };
     }
-});
+);
 
 
 @v = Emitter.new();

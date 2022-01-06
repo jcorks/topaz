@@ -31,13 +31,13 @@
 // Every custom entity will be its own tclass that inherits from either Topaz.Entity
 // directly, or another Topaz.Entity-based class.
 //
-@: Rectangle = class(info:{
+@: Rectangle = class(
     inherits : [Topaz.Entity],
     // The define property is a special function to the class uses 
     // to construct new instances. entclass is a reference to the output 
     // of tclass which can be used as a place for static class storage.
     // ent is the new instance being created.
-    define ::(this) {
+    define:::(this) {
         // The define function is called to initialize parameters of the 
         // entity that are private to its definition.
         //
@@ -101,7 +101,7 @@
             }  
         };
     }
-});
+);
 
 
 // Now that the entity has been defined, we need to actually use it.
