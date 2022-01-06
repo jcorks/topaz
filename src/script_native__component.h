@@ -164,13 +164,15 @@ TSO_SCRIPT_API_FN(component_api__get_host) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_TYPE__COMPONENT);   
     topazEntity_t * out = topaz_component_get_host(native);
-    if (!out) out = topaz_entity_null();
-    topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(out);
-    if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW_VALUE(out, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
-    return object;
-}
+    if (out) {
+        topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(out);
+        if (a) return topaz_script_object_from_object(script, a);
+        TSO_OBJECT_NEW_VALUE(out, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
+        return object;
+    }
+    TSO_NO_RETURN;
+}   
 
 
 TSO_SCRIPT_API_FN(component_api__null) {
@@ -240,7 +242,7 @@ static int component_api_callback(topazComponent_t * c, void * data, topazEntity
     
     topazScript_Object_t * a[1];
 
-    if (source) {
+    if (source && source != topaz_entity_null()) {
         topazScript_Object_t * sourceObject = TSO_OBJECT_FETCH_KEPT_NATIVE(source);
         if (sourceObject) {
             a[0] = sourceObject;
@@ -555,7 +557,7 @@ TSO_SCRIPT_API_FN(entity_api__get_nth_component) {
 
     topazComponent_t * component;
     if (index < 0 || index >= count) {
-        component = topaz_component_null();
+        TSO_NO_RETURN;
     } else {
         component = topaz_array_at(topaz_entity_get_components(native), topazComponent_t *, index);
     }
@@ -575,13 +577,16 @@ TSO_SCRIPT_API_FN(entity_api__query_component) {
     const topazString_t * str = topaz_script_object_as_string(arg1);
 
     topazComponent_t * component = topaz_entity_query_component(native, str);
-    if (!component) component = topaz_component_null();
 
-    topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(component);
-    if (a) return topaz_script_object_from_object(script, a);
+    if (component) {
+        topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(component);
+        if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW_VALUE(component, TSO_OBJECT_TYPE__COMPONENT, NULL, NULL);
-    return object;
+        TSO_OBJECT_NEW_VALUE(component, TSO_OBJECT_TYPE__COMPONENT, NULL, NULL);
+    
+        return object;
+    }
+    TSO_NO_RETURN;
 }
 
 TSO_SCRIPT_API_FN(entity_api__remove_component) {

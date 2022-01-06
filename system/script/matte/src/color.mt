@@ -3,18 +3,18 @@
 // bound to it. When it interacts with 
 // the native context, a wrapper is added and the data syncd
 return ::<={
-    <@>topaz_color__create = getExternalFunction(name:'topaz_color__create');
-    <@>topaz_color__set_rgba = getExternalFunction(name:'topaz_color__set_rgba');
-    <@>topaz_color__get_r = getExternalFunction(name:'topaz_color__get_r');
-    <@>topaz_color__get_g = getExternalFunction(name:'topaz_color__get_g');
-    <@>topaz_color__get_b = getExternalFunction(name:'topaz_color__get_b');
-    <@>topaz_color__get_a = getExternalFunction(name:'topaz_color__get_a');
-    <@>topaz_color__to_hex_string = getExternalFunction(name:'topaz_color__to_hex_string');
-    <@>topaz_color__set_from_string = getExternalFunction(name:'topaz_color__set_from_string');
+    @:topaz_color__create = getExternalFunction(name:'topaz_color__create');
+    @:topaz_color__set_rgba = getExternalFunction(name:'topaz_color__set_rgba');
+    @:topaz_color__get_r = getExternalFunction(name:'topaz_color__get_r');
+    @:topaz_color__get_g = getExternalFunction(name:'topaz_color__get_g');
+    @:topaz_color__get_b = getExternalFunction(name:'topaz_color__get_b');
+    @:topaz_color__get_a = getExternalFunction(name:'topaz_color__get_a');
+    @:topaz_color__to_hex_string = getExternalFunction(name:'topaz_color__to_hex_string');
+    @:topaz_color__set_from_string = getExternalFunction(name:'topaz_color__set_from_string');
 
-    <@>refColor = topaz_color__create(a:0, b:0, c:0, d:0);
+    @:refColor = topaz_color__create(a:0, b:0, c:0, d:0);
 
-    <@>statepush = ::(v) {
+    @:statepush = ::(v) {
         if (v.native == empty) ::<={
             if (introspect.isNaN(value:v.r)) v.r = 0;
             if (introspect.isNaN(value:v.g)) v.g = 0;
@@ -26,7 +26,7 @@ return ::<={
         };
     };
 
-    <@>statepull = ::(v) {
+    @:statepull = ::(v) {
         v.r = topaz_color__get_r(a:v.native);
         v.g = topaz_color__get_g(a:v.native);
         v.b = topaz_color__get_b(a:v.native);
@@ -35,7 +35,7 @@ return ::<={
 
     return {
         fromnative : ::(native) {
-            <@>out = {native:native};
+            @:out = {native:native};
             statepull(v:out);
             return out;
         },

@@ -1,11 +1,11 @@
 // We'll also need the language class module as well
-<@>class = import(module:'Matte.Core.Class');
+@:class = import(module:'Matte.Core.Class');
 
 
 // All topaz symbols are contained within the module "Topaz".
 // It needs to be pulled in before accessing its features.
-<@>Topaz = import(module:'Topaz.Core');
-<@>Color = import(module:'Topaz.Color');
+@:Topaz = import(module:'Topaz.Core');
+@:Color = import(module:'Topaz.Color');
 
 
 
@@ -31,7 +31,7 @@
 // Every custom entity will be its own tclass that inherits from either Topaz.Entity
 // directly, or another Topaz.Entity-based class.
 //
-<@> Rectangle = class(info:{
+@: Rectangle = class(info:{
     inherits : [Topaz.Entity],
     // The define property is a special function to the class uses 
     // to construct new instances. entclass is a reference to the output 
@@ -45,7 +45,7 @@
         // Shape2D is the basic component for drawing 2D shapes.
         // It can be formed into any shape, but we will stick with 
         // a basic rectangle.
-        <@>visual = Topaz.Shape2D.new();
+        @:visual = Topaz.Shape2D.new();
 
         // This changes the shape into a 200 by 200 rectangle.
         visual.formRectangle(width:200, height:200);
@@ -77,7 +77,7 @@
             //
             // The position, rotation, and scale properties are vector objects,
             // so to update them, you actually replace them with new vectors.
-            <@>r = this.rotation;
+            @:r = this.rotation;
             this.rotation = {
                 x:r.x + 0.01,
                 y:r.y + 0.2,

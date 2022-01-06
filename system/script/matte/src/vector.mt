@@ -1,28 +1,28 @@
 return ::<={
-    <@>topaz_vector__create = getExternalFunction(name:'topaz_vector__create');
-    <@>topaz_vector__set_xyz = getExternalFunction(name:'topaz_vector__set_xyz');
-    <@>topaz_vector__get_x = getExternalFunction(name:'topaz_vector__get_x');
-    <@>topaz_vector__get_y = getExternalFunction(name:'topaz_vector__get_y');
-    <@>topaz_vector__get_z = getExternalFunction(name:'topaz_vector__get_z');
-    <@>topaz_vector__get_distance = getExternalFunction(name:'topaz_vector__get_distance');
-    <@>topaz_vector__normalize = getExternalFunction(name:'topaz_vector__normalize');
-    <@>topaz_vector__cross = getExternalFunction(name:'topaz_vector__cross');
-    <@>topaz_vector__floor = getExternalFunction(name:'topaz_vector__floor');
-    <@>topaz_vector__rotation_x_diff = getExternalFunction(name:'topaz_vector__rotation_x_diff');
-    <@>topaz_vector__rotation_x_diff_relative = getExternalFunction(name:'topaz_vector__rotation_x_diff_relative');
-    <@>topaz_vector__rotation_y_diff = getExternalFunction(name:'topaz_vector__rotation_y_diff');
-    <@>topaz_vector__rotation_y_diff_relative = getExternalFunction(name:'topaz_vector__rotation_y_diff_relative');
-    <@>topaz_vector__rotation_z_diff = getExternalFunction(name:'topaz_vector__rotation_z_diff');
-    <@>topaz_vector__rotation_z_diff_relative = getExternalFunction(name:'topaz_vector__rotation_z_diff_relative');
-    <@>topaz_vector__rotation_x = getExternalFunction(name:'topaz_vector__rotation_x');
-    <@>topaz_vector__rotation_y = getExternalFunction(name:'topaz_vector__rotation_y');
-    <@>topaz_vector__rotation_z = getExternalFunction(name:'topaz_vector__rotation_z');
-    <@>topaz_vector__rotate_x = getExternalFunction(name:'topaz_vector__rotate_x');
-    <@>topaz_vector__rotate_y = getExternalFunction(name:'topaz_vector__rotate_y');
-    <@>topaz_vector__rotate_z = getExternalFunction(name:'topaz_vector__rotate_z');
-    <@>topaz_vector__get_length = getExternalFunction(name:'topaz_vector__get_length');
+    @:topaz_vector__create = getExternalFunction(name:'topaz_vector__create');
+    @:topaz_vector__set_xyz = getExternalFunction(name:'topaz_vector__set_xyz');
+    @:topaz_vector__get_x = getExternalFunction(name:'topaz_vector__get_x');
+    @:topaz_vector__get_y = getExternalFunction(name:'topaz_vector__get_y');
+    @:topaz_vector__get_z = getExternalFunction(name:'topaz_vector__get_z');
+    @:topaz_vector__get_distance = getExternalFunction(name:'topaz_vector__get_distance');
+    @:topaz_vector__normalize = getExternalFunction(name:'topaz_vector__normalize');
+    @:topaz_vector__cross = getExternalFunction(name:'topaz_vector__cross');
+    @:topaz_vector__floor = getExternalFunction(name:'topaz_vector__floor');
+    @:topaz_vector__rotation_x_diff = getExternalFunction(name:'topaz_vector__rotation_x_diff');
+    @:topaz_vector__rotation_x_diff_relative = getExternalFunction(name:'topaz_vector__rotation_x_diff_relative');
+    @:topaz_vector__rotation_y_diff = getExternalFunction(name:'topaz_vector__rotation_y_diff');
+    @:topaz_vector__rotation_y_diff_relative = getExternalFunction(name:'topaz_vector__rotation_y_diff_relative');
+    @:topaz_vector__rotation_z_diff = getExternalFunction(name:'topaz_vector__rotation_z_diff');
+    @:topaz_vector__rotation_z_diff_relative = getExternalFunction(name:'topaz_vector__rotation_z_diff_relative');
+    @:topaz_vector__rotation_x = getExternalFunction(name:'topaz_vector__rotation_x');
+    @:topaz_vector__rotation_y = getExternalFunction(name:'topaz_vector__rotation_y');
+    @:topaz_vector__rotation_z = getExternalFunction(name:'topaz_vector__rotation_z');
+    @:topaz_vector__rotate_x = getExternalFunction(name:'topaz_vector__rotate_x');
+    @:topaz_vector__rotate_y = getExternalFunction(name:'topaz_vector__rotate_y');
+    @:topaz_vector__rotate_z = getExternalFunction(name:'topaz_vector__rotate_z');
+    @:topaz_vector__get_length = getExternalFunction(name:'topaz_vector__get_length');
 
-    <@>statepush = ::(v) {
+    @:statepush = ::(v) {
         if (v.native == empty) ::<={
             if (v.x == empty || introspect.isNaN(value:v.x)) v.x = 0;
             if (v.y == empty || introspect.isNaN(value:v.y)) v.y = 0;
@@ -33,7 +33,7 @@ return ::<={
         };
     };
 
-    <@>statepull = ::(v) {
+    @:statepull = ::(v) {
         v.x = topaz_vector__get_x(a:v.native);
         v.y = topaz_vector__get_y(a:v.native);
         v.z = topaz_vector__get_z(a:v.native);
@@ -43,7 +43,7 @@ return ::<={
         statepush : statepush,
         statepull : statepull,
         fromnative ::(native) {
-            <@>out = {native:native};
+            @:out = {native:native};
             statepull(v:out);
             return out;
         },

@@ -292,12 +292,14 @@ TSO_SCRIPT_API_FN(object2d_api__get_last_collided) {
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
 
     topazEntity_t * out = topaz_object2d_get_last_collided(native);
-    if (!out) out = topaz_entity_null();
-    topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(out);
-    if (a) return topaz_script_object_from_object(script, a);
+    if (out) {
+        topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(out);
+        if (a) return topaz_script_object_from_object(script, a);
 
-    TSO_OBJECT_NEW_VALUE(out, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
-    return object;
+        TSO_OBJECT_NEW_VALUE(out, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
+        return object;
+    }
+    TSO_NO_RETURN;
 }
 
 static void add_refs__object2d_api(topazScript_t * script, topazScriptManager_t * context) {

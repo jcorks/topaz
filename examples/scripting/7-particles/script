@@ -1,10 +1,10 @@
-<@>Topaz = import(module:'Topaz.Core');
-<@>class = import(module:'Matte.Core.Class');
-<@>TOPAZ = import(module:'Topaz.Constants');
-<@>Emitter = class(info:{
+@:Topaz = import(module:'Topaz.Core');
+@:class = import(module:'Matte.Core.Class');
+@:TOPAZ = import(module:'Topaz.Constants');
+@:Emitter = class(info:{
     inherits : [Topaz.Entity],
     define ::(this) {
-        <@>emitter = Topaz.ParticleEmitter2D.new();    
+        @:emitter = Topaz.ParticleEmitter2D.new();    
 
         @a = Topaz.Automation.new();
         a.addKeyframe(value:0,   function:TOPAZ.AUTOMATION.FUNCTION.SQUARE_ROOT, offset:0);

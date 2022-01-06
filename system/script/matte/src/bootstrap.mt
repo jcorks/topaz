@@ -1,8 +1,8 @@
-<@>TOPAZ = import(module:'Topaz.Constants');
-<@>Vector = import(module:'Topaz.Vector');
-<@>Color = import(module:'Topaz.Color');
+@:TOPAZ = import(module:'Topaz.Constants');
+@:Vector = import(module:'Topaz.Vector');
+@:Color = import(module:'Topaz.Color');
 
-<@>topaz__debug = getExternalFunction(name:'topaz__debug');
+@:topaz__debug = getExternalFunction(name:'topaz__debug');
 
 
 @class = import(module:'Matte.Core.Class');
@@ -76,9 +76,9 @@
         });
 
         // Must be separate since Topaz inherit from the asset ahead of time before Topaz is computed.
-        <@>topaz_asset__get_type = getExternalFunction(name:'topaz_asset__get_type');
+        @:topaz_asset__get_type = getExternalFunction(name:'topaz_asset__get_type');
         @__Asset__ = ::<={
-            <@>topaz_asset__get_name = getExternalFunction(name:'topaz_asset__get_name');
+            @:topaz_asset__get_name = getExternalFunction(name:'topaz_asset__get_name');
 
             return class(info:{
                 name : 'Topaz.Asset',        
@@ -107,12 +107,12 @@
         };
 
         @__Filesystem__ = ::<={
-            <@>topaz_filesystem__get_path = getExternalFunction(name:'topaz_filesystem__get_path');
-            <@>topaz_filesystem__get_path_from_string = getExternalFunction(name:'topaz_filesystem__get_path_from_string');
-            <@>topaz_filesystem_path__as_string = getExternalFunction(name:'topaz_filesystem_path__as_string');
-            <@>topaz_filesystem_path__get_parent = getExternalFunction(name:'topaz_filesystem_path__get_parent');
-            <@>topaz_filesystem_path__get_nth_child = getExternalFunction(name:'topaz_filesystem_path__get_nth_child');
-            <@>topaz_filesystem_path__get_child_count = getExternalFunction(name:'topaz_filesystem_path__get_child_count');
+            @:topaz_filesystem__get_path = getExternalFunction(name:'topaz_filesystem__get_path');
+            @:topaz_filesystem__get_path_from_string = getExternalFunction(name:'topaz_filesystem__get_path_from_string');
+            @:topaz_filesystem_path__as_string = getExternalFunction(name:'topaz_filesystem_path__as_string');
+            @:topaz_filesystem_path__get_parent = getExternalFunction(name:'topaz_filesystem_path__get_parent');
+            @:topaz_filesystem_path__get_nth_child = getExternalFunction(name:'topaz_filesystem_path__get_nth_child');
+            @:topaz_filesystem_path__get_child_count = getExternalFunction(name:'topaz_filesystem_path__get_child_count');
             return {        
                 getPath : ::(node) { 
                     return __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path(a:node));
@@ -167,10 +167,10 @@
         };
 
         @__RNG__ = ::<={
-            <@>topaz_rng__create = getExternalFunction(name:'topaz_rng__create');
-            <@>topaz_rng__set_seed = getExternalFunction(name:'topaz_rng__set_seed');
-            <@>topaz_rng__next_int = getExternalFunction(name:'topaz_rng__next_int');
-            <@>topaz_rng__next_value = getExternalFunction(name:'topaz_rng__next_value');
+            @:topaz_rng__create = getExternalFunction(name:'topaz_rng__create');
+            @:topaz_rng__set_seed = getExternalFunction(name:'topaz_rng__set_seed');
+            @:topaz_rng__next_int = getExternalFunction(name:'topaz_rng__next_int');
+            @:topaz_rng__next_value = getExternalFunction(name:'topaz_rng__next_value');
 
             return class(info:{
                 name : 'Topaz.RNG',        
@@ -212,10 +212,10 @@
             });
         };
         @__ViewManager__ = ::<={
-            <@> topaz_view_manager__set_main = getExternalFunction(name:'topaz_view_manager__set_main');
-            <@> topaz_view_manager__get_main = getExternalFunction(name:'topaz_view_manager__get_main');
-            <@> topaz_view_manager__set_clipboard_from_string = getExternalFunction(name:'topaz_view_manager__set_clipboard_from_string');
-            <@> topaz_view_manager__get_clipboard_as_string = getExternalFunction(name:'topaz_view_manager__get_clipboard_as_string');
+            @: topaz_view_manager__set_main = getExternalFunction(name:'topaz_view_manager__set_main');
+            @: topaz_view_manager__get_main = getExternalFunction(name:'topaz_view_manager__get_main');
+            @: topaz_view_manager__set_clipboard_from_string = getExternalFunction(name:'topaz_view_manager__set_clipboard_from_string');
+            @: topaz_view_manager__get_clipboard_as_string = getExternalFunction(name:'topaz_view_manager__get_clipboard_as_string');
             return class(info:{
                 name : 'Topaz.ViewManager',        
                 define ::(this) { 
@@ -243,20 +243,20 @@
             }).new();
         };
         @__Display__ = ::<={
-            <@>topaz_view_manager__create_display = getExternalFunction(name:'topaz_view_manager__create_display');
-            <@>topaz_display__destroy = getExternalFunction(name:'topaz_display__destroy');
-            <@>topaz_display__set_parameter = getExternalFunction(name:'topaz_display__set_parameter');
-            <@>topaz_display__add_parameter_callback = getExternalFunction(name:'topaz_display__add_parameter_callback');
-            <@>topaz_display__add_close_callback = getExternalFunction(name:'topaz_display__add_close_callback');
-            <@>topaz_display__remove_callback = getExternalFunction(name:'topaz_display__remove_callback');
-            <@>topaz_display__get_parameter = getExternalFunction(name:'topaz_display__get_parameter');
-            <@>topaz_display__get_framebuffer = getExternalFunction(name:'topaz_display__get_framebuffer');
-            <@>topaz_display__use_framebuffer = getExternalFunction(name:'topaz_display__use_framebuffer');
-            <@>topaz_display__clear_main_framebuffer = getExternalFunction(name:'topaz_display__clear_main_framebuffer');
-            <@>topaz_display__capture_main_framebuffer = getExternalFunction(name:'topaz_display__capture_main_framebuffer');
-            <@>topaz_display__get_camera_2d = getExternalFunction(name:'topaz_display__get_camera_2d');
-            <@>topaz_display__get_camera_3d = getExternalFunction(name:'topaz_display__get_camera_3d');
-            <@>topaz_display__get_main_framebuffer = getExternalFunction(name:'topaz_display__get_main_framebuffer');
+            @:topaz_view_manager__create_display = getExternalFunction(name:'topaz_view_manager__create_display');
+            @:topaz_display__destroy = getExternalFunction(name:'topaz_display__destroy');
+            @:topaz_display__set_parameter = getExternalFunction(name:'topaz_display__set_parameter');
+            @:topaz_display__add_parameter_callback = getExternalFunction(name:'topaz_display__add_parameter_callback');
+            @:topaz_display__add_close_callback = getExternalFunction(name:'topaz_display__add_close_callback');
+            @:topaz_display__remove_callback = getExternalFunction(name:'topaz_display__remove_callback');
+            @:topaz_display__get_parameter = getExternalFunction(name:'topaz_display__get_parameter');
+            @:topaz_display__get_framebuffer = getExternalFunction(name:'topaz_display__get_framebuffer');
+            @:topaz_display__use_framebuffer = getExternalFunction(name:'topaz_display__use_framebuffer');
+            @:topaz_display__clear_main_framebuffer = getExternalFunction(name:'topaz_display__clear_main_framebuffer');
+            @:topaz_display__capture_main_framebuffer = getExternalFunction(name:'topaz_display__capture_main_framebuffer');
+            @:topaz_display__get_camera_2d = getExternalFunction(name:'topaz_display__get_camera_2d');
+            @:topaz_display__get_camera_3d = getExternalFunction(name:'topaz_display__get_camera_3d');
+            @:topaz_display__get_main_framebuffer = getExternalFunction(name:'topaz_display__get_main_framebuffer');
             return class(info:{
                 name : 'Topaz.Display',        
                 inherits : [__Native__],
@@ -359,11 +359,11 @@
         };
 
         @__Framebuffer__ = ::<={
-            <@>topaz_framebuffer__get_width = getExternalFunction(name:'topaz_framebuffer__get_width');
-            <@>topaz_framebuffer__get_height = getExternalFunction(name:'topaz_framebuffer__get_height');
-            <@>topaz_framebuffer__resize = getExternalFunction(name:'topaz_framebuffer__resize');
-            <@>topaz_framebuffer__get_filtered_hint = getExternalFunction(name:'topaz_framebuffer__get_filtered_hint');
-            <@>topaz_framebuffer__set_filtered_hint = getExternalFunction(name:'topaz_framebuffer__set_filtered_hint');
+            @:topaz_framebuffer__get_width = getExternalFunction(name:'topaz_framebuffer__get_width');
+            @:topaz_framebuffer__get_height = getExternalFunction(name:'topaz_framebuffer__get_height');
+            @:topaz_framebuffer__resize = getExternalFunction(name:'topaz_framebuffer__resize');
+            @:topaz_framebuffer__get_filtered_hint = getExternalFunction(name:'topaz_framebuffer__get_filtered_hint');
+            @:topaz_framebuffer__set_filtered_hint = getExternalFunction(name:'topaz_framebuffer__set_filtered_hint');
             return class(info:{
                 name : 'Topaz.Framebuffer',        
                 inherits : [__Native__],
@@ -406,15 +406,15 @@
         };
 
         @__Mesh__ = ::<={
-            <@>topaz_mesh__get_vertex_count = getExternalFunction(name:'topaz_mesh__get_vertex_count');
-            <@>topaz_mesh__set_vertex_count = getExternalFunction(name:'topaz_mesh__set_vertex_count');
-            <@>topaz_mesh__get_vertex = getExternalFunction(name:'topaz_mesh__get_vertex');
-            <@>topaz_mesh__set_vertex = getExternalFunction(name:'topaz_mesh__set_vertex');
-            <@>topaz_mesh__add_object = getExternalFunction(name:'topaz_mesh__add_object');
-            <@>topaz_mesh__set_object = getExternalFunction(name:'topaz_mesh__set_object');
-            <@>topaz_mesh__remove_object = getExternalFunction(name:'topaz_mesh__remove_object');
-            <@>topaz_mesh__define_vertices = getExternalFunction(name:'topaz_mesh__define_vertices');
-            <@>topaz_mesh__get_object_count = getExternalFunction(name:'topaz_mesh__get_object_count');
+            @:topaz_mesh__get_vertex_count = getExternalFunction(name:'topaz_mesh__get_vertex_count');
+            @:topaz_mesh__set_vertex_count = getExternalFunction(name:'topaz_mesh__set_vertex_count');
+            @:topaz_mesh__get_vertex = getExternalFunction(name:'topaz_mesh__get_vertex');
+            @:topaz_mesh__set_vertex = getExternalFunction(name:'topaz_mesh__set_vertex');
+            @:topaz_mesh__add_object = getExternalFunction(name:'topaz_mesh__add_object');
+            @:topaz_mesh__set_object = getExternalFunction(name:'topaz_mesh__set_object');
+            @:topaz_mesh__remove_object = getExternalFunction(name:'topaz_mesh__remove_object');
+            @:topaz_mesh__define_vertices = getExternalFunction(name:'topaz_mesh__define_vertices');
+            @:topaz_mesh__get_object_count = getExternalFunction(name:'topaz_mesh__get_object_count');
 
             return class(info:{
                 name : 'Topaz.Mesh',        
@@ -422,7 +422,7 @@
                 define : ::(this){ 
                     @impl;
                     this.constructor = ::(native){
-                        this[__Asset__].constructor(native:native);
+                        this.constructor[__Asset__](native:native);
                         impl = this.native;
                         return this;
                     };    
@@ -515,24 +515,24 @@
         };
 
         @__Input__ = ::<={
-            <@>topaz_input__mouse_x = getExternalFunction(name:'topaz_input__mouse_x');
-            <@>topaz_input__mouse_y = getExternalFunction(name:'topaz_input__mouse_y');
-            <@>topaz_input__mouse_delta_x = getExternalFunction(name:'topaz_input__mouse_delta_x');
-            <@>topaz_input__mouse_delta_y = getExternalFunction(name:'topaz_input__mouse_delta_y');
-            <@>topaz_input__mouse_wheel = getExternalFunction(name:'topaz_input__mouse_wheel');
-            <@>topaz_input__add_keyboard_listener = getExternalFunction(name:'topaz_input__add_keyboard_listener');
-            <@>topaz_input__add_pad_listener = getExternalFunction(name:'topaz_input__add_pad_listener');
-            <@>topaz_input__add_pointer_listener = getExternalFunction(name:'topaz_input__add_pointer_listener');
-            <@>topaz_input__add_mapped_listener = getExternalFunction(name:'topaz_input__add_mapped_listener');
-            <@>topaz_input__remove_listener = getExternalFunction(name:'topaz_input__remove_listener');
-            <@>topaz_input__get_state = getExternalFunction(name:'topaz_input__get_state');
-            <@>topaz_input__get_pad_state = getExternalFunction(name:'topaz_input__get_pad_state');
-            <@>topaz_input__get_mapped_state = getExternalFunction(name:'topaz_input__get_mapped_state');
-            <@>topaz_input__set_deadzone = getExternalFunction(name:'topaz_input__set_deadzone');
-            <@>topaz_input__query_pad_count = getExternalFunction(name:'topaz_input__query_pad_count');
-            <@>topaz_input__query_pad_id = getExternalFunction(name:'topaz_input__query_pad_id');
-            <@>topaz_input__add_unicode_listener = getExternalFunction(name:'topaz_input__add_unicode_listener');
-            <@>topaz_input__remove_unicode_listener = getExternalFunction(name:'topaz_input__remove_unicode_listener');
+            @:topaz_input__mouse_x = getExternalFunction(name:'topaz_input__mouse_x');
+            @:topaz_input__mouse_y = getExternalFunction(name:'topaz_input__mouse_y');
+            @:topaz_input__mouse_delta_x = getExternalFunction(name:'topaz_input__mouse_delta_x');
+            @:topaz_input__mouse_delta_y = getExternalFunction(name:'topaz_input__mouse_delta_y');
+            @:topaz_input__mouse_wheel = getExternalFunction(name:'topaz_input__mouse_wheel');
+            @:topaz_input__add_keyboard_listener = getExternalFunction(name:'topaz_input__add_keyboard_listener');
+            @:topaz_input__add_pad_listener = getExternalFunction(name:'topaz_input__add_pad_listener');
+            @:topaz_input__add_pointer_listener = getExternalFunction(name:'topaz_input__add_pointer_listener');
+            @:topaz_input__add_mapped_listener = getExternalFunction(name:'topaz_input__add_mapped_listener');
+            @:topaz_input__remove_listener = getExternalFunction(name:'topaz_input__remove_listener');
+            @:topaz_input__get_state = getExternalFunction(name:'topaz_input__get_state');
+            @:topaz_input__get_pad_state = getExternalFunction(name:'topaz_input__get_pad_state');
+            @:topaz_input__get_mapped_state = getExternalFunction(name:'topaz_input__get_mapped_state');
+            @:topaz_input__set_deadzone = getExternalFunction(name:'topaz_input__set_deadzone');
+            @:topaz_input__query_pad_count = getExternalFunction(name:'topaz_input__query_pad_count');
+            @:topaz_input__query_pad_id = getExternalFunction(name:'topaz_input__query_pad_id');
+            @:topaz_input__add_unicode_listener = getExternalFunction(name:'topaz_input__add_unicode_listener');
+            @:topaz_input__remove_unicode_listener = getExternalFunction(name:'topaz_input__remove_unicode_listener');
 
             return class(info:{
                 name : 'Topaz.Input',        
@@ -631,18 +631,18 @@
         };
 
         @__Audio__ = ::<={
-            <@>topaz_audio__playback_set_volume = getExternalFunction(name:'topaz_audio__playback_set_volume');
-            <@>topaz_audio__playback_set_panning = getExternalFunction(name:'topaz_audio__playback_set_panning');
-            <@>topaz_audio__playback_set_repeat = getExternalFunction(name:'topaz_audio__playback_set_repeat');
-            <@>topaz_audio__playback_pause = getExternalFunction(name:'topaz_audio__playback_pause');
-            <@>topaz_audio__playback_resume = getExternalFunction(name:'topaz_audio__playback_resume');
-            <@>topaz_audio__playback_seek = getExternalFunction(name:'topaz_audio__playback_seek');
-            <@>topaz_audio__playback_stop = getExternalFunction(name:'topaz_audio__playback_stop');
+            @:topaz_audio__playback_set_volume = getExternalFunction(name:'topaz_audio__playback_set_volume');
+            @:topaz_audio__playback_set_panning = getExternalFunction(name:'topaz_audio__playback_set_panning');
+            @:topaz_audio__playback_set_repeat = getExternalFunction(name:'topaz_audio__playback_set_repeat');
+            @:topaz_audio__playback_pause = getExternalFunction(name:'topaz_audio__playback_pause');
+            @:topaz_audio__playback_resume = getExternalFunction(name:'topaz_audio__playback_resume');
+            @:topaz_audio__playback_seek = getExternalFunction(name:'topaz_audio__playback_seek');
+            @:topaz_audio__playback_stop = getExternalFunction(name:'topaz_audio__playback_stop');
 
-            <@>topaz_audio__play_sound = getExternalFunction(name:'topaz_audio__play_sound');
-            <@>topaz_audio__channel_halt = getExternalFunction(name:'topaz_audio__channel_halt');
-            <@>topaz_audio__channel_set_volume = getExternalFunction(name:'topaz_audio__channel_set_volume');
-            <@>topaz_audio__channel_set_panning = getExternalFunction(name:'topaz_audio__channel_set_panning');
+            @:topaz_audio__play_sound = getExternalFunction(name:'topaz_audio__play_sound');
+            @:topaz_audio__channel_halt = getExternalFunction(name:'topaz_audio__channel_halt');
+            @:topaz_audio__channel_set_volume = getExternalFunction(name:'topaz_audio__channel_set_volume');
+            @:topaz_audio__channel_set_panning = getExternalFunction(name:'topaz_audio__channel_set_panning');
 
 
 
@@ -730,17 +730,17 @@
         };
 
         @__Material__ = ::<={
-            <@>topaz_material__set_program_data = getExternalFunction(name:'topaz_material__set_program_data');
-            <@>topaz_material__get_program_data = getExternalFunction(name:'topaz_material__get_program_data');
-            <@>topaz_material__clear_sources = getExternalFunction(name:'topaz_material__clear_sources');
-            <@>topaz_material__set_program_source = getExternalFunction(name:'topaz_material__set_program_source');
+            @:topaz_material__set_program_data = getExternalFunction(name:'topaz_material__set_program_data');
+            @:topaz_material__get_program_data = getExternalFunction(name:'topaz_material__get_program_data');
+            @:topaz_material__clear_sources = getExternalFunction(name:'topaz_material__clear_sources');
+            @:topaz_material__set_program_source = getExternalFunction(name:'topaz_material__set_program_source');
             return class(info:{
                 name : 'Topaz.Material',        
                 inherits : [__Asset__],
                 define : ::(this){ 
                     @impl;
                     this.constructor = ::(native) {
-                        this[__Asset__].constructor(native:native);
+                        this.constructor[__Asset__](native:native);
                         impl = this.native;
                         return this;
                     };
@@ -768,20 +768,20 @@
         };
         
         @__Image__ = ::<={
-            <@>topaz_image__get_width = getExternalFunction(name:'topaz_image__get_width');
-            <@>topaz_image__get_height = getExternalFunction(name:'topaz_image__get_height');
-            <@>topaz_image__get_frame_count = getExternalFunction(name:'topaz_image__get_frame_count');
-            <@>topaz_image__resize = getExternalFunction(name:'topaz_image__resize');
-            <@>topaz_image__add_frame = getExternalFunction(name:'topaz_image__add_frame');
-            <@>topaz_image__remove_frame = getExternalFunction(name:'topaz_image__remove_frame');
-            <@>topaz_image__frame_set_rgba = getExternalFunction(name:'topaz_image__frame_set_rgba');
+            @:topaz_image__get_width = getExternalFunction(name:'topaz_image__get_width');
+            @:topaz_image__get_height = getExternalFunction(name:'topaz_image__get_height');
+            @:topaz_image__get_frame_count = getExternalFunction(name:'topaz_image__get_frame_count');
+            @:topaz_image__resize = getExternalFunction(name:'topaz_image__resize');
+            @:topaz_image__add_frame = getExternalFunction(name:'topaz_image__add_frame');
+            @:topaz_image__remove_frame = getExternalFunction(name:'topaz_image__remove_frame');
+            @:topaz_image__frame_set_rgba = getExternalFunction(name:'topaz_image__frame_set_rgba');
             return class(info:{
                 name : 'Topaz.Image',        
                 inherits : [__Asset__],
                 define : ::(this){ 
                     @impl;
                     this.constructor = ::(native) {
-                        this[__Asset__].constructor(native:native);
+                        this.constructor[__Asset__](native:native);
                         impl = this.native;
                         return this;
                     };
@@ -818,17 +818,17 @@
             });
         };
         @__Data__ = ::<={
-            <@>topaz_data__get_byte_count = getExternalFunction(name:'topaz_data__get_byte_count');
-            <@>topaz_data__get_as_string = getExternalFunction(name:'topaz_data__get_as_string');
-            <@>topaz_data__get_nth_byte = getExternalFunction(name:'topaz_data__get_nth_byte');
-            <@>topaz_data__set = getExternalFunction(name:'topaz_data__set');
+            @:topaz_data__get_byte_count = getExternalFunction(name:'topaz_data__get_byte_count');
+            @:topaz_data__get_as_string = getExternalFunction(name:'topaz_data__get_as_string');
+            @:topaz_data__get_nth_byte = getExternalFunction(name:'topaz_data__get_nth_byte');
+            @:topaz_data__set = getExternalFunction(name:'topaz_data__set');
             return class(info:{
                 name : 'Topaz.Data',        
                 inherits : [__Asset__],
                 define : ::(this) { 
                     @impl;
                     this.constructor = ::(native){
-                        this[__Asset__].constructor(native:native);
+                        this.constructor[__Asset__](native:native);
                         impl = this.native;
                         return this;
                     };
@@ -861,10 +861,10 @@
         };
         
         @__Sound__ = ::<={
-            <@>topaz_sound__get_sample_count = getExternalFunction(name:'topaz_sound__get_sample_count');
-            <@>topaz_sound__get_nth_sample_left = getExternalFunction(name:'topaz_sound__get_nth_sample_left');
-            <@>topaz_sound__get_nth_sample_right = getExternalFunction(name:'topaz_sound__get_nth_sample_right');
-            <@>topaz_sound__set_samples = getExternalFunction(name:'topaz_sound__set_samples');
+            @:topaz_sound__get_sample_count = getExternalFunction(name:'topaz_sound__get_sample_count');
+            @:topaz_sound__get_nth_sample_left = getExternalFunction(name:'topaz_sound__get_nth_sample_left');
+            @:topaz_sound__get_nth_sample_right = getExternalFunction(name:'topaz_sound__get_nth_sample_right');
+            @:topaz_sound__set_samples = getExternalFunction(name:'topaz_sound__set_samples');
             return class(info: {
                 name : 'Topaz.Sound',        
                 inherits : [__Asset__],
@@ -900,16 +900,16 @@
         
         
         @__Resources__ = ::<={
-            <@>topaz_resources__fetch_asset = getExternalFunction(name:'topaz_resources__fetch_asset');
-            <@>topaz_resources__create_asset = getExternalFunction(name:'topaz_resources__create_asset');
-            <@>topaz_resources__load_asset = getExternalFunction(name:'topaz_resources__load_asset');
-            <@>topaz_resources__load_asset_data = getExternalFunction(name:'topaz_resources__load_asset_data');
-            <@>topaz_resources__load_asset_base64 = getExternalFunction(name:'topaz_resources__load_asset_base64');
-            <@>topaz_resources__write_asset = getExternalFunction(name:'topaz_resources__write_asset');
-            <@>topaz_resources__remove_asset = getExternalFunction(name:'topaz_resources__remove_asset');
-            <@>topaz_resources__is_extension_supported = getExternalFunction(name:'topaz_resources__is_extension_supported');
-            <@>topaz_resources__get_path = getExternalFunction(name:'topaz_resources__get_path');
-            <@>topaz_resources__set_path = getExternalFunction(name:'topaz_resources__set_path');
+            @:topaz_resources__fetch_asset = getExternalFunction(name:'topaz_resources__fetch_asset');
+            @:topaz_resources__create_asset = getExternalFunction(name:'topaz_resources__create_asset');
+            @:topaz_resources__load_asset = getExternalFunction(name:'topaz_resources__load_asset');
+            @:topaz_resources__load_asset_data = getExternalFunction(name:'topaz_resources__load_asset_data');
+            @:topaz_resources__load_asset_base64 = getExternalFunction(name:'topaz_resources__load_asset_base64');
+            @:topaz_resources__write_asset = getExternalFunction(name:'topaz_resources__write_asset');
+            @:topaz_resources__remove_asset = getExternalFunction(name:'topaz_resources__remove_asset');
+            @:topaz_resources__is_extension_supported = getExternalFunction(name:'topaz_resources__is_extension_supported');
+            @:topaz_resources__get_path = getExternalFunction(name:'topaz_resources__get_path');
+            @:topaz_resources__set_path = getExternalFunction(name:'topaz_resources__set_path');
             return class(info:{
                 name : 'Topaz.Resources',        
                 define : ::(this){ 
@@ -977,9 +977,9 @@
             }).new();
         };
         @__FontManager__ = ::<={
-            <@>topaz_font_manager__register_font = getExternalFunction(name:'topaz_font_manager__register_font');
-            <@>topaz_font_manager__preload_glyphs = getExternalFunction(name:'topaz_font_manager__preload_glyphs');
-            <@>topaz_font_manager__unregister_font = getExternalFunction(name:'topaz_font_manager__unregister_font');
+            @:topaz_font_manager__register_font = getExternalFunction(name:'topaz_font_manager__register_font');
+            @:topaz_font_manager__preload_glyphs = getExternalFunction(name:'topaz_font_manager__preload_glyphs');
+            @:topaz_font_manager__unregister_font = getExternalFunction(name:'topaz_font_manager__unregister_font');
             return class(info:{
                 name : 'Topaz.FontManager',        
                 define : ::(this) { 
@@ -1002,52 +1002,52 @@
 
 
                 
-        <@>topaz_entity__remove_component = getExternalFunction(name:'topaz_entity__remove_component');
-        <@>topaz_entity__add_component = getExternalFunction(name:'topaz_entity__add_component');
+        @:topaz_entity__remove_component = getExternalFunction(name:'topaz_entity__remove_component');
+        @:topaz_entity__add_component = getExternalFunction(name:'topaz_entity__add_component');
 
         @__Entity__ = ::<={
-            <@>topaz_entity__is_valid = getExternalFunction(name:'topaz_entity__is_valid');
-            <@>topaz_entity__remove = getExternalFunction(name:'topaz_entity__remove');
-            <@>topaz_entity__get_child_count = getExternalFunction(name:'topaz_entity__get_child_count');
-            <@>topaz_entity__get_nth_child = getExternalFunction(name:'topaz_entity__get_nth_child');
-            <@>topaz_entity__detach = getExternalFunction(name:'topaz_entity__detach');
-            <@>topaz_entity__attach = getExternalFunction(name:'topaz_entity__attach');
-            <@>topaz_entity__step = getExternalFunction(name:'topaz_entity__step');
-            <@>topaz_entity__draw = getExternalFunction(name:'topaz_entity__draw');
-            <@>topaz_entity__get_parent = getExternalFunction(name:'topaz_entity__get_parent');
-            <@>topaz_entity__query = getExternalFunction(name:'topaz_entity__query');
-            <@>topaz_entity__search = getExternalFunction(name:'topaz_entity__search');
-            <@>topaz_entity__get_priority = getExternalFunction(name:'topaz_entity__get_priority');
-            <@>topaz_entity__set_priority = getExternalFunction(name:'topaz_entity__set_priority');
-            <@>topaz_entity__set_priority_last = getExternalFunction(name:'topaz_entity__set_priority_last');
-            <@>topaz_entity__set_priority_first = getExternalFunction(name:'topaz_entity__set_priority_first');
-            <@>topaz_entity__get_rotation = getExternalFunction(name:'topaz_entity__get_rotation');
-            <@>topaz_entity__get_position = getExternalFunction(name:'topaz_entity__get_position');
-            <@>topaz_entity__get_scale = getExternalFunction(name:'topaz_entity__get_scale');
-            <@>topaz_entity__set_rotation = getExternalFunction(name:'topaz_entity__set_rotation');
-            <@>topaz_entity__set_position = getExternalFunction(name:'topaz_entity__set_position');
-            <@>topaz_entity__set_scale = getExternalFunction(name:'topaz_entity__set_scale');
-            <@>topaz_entity__get_global_position = getExternalFunction(name:'topaz_entity__get_global_position');
-            <@>topaz_entity__is_stepping = getExternalFunction(name:'topaz_entity__is_stepping');
-            <@>topaz_entity__is_drawing = getExternalFunction(name:'topaz_entity__is_drawing');
-            <@>topaz_entity__get_drawing = getExternalFunction(name:'topaz_entity__get_drawing');
-            <@>topaz_entity__set_drawing = getExternalFunction(name:'topaz_entity__set_drawing');
-            <@>topaz_entity__get_stepping = getExternalFunction(name:'topaz_entity__get_stepping');
-            <@>topaz_entity__set_stepping = getExternalFunction(name:'topaz_entity__set_stepping');
-            <@>topaz_entity__get_name = getExternalFunction(name:'topaz_entity__get_name');
-            <@>topaz_entity__set_name = getExternalFunction(name:'topaz_entity__set_name');
-            <@>topaz_entity__add_component_after = getExternalFunction(name:'topaz_entity__add_component_after');
-            <@>topaz_entity__get_component_count = getExternalFunction(name:'topaz_entity__get_component_count');
-            <@>topaz_entity__get_nth_component = getExternalFunction(name:'topaz_entity__get_nth_component');
-            <@>topaz_entity__query_component = getExternalFunction(name:'topaz_entity__query_component');
-            <@>topaz_entity__set_on_step = getExternalFunction(name:'topaz_entity__set_on_step');
-            <@>topaz_entity__set_on_draw = getExternalFunction(name:'topaz_entity__set_on_draw');
-            <@>topaz_entity__set_on_pre_step = getExternalFunction(name:'topaz_entity__set_on_pre_step');
-            <@>topaz_entity__set_on_pre_draw = getExternalFunction(name:'topaz_entity__set_on_pre_draw');
-            <@>topaz_entity__set_on_attach = getExternalFunction(name:'topaz_entity__set_on_attach');
-            <@>topaz_entity__set_on_detach = getExternalFunction(name:'topaz_entity__set_on_detach');
-            <@>topaz_entity__set_on_remove = getExternalFunction(name:'topaz_entity__set_on_remove');
-            <@>topaz_entity__create = getExternalFunction(name:'topaz_entity__create');
+            @:topaz_entity__is_valid = getExternalFunction(name:'topaz_entity__is_valid');
+            @:topaz_entity__remove = getExternalFunction(name:'topaz_entity__remove');
+            @:topaz_entity__get_child_count = getExternalFunction(name:'topaz_entity__get_child_count');
+            @:topaz_entity__get_nth_child = getExternalFunction(name:'topaz_entity__get_nth_child');
+            @:topaz_entity__detach = getExternalFunction(name:'topaz_entity__detach');
+            @:topaz_entity__attach = getExternalFunction(name:'topaz_entity__attach');
+            @:topaz_entity__step = getExternalFunction(name:'topaz_entity__step');
+            @:topaz_entity__draw = getExternalFunction(name:'topaz_entity__draw');
+            @:topaz_entity__get_parent = getExternalFunction(name:'topaz_entity__get_parent');
+            @:topaz_entity__query = getExternalFunction(name:'topaz_entity__query');
+            @:topaz_entity__search = getExternalFunction(name:'topaz_entity__search');
+            @:topaz_entity__get_priority = getExternalFunction(name:'topaz_entity__get_priority');
+            @:topaz_entity__set_priority = getExternalFunction(name:'topaz_entity__set_priority');
+            @:topaz_entity__set_priority_last = getExternalFunction(name:'topaz_entity__set_priority_last');
+            @:topaz_entity__set_priority_first = getExternalFunction(name:'topaz_entity__set_priority_first');
+            @:topaz_entity__get_rotation = getExternalFunction(name:'topaz_entity__get_rotation');
+            @:topaz_entity__get_position = getExternalFunction(name:'topaz_entity__get_position');
+            @:topaz_entity__get_scale = getExternalFunction(name:'topaz_entity__get_scale');
+            @:topaz_entity__set_rotation = getExternalFunction(name:'topaz_entity__set_rotation');
+            @:topaz_entity__set_position = getExternalFunction(name:'topaz_entity__set_position');
+            @:topaz_entity__set_scale = getExternalFunction(name:'topaz_entity__set_scale');
+            @:topaz_entity__get_global_position = getExternalFunction(name:'topaz_entity__get_global_position');
+            @:topaz_entity__is_stepping = getExternalFunction(name:'topaz_entity__is_stepping');
+            @:topaz_entity__is_drawing = getExternalFunction(name:'topaz_entity__is_drawing');
+            @:topaz_entity__get_drawing = getExternalFunction(name:'topaz_entity__get_drawing');
+            @:topaz_entity__set_drawing = getExternalFunction(name:'topaz_entity__set_drawing');
+            @:topaz_entity__get_stepping = getExternalFunction(name:'topaz_entity__get_stepping');
+            @:topaz_entity__set_stepping = getExternalFunction(name:'topaz_entity__set_stepping');
+            @:topaz_entity__get_name = getExternalFunction(name:'topaz_entity__get_name');
+            @:topaz_entity__set_name = getExternalFunction(name:'topaz_entity__set_name');
+            @:topaz_entity__add_component_after = getExternalFunction(name:'topaz_entity__add_component_after');
+            @:topaz_entity__get_component_count = getExternalFunction(name:'topaz_entity__get_component_count');
+            @:topaz_entity__get_nth_component = getExternalFunction(name:'topaz_entity__get_nth_component');
+            @:topaz_entity__query_component = getExternalFunction(name:'topaz_entity__query_component');
+            @:topaz_entity__set_on_step = getExternalFunction(name:'topaz_entity__set_on_step');
+            @:topaz_entity__set_on_draw = getExternalFunction(name:'topaz_entity__set_on_draw');
+            @:topaz_entity__set_on_pre_step = getExternalFunction(name:'topaz_entity__set_on_pre_step');
+            @:topaz_entity__set_on_pre_draw = getExternalFunction(name:'topaz_entity__set_on_pre_draw');
+            @:topaz_entity__set_on_attach = getExternalFunction(name:'topaz_entity__set_on_attach');
+            @:topaz_entity__set_on_detach = getExternalFunction(name:'topaz_entity__set_on_detach');
+            @:topaz_entity__set_on_remove = getExternalFunction(name:'topaz_entity__set_on_remove');
+            @:topaz_entity__create = getExternalFunction(name:'topaz_entity__create');
 
 
             return class(info: {
@@ -1085,6 +1085,7 @@
                         
                         nthChild : ::(n){ 
                             @f = topaz_entity__get_nth_child(a:this.native, b:n);
+                            when (f == empty) empty;
                             when (f.__ctx != empty) f.__ctx;
                             return this.class.new(native:f);                
                         },
@@ -1134,6 +1135,7 @@
                         parent : {
                             get : ::() { 
                                 @f = topaz_entity__get_parent(a:this.native);
+                                when (f == empty) empty;
                                 when (f.__ctx != empty) f.__ctx;
                                 return this.class.new(native:f);
                             },
@@ -1145,6 +1147,7 @@
                         
                         query : ::(name) { 
                             @f = topaz_entity__query(a:this.native, b:name);
+                            when (f == empty) empty;
                             when (f.__ctx != empty) f.__ctx;
                             return this.class.new(native:f);
                         },
@@ -1152,6 +1155,7 @@
                         
                         search : ::(name){ 
                             @f = topaz_entity__search(a:this.native, b:name);
+                            when (f == empty) empty;
                             when (f.__ctx != empty) f.__ctx;
                             return this.class.new(native:f);
                         },
@@ -1227,6 +1231,7 @@
                                 @out = [];
                                 for(in:[0, len], do:::(i) {
                                     @f = topaz_entity__get_nth_component(a:this.native, b:i);
+                                    when(f == empty) out[i] = empty;
                                     out[i] = if (f.__ctx != empty) f.__ctx else __Topaz__.Component.new(native:f);
                                 });
                                 return out;
@@ -1247,6 +1252,7 @@
         
                         queryComponent : ::(tag) { 
                             @f = topaz_entity__query_component(a:this.native, b:tag);
+                            when (f == empty) empty;
                             when (f.__ctx != empty) f.__ctx;
                             return __Topaz__.Component.new(native:f);
                         },
@@ -1294,32 +1300,33 @@
         };
 
         @__Component__ = ::<= {
-            <@>topaz_component__destroy = getExternalFunction(name:'topaz_component__destroy');
-            <@>topaz_component__step = getExternalFunction(name:'topaz_component__step');
-            <@>topaz_component__draw = getExternalFunction(name:'topaz_component__draw');
-            <@>topaz_component__get_stepping = getExternalFunction(name:'topaz_component__get_stepping');
-            <@>topaz_component__set_stepping = getExternalFunction(name:'topaz_component__set_stepping');
-            <@>topaz_component__get_drawing = getExternalFunction(name:'topaz_component__get_drawing');
-            <@>topaz_component__set_drawing = getExternalFunction(name:'topaz_component__set_drawing');
-            <@>topaz_component__get_tag = getExternalFunction(name:'topaz_component__get_tag');
-            <@>topaz_component__set_tag = getExternalFunction(name:'topaz_component__set_tag');
-            <@>topaz_component__get_host = getExternalFunction(name:'topaz_component__get_host');
-            <@>topaz_component__emit_event_anonymous = getExternalFunction(name:'topaz_component__emit_event_anonymous');
-            <@>topaz_component__emit_event = getExternalFunction(name:'topaz_component__emit_event');
-            <@>topaz_component__can_handle_event = getExternalFunction(name:'topaz_component__can_handle_event');
-            <@>topaz_component__install_event = getExternalFunction(name:'topaz_component__install_event');
-            <@>topaz_component__uninstall_event = getExternalFunction(name:'topaz_component__uninstall_event');
-            <@>topaz_component__install_hook = getExternalFunction(name:'topaz_component__install_hook');
-            <@>topaz_component__uninstall_hook = getExternalFunction(name:'topaz_component__uninstall_hook');
-            <@>topaz_component__install_handler = getExternalFunction(name:'topaz_component__install_handler');
-            <@>topaz_component__uninstall_handler = getExternalFunction(name:'topaz_component__uninstall_handler');
-            <@>topaz_component__set_on_step = getExternalFunction(name:'topaz_component__set_on_step');
-            <@>topaz_component__set_on_draw = getExternalFunction(name:'topaz_component__set_on_draw');
-            <@>topaz_component__set_on_attach = getExternalFunction(name:'topaz_component__set_on_attach');
-            <@>topaz_component__set_on_detach = getExternalFunction(name:'topaz_component__set_on_detach');
-            <@>topaz_component__set_on_destroy = getExternalFunction(name:'topaz_component__set_on_destroy');
-            <@>topaz_component__create = getExternalFunction(name:'topaz_component__create');
-            <@>nativeToE = ::(native) {
+            @:topaz_component__destroy = getExternalFunction(name:'topaz_component__destroy');
+            @:topaz_component__step = getExternalFunction(name:'topaz_component__step');
+            @:topaz_component__draw = getExternalFunction(name:'topaz_component__draw');
+            @:topaz_component__get_stepping = getExternalFunction(name:'topaz_component__get_stepping');
+            @:topaz_component__set_stepping = getExternalFunction(name:'topaz_component__set_stepping');
+            @:topaz_component__get_drawing = getExternalFunction(name:'topaz_component__get_drawing');
+            @:topaz_component__set_drawing = getExternalFunction(name:'topaz_component__set_drawing');
+            @:topaz_component__get_tag = getExternalFunction(name:'topaz_component__get_tag');
+            @:topaz_component__set_tag = getExternalFunction(name:'topaz_component__set_tag');
+            @:topaz_component__get_host = getExternalFunction(name:'topaz_component__get_host');
+            @:topaz_component__emit_event_anonymous = getExternalFunction(name:'topaz_component__emit_event_anonymous');
+            @:topaz_component__emit_event = getExternalFunction(name:'topaz_component__emit_event');
+            @:topaz_component__can_handle_event = getExternalFunction(name:'topaz_component__can_handle_event');
+            @:topaz_component__install_event = getExternalFunction(name:'topaz_component__install_event');
+            @:topaz_component__uninstall_event = getExternalFunction(name:'topaz_component__uninstall_event');
+            @:topaz_component__install_hook = getExternalFunction(name:'topaz_component__install_hook');
+            @:topaz_component__uninstall_hook = getExternalFunction(name:'topaz_component__uninstall_hook');
+            @:topaz_component__install_handler = getExternalFunction(name:'topaz_component__install_handler');
+            @:topaz_component__uninstall_handler = getExternalFunction(name:'topaz_component__uninstall_handler');
+            @:topaz_component__set_on_step = getExternalFunction(name:'topaz_component__set_on_step');
+            @:topaz_component__set_on_draw = getExternalFunction(name:'topaz_component__set_on_draw');
+            @:topaz_component__set_on_attach = getExternalFunction(name:'topaz_component__set_on_attach');
+            @:topaz_component__set_on_detach = getExternalFunction(name:'topaz_component__set_on_detach');
+            @:topaz_component__set_on_destroy = getExternalFunction(name:'topaz_component__set_on_destroy');
+            @:topaz_component__create = getExternalFunction(name:'topaz_component__create');
+            @:nativeToE = ::(native) {
+                when (native == empty) empty;
                 when (native.__ctx != empty) native.__ctx;
                 return __Entity__.new(native:native);
             };
@@ -1378,7 +1385,7 @@
                             },
 
                             set : ::(v) {
-                                <@>p = topaz_component__get_host(a:this.native);
+                                @:p = topaz_component__get_host(a:this.native);
                                 if (p != empty) ::<={
                                     topaz_entity__remove_component(a:p, b:this.native);
                                 };
@@ -1456,24 +1463,24 @@
         
         
         @__Text2D__ = ::<={
-            <@>topaz_text2d__create = getExternalFunction(name:'topaz_text2d__create');
-            <@>topaz_text2d__get_text = getExternalFunction(name:'topaz_text2d__get_text');
-            <@>topaz_text2d__set_text = getExternalFunction(name:'topaz_text2d__set_text');
-            <@>topaz_text2d__set_font = getExternalFunction(name:'topaz_text2d__set_font');
-            <@>topaz_text2d__set_color = getExternalFunction(name:'topaz_text2d__set_color');
-            <@>topaz_text2d__set_color_section = getExternalFunction(name:'topaz_text2d__set_color_section');
-            <@>topaz_text2d__get_extent_width = getExternalFunction(name:'topaz_text2d__get_extent_width');
-            <@>topaz_text2d__get_extent_height = getExternalFunction(name:'topaz_text2d__get_extent_height');
-            <@>topaz_text2d__get_char_x = getExternalFunction(name:'topaz_text2d__get_char_x');
-            <@>topaz_text2d__get_char_y = getExternalFunction(name:'topaz_text2d__get_char_y');
-            <@>topaz_text2d__get_position = getExternalFunction(name:'topaz_text2d__get_position');
-            <@>topaz_text2d__set_position = getExternalFunction(name:'topaz_text2d__set_position');
-            <@>topaz_text2d__set_scale = getExternalFunction(name:'topaz_text2d__set_scale');
-            <@>topaz_text2d__get_scale = getExternalFunction(name:'topaz_text2d__get_scale');
-            <@>topaz_text2d__set_rotation = getExternalFunction(name:'topaz_text2d__set_rotation');
-            <@>topaz_text2d__get_rotation = getExternalFunction(name:'topaz_text2d__get_rotation');
-            <@>topaz_text2d__set_attribute = getExternalFunction(name:'topaz_text2d__set_attribute');
-            <@>topaz_text2d__get_attribute = getExternalFunction(name:'topaz_text2d__get_attribute');
+            @:topaz_text2d__create = getExternalFunction(name:'topaz_text2d__create');
+            @:topaz_text2d__get_text = getExternalFunction(name:'topaz_text2d__get_text');
+            @:topaz_text2d__set_text = getExternalFunction(name:'topaz_text2d__set_text');
+            @:topaz_text2d__set_font = getExternalFunction(name:'topaz_text2d__set_font');
+            @:topaz_text2d__set_color = getExternalFunction(name:'topaz_text2d__set_color');
+            @:topaz_text2d__set_color_section = getExternalFunction(name:'topaz_text2d__set_color_section');
+            @:topaz_text2d__get_extent_width = getExternalFunction(name:'topaz_text2d__get_extent_width');
+            @:topaz_text2d__get_extent_height = getExternalFunction(name:'topaz_text2d__get_extent_height');
+            @:topaz_text2d__get_char_x = getExternalFunction(name:'topaz_text2d__get_char_x');
+            @:topaz_text2d__get_char_y = getExternalFunction(name:'topaz_text2d__get_char_y');
+            @:topaz_text2d__get_position = getExternalFunction(name:'topaz_text2d__get_position');
+            @:topaz_text2d__set_position = getExternalFunction(name:'topaz_text2d__set_position');
+            @:topaz_text2d__set_scale = getExternalFunction(name:'topaz_text2d__set_scale');
+            @:topaz_text2d__get_scale = getExternalFunction(name:'topaz_text2d__get_scale');
+            @:topaz_text2d__set_rotation = getExternalFunction(name:'topaz_text2d__set_rotation');
+            @:topaz_text2d__get_rotation = getExternalFunction(name:'topaz_text2d__get_rotation');
+            @:topaz_text2d__set_attribute = getExternalFunction(name:'topaz_text2d__set_attribute');
+            @:topaz_text2d__get_attribute = getExternalFunction(name:'topaz_text2d__get_attribute');
 
             return class(info:{
                 name : 'Topaz.Text2D',        
@@ -1572,15 +1579,15 @@
         };
 
         @__Scheduler__ = ::<={
-            <@>topaz_scheduler__create = getExternalFunction(name:'topaz_scheduler__create');
-            <@>topaz_scheduler__start_task = getExternalFunction(name:'topaz_scheduler__start_task');
-            <@>topaz_scheduler__start_task_simple = getExternalFunction(name:'topaz_scheduler__start_task_simple');
-            <@>topaz_scheduler__end_task = getExternalFunction(name:'topaz_scheduler__end_task');
-            <@>topaz_scheduler__pause = getExternalFunction(name:'topaz_scheduler__pause');
-            <@>topaz_scheduler__resume = getExternalFunction(name:'topaz_scheduler__resume');
-            <@>topaz_scheduler__get_task_interval_remaining = getExternalFunction(name:'topaz_scheduler__get_task_interval_remaining');
-            <@>topaz_scheduler__get_task_count = getExternalFunction(name:'topaz_scheduler__get_task_count');
-            <@>topaz_scheduler__get_task = getExternalFunction(name:'topaz_scheduler__get_task');
+            @:topaz_scheduler__create = getExternalFunction(name:'topaz_scheduler__create');
+            @:topaz_scheduler__start_task = getExternalFunction(name:'topaz_scheduler__start_task');
+            @:topaz_scheduler__start_task_simple = getExternalFunction(name:'topaz_scheduler__start_task_simple');
+            @:topaz_scheduler__end_task = getExternalFunction(name:'topaz_scheduler__end_task');
+            @:topaz_scheduler__pause = getExternalFunction(name:'topaz_scheduler__pause');
+            @:topaz_scheduler__resume = getExternalFunction(name:'topaz_scheduler__resume');
+            @:topaz_scheduler__get_task_interval_remaining = getExternalFunction(name:'topaz_scheduler__get_task_interval_remaining');
+            @:topaz_scheduler__get_task_count = getExternalFunction(name:'topaz_scheduler__get_task_count');
+            @:topaz_scheduler__get_task = getExternalFunction(name:'topaz_scheduler__get_task');
 
 
             return class(info:{
@@ -1652,13 +1659,13 @@
             });
         };
         @__StateControl__ = ::<={
-            <@>topaz_state_control__create = getExternalFunction(name:'topaz_state_control__create');
-            <@>topaz_state_control__add = getExternalFunction(name:'topaz_state_control__add');
-            <@>topaz_state_control__remove = getExternalFunction(name:'topaz_state_control__remove');
-            <@>topaz_state_control__execute = getExternalFunction(name:'topaz_state_control__execute');
-            <@>topaz_state_control__halt = getExternalFunction(name:'topaz_state_control__halt');
-            <@>topaz_state_control__is_halted = getExternalFunction(name:'topaz_state_control__is_halted');
-            <@>topaz_state_control__get_current = getExternalFunction(name:'topaz_state_control__get_current');
+            @:topaz_state_control__create = getExternalFunction(name:'topaz_state_control__create');
+            @:topaz_state_control__add = getExternalFunction(name:'topaz_state_control__add');
+            @:topaz_state_control__remove = getExternalFunction(name:'topaz_state_control__remove');
+            @:topaz_state_control__execute = getExternalFunction(name:'topaz_state_control__execute');
+            @:topaz_state_control__halt = getExternalFunction(name:'topaz_state_control__halt');
+            @:topaz_state_control__is_halted = getExternalFunction(name:'topaz_state_control__is_halted');
+            @:topaz_state_control__get_current = getExternalFunction(name:'topaz_state_control__get_current');
             return class(info:{
                 name : 'Topaz.StateControl',        
                 inherits :[__Component__],
@@ -1711,32 +1718,32 @@
             });
         };
         @__Object2D__ = ::<={
-            <@>topaz_object2d__create = getExternalFunction(name:'topaz_object2d__create');
-            <@>topaz_object2d__add_velocity = getExternalFunction(name:'topaz_object2d__add_velocity');
-            <@>topaz_object2d__add_velocity_towards = getExternalFunction(name:'topaz_object2d__add_velocity_towards');
-            <@>topaz_object2d__set_velocity = getExternalFunction(name:'topaz_object2d__set_velocity');
-            <@>topaz_object2d__set_velocity_towards = getExternalFunction(name:'topaz_object2d__set_velocity_towards');
-            <@>topaz_object2d__get_friction_x = getExternalFunction(name:'topaz_object2d__get_friction_x');
-            <@>topaz_object2d__set_friction_x = getExternalFunction(name:'topaz_object2d__set_friction_x');
-            <@>topaz_object2d__get_friction_y = getExternalFunction(name:'topaz_object2d__get_friction_y');
-            <@>topaz_object2d__set_friction_y = getExternalFunction(name:'topaz_object2d__set_friction_y');
-            <@>topaz_object2d__get_direction = getExternalFunction(name:'topaz_object2d__get_direction');
-            <@>topaz_object2d__halt = getExternalFunction(name:'topaz_object2d__halt');
-            <@>topaz_object2d__reset_motion = getExternalFunction(name:'topaz_object2d__reset_motion');
-            <@>topaz_object2d__get_velocity_x = getExternalFunction(name:'topaz_object2d__get_velocity_x');
-            <@>topaz_object2d__get_velocity_y = getExternalFunction(name:'topaz_object2d__get_velocity_y');
-            <@>topaz_object2d__set_velocity_x = getExternalFunction(name:'topaz_object2d__set_velocity_x');
-            <@>topaz_object2d__set_velocity_y = getExternalFunction(name:'topaz_object2d__set_velocity_y');
-            <@>topaz_object2d__get_speed = getExternalFunction(name:'topaz_object2d__get_speed');
-            <@>topaz_object2d__set_speed = getExternalFunction(name:'topaz_object2d__set_speed');
-            <@>topaz_object2d__get_next_position = getExternalFunction(name:'topaz_object2d__get_next_position');
-            <@>topaz_object2d__get_group = getExternalFunction(name:'topaz_object2d__get_group');
-            <@>topaz_object2d__set_group = getExternalFunction(name:'topaz_object2d__set_group');
-            <@>topaz_object2d__set_collider = getExternalFunction(name:'topaz_object2d__set_collider');
-            <@>topaz_object2d__set_collider_radial = getExternalFunction(name:'topaz_object2d__set_collider_radial');
-            <@>topaz_object2d__get_collider_len = getExternalFunction(name:'topaz_object2d__get_collider_len');
-            <@>topaz_object2d__get_last_collided = getExternalFunction(name:'topaz_object2d__get_last_collided');
-            <@>topaz_object2d__get_collider_point = getExternalFunction(name:'topaz_object2d__get_collider_point');
+            @:topaz_object2d__create = getExternalFunction(name:'topaz_object2d__create');
+            @:topaz_object2d__add_velocity = getExternalFunction(name:'topaz_object2d__add_velocity');
+            @:topaz_object2d__add_velocity_towards = getExternalFunction(name:'topaz_object2d__add_velocity_towards');
+            @:topaz_object2d__set_velocity = getExternalFunction(name:'topaz_object2d__set_velocity');
+            @:topaz_object2d__set_velocity_towards = getExternalFunction(name:'topaz_object2d__set_velocity_towards');
+            @:topaz_object2d__get_friction_x = getExternalFunction(name:'topaz_object2d__get_friction_x');
+            @:topaz_object2d__set_friction_x = getExternalFunction(name:'topaz_object2d__set_friction_x');
+            @:topaz_object2d__get_friction_y = getExternalFunction(name:'topaz_object2d__get_friction_y');
+            @:topaz_object2d__set_friction_y = getExternalFunction(name:'topaz_object2d__set_friction_y');
+            @:topaz_object2d__get_direction = getExternalFunction(name:'topaz_object2d__get_direction');
+            @:topaz_object2d__halt = getExternalFunction(name:'topaz_object2d__halt');
+            @:topaz_object2d__reset_motion = getExternalFunction(name:'topaz_object2d__reset_motion');
+            @:topaz_object2d__get_velocity_x = getExternalFunction(name:'topaz_object2d__get_velocity_x');
+            @:topaz_object2d__get_velocity_y = getExternalFunction(name:'topaz_object2d__get_velocity_y');
+            @:topaz_object2d__set_velocity_x = getExternalFunction(name:'topaz_object2d__set_velocity_x');
+            @:topaz_object2d__set_velocity_y = getExternalFunction(name:'topaz_object2d__set_velocity_y');
+            @:topaz_object2d__get_speed = getExternalFunction(name:'topaz_object2d__get_speed');
+            @:topaz_object2d__set_speed = getExternalFunction(name:'topaz_object2d__set_speed');
+            @:topaz_object2d__get_next_position = getExternalFunction(name:'topaz_object2d__get_next_position');
+            @:topaz_object2d__get_group = getExternalFunction(name:'topaz_object2d__get_group');
+            @:topaz_object2d__set_group = getExternalFunction(name:'topaz_object2d__set_group');
+            @:topaz_object2d__set_collider = getExternalFunction(name:'topaz_object2d__set_collider');
+            @:topaz_object2d__set_collider_radial = getExternalFunction(name:'topaz_object2d__set_collider_radial');
+            @:topaz_object2d__get_collider_len = getExternalFunction(name:'topaz_object2d__get_collider_len');
+            @:topaz_object2d__get_last_collided = getExternalFunction(name:'topaz_object2d__get_last_collided');
+            @:topaz_object2d__get_collider_point = getExternalFunction(name:'topaz_object2d__get_collider_point');
             return class(info:{
                 name : 'Topaz.Object2D',        
                 inherits :[__Component__],
@@ -1849,33 +1856,33 @@
                 }
             });
         };
-        <@>topaz_object2d__set_group_interaction = getExternalFunction(name:'topaz_object2d__set_group_interaction');
+        @:topaz_object2d__set_group_interaction = getExternalFunction(name:'topaz_object2d__set_group_interaction');
         __Object2D__.setGroupInteraction = ::(groupA, groupB, interact){ 
             topaz_object2d__set_group_interaction(a:groupA, b:groupB, c:interact);
         };
 
         @__Shape2D__ = ::<={
-            <@>topaz_shape2d__create = getExternalFunction(name:'topaz_shape2d__create');
-            <@>topaz_shape2d__get_color = getExternalFunction(name:'topaz_shape2d__get_color');
-            <@>topaz_shape2d__set_color = getExternalFunction(name:'topaz_shape2d__set_color');
-            <@>topaz_shape2d__get_anim_speed = getExternalFunction(name:'topaz_shape2d__get_anim_speed');
-            <@>topaz_shape2d__set_anim_speed = getExternalFunction(name:'topaz_shape2d__set_anim_speed');
-            <@>topaz_shape2d__get_center = getExternalFunction(name:'topaz_shape2d__get_center');
-            <@>topaz_shape2d__set_center = getExternalFunction(name:'topaz_shape2d__set_center');
-            <@>topaz_shape2d__set_position = getExternalFunction(name:'topaz_shape2d__set_position');
-            <@>topaz_shape2d__get_position = getExternalFunction(name:'topaz_shape2d__get_position');
-            <@>topaz_shape2d__set_rotation = getExternalFunction(name:'topaz_shape2d__set_rotation');
-            <@>topaz_shape2d__get_rotation = getExternalFunction(name:'topaz_shape2d__get_rotation');
-            <@>topaz_shape2d__set_scale = getExternalFunction(name:'topaz_shape2d__set_scale');
-            <@>topaz_shape2d__get_scale = getExternalFunction(name:'topaz_shape2d__get_scale');
-            <@>topaz_shape2d__form_lines = getExternalFunction(name:'topaz_shape2d__form_lines');
-            <@>topaz_shape2d__form_triangles = getExternalFunction(name:'topaz_shape2d__form_triangles');
-            <@>topaz_shape2d__set_attribute = getExternalFunction(name:'topaz_shape2d__set_attribute');
-            <@>topaz_shape2d__get_attribute = getExternalFunction(name:'topaz_shape2d__get_attribute');
-            <@>topaz_shape2d__form_rectangle = getExternalFunction(name:'topaz_shape2d__form_rectangle');
-            <@>topaz_shape2d__form_image = getExternalFunction(name:'topaz_shape2d__form_image');
-            <@>topaz_shape2d__form_image_frame = getExternalFunction(name:'topaz_shape2d__form_image_frame');
-            <@>topaz_shape2d__form_radial = getExternalFunction(name:'topaz_shape2d__form_radial');
+            @:topaz_shape2d__create = getExternalFunction(name:'topaz_shape2d__create');
+            @:topaz_shape2d__get_color = getExternalFunction(name:'topaz_shape2d__get_color');
+            @:topaz_shape2d__set_color = getExternalFunction(name:'topaz_shape2d__set_color');
+            @:topaz_shape2d__get_anim_speed = getExternalFunction(name:'topaz_shape2d__get_anim_speed');
+            @:topaz_shape2d__set_anim_speed = getExternalFunction(name:'topaz_shape2d__set_anim_speed');
+            @:topaz_shape2d__get_center = getExternalFunction(name:'topaz_shape2d__get_center');
+            @:topaz_shape2d__set_center = getExternalFunction(name:'topaz_shape2d__set_center');
+            @:topaz_shape2d__set_position = getExternalFunction(name:'topaz_shape2d__set_position');
+            @:topaz_shape2d__get_position = getExternalFunction(name:'topaz_shape2d__get_position');
+            @:topaz_shape2d__set_rotation = getExternalFunction(name:'topaz_shape2d__set_rotation');
+            @:topaz_shape2d__get_rotation = getExternalFunction(name:'topaz_shape2d__get_rotation');
+            @:topaz_shape2d__set_scale = getExternalFunction(name:'topaz_shape2d__set_scale');
+            @:topaz_shape2d__get_scale = getExternalFunction(name:'topaz_shape2d__get_scale');
+            @:topaz_shape2d__form_lines = getExternalFunction(name:'topaz_shape2d__form_lines');
+            @:topaz_shape2d__form_triangles = getExternalFunction(name:'topaz_shape2d__form_triangles');
+            @:topaz_shape2d__set_attribute = getExternalFunction(name:'topaz_shape2d__set_attribute');
+            @:topaz_shape2d__get_attribute = getExternalFunction(name:'topaz_shape2d__get_attribute');
+            @:topaz_shape2d__form_rectangle = getExternalFunction(name:'topaz_shape2d__form_rectangle');
+            @:topaz_shape2d__form_image = getExternalFunction(name:'topaz_shape2d__form_image');
+            @:topaz_shape2d__form_image_frame = getExternalFunction(name:'topaz_shape2d__form_image_frame');
+            @:topaz_shape2d__form_radial = getExternalFunction(name:'topaz_shape2d__form_radial');
 
             return class(info:{
                 name : 'Topaz.Shape2D',        
@@ -1883,7 +1890,7 @@
                 define : ::(this){ 
                     @impl;
                     this.constructor = ::(native) {
-                        this[__Component__].constructor(native:native);
+                        this.constructor[__Component__](native:native);
                         // whoops, the component constructor already made a generic component native.
                         // destroy it and make a real one
                         this.native.__ctx.destroy();
@@ -1981,19 +1988,19 @@
         };
         
         @__Shape3D__ = ::<={
-            <@>topaz_shape3d__create = getExternalFunction(name:'topaz_shape3d__create');
-            <@>topaz_shape3d__get_position = getExternalFunction(name:'topaz_shape3d__get_position');
-            <@>topaz_shape3d__set_position = getExternalFunction(name:'topaz_shape3d__set_position');
-            <@>topaz_shape3d__set_rotation = getExternalFunction(name:'topaz_shape3d__set_rotation');
-            <@>topaz_shape3d__get_rotation = getExternalFunction(name:'topaz_shape3d__get_rotation');
-            <@>topaz_shape3d__get_scale = getExternalFunction(name:'topaz_shape3d__get_scale');
-            <@>topaz_shape3d__set_scale = getExternalFunction(name:'topaz_shape3d__set_scale');
-            <@>topaz_shape3d__set_attribute = getExternalFunction(name:'topaz_shape3d__set_attribute');
-            <@>topaz_shape3d__get_attribute = getExternalFunction(name:'topaz_shape3d__get_attribute');
-            <@>topaz_shape3d__set_texture = getExternalFunction(name:'topaz_shape3d__set_texture');
-            <@>topaz_shape3d__set_mesh = getExternalFunction(name:'topaz_shape3d__set_mesh');
-            <@>topaz_shape3d__set_sample_framebuffer = getExternalFunction(name:'topaz_shape3d__set_sample_framebuffer');
-            <@>topaz_shape3d__set_material = getExternalFunction(name:'topaz_shape3d__set_material');
+            @:topaz_shape3d__create = getExternalFunction(name:'topaz_shape3d__create');
+            @:topaz_shape3d__get_position = getExternalFunction(name:'topaz_shape3d__get_position');
+            @:topaz_shape3d__set_position = getExternalFunction(name:'topaz_shape3d__set_position');
+            @:topaz_shape3d__set_rotation = getExternalFunction(name:'topaz_shape3d__set_rotation');
+            @:topaz_shape3d__get_rotation = getExternalFunction(name:'topaz_shape3d__get_rotation');
+            @:topaz_shape3d__get_scale = getExternalFunction(name:'topaz_shape3d__get_scale');
+            @:topaz_shape3d__set_scale = getExternalFunction(name:'topaz_shape3d__set_scale');
+            @:topaz_shape3d__set_attribute = getExternalFunction(name:'topaz_shape3d__set_attribute');
+            @:topaz_shape3d__get_attribute = getExternalFunction(name:'topaz_shape3d__get_attribute');
+            @:topaz_shape3d__set_texture = getExternalFunction(name:'topaz_shape3d__set_texture');
+            @:topaz_shape3d__set_mesh = getExternalFunction(name:'topaz_shape3d__set_mesh');
+            @:topaz_shape3d__set_sample_framebuffer = getExternalFunction(name:'topaz_shape3d__set_sample_framebuffer');
+            @:topaz_shape3d__set_material = getExternalFunction(name:'topaz_shape3d__set_material');
 
             return class(info:{
                 name : 'Topaz.Shape3D',        
@@ -2063,30 +2070,30 @@
             });
         };
         @__Automation__ = ::<={
-            <@>topaz_automation__create = getExternalFunction(name:'topaz_automation__create');
-            <@>topaz_automation__add_keyframe = getExternalFunction(name:'topaz_automation__add_keyframe');
-            <@>topaz_automation__add_vector_keyframe = getExternalFunction(name:'topaz_automation__add_vector_keyframe');
-            <@>topaz_automation__clear = getExternalFunction(name:'topaz_automation__clear');
-            <@>topaz_automation__blend = getExternalFunction(name:'topaz_automation__blend');
-            <@>topaz_automation__smooth = getExternalFunction(name:'topaz_automation__smooth');
-            <@>topaz_automation__add_from_string = getExternalFunction(name:'topaz_automation__add_from_string');
-            <@>topaz_automation__skip_to = getExternalFunction(name:'topaz_automation__skip_to');
-            <@>topaz_automation__resume = getExternalFunction(name:'topaz_automation__resume');
-            <@>topaz_automation__pause = getExternalFunction(name:'topaz_automation__pause');
-            <@>topaz_automation__vector_at = getExternalFunction(name:'topaz_automation__vector_at');
-            <@>topaz_automation__at = getExternalFunction(name:'topaz_automation__at');
-            <@>topaz_automation__current_vector = getExternalFunction(name:'topaz_automation__current_vector');
-            <@>topaz_automation__current = getExternalFunction(name:'topaz_automation__current');
-            <@>topaz_automation__to_string = getExternalFunction(name:'topaz_automation__to_string');
-            <@>topaz_automation__set_from_string = getExternalFunction(name:'topaz_automation__set_from_string');
-            <@>topaz_automation__get_length = getExternalFunction(name:'topaz_automation__get_length');
-            <@>topaz_automation__set_duration_frames = getExternalFunction(name:'topaz_automation__set_duration_frames');
-            <@>topaz_automation__set_duration_seconds = getExternalFunction(name:'topaz_automation__set_duration_seconds');
-            <@>topaz_automation__get_duration = getExternalFunction(name:'topaz_automation__get_duration');
-            <@>topaz_automation__get_looped = getExternalFunction(name:'topaz_automation__get_looped');
-            <@>topaz_automation__set_looped = getExternalFunction(name:'topaz_automation__set_looped');
-            <@>topaz_automation__set_speed = getExternalFunction(name:'topaz_automation__set_speed');
-            <@>topaz_automation__get_speed = getExternalFunction(name:'topaz_automation__get_speed');
+            @:topaz_automation__create = getExternalFunction(name:'topaz_automation__create');
+            @:topaz_automation__add_keyframe = getExternalFunction(name:'topaz_automation__add_keyframe');
+            @:topaz_automation__add_vector_keyframe = getExternalFunction(name:'topaz_automation__add_vector_keyframe');
+            @:topaz_automation__clear = getExternalFunction(name:'topaz_automation__clear');
+            @:topaz_automation__blend = getExternalFunction(name:'topaz_automation__blend');
+            @:topaz_automation__smooth = getExternalFunction(name:'topaz_automation__smooth');
+            @:topaz_automation__add_from_string = getExternalFunction(name:'topaz_automation__add_from_string');
+            @:topaz_automation__skip_to = getExternalFunction(name:'topaz_automation__skip_to');
+            @:topaz_automation__resume = getExternalFunction(name:'topaz_automation__resume');
+            @:topaz_automation__pause = getExternalFunction(name:'topaz_automation__pause');
+            @:topaz_automation__vector_at = getExternalFunction(name:'topaz_automation__vector_at');
+            @:topaz_automation__at = getExternalFunction(name:'topaz_automation__at');
+            @:topaz_automation__current_vector = getExternalFunction(name:'topaz_automation__current_vector');
+            @:topaz_automation__current = getExternalFunction(name:'topaz_automation__current');
+            @:topaz_automation__to_string = getExternalFunction(name:'topaz_automation__to_string');
+            @:topaz_automation__set_from_string = getExternalFunction(name:'topaz_automation__set_from_string');
+            @:topaz_automation__get_length = getExternalFunction(name:'topaz_automation__get_length');
+            @:topaz_automation__set_duration_frames = getExternalFunction(name:'topaz_automation__set_duration_frames');
+            @:topaz_automation__set_duration_seconds = getExternalFunction(name:'topaz_automation__set_duration_seconds');
+            @:topaz_automation__get_duration = getExternalFunction(name:'topaz_automation__get_duration');
+            @:topaz_automation__get_looped = getExternalFunction(name:'topaz_automation__get_looped');
+            @:topaz_automation__set_looped = getExternalFunction(name:'topaz_automation__set_looped');
+            @:topaz_automation__set_speed = getExternalFunction(name:'topaz_automation__set_speed');
+            @:topaz_automation__get_speed = getExternalFunction(name:'topaz_automation__get_speed');
 
             return class(info:{
                 name : 'Topaz.Automation',        
@@ -2194,14 +2201,14 @@
             });
         };
         @__Particle__ = ::<={
-            <@>topaz_particle__set_attribute = getExternalFunction(name:'topaz_particle__set_attribute');
-            <@>topaz_particle__set_noise_min = getExternalFunction(name:'topaz_particle__set_noise_min');
-            <@>topaz_particle__set_noise_max = getExternalFunction(name:'topaz_particle__set_noise_max');
-            <@>topaz_particle__set_function = getExternalFunction(name:'topaz_particle__set_function');
-            <@>topaz_particle__to_string = getExternalFunction(name:'topaz_particle__to_string');
-            <@>topaz_particle__set_from_string = getExternalFunction(name:'topaz_particle__set_from_string');
-            <@>topaz_particle__set_image = getExternalFunction(name:'topaz_particle__set_image');
-            <@>topaz_particle__create = getExternalFunction(name:'topaz_particle__create');
+            @:topaz_particle__set_attribute = getExternalFunction(name:'topaz_particle__set_attribute');
+            @:topaz_particle__set_noise_min = getExternalFunction(name:'topaz_particle__set_noise_min');
+            @:topaz_particle__set_noise_max = getExternalFunction(name:'topaz_particle__set_noise_max');
+            @:topaz_particle__set_function = getExternalFunction(name:'topaz_particle__set_function');
+            @:topaz_particle__to_string = getExternalFunction(name:'topaz_particle__to_string');
+            @:topaz_particle__set_from_string = getExternalFunction(name:'topaz_particle__set_from_string');
+            @:topaz_particle__set_image = getExternalFunction(name:'topaz_particle__set_image');
+            @:topaz_particle__create = getExternalFunction(name:'topaz_particle__create');
             return class(info:{
                 name : 'Topaz.Particle',        
                 inherits : [__Native__],
@@ -2239,10 +2246,10 @@
             });
         };
         @__ParticleEmitter2D__  = ::<={ 
-            <@>topaz_particle_emitter_2d__create = getExternalFunction(name:'topaz_particle_emitter_2d__create');
-            <@>topaz_particle_emitter_2d__set_particle = getExternalFunction(name:'topaz_particle_emitter_2d__set_particle');
-            <@>topaz_particle_emitter_2d__set_independent = getExternalFunction(name:'topaz_particle_emitter_2d__set_independent');
-            <@>topaz_particle_emitter_2d__emit = getExternalFunction(name:'topaz_particle_emitter_2d__emit');
+            @:topaz_particle_emitter_2d__create = getExternalFunction(name:'topaz_particle_emitter_2d__create');
+            @:topaz_particle_emitter_2d__set_particle = getExternalFunction(name:'topaz_particle_emitter_2d__set_particle');
+            @:topaz_particle_emitter_2d__set_independent = getExternalFunction(name:'topaz_particle_emitter_2d__set_independent');
+            @:topaz_particle_emitter_2d__emit = getExternalFunction(name:'topaz_particle_emitter_2d__emit');
             return class( info:{
                 name : 'Topaz.ParticleEmitter2D',        
                 inherits :[__Entity__],
@@ -2272,21 +2279,21 @@
             });
         };
 
-        <@>topaz__attach_pre_manager = getExternalFunction(name:'topaz__attach_pre_manager');
-        <@>topaz__attach_pre_manager_unpausable = getExternalFunction(name:'topaz__attach_pre_manager_unpausable');
-        <@>topaz__attach_post_manager = getExternalFunction(name:'topaz__attach_post_manager');
-        <@>topaz__attach_post_manager_unpausable = getExternalFunction(name:'topaz__attach_post_manager_unpausable');
-        <@>topaz__wait = getExternalFunction(name:'topaz__wait');
-        <@>topaz__log = getExternalFunction(name:'topaz__log');
-        <@>topaz__to_base64 = getExternalFunction(name:'topaz__to_base64');
-        <@>topaz__from_base64 = getExternalFunction(name:'topaz__from_base64');
-        <@>topaz__set_root = getExternalFunction(name:'topaz__set_root');
-        <@>topaz__get_root = getExternalFunction(name:'topaz__get_root');
-        <@>topaz__is_paused = getExternalFunction(name:'topaz__is_paused');
-        <@>topaz__get_time = getExternalFunction(name:'topaz__get_time');
-        <@>topaz__get_version_minor = getExternalFunction(name:'topaz__get_version_minor');
-        <@>topaz__get_version_micro = getExternalFunction(name:'topaz__get_version_micro');
-        <@>topaz__get_version_major = getExternalFunction(name:'topaz__get_version_major');
+        @:topaz__attach_pre_manager = getExternalFunction(name:'topaz__attach_pre_manager');
+        @:topaz__attach_pre_manager_unpausable = getExternalFunction(name:'topaz__attach_pre_manager_unpausable');
+        @:topaz__attach_post_manager = getExternalFunction(name:'topaz__attach_post_manager');
+        @:topaz__attach_post_manager_unpausable = getExternalFunction(name:'topaz__attach_post_manager_unpausable');
+        @:topaz__wait = getExternalFunction(name:'topaz__wait');
+        @:topaz__log = getExternalFunction(name:'topaz__log');
+        @:topaz__to_base64 = getExternalFunction(name:'topaz__to_base64');
+        @:topaz__from_base64 = getExternalFunction(name:'topaz__from_base64');
+        @:topaz__set_root = getExternalFunction(name:'topaz__set_root');
+        @:topaz__get_root = getExternalFunction(name:'topaz__get_root');
+        @:topaz__is_paused = getExternalFunction(name:'topaz__is_paused');
+        @:topaz__get_time = getExternalFunction(name:'topaz__get_time');
+        @:topaz__get_version_minor = getExternalFunction(name:'topaz__get_version_minor');
+        @:topaz__get_version_micro = getExternalFunction(name:'topaz__get_version_micro');
+        @:topaz__get_version_major = getExternalFunction(name:'topaz__get_version_major');
         this.interface = {
             run   : getExternalFunction(name:'topaz__run'),
             pause   : getExternalFunction(name:'topaz__pause'),
@@ -2487,7 +2494,7 @@ return Topaz;
     @packagesActive = [];
     @packageDB = {}; // indexed by string.
 
-    <@>loadAsset = ::(jsonAsset, ext) {
+    @:loadAsset = ::(jsonAsset, ext) {
         if (jsonAsset.assetBase64 != empty) {
             @success = Topaz.Resources.loadAssetBase64(
                 ext,
@@ -2512,7 +2519,7 @@ return Topaz;
     }
 
     // can throw, watch out
-    <@>makePackageFromJSON = ::(json) {
+    @:makePackageFromJSON = ::(json) {
 
         if (json.formatVersion != 1) {
             throw new Error('Package version unrecognized (' + json.formatVersion + ')');
@@ -2535,7 +2542,7 @@ return Topaz;
         pkg.resolved = false;
 
         for(@i = 0; i < json.assets.length; ++i) {
-            <@>assetSrc = json.assets[i];
+            @:assetSrc = json.assets[i];
             switch(assetSrc.assetType) {
               case 'script':
                 if (assetSrc.autorun == "true") {
@@ -2571,7 +2578,7 @@ return Topaz;
                 return;
             }
             try {
-                <@>pkg = makePackageFromJSON(JSON.parse(asset.string));
+                @:pkg = makePackageFromJSON(JSON.parse(asset.string));
                 packageDB[pkg.name] = pkg;
                 packages.push(pkg);
             } catch(e) {
@@ -2584,7 +2591,7 @@ return Topaz;
         // Adds all assets for the package from a package JSON string.
         readData : ::(jsonStr) {
             try {
-                <@>pkg = makePackageFromJSON(JSON.parse(jsonStr));
+                @:pkg = makePackageFromJSON(JSON.parse(jsonStr));
                 packageDB[pkg.name] = pkg;
                 packages.push(pkg);
             } catch(e) {
@@ -2602,7 +2609,7 @@ return Topaz;
         // and version at or greater, this_ function will return true.
         // If not, an error is thrown.
         require : ::(packageName, versionObject) {
-            <@>pkg = packageDB[packageName];
+            @:pkg = packageDB[packageName];
             if (!pkg) {
                 throw new Error('Unknown package ' + packageName);                
             }
@@ -2658,12 +2665,12 @@ return Topaz;
                     return false;                    
                 }
 
-                <@>dep = packageDB[pkg.depends[i].name];
-                <@>majorNeeded = parseInt(pkg.depends[i].version.major);
-                <@>minorNeeded = parseInt(pkg.depends[i].version.minor);
+                @:dep = packageDB[pkg.depends[i].name];
+                @:majorNeeded = parseInt(pkg.depends[i].version.major);
+                @:minorNeeded = parseInt(pkg.depends[i].version.minor);
 
-                <@>majorHave = pauseInt(dep.version.major);
-                <@>minorHave = pauseInt(dep.version.minor);
+                @:majorHave = pauseInt(dep.version.major);
+                @:minorHave = pauseInt(dep.version.minor);
 
                 if (
                     (majorHave < majorNeeded) 
@@ -2704,10 +2711,10 @@ return Topaz;
         // - read()s all packages within the directory. Looks for the suffix ".package.json"
         // - calls resolveAll()
         importPath : ::(path) {
-            <@>obj = Topaz.Filesystem.getPathFromString(Topaz.Filesystem.getPathFromString(Topaz.Resources.path), path);
-            <@>children = obj.children;
+            @:obj = Topaz.Filesystem.getPathFromString(Topaz.Filesystem.getPathFromString(Topaz.Resources.path), path);
+            @:children = obj.children;
             for(@i = 0; i < children.length; ++i) {
-                <@>subpath = children[i].string;
+                @:subpath = children[i].string;
                 if (subpath.indexOf('.package.json') != -1) {
                     Topaz.Package.read(subpath);
                 }
@@ -2781,7 +2788,7 @@ return Topaz;
                         Topaz.log('WARNING setup_package.json: missing "version.build" property');
                     }
         
-                    <@>debug = injson.debug == empty ? false : injson.debug;
+                    @:debug = injson.debug == empty ? false : injson.debug;
         
                     outjson.depends = [];
                     if (injson.depends && injson.depends.length) {
@@ -2818,7 +2825,7 @@ return Topaz;
                             Topaz.log(injson.assets[i].assetName + ' -> Added');
         
                         } else {
-                            <@>bufferIn = Topaz.Resources.loadAsset('', injson.assets[i].assetFile, injson.assets[i].assetName);
+                            @:bufferIn = Topaz.Resources.loadAsset('', injson.assets[i].assetFile, injson.assets[i].assetName);
                             if (!(bufferIn && bufferIn.byteCount)) {
                                 return ('setup_package.json: could not open asset ' + injson.assets[i].assetFile);
                             }
@@ -2826,9 +2833,9 @@ return Topaz;
                             Topaz.log('Processing asset ' + injson.assets[i].assetName, false);
                             Topaz.log('.', false);
         
-                            <@>byteCount = bufferIn.byteCount;
-                            <@>bytes = bufferIn.bytes;
-                            <@>partition = Math.floor(byteCount/5);
+                            @:byteCount = bufferIn.byteCount;
+                            @:bytes = bufferIn.bytes;
+                            @:partition = Math.floor(byteCount/5);
         
                             Topaz.log('++.', false);
                             Topaz.log(' ', false);
@@ -2845,8 +2852,8 @@ return Topaz;
                     @outputAsset = Topaz.Resources.fetchAsset(TOPAZ.ASSET.TYPE.DATA, '__ASSET__39245s$');
                     @outputData = [];
                     Topaz.log('Generating output buffer', false);
-                    <@>length = output.length;
-                    <@>partition = Math.floor(length / 5);
+                    @:length = output.length;
+                    @:partition = Math.floor(length / 5);
                     for(@i = 0; i < length; ++i) {
                         if (i%partition == 0) {
                             Topaz.log('.', false);

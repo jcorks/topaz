@@ -1,19 +1,19 @@
-<@>Topaz  = import(module:'Topaz.Core');
-<@>TOPAZ  = import(module:'Topaz.Constants');
-<@>Vector = import(module:'Topaz.Vector');
-<@>Color  = import(module:'Topaz.Color');
-<@>class  = import(module:'Matte.Core.Class');
+@:Topaz  = import(module:'Topaz.Core');
+@:TOPAZ  = import(module:'Topaz.Constants');
+@:Vector = import(module:'Topaz.Vector');
+@:Color  = import(module:'Topaz.Color');
+@:class  = import(module:'Matte.Core.Class');
 
-<@> Rectangle = class(info:{
+@: Rectangle = class(info:{
     name : 'Rectangle',
     inherits : [Topaz.Entity],
     define ::(this){
-        <@>v = Topaz.Shape2D.new();
+        @:v = Topaz.Shape2D.new();
         v.formRectangle(width:30, height:30);
         v.center = {x:15, y:15};
 
 
-        <@>a = Topaz.Automation.new();
+        @:a = Topaz.Automation.new();
         a.installHook(event:'on-anim-end', callback:::(source) {
             Topaz.log(message:'Animation reset!');
         });
@@ -43,7 +43,7 @@
         this.components = [a, v];
 
         this.onStep = ::{
-            <@>r = this.position;
+            @:r = this.position;
             this.position = {x:100+a.value, y:r.y};
         };
         this.interface = {
@@ -59,7 +59,7 @@
 });
 
 
-<@> RectangleLinear = class(info:{
+@: RectangleLinear = class(info:{
     inherits : [Rectangle],
     define ::(this) {
         this.visual.color = Color.parse(string:'purple');
@@ -71,7 +71,7 @@
     }
 });
 
-<@>RectangleAccel = class(info:{
+@:RectangleAccel = class(info:{
     inherits : [Rectangle],
     define ::(this) {
         this.visual.color = Color.parse(string:'blue');
@@ -84,7 +84,7 @@
     }
 });
 
-<@>RectangleSlow = class(info:{
+@:RectangleSlow = class(info:{
     inherits : [Rectangle],
     define ::(this) {
         this.visual.color = Color.parse(string:'red');
@@ -100,7 +100,7 @@
 
 
 ::<= {
-    <@>root = Topaz.Entity.new();
+    @:root = Topaz.Entity.new();
     root.children = [
         RectangleLinear.new(),
         RectangleAccel.new(),

@@ -1,8 +1,8 @@
-<@>Topaz = import(module:'Topaz.Core');
-<@>Color = import(module:'Topaz.Color');
-<@>class = import(module:'Matte.Core.Class');
+@:Topaz = import(module:'Topaz.Core');
+@:Color = import(module:'Topaz.Color');
+@:class = import(module:'Matte.Core.Class');
 
-<@>StringVisual = class(info:{
+@:StringVisual = class(info:{
     inherits : [Topaz.Entity],
     define ::(this) {
         @visual = Topaz.Text2D.new();    

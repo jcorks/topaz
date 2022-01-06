@@ -8,11 +8,11 @@
 // This example demonstrates the 2 main methods to get
 // input information: Polling and Event Listening.
 //
-<@>Topaz  = import(module:'Topaz.Core');
-<@>TOPAZ  = import(module:'Topaz.Constants');
-<@>class  = import(module:'Matte.Core.Class');
-<@>Color  = import(module:'Topaz.Color');
-<@>Vector = import(module:'Topaz.Vector');
+@:Topaz  = import(module:'Topaz.Core');
+@:TOPAZ  = import(module:'Topaz.Constants');
+@:class  = import(module:'Matte.Core.Class');
+@:Color  = import(module:'Topaz.Color');
+@:Vector = import(module:'Topaz.Vector');
 
 //
 //
@@ -29,13 +29,13 @@
 // To demonstrate the effect of input, this example entity 
 // will use a blue rectangle to show itself onscreen and will 
 // respond to the arrow keys and right-click + dragging.
-<@>Input_Poll = class(info:{
+@:Input_Poll = class(info:{
     name : 'Input_Poll',
     inherits : [Topaz.Entity],
     define ::(this) {
         // Since we are making the shape once and not modifying it,
         // theres no need to keep the component around.
-        <@>visual = Topaz.Shape2D.new();
+        @:visual = Topaz.Shape2D.new();
 
         // Set it to blue and make it 20x20
         visual.color = Color.parse(string:'blue');
@@ -138,7 +138,7 @@
         @clicking = false;
 
         // Same story as the first prefab!
-        <@>visual = Topaz.Shape2D.new();
+        @:visual = Topaz.Shape2D.new();
 
         // Here, we're using RGB hex notation to define our color.
         visual.color = Color.parse(string:'#ff0000');
