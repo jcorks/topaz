@@ -25,8 +25,8 @@ static void script_scheduler_callback(topazComponent_t * component, void * data)
     topaz_script_object_destroy(
         topaz_script_object_reference_call(
             s->func, 
-            TOPAZ_ARRAY_CAST(&s->src, topazScript_Object_t *, 1)
-        )    
+            topaz_array_empty()
+        )
     );
 
 }
