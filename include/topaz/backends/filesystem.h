@@ -170,6 +170,12 @@ const topazString_t * topaz_filesystem_path_as_string(
     const topazFilesystem_Path_t * path
 );
 
+/// Gets a read-only string representing the name.
+/// For most filesystems, this is just the file name.
+const topazString_t * topaz_filesystem_path_get_name(
+    /// The path to get a string form of.
+    const topazFilesystem_Path_t * path
+);
 
 /// Gets the parent filesystem path of the given path. 
 /// If none, NULL is returned.

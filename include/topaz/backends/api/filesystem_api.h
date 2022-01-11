@@ -89,6 +89,13 @@ struct topazFilesystemAPI_t {
         topazArray_t * children
     );
     
+    // gets the node name portion of the string path.
+    topazString_t * (*filesystem_path_string_get_name)(
+        topazFilesystem_t *,
+        void *,
+        const topazString_t * path    
+    );
+    
     // returns 0 or 1 for whether the given 
     // path, whether partial or full, referes to a 
     // preexisting element. After returning, the path 

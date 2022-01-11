@@ -24,9 +24,9 @@ return ::<={
 
     @:statepush = ::(v) {
         if (v.native == empty) ::<={
-            if (v.x == empty || introspect.isNaN(value:v.x)) v.x = 0;
-            if (v.y == empty || introspect.isNaN(value:v.y)) v.y = 0;
-            if (v.z == empty || introspect.isNaN(value:v.z)) v.z = 0;
+            if (v.x == empty || Number.isNaN(value:v.x)) v.x = 0;
+            if (v.y == empty || Number.isNaN(value:v.y)) v.y = 0;
+            if (v.z == empty || Number.isNaN(value:v.z)) v.z = 0;
             v.native = topaz_vector__create(a:v.x, b:v.y, c:v.z);
         } else ::<={
             topaz_vector__set_xyz(a:v.native, b:v.x, c:v.y, d:v.z);

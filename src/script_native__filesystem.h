@@ -82,6 +82,17 @@ TSO_SCRIPT_API_FN(filesystem_api_path__as_string) {
     );
 }
 
+TSO_SCRIPT_API_FN(filesystem_api_path__get_name) {
+    TSO_ARG_0;
+    TSO_NATIVIZE(topazFilesystem_Path_t *, TSO_OBJECT_ID__FILESYSTEM_PATH);
+
+
+    return topaz_script_object_from_string(
+        script,
+        topaz_filesystem_path_get_name(native)
+    );
+}
+
 TSO_SCRIPT_API_FN(filesystem_api_path__get_parent) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazFilesystem_Path_t *, TSO_OBJECT_ID__FILESYSTEM_PATH);
@@ -141,9 +152,10 @@ TSO_SCRIPT_API_FN(filesystem_api_path__get_nth_child) {
 
 static void add_refs__filesystem_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz_filesystem__get_path", filesystem_api__get_path, 1);
-    TS_MAP_NATIVE_FN("topaz_filesystem__get_path_from_string", filesystem_api__get_path_from_string, 1);
+    TS_MAP_NATIVE_FN("topaz_filesystem__get_path_from_string", filesystem_api__get_path_from_string, 2);
 
     TS_MAP_NATIVE_FN("topaz_filesystem_path__as_string", filesystem_api_path__as_string, 1);
+    TS_MAP_NATIVE_FN("topaz_filesystem_path__get_name", filesystem_api_path__get_name, 1);
     TS_MAP_NATIVE_FN("topaz_filesystem_path__get_parent", filesystem_api_path__get_parent, 1);
     TS_MAP_NATIVE_FN("topaz_filesystem_path__get_child_count", filesystem_api_path__get_child_count, 1);
     TS_MAP_NATIVE_FN("topaz_filesystem_path__get_nth_child", filesystem_api_path__get_nth_child, 2);

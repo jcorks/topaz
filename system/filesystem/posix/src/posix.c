@@ -217,6 +217,22 @@ static void topaz_filesystem_posix__path_get_children(
 }
 
 
+static topazString_t * topaz_filesystem_posix__path_string_get_name(
+    topazFilesystem_t * fs,
+    void * nu,
+    const topazString_t * path    
+) {
+    uint32_t i;
+    uint32_t len = topaz_string_get_length(path);
+    for(i = len - 1; i != 0; --i) {
+        if (topaz_string_get_char(path, i) == '/') {
+            return topaz_string_get_substr(path, i+1, len-1);
+        }
+    }
+    return topaz_string_create();
+}
+
+
 
 
 static int topaz_filesystem_posix__path_validate(
@@ -313,6 +329,7 @@ void topaz_system_filesystem_posix__backend(
     api->filesystem_path_parent = topaz_filesystem_posix__path_parent;
     api->filesystem_path_get_children = topaz_filesystem_posix__path_get_children;
     api->filesystem_path_validate = topaz_filesystem_posix__path_validate;
+    api->filesystem_path_string_get_name = topaz_filesystem_posix__path_string_get_name;
 
 }
 

@@ -28,6 +28,7 @@ struct topazFilesystem_Path_t {
     topazFilesystem_t * fs;
     topazFilesystem_Path_t * parent;
     topazString_t * str;
+    topazString_t * name;
     topazArray_t * children;
 };
 
@@ -43,6 +44,7 @@ static topazFilesystem_Path_t * generate_path(
     out->parent = NULL;
     out->str = topaz_string_clone(path);
     out->children = topaz_array_create(sizeof(topazFilesystem_Path_t*));
+    out->name = fs->api.filesystem_path_string_get_name(fs, fs->userData, out->str);
     topaz_table_insert(fs->allPaths, out->str, out);
     return out;
 }
@@ -140,6 +142,16 @@ const topazString_t * topaz_filesystem_path_as_string(
 ) {
     return path->str;
 }
+
+/// Gets a read-only string representing the name.
+/// For most filesystems, this is just the file name.
+const topazString_t * topaz_filesystem_path_get_name(
+    /// The path to get a string form of.
+    const topazFilesystem_Path_t * path
+) {
+    return path->name;
+}
+
 
 /// Returns a new filesystem path from a string representation of a 
 /// path. On systems that support partial / relative paths, they will be 

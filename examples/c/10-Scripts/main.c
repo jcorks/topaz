@@ -31,6 +31,52 @@ static int run_script(topaz_t * ctx, topazScript_t * script, const topazString_t
     return 1;   
 }
 
+static void preload_all_scripts(topaz_t * ctx) {
+    
+    // load all .mt files in the first in case theyre going to be included.
+    const topazFilesystem_Path_t * s = topaz_filesystem_get_path(
+        topaz_context_get_filesystem(ctx),
+        topazFilesystem_DefaultNode_Resources
+    );
+    
+    const topazArray_t * sources = topaz_filesystem_path_get_children(s);
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(sources);
+    for(i = 0; i < len; ++i) {
+        if (topaz_string_test_contains(
+                topaz_filesystem_path_as_string(
+                    topaz_array_at(
+                        sources, 
+                        topazFilesystem_Path_t *, 
+                        i
+                    )
+                ), 
+                
+                TOPAZ_STR_CAST(".mt")
+            )
+        ) {
+            topaz_resources_load_asset(
+                topaz_context_get_resources(ctx),
+                TOPAZ_STR_CAST(""),
+                topaz_filesystem_path_as_string(
+                    topaz_array_at(
+                        sources, 
+                        topazFilesystem_Path_t *, 
+                        i
+                    )
+                ), 
+                topaz_filesystem_path_get_name(
+                    topaz_array_at(
+                        sources, 
+                        topazFilesystem_Path_t *, 
+                        i
+                    )
+                )
+            );
+        }
+    }
+}
+
 int main(int argc, char ** argv) {
     char * path = "script";
     if (argc > 1)
@@ -64,6 +110,11 @@ int main(int argc, char ** argv) {
         console,
         script
     );
+    
+    // the script can import other scripts.
+    // The scripts that can be imported are through resources
+    preload_all_scripts(ctx);
+    
 
 
     // Optional

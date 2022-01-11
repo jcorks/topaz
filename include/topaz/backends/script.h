@@ -221,6 +221,13 @@ int topaz_script_map_native_function(
 );
 
 
+void topaz_script_register_source(
+    topazScript_t * s, 
+    const topazString_t * sourceName,
+    const topazString_t * scriptData
+);
+
+
 
 /// Runs the given script logic within the given string.
 /// 

@@ -36,7 +36,11 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/version.h>
 #include <topaz/containers/array.h>
 #include <topaz/modules/console.h>
+#include <topaz/modules/resources.h>
 #include <topaz/topaz.h>
+#include <topaz/asset.h>
+#include <topaz/assets/data.h>
+
 
 #include <stdio.h>
 #ifdef TOPAZDC_DEBUG
@@ -576,6 +580,77 @@ static void topaz_matte_fatal(matteVM_t * vm, uint32_t file, int lineNumber, mat
 
 
 
+static uint8_t * topaz_matte_import(
+    matteVM_t * vm,
+    const matteString_t * importPath,
+    uint32_t * fileid,
+    uint32_t * dataLength,
+    void * usrdata
+) {
+    TOPAZMATTE * ctx = usrdata;
+    topaz_t * t = ctx->ctx;
+    
+    topazResources_t * res = topaz_context_get_resources(t);
+    topazAsset_t * asset = topaz_resources_fetch_asset(
+        res,
+        topazAsset_Type_Data,
+        TOPAZ_STR_CAST(matte_string_get_c_str(importPath))
+    );
+    if (!asset) {
+        PERROR(ctx->ctx, topaz_string_create_from_c_str("Could not find source asset %s", matte_string_get_c_str(importPath)));        
+        *dataLength = 0;
+        return NULL;
+    }
+    const topazArray_t * data = topaz_data_get_as_bytes(asset);
+    uint8_t * dataBytes = malloc(topaz_array_get_size(data));
+    memcpy(dataBytes, topaz_array_get_data(data), topaz_array_get_size(data));
+    *dataLength = topaz_array_get_size(data);
+    *fileid = matte_vm_get_new_file_id(vm, importPath);
+    topazString_t * srcstr = topaz_data_get_as_string(asset);
+    topaz_script_register_source(ctx->script, TOPAZ_STR_CAST(matte_string_get_c_str(importPath)), srcstr);
+    matte_string_destroy(srcstr);
+    return dataBytes;
+    
+    /*
+    uint32_t * id = matte_table_find(vm->defaultImport_table, importPath);
+    if (id) {
+        *dataLength = 0;
+        *fileid = *id;
+        return NULL;
+    }
+
+
+    FILE * f = fopen(matte_string_get_c_str(importPath), "rb");
+    if (!f) {
+        *dataLength = 0;
+        return NULL;
+    }
+
+    #define DEFAULT_DUMP_SIZE 1024
+    char * msg = malloc(DEFAULT_DUMP_SIZE);
+    uint32_t totalLen = 0;
+    uint32_t len;
+    while(len = fread(msg, 1, DEFAULT_DUMP_SIZE, f)) {
+        totalLen += len;
+    }
+    fseek(f, SEEK_SET, 0);
+    uint8_t * outBuffer = malloc(totalLen);
+    uint8_t * iter = outBuffer;
+    while(len = fread(msg, 1, DEFAULT_DUMP_SIZE, f)) {
+        memcpy(iter, msg, len);
+        iter += len;
+    }
+    free(msg);
+    fclose(f);
+    id = malloc(sizeof(uint32_t));
+    *id = matte_vm_get_new_file_id(vm, importPath);
+    matte_table_insert(vm->defaultImport_table, importPath, id);
+
+    *fileid = *id;
+    *dataLength = totalLen;
+    return outBuffer;
+    */
+}
 
 
 
@@ -600,6 +675,11 @@ static void * topaz_matte_create(topazScript_t * scr, topaz_t * ctx) {
     matte_vm_set_unhandled_callback(
         matte_get_vm(out->matte),
         topaz_matte_fatal,
+        out
+    );
+    matte_vm_set_import(
+        out->vm,
+        topaz_matte_import,
         out
     );
     out->script = scr;

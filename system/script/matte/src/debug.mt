@@ -10,7 +10,7 @@ return ::(o) {
     @helper ::(obj, level) {
         @poself = context;
 
-        return match(introspect.type(of:obj)) {
+        return match(getType(of:obj)) {
             (String) : '(type => String): \'' + obj + '\'',
             (Number) : '(type => Number): '+obj,
             (Boolean): '(type => Boolean): '+obj,
@@ -19,10 +19,7 @@ return ::(o) {
                 when(already[obj] == true) '(type => Object): [already printed]';
                 already[obj] = true;
 
-                @output = if (introspect.isCallable(value:obj)) 
-                            '(type => Function): {'
-                        else 
-                            '(type => Object): {';
+                @output = '(type => Object): {';
 
                 @multi = false;
                 foreach(in:obj, do:::(key, val) {                        
@@ -34,7 +31,7 @@ return ::(o) {
                 return output;                
             }(),
             (Type): '(type => Type): ' + obj,
-            default: '(type => ' + introspect.type(of:obj) + '): {...}'
+            default: '(type => ' + getType(of:obj) + '): {...}'
 
         };
     };

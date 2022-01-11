@@ -16,10 +16,10 @@ return ::<={
 
     @:statepush = ::(v) {
         if (v.native == empty) ::<={
-            if (introspect.isNaN(value:v.r)) v.r = 0;
-            if (introspect.isNaN(value:v.g)) v.g = 0;
-            if (introspect.isNaN(value:v.b)) v.b = 0;
-            if (introspect.isNaN(value:v.a)) v.a = 0;
+            if (Number.isNaN(value:v.r)) v.r = 0;
+            if (Number.isNaN(value:v.g)) v.g = 0;
+            if (Number.isNaN(value:v.b)) v.b = 0;
+            if (Number.isNaN(value:v.a)) v.a = 0;
             v.native = topaz_color__create(a:v.r, b:v.g, c:v.b, d:v.a);
         } else ::<={
             topaz_color__set_rgba(a:v.native, b:v.r, c:v.g, d:v.b, e:v.a);

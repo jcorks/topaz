@@ -35,7 +35,7 @@
                             if (args == empty) ::<={
                                 impl = nativeCreate();
                             } else ::<={
-                                match(introspect.keycount(of:args)) {
+                                match(Object.length(of:args)) {
                                   (1): ::<={
                                     impl = nativeCreate(a:args[0]);
                                   },
@@ -110,6 +110,7 @@
             @:topaz_filesystem__get_path = getExternalFunction(name:'topaz_filesystem__get_path');
             @:topaz_filesystem__get_path_from_string = getExternalFunction(name:'topaz_filesystem__get_path_from_string');
             @:topaz_filesystem_path__as_string = getExternalFunction(name:'topaz_filesystem_path__as_string');
+            @:topaz_filesystem_path__get_name = getExternalFunction(name:'topaz_filesystem_path__get_name');
             @:topaz_filesystem_path__get_parent = getExternalFunction(name:'topaz_filesystem_path__get_parent');
             @:topaz_filesystem_path__get_nth_child = getExternalFunction(name:'topaz_filesystem_path__get_nth_child');
             @:topaz_filesystem_path__get_child_count = getExternalFunction(name:'topaz_filesystem_path__get_child_count');
@@ -118,9 +119,9 @@
                     return __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path(a:node));
                 },
                 
-                getPathFromString : ::(pth, str){ 
-                    when (str == empty) __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path_from_string(a:pth));            
-                    return              __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path_from_string(a:pth.native, b:str));                        
+                getPathFromString : ::(path, string){ 
+                    when (string == empty) __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path_from_string(a:path));            
+                    return                 __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path_from_string(a:path.native, b:string));                        
                 },
                 
                 Path : class(
@@ -138,6 +139,12 @@
                             string : {
                                 get ::{ 
                                     return topaz_filesystem_path__as_string(a:impl);
+                                }
+                            },
+                            
+                            name : {
+                                get ::{
+                                    return topaz_filesystem_path__get_name(a:impl);
                                 }
                             },
                             
@@ -1108,7 +1115,7 @@
                                     return true;
                                 });
                                     
-                                for(in:[0, introspect.keycount(of:value)], do:::(i) {
+                                for(in:[0, Object.length(of:value)], do:::(i) {
                                     topaz_entity__attach(a:this.native, b:value[i].native);
                                 });
                             }
@@ -1243,7 +1250,7 @@
                                     return true;
                                 });
         
-                                for(in:[0, introspect.keycount(of:value)], do:::(i) {
+                                for(in:[0, Object.length(of:value)], do:::(i) {
                                     topaz_entity__add_component(a:this.native, b:value[i].native);
                                 });
                             }
@@ -2359,32 +2366,6 @@
 
             
             
-            
-            
-            
-            objectToString : ::(obj, levelSrc) {
-                @checked = [];
-                @levelG = if (levelSrc != 0) levelSrc else 10;
-                @helper = ::(obj, level) {
-                    when (obj == empty) 'empty';
-                    when (!(introspect.type(of:obj) == Object)) '\''+obj + '\'';
-                    when (checked[obj] != empty) '[Already Printed]';
-                    checked[obj] = true;
-                    @strOut = '{\n';
-                    @keys = introspect.keys(of:obj);
-                    @levelInv = levelG - level;
-                    for(in:[0, introspect.length(of:keys)], do:::(i) {
-                        @subStr = if (levelInv != 0) helper(obj:obj[keys[i]], level:level+1) else obj[keys[i]];
-                        for(in:[0, level], do:::(n) {strOut += '  ';});
-                        strOut += '  \'' + keys[i] + '\' : ' + subStr + ',\n'; 
-                    });
-                    for(in:[0, level], do:::(n){strOut += '  ';});
-                    strOut += '}';
-                    return strOut;
-                };
-                
-                return helper(obj:obj, level:0) + '\n';
-            },
     
             Filesystem  : {get : ::(){return __Filesystem__; }},
             RNG         : {get : ::(){return __RNG__; }},
