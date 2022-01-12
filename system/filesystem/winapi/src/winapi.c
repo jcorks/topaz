@@ -213,7 +213,7 @@ static void topaz_filesystem_winapi__path_get_children(
     FindClose(dObj);
 }
 
-static topazString_t * topaz_filesystem_posix__path_string_get_name(
+static topazString_t * topaz_filesystem_winapi__path_string_get_name(
     topazFilesystem_t * fs,
     void * nu,
     const topazString_t * path    

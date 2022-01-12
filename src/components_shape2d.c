@@ -376,7 +376,7 @@ void topaz_shape2d_form_image_frame_scaled(topazComponent_t * c, topazAsset_t * 
 void topaz_shape2d_form_radial(topazComponent_t * c, float radius, uint32_t numIterations) {
     Shape2D * s = shape2d__retrieve(c);
 
-    topazVector_t * pts = malloc(sizeof(topazVector_t)*numIterations);
+    topazVector_t * pts = malloc(sizeof(topazVector_t)*(numIterations*3));
     topazVector_t * ptsIter = pts;
     topazVector_t curPt;
     topazVector_t empty;
@@ -410,7 +410,7 @@ void topaz_shape2d_form_radial(topazComponent_t * c, float radius, uint32_t numI
         TOPAZ_ARRAY_CAST(
             ptsIter,
             topazVector_t,
-            numIterations
+            numIterations*3
         )
     );
     free(ptsIter);

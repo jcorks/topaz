@@ -1617,7 +1617,7 @@
                     
                     this.interface = {
                         startTask : ::(taskName, interval, intervalDelay, callback){ 
-                            if (taskName != empty) ::<={
+                            return if (taskName != empty) ::<={
                                 topaz_scheduler__start_task(
                                     a:impl,
                                     b:taskName,
