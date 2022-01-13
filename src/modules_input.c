@@ -189,6 +189,7 @@ struct DeviceState {
             input->prev = input->current;
             input->current = ev.state;
 
+
             if (topaz_array_get_size(d->listeners)) {
                 uint32_t i;
                 uint32_t len = topaz_array_get_size(d->listeners);
@@ -197,7 +198,7 @@ struct DeviceState {
                     if (inst->listener.on_update) inst->listener.on_update(d->parent, index, input->current, inst->listener.userData);
                     if (inst->listener.on_press && !input->prev && input->current)  
                         inst->listener.on_press(d->parent, index, inst->listener.userData);
-                    if (inst->listener.on_release && !input->prev && input->current)  
+                    if (inst->listener.on_release && input->prev && !input->current)  
                         inst->listener.on_release(d->parent, index, inst->listener.userData);
  
                     inst++;
@@ -225,7 +226,7 @@ struct DeviceState {
                         if (inst->listener.on_update) inst->listener.on_update(d->parent, index, input->current, inst->listener.userData);
                         if (inst->listener.on_press && !input->prev && input->current)
                             inst->listener.on_press(d->parent, index, inst->listener.userData);
-                        if (inst->listener.on_release && !input->prev && input->current)
+                        if (inst->listener.on_release && input->prev && !input->current)
                             inst->listener.on_release(d->parent, index, inst->listener.userData);
 
                         inst++;

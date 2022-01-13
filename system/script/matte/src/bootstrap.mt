@@ -1076,7 +1076,7 @@
                     this.interface = {
                         isValid : {
                             get : ::(){ 
-                                return topaz_entity__is_valid(a:this.native);
+                                return topaz_entity__is_valid(a:this.native) == 1;
                             }
                         },
                         

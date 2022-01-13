@@ -139,10 +139,12 @@ topazComponent_t * topaz_component_null() {
 void topaz_component_destroy(topazComponent_t * c) {
     if (!c->valid) return;
     topaz_component_emit_event_anonymous(c, TOPAZ_STR_CAST("on-destroy"));
+    if (c->api.on_destroy) c->api.on_destroy(c, c->api.userData);
+
     if (topaz_entity_is_valid(c->host)) {
         topaz_component_detach(c);
     }    
-    if (c->api.on_destroy) c->api.on_destroy(c, c->api.userData);
+    c->valid = FALSE;
 
     topazTableIter_t * iter = topaz_table_iter_create();
     for(
@@ -160,7 +162,6 @@ void topaz_component_destroy(topazComponent_t * c) {
 
     c->step = FALSE;
     c->draw = FALSE;
-    c->valid = FALSE;
     topaz_array_push(dead, c);
 }
 
