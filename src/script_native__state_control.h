@@ -26,7 +26,7 @@ static void script_state_control__on_step(topazComponent_t * component, void * d
     topaz_script_object_destroy(
         topaz_script_object_reference_call(
             s->onStep, 
-            TOPAZ_ARRAY_CAST(&s->src, topazScript_Object_t *, 1)
+            topaz_array_empty()
         )    
     );
 }
@@ -36,7 +36,7 @@ static void script_state_control__on_draw(topazComponent_t * component, void * d
     topaz_script_object_destroy(
         topaz_script_object_reference_call(
             s->onDraw, 
-            TOPAZ_ARRAY_CAST(&s->src, topazScript_Object_t *, 1)
+            topaz_array_empty()
         )    
     );
 }
@@ -46,7 +46,7 @@ static void script_state_control__on_init(topazComponent_t * component, void * d
     topaz_script_object_destroy(
         topaz_script_object_reference_call(
             s->onInit, 
-            TOPAZ_ARRAY_CAST(&s->src, topazScript_Object_t *, 1)
+            topaz_array_empty()
         )    
     );
 }

@@ -313,7 +313,10 @@ static void topaz_matte_object_finalizer(void * objectUserdata, void * functionU
     TOPAZMATTEObjectTag * tag = objectUserdata;
 
     #ifdef TOPAZDC_DEBUG
-        assert(tag);
+        if (!tag) {
+            printf("SOMETHIGN HAPPENED. TAG WAS NULL..\n");
+            return;
+        }
     #endif
 
     // if this is even happening, the global stash entry was already removed.

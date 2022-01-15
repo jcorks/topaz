@@ -427,6 +427,13 @@ topazEntity_t * topaz_object2d_get_last_collided(
 );
 
 
+/// Sets whether to bind the calculated positions 
+/// to whole units only. The default is false.
+void topaz_object2d_set_unit_lock(
+    topazComponent_t * o2d,
+    int doIt
+);
+
 
 #endif
 

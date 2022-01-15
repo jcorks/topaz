@@ -183,6 +183,7 @@ struct TopazObject2D_t {
     tcollider_t * collider;
     topazObject2D_Group group;
     int id;
+    int unitLock;
 };
 
 
@@ -212,6 +213,11 @@ static void object2d__on_step(topazComponent_t * o, TopazObject2D_t * object) {
         topazVector_t * pos = topaz_entity_position(host);
         pos->x += delta.x;
         pos->y += delta.y;
+
+        if (object->unitLock) {
+            pos->x = (int)pos->x;
+            pos->y = (int)pos->y;
+        }
 
         // push it through        
         topaz_spatial_check_update(topaz_entity_get_spatial(host));
@@ -342,6 +348,19 @@ void topaz_object2d_set_velocity_towards(
     s->speedX = factor * (cos((topaz_math_pi / 180.f) * direction));
     s->speedY = factor * (sin((topaz_math_pi / 180.f) * direction));
 }
+
+
+/// Sets whether to bind the calculated positions 
+/// to whole units only. The default is false.
+void topaz_object2d_set_unit_lock(
+    topazComponent_t * c,
+    int doIt
+) {
+    TopazObject2D_t * s = object2d__retrieve(c);    
+    s->unitLock = doIt;    
+}
+
+
 
 void topaz_object2d_set_friction_x(topazComponent_t * c, float amt) {
     TopazObject2D_t * s = object2d__retrieve(c);    
@@ -1471,7 +1490,6 @@ void t2dm_set_interaction(topazEntity_t * e, topazObject2D_Group a, topazObject2
         topaz_table_insert_by_uint(inst->smapTable, key, smap);
     }
 }
-
 
 
 

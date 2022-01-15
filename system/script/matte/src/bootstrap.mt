@@ -1616,7 +1616,7 @@
                     
                     
                     this.interface = {
-                        startTask : ::(taskName, interval, intervalDelay, callback){ 
+                        startTask : ::(taskName, interval => Number, intervalDelay, callback){ 
                             return if (taskName != empty) ::<={
                                 topaz_scheduler__start_task(
                                     a:impl,
@@ -1637,6 +1637,13 @@
                         
                         endTask : ::(name){ 
                             topaz_scheduler__end_task(a:impl, b:name);
+                        },
+
+                        endAllTasks :: {
+                            @len = topaz_scheduler__get_task_count(a:impl);
+                            for(in:[0, len], do:::(i) {
+                                this.endTask(name:topaz_scheduler__get_task(a:impl, b:i));
+                            });
                         },
                     
                         pause : ::(name){ 
@@ -1746,6 +1753,7 @@
             @:topaz_object2d__get_next_position = getExternalFunction(name:'topaz_object2d__get_next_position');
             @:topaz_object2d__get_group = getExternalFunction(name:'topaz_object2d__get_group');
             @:topaz_object2d__set_group = getExternalFunction(name:'topaz_object2d__set_group');
+            @:topaz_object2d__set_unit_lock = getExternalFunction(name:'topaz_object2d__set_unit_lock');
             @:topaz_object2d__set_collider = getExternalFunction(name:'topaz_object2d__set_collider');
             @:topaz_object2d__set_collider_radial = getExternalFunction(name:'topaz_object2d__set_collider_radial');
             @:topaz_object2d__get_collider_len = getExternalFunction(name:'topaz_object2d__get_collider_len');
@@ -1839,6 +1847,10 @@
                             set : ::(value) {topaz_object2d__set_group(a:impl, b:value);} 
                         },
 
+                        unitLock : {
+                            set ::(value) {topaz_object2d__set_unit_lock(a:impl, b:value);}
+                        },
+
                         collider : {
                             get : ::()  {return _collider; },
                             set : ::(value) {_collider=value; topaz_object2d__set_collider(a:impl, b:value);} 
@@ -1864,9 +1876,6 @@
             );
         };
         @:topaz_object2d__set_group_interaction = getExternalFunction(name:'topaz_object2d__set_group_interaction');
-        __Object2D__.setGroupInteraction = ::(groupA, groupB, interact){ 
-            topaz_object2d__set_group_interaction(a:groupA, b:groupB, c:interact);
-        };
 
         @__Shape2D__ = ::<={
             @:topaz_shape2d__create = getExternalFunction(name:'topaz_shape2d__create');
@@ -2362,7 +2371,9 @@
                     return topaz__get_version_minor();                
                 }
             },
-            
+            setGroupInteraction ::(groupA, groupB, interact){ 
+                topaz_object2d__set_group_interaction(a:groupA, b:groupB, c:interact);
+            },
 
             
             
