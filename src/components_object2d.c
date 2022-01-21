@@ -183,7 +183,8 @@ struct TopazObject2D_t {
     tcollider_t * collider;
     topazObject2D_Group group;
     int id;
-    int unitLock;
+    int16_t unitLock;
+    int16_t active;
 };
 
 
@@ -206,6 +207,11 @@ static void object2d__on_step(topazComponent_t * o, TopazObject2D_t * object) {
     delta.x = next.x - gpos.x;
     delta.y = next.y - gpos.y;
     delta.z = 0;
+    if (object->active == 0) {
+        t2dm_register_object(object->manager, o);
+    }
+    object->active = 1;
+    object->last = *topaz_entity_get_position(host);
 
     // using the "last" model, we include manual translations as part of 
     // normal collisions.
@@ -223,7 +229,6 @@ static void object2d__on_step(topazComponent_t * o, TopazObject2D_t * object) {
         topaz_spatial_check_update(topaz_entity_get_spatial(host));
     }
 
-    object->last = *topaz_entity_get_position(host);
 
     object->speedX *= (1.0 - object->frictionX);
     object->speedY *= (1.0 - object->frictionY);
@@ -238,7 +243,8 @@ static void object2d__on_attach(topazComponent_t * c, TopazObject2D_t * s) {
 
 
 static void object2d__on_detach(topazComponent_t * c, TopazObject2D_t * s) {
-    t2dm_unregister_object(s->manager, c);
+    if (s->active > 0)
+        t2dm_unregister_object(s->manager, c);
 }
 
 static void object2d__on_destroy(topazComponent_t * c, TopazObject2D_t * s) {
@@ -265,7 +271,7 @@ topazComponent_t * topaz_object2d_create(topaz_t * t) {
     attribs.on_step     = (topaz_component_attribute_callback) object2d__on_step;
     attribs.userData = data;
     topazComponent_t * out = topaz_component_create_with_attributes(TOPAZ_STR_CAST("Object2D"), t, &attribs);
-    t2dm_register_object(data->manager, out);
+
     topaz_component_install_event(out, TOPAZ_STR_CAST("on-collide"), NULL, NULL);
     static int idp = 1;
     data->id = idp++;    
@@ -1239,6 +1245,16 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
         }
         
         object = topaz_component_get_attributes(c)->userData;
+        if (object->active == 2) {
+            // 2 means "DID NOT UPDATE IN STEP()" 
+            // so remove from main objects.
+            object->active = 0;
+            topaz_array_remove(m->objects, i);
+            numObj--;
+            i--;
+            continue;
+        }
+        object->active = 2;
         topazVector_t next = topaz_object2d_get_next_position(c);
         collider_update_transition(
             object->collider,

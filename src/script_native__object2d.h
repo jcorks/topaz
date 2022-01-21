@@ -185,6 +185,15 @@ TSO_SCRIPT_API_FN(object2d_api__get_next_position) {
     return out;
 }
 
+TSO_SCRIPT_API_FN(object2d_api__get_last_position) {
+    TSO_ARG_0;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
+    topazVector_t * v;
+    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
+    *v = *topaz_object2d_get_last_position(native);
+    return out;
+}
+
 
 
 TSO_SCRIPT_API_FN(object2d_api__set_unit_lock) {
@@ -333,6 +342,7 @@ static void add_refs__object2d_api(topazScript_t * script, topazScriptManager_t 
     TS_MAP_NATIVE_FN("topaz_object2d__set_speed", object2d_api__set_speed, 2);
     TS_MAP_NATIVE_FN("topaz_object2d__get_speed", object2d_api__get_speed, 1);
     TS_MAP_NATIVE_FN("topaz_object2d__get_next_position", object2d_api__get_next_position, 1);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_last_position", object2d_api__get_last_position, 1);
 
     TS_MAP_NATIVE_FN("topaz_object2d__set_unit_lock", object2d_api__set_unit_lock, 2);
 

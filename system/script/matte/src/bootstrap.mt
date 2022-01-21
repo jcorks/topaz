@@ -1751,6 +1751,7 @@
             @:topaz_object2d__get_speed = getExternalFunction(name:'topaz_object2d__get_speed');
             @:topaz_object2d__set_speed = getExternalFunction(name:'topaz_object2d__set_speed');
             @:topaz_object2d__get_next_position = getExternalFunction(name:'topaz_object2d__get_next_position');
+            @:topaz_object2d__get_last_position = getExternalFunction(name:'topaz_object2d__get_last_position');
             @:topaz_object2d__get_group = getExternalFunction(name:'topaz_object2d__get_group');
             @:topaz_object2d__set_group = getExternalFunction(name:'topaz_object2d__set_group');
             @:topaz_object2d__set_unit_lock = getExternalFunction(name:'topaz_object2d__set_unit_lock');
@@ -1839,9 +1840,11 @@
                         },
 
                         nextPosition : {
-                            get : ::()  {return topaz_object2d__get_next_position(a:impl);} 
+                            get : ::()  {return Vector.fromnative(native:topaz_object2d__get_next_position(a:impl));} 
                         },
-
+                        lastPosition : {
+                            get : ::()  {return Vector.fromnative(native:topaz_object2d__get_last_position(a:impl));} 
+                        },
                         group : {
                             get : ::()  {return topaz_object2d__get_group(a:impl);}, 
                             set : ::(value) {topaz_object2d__set_group(a:impl, b:value);} 
