@@ -310,12 +310,11 @@ static TOPAZMATTEObjectTag * topaz_matte_object_set_tag(TOPAZMATTE * ctx, matteV
 }
 
 static void topaz_matte_object_finalizer(void * objectUserdata, void * functionUserdata) {
-    TOPAZMATTEObjectTag * tag = objectUserdata;
+    TOPAZMATTEObjectTag * tag = functionUserdata;
 
     #ifdef TOPAZDC_DEBUG
         if (!tag) {
-            printf("SOMETHIGN HAPPENED. TAG WAS NULL..\n");
-            return;
+            assert(!"Matte-Native object should never have a NULL tag.");
         }
     #endif
 
@@ -358,7 +357,7 @@ static void * topaz_matte_object_wrap(void * ctxSrc, matteValue_t val) {
             ctx->heap,
             val,
             topaz_matte_object_finalizer,
-            NULL
+            tag
         );
     }
 
