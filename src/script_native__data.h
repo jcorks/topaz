@@ -62,7 +62,7 @@ TSO_SCRIPT_API_FN(data_api__get_nth_byte) {
 
 static void add_refs__data_api(topazScript_t * script, topazScriptManager_t * context) {
     // member functions
-    TS_MAP_NATIVE_FN("topaz_data__set", data_api__set, 1);
+    TS_MAP_NATIVE_FN("topaz_data__set", data_api__set, 2);
     TS_MAP_NATIVE_FN("topaz_data__get_byte_count", data_api__get_byte_count, 1);
     TS_MAP_NATIVE_FN("topaz_data__get_nth_byte", data_api__get_nth_byte, 2);
     TS_MAP_NATIVE_FN("topaz_data__get_as_string", data_api__get_as_string, 1);

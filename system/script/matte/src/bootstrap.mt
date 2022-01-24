@@ -120,7 +120,7 @@
                 },
                 
                 getPathFromString : ::(path, string){ 
-                    when (string == empty) __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path_from_string(a:path));            
+                    when (path == empty)   __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path_from_string(a:string));            
                     return                 __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path_from_string(a:path.native, b:string));                        
                 },
                 

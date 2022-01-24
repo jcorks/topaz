@@ -1,7 +1,17 @@
-Topaz.import('generator.js');
 
-generateDocumentation('C',    '../../include/topaz/',               '../c/');
-generateDocumentation('None', '../../system/script/documentation/', '../scripting/');
+@:generateDocumentation = import(module:'generator.mt');
+@:Topaz = import(module:'Topaz.Core');
+
+generateDocumentation(
+    langHint:'C',    
+    sourcePath:'../../include/topaz/',
+    outputPath:'../c/'
+);
+generateDocumentation(
+    langHint:'None', 
+    sourcePath:'../../system/script/documentation/', 
+    outputPath:'../scripting/'
+);
 
 
 Topaz.quit();
