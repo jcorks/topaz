@@ -305,6 +305,7 @@ static void command_debug_response(
     switch(command) {
       case topazScript_DebugCommand_Pause:
         topaz_console_display_clear(console->display);
+        console->debugLevel = 0;
 
 
 
@@ -350,6 +351,7 @@ static void command_debug_response(
 
       case topazScript_DebugCommand_StepInto:
         topaz_console_display_clear(console->display);
+        console->debugLevel = 0;
         console_print_debug_state(
             console,
             state
@@ -358,6 +360,7 @@ static void command_debug_response(
 
       case topazScript_DebugCommand_StepOver:
         topaz_console_display_clear(console->display);
+        console->debugLevel = 0;
         console_print_debug_state(
             console,
             state
@@ -423,12 +426,22 @@ static void command_debug_response(
             for(i = 0; i < len; ++i) {
                 DebugBreakpoint * bp = &topaz_array_at(console->debugBreakpoints, DebugBreakpoint, i);
                 if (topaz_string_test_eq(bp->label, result)) {
+
+                    topazString_t * out = topaz_string_create_from_c_str(
+                        "Removed breakpoint %d (",
+                        bp->id
+                    );
+
+                    topaz_string_concat(out, bp->file);
+                    topaz_string_concat_printf(out, ":%d)", bp->line);
+                    topaz_console_print(console, out);
+                    topaz_string_destroy(out);
                     topaz_string_destroy(bp->file);
                     if (bp->label)
                         topaz_string_destroy(bp->label);
+
                     topaz_array_remove(console->debugBreakpoints, i);
 
-                    topaz_console_print(console, TOPAZ_STR_CAST("Removed breakpoint."));
                     break;
                 }
             }
@@ -697,13 +710,6 @@ TOPAZCCOMMAND(command__delete_breakpoint) {
         for(i = 0; i < len; ++i) {
             bp = &topaz_array_at(console->debugBreakpoints, DebugBreakpoint, i);
             if (bp->id == id) {
-                topazString_t * out = topaz_string_create_from_c_str(
-                    "Removing breakpoint %d (",
-                    id
-                );
-
-                topaz_string_concat(out, bp->file);
-                topaz_string_concat_printf(out, ":%d)", bp->line);
 
 
                 // request server-side removal
@@ -714,7 +720,7 @@ TOPAZCCOMMAND(command__delete_breakpoint) {
                 );
                                 
 
-                return out;
+                return topaz_string_create();;
             }
         }
         return topaz_string_create_from_c_str("Could not remove breakpoint %d: no such breakpoint.", id);
