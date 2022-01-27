@@ -9,7 +9,7 @@
 #include "../../../system/inputManager/glfw/src/backend.h"
 #include "../../../system/renderer/ogl3/src/backend.h"
 #include "../../../system/time/winapi/src/backend.h"
-#include "../../../system/script/duktapeJS/src/backend.h"
+#include "../../../system/script/matte/src/backend.h"
 #include "../../../system/consoleDisplay/winapi/src/backend.h"
 #include "../../../system/fontRenderer/freetype/src/backend.h"
 #include "../../../system/iox/rawdata/src/backend.h"
@@ -31,7 +31,7 @@ topaz_system_config_add_handler(TOPAZ_STR_CAST("filesystem"), TOPAZ_STR_CAST("wi
 topaz_system_config_add_handler(TOPAZ_STR_CAST("inputManager"), TOPAZ_STR_CAST("glfw"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_inputManager_glfw__backend);
 topaz_system_config_add_handler(TOPAZ_STR_CAST("renderer"), TOPAZ_STR_CAST("ogl3"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_renderer_ogl3__backend);
 topaz_system_config_add_handler(TOPAZ_STR_CAST("time"), TOPAZ_STR_CAST("winapi"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_time_winapi__backend);
-topaz_system_config_add_handler(TOPAZ_STR_CAST("script"), TOPAZ_STR_CAST("duktapeJS"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_script_duktapeJS__backend);
+topaz_system_config_add_handler(TOPAZ_STR_CAST("script"), TOPAZ_STR_CAST("matte"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_script_matte__backend);
 topaz_system_config_add_handler(TOPAZ_STR_CAST("consoleDisplay"), TOPAZ_STR_CAST("winapi"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_consoleDisplay_winapi__backend);
 topaz_system_config_add_handler(TOPAZ_STR_CAST("fontRenderer"), TOPAZ_STR_CAST("freetype"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_fontRenderer_freetype__backend);
 topaz_system_config_add_handler(TOPAZ_STR_CAST("iox"), TOPAZ_STR_CAST("rawdata"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_iox_rawdata__backend);

@@ -1786,7 +1786,8 @@
                         },
 
                         addVelocityTowards : ::(amount, target, offset) { 
-                            topaz_object2d__add_velocity_towards(a:impl, b:amount, c:target, d:offset);
+                            Vector.statepush(v:target);
+                            topaz_object2d__add_velocity_towards(a:impl, b:amount, c:target.native, d:offset);
                         },
 
                         setVelocity : ::(amount, direction) { 
@@ -1794,7 +1795,8 @@
                         },
 
                         setVelocityTowards : ::(amount, target, offset) { 
-                            topaz_object2d__set_velocity_towards(a:impl, b:amount, c:target, d:offset);
+                            Vector.statepush(v:target);
+                            topaz_object2d__set_velocity_towards(a:impl, b:amount, c:target.native, d:offset);
                         },
 
 

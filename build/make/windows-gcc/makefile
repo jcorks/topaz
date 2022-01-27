@@ -92,9 +92,19 @@ SRCS +=  system/renderer/ogl3/src/main.c\
          system/renderer/ogl3/src/program.c \
 		 system/renderer/ogl3/src/glad.c
 
-SRCS += system/script/duktapeJS/src/main.c\
-        system/script/duktapeJS/src/duktape.c\
-        system/script/duktapeJS/src/duk_trans_dvalue.c\
+SRCS +=  system/script/matte/src/main.c\
+         system/script/matte/src/matte/src/matte.c\
+         system/script/matte/src/matte/src/matte_array.c\
+         system/script/matte/src/matte/src/matte_bin.c\
+         system/script/matte/src/matte/src/matte_bytecode_stub.c\
+         system/script/matte/src/matte/src/matte_compiler.c\
+         system/script/matte/src/matte/src/matte_compiler__syntax_graph.c\
+         system/script/matte/src/matte/src/matte_heap.c\
+         system/script/matte/src/matte/src/matte_heap_string.c\
+         system/script/matte/src/matte/src/matte_string.c\
+         system/script/matte/src/matte/src/matte_table.c\
+         system/script/matte/src/matte/src/matte_vm.c\
+         system/script/matte/src/matte/src/rom/native.c
 
 SRCS += system/time/winapi/src/time_winapi_topaz.c
 
