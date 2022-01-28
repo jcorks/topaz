@@ -77,6 +77,15 @@ static void preload_all_scripts(topaz_t * ctx) {
     }
 }
 
+static void window_close_callback(
+    /// The display responding to the event.
+    topazDisplay_t * display,
+    /// The data bound to the callback.
+    void * ctx
+) {
+    topaz_context_quit(ctx);
+}
+
 int main(int argc, char ** argv) {
     char * path = "script";
     if (argc > 1)
@@ -84,7 +93,6 @@ int main(int argc, char ** argv) {
 
     // Create the context and window
     topaz_t * ctx = topaz_context_create();
-    topaz_view_manager_create_main_default(topaz_context_get_view_manager(ctx), TOPAZ_STR_CAST("Scripting"));
 
 
     // Creates a script instance. The permissions can 
@@ -98,18 +106,6 @@ int main(int argc, char ** argv) {
     topaz_script_enable_debugging(script);
 
 
-    // We want to enable use of the debugging console.
-    //
-    topazConsole_t * console = topaz_context_get_console(ctx);
-    topaz_console_enable(console, TRUE);
-
-
-    // In case something goes wrong, it can be helpful to attach
-    // a script context to the console.
-    topaz_console_attach_script(
-        console,
-        script
-    );
     
     // the script can import other scripts.
     // The scripts that can be imported are through resources
@@ -118,13 +114,28 @@ int main(int argc, char ** argv) {
 
 
     // Optional
+    topazDisplay_t * display = topaz_view_manager_create_main_default(topaz_context_get_view_manager(ctx), TOPAZ_STR_CAST("Scripting"));
+
+    // add behavior for system X button
+    topaz_display_add_close_callback(
+        display,
+        window_close_callback,
+        ctx
+    );
+
     run_script(ctx, script, TOPAZ_STR_CAST("preload"));
+
     if (!run_script(ctx, script, TOPAZ_STR_CAST(path))) {
+
+        // We want to enable use of the debugging console.
+        //
+        topazConsole_t * console = topaz_context_get_console(ctx);
+        topaz_console_enable(console, TRUE);
+
         topazString_t * message = topaz_string_create_from_c_str("Script \"%s\" could not be opened or was empty.", path);
         topaz_console_print(console, message);
         topaz_string_destroy(message);
         return 1;
-    }
-
+    } 
     topaz_context_run(ctx);
 }

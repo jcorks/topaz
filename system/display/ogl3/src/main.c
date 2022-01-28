@@ -90,7 +90,12 @@ static void glfw_fb_size_change(
     );
 }
 
-
+static void glfw_fb_close(
+    GLFWwindow * win
+) {
+    TopazGLFWWindow * d = glfwGetWindowUserPointer(win);
+    topaz_display_signal_close(d->source);
+}
 
 static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
 
@@ -100,6 +105,7 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
     GLFWwindow * wOld = glfwGetCurrentContext();
     w->window = glfwCreateWindow(640, 480, "topaz", NULL, glfwGetCurrentContext());
     glfwSetFramebufferSizeCallback(w->window, glfw_fb_size_change);
+    glfwSetWindowCloseCallback(w->window, glfw_fb_close);
     glfwSetWindowUserPointer(w->window, w);
 
     glfwMakeContextCurrent(w->window);

@@ -2,7 +2,6 @@
 @:Vector = import(module:'Topaz.Vector');
 @:Color = import(module:'Topaz.Color');
 
-@:topaz__debug = getExternalFunction(name:'topaz__debug');
 
 
 @class = import(module:'Matte.Core.Class');
@@ -2315,6 +2314,9 @@
         @:topaz__get_version_minor = getExternalFunction(name:'topaz__get_version_minor');
         @:topaz__get_version_micro = getExternalFunction(name:'topaz__get_version_micro');
         @:topaz__get_version_major = getExternalFunction(name:'topaz__get_version_major');
+        @:topaz__debug = getExternalFunction(name:'topaz__debug');
+        @:topaz__enable_console = getExternalFunction(name:'topaz__enable_console');
+
         this.interface = {
             run   : getExternalFunction(name:'topaz__run'),
             pause   : getExternalFunction(name:'topaz__pause'),
@@ -2337,7 +2339,9 @@
             debug ::{
                 topaz__debug();
             },
-            
+            enableConsole ::{
+                topaz__enable_console();
+            },
             root : {
                 set : ::(value){ 
                     return topaz__set_root(a:value.native);

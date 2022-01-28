@@ -57,6 +57,7 @@ typedef struct {
 static void winapi_printf(HANDLE * outf, topazString_t * str) {
     DWORD len;
     WriteFile(outf, topaz_string_get_c_str(str), topaz_string_get_length(str), &len, NULL);
+    FlushFileBuffers(outf);
     topaz_string_destroy(str);
 }
 
@@ -90,8 +91,9 @@ static void update_input(topazSystem_Backend_t * b, WINAPITerm * t) {
                         topazString_t * temp = t->str;
                         t->str = topaz_string_clone(topaz_string_get_substr(t->str, 0, topaz_string_get_length(t->str)-2));               
                         topaz_string_destroy(temp);
+                        winapi_printf(t->cout, topaz_string_create_from_c_str("\b \b"));
                     }
-                    winapi_printf(t->cout, topaz_string_create_from_c_str("\b"));
+                    
                 } else if (!iscntrl(input.Event.KeyEvent.uChar.AsciiChar)) {
                     topaz_string_concat_printf(t->str, "%c", input.Event.KeyEvent.uChar.AsciiChar);
                     winapi_printf(t->cout, topaz_string_create_from_c_str("%c", input.Event.KeyEvent.uChar.AsciiChar));
@@ -142,22 +144,28 @@ static void term_enable(topazConsoleDisplay_t * d, void * data, int enable) {
     if (enable) {
         FreeConsole();
         AllocConsole();
-        ShowWindow(GetConsoleWindow(), TRUE);
-        term->file = GetStdHandle(STD_INPUT_HANDLE);
-        term->cout = GetStdHandle(STD_OUTPUT_HANDLE);
-        assert(term->file != INVALID_HANDLE_VALUE);
-
         DWORD dwMode = 0;
+        
+
+        assert(term->file != INVALID_HANDLE_VALUE);
+        FILE * d;
+        term->file = CreateFileA("CONIN$", GENERIC_WRITE | GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        term->cout = CreateFileA("CONOUT$", GENERIC_WRITE | GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         if (GetConsoleMode(term->cout, &dwMode)) {
             dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
             SetConsoleMode(term->cout, dwMode);
+        }
+
+        if (GetConsoleMode(term->file, &dwMode)) {
+            dwMode |= ENABLE_INSERT_MODE;
+            SetConsoleMode(term->file, dwMode);
         }
 
 
     } else {
         FreeConsole();
         ShowWindow(GetConsoleWindow(), FALSE);
-        term->file = NULL;
+        term->file = NULL;  
     }
 }
 

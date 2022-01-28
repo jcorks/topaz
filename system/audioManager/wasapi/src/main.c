@@ -45,6 +45,9 @@ DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <mmdeviceapi.h>
 
+#define AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM      0x80000000
+#define AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY 0x08000000
+
 
 #define REFTIMES_PER_SEC  10000000
 #define REFTIMES_PER_MILLISEC  10000
@@ -160,7 +163,8 @@ static DWORD topaz_wasapi_main(void * a) {
         AUDCLNT_SHAREMODE_SHARED,
         0,
         1000000, // 1 second i think
-        0,
+        AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM|
+        AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY,
         &format.Format,
         NULL      
     ))) {
@@ -179,7 +183,8 @@ static DWORD topaz_wasapi_main(void * a) {
             AUDCLNT_SHAREMODE_SHARED,
             0,
             1000000, // 1 second i think
-            0,
+            AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM|
+            AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY,
             mixerFormat,
             NULL      
         );

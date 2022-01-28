@@ -127,8 +127,58 @@ TOPAZCCOMMAND(command__echo) {
         return topaz_string_create();
 }
 
+TOPAZCCOMMAND(command__help) {
+    return topaz_string_create_from_c_str(
+        "Topaz toolkit basic console. Recognized commands:\n\n"
+        " echo  - Output what you type in.\n"
+        " help  - Display this help.\n"
+        " dbg   - Enter debug mode.\n"
+        " quit  - Quit the engine.\n\n"
+    );
+}
+
+
+TOPAZCCOMMAND(command__helpdbg) {
+    return topaz_string_create_from_c_str(
+        "Topaz toolkit debug console.\n"
+        "When in a scripting context, the debugger\n"
+        "follows GDB-style commands:\n\n"
+
+        " backtrace - (short ver.: 'bt'): Output callstack.\n"
+        " eval      - (short ver.: 'e'):  Evaluate an expression.\n"
+        " continue  - (short ver.: 'c'):  Continue execution if paused.\n"
+        " quit      - (short ver.: 'q'):  Exit the debugger.\n"
+        " pause     - (short ver.: 'p'):  Pauses the engine on next \n"
+        "                                 script instruction.Quit the engine.\n"
+        " up        -                     Looks in the stack frame above the\n"
+        "                                 current if available.\n"
+        " down      -                     Looks in the stack frame below\n"
+        " next      - (short ver.: 'n'):  Proceeds to the next line of \n"
+        "                                 source code in the same stackframe.\n"
+        " step      - (short ver.: 's'):  Proceeds to the next line of\n"
+        "                                 source regardless of stackframe\n"
+        "                                 changes.\n"
+        " break     - (short ver.: 'b'):  Adds a breakpoint. If just a\n"
+        "                                 number is given, the breakpoint is\n"
+        "                                 added to the given line in the current\n"
+        "                                 file. Otherwise, the format expected\n"
+        "                                 is file:lineNumber. If no arg is given\n"
+        "                                 the current line is added as a breakpoint\n"
+        " delete    - (short ver.: 'd'):  Delete a breakpoint with the given id.\n"
+        " list      - (short ver.: 'l'):  Lists all the current breakpoints.\n\n"
+
+        "If no command is recognized, the default behavior is to\n"
+        "evaluate the input directly as an expression as if the\n"
+        "input was prefixed with 'eval'.\n"
+    );
+}
 
 TOPAZCCOMMAND(command__quit) {
+    topaz_script_debug_send_command(
+        console->script,
+        topazScript_DebugCommand_Resume,
+        TOPAZ_STR_CAST("")
+    );
     topaz_context_quit(userData);
     return topaz_string_create();
 }
@@ -783,12 +833,15 @@ topazConsole_t * topaz_console_create(topaz_t * t) {
 
     // add basic commands
     topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("echo"), command__echo, NULL);
+    topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("help"), command__help, NULL);
     topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("quit"), command__quit, t);
     topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("eval"), command__eval, t);
     topaz_console_command_context_add_command(out->cmd, TOPAZ_STR_CAST("dbg"),  command__dbg, t);
 
 
     // debug commands 
+    topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("help"),      command__helpdbg, t);
+
     topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("backtrace"), command__backtrace, t);
     topaz_console_command_context_add_command(out->dbg, TOPAZ_STR_CAST("bt"),        command__backtrace, t);
 

@@ -61,6 +61,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 void PLOG(topaz_t * t, topazString_t * str) {
+    
     topaz_console_print_message(
         topaz_context_get_console(t),
         str,
@@ -80,13 +81,19 @@ void PWARN(topaz_t * t, topazString_t * str) {
 }
 
 
-void PERROR(topaz_t * t, topazString_t * str) {
+void PERROR(topaz_t * t, topazScript_t * script, topazString_t * str) {
+    topazConsole_t * console = topaz_context_get_console(t);
+    topaz_console_attach_script(console, script);
+    topaz_console_enable(console, TRUE);
+    
     topaz_console_print_message(
         topaz_context_get_console(t),
         str,
         topazConsole_MessageType_Error
     );
     topaz_string_destroy(str);
+
+
 }
 
 typedef struct {
@@ -487,14 +494,14 @@ static void topaz_matte_fatal(matteVM_t * vm, uint32_t file, int lineNumber, mat
     {
         const matteString_t * rep = matte_value_string_get_string_unsafe(heap, matte_value_object_access_string(heap, value, MATTE_VM_STR_CAST(vm, "summary")));
 
-        PERROR(ctx->ctx, topaz_string_create_from_c_str("Topaz Scripting error: (%s, line %d):\n%s\n%s", 
+        PERROR(ctx->ctx, ctx->script, topaz_string_create_from_c_str("Topaz Scripting error: (%s, line %d):\n%s\n%s", 
             matte_string_get_c_str(matte_vm_get_script_name_by_id(vm, file)),
             lineNumber,
             matte_string_get_c_str(rep)));
     }
     topazString_t * str = topaz_matte_stack_where(ctx);
     if (topaz_string_get_length(str)) {
-        PERROR(ctx->ctx, str);
+        PERROR(ctx->ctx, ctx->script, str);
     } else {
         topaz_string_destroy(str);
     }
@@ -524,7 +531,7 @@ static uint8_t * topaz_matte_import(
         TOPAZ_STR_CAST(matte_string_get_c_str(importPath))
     );
     if (!asset) {
-        PERROR(ctx->ctx, topaz_string_create_from_c_str("Could not find source asset %s", matte_string_get_c_str(importPath)));        
+        PERROR(ctx->ctx, ctx->script, topaz_string_create_from_c_str("Could not find source asset %s", matte_string_get_c_str(importPath)));        
         *dataLength = 0;
         return NULL;
     }
@@ -642,7 +649,7 @@ static void topaz_matte_run__error(const matteString_t * s, uint32_t line, uint3
         matteString_t * errm = matte_string_create_from_c_str("%s", topaz_string_get_c_str(str));
         matte_vm_raise_error_string(ctx->vm, errm);
         matte_string_destroy(errm);
-        PERROR(ctx->ctx, str);
+        PERROR(ctx->ctx, ctx->script, str);
     
 }
 
@@ -653,7 +660,7 @@ static void topaz_matte_expression__error(matteVM_t * vm, matteVMDebugEvent_t ev
         topaz_string_concat_printf(str, "Error in expression: %s\n", matte_string_get_c_str(matte_value_string_get_string_unsafe(ctx->heap, matte_value_as_string(ctx->heap, value))));
         topaz_string_concat(str, topaz_matte_stack_where(ctx));
         if (topaz_string_get_length(str)) {
-            PERROR(ctx->ctx, str);
+            PERROR(ctx->ctx, ctx->script, str);
         }
     }   
 }
@@ -667,7 +674,7 @@ static topazScript_Object_t * topaz_matte_expression(
 
     if (!matte_vm_get_stackframe_size(ctx->vm)) {
         topazString_t * str = topaz_string_create_from_c_str("Eval error: Cannot evaluate expression if there is no callstack currently active.");
-        PERROR(ctx->ctx, str);
+        PERROR(ctx->ctx, ctx->script, str);
         return topaz_script_object_undefined(ctx->script);   
     }
     matteString_t * exprM = matte_string_create_from_c_str(topaz_string_get_c_str(expr));
@@ -777,7 +784,7 @@ static void topaz_matte_run(
 
     if (!bytecode || !bytelen) {
         topazString_t * str = topaz_string_create_from_c_str("Could not compile source \"%s\"", topaz_string_get_c_str(sourceName));
-        PERROR(ctx->ctx, str);
+        PERROR(ctx->ctx, ctx->script, str);
         return;
     }
     
@@ -1123,8 +1130,10 @@ static void topaz_matte_debug_callback(
             
             if (pendingError) {
                 matteHeap_t * heap = ctx->heap;
-                const matteString_t * rep = matte_value_string_get_string_unsafe(heap, value);            
+                const matteString_t * rep = matte_value_string_get_string_unsafe(heap, value);   
                 topaz_string_concat_printf(err, "Script runtime error: %s", matte_string_get_c_str(rep));
+                // activate console so that debugger will have something to work with.
+                PERROR(ctx->ctx, ctx->script, topaz_string_create_from_c_str("Pausing context due to error."));      
             }
             topaz_script_notify_command(
                 ctx->script, 
@@ -1281,7 +1290,7 @@ void topaz_matte_debug_send_command(
         );
         if (!matte_vm_get_stackframe_size(ctx->vm)) {
             topazString_t * str = topaz_string_create_from_c_str("Eval error: Cannot evaluate expression if there is no callstack currently active.");
-            PERROR(ctx->ctx, str);
+            PERROR(ctx->ctx, ctx->script, str);
             return;   
         }
         matteString_t * exprM = matte_string_create_from_c_str("return (import(module:'Topaz.DebugPrinter'))(o:%s);", topaz_string_get_c_str(command));
