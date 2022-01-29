@@ -1,25 +1,26 @@
-/// Inherits from Topaz.Asset.
-///
 /// Defines how 3D objects visually express their vertex data. This
 /// includes things such as textures, shader programs, and color definitions.
 /// Shader programs are also specified here.
 class Topaz.Material
+
+    ///
+    inherits Topaz.Asset
 
 /// Sets the program data that material programs use.
 ///
 func setProgramData ->
     // Specifies which of the data parameters to modify.
     // There are 28 values possible, so this can be on the range 0-27
-    Int index 
+    @Int index 
     // The new value of the datum.
-    Number value
+    @Number value
     
 /// Sets the program data that material programs use.
 ///
 func getProgramData -> Number
     // Specifies which of the data parameters to modify.
     // There are 28 values possible, so this can be on the range 0-27
-    Int index
+    @Int index
     
 /// Sets the source for the program to use.
 /// If the source changes, and the language matches that 
@@ -32,11 +33,11 @@ func getProgramData -> Number
 /// and maintained for better portability.
 func setProgramSource -> 
     /// The language that this source pertains to.
-    String language 
+    @String language 
     /// The vertex shader source.    
-    String vertexShaderSource 
+    @String vertexShaderSource 
     /// The fragment shader source.
-    String fragmentShaderSource
+    @String fragmentShaderSource
     
 
 /// Removes all shader program sources from the material.    

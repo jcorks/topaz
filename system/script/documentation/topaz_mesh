@@ -1,5 +1,3 @@
-/// Inherits from Topaz.Asset.
-///
 /// A collection of vertex data and indices into 
 /// the collection to form 3D meshes.
 ///
@@ -12,31 +10,34 @@
 /// may contain any number of objects.
 class Topaz.Mesh
 
+    ///
+    inherits Topaz.Asset
+
 
 /// Sets/Gets the total number of vertices within the mesh.
 /// Note that setting the vertex count may trigger an internal 
 /// resize of buffers for storing vertices. The vertexCount must be set 
 /// before reading / writing to vertices.
-Int vertexCount
+@Int vertexCount
 
 
 /// Sets/Gets the raw vertex data as a simple array of Numbers.
 ///
-Array vertices
+@Array vertices
 
 
 /// Sets a specific vertex's data.
 func setVertex ->
     /// The index of the vertex to modify.
-    Int index 
+    @Int index 
     /// A simple array of Numbers to update the vertex to.
-    Array values 
+    @Array values 
     
     
 /// Gets a specific vertex's data.
 func getVertex -> Array
     /// The index of the vertex to query.
-    Int index
+    @Int index
     
 /// Adds a new object.  This function creates a new instance
 /// and its index is returned. This index can be used with topaz_mesh_get_object 
@@ -44,18 +45,18 @@ func getVertex -> Array
 ///
 func addObject -> 
     /// Optional array of indices to initialize the object with.
-    Array indices
+    @Array indices
 
 
 /// Returns the current object count.
 /// Read-only.
-Int objectCount
+@Int objectCount
 
 
 /// Removes the specified object.
 func removeObject -> 
     /// The index of the object to remove.
-    Int objectIndex
+    @Int objectIndex
     
     
     

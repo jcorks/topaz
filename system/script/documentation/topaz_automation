@@ -1,7 +1,12 @@
-/// Inherits from Topaz.Component
-///
-///
+/// Automation allows for complex and generic animation.
+/// By specifying timing and transformation functions,
+/// Automations can be used to animate anything, from colors,
+/// to movement, to user-defined constructs.
+/// 
 class Topaz.Automation
+    ///
+    inherits Topaz.Component
+
 
 /// Adds a keyframe to the automation.
 /// Every automation holds an automation, an automation 
@@ -10,13 +15,13 @@ class Topaz.Automation
 func addKeyframe ->
     /// The value for the keyframe. Once this keyframe is 
     /// reached, the automation will take on this value.
-    Number value 
+    @Number value 
     /// The traveling function that describes how 
     /// the next keyframe's value should be reached. 
-    TOPAZ.AUTOMATION.FUNCTION f 
+    @TOPAZ.AUTOMATION.FUNCTION f 
     /// The offset from the end of the last keyframe.
     /// This can be querried with the length property.
-    Number offset
+    @Number offset
 
 
 /// Same as topaz_automation_add_keyframe, except the 
@@ -24,13 +29,13 @@ func addKeyframe ->
 func addVectorKeyframe ->
     /// The value for the keyframe. Once this keyframe is 
     /// reached, the automation will take on this value.
-    Topaz.Vector value 
+    @Topaz.Vector value 
     /// The traveling function that describes how 
     /// the next keyframe's value should be reached. 
-    TOPAZ.AUTOMATION.FUNCTION f 
+    @TOPAZ.AUTOMATION.FUNCTION f 
     /// The offset from the end of the last keyframe.
     /// This can be querried with the length property.
-    Number offset
+    @Number offset
 
 
 /// Removes all keyframes from an automation.
@@ -42,7 +47,7 @@ func clear ->
 /// facilitate
 func blend ->
     /// The automation to blend with.
-    Topaz.Automation other 
+    @Topaz.Automation other 
 
 /// Smooths the keyframe values across the current 
 /// average.
@@ -52,7 +57,7 @@ func smooth ->
 /// the automation is in string form.
 func addFromString ->
     /// The automation string.
-    String str 
+    @String str 
 
 /// Gets the length of the automation. This is the total accumulative
 /// keyframe offsets within the automation. The automation length 
@@ -60,7 +65,7 @@ func addFromString ->
 /// The length of the automation is not necessarily how long in seconds 
 /// or frames the automation is.
 /// Read-only.
-Number length 
+@Number length 
 
 /// Skip to a part of the automation. The value must be between or 
 /// equal to 0 and the value of topaz_automation_get_length()
@@ -68,29 +73,29 @@ Number length
 /// this is in keyframe units.
 func skipTo ->
     /// The value to skip to.
-    Number location
+    @Number location
 
 /// Sets the real duration of the automation.
 /// This is how long it takes to get through the automation in 
 /// frames. If an automation is currently running, the automation 
 /// is reset.
 /// Write-only
-Number durationFrames 
+@Number durationFrames 
 /// Sets the real duration of the automation.
 /// This is how long it takes to get through the automation
 /// in seconds. If an automation is currently running,
 /// the automation is reset.
 /// Write-only
-Number durationSeconds
+@Number durationSeconds
 /// Gets the duration of the automation in either frames or seconds.
-Number duration
+@Number duration
 // Gets/Sets whether the automation is looped.
 /// When its looped, the automation will start over 
 /// when the animato is done
-Boolean looped 
+@Boolean looped 
 /// Gets/Sets the speed multiplier for the automation.
 /// The default is 1.0.
-Number speed 
+@Number speed 
 /// Pauses resumes the automation.
 func resume ->
 /// Pauses the automation.
@@ -99,23 +104,23 @@ func pause ->
 /// When written to, sets the automation from a string. This removes all 
 /// the existing keyframes and replaces them with the 
 /// the keyframes from the compiled string.
-String string 
+@String string 
 
 /// Returns the vector animated based on the keyframes 
 /// and the given progress within the automation. Progress is 
 /// 0 to 1 but looped.
 func vectorAt -> Topaz.Vector
     /// The progress along the automation.
-    Number progress
+    @Number progress
 
 /// Returns the float animated based on the keyframes 
 /// and the given progress within the automation. Progress is 
 /// 0 to 1 but looped.
 func at -> Number
     /// The progress along the automation.
-    Number progress
+    @Number progress
 /// Returns the current vector value within the automation 
 ///
-Topaz.Vector vector 
+@Topaz.Vector vector 
 /// Returns the value within the automation.
-Number value
+@Number value

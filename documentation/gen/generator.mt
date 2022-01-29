@@ -98,7 +98,8 @@
         symbolTable.setTypeHint(hint:'func',            type:symbolTable.type.FUNCTION);
         symbolTable.setTypeHint(hint:'structure',       type:symbolTable.type.OPEN_STRUCTURE);
         symbolTable.setTypeHint(hint:'singleton',       type:symbolTable.type.SINGLETON);
-        symbolTable.setTypeHint(hint:' ',                type:symbolTable.type.VARIABLE);
+        symbolTable.setTypeHint(hint:'@',               type:symbolTable.type.VARIABLE);
+        symbolTable.setTypeHint(hint:'inherits',        type:symbolTable.type.INHERITS);
 
         symbolTable.setSymbolExtractor(format:'DOCPAGE[%]', type:symbolTable.type.DOCPAGE); 
         symbolTable.setSymbolExtractor(format:'func[%]->', type:symbolTable.type.FUNCTION); 
@@ -107,13 +108,16 @@
         symbolTable.setSymbolExtractor(format:'singleton[%]', type:symbolTable.type.SINGLETON); 
         symbolTable.setSymbolExtractor(format:'enum[%]', type:symbolTable.type.ENUMERATOR); 
         symbolTable.setSymbolExtractor(format:'eval[%]', type:symbolTable.type.ENUM_VALUE); 
-        symbolTable.setSymbolExtractor(format:' [%] [%]', type:symbolTable.type.VARIABLE, groupIndex:1); 
+        symbolTable.setSymbolExtractor(format:'@[%] [%]', type:symbolTable.type.VARIABLE, groupIndex:1); 
         symbolTable.setSymbolExtractor(format:'func object [%]', type:symbolTable.type.FUNCTION_POINTER); 
         symbolTable.setSymbolExtractor(format:'#define [%]', type:symbolTable.type.MACRO);
+        symbolTable.setSymbolExtractor(format:'[%] ', type:symbolTable.type.INHERITS);
 
         symbolTable.setReturnObjectExtractor(format:'->[%]', type:symbolTable.type.FUNCTION);
-        symbolTable.setReturnObjectExtractor(format:'[%] ', type:symbolTable.type.VARIABLE);
+        symbolTable.setReturnObjectExtractor(format:'@[%] ', type:symbolTable.type.VARIABLE);
         symbolTable.setReturnObjectExtractor(format:'[%] ', type:symbolTable.type.FUNCTION_POINTER);
+        symbolTable.setReturnObjectExtractor(format:'inherits[%]', type:symbolTable.type.INHERITS);
+
 
         symbolTable.setObjectExtractor(format:' [%]');
       }
@@ -125,6 +129,19 @@
 
     @:doc = gendoc.createDoc();
     @navlistContent = '';
+    
+    @:removeLeadingSpace ::(str) {
+        loop(func:::{
+            when(str == empty) false;
+            @fc = String.charAt(string:str, index:0);
+            when(fc == ' ' || fc == '\r' || fc == '\n' || fc == '\t') ::<= {
+                str = String.substr(string:str, from:1, to:String.length(of:str)-1);
+                return true;
+            };
+            return false;
+        });    
+        return if (str == empty) '' else str;
+    };
 
     @data2doc = ::(filename) {
         @text = Topaz.Resources.loadAsset(extension:'txt', path:filename, name:filename).string;
@@ -150,7 +167,8 @@
             @:templsp = startsSpace;
             startsSpace = String.search(string:doclineContent, key:' ') == 0;
             if (startsSpace)
-                doclineContent = String.replace(string:doclineContent, keys:[' ', '\r', '\n', '\t'], with:'');
+                doclineContent = removeLeadingSpace(str:doclineContent);
+                //doclineContent = String.replace(string:doclineContent, keys:[' ', '\r', '\n', '\t'], with:'');
 
             docline = String.search(string:doclineContent, key:'///') == 0;
             doclineContent = String.replace(string:doclineContent, key:'///', with:'');
@@ -257,8 +275,8 @@
             // Get the parent symbol
             @parent = symbolRef;
             loop(func:::{
-                when(!(parent != empty && parent.parent != empty)) false;
-                parent = symbolTable.getSymbol(symbolName:symbolRef.parent);                
+                when(parent.parent == '') false;
+                parent = symbolTable.getSymbol(symbolName:parent.parent);    
                 return true;            
             });
 
@@ -503,12 +521,23 @@
                     tag:'h1',
                     attribs:'id="'+symbols[i].name+'"'
                 );
+                for(in:[0, Object.length(of:symbols[i].children)], do:::(m) {
+                    @child = symbolTable.getChildSymbol(symbol:symbols[i], childIndex:m);
+                    if (child.type == symbolTable.type.INHERITS) ::<= {
+                        block = block+doc.createElement(
+                            content:'- inherits from: ' + linkObject(doc:doc, objectString:child.returns),
+                            tag:'i'
+                        );                
+                    };
+                });
+
+                
 
                 block = block + doc.createElement(
                     content:symbols[i].desc + '',    
                     tag:'pre'
                 );
-
+                
 
 
 

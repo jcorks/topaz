@@ -26,18 +26,18 @@ func [constructor] ->
     ///
     /// In the case that there are 3 arguments, this is interpreted as the x component 
     /// value.
-    Object stringOrXNumber
+    @Object stringOrXNumber
 
     /// The y component value
-    Number Y
+    @Number Y
     /// The z component value
-    Number Z
+    @Number Z
 
 /// Returns the distance of this vector to the other vector.
 ///
 func getDistance -> Number
     /// The second positional vector.
-    Topaz.Vector other 
+    @Topaz.Vector other 
 
 /// Sets the vector to a magnitude of 1. 
 func normalize -> 
@@ -46,7 +46,7 @@ func normalize ->
 ///
 func cross -> Topaz.Vector
     /// Vector B
-    Topaz.Vector b
+    @Topaz.Vector b
 
 /// Sets the X Y Z to integer values.
 ///
@@ -56,18 +56,18 @@ func floor ->
 /// by the specified degrees about the center
 func rotateX -> 
     /// The amount to rotate in degrees.
-    Number amt
+    @Number amt
 
 /// Returns the YZ angle between the 2
 /// vectors in relation to the origin in degrees
 func rotationXDiff -> Number 
     /// The positional vector to measure to.
-    Topaz.Vector other 
+    @Topaz.Vector other 
 /// Returns the angle between the 2
 /// vectors in relation to this in degrees
 func rotationXDiffRelative -> Number 
     /// The positional vector to measure to.
-    Topaz.Vector other 
+    @Topaz.Vector other 
 /// Returns the angle of the vector in degrees about the X axis
 ///
 /// If a vector has length zero in these dimensions
@@ -81,18 +81,18 @@ func rotationX -> Number
 /// by the specified degrees about the center
 func rotateY -> 
     /// The amount to rotate in degrees.
-    Number amt
+    @Number amt
 /// Returns the zx angle between the 2
 /// vectors in relation to the origin in degrees
 func rotationYDiff -> Number 
     /// The positional vector to measure to.
-    Topaz.Vector other 
+    @Topaz.Vector other 
 
 /// Returns the angle between the 2
 /// vectors in relation to this in degrees
 func rotationYDiffRelative -> Number 
     /// The positional vector to measure to.
-    Topaz.Vector other 
+    @Topaz.Vector other 
 /// Returns the angle of the vector about the Y axis in degrees
 ///
 /// If a vector has length zero in these dimensions
@@ -105,18 +105,18 @@ func rotationY -> Number
 /// by the specified degrees about the center
 func rotateZ ->
     /// The amount to rotate in degrees. 
-    Number amt
+    @Number amt
 
 /// Returns the XY angle between the 2
 /// vectors in relation to the origin in degrees
 func rotationZDiff -> Number 
     /// The positional vector to measure to.
-    Topaz.Vector other 
+    @Topaz.Vector other 
 /// Returns the angle between the 2
 /// vectors in relation to this in degrees
 func rotationZDiffRelative -> Number 
     /// The positional vector to measure to.
-    Topaz.Vector other 
+    @Topaz.Vector other 
 /// Returns the angle of the vector about the Z axis in degrees
 /// These deals with angles between the x and y axes.
 /// XY is most useful for 2D angles and transformations.
@@ -130,11 +130,11 @@ func rotationZ -> Number
 
 /// Returns the length of the vector.
 /// Write-only.
-Number length 
+@Number length 
 
 /// Sets/Gets the x component of the vector.
-Number x 
+@Number x 
 /// Sets/Gets the y component of the vector.
-Number y 
+@Number y 
 /// Sets/Gets the z component of the vector.
-Number z
+@Number z

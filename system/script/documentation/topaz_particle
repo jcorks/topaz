@@ -6,33 +6,33 @@ class Topaz.Particle
 
 /// Modifies a render parameter.
 ///
-func setAttribute
+func setAttribute ->
     /// Determines how to interpret the next value.
     /// If PRIMITIVE, val is expected to be a value within TOPAZ.RENDERER.PRIMITIVE
     /// If ALPHA_RULE, val is expected to be a value within TOPAZ.RENDERER.ALPHA_RULE
     /// If DEPTH_TEST, val is expected to be a value within TOPAZ.RENDERER.DEPTH_TEST
     /// If ETCH_RULE,  val is expected to be a value within TOPAZ.RENDERER.ETCH_RULE 
     /// if TEXTURE_FILTER_HINT, val is expected to be a value within TOPAZ.RENDERER.TEXTURE_FILTER_HINT
-    TOPAZ.RENDERER.ATTRIBUTE param 
+    @TOPAZ.RENDERER.ATTRIBUTE param 
 
     /// The new value. How its interpreted depends on param.
-    Int val 
+    @Int val 
 
 /// The minimum value for the attribute to start.
 ///
 func setNoiseMin ->
     /// The property to modify.
-    TOPAZ.PARTICLE.PROPERTY p 
+    @TOPAZ.PARTICLE.PROPERTY p 
     /// The value to set.
-    Number val 
+    @Number val 
 
 /// The maximum value for the attribute to start.
 ///
 func setNoiseMax ->
     /// The property to modify.
-    TOPAZ.PARTICLE.PROPERTY p 
+    @TOPAZ.PARTICLE.PROPERTY p 
     /// The value to set.
-    Number val 
+    @Number val 
 
 /// Sets how the particle property modifies its value over 
 /// its duration. animString is expected to be output from
@@ -40,16 +40,16 @@ func setNoiseMax ->
 /// how the value changes from the start of its life to the end.
 func setFunction -> 
     /// The property to modify.
-    TOPAZ.PARTICLE.PROPERTY p 
+    @TOPAZ.PARTICLE.PROPERTY p 
     /// The automation state string.
-    String automationString
+    @String automationString
 
 /// When read, returns string representation of the particle's
 /// state, allowing for saving / loading the state of the particle.
 /// When written, sets the particle specification from a string.
 /// This string is assumed to have come from a
 /// previously read particle string.
-String string 
+@String string 
 
 /// Sets the base image to use for the particle.
-Topaz.Image image
+@Topaz.Image image

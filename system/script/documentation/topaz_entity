@@ -18,10 +18,10 @@ class Topaz.Entity
 
 /// Returns whether this instance is valid or not.
 ///
-Boolean isValid
+@Boolean isValid
 
 /// The number of child entities.
-Int childCount
+@Int childCount
 
 /// Returns all child entities
 ///
@@ -31,7 +31,7 @@ Int childCount
 ///
 /// The Array may be set with a new Array containing the new children
 /// to attach.
-Array children
+@Array children
 
 
 /// Updates this entity, all child entities, and components.
@@ -49,7 +49,7 @@ func draw ->
 func attach ->
 
     /// The child entity.
-    Topaz.Entity child
+    @Topaz.Entity child
 
 /// Detaches the entity from its parent.
 ///
@@ -58,7 +58,7 @@ func detach ->
 
 /// Sets the parent entity. This will 
 /// automatically detach / attach the entities involved.
-Topaz.Entity parent
+@Topaz.Entity parent
 
 /// Returns the first child entity with the given name.
 /// Only the immediate children are checked.
@@ -66,7 +66,7 @@ Topaz.Entity parent
 func query -> Topaz.Entity
 
     /// The name to search.
-    String name
+    @String name
     
     
 /// Returns the first child entity with the given name, but 
@@ -75,13 +75,13 @@ func query -> Topaz.Entity
 func search -> Topaz.Entity 
 
     /// The name to search.
-    String name 
+    @String name 
     
 /// Sets / Gets the priority.
 /// Priority determines the order in which this
 /// entity is updated. A lower priority means it will be drawn and updated earlier.
 /// It is undefined which entity is updated first if both have the same priority.
-Int priority
+@Int priority
 
 /// Sends the entity to be the first entity to be updated.
 ///
@@ -92,76 +92,124 @@ func setPriorityFirst ->
 func setPriorityLast ->
 
 /// Sets / Gets the rotation of the entity.
-Topaz.Vector rotation
+@Topaz.Vector rotation
 
 /// Sets / Gets the position of the entity.
-Topaz.Vector position
+@Topaz.Vector position
 
 /// Sets / Gets the scale of the entity.
-Topaz.Vector scale
+@Topaz.Vector scale
 
 /// Gets the global position of the entity.
-Topaz.Vector globalPosition
+@Topaz.Vector globalPosition
 
 /// Returns wether or not the Engine is handling calling Step() automatically,
 /// taking Into account the Entity's hierarchy.
 /// (Read-only)
 ///
-Boolean isStepping 
+@Boolean isStepping 
 
 /// Returns wether or not the Engine is handling calling Draw() automatically,
 /// taking Into account the Entity's hierarchy.
 ///
-Boolean isDrawing 
+@Boolean isDrawing 
 
 /// Whether the engine should call Step() automatically for this entity.
 /// Note that topaz_entity_step() calls also manage components and child entities.
 /// The default is true.
 ///
-Boolean stepping 
+@Boolean stepping 
 
 /// Whether the engine should call Draw() automatically for this entity.
 /// Note that topaz_entity_draw() calls also manage components and child entities.
 /// The default is true.
 ///
-Boolean drawing
+@Boolean drawing
 
 /// Sets/Gets the name of the entity.
 ///
-String name
+@String name
+
+/// Removes the entity. After this call, uses of the entity will be invalid.
+///
+func remove ->
+
+
+/// Returns the n'th child Entity.
+///
+func nthChild -> Topaz.Entity
+
+    /// The index to query.
+    ///
+    @Int n    
 
 /// Attaches a component to this entity.
 ///
 /// Once attached, the component's
 /// Step and Draw functions will be called before this entity's Step and Draw.
 /// 
-func addComponent -> 
+func add -> 
 
     /// The component to add to the entity.
-    Topaz.Component component
+    @Topaz.Component component
 
 /// Same addComponent, but the component is updated 
 /// after this entity's step and draw functions.
-func addComponentAfter -> 
+func addAfter -> 
 
     /// The component to add to the entity.
-    Topaz.Component component
+    @Topaz.Component component
 
 /// If read, returns an Array of all attached components.
 /// If written to, removes all current components and 
 /// instead attaches all the given components.
-Array components
+@Array components
 
 
 /// Returns the first component with the given tag.
 func queryComponent -> Topaz.Component
 
     /// The tag to search within the entity.
-    String tag
+    @String tag
     
     
 /// Removes the given component from the entity.
 ///
-func removeComponent -> 
+func remove -> 
     /// The component to remove.
-    String componennt
+    @String component
+    
+    
+    
+    
+/// The function to run every step.
+///
+@Function onStep
+
+/// The function to run every draw frame.
+///
+@Function onDraw
+
+/// The function to run before every step.
+///
+@Function onPreStep
+
+/// The function to run before every draw frame
+///
+@Function onPreDraw
+
+/// The function to run when attaching this entity to a parent.
+///
+@Function onAttach
+
+
+/// The function to run when detaching this entity to a parent.
+///
+@Function onDetach
+
+
+/// The function to run when this entity is removed.
+///
+@Function onRemove
+
+

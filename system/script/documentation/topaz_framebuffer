@@ -4,11 +4,11 @@ class Topaz.Framebuffer
 
 /// Returns the width of the framebuffer.
 /// Read-only.
-Int width
+@Int width
 
 /// Returns the height of the framebuffer.
 /// Read-only.
-Int height 
+@Int height 
 
 
 /// Sets whether to interpret the Framebuffer's data
@@ -24,12 +24,12 @@ Int height
 /// to be a purely cosmetic effect after all graphics processing as finished. 
 /// The default is true. This does not affect the retrieval of raw data through capturing.
 ///
-Boolean filteredHint
+@Boolean filteredHint
 
 
 /// Changes the size of the framebuffer manually.
 func resize ->
     // New width for the framebuffer 
-    Int width 
+    @Int width 
     // New height for the framebuffer
-    Int height
+    @Int height

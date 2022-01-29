@@ -66,7 +66,7 @@ func draw ->
 func attachPreManager ->
     
     /// The entity to become a manager.
-    Topaz.Entity ent
+    @Topaz.Entity manager
 
 
 
@@ -76,7 +76,7 @@ func attachPreManager ->
 func attachPreManagerUnpausable ->
 
     /// The entity to become a manager.
-    Topaz.Entity ent
+    @Topaz.Entity manager
 
 
 /// Same as topaz_context_attach_pre_manager, but the manager is updated 
@@ -85,7 +85,7 @@ func attachPreManagerUnpausable ->
 func attachPostManager -> 
 
     /// The entity to become a manager.
-    Topaz.Entity ent
+    @Topaz.Entity manager
 
 /// Same as topaz_context_attach_post_manager, but the manager is updated 
 /// even when the paused state is entered
@@ -93,7 +93,7 @@ func attachPostManager ->
 func attachPostManagerUnpausable ->
 
     /// The entity to become a manager.
-    Topaz.Entity ent
+    @Topaz.Entity manager
 
 
 /// Ends the context execution loop.
@@ -107,7 +107,7 @@ func quit ->
 func wait ->
     
     /// The target updates per second.
-    Int FPS
+    @Int FPS
 
 
 
@@ -119,10 +119,10 @@ func wait ->
 func log -> 
 
     /// The string to print.
-    String str 
+    @String message 
     
     /// Whether to add a newline. (Optional)
-    Boolean newline
+    @Boolean newline
 
 
 /// Given an array of byte (0-255) values, a base64-formatted
@@ -130,7 +130,7 @@ func log ->
 func toBase64 -> string
 
     /// The bytes to convert.
-    Array inputBytes
+    @Array bytes
     
     
     
@@ -140,13 +140,18 @@ func toBase64 -> string
 func fromBase64 -> Topaz.Data
     
     /// The string to convert.
-    String base64
+    @String base64
     
 
 
-///  returns whether the engine is in a paused or broken state.
-///
-boolean isPaused
+/// Pauses the engine's execution at the current scripting 
+/// calling context and enables the debugger. The debugger is 
+/// accessible via console.
+func debug ->
+
+/// Enables console interaction with the current script context
+func enableConsole ->
+
 
 
 /// Gets/sets the toplevel Entity. 
@@ -157,50 +162,60 @@ boolean isPaused
 /// From this entity, all other entities will be updated.
 /// topaz handles entities in a hierarchical structure,
 /// so the root must be populated and managed.
-Topaz.Entity root
+@Topaz.Entity root
 
+
+
+///  returns whether the engine is in a paused or broken state.
+///
+@Boolean isPaused
 
 /// Gets the number of milliseconds since creating this context.
 ///
-number time
+@Number time
 
 
 /// Sets whether groups should interact. By default, only Group A interacts with Group A
 ///
-func Topaz.Object2D.setGroupInteraction
+func setGroupInteraction ->
     /// First interaction group.
-    TOPAZ.OBJECT2D.GROUP firstGroup
+    @TOPAZ.OBJECT2D.GROUP groupA
     /// Other interaction group.
-    TOPAZ.OBJECT2D.GROUP otherGroup
+    @TOPAZ.OBJECT2D.GROUP groupB
     /// Whether to interact.
-    Boolean interact
+    @Boolean interact
 
 /// The micro version number for topaz.
-int versionMicro
+@Int versionMicro
 
 /// The major version number for topaz.
-int versionMajor 
+@Int versionMajor 
 
 /// The minor version number for topaz.
-int versionMinor
+@Int versionMinor
 
 
 
 
 /// Singleton for Filesystem-related tools.
-Topaz.Filesystem </br>
+@Topaz.Filesystem </br>
 
 /// Singleton for Input-related symbols.
-Topaz.Input </br>
+@Topaz.Input </br>
 
 /// Singleton for Audio-related symbols.
-Topaz.Audio </br>
+@Topaz.Audio </br>
 
 /// Singleton for Resource-related symbols.
-Topaz.Resources </br>
+@Topaz.Resources </br>
 
 /// Singleton for FontManager-related symbols.
-Topaz.FontManager </br>
+@Topaz.FontManager </br>
+
+/// Singleton for ViewManager-related symbols.
+@Topaz.ViewManager </br>
+
+
 
 
 

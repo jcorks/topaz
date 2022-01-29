@@ -11,16 +11,16 @@ class Topaz.RNG
 ///
 func [constructor] ->
     /// Optional string use as a seed.
-    String seed
+    @String seed
 
 /// Sets the seed for the random number generator.
 /// Write-only.
-String seed
+@String seed
 
 /// Gets the next random integer from the RNG
 /// Read-only.
-Int integer
+@Int integer
 
 /// Gets the next random number from the RNG on the range [0, 1).
 /// Read-only.
-Number value
+@Number value

@@ -1,13 +1,13 @@
-/// Inherits from Topaz.Component
-///
 /// Allows for running of functions at regular intervals.
 class Topaz.Scheduler
+    ///
+    inherits Topaz.Component
 
 
 /// The constructor requires a mode.
 func [constructor] ->
     /// The mode to use.
-    TOPAZ.SCHEDULER.MODE mode
+    @TOPAZ.SCHEDULER.MODE mode
 
 
 /// Assigns a new task for the scheduler to process. Once 
@@ -37,7 +37,7 @@ func [constructor] ->
 /// The name of the task is always returned.
 func startTask -> String
     /// The argument map containing the task's properties.
-    Object args
+    @Object args
 
 
 
@@ -47,27 +47,27 @@ func startTask -> String
 ///
 func endTask ->
     /// The name of the task to remove. 
-    String taskName
+    @String taskName
 
 /// Stops processing and timing of tasks until topaz_scheduler_resume() is called.
 ///
 func pause ->
     /// The scheduler to pause.
-    String taskName
+    @String taskName
 
 /// Resumes processing of tasks once more. If the scheduler was not 
 /// paused, no action is taken.
 func resume ->
     /// The scheduler to resume.
-    String taskName 
+    @String taskName 
 
 
 /// Gets the interval amount before the task interval
 /// is next complete.
 func getTaskIntervalRemaining -> Number 
     /// The name of the task to query.
-    String taskName 
+    @String taskName 
 
 /// Returns an array of the names of all tasks currently running.
 /// 
-Array tasks
+@Array tasks

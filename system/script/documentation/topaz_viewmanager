@@ -11,9 +11,9 @@ singleton Topaz.ViewManager
 /// Gets/Sets the given display as the one to update and draw to.
 /// NULL is accepted, and will result in no display being updated.
 ///
-Topaz.Display mainDisplay
+@Topaz.Display mainDisplay
 
 /// Gets/Sets the current main display's clipboard contents
 /// as a string. On most systems, there is only one 
 /// clipboard for the system.
-String clipboard
+@String clipboard

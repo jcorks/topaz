@@ -61,19 +61,19 @@ enum TOPAZ.PARTICLE.PROPERTY
 /// See Topaz.Automation.
 enum TOPAZ.AUTOMATION.FUNCTION
     /// The value instantaneously becomes the end value.
-    NONE
+    eval NONE
     /// The value linearly becomes the end value.
-    LINEAR
+    eval LINEAR
     /// The value follows a bezier curve, where the value starts slow then accelerates to the end value.
-    ACCEL
+    eval ACCEL
     /// The value follows a bezier curve, where the value starts quickly then slows.
-    SLOW
+    eval SLOW
     /// The value follows a bezier curve, where the value starts slow then accelerates to the end value, but more mildly.
-    SOFT_ACCEL
+    eval SOFT_ACCEL
     /// The value follows a bezier curve, where the value starts quickly then slows, but more mildly.
-    SOFT_SLOW
+    eval SOFT_SLOW
     /// The value becomes any value between begin and end when it is re-sampled.
-    RANDOM
+    eval RANDOM
 
 
 /// Enumerator of all possible collision groups available for use 

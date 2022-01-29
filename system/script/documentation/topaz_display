@@ -19,28 +19,28 @@ func destroy ->
 ///    
 func resize ->
     /// The new width.
-    Int width
+    @Int width
     /// The new height.
-    Int height
+    @Int height
 
 /// Adds an additional callback function to be called 
 func addParameterCallback -> Int
     /// The callback to add.
-    Function callback
+    @Function callback
     
     
 /// Gets a parameter from the display.
 func getParameter -> Int
     /// The parameter to retrieve.
-    TOPAZ.DISPLAY.PARAMETER parameter
+    @TOPAZ.DISPLAY.PARAMETER parameter
 
 
 /// Sets a parameter from the display.
 func setParameter -> Int
     /// The parameter to modify.
-    TOPAZ.DISPLAY.PARAMETER parameter
+    @TOPAZ.DISPLAY.PARAMETER parameter
     /// The new value for the parameter.
-    Int value
+    @Int value
 
 /// Adds an additional callback function to be called after
 /// the occurance of a closing event.
@@ -52,46 +52,46 @@ func setParameter -> Int
 ///
 func addCloseCallback -> Int
     /// The callback to add.
-    Function callback
+    @Function callback
 
 /// Removes the callback by id.
 ///
 func removeCallback ->
     /// The callback to remove.
-    Int callbackID
+    @Int callbackID
 
 
 
 
 /// Returns the width of the display.
 /// Read-only.
-Int width
+@Int width
 
 /// Returns the height of the display.
 /// Read-only.
-Int height
+@Int height
 
 
 /// Gets the framebuffer specified.
 func getFramebuffer -> Topaz.Framebuffer 
     /// The framebuffer to get.
-    TOPAZ.DISPLAY.FRAMEBUFFER fb
+    @TOPAZ.DISPLAY.FRAMEBUFFER fb
 
 /// Sets the framebuffer as the main framebuffer. This framebuffer 
 /// is rendered into the display every frame.
 func useFramebuffer -> 
     /// The framebuffer to use.
-    TOPAZ.DISPLAY.FRAMEBUFFER fb
+    @TOPAZ.DISPLAY.FRAMEBUFFER fb
 
 
 /// The current framebuffer in use.
-Topaz.Framebuffer framebuffer
+@Topaz.Framebuffer framebuffer
 
 /// Forces clearing of the results of drawing stored within the current framebuffer.
 ///
 func clearMainFramebuffer ->
     /// What data to clear from the framebuffer
-    TOPAZ.RENDERER.LAYER layer
+    @TOPAZ.RENDERER.LAYER layer
     
     
 /// Gets the contents of the current framebuffer and 
@@ -106,7 +106,7 @@ func clearMainFramebuffer ->
 /// devices. Use sparringly!
 func captureMainFramebuffer -> 
     /// The image to populate.
-    Topaz.Image capture
+    @Topaz.Image capture
 
 
 
@@ -114,10 +114,10 @@ func captureMainFramebuffer ->
 /// used for 2d operations. This camera is used when the display is set as 
 /// the main display. see topazViewManager_t
 /// Read-only.
-Topaz.Entity camera2d
+@Topaz.Entity camera2d
 
 /// Retrieves the camera associated with the display thats 
 /// used for 3d operations. This camera is used when the display is set as 
 /// the main display. see topazViewManager_t
 /// Read-only.
-Topaz.Entity camera3d
+@Topaz.Entity camera3d

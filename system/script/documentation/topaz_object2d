@@ -1,8 +1,8 @@
-/// Inherits from Topaz.Component
-///
 /// Provides simple, physics-like behavior to objects, allowign for 
 /// collisions and velocity control.
 class Topaz.Object2D
+    ///
+    inherits Topaz.Component
 
 /// Compounds a velocity vector with the current velocity
 /// factor is the velocity amount to add. Can be negative.
@@ -10,22 +10,22 @@ class Topaz.Object2D
 ///
 func addVelocity ->
     /// The velocity amount to add.
-    Number factor
+    @Number factor
     /// The direction to add it in, in degrees. 
-    Number directionDegrees
+    @Number directionDegrees
 
 /// Same as topaz_object2d_add_velocity, but the direction is toward a 
 /// global position.
 /// factor is the amount of speed to add in that direction.
 /// directionOffset is how much to offset the direction from.
 ///
-func addVelocityTowards
+func addVelocityTowards ->
     /// The velocity amount to add.
-    Number factor 
+    @Number factor 
     /// The position vector to add velocity towards, determining the direction to add velocity.
-    Topaz.Vector position
+    @Topaz.Vector position
     /// The offset from that positional direction.
-    Number directionOffset
+    @Number directionOffset
 
 
 /// Sets the current velocity
@@ -34,38 +34,38 @@ func addVelocityTowards
 ///
 func setVelocity ->
     /// The velocity amount to add.
-    Number factor
+    @Number factor
     /// The direction to add it in, in degrees. 
-    Number directionDegrees
+    @Number directionDegrees
 
 /// Same as SetVelocity, but the direction is toward a 
 /// global position.
 ///
 func setVelocityTowards ->
     /// The velocity amount to add.
-    Number factor 
+    @Number factor 
     /// The position vector to add velocity towards, determining the direction to add velocity.
-    Topaz.Vector position
+    @Topaz.Vector position
     /// The offset from that positional direction.
-    Number directionOffset
+    @Number directionOffset
 
 /// Gets/Sets the amount of resistance to speed measured as a percentile of the speed per update.
 /// Every frame, only the amount percent of the host entity's velocity is retained. For example,
 /// if friction is specified to be .05, every frame 5% of the Entity's speed will be lost.
 /// This is applied in the horizontal direction.
 ///
-Number frictionX 
+@Number frictionX 
 /// Gets/Sets the amount of resistance to speed measured as a percentile of the speed per update.
 /// Every frame, only the amount percent of the host entity's velocity is retained. For example,
 /// if friction is specified to be .05, every frame 5% of the Entity's speed will be lost.
 /// This is applied in the vertical direction.
 ///
-Number fractionY
+@Number fractionY
 
 
 /// Sets/Gets the current direction that the entity is traveling in degrees.
 ///
-Number direction
+@Number direction
 
 /// Reduces the speed of the Entity to 0.
 ///
@@ -80,35 +80,35 @@ func resetMotion ->
 
 /// Sets/Gets the horizontal component of the current velocity.
 ///
-Number velocityX
+@Number velocityX
 
 /// Sets/Gets the vertical component of the current velocity.
 ///
-Number velocityY
+@Number velocityY
 
 /// Returns the position of the Entity after another frame of movement.
 /// Read-only.
-Topaz.Vector nextPosition
+@Topaz.Vector nextPosition
 
 /// Sets/Gsets the object's collision group. The default is Group A.
 ///
-Topaz.Object2D.Group group
+@Topaz.Object2D.Group group
 
 /// If set, creates a collider from a collection of Topaz.Vector 2D point coordinates
 /// It is assumed that the polygon is formed by making lines between these points 
 /// in the order presented within the array. It is assumed that the center of the object 
 /// is at 0, 0. When read, the collider points are returned.
 ///
-Array collider
+@Array collider
 
 /// Creates a radial collider about 0, 0 with the given radius and 
 /// number of sides.
 /// Modifies the collider attribute.
 func setColliderRadial ->
     /// The radius of the new collider.
-    Number radius
+    @Number radius
     /// The number of sides of the collider.
-    Number numIters
+    @Number numIters
 
 /// Returns the last entity that collided with this one.
-Topaz.Entity lastCollided
+@Topaz.Entity lastCollided

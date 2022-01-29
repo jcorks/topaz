@@ -13,15 +13,15 @@ singleton Topaz.Audio
 ///
 func playSound -> Topaz.Audio.PlaybackSound
     /// The sound to play.
-    Topaz.Sound asset 
+    @Topaz.Sound asset 
     /// Optional: The channel to play the sound on. 
     /// If not specified, channel 0 is chosen.
-    Int channel
+    @Int channel
 
 /// Stops all sounds currently playing on a channel.
 func channelHalt ->
     /// The channel to to modify.
-    Int channel 
+    @Int channel 
 
 /// Sets the volume for the given channel
 /// 0.f denotes minimum volume and 1.f maximum.
@@ -29,17 +29,17 @@ func channelHalt ->
 ///
 func channelSetVolume ->
     /// The channel to to modify.
-    Int channel 
+    @Int channel 
     /// The amount, from 0 to 1. Will be clamped.
-    Number volume
+    @Number volume
 
 
 /// Sets the panning for the entire channel.
 /// 0.f denotes all the way to the left and 1.f all the way to the right.
 /// The values are clipped if they are beyond these bounds.
 ///
-func channelSetPanning
+func channelSetPanning ->
     /// The channel to to modify.
-    Int channel 
+    @Int channel 
     /// The amount, from 0 to 1. Will be clamped.
-    Number panning
+    @Number panning

@@ -17,7 +17,7 @@ singleton Topaz.Resources
 /// can be used to refer to the asset.
 func createAsset -> Topaz.Asset
     /// The asset type.
-    TOPAZ.ASSET.TYPE type 
+    @TOPAZ.ASSET.TYPE type 
 
 
 /// Either creates a new asset if the given name doesn't exist, or 
@@ -30,9 +30,9 @@ func createAsset -> Topaz.Asset
 /// 
 func fetchAsset -> Topaz.Asset 
     /// The asset type.
-    TOPAZ.ASSET.TYPE type 
+    @TOPAZ.ASSET.TYPE type 
     /// The unique name of the asset.
-    String name 
+    @String name 
 
 
 /// Convenience function that attempts to load a new asset 
@@ -61,11 +61,11 @@ func fetchAsset -> Topaz.Asset
 ///
 func loadAsset -> Topaz.Asset 
     /// The extension / filetype to attempt to read with. i.e. 'png'
-    String extension 
+    @String extension 
     /// The path to the asset.
-    String path
+    @String path
     /// The unique name to give to the asset.
-    String name 
+    @String name 
 
 /// Equivalent to topaz_resources_load_asset, except instead of reading 
 /// from the filsystem, raw byte data is read instead. Each member of 
@@ -73,11 +73,11 @@ func loadAsset -> Topaz.Asset
 ///
 func loadAssetData -> Topaz.Asset 
     /// The extension / filetype to attempt to read with. i.e. 'png'
-    String extension 
+    @String extension 
     /// The raw data for the asset. Read as if contiguous bytes.
-    Array bytes
+    @Array bytes
     /// The unique name to give to the asset.
-    String name 
+    @String name 
 
 /// Equivalent to topaz_resources_load_asset, except instead of reading
 /// from the filesystem, raw byte data is generated from an encoded
@@ -85,37 +85,37 @@ func loadAssetData -> Topaz.Asset
 ///
 func loadAssetBase64 -> Topaz.Asset
     /// The extension / filetype to attempt to read with. i.e. 'png'
-    String extension
+    @String extension
     /// The raw data for the asset. Read as a base64 string.
-    String base64
+    @String base64
     /// The unique name to give to the asset.
-    String name 
+    @String name 
 
 /// Writes an asset to the filesystem at the outputpath 
 /// given relative to the resources path.
 ///
 func writeAsset -> Boolean
     /// The asset to write.
-    Topaz.Asset asset
+    @Topaz.Asset asset
     /// The type to write the asset as.
-    String extension 
+    @String extension 
     /// The output path to write to. This is system-dependent based on the filesystem backend.
     /// See Topaz.Filesystem for more information.
-    String path 
+    @String path 
 
 /// Removes the asset by name.
 func removeAsset -> 
     /// Name of the asset to remove.
-    String name 
+    @String name 
 
 /// Returns whether a particular file extension is supported.
 ///
 func isExtensionSupport -> Boolean 
     /// The name of the file extension / type to request.
-    String ext
+    @String ext
 
 /// Current path for reading / writing operations. In cases where 
 /// a partial path is given when using resource features 
 /// that references the database, this path will be assumed 
 /// to be the "current directory".
-String path
+@String path

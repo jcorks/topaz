@@ -13,7 +13,7 @@ func registerFont ->
     /// The name of the asset that contains the raw font data, specific 
     /// to the backend. The asset type needs to be 
     /// a raw data asset.
-    String assetName 
+    @String assetName 
 
 
 /// Convenience function to get tell the font renderer 
@@ -22,13 +22,13 @@ func registerFont ->
 /// This can speed up processing time when first displaying characters.
 func preloadGlyphs ->
     /// The name of the font to preload.
-    String fontName
+    @String fontName
     /// The size of the font to preload.
-    Int sizeRequest 
+    @Int sizeRequest 
     /// A string of characters to preload.
-    String characters
+    @String characters
 
 /// Removes the font from the manager by name.
 func unregisterFont -> 
     /// The name of the font to remove.
-    String fontName
+    @String fontName

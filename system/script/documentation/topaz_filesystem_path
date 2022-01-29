@@ -8,14 +8,14 @@ class Topaz.Filesystem.Path
 /// Gets a string representing the path.
 /// For most filesystems, this is a "fully qualified" path.
 /// Read only.
-String string
+@String string
 
 /// Gets the parent filesystem path of the given path. 
 /// If none, undefined is returned.
 /// Read only.
-Topaz.Filesystem.Path parent 
+@Topaz.Filesystem.Path parent 
 
 /// Gets an Array of path objects that are 
 /// immediate children of this object. If there are 
 /// none, an empty array is returned.
-Array children
+@Array children

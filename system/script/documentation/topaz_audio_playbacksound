@@ -7,26 +7,26 @@ class Topaz.Audio.PlaybackSound
 
 /// Sets the volume for a sound 
 /// Write-only.
-Number volume
+@Number volume
 
 /// Sets the panning for a sound.
 /// It will be clamped on 0 to 1.
 /// Write-only.
-Number panning 
+@Number panning 
 
 /// Sets whether to repeat. Default is not to.
 /// Write-only.
-Boolean repeatSound
+@Boolean repeatSound
 
 /// Sets whether to pause. Default is not to.
 /// Write-only.
-Boolean paused
+@Boolean paused
 
 /// Sets the position in the sound to play from.
 /// Default starts at 0 and will continually increase 
 /// to 1. Seeking to 1 will halt the sound.
 /// Write-only.
-Number seek
+@Number seek
 
 ///  Halts the sound.
 func stop ->

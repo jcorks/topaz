@@ -39,7 +39,7 @@ func addKeyboardListener -> Int
     ///     input. The value may or may not be changed. (some implementations
     ///     may post new events to the device, but the value could be the same
     ///     even when this happens)
-    Object listenerMap 
+    @Object listenerMap 
 
 /// Adds a new listener object for the pointer, calling the given 
 /// functions when the relevant event is detected. 
@@ -73,7 +73,7 @@ func addPointerListener -> Int
     ///     input. The value may or may not be changed. (some implementations
     ///     may post new events to the device, but the value could be the same
     ///     even when this happens)
-    Object listenerMap 
+    @Object listenerMap 
 
 
 /// Adds a new listener object for an input pad, calling the given 
@@ -108,10 +108,10 @@ func addPadListener -> Int
     ///     input. The value may or may not be changed. (some implementations
     ///     may post new events to the device, but the value could be the same
     ///     even when this happens)
-    Object listenerMap 
+    @Object listenerMap 
 
     /// The pad index to listen to.
-    Int padID
+    @Int padID
 
 
 /// Adds a new listener object for an mapped input, calling the given 
@@ -146,17 +146,17 @@ func addMappedListener -> Int
     ///     input. The value may or may not be changed. (some implementations
     ///     may post new events to the device, but the value could be the same
     ///     even when this happens)
-    Object listenerMap 
+    @Object listenerMap 
 
     /// The mapped string to listen to. 
-    String mappedName
+    @String mappedName
 
 
 /// Removes an input listener.
 ///
 func removeListener ->
     /// The listener to remove. Expected to be the return value of an addListener() call.
-    Int retval
+    @Int retval
 
 /// Returns the current state of the device input
 /// This is most useful for keyboards. 
@@ -164,7 +164,7 @@ func removeListener ->
 func getState -> Number 
 
     /// The input value to query. Usually of type topazKey. 
-    TOPAZ.INPUT input
+    @TOPAZ.INPUT input
 
 
 /// Returns the current state of the device input for a given pad.
@@ -172,15 +172,15 @@ func getState -> Number
 ///
 func getPadState -> Number 
     /// The pad to query.
-    Int padID 
+    @Int padID 
     /// The input to query.
-    TOPAZ.INPUT input 
+    @TOPAZ.INPUT input 
 
 /// Returns the current state of the device input for a mapped input
 ///
 func getMappedState -> Number 
     /// The mapped name.
-    String mappedInput 
+    @String mappedInput 
 
 
 /// Sets a deadzone for an input, meaning that if an input is detected that is below 
@@ -188,12 +188,12 @@ func getMappedState -> Number
 ///
 func setDeadzone -> 
     /// The pad index to modify.
-    Int padID 
+    @Int padID 
     /// The input key to set a deadzone. Mostly useful for pad axes inputs
-    TOPAZ.INPUT input 
+    @TOPAZ.INPUT input 
     /// The deadzone amount. If an input value's absolute value is 
     /// below this amount, then the input will be ignored.
-    Number deadzone
+    @Number deadzone
 
 
 /// Returns an array of Ints signifying corrently connected 
@@ -232,24 +232,24 @@ func addUnicodeListener -> Object
     /// 8   -> backspace
     ///
     ///
-    Object inputMap
+    @Object inputMap
 
 
 /// Removes an input listener.
 ///
 func removeUnicodeListener -> 
     /// Listener to remove. Expected to be return value from addUnicodeListener()
-    Object retval 
+    @Object retval 
 
 
 /// Convenience getter that returns the current 
 /// position of the mouse (pointer 0) as a 2-dimensional vector.
-Topaz.Vector mouse
+@Topaz.Vector mouse
 
 /// Convenience getter that returns the last change 
 /// of the position of the mouse (pointer 0) as a 2-dimensional vector.
-Topaz.Vector mouseDelta
+@Topaz.Vector mouseDelta
 
 /// Convenience function that returns the current wheel state 
 /// of the mouse (pointer 0).
-Number mouseWheel
+@Number mouseWheel

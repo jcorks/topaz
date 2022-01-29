@@ -1,7 +1,8 @@
-/// Inherits from Topaz.Component
-///
-/// 
+/// Allows for controlling of various frame 
+/// update functions as a state machine.
 class Topaz.StateControl
+    ///
+    inherits Topaz.Component
 
 /// Sets up a new valid state.
 /// If an existing state fo the same name exists, it is updated.
@@ -29,14 +30,14 @@ func add ->
     ///
     /// When called, all mapped functions are given a single argument:
     /// the source state control object to which they belong.
-    Object state 
+    @Object state 
 
 /// Removes the state.
 /// No action is taken if the tag does not refer to a valid state.
 ///
 func remove ->
     /// Name of the state to remove.
-    String name 
+    @String name 
 
 /// Begins the state machine execution loop from the given state.
 /// If begin state does not refer to a valid state, no action is taken.
@@ -45,7 +46,7 @@ func remove ->
 ///
 func execute ->
     /// Name of the state to change to.
-    String name 
+    @String name 
 
 /// Stops all current execution.
 /// If done during a state loop, all remaining state loop functions 
@@ -55,8 +56,8 @@ func halt ->
 
 /// Returns whether or not the machine is in a halted state.
 /// Read-only.
-Boolean isHalted
+@Boolean isHalted
 
 /// Returns the current state tag. If no execution state is active, the empty string is returned.
 /// Read-only.
-String state
+@String state

@@ -24,7 +24,8 @@ return class(
             FUNCTION_POINTER : 7,
             MACRO : 8,
             DOCPAGE : 9,
-            SINGLETON : 10
+            SINGLETON : 10,
+            INHERITS : 11
         };
 
         @:typeToString = ::(type) {
@@ -40,7 +41,8 @@ return class(
               (types.VARIABLE):        "Variable/Parameter",
               (types.FUNCTION_POINTER):"Function Pointer",
               (types.MACRO):           "Macro",
-              (types.DOCPAGE):         "Documentation Page"
+              (types.DOCPAGE):         "Documentation Page",
+              (types.INHERITS):        "Inherits"
             };
         };
         
@@ -85,10 +87,12 @@ return class(
                 returnObject, // what the object returns
                 sourceLine    // original line from which it was extracted
             ) {        
+                if (type != types.INHERITS && name == '') error(detail:'Empty name cannot be added.');
                 @:nameCleaned   = clean(name:name);
                 @:parentCleaned = clean(name:parent);
                 @symbolB       = symbols[nameCleaned];
                 @parentSymbolB = symbols[parentCleaned];
+                
 
                 if (symbolB == empty) ::<= {
                     symbols[nameCleaned] = [];
@@ -118,7 +122,7 @@ return class(
                 symbol.parent = parentCleaned;
                 symbol.source = sourceLine;
 
-                if (symbol.type != types.VARIABLE) 
+                if (symbol.type != types.VARIABLE && symbol.type != types.INHERITS) 
                     symbolB[file] = symbol;
 
                 if (parentSymbol == empty)
@@ -127,7 +131,7 @@ return class(
                 if (files[file] == empty) 
                     files[file] = [];
                 
-                if (symbol.type != types.VARIABLE) 
+                if (symbol.type != types.VARIABLE && symbol.type != types.INHERITS) 
                     Object.push(object:files[file], value:nameCleaned);
             },
 
@@ -219,8 +223,8 @@ return class(
                         with: ''
                     );
                 };
-
-                @result = clean(name:String.scan(value:objectString, format:objectExtractor.format)[objectExtractor.groupIndex]);
+                @:result = objectString;
+                //@result = clean(name:String.scan(value:objectString, format:objectExtractor.format)[objectExtractor.groupIndex]);
                 when (result == '' ) '';
                 when (symbols[result] != empty) result;
                 return '';

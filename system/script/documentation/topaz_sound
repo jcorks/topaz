@@ -1,16 +1,18 @@
-/// Inherits from Topaz.Asset 
-///
 /// Asset to hold audio data.
 class Topaz.Sound 
 
+    ///
+    inherits Topaz.Asset
+
+
 /// Returns the total number of samples
 /// Read-only.
-int sampleCount 
+@Int sampleCount 
 
 /// Sets/Gets the samples as an array of integer values.
 /// In topaz, a sample consists of 2 interleaved channels.
 /// The samples array consists of these channels laid out 
 /// contiguously, as the array consists of pure ints.
 /// The sampels themselves are usigned 16bit values.
-Array samples
+@Array samples
 
