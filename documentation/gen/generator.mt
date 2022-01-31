@@ -1,7 +1,6 @@
-@:Topaz       = import(module:'Topaz.Core');
+@:Topaz       = import(module:'Topaz');
 @:SymbolTable = import(module:'symbolTable.mt');
 @:JSON        = import(module:'Matte.Core.JSON');
-@:TOPAZ       = import(module:'Topaz.Constants');
 
 @:generateDocumentation = ::(
     langHint,
@@ -10,7 +9,7 @@
 ) {
     @symbolTable = SymbolTable.new();
     @:writeTextFile ::(str, filename) {
-        @:asset = Topaz.Resources.fetchAsset(type:TOPAZ.ASSET.TYPE.DATA, name:filename);
+        @:asset = Topaz.Resources.fetchAsset(type:Topaz.Asset.TYPE.DATA, name:filename);
                         
         @bytes = [];
         for(in:[0, String.length(of:str)], do:::(i) {
@@ -89,34 +88,42 @@
       },
       
       ('None'):::<={
-        symbolTable.setTypeHint(hint:'DOCPAGE',         type:symbolTable.type.DOCPAGE);
+        symbolTable.setTypeHint(hint:'docpage',         type:symbolTable.type.DOCPAGE);
         symbolTable.setTypeHint(hint:'#define',         type:symbolTable.type.MACRO);
         symbolTable.setTypeHint(hint:'class',           type:symbolTable.type.CLASS);
+        symbolTable.setTypeHint(hint:'module',          type:symbolTable.type.MODULE);
         symbolTable.setTypeHint(hint:'enum',            type:symbolTable.type.ENUMERATOR);
         symbolTable.setTypeHint(hint:'eval',            type:symbolTable.type.ENUM_VALUE);
         symbolTable.setTypeHint(hint:'func object',     type:symbolTable.type.FUNCTION_POINTER);
-        symbolTable.setTypeHint(hint:'func',            type:symbolTable.type.FUNCTION);
+        symbolTable.setTypeHint(hint:'staticfn',        type:symbolTable.type.STATIC_FUNCTION);
         symbolTable.setTypeHint(hint:'structure',       type:symbolTable.type.OPEN_STRUCTURE);
         symbolTable.setTypeHint(hint:'singleton',       type:symbolTable.type.SINGLETON);
         symbolTable.setTypeHint(hint:'@',               type:symbolTable.type.VARIABLE);
+        symbolTable.setTypeHint(hint:'func',            type:symbolTable.type.FUNCTION);
         symbolTable.setTypeHint(hint:'inherits',        type:symbolTable.type.INHERITS);
+        symbolTable.setTypeHint(hint:'link',            type:symbolTable.type.LINK);
 
-        symbolTable.setSymbolExtractor(format:'DOCPAGE[%]', type:symbolTable.type.DOCPAGE); 
+        symbolTable.setSymbolExtractor(format:'docpage[%]', type:symbolTable.type.DOCPAGE); 
         symbolTable.setSymbolExtractor(format:'func[%]->', type:symbolTable.type.FUNCTION); 
+        symbolTable.setSymbolExtractor(format:'staticfn[%]->', type:symbolTable.type.STATIC_FUNCTION); 
         symbolTable.setSymbolExtractor(format:'structure[%]', type:symbolTable.type.OPEN_STRUCTURE); 
         symbolTable.setSymbolExtractor(format:'class[%]', type:symbolTable.type.CLASS); 
+        symbolTable.setSymbolExtractor(format:'module[%]', type:symbolTable.type.MODULE); 
         symbolTable.setSymbolExtractor(format:'singleton[%]', type:symbolTable.type.SINGLETON); 
         symbolTable.setSymbolExtractor(format:'enum[%]', type:symbolTable.type.ENUMERATOR); 
         symbolTable.setSymbolExtractor(format:'eval[%]', type:symbolTable.type.ENUM_VALUE); 
         symbolTable.setSymbolExtractor(format:'@[%] [%]', type:symbolTable.type.VARIABLE, groupIndex:1); 
         symbolTable.setSymbolExtractor(format:'func object [%]', type:symbolTable.type.FUNCTION_POINTER); 
         symbolTable.setSymbolExtractor(format:'#define [%]', type:symbolTable.type.MACRO);
+        symbolTable.setSymbolExtractor(format:'link[%]', type:symbolTable.type.LINK);
         symbolTable.setSymbolExtractor(format:'[%] ', type:symbolTable.type.INHERITS);
 
         symbolTable.setReturnObjectExtractor(format:'->[%]', type:symbolTable.type.FUNCTION);
+        symbolTable.setReturnObjectExtractor(format:'->[%]', type:symbolTable.type.STATIC_FUNCTION);
         symbolTable.setReturnObjectExtractor(format:'@[%] ', type:symbolTable.type.VARIABLE);
         symbolTable.setReturnObjectExtractor(format:'[%] ', type:symbolTable.type.FUNCTION_POINTER);
         symbolTable.setReturnObjectExtractor(format:'inherits[%]', type:symbolTable.type.INHERITS);
+        symbolTable.setReturnObjectExtractor(format:'link[%]', type:symbolTable.type.LINK);
 
 
         symbolTable.setObjectExtractor(format:' [%]');
@@ -303,7 +310,8 @@
         listen(to:::{
             for(in:[0, Object.length(of:symbols)], do:::(i) {
                 if (symbols[i].type == symbolTable.type.CLASS ||
-                    symbols[i].type == symbolTable.type.SINGLETON) ::<={
+                    symbols[i].type == symbolTable.type.SINGLETON ||
+                    symbols[i].type == symbolTable.type.MODULE) ::<={
                     mainClass = symbols[i].name;
                     send();
                 };
@@ -329,7 +337,7 @@
     // assumes that the search index is populated.
     @:generateLink ::(file, symbolName) {
         @:t = searchIndex[symbolName];
-        when (t == empty) '';
+        when (t == empty) symbolName + '.html';
         when (symbolName == t[file].mainClass) symbolName+'.html';
         return t[file].mainClass+'.html#'+symbolName;
     };
@@ -359,7 +367,7 @@
         @searchIndexText = 'var searchIndex = ' + JSON.encode(object:searchIndex);
         @:filename = "searchindex_db.js";
 
-        @:asset = Topaz.Resources.fetchAsset(type:TOPAZ.ASSET.TYPE.DATA, name:filename);
+        @:asset = Topaz.Resources.fetchAsset(type:Topaz.Asset.TYPE.DATA, name:filename);
         @bytes = [];
         for(in:[0, String.length(of:searchIndexText)], do:::(i) {
             bytes[i] = String.charCodeAt(string:searchIndexText, index:i);
@@ -407,8 +415,13 @@
             Topaz.log(message:symbols[i].name+'('+symbolTable.typeToString(type:symbols[i].type)+')  - generating');
             match(symbols[i].type) {
               (symbolTable.type.FUNCTION,
-               symbolTable.type.FUNCTION_POINTER) :::<={
-                typename = if(symbols[i].type == symbolTable.type.FUNCTION) 'Function' else 'FunctionPointer';
+               symbolTable.type.FUNCTION_POINTER,
+               symbolTable.type.STATIC_FUNCTION) :::<={
+                typename = match(symbols[i].type) {
+                    (symbolTable.type.FUNCTION): 'Function',
+                    (symbolTable.type.FUNCTION_POINTER): 'FunctionPointer',
+                    (symbolTable.type.STATIC_FUNCTION): 'StaticFunction'
+                };
                 block = doc.createElement(
                     content:linkObject(doc:doc, objectString:symbols[i].returns),
                     tag:'h5',
@@ -418,10 +431,10 @@
                 // write out all arguments within a table for better formatting.
                 if (Object.length(of:symbols[i].children) > 0) ::<={
                     block = block+doc.createElement(
-                        content: if(symbols[i].type == symbolTable.type.FUNCTION)  
-                                symbols[i].name + '(' 
-                            else
+                        content: if(symbols[i].type == symbolTable.type.FUNCTION_POINTER)  
                                 '(*' + symbols[i].name + ')('
+                            else
+                                symbols[i].name + '(' 
                             ,    
                         tag:'h3',
                         attribs:'id="'+symbols[i].name+'"'
@@ -459,10 +472,10 @@
                 } else ::<={
                     // no arguments? iconic empty parenth!
                     block = block + doc.createElement(
-                        content: if(symbols[i].type == symbolTable.type.FUNCTION)
-                                symbols[i].name + '()' 
-                             else
+                        content: if(symbols[i].type == symbolTable.type.FUNCTION_POINTER)
                                 '(*' + symbols[i].name + ')()'
+                             else
+                                symbols[i].name + '()' 
                         ,   
                         tag:'h3',
                         attribs:'id="'+symbols[i].name+'"'
@@ -509,12 +522,32 @@
                     content:symbols[i].desc + '',    
                     tag:'pre'
                 );
+
+                for(in:[0, Object.length(of:symbols[i].children)], do:::(m) {
+                    @child = symbolTable.getChildSymbol(symbol:symbols[i], childIndex:m);
+                    if (child.type == symbolTable.type.LINK) ::<= {
+                        block = block+doc.createElement(
+                            content: linkObject(doc:doc, objectString:child.returns),
+                            tag:'i'
+                        );                
+                    };
+                });
+
               },
 
+
+
+
               (symbolTable.type.CLASS,
-               symbolTable.type.SINGLETON):::<={
+               symbolTable.type.SINGLETON,
+               symbolTable.type.MODULE):::<={
                 
-                typename = if(symbols[i].type == symbolTable.type.CLASS) 'Class' else 'Singleton';
+                typename = match(symbols[i].type) {
+                    (symbolTable.type.CLASS): 'Class',
+                    (symbolTable.type.SINGLETON): 'Singleton',
+                    (symbolTable.type.MODULE): 'Module'
+                };
+
                 if (mainClass == '') mainClass = symbols[i].name;
                 block = doc.createElement(
                     content:symbols[i].name + '',    
@@ -543,10 +576,7 @@
 
                 @hasFunctions = false;
                 @funcList = '';
-                funcList = funcList + doc.createElement(
-                    content:"</br><b>Member Functions:</b></br></br>",
-                    tag:'div'
-                );
+
                 
                 @mem = '';
                 // list all quick symbols
@@ -564,13 +594,48 @@
                         hasFunctions = true;
                     };
                 });
+
+                @hasStFunctions = false;
+                @funcStList = '';
+
+                
+                @memst = '';
+                // list all quick symbols
+                for(in:[0, Object.length(of:symbols[i].children)], do:::(m) {
+                    if (symbolTable.getChildSymbol(symbol:symbols[i], childIndex:m).type == symbolTable.type.STATIC_FUNCTION) ::<={
+                        memst = memst+ 
+                        doc.createElement(
+                            content:doc.createElement(
+                                content:symbols[i].children[m] + "()",
+                                tag:'a',
+                                attribs:'href="'+generateLink(file:files[n], symbolName:symbols[i].children[m])+'"'
+                            ),
+                            tag:'div'
+                        );
+                        hasStFunctions = true;
+                    };
+                });
+
+
+                if (hasFunctions)
+                    funcList = funcList + doc.createElement(
+                        content:"</br><b>Member Functions:</b></br></br>",
+                        tag:'div'
+                    );
+                
+                if (hasStFunctions)
+                    funcList = funcList + doc.createElement(
+                        content:"</br><b>Static Functions:</b></br></br>",
+                        tag:'div'
+                    );
+
                 funcList = funcList + doc.createElement(
-                    content:mem,
+                    content:mem + memst,
                     tag:'div',
                     attribs:'class="PublicSymbols"'
                 );
-                if (hasFunctions) 
-                    block = block + funcList;
+                block = block + funcList;
+
 
 
                 @hasEnums = false;

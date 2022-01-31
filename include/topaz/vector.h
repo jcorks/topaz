@@ -137,6 +137,15 @@ topazVector_t topaz_vector_cross(
     const topazVector_t * B
 );
 
+/// Returns the dot product.: A . B
+float topaz_vector_dot(
+    /// Vector A
+    const topazVector_t * A,
+
+    /// Vector B
+    const topazVector_t * B
+);
+
 /// Sets the X Y Z to integer values.
 ///
 topazVector_t * topaz_vector_floor(

@@ -1,0 +1,189 @@
+/// Provides simple, physics-like behavior to objects, allowign for 
+/// collisions and velocity control.
+class Topaz.Object2D
+    ///
+    inherits Topaz.Component
+
+/// Enumerator of all possible collision groups available for use 
+/// within Topaz.Object2D. By default, all objects belong to group A.
+enum Topaz.Object2D.GROUP
+    /// Collision group A
+    eval A
+    /// Collision group B
+    eval B
+    /// Collision group C
+    eval C
+    /// Collision group D
+    eval D
+    /// Collision group E
+    eval E
+    /// Collision group F
+    eval F
+    /// Collision group G
+    eval G
+    /// Collision group H
+    eval H
+    /// Collision group I
+    eval I
+    /// Collision group J
+    eval J
+    /// Collision group K
+    eval K
+    /// Collision group L
+    eval L
+    /// Collision group M
+    eval M
+    /// Collision group N
+    eval N
+    /// Collision group O
+    eval O
+    /// Collision group P
+    eval P
+    /// Collision group Q
+    eval Q
+    /// Collision group R
+    eval R
+    /// Collision group S
+    eval S
+    /// Collision group T
+    eval T
+    /// Collision group U
+    eval U
+    /// Collision group V
+    eval V
+    /// Collision group W
+    eval W
+    /// Collision group X
+    eval X
+    /// Collision group Y
+    eval Y
+    /// Collision group Z
+    eval Z
+
+/// Sets whether groups should interact. By default, only Group A interacts with Group A
+///
+staticfn setGroupInteraction ->
+    /// First interaction group.
+    @Topaz.Object2D.GROUP thisGroup
+    /// Other interaction group.
+    @Topaz.Object2D.GROUP otherGroup
+    /// Whether to interact.
+    @Boolean interact
+
+
+/// Compounds a velocity vector with the current velocity
+/// factor is the velocity amount to add. Can be negative.
+/// direction is that degree direction to apply the velocity in degrees.
+///
+func addVelocity ->
+    /// The velocity amount to add.
+    @Number amount
+    /// The direction to add it in, in degrees. 
+    @Number direction
+
+/// Same as topaz_object2d_add_velocity, but the direction is toward a 
+/// global position.
+/// factor is the amount of speed to add in that direction.
+/// directionOffset is how much to offset the direction from.
+///
+func addVelocityTowards ->
+    /// The velocity amount to add.
+    @Number amount 
+    /// The position vector to add velocity towards, determining the direction to add velocity.
+    @Object target
+    /// The offset from that positional direction.
+    @Number offset
+
+
+/// Sets the current velocity
+/// factor is the velocity amount to add. Can be negative.
+/// direction is that degree direction to apply the velocity in degrees.
+///
+func setVelocity ->
+    /// The velocity amount to add.
+    @Number amount
+    /// The direction to add it in, in degrees. 
+    @Number direction
+
+/// Same as SetVelocity, but the direction is toward a 
+/// global position.
+///
+func setVelocityTowards ->
+    /// The velocity amount to add.
+    @Number amount
+    /// The position vector to add velocity towards, determining the direction to add velocity.
+    @Object target
+    /// The offset from that positional direction.
+    @Number offset
+
+/// Gets/Sets the amount of resistance to speed measured as a percentile of the speed per update.
+/// Every frame, only the amount percent of the host entity's velocity is retained. For example,
+/// if friction is specified to be .05, every frame 5% of the Entity's speed will be lost.
+/// This is applied in the horizontal direction.
+///
+@Number frictionX 
+/// Gets/Sets the amount of resistance to speed measured as a percentile of the speed per update.
+/// Every frame, only the amount percent of the host entity's velocity is retained. For example,
+/// if friction is specified to be .05, every frame 5% of the Entity's speed will be lost.
+/// This is applied in the vertical direction.
+///
+@Number fractionY
+
+
+/// Sets/Gets the current direction that the entity is traveling in degrees.
+///
+@Number direction
+
+/// Reduces the speed of the Entity to 0.
+///
+func halt ->
+
+/// Resets the motion path of the Object2D collider.
+/// Normally, all collisions take into account the motion from previous position
+/// to current. resetMotion() eliminates this motion, 
+/// allowing for discontinuous motion.
+///
+func resetMotion ->
+
+/// Sets/Gets the horizontal component of the current velocity.
+///
+@Number velocityX
+
+/// Sets/Gets the vertical component of the current velocity.
+///
+@Number velocityY
+
+
+/// Sets/Gets the speed, maintaining direction.
+@Number speed
+
+/// Returns the position of the Entity after another frame of movement.
+/// Read-only.
+@Object nextPosition
+
+/// Returns the position of the Entity from the previous frame.
+/// Read-only.
+@Object lastPosition
+
+/// Sets/Gets the object's collision group. The default is Group A.
+///
+@Topaz.Object2D.GROUP group
+
+/// If set, creates a collider from a collection of X, Y value pairs
+/// It is assumed that the polygon is formed by making lines between these points 
+/// in the order presented within the array. It is assumed that the center of the object 
+/// is at 0, 0. When read, the collider points are returned.
+///
+@Array collider
+
+/// Creates a radial collider about 0, 0 with the given radius and 
+/// number of sides.
+/// Modifies the collider attribute.
+func setColliderRadial ->
+    /// The radius of the new collider.
+    @Number radius
+    /// The number of sides of the collider.
+    @Number numIterations
+
+/// Returns the last entity that collided with this one.
+@Topaz.Entity lastCollided

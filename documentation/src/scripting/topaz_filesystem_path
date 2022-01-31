@@ -1,0 +1,27 @@
+/// An object representing a real item 
+/// on the filesystem. In conjunction with 
+/// the Filesystem singleton and Topaz.Resources, 
+/// path objects can be used to assist in searching 
+/// for items and verifying paths.
+class Topaz.Filesystem.Path 
+
+/// Gets a string representing the path.
+/// For most filesystems, this is a "fully qualified" path.
+/// Read only.
+@String string
+
+/// Gets the name of this path item. For most filesystems,
+/// this is the name of the file / directory / object.
+/// Read-only.
+@String name
+
+/// Gets the parent filesystem path of the given path. 
+/// If none, undefined is returned.
+/// Read only.
+@Topaz.Filesystem.Path parent 
+
+/// Gets an Array of path objects that are 
+/// immediate children of this object. If there are 
+/// none, an empty array is returned.
+/// Read-only.
+@Array children

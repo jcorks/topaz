@@ -1,0 +1,123 @@
+/// Inherits from Topaz.Component
+///
+/// Can express basic 2D objects, such as images and shapes.
+class Topaz.Shape2D
+
+
+/// Sets/Gets the color of the object.
+/// The default color is #000000 (black)
+///
+@Object color 
+
+/// Sets/Gets the animation speed of the image in seconds. This is how quickly 
+/// the object will flip through image frames. The time is returned in seconds.
+/// The default is 1 / 60th of a second.
+@Number animSpeed
+
+/// Sets/Gets the center of the shape.
+@Object center 
+/// Sets/Gets the position with the host entity being the parent transform.
+@Object position
+/// Sets/Gets the rotation with the host entity being the parent transform.
+@Object rotation 
+/// Sets/Gets the scale with the host entity being the parent transform.
+@Object scale
+
+/// When set, forms the shape into a collection of line segments.
+/// If an odd number of points are given, the last point is ignored.
+/// The array should be the a collection of Numbers.
+/// If set, reading lines will return the array of points used to 
+/// create the lines.
+@Array lines 
+
+/// When set, forms the object into a generic set of triangles. The given array 
+/// should be populated with Number values.
+/// The points are interpreted as positions and are expected to be in groups of 3.
+/// If a non-multiple-of-three number of points is given,
+/// the remainder points are ignored.
+/// If set, reading triangles will return the array of points used to 
+/// create the triangles.
+///
+@Array triangles 
+
+
+
+/// Modifies a render parameter. 
+///
+func setAttribute ->
+    /// Determines how to interpret the next value.
+    /// If PRIMITIVE, val is expected to be a value within TOPAZ.RENDERER.PRIMITIVE
+    /// If ALPHA_RULE, val is expected to be a value within TOPAZ.RENDERER.ALPHA_RULE
+    /// If DEPTH_TEST, val is expected to be a value within TOPAZ.RENDERER.DEPTH_TEST
+    /// If ETCH_RULE,  val is expected to be a value within TOPAZ.RENDERER.ETCH_RULE 
+    /// if TEXTURE_FILTER_HINT, val is expected to be a value within TOPAZ.RENDERER.TEXTURE_FILTER_HINT
+    @Topaz.RENDERER.ATTRIBUTE attribute 
+
+    /// The new value. How its interpreted depends on param.
+    @Int value
+
+
+// Gets a rendering attribute. 
+func getAttribute -> Int
+    /// Determines how to interpret the next value.
+    /// If PRIMITIVE, the return value is expected to be a value within TOPAZ.RENDERER.PRIMITIVE
+    /// If ALPHA_RULE, the return value is expected to be a value within TOPAZ.RENDERER.ALPHA_RULE
+    /// If DEPTH_TEST, the return value is expected to be a value within TOPAZ.RENDERER.DEPTH_TEST
+    /// If ETCH_RULE,  the return value is expected to be a value within TOPAZ.RENDERER.ETCH_RULE 
+    /// if TEXTURE_FILTER_HINT, the return value is expected to be a value within TOPAZ.RENDERER.TEXTURE_FILTER_HINT
+    @Topaz.RENDERER.ATTRIBUTE attribute
+
+
+/// Forms the object into a rectangle. The Shape2D origin is the top-left of the
+/// rectangle. 
+///
+func formRectangle ->
+    /// The width of the rectangle.
+    @Number width 
+
+    /// The height of the rectangle.
+    @Number height
+
+
+/// Forms the object into the shape and visual of an image.
+/// If the image has multiple frames, the image is drawn as an animation
+/// accoring to animSpeed.
+///
+func formImage ->
+    /// The image asset to use as the source.
+    @Topaz.Image image
+
+/// Forms the object into the shape and visual of an image's specific frame.
+/// If the image argument is empty, the currently set image is used.
+func formImageFrame ->
+    /// The image asset to use as the source.
+    @Topaz.Image image
+    /// The frame of the image, 0-indexed.
+    @Integer frameIndex
+
+/// Same as topaz_shape2d_form_image, except a specific width/height 
+/// can be given. If so, the image will be rescaled to match this width/height.
+/// If the image argument is empty, the currently set image is used.
+///
+func formImageScaled ->
+    /// The image asset to use as the source.
+    @Topaz.Image image 
+    /// The custom width of the shape2d.
+    @Number width
+    /// The custom height of the shape2d.
+    @Number height
+
+
+/// Forms the object into an estimated circle in triangles. numIterations
+/// refers to how many triangles to form it from. The higher this number, the 
+/// more "smooth" the circle will appear. This also can be used to make 
+/// simple geometric objects of equal-length sides. For example, using numIterations 
+/// of 3 will yield an equalateral triangle.
+/// 
+func formRadial ->
+    /// The radius of the radial object.
+    @Number radius 
+    /// The number of sides to shape.
+    @Number numSides
+
+

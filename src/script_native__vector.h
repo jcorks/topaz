@@ -166,6 +166,21 @@ TSO_SCRIPT_API_FN(vector_api__cross) {
     return out;
 }
 
+TSO_SCRIPT_API_FN(vector_api__dot) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
+    TSO_NATIVIZE_1(topazVector_t *, TSO_OBJECT_ID__VECTOR);
+
+    float r = topaz_vector_dot(
+        native,
+        native1
+    );
+
+
+    return topaz_script_object_from_number(script, r);
+}
+
 TSO_SCRIPT_API_FN(vector_api__floor) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
@@ -354,6 +369,7 @@ static void add_refs__vector_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_vector__get_distance", vector_api__get_distance, 2);
     TS_MAP_NATIVE_FN("topaz_vector__normalize", vector_api__normalize, 1);
     TS_MAP_NATIVE_FN("topaz_vector__cross", vector_api__cross, 2);
+    TS_MAP_NATIVE_FN("topaz_vector__dot", vector_api__dot, 2);
     TS_MAP_NATIVE_FN("topaz_vector__floor", vector_api__floor, 1);
     TS_MAP_NATIVE_FN("topaz_vector__rotation_x_diff", vector_api__rotation_x_diff, 2);
     TS_MAP_NATIVE_FN("topaz_vector__rotation_x_diff_relative", vector_api__rotation_x_diff_relative, 2);

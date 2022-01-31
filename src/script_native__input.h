@@ -83,7 +83,7 @@ static void script_input_on_new_unicode(topazInput_t * i, int input, void * data
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(l->obj, TOPAZ_STR_CAST("onNewUnicode"));
     topazScript_Object_t * arg = topaz_script_object_from_int(l->script, input);
 
-    topazScript_Object_t * args[2] = {
+    topazScript_Object_t * args[1] = {
         arg
     };
 
@@ -101,15 +101,14 @@ static void script_input_on_repeat_unicode(topazInput_t * i, int input, void * d
     topazScript_Object_t * fn = topaz_script_object_reference_map_get_property(l->obj, TOPAZ_STR_CAST("onRepeatUnicode"));
     topazScript_Object_t * arg = topaz_script_object_from_int(l->script, input);
 
-    topazScript_Object_t * args[2] = {
-        l->obj,
+    topazScript_Object_t * args[1] = {
         arg
     };
 
     topaz_script_object_destroy(
         topaz_script_object_reference_call(
             fn, 
-            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 2)
+            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 1)
         )
     );
     topaz_script_object_destroy(arg);

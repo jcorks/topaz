@@ -1,0 +1,51 @@
+/// Allows for controlling of various frame 
+/// update functions as a state machine.
+class Topaz.StateControl
+    ///
+    inherits Topaz.Component
+
+/// Sets up a new valid state.
+/// If an existing state fo the same name exists, it is updated.
+///
+/// If any of these properties are undefined, they are 
+/// simply ignored. 
+///
+func add ->
+    ///     The name of the new state.
+    @String name
+    ///     function called on entering the state. 
+    @Function onInit
+    ///     function called each step within this state 
+    @Function onStep
+    ///     function called each draw within this state 
+    @Function onDraw
+
+/// Removes the state.
+/// No action is taken if the tag does not refer to a valid state.
+///
+func remove ->
+    /// Name of the state to remove.
+    @String name 
+
+/// Begins the state machine execution loop from the given state.
+/// If begin state does not refer to a valid state, no action is taken.
+/// If done in the middle of a state loop function, any queued 
+/// function calls are cancelled.
+///
+func execute ->
+    /// Name of the state to change to.
+    @String name 
+
+/// Stops all current execution.
+/// If done during a state loop, all remaining state loop functions 
+/// that would have executed are cancelled.
+///
+func halt ->
+
+/// Returns whether or not the machine is in a halted state.
+/// Read-only.
+@Boolean isHalted
+
+/// Returns the current state tag. If no execution state is active, the empty string is returned.
+/// Read-only.
+@String state

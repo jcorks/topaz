@@ -1,0 +1,29 @@
+/// Utilities for working with color objects.
+/// Colors are worked with in usercode as basic 
+/// objects containing r, g, b, and/or a attributes,
+/// from 0 to 1. When stored within Topaz, they become 
+/// 32-bit colors.
+singleton Topaz.Color 
+
+
+
+/// Returns a color object from a string.
+/// In the case that the string starts with a '#', the
+/// remainder of the string will be read as a hexidecimal
+/// integer referring to the values of the hex string. For example
+/// Color("#FF00FFFF") is equivalent to Color(255, 0, 255, 255)
+/// It is also valid to specify only 3 components:
+/// Color("#FF00FF") is equivalent to Color(255, 0, 255, 255). If the string does not
+/// begin with a '#', the string is implied to represent the name of a color.
+staticfn Topaz.Color.parse -> Object 
+    /// The input string to convert into a color.
+    @String string
+
+
+
+/// Returns a hex version of the color, encoded as such:
+/// "#rrggbbaa"
+staticfn Topaz.Color.asString -> String 
+    /// The basic object with properties r,g,b,a to 
+    /// encode.
+    @Object color

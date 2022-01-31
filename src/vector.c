@@ -113,6 +113,13 @@ topazVector_t topaz_vector_cross(const topazVector_t * a, const topazVector_t * 
 	return out;
 }
 
+float topaz_vector_dot(const topazVector_t * a, const topazVector_t * b) {
+    return 
+        a->x * b->x + 
+        a->y * b->y + 
+        a->z * b->z;
+}
+
 
 topazVector_t * topaz_vector_floor(topazVector_t * t) {
     t->x = (int)t->x;

@@ -4,30 +4,21 @@
 int main() {
     char * files_in[] = {
         "bootstrap.mt",
-        "constants.mt",
-        "vector.mt",
-        "color.mt",
         "debug.mt"
     };
 
     char * files_out[] = {
         "bootstrap_bytes",
-        "constants_bytes",
-        "vector_bytes",
-        "color_bytes",
         "debug_bytes"
     };
 
     char * files_ref[] = {
         "const uint8_t bootstrap_bytes[]={",
-        "const uint8_t constants_bytes[]={",
-        "const uint8_t vector_bytes[]={",
-        "const uint8_t color_bytes[]={",
         "const uint8_t debug_bytes[]={",
     };
     
     uint32_t n;
-    for(n = 0; n < 5; ++n) {
+    for(n = 0; n < 2; ++n) {
 
 
         FILE * in = fopen(files_in[n], "rb");

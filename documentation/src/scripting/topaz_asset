@@ -1,0 +1,40 @@
+///
+/// An Asset represets a data-based 
+/// primitive that can be expressed as 
+/// a useful multimedia object.
+/// Pure assets dont exist, but serve 
+/// symbolically as a basis for these 
+/// objects.
+///
+class Topaz.Asset
+
+/// Type of asset.
+///
+/// Every asset has a type that gives a hint to what child class
+/// it is. 
+///
+enum Topaz.Asset.TYPE
+    /// The asset doesnt have a type. This is used for 
+    /// error cases.
+    ///
+    eval NONE
+    /// The asset is a Topaz.Image, which holds raw 
+    /// pixel data.
+    eval IMAGE
+    /// The asset is a Topaz.Sound, which holds raw 
+    /// audio data.
+    eval SOUND
+    /// The asset is a Topaz.Material, which defines how 
+    /// 3d geometry looks.
+    eval MATERIAL
+    /// The asset is a Topaz.Data, which expresses raw bytes / text. 
+    eval DATA
+    /// The asset is a Topaz.Mesh, which holds raw 3D data.
+    eval MESH
+
+
+/// The type of the asset. Read-only.
+@Topaz.Asset.TYPE type 
+
+/// The nae of the asset. Read-only.
+@String name

@@ -1,5 +1,5 @@
 @:class = import(module:'Matte.Core.Class');
-@:Topaz = import(module:'Topaz.Core');
+@:Topaz = import(module:'Topaz');
 return class(
     name: 'SymbolTable',
     define:::(this) {
@@ -25,7 +25,10 @@ return class(
             MACRO : 8,
             DOCPAGE : 9,
             SINGLETON : 10,
-            INHERITS : 11
+            INHERITS : 11,
+            MODULE : 12,
+            LINK : 13,
+            STATIC_FUNCTION : 14
         };
 
         @:typeToString = ::(type) {
@@ -42,7 +45,8 @@ return class(
               (types.FUNCTION_POINTER):"Function Pointer",
               (types.MACRO):           "Macro",
               (types.DOCPAGE):         "Documentation Page",
-              (types.INHERITS):        "Inherits"
+              (types.INHERITS):        "Inherits",
+              (types.STATIC_FUNCTION): "Static Function"
             };
         };
         
@@ -122,7 +126,7 @@ return class(
                 symbol.parent = parentCleaned;
                 symbol.source = sourceLine;
 
-                if (symbol.type != types.VARIABLE && symbol.type != types.INHERITS) 
+                if (symbol.type != types.VARIABLE && symbol.type != types.INHERITS && symbol.type != types.LINK) 
                     symbolB[file] = symbol;
 
                 if (parentSymbol == empty)
@@ -131,7 +135,7 @@ return class(
                 if (files[file] == empty) 
                     files[file] = [];
                 
-                if (symbol.type != types.VARIABLE && symbol.type != types.INHERITS) 
+                if (symbol.type != types.VARIABLE && symbol.type != types.INHERITS && symbol.type != types.LINK) 
                     Object.push(object:files[file], value:nameCleaned);
             },
 

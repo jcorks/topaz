@@ -1,10 +1,247 @@
-@:TOPAZ = import(module:'Topaz.Constants');
-@:Vector = import(module:'Topaz.Vector');
-@:Color = import(module:'Topaz.Color');
-
-
 
 @class = import(module:'Matte.Core.Class');
+
+@:Color = ::<={
+    @:topaz_color__create = getExternalFunction(name:'topaz_color__create');
+    @:topaz_color__set_rgba = getExternalFunction(name:'topaz_color__set_rgba');
+    @:topaz_color__get_r = getExternalFunction(name:'topaz_color__get_r');
+    @:topaz_color__get_g = getExternalFunction(name:'topaz_color__get_g');
+    @:topaz_color__get_b = getExternalFunction(name:'topaz_color__get_b');
+    @:topaz_color__get_a = getExternalFunction(name:'topaz_color__get_a');
+    @:topaz_color__to_hex_string = getExternalFunction(name:'topaz_color__to_hex_string');
+    @:topaz_color__set_from_string = getExternalFunction(name:'topaz_color__set_from_string');
+
+    @:refColor = topaz_color__create(a:0, b:0, c:0, d:0);
+
+    @:statepush = ::(v) {
+        if (v.native == empty) ::<={
+            if (Number.isNaN(value:v.r)) v.r = 0;
+            if (Number.isNaN(value:v.g)) v.g = 0;
+            if (Number.isNaN(value:v.b)) v.b = 0;
+            if (Number.isNaN(value:v.a)) v.a = 0;
+            v.native = topaz_color__create(a:v.r, b:v.g, c:v.b, d:v.a);
+        } else ::<={
+            topaz_color__set_rgba(a:v.native, b:v.r, c:v.g, d:v.b, e:v.a);
+        };
+    };
+
+    @:statepull = ::(v) {
+        v.r = topaz_color__get_r(a:v.native);
+        v.g = topaz_color__get_g(a:v.native);
+        v.b = topaz_color__get_b(a:v.native);
+        v.a = topaz_color__get_a(a:v.native);
+    };
+
+    return {
+        fromnative : ::(native) {
+            @:out = {native:native};
+            statepull(v:out);
+            return out;
+        },
+        statepush : statepush,
+        statepull : statepull,
+        asString : ::(color) {
+            statepush(v:color);
+            return topaz_color__to_hex_string(a:color.native);
+        },
+
+        parse : ::(string) {
+            topaz_color__set_from_string(a:refColor, b:string);
+            return {
+                r: topaz_color__get_r(a:refColor),
+                g: topaz_color__get_g(a:refColor),
+                b: topaz_color__get_b(a:refColor),
+                a: topaz_color__get_a(a:refColor)
+            };
+        }
+    };
+};
+
+
+@:Vector = ::<={
+    @:topaz_vector__create = getExternalFunction(name:'topaz_vector__create');
+    @:topaz_vector__set_xyz = getExternalFunction(name:'topaz_vector__set_xyz');
+    @:topaz_vector__get_x = getExternalFunction(name:'topaz_vector__get_x');
+    @:topaz_vector__get_y = getExternalFunction(name:'topaz_vector__get_y');
+    @:topaz_vector__get_z = getExternalFunction(name:'topaz_vector__get_z');
+    @:topaz_vector__get_distance = getExternalFunction(name:'topaz_vector__get_distance');
+    @:topaz_vector__normalize = getExternalFunction(name:'topaz_vector__normalize');
+    @:topaz_vector__cross = getExternalFunction(name:'topaz_vector__cross');
+    @:topaz_vector__dot = getExternalFunction(name:'topaz_vector__dot');
+    @:topaz_vector__floor = getExternalFunction(name:'topaz_vector__floor');
+    @:topaz_vector__rotation_x_diff = getExternalFunction(name:'topaz_vector__rotation_x_diff');
+    @:topaz_vector__rotation_x_diff_relative = getExternalFunction(name:'topaz_vector__rotation_x_diff_relative');
+    @:topaz_vector__rotation_y_diff = getExternalFunction(name:'topaz_vector__rotation_y_diff');
+    @:topaz_vector__rotation_y_diff_relative = getExternalFunction(name:'topaz_vector__rotation_y_diff_relative');
+    @:topaz_vector__rotation_z_diff = getExternalFunction(name:'topaz_vector__rotation_z_diff');
+    @:topaz_vector__rotation_z_diff_relative = getExternalFunction(name:'topaz_vector__rotation_z_diff_relative');
+    @:topaz_vector__rotation_x = getExternalFunction(name:'topaz_vector__rotation_x');
+    @:topaz_vector__rotation_y = getExternalFunction(name:'topaz_vector__rotation_y');
+    @:topaz_vector__rotation_z = getExternalFunction(name:'topaz_vector__rotation_z');
+    @:topaz_vector__rotate_x = getExternalFunction(name:'topaz_vector__rotate_x');
+    @:topaz_vector__rotate_y = getExternalFunction(name:'topaz_vector__rotate_y');
+    @:topaz_vector__rotate_z = getExternalFunction(name:'topaz_vector__rotate_z');
+    @:topaz_vector__get_length = getExternalFunction(name:'topaz_vector__get_length');
+
+    @:statepush = ::(v) {
+        if (v.native == empty) ::<={
+            if (v.x == empty || Number.isNaN(value:v.x)) v.x = 0;
+            if (v.y == empty || Number.isNaN(value:v.y)) v.y = 0;
+            if (v.z == empty || Number.isNaN(value:v.z)) v.z = 0;
+            v.native = topaz_vector__create(a:v.x, b:v.y, c:v.z);
+        } else ::<={
+            topaz_vector__set_xyz(a:v.native, b:v.x, c:v.y, d:v.z);
+        };
+    };
+
+    @:statepull = ::(v) {
+        v.x = topaz_vector__get_x(a:v.native);
+        v.y = topaz_vector__get_y(a:v.native);
+        v.z = topaz_vector__get_z(a:v.native);
+    };
+
+    return {
+        statepush : statepush,
+        statepull : statepull,
+        fromnative ::(native) {
+            @:out = {native:native};
+            statepull(v:out);
+            return out;
+        },
+        getDistance ::(from, to){ 
+            statepush(v:from); statepush(v:to);
+            return topaz_vector__get_distance(a:from.native, b:to.native);
+        },
+        
+        normalize ::(value){ 
+            statepush(v:value);
+            topaz_vector__normalize(a:value.native);   
+            statepull(v:value);
+        },
+        
+        cross ::(a, b){ 
+            statepush(v:a);
+            statepush(v:b);
+            @out = {native:topaz_vector__cross(a:a.native, b:b.native)};
+            statepull(v:out);
+            return out;
+        },
+
+        dot ::(a, b){ 
+            statepush(v:a);
+            statepush(v:b);
+            return topaz_vector__dot(a:a.native, b:b.native);
+        },
+
+        floor ::(value){ 
+            statepush(v:value);
+            topaz_vector__floor(a:value.native);
+            statepull(v:value);
+        },
+        
+        rotationXDiff ::(from, to){ 
+            statepush(v:from);
+            statepush(v:to);
+            return topaz_vector__rotation_x_diff(a:from.native, b:to.native);
+        },
+        
+        rotationXDiffRelative ::(from, to){ 
+            statepush(v:from);
+            statepush(v:to);
+            return topaz_vector__rotation_x_diff_relative(a:from.native, b:to.native);
+        },
+        
+        rotationX ::(of) { 
+            statepush(v:of);
+            return topaz_vector__rotation_x(a:of.native);
+        },
+        
+        rotationYDiff ::(from, to) { 
+            statepush(v:from);
+            statepush(v:to);
+            return topaz_vector__rotation_y_diff(a:from.native, b:to.native);
+        },
+        
+        rotationYDiffRelative ::(from, to){ 
+            statepush(v:from);
+            statepush(v:to);
+            return topaz_vector__rotation_y_diff_relative(a:from.native, b:to.native);
+        },
+        
+        rotationY : ::(of){ 
+            statepush(v:of);
+            return topaz_vector__rotation_y(a:of.native);
+        },
+        
+        rotationZDiff : ::(from, to){
+            statepush(v:from);
+            statepush(v:to); 
+            return topaz_vector__rotation_z_diff(a:from.native, b:to.native);
+        },
+        
+        rotationZDiffRelative : ::(from, to){
+            statepush(v:from);
+            statepush(v:to);
+            return topaz_vector__rotation_z_diff_relative(a:from.native, b:to.native);
+        },
+        
+        rotationZ : ::(of){ 
+            statepush(v:of);
+            return topaz_vector__rotation_z(a:of.native);
+        },
+        
+        rotateX : ::(vector, amt){ 
+            statepush(v:vector);
+            topaz_vector__rotate_x(a:vector.native, b:amt);
+            statepull(v:vector);
+        },
+        
+        rotateY : ::(vector, amt){ 
+            statepush(v:vector);
+            topaz_vector__rotate_y(a:vector.native, b:amt);
+            statepull(v:vector);
+        },
+        
+        rotateZ : ::(vector, amt){ 
+            statepush(v:vector);
+            topaz_vector__rotate_y(a:vector.native, b:amt);
+            statepull(v:vector);
+        },
+
+        length : ::(of){
+            statepush(v:of);
+            return topaz_vector__get_length(a:of.native);
+        },
+        
+        add : ::(a, b){ 
+            statepush(v:a);
+            statepush(v:b);
+            return {x:a.x + b.x, y:a.y + b.y, z:a.z + b.z};
+        },
+        
+        subtract : ::(a, b){ 
+            statepush(v:a);
+            statepush(v:b);
+            return {x:a.x - b.x, y:a.y - b.y, z:a.z - b.z};
+        },
+
+        multiply : ::(a, b){ 
+            statepush(v:a);
+            statepush(v:b);
+            return {x:a.x * b.x, y:a.y * b.y, z:a.z * b.z};
+        },
+        
+        divide : ::(a, b){ 
+            statepush(v:a);
+            statepush(v:b);
+            return {x:a.x / b.x, y:a.y / b.y, z:a.z / b.z};
+        }
+        
+
+    };
+};
+
+
 
 @Topaz = class(
     define :::(this){ 
@@ -80,7 +317,18 @@
             @:topaz_asset__get_name = getExternalFunction(name:'topaz_asset__get_name');
 
             return class(
-                name : 'Topaz.Asset',        
+                name : 'Topaz.Asset',    
+                statics : {
+                    TYPE : {
+                        NONE : 0,
+                        IMAGE : 1,
+                        SOUND : 2,
+                        MATERIAL : 3,
+                        PARTICLE : 4,
+                        DATA : 5,
+                        MESH : 6
+                    }
+                }, 
                 inherits : [__Native__],
                 define : ::(this) { 
                     @impl;
@@ -113,7 +361,13 @@
             @:topaz_filesystem_path__get_parent = getExternalFunction(name:'topaz_filesystem_path__get_parent');
             @:topaz_filesystem_path__get_nth_child = getExternalFunction(name:'topaz_filesystem_path__get_nth_child');
             @:topaz_filesystem_path__get_child_count = getExternalFunction(name:'topaz_filesystem_path__get_child_count');
-            return {        
+            return {     
+                DEFAULT_NODE : {
+                    RESOURCES : 0,
+                    TOPAZ : 1,
+                    USER_DATA : 2
+                },
+
                 getPath : ::(node) { 
                     return __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path(a:node));
                 },
@@ -266,6 +520,32 @@
             return class(
                 name : 'Topaz.Display',        
                 inherits : [__Native__],
+                statics : {
+                    VIEW_POLICY : {
+                        NONE      : 0,
+                        MATCH_SIZE : 1
+                    },
+
+                    PARAMETER : {
+                        X : 0,
+                        Y : 1,
+                        WIDTH : 2,
+                        HEIGHT : 3,
+                        SHOW : 4,
+                        FULLSCREEN : 5,
+                        LOCK_CLIENT_RESIZE : 6,
+                        LOCK_CLIENT_POSITION : 7,
+                        VIEW_POLICY : 8,
+                        INPUT_FOCUS : 9
+                    },
+                    
+                    FRAMEBUFFER : {
+                        A : 0,
+                        B : 1,
+                        C : 2,
+                        D : 3
+                    }
+                },
                 define : ::(this) { 
                     @impl;
                     this.constructor = ::(native){
@@ -394,10 +674,6 @@
                             }
                         },
         
-                        resize : ::(width, height){ 
-                            topaz_framebuffer__resize(a:impl, b:width, c:height);
-                        },
-        
                         filteredHint : {
                             get : ::(){ 
                                 return topaz_framebuffer__get_filtered_hint(a:impl);
@@ -405,6 +681,11 @@
                             set : ::(value){ 
                                 return topaz_framebuffer__set_filtered_hint(a:impl, b:value);
                             }
+                        },
+
+        
+                        resize : ::(width, height){ 
+                            topaz_framebuffer__resize(a:impl, b:width, c:height);
                         }
                     };
                 }
@@ -508,12 +789,12 @@
                             }
                         },
         
-                        removeObject : ::(index){ 
-                            topaz_mesh__remove_object(a:impl, b:index);
+                        removeObject : ::(i){ 
+                            topaz_mesh__remove_object(a:impl, b:i);
                         },
         
-                        setObject : ::(index, value){ 
-                            topaz_mesh__set_object(a:impl, b:index, c:value);
+                        setObject : ::(i, value){ 
+                            topaz_mesh__set_object(a:impl, b:i, c:value);
                         }
                     };
                 }
@@ -542,8 +823,224 @@
 
             return class(
                 name : 'Topaz.Input',        
-                define : ::(this) { 
+                define : ::(this) {
+                    @:constants = {
+                        KEY : {
+                            _0: 1, ///< 0
+                            _1: 2, ///< 1
+                            _2: 3, ///< 2
+                            _3: 4, ///< 3
+                            _4: 5, ///< 4
+                            _5: 6, ///< 5
+                            _6: 7, ///< 6
+                            _7: 8, ///< 7
+                            _8: 9, ///< 8
+                            _9: 10, ///< 9
+                            A: 11, ///< a
+                            B: 12, ///< b
+                            C: 13, ///< c
+                            D: 14, ///< d
+                            E: 15, ///< e
+                            F: 16, ///< f
+                            G: 17, ///< g
+                            H: 18, ///< h
+                            I: 19, ///< i
+                            J: 20, ///< j
+                            K: 21, ///< k
+                            L: 22, ///< l
+                            M: 23, ///< m
+                            N: 24, ///< n
+                            O: 25, ///< o
+                            P: 26, ///< p
+                            Q: 27, ///< q
+                            R: 28, ///< r
+                            S: 29, ///< s
+                            T: 30, ///< t
+                            U: 31, ///< u
+                            V: 32, ///< v
+                            W: 33, ///< w
+                            X: 34, ///< x
+                            Y: 35, ///< y
+                            Z: 36, ///< z
+                            L_SHIFT: 37, ///< Left shift key
+                            R_SHIFT: 38, ///< Right shift key
+                            L_CTRL: 39,  ///< Left control key
+                            R_CTRL: 40,  ///< Right control key
+                            L_ALT: 41,   ///< Left alt key
+                            R_ALT: 42,   ///< Right alt key
+                            TAB: 43,    ///< Tab
+                            F1: 44,     ///< F1
+                            F2: 45,     ///< F2
+                            F3: 46,     ///< F3
+                            F4: 47,     ///< F4
+                            F5: 48,     ///< F5
+                            F6: 49,     ///< F6
+                            F7: 50,     ///< F7
+                            F8: 51,     ///< F8
+                            F9: 52,     ///< F9
+                            F10: 53,    ///< F10
+                            F11: 54,    ///< F11
+                            F12: 55,    ///< F12
+                            UP: 100,     ///< Up arrow
+                            DOWN: 101,   ///< Down arrow
+                            LEFT: 102,   ///< Left arrow
+                            RIGHT: 103,  ///< Right arrow
+                            MINUS: 104,  ///< -
+                            EQUAL: 105,  ///< = 
+                            BACKSPACE: 106,  ///< Backspace
+                            GRAVE: 107,  ///< `
+                            ESC: 108,    ///< Escape
+                            HOME: 109,   ///< Home key
+                            PAGE_UP: 110, ///< Page up key
+                            PAGE_DOWN: 111,  ///< Page down key
+                            END: 112,    ///< End key
+                            BACKSLASH: 113, ///< '\'
+                            L_BRACKET: 114, ///< [
+                            R_BRACKET: 115, ///< ]
+                            SEMICOLON: 116, ///< ;
+                            APOSTROPHE: 117, ///< '
+                            FRONTSLASH: 118, ///< /
+                            ENTER: 119, ///< Enter
+                            DELETE: 120, ///< Delete
+                            NUMPAD_0: 121, ///< Numpad 0
+                            NUMPAD_1: 122, ///< Numpad 1
+                            NUMPAD_2: 123, ///< Numpad 2
+                            NUMPAD_3: 124, ///< Numpad 3
+                            NUMPAD_4: 125, ///< Numpad 4
+                            NUMPAD_5: 126, ///< Numpad 5
+                            NUMPAD_6: 127, ///< Numpad 6
+                            NUMPAD_7: 128, ///< Numpad 7
+                            NUMPAD_8: 129, ///< Numpad 8
+                            NUMPAD_9: 130, ///< Numpad 9
+                            PRINT_SCREEN: 131, ///< Print screen button
+                            L_SUPER: 132, ///< Left Super key (Windows key)
+                            R_SUPER: 133, ///< Right Super key (Windows key)
+                            SPACE: 134,  ///< Space
+                            INSERT: 135, ///< Insert key
+                            COMMA: 136, ///< ,
+                            PERIOD: 137 , ///< .
+                            WORLD_1: 138, /// I8n key0
+                            WORLD_2: 139, /// I8n key1
+                            WORLD_3: 140, /// I8n key2
+                            WORLD_4: 141, /// I8n key3
+                            WORLD_5: 142, /// I8n key4
+                            WORLD_6: 143, /// I8n key5
+                            WORLD_7: 144, /// I8n key6
+                            WORLD_8: 145, /// I8n key7
+                            WORLD_9: 146 /// I8n key8
+                        },
+
+
+
+                        POINTER : {
+                            _0: 256, ///< Left click
+                            _1: 257, ///< Right click
+                            _2: 258, ///< Middle click
+                        
+                            X: 259, ///< Horizontal axis. Usually for the X axis of the pointer
+                            Y: 260, ///< Horizontal axis. Usually for the X axis of the pointer
+                            WHEEL: 261 ///< Mouse wheel.
+                        },
+
+                        PAD : {
+                        
+                            A: 300,     ///< Button 0
+                            B: 301,     ///< Button 1
+                            C: 302,     ///< Button 2
+                            X: 303,     ///< Button 3
+                            Y: 304,     ///< Button 4
+                            R: 305,     ///< Button 5
+                            L: 306,     ///< Button 6
+                            R2: 307,    ///< Button 7
+                            L2: 308,    ///< Button 8
+                            R3: 309,    ///< Button 9
+                            L3: 310,    ///< Button 10
+                            START: 311,    ///< Button 11
+                            SELECT: 312,///< Button 12
+                            B13: 313,///< Button 13
+                            B14: 314,///< Button 14
+                            B15: 315,///< Button 15
+                            B16: 316,///< Button 16
+                            B17: 317,///< Button 17
+                            B18: 318,///< Button 18
+                            B19: 319,///< Button 19
+                            B20: 320,///< Button 20
+                            B21: 321,///< Button 21
+                            B22: 322,///< Button 22
+                            B23: 323,///< Button 23
+                            B24: 324,///< Button 24
+                            B25: 325,///< Button 25
+                            B26: 326,///< Button 26
+                            B27: 327,///< Button 27
+                            B28: 328,///< Button 28
+                            B29: 329,///< Button 29
+                            B30: 330,///< Button 30
+                            B31: 331,///< Button 31
+                            B32: 332,///< Button 32
+                        
+                            AXIS_X: 400, ///< X button
+                            AXIS_Y: 401, ///< Y button
+                            AXIS_Z: 402, ///< Z button
+                            AXIS_X2: 403,///< X2 button 
+                            AXIS_Y2: 404,///< Y2 button
+                            AXIS_Z2: 405,///< Z2 button
+                            AXIS_X3: 406,///< X3 button
+                            AXIS_Y3: 407,///< Y3 button
+                            AXIS_Z3: 408,///< Z3 button
+                            AXIS_X4: 409,///< X4 button
+                            AXIS_Y4: 410,///< Y4 button
+                            AXIS_Z4: 411,///< Z4 button
+                            AXIS_X5: 412,///< X4 button
+                            AXIS_Y5: 413,///< Y4 button
+                            AXIS_Z5: 414,///< Z4 button
+                            AXIS_X6: 415,///< X4 button
+                            AXIS_Y6: 416,///< Y4 button
+                            AXIS_Z6: 417,///< Z4 button
+                        
+                            AXIS_R: 450,   
+                            AXIS_L: 451,    
+                            AXIS_R2: 452,    
+                            AXIS_L2: 453,    
+                            AXIS_R3: 454,    
+                            AXIS_L3: 455,    
+                            AXIS_R4: 456,    
+                            AXIS_L4: 457,    
+                        
+                            OPTIONS: 511
+                        }
+                    };
+
+                    
+                
+
+
+                    
+
                     this.interface = {
+                        KEY : {
+                            get :: {
+                                return constants.KEY;
+                            }
+                        },
+
+                        PAD : {
+                            get :: {
+                                return constants.PAD;
+                            }
+                        
+                        },
+
+                        POINTER : {
+                            get :: {
+                                return constants.POINTER;
+                            }
+                        },
+
+                        DEFAULT_INPUT_COUNT: {                            
+                            get ::(){return 512;}
+                        },
+
+
                         mouse : {   
                             get : ::(){ 
                                 return {x:topaz_input__mouse_x(), y:topaz_input__mouse_y()};
@@ -602,7 +1099,7 @@
                             return topaz_input__get_state(a:input);
                         },
                 
-                        getPadState : ::(input, pad) { 
+                        getPadState : ::(pad, input) { 
                             return topaz_input__get_pad_state(a:input, b:pad);
                         },
                 
@@ -623,8 +1120,13 @@
                             return out;
                         },
                 
-                        addUnicodeListener : ::(listener) { 
-                            return topaz_input__add_unicode_listener(a:listener);
+                        addUnicodeListener : ::(onNewUnicode, onRepeatUnicode) { 
+                            if (onNewUnicode == empty)    onNewUnicode = ::(unicode){};
+                            if (onRepeatUnicode == empty) onRepeatUnicode = ::(unicode){};
+                            return topaz_input__add_unicode_listener(a:{
+                                onNewUnicode::(a){onNewUnicode(unicode:a);},
+                                onRepeatUnicode::(a){onRepeatUnicode(unicode:a);}
+                            });
                         },
                 
                         removeUnicodeListener : ::(id) { 
@@ -751,12 +1253,12 @@
                         return this;
                     };
                     this.interface = {
-                        setProgramData : ::(index, value){ 
-                            topaz_material__set_program_data(a:impl, b:index, c:value);
+                        setProgramData : ::(i, value){ 
+                            topaz_material__set_program_data(a:impl, b:i, c:value);
                         },
         
-                        getProgramData : ::(index){ 
-                            return topaz_material__get_program_data(a:impl, b:index);
+                        getProgramData : ::(i){ 
+                            return topaz_material__get_program_data(a:impl, b:i);
                         },
         
                         clearSources : ::(){ 
@@ -920,11 +1422,11 @@
                 name : 'Topaz.Resources',        
                 define : ::(this){ 
                     @swtch = {};
-                    swtch[TOPAZ.ASSET.TYPE.IMAGE] = ::(i){return __Topaz__.Image.new(native:i);}; 
-                    swtch[TOPAZ.ASSET.TYPE.DATA] = ::(i){return __Topaz__.Data.new(native:i);};
-                    swtch[TOPAZ.ASSET.TYPE.SOUND] = ::(i){return __Topaz__.Sound.new(native:i);}; 
-                    swtch[TOPAZ.ASSET.TYPE.MATERIAL] = ::(i){return __Topaz__.Material.new(native:i);}; 
-                    swtch[TOPAZ.ASSET.TYPE.MESH] = ::(i){return __Topaz__.Mesh.new(native:i);};
+                    swtch[__Asset__.TYPE.IMAGE] = ::(i){return __Topaz__.Image.new(native:i);}; 
+                    swtch[__Asset__.TYPE.DATA] = ::(i){return __Topaz__.Data.new(native:i);};
+                    swtch[__Asset__.TYPE.SOUND] = ::(i){return __Topaz__.Sound.new(native:i);}; 
+                    swtch[__Asset__.TYPE.MATERIAL] = ::(i){return __Topaz__.Material.new(native:i);}; 
+                    swtch[__Asset__.TYPE.MESH] = ::(i){return __Topaz__.Mesh.new(native:i);};
 
                     @_rawAssetToInstance = ::(impl) { 
                         when(impl == empty) empty;
@@ -947,8 +1449,8 @@
                             return _rawAssetToInstance(impl:topaz_resources__load_asset(a:extension, b:path, c:name));
                         },
 
-                        loadAssetData : ::(extension, data, name) { 
-                            return _rawAssetToInstance(impl:topaz_resources__load_asset_data(a:extension, b:data, c:name));
+                        loadAssetData : ::(extension, bytes, name) { 
+                            return _rawAssetToInstance(impl:topaz_resources__load_asset_data(a:extension, b:bytes, c:name));
                         },
                         loadAssetBase64 : ::(extension, base64, name) { 
                             return _rawAssetToInstance(impl:topaz_resources__load_asset_base64(a:extension, b:base64, c:name));
@@ -994,12 +1496,12 @@
                             topaz_font_manager__register_font(a:name);
                         },
 
-                        preloadGlyphs : ::(fontName, sizeRequest, characters){ 
-                            topaz_font_manager__preload_glyphs(a:fontName, b:sizeRequest, c:characters);
+                        preloadGlyphs : ::(name, sizeRequest, characters){ 
+                            topaz_font_manager__preload_glyphs(a:name, b:sizeRequest, c:characters);
                         },
 
-                        unregisterFont : ::(fontName){ 
-                            topaz_font_manager__unregister_font(a:fontName);
+                        unregisterFont : ::(name){ 
+                            topaz_font_manager__unregister_font(a:name);
                         }        
                     };
                 }
@@ -1599,6 +2101,12 @@
             return class(
                 name : 'Topaz.Scheduler',        
                 inherits :[__Component__],
+                statics : {
+                    MODE : {
+                        TIME : 0,
+                        FRAME : 1
+                    }
+                },
                 define : ::(this){ 
                     @impl;
                     this.constructor = ::(native) {
@@ -1762,6 +2270,40 @@
             return class(
                 name : 'Topaz.Object2D',        
                 inherits :[__Component__],
+                statics: {
+                    GROUP : {
+                        A : 0,
+                        B : 1,
+                        C : 2,
+                        D : 3,
+                        E : 4,
+                        F : 5,
+                        G : 6,
+                        H : 7,
+                        I : 8,
+                        J : 9,
+                        K : 10,
+                        L : 11,
+                        M : 12,
+                        N : 13,
+                        O : 14,
+                        P : 15,
+                        Q : 16,
+                        R : 17,
+                        S : 18,
+                        T : 19,
+                        U : 20,
+                        V : 21,
+                        W : 22,
+                        X : 23,
+                        Y : 24,
+                        Z : 25
+                    },
+
+                    setGroupInteraction ::(thisGroup, otherGroup, interact){ 
+                        topaz_object2d__set_group_interaction(a:thisGroup, b:otherGroup, c:interact);
+                    }
+                }, 
                 define : ::(this){ 
                     @impl;
                     this.constructor = ::(native) {
@@ -2025,6 +2567,13 @@
             return class(
                 name : 'Topaz.Shape3D',        
                 inherits :[__Component__],
+                statics: {
+                    TEXTURE : {
+                        SLOT_0 : 0,
+                        SLOT_1 : 1,
+                        SLOT_2 : 2
+                    }
+                },
                 define : ::(this){ 
                     @impl;
                     this.constructor = ::(native) {
@@ -2118,6 +2667,17 @@
             return class(
                 name : 'Topaz.Automation',        
                 inherits :[__Component__],
+                statics : {
+                    FUNCTION : {
+                        NONE : 0,
+                        LINEAR : 1,
+                        ACCEL : 2,
+                        SLOW : 3,
+                        SOFT_ACCEL : 4,
+                        SOFT_SLOW : 5,
+                        RANDOM : 6    
+                    }      
+                },
                 define : ::(this){ 
                     @impl;
                     this.constructor = ::(native) {
@@ -2230,7 +2790,23 @@
             @:topaz_particle__set_image = getExternalFunction(name:'topaz_particle__set_image');
             @:topaz_particle__create = getExternalFunction(name:'topaz_particle__create');
             return class(
-                name : 'Topaz.Particle',        
+                name : 'Topaz.Particle',      
+                statics: {
+                    PROPERTY : {
+                        DURATION : 0,
+                        SCALE_X : 1,
+                        SCALE_Y : 2,
+                        SCALE_MULTIPLIER : 3,
+                        ROTATION : 4,
+                        DIRECTION : 5,
+                        SPEED_X : 6,
+                        SPEED_Y : 7,
+                        RED : 8,
+                        GREEN : 9,
+                        BLUE : 10,
+                        ALPHA : 11
+                    }
+                },
                 inherits : [__Native__],
                 define : ::(this){ 
 
@@ -2316,6 +2892,58 @@
         @:topaz__get_version_major = getExternalFunction(name:'topaz__get_version_major');
         @:topaz__debug = getExternalFunction(name:'topaz__debug');
         @:topaz__enable_console = getExternalFunction(name:'topaz__enable_console');
+        @:RENDERER =  {
+            ATTRIBUTE : {
+                PRIMITIVE : 0,
+                ALPHA_RULE : 1,
+                DEPTH_TEST : 2,
+                ETCH_RULE : 3,
+                TEXTURE_FILTER_HINT : 4
+            },
+            
+            PRIMITIVE : {
+                TRIANGLE : 0,
+                LINE : 1
+            },
+
+            ETCH_RULE : {
+                NO_ETCHING : 0,
+                DEFINE : 1,
+                UNDEFINE : 2,
+                IN : 3,
+                OUT : 4
+            },
+            
+            DEPTH_TEST : {
+                LESS : 0,
+                LEQ : 1,
+                GREATER : 2,
+                GEQ : 3,
+                EQUAL : 4,
+                NONE : 5
+            },
+
+            ALPHA_RULE : {
+                ALLOW : 0,
+                OPAQUE : 1,
+                TRANSLUCENT : 2,
+                INVISIBLE : 3
+            },
+            
+            TEXTURE_FILTER_HINT : {
+                LINEAR : 0,
+                NONE : 1
+            },
+            
+            LAYER : {
+                COLOR : 1,
+                DEPTH : 2,
+                ETCH : 4,
+                ALL  : 7
+            }
+
+        };
+ 
 
         this.interface = {
             run   : getExternalFunction(name:'topaz__run'),
@@ -2380,9 +3008,6 @@
                     return topaz__get_version_minor();                
                 }
             },
-            setGroupInteraction ::(groupA, groupB, interact){ 
-                topaz_object2d__set_group_interaction(a:groupA, b:groupB, c:interact);
-            },
 
             
             
@@ -2412,7 +3037,12 @@
             Shape3D     : {get : ::(){return __Shape3D__; }},
             Automation  : {get : ::(){return __Automation__; }},
             Particle    : {get : ::(){return __Particle__; }},
-            ParticleEmitter2D : {get : ::(){return __ParticleEmitter2D__; }}
+            ParticleEmitter2D : {get : ::(){return __ParticleEmitter2D__; }},
+            Vector : {get ::{return Vector;}},
+            Color  : {get ::{return Color;}},
+            RENDERER : {get ::{return RENDERER;}}
+
+
        };
     }
 ).new();

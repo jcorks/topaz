@@ -116,19 +116,7 @@ a:hover {
 }
 
 
-/* function control */
-.Function {
-  
-  background-color: #eeeeee;
-  margin: 15px;
 
-  border-top-width: 5px;
-  border-color: #e9e296;
-  border-top-style: solid;
-  padding:14px;
-  
-  font-family: codeText;
-}
 
 
 
@@ -152,6 +140,20 @@ a:hover {
   color : #666666;
 }
 
+/* function control */
+.Function {
+  
+  background-color: #eeeeee;
+  margin: 15px;
+
+  border-top-width: 5px;
+  border-color: #e9e296;
+  border-top-style: solid;
+  padding:14px;
+  
+  font-family: codeText;
+}
+
 .Function table {
   padding-left: 30px;
   text-align: left;
@@ -170,6 +172,39 @@ a:hover {
   font-size: 18px;
 }
 
+
+
+
+.StaticFunction {
+  
+  background-color: #eeeeee;
+  margin: 15px;
+
+  border-top-width: 5px;
+  border-color: #e9e296;
+  border-top-style: solid;
+  padding:14px;
+  
+  font-family: codeText;
+}
+
+.StaticFunction table {
+  padding-left: 30px;
+  text-align: left;
+}
+
+.StaticFunction h3 {
+  font-size: 26px;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.StaticFunction h4 {
+  padding-left: 60px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  font-size: 18px;
+}
 
 /* docpage */
 .Docpage {
@@ -302,7 +337,32 @@ a:hover {
   font-size: 18px;
 }
 
+/* Module */
+.Module {
+  background-color: #eeeeee;
+  margin: 15px;
 
+  border-top-width: 5px;
+  border-color: #e9e296;
+  border-top-style: solid;
+  padding:14px;
+  
+  font-family: codeText;
+}
+
+.Module a {
+}
+
+.Module h1 {
+  font-size: 28px;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.Module h4 {
+  padding-left: 60px;
+  font-size: 18px;
+}
 
 
 /* macro */

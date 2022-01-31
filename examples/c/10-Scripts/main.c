@@ -87,10 +87,10 @@ static void window_close_callback(
 }
 
 int main(int argc, char ** argv) {
-    char * path = "script";
+    char * path = "main.mt";
     if (argc > 1)
         path = argv[1];
-
+ 
     // Create the context and window
     topaz_t * ctx = topaz_context_create();
 
@@ -135,7 +135,6 @@ int main(int argc, char ** argv) {
         topazString_t * message = topaz_string_create_from_c_str("Script \"%s\" could not be opened or was empty.", path);
         topaz_console_print(console, message);
         topaz_string_destroy(message);
-        return 1;
     } 
     topaz_context_run(ctx);
 }

@@ -724,46 +724,24 @@ static void topaz_matte_run__first_time(
         TOPAZ_STR_CAST((char*)debug_bytes)
     );
 
-    #include "constants_bytes"
-
-    topaz_script_run(
-        script,
-        TOPAZ_STR_CAST("Topaz.Constants"),
-        TOPAZ_STR_CAST((char*)constants_bytes)
-    );
-    #include "vector_bytes"
-
-    topaz_script_run(
-        script,
-        TOPAZ_STR_CAST("Topaz.Vector"),
-        TOPAZ_STR_CAST((char*)vector_bytes)
-    );
-    #include "color_bytes"
-
-    topaz_script_run(
-        script,
-        TOPAZ_STR_CAST("Topaz.Color"),
-        TOPAZ_STR_CAST((char*)color_bytes)
-    );
-
     #include "bootstrap_bytes"
 
     topaz_script_run(
         script,
-        TOPAZ_STR_CAST("Topaz.Core"),
+        TOPAZ_STR_CAST("Topaz"),
 
         TOPAZ_STR_CAST((char*)bootstrap_bytes)
     );
 
-}
-
+}  
+  
 static void topaz_matte_run(
     topazScript_t * script, 
     void * data, 
     
     const topazString_t * sourceName, 
     const topazString_t * sourceDataD) {
-
+   
     TOPAZMATTE * ctx = data;
     
     if (!ctx->init) {
@@ -779,7 +757,7 @@ static void topaz_matte_run(
         &bytelen,
         topaz_matte_run__error,
         ctx
-    );
+    ); 
 
 
     if (!bytecode || !bytelen) {
