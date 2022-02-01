@@ -1,17 +1,18 @@
 
 @:generateDocumentation = import(module:'generator.mt');
 @:Topaz = import(module:'Topaz');
+Topaz.enableConsole();
 
-/*generateDocumentation(
+generateDocumentation(
     langHint:'C',    
     sourcePath:'../../include/topaz/',
     outputPath:'../c/'
-);*/
-generateDocumentation(
+);
+/*generateDocumentation(
     langHint:'None', 
     sourcePath:'../src/scripting/', 
     outputPath:'../scripting/'
-);
+);*/
 
 
 Topaz.quit();

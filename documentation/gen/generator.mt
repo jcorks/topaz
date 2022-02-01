@@ -65,23 +65,24 @@
         symbolTable.setTypeHint(hint:'#define',         type:symbolTable.type.MACRO);
         symbolTable.setTypeHint(hint:'typedef struct ', type:symbolTable.type.CLASS);
         symbolTable.setTypeHint(hint:'enum',            type:symbolTable.type.ENUMERATOR);
-        symbolTable.setTypeHint(hint:'typedef',         type:symbolTable.type.FUNCTION_POINTER);
+        symbolTable.setTypeHint(hint:'(*',         type:symbolTable.type.FUNCTION_POINTER);
         symbolTable.setTypeHint(hint:'(',               type:symbolTable.type.FUNCTION);
         symbolTable.setTypeHint(hint:' {',              type:symbolTable.type.OPEN_STRUCTURE);
-        symbolTable.setTypeHint(hint:'',                type:symbolTable.type.VARIABLE);
+        symbolTable.setTypeHint(hint:' ',                type:symbolTable.type.VARIABLE);
+        symbolTable.setTypeHint(hint:'_',              type:symbolTable.type.ENUM_VALUE);
 
         symbolTable.setSymbolExtractor(format:'DOCPAGE[%]',type: symbolTable.type.DOCPAGE); 
         symbolTable.setSymbolExtractor(format:'[%] [%](', type:symbolTable.type.FUNCTION, removeKeys:['*', 'const '], groupIndex:1); 
         symbolTable.setSymbolExtractor(format:'struct [%] ', type:symbolTable.type.OPEN_STRUCTURE); 
         symbolTable.setSymbolExtractor(format:'struct [%] ', type:symbolTable.type.CLASS); 
         symbolTable.setSymbolExtractor(format:'enum [%] ', type:symbolTable.type.ENUMERATOR); 
-        symbolTable.setSymbolExtractor(format:'[%],', type:symbolTable.type.ENUM_VALUE); 
-        symbolTable.setSymbolExtractor(format:' [%]\n', type:symbolTable.type.VARIABLE, removeKeys:[';']); 
+        symbolTable.setSymbolExtractor(format:'[%]\n', type:symbolTable.type.ENUM_VALUE, removeKeys:[',']); 
+        symbolTable.setSymbolExtractor(format:'[%] [%]\n', type:symbolTable.type.VARIABLE, removeKeys:['*', 'const ', ';'], groupIndex:1); 
         symbolTable.setSymbolExtractor(format:'*[%])', type:symbolTable.type.FUNCTION_POINTER); 
-        symbolTable.setSymbolExtractor(format:'#define[%] ', type:symbolTable.type.MACRO);
+        symbolTable.setSymbolExtractor(format:'#define [%] ', type:symbolTable.type.MACRO);
 
         symbolTable.setReturnObjectExtractor(format:'[%] [%](', type:symbolTable.type.FUNCTION, removeKeys:['const ', '*']);
-        symbolTable.setReturnObjectExtractor(format:'[%] ', type:symbolTable.type.VARIABLE, removeKeys:['*', 'const ']);
+        symbolTable.setReturnObjectExtractor(format:'[%] [%]\n', type:symbolTable.type.VARIABLE, removeKeys:['*', 'const ', ';']);
         symbolTable.setReturnObjectExtractor(format:'typedef[%](', type:symbolTable.type.FUNCTION_POINTER, removeKeys:['*', 'const ']);
 
         symbolTable.setObjectExtractor(format:'[%] [%]\n', removeKeys:['const', '*']);
@@ -263,7 +264,6 @@
         });
         return out;
     };
-
     for(in:[0, Object.length(of:files)], do:::(i) {
         data2doc(filename:files[i]);
     });

@@ -312,7 +312,7 @@ void topaz_script_set_handler(
     /// The event to set a handler for.
     topazScript_Event_t event, 
     /// The function to call when an event is triggered.
-    topaz_script_native_function, 
+    topaz_script_native_function function, 
     /// The data to bind to the function
     void * data
 );
@@ -518,7 +518,7 @@ topazScript_Object_t * topaz_script_object_reference_call(
     topazScript_Object_t * object,
 
     /// The arguments to pass to the function. The array will be read. 
-    const topazArray_t *
+    const topazArray_t * args
 );
 
 /// Associates this data object with a pointer. This is only modifiable

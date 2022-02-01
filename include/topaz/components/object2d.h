@@ -146,7 +146,7 @@ enum topazObject2D_Group {
 ///
 topazComponent_t * topaz_object2d_create(
     /// The topaz context.
-    topaz_t *
+    topaz_t * context
 );
 
 

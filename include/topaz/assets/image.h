@@ -178,9 +178,9 @@ void topaz_image_remove_texture_event_notify(
 ///
 void topaz_image_frame_set_from_texture(
     /// Frame to modify.
-    topazImage_Frame_t *,
+    topazImage_Frame_t * frame,
     /// Texture to clone from. 
-    topazRenderer_Texture_t *
+    topazRenderer_Texture_t * texture
 );
 
 
@@ -190,7 +190,7 @@ void topaz_image_frame_set_from_texture(
 ///
 void topaz_image_frame_set_data(
     /// Frame to modify.
-    topazImage_Frame_t *,
+    topazImage_Frame_t * frame,
     /// Texture data to read from and copy.
     const uint8_t * rgbdaData
 );
@@ -199,12 +199,18 @@ void topaz_image_frame_set_data(
 
 /// Gets the texture handle for the frame.
 ///
-topazRenderer_Texture_t * topaz_image_frame_get_texture(const topazImage_Frame_t *);
+topazRenderer_Texture_t * topaz_image_frame_get_texture(
+    /// The frame to query.
+    const topazImage_Frame_t * frame
+);
 
 
 /// Returns a new array with rgba data of the image frame.
 ///
-topazArray_t * topaz_image_frame_get_rgba_data(const topazImage_Frame_t *);
+topazArray_t * topaz_image_frame_get_rgba_data(
+    /// The frame to query.
+    const topazImage_Frame_t * frame
+);
 
 
 #endif

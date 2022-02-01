@@ -51,7 +51,7 @@ topazString_t * topaz_string_create_from_c_str(
     const char * fmt, 
 
     /// The variable args following the format.
-    ...
+    ... /*varargs*/
 );
 
 /// Creates a new string as a copy of the given string 
@@ -78,7 +78,7 @@ topazString_t * topaz_string_base64_from_bytes(
 /// NULL is returned and the size set to 0.
 uint8_t * topaz_string_base64_to_bytes(
     /// The string encoded into base64.
-    const topazString_t *,
+    const topazString_t * string,
     /// The size of the buffer returned.
     uint32_t * size
 );
@@ -146,7 +146,7 @@ void topaz_string_concat_printf(
     const char * format, 
 
     /// The variable arguments, indicated by format.
-    ...
+    ... /*varargs*/
 );
 
 
@@ -221,7 +221,7 @@ void topaz_string_set_char(
 ///
 void topaz_string_append_char(
     /// The string to append to.
-    topazString_t *, 
+    topazString_t * string, 
 
     /// The value of the character to add to the string.
     int value

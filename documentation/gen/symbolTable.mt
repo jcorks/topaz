@@ -76,6 +76,30 @@ return class(
             );
         };
 
+        // trailing and leading space
+        @:strip ::(str) {
+            loop(func:::{
+                when(str == empty) false;
+                @fc = String.charAt(string:str, index:0);
+                when(fc == ' ' || fc == '\r' || fc == '\n' || fc == '\t') ::<= {
+                    str = String.substr(string:str, from:1, to:String.length(of:str)-1);
+                    return true;
+                };
+                return false;
+            });    
+
+            loop(func:::{
+                when(str == empty) false;
+                @fc = String.charAt(string:str, index:String.length(of:str)-1);
+                when(fc == ' ' || fc == '\r' || fc == '\n' || fc == '\t') ::<= {
+                    str = String.substr(string:str, from:0, to:String.length(of:str)-2);
+                    return true;
+                };
+                return false;
+            });    
+            return if (str == empty) '' else str;
+        };
+
         this.interface = {
             type : {get::{return types;}},
 
@@ -165,6 +189,7 @@ return class(
                 textLine            
             ) {
                 when (textLine == '') types.NONE;
+                textLine = strip(str:textLine);
                 return listen(to:::{
                     for(in:[0, Object.length(of:hints)], do:::(i) {
                         if (String.contains(string:textLine, key:hints[i].hint)) ::<= {

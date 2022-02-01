@@ -60,11 +60,11 @@ typedef struct topazRender2D_t topazRender2D_t;
 ///
 topazRender2D_t * topaz_render2d_create(
     /// The 2D renderer to bind to this render2d instance.
-    topazRenderer_2D_t *, 
+    topazRenderer_2D_t * renderer, 
 
     /// The spatial reference to associate with this instance. If NULL,
     /// a new one will be created.
-    topazSpatial_t *
+    topazSpatial_t * spatial
 );
 
 /// Destroys the 2d object.
