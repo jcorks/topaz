@@ -1,0 +1,4173 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazAutomation_Function">
+topazAutomation_Function
+</h3>
+<pre>
+ Enumerator for the different available automation 
+ functions. Every automation can have functions associated with it
+ that describe how values change over time. These primitive 
+ functions can be string together to make virtually any 
+ value description.
+
+</pre>
+<table>
+<tr>
+<th>
+topazAutomation_Function_None
+</th>
+<td>
+ The value instantaneously becomes the end value.
+
+</td>
+</tr>
+<tr>
+<th>
+topazAutomation_Function_Linear
+</th>
+<td>
+ The value linearly becomes the end value.
+
+</td>
+</tr>
+<tr>
+<th>
+topazAutomation_Function_Accel
+</th>
+<td>
+ The value follows a bezier curve, where the value starts slow then accelerates to the end value.
+
+</td>
+</tr>
+<tr>
+<th>
+topazAutomation_Function_Slow
+</th>
+<td>
+ The value follows a bezier curve, where the value starts quickly then slows.
+
+</td>
+</tr>
+<tr>
+<th>
+topazAutomation_Function_SoftAccel
+</th>
+<td>
+ The value follows a bezier curve, where the value starts slow then accelerates to the end value, but more mildly.
+
+</td>
+</tr>
+<tr>
+<th>
+topazAutomation_Function_SoftSlow
+</th>
+<td>
+ The value follows a bezier curve, where the value starts quickly then slows, but more mildly.
+
+</td>
+</tr>
+<tr>
+<th>
+topazAutomation_Function_Random
+</th>
+<td>
+ The value becomes any value between begin and end when it is re-sampled.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_create
+</th>
+<td>
+ Creates a new automation instance.
+ Recognized events:
+ "on-anim-end" - when the automation is finished
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_add_keyframe
+</th>
+<td>
+ Adds a keyframe to the automation.
+ Every automation holds an automation, an automation 
+ is a collection of sequential keyframes that describe 
+ how a value should change over time.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_add_vector_keyframe
+</th>
+<td>
+ Same as topaz_automation_add_keyframe, except the 
+ value is a vector. 
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_clear
+</th>
+<td>
+ Removes all keyframes from an automation.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_add_automation
+</th>
+<td>
+ Adds all the keyframes from the given automation 
+ at the end of this automation.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_blend
+</th>
+<td>
+ The values for each keyframe are averaged and 
+ set back into this automation.
+ This may create additional keyframes to 
+ facilitate
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_smooth
+</th>
+<td>
+ Smooths the keyframe values across the current 
+ average.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_add_from_string
+</th>
+<td>
+ Adds an automation to this automation, but 
+ the automation is in string form.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_get_length
+</th>
+<td>
+ Gets the length of the automation. This is the total accumulative
+ keyframe offsets within the automation. The automation length 
+ is meant to convey how long the automation is in a time-agnostic way.
+ The length of the automation is not necessarily how long in seconds 
+ or frames the automation is.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_skip_to
+</th>
+<td>
+ Skip to a part of the automation. The value must be between or 
+ equal to 0 and the value of topaz_automation_get_length()
+ The value is modulo the length of the automation. Note that 
+ this is in keyframe units.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_set_duration_seconds
+</th>
+<td>
+ Sets the real duration of the automation.
+ This is how long it takes to get through the automation
+ in seconds. If an automation is currently running,
+ the automation is reset.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_set_duration_frames
+</th>
+<td>
+ Sets the real duration of the automation.
+ This is how long it takes to get through the automation in 
+ frames. If an automation is currently running, the automation 
+ is reset.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_get_duration
+</th>
+<td>
+ Gets the duration of the automation in either frames or seconds.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_set_looped
+</th>
+<td>
+ Sets whether the automation is looped.
+ When its looped, the automation will start over 
+ when the animato is done
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_get_looped
+</th>
+<td>
+ Gets whether the automation is looped.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_set_speed
+</th>
+<td>
+ Sets the speed multiplier for the automation.
+ The default is 1.0.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_get_speed
+</th>
+<td>
+ Gets the speed of the automation.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_pause
+</th>
+<td>
+ Pauses the automation.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_resume
+</th>
+<td>
+ Pauses resumes the automation.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_to_string
+</th>
+<td>
+ Compiles the current automation's keyframes into a string 
+
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_set_from_string
+</th>
+<td>
+ Sets the automation from a string. This removes all 
+ the existing keyframes and replaces them with the 
+ the keyframes from the compiled string.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_vector_at
+</th>
+<td>
+ Returns the vector animated based on the keyframes 
+ and the given progress within the automation. Progress is 
+ 0 to 1 but looped.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_at
+</th>
+<td>
+ Returns the float animated based on the keyframes 
+ and the given progress within the automation. Progress is 
+ 0 to 1 but looped.
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_current_vector
+</th>
+<td>
+ Returns the current vector value within the automation 
+
+
+</td>
+</tr>
+<tr>
+<th>
+topaz_automation_current
+</th>
+<td>
+ Returns the value within the automation.
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</h5>
+<h3 id="topaz_automation_create">
+topaz_automation_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new automation instance.
+ Recognized events:
+ "on-anim-end" - when the automation is finished
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The topaz context to create the component under.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_add_keyframe">
+topaz_automation_add_keyframe(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+value,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAutomation_Function.html#topazAutomation_Function">
+topazAutomation_Function
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+lerp,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+automationOffset
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a keyframe to the automation.
+ Every automation holds an automation, an automation 
+ is a collection of sequential keyframes that describe 
+ how a value should change over time.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation,
+</div>
+<pre>
+ The automation instance to add a keyframe to.
+
+</pre>
+<div>
+value,
+</div>
+<pre>
+ The value for the keyframe. Once this keyframe is 
+ reached, the automation will take on this value.
+
+</pre>
+<div>
+lerp,
+</div>
+<pre>
+ The traveling function that describes how 
+ the next keyframe's value should be reached. 
+
+</pre>
+<div>
+automationOffset
+</div>
+<pre>
+ The offset from the end of the last keyframe.
+ This can be querried with topaz_automation_get_length().
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_add_vector_keyframe">
+topaz_automation_add_vector_keyframe(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+value,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAutomation_Function.html#topazAutomation_Function">
+topazAutomation_Function
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+lerp,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+automationOffset
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_automation_add_keyframe, except the 
+ value is a vector. 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation,
+</div>
+<pre>
+ The automation instance to add a keyframe to.
+
+</pre>
+<div>
+value,
+</div>
+<pre>
+ The value for the keyframe. Once this keyframe is 
+ reached, the automation will take on this value.
+
+</pre>
+<div>
+lerp,
+</div>
+<pre>
+ The traveling function that describes how 
+ the next keyframe's value should be reached. 
+
+</pre>
+<div>
+automationOffset
+</div>
+<pre>
+ The offset from the end of the last keyframe.
+ This can be querried with topaz_automation_get_length().
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_clear">
+topaz_automation_clear(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes all keyframes from an automation.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation
+</div>
+<pre>
+ The automation to clear.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_add_automation">
+topaz_automation_add_automation(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+other
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds all the keyframes from the given automation 
+ at the end of this automation.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation,
+</div>
+<pre>
+ The automation to add to.
+
+</pre>
+<div>
+other
+</div>
+<pre>
+ The other automation.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_blend">
+topaz_automation_blend(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+other
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ The values for each keyframe are averaged and 
+ set back into this automation.
+ This may create additional keyframes to 
+ facilitate
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation,
+</div>
+<pre>
+ The automation to modify.
+
+</pre>
+<div>
+other
+</div>
+<pre>
+ The automation to blend with.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_smooth">
+topaz_automation_smooth(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Smooths the keyframe values across the current 
+ average.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation
+</div>
+<pre>
+ The automation to smooth.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_add_from_string">
+topaz_automation_add_from_string(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+other
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds an automation to this automation, but 
+ the automation is in string form.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation,
+</div>
+<pre>
+ The automation to add to.
+
+</pre>
+<div>
+other
+</div>
+<pre>
+ The automation string.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_automation_get_length">
+topaz_automation_get_length(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the length of the automation. This is the total accumulative
+ keyframe offsets within the automation. The automation length 
+ is meant to convey how long the automation is in a time-agnostic way.
+ The length of the automation is not necessarily how long in seconds 
+ or frames the automation is.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation
+</div>
+<pre>
+ The automation to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_skip_to">
+topaz_automation_skip_to(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Skip to a part of the automation. The value must be between or 
+ equal to 0 and the value of topaz_automation_get_length()
+ The value is modulo the length of the automation. Note that 
+ this is in keyframe units.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation,
+</div>
+<pre>
+ The automation to skip within.
+
+</pre>
+<div>
+value
+</div>
+<pre>
+ The value to skip to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_set_duration_seconds">
+topaz_automation_set_duration_seconds(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+seconds
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the real duration of the automation.
+ This is how long it takes to get through the automation
+ in seconds. If an automation is currently running,
+ the automation is reset.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation,
+</div>
+<pre>
+ The automation to modify.
+
+</pre>
+<div>
+seconds
+</div>
+<pre>
+ The actual real duration.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_set_duration_frames">
+topaz_automation_set_duration_frames(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+frames
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the real duration of the automation.
+ This is how long it takes to get through the automation in 
+ frames. If an automation is currently running, the automation 
+ is reset.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation,
+</div>
+<pre>
+ The automation to query.
+
+</pre>
+<div>
+frames
+</div>
+<pre>
+ the number of frames.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_automation_get_duration">
+topaz_automation_get_duration(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the duration of the automation in either frames or seconds.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation
+</div>
+<pre>
+ The automation to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_set_looped">
+topaz_automation_set_looped(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation,
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets whether the automation is looped.
+ When its looped, the automation will start over 
+ when the animato is done
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation,
+</div>
+<pre>
+ The automation to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_automation_get_looped">
+topaz_automation_get_looped(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets whether the automation is looped.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation
+</div>
+<pre>
+ The automation to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_set_speed">
+topaz_automation_set_speed(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+speed
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the speed multiplier for the automation.
+ The default is 1.0.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation,
+</div>
+<pre>
+ The automation to modify.
+
+</pre>
+<div>
+speed
+</div>
+<pre>
+ The rate of the automation automation. 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_automation_get_speed">
+topaz_automation_get_speed(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the speed of the automation.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation
+</div>
+<pre>
+ The automation to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_pause">
+topaz_automation_pause(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Pauses the automation.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation
+</div>
+<pre>
+ The automation to pause.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_resume">
+topaz_automation_resume(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Pauses resumes the automation.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation
+</div>
+<pre>
+ The automation to resume.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_automation_to_string">
+topaz_automation_to_string(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Compiles the current automation's keyframes into a string 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation
+</div>
+<pre>
+ The automation to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_automation_set_from_string">
+topaz_automation_set_from_string(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automationString
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the automation from a string. This removes all 
+ the existing keyframes and replaces them with the 
+ the keyframes from the compiled string.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation,
+</div>
+<pre>
+ The automation the modify
+
+</pre>
+<div>
+automationString
+</div>
+<pre>
+ The automation string to set from. 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_automation_vector_at">
+topaz_automation_vector_at(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+progress
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the vector animated based on the keyframes 
+ and the given progress within the automation. Progress is 
+ 0 to 1 but looped.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation,
+</div>
+<pre>
+ The automation to query.
+
+</pre>
+<div>
+progress
+</div>
+<pre>
+ The progress along the automation.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_automation_at">
+topaz_automation_at(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+progress
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the float animated based on the keyframes 
+ and the given progress within the automation. Progress is 
+ 0 to 1 but looped.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation,
+</div>
+<pre>
+ The automation to query.
+
+</pre>
+<div>
+progress
+</div>
+<pre>
+ The progress along the automation.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_automation_current_vector">
+topaz_automation_current_vector(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the current vector value within the automation 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation
+</div>
+<pre>
+ The automation to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_automation_current">
+topaz_automation_current(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+automation
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the value within the automation.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+automation
+</div>
+<pre>
+ The automation to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazComponent_t">
+topazComponent_t
+</h1>
+<pre>
+ Extends the functionality of Entities.
+
+ Each component can hold its own update cycle (step / draw)
+ as well as implement a generic event / callback system, 
+ allowing for extensions of all kinds.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazComponent_t.html#topaz_component_create">
+topaz_component_create()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_create_with_attributes">
+topaz_component_create_with_attributes()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_get_attributes">
+topaz_component_get_attributes()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_set_attributes">
+topaz_component_set_attributes()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_destroy">
+topaz_component_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_attach">
+topaz_component_attach()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_detach">
+topaz_component_detach()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_step">
+topaz_component_step()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_draw">
+topaz_component_draw()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_get_stepping">
+topaz_component_get_stepping()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_get_drawing">
+topaz_component_get_drawing()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_set_stepping">
+topaz_component_set_stepping()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_set_drawing">
+topaz_component_set_drawing()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_get_tag">
+topaz_component_get_tag()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_set_tag">
+topaz_component_set_tag()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_get_host">
+topaz_component_get_host()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_get_context">
+topaz_component_get_context()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_null">
+topaz_component_null()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_emit_event">
+topaz_component_emit_event()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_emit_event_anonymous">
+topaz_component_emit_event_anonymous()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_can_handle_event">
+topaz_component_can_handle_event()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_install_hook">
+topaz_component_install_hook()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_uninstall_hook">
+topaz_component_uninstall_hook()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_install_handler">
+topaz_component_install_handler()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_uninstall_handler">
+topaz_component_uninstall_handler()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_get_known_events">
+topaz_component_get_known_events()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_install_event">
+topaz_component_install_event()
+</a>
+
+</div>
+<div>
+<a href="topazComponent_t.html#topaz_component_uninstall_event">
+topaz_component_uninstall_event()
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+struct
+</span>
+<span class="VariableName">
+ topazComponent_Attributes_t{
+</span>
+
+</div>
+<pre>
+ Attributes of the component. Attributes define a baseline behavior 
+ in response to common events. 
+
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_attribute_callback">
+(*topaz_component_attribute_callback)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+cbData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Standard callback for all component attributes.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component revieing the callback
+
+</pre>
+<div>
+cbData
+</div>
+<pre>
+ Data bound to the callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</h5>
+<h3 id="topaz_component_create">
+topaz_component_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+tagName,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new component
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+tagName,
+</div>
+<pre>
+ Helps uniquely identify the component
+
+</pre>
+<div>
+context
+</div>
+<pre>
+ The topaz context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</h5>
+<h3 id="topaz_component_create_with_attributes">
+topaz_component_create_with_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+tagName,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazComponent_Attributes_t
+</th>
+<th class="FunctionArgumentName">
+attribs
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new component with the specified attributes
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+tagName,
+</div>
+<pre>
+ Helps uniquely identify the component
+
+</pre>
+<div>
+context,
+</div>
+<pre>
+ The topaz context.
+
+</pre>
+<div>
+attribs
+</div>
+<pre>
+ The attributes to define the component with.     
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+topazComponent_Attributes_t
+</h5>
+<h3 id="topaz_component_get_attributes">
+topaz_component_get_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the attributes of the component.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ The component to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_set_attributes">
+topaz_component_set_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazComponent_Attributes_t
+</th>
+<th class="FunctionArgumentName">
+newAttribs
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the attributes of the component. This is applied immediately.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component to modify.
+
+</pre>
+<div>
+newAttribs
+</div>
+<pre>
+ The new incoming attributes.    
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_destroy">
+topaz_component_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys a component. This detaches the component from the entity 
+ which emits the detach event.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ the component to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_attach">
+topaz_component_attach(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Attaches the component to an entity. This triggers the attach event.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component to attach to an entity.
+
+</pre>
+<div>
+entity
+</div>
+<pre>
+ The entity to attach to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_detach">
+topaz_component_detach(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Detaches the component from an entity. This triggers the detach event.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ The component to detach from its host.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_step">
+topaz_component_step(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Steps the component. Normally called for you if attached to a host.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ The component to step.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_draw">
+topaz_component_draw(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Draws the component. Normally called for you if attached to a host.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ The component to draw.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_component_get_stepping">
+topaz_component_get_stepping(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets whether this component will update when a step 
+ is requested.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ The component to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_component_get_drawing">
+topaz_component_get_drawing(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets whether this component will draw when a draw
+ is requested.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ The component to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_set_stepping">
+topaz_component_set_stepping(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+trueOrFalse
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets whether this component will step.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component to modify.
+
+</pre>
+<div>
+trueOrFalse
+</div>
+<pre>
+ Whether to enable.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_set_drawing">
+topaz_component_set_drawing(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+trueOrFalse
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets whether this component will draw.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+,
+</div>
+<pre>
+ The component to modify.
+
+</pre>
+<div>
+trueOrFalse
+</div>
+<pre>
+ Whether to enable.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_component_get_tag">
+topaz_component_get_tag(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the tag for the component.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ The component to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_set_tag">
+topaz_component_set_tag(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+newTag
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the tag for the component.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component to modify.
+
+</pre>
+<div>
+newTag
+</div>
+<pre>
+ The tag to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</h5>
+<h3 id="topaz_component_get_host">
+topaz_component_get_host(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the set host of the component. If no host is set,
+ nullptr is returned.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ The component to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</h5>
+<h3 id="topaz_component_get_context">
+topaz_component_get_context(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the context that this component belongs in.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ The component to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</h5>
+<h3 id="topaz_component_null">
+topaz_component_null()
+</h3>
+<pre>
+ Returns the emtpy component. This value is consistent across all 
+ invocations.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="TOPAZ_CNULL">
+TOPAZ_CNULL
+</h3>
+<pre>
+ Macro that can be used as an expression instead of the call 
+ topaz_component_null() 
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_event_handler">
+(*topaz_event_handler)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+dataEvent,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+source,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+sourceEvent
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Function type for all event signals.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component instance handling this event.
+
+
+</pre>
+<div>
+dataEvent,
+</div>
+<pre>
+ The user data specifified when setting this handler.
+
+
+</pre>
+<div>
+source,
+</div>
+<pre>
+ The entity that triggered this event.
+ 
+
+</pre>
+<div>
+sourceEvent
+</div>
+<pre>
+ Data sent when the emitted event.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_component_emit_event">
+topaz_component_emit_event(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+eventName,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+source,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+sourceData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Triggers the specified event for this Component
+
+ Returns whether the event was allowed to propogate all the
+ way to the main handler (in other words, lets you know whether
+ all the handlers allowed the event to happen)
+ Source is passed to the handler and is usually the source of the event (but does not have to be)
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component to emit the event from
+
+</pre>
+<div>
+eventName,
+</div>
+<pre>
+ Name of the event. This should match the name that was installed.
+
+</pre>
+<div>
+source,
+</div>
+<pre>
+ Entity that indicates the source of the event. For example, in a collision, this may be the object collided with.
+
+</pre>
+<div>
+sourceData
+</div>
+<pre>
+ Optional string vector with additional information to be used by the event.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_component_emit_event_anonymous">
+topaz_component_emit_event_anonymous(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+eventName
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_component_emit_event() but the source entity and source data are NULL
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component to emit the event from.
+
+</pre>
+<div>
+eventName
+</div>
+<pre>
+ The name of the event to emit.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_component_can_handle_event">
+topaz_component_can_handle_event(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+eventName
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns whether there exists at least one handler for the given event
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component to query.
+
+</pre>
+<div>
+eventName
+</div>
+<pre>
+ The event name to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_component_install_hook">
+topaz_component_install_hook(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+eventName,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topaz_event_handler">
+topaz_event_handler
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+hook,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+eventData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a hook to the event. 
+
+ A hook happens at the end of a given event after all the
+ handlers have been run. Hooks occur regardless of event handler propogation.
+ (the return value is ignored for all hooks)
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component to install a hook within.
+
+</pre>
+<div>
+eventName,
+</div>
+<pre>
+ The event to add the hook to.
+
+</pre>
+<div>
+hook,
+</div>
+<pre>
+ The handler that will be called when the event is triggered.
+
+</pre>
+<div>
+eventData
+</div>
+<pre>
+ The data to bind with the hook when calling it.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_uninstall_hook">
+topaz_component_uninstall_hook(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+eventName,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+index
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes a hook added with InstallHook()
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component to remove the hook from.
+
+</pre>
+<div>
+eventName,
+</div>
+<pre>
+ The name of the event 
+
+</pre>
+<div>
+index
+</div>
+<pre>
+ The index of the hook to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_component_install_handler">
+topaz_component_install_handler(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+eventName,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topaz_event_handler">
+topaz_event_handler
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+handler,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+handlerData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a handler to an event. 
+
+ Handlers that are added are run in LIFO order
+ and their return values dictate whether the event should propogate.
+ the last handler run for an event is always the main handler of the event.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component to install a handler into.
+
+</pre>
+<div>
+eventName,
+</div>
+<pre>
+ The event name to install to.
+
+</pre>
+<div>
+handler,
+</div>
+<pre>
+ The handler called when handling the event.
+
+</pre>
+<div>
+handlerData
+</div>
+<pre>
+ The data to bind with the handler.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_uninstall_handler">
+topaz_component_uninstall_handler(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+eventName,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+index
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes a handler added with InstallHandler()
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component to remove the handler from.
+
+</pre>
+<div>
+eventName,
+</div>
+<pre>
+ The event name to uninstall the handler from.
+
+</pre>
+<div>
+index
+</div>
+<pre>
+ The index of the handler.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_component_get_known_events">
+topaz_component_get_known_events(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a list of event names that this component is able to process
+ The array needs to be freed by the caller.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ The component to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_install_event">
+topaz_component_install_event(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+eventName,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topaz_event_handler">
+topaz_event_handler
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+defaultHandler,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+handlerData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a new event to be recognized by the Component.
+
+ if mainHandler is nullptr, the event is still added, but has no default
+ handler is set. The default handler is always guaranteed to run first for the event.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component to install an event to.
+
+</pre>
+<div>
+eventName,
+</div>
+<pre>
+ The name of the event.
+
+</pre>
+<div>
+defaultHandler,
+</div>
+<pre>
+ The default handler for the new event.
+
+</pre>
+<div>
+handlerData
+</div>
+<pre>
+ The data to bind with the default handler.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_component_uninstall_event">
+topaz_component_uninstall_event(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+eventName
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ removes a handler of an event
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component,
+</div>
+<pre>
+ The component to remove an event from.
+
+</pre>
+<div>
+eventName
+</div>
+<pre>
+ The event to remove from the handler.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

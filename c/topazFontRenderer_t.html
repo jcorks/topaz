@@ -1,0 +1,767 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazFontRenderer_t">
+topazFontRenderer_t
+</h1>
+<pre>
+ An abstraction for generating image data 
+ for text characters.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazFontRenderer_t.html#topaz_font_renderer_create">
+topaz_font_renderer_create()
+</a>
+
+</div>
+<div>
+<a href="topazFontRenderer_t.html#topaz_font_renderer_destroy">
+topaz_font_renderer_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazFontRenderer_t.html#topaz_font_renderer_get_backend">
+topaz_font_renderer_get_backend()
+</a>
+
+</div>
+<div>
+<a href="topazFontRenderer_t.html#topaz_font_renderer_get_api">
+topaz_font_renderer_get_api()
+</a>
+
+</div>
+<div>
+<a href="topazFontRenderer_t.html#topaz_font_renderer_image_ref">
+topaz_font_renderer_image_ref()
+</a>
+
+</div>
+<div>
+<a href="topazFontRenderer_t.html#topaz_font_renderer_image_unref">
+topaz_font_renderer_image_unref()
+</a>
+
+</div>
+<div>
+<a href="topazFontRenderer_t.html#topaz_font_renderer_set_font_data">
+topaz_font_renderer_set_font_data()
+</a>
+
+</div>
+<div>
+<a href="topazFontRenderer_t.html#topaz_font_renderer_query_spacing">
+topaz_font_renderer_query_spacing()
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+struct
+</span>
+<span class="VariableName">
+ topazFontRenderer_Spacing_t{
+</span>
+
+</div>
+<pre>
+ Object that holds spacing information, allowing for more complex placement of 
+ characters next to each other.
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazFontRenderer_t.html#topazFontRenderer_t">
+topazFontRenderer_t
+</a>
+
+</h5>
+<h3 id="topaz_font_renderer_create">
+topaz_font_renderer_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazFontRendererAPI_t
+</th>
+<th class="FunctionArgumentName">
+api
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new font renderer object
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The topaz context.
+
+</pre>
+<div>
+backend,
+</div>
+<pre>
+ The backend to implement the backend's features.
+
+</pre>
+<div>
+api
+</div>
+<pre>
+ The raw API to implement the backend's features.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_font_renderer_destroy">
+topaz_font_renderer_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFontRenderer_t.html#topazFontRenderer_t">
+topazFontRenderer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fRenderer
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys and cleans up a font renderer API
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fRenderer
+</div>
+<pre>
+ The font renderer to destroy
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</h5>
+<h3 id="topaz_font_renderer_get_backend">
+topaz_font_renderer_get_backend(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFontRenderer_t.html#topazFontRenderer_t">
+topazFontRenderer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fRenderer
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the backend for this font renderer object.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fRenderer
+</div>
+<pre>
+ The font renderer to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+topazFontRendererAPI_t
+</h5>
+<h3 id="topaz_font_renderer_get_api">
+topaz_font_renderer_get_api(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFontRenderer_t.html#topazFontRenderer_t">
+topazFontRenderer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fRenderer
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the API for this font renderer.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fRenderer
+</div>
+<pre>
+ The font renderer to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</h5>
+<h3 id="topaz_font_renderer_image_ref">
+topaz_font_renderer_image_ref(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFontRenderer_t.html#topazFontRenderer_t">
+topazFontRenderer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fRenderer,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+charcode,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+sizePixels
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a pixel buffer containing the glyph 
+ in question. The pixel buffer is owned by the renderer.
+ Each call to topaz_font_renderer_glyph_ref() increments 
+ a reference count to the pixel buffer representing the 
+ glyph. Once the user is done with the buffer, they may 
+ call topaz_font_renderer_glyph_unref to decrement the 
+ reference count. Once the reference count reaches 0, 
+ the topazAsset_t * will be freed.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fRenderer,
+</div>
+<pre>
+ The font renderer to use.
+
+</pre>
+<div>
+charcode,
+</div>
+<pre>
+ The codepoint for the character.
+
+</pre>
+<div>
+sizePixels
+</div>
+<pre>
+ The requested size in pixels.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_font_renderer_image_unref">
+topaz_font_renderer_image_unref(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFontRenderer_t.html#topazFontRenderer_t">
+topazFontRenderer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fRenderer,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+charcode,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+sizePixels
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gives a hint to the font renderer to decrement 
+ the reference count for the character in question.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fRenderer,
+</div>
+<pre>
+ The font renderer to use.
+
+</pre>
+<div>
+charcode,
+</div>
+<pre>
+ The codepoint for the character.
+
+</pre>
+<div>
+sizePixels
+</div>
+<pre>
+ The requested size in pixels.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_font_renderer_set_font_data">
+topaz_font_renderer_set_font_data(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFontRenderer_t.html#topazFontRenderer_t">
+topazFontRenderer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fRenderer,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint8_t
+</th>
+<th class="FunctionArgumentName">
+srcData,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+size
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the font renderer's font data.
+ This corresponds to the data that the font renderer understands
+ which is backend-dependent. For most cases, this is 
+ raw data from an external source, i.e. a file.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fRenderer,
+</div>
+<pre>
+ The font renderer to send data to.
+
+</pre>
+<div>
+srcData,
+</div>
+<pre>
+ The raw bytes to send to the font renderer.
+
+</pre>
+<div>
+size
+</div>
+<pre>
+ The number of raw bytes being sent to the font renderer.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_font_renderer_query_spacing">
+topaz_font_renderer_query_spacing(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFontRenderer_t.html#topazFontRenderer_t">
+topazFontRenderer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fRenderer,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazFontRenderer_Spacing_t
+</th>
+<th class="FunctionArgumentName">
+spacing,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+sizePixels,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+prevchar,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+thischar,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+nextchar
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns sizing information for a character.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fRenderer,
+</div>
+<pre>
+ The font renderer to use.
+
+</pre>
+<div>
+spacing,
+</div>
+<pre>
+ The spacing information to populate.
+ The xNextOrigin and yNextOrigin should be 
+ zero'd when starting a new string of characters,
+ as the output xNextOrigin and yNextOrigin are relative
+ to the initial character.
+
+
+</pre>
+<div>
+sizePixels,
+</div>
+<pre>
+ Requested size of the font in pixels.
+
+
+</pre>
+<div>
+prevchar,
+</div>
+<pre>
+ The previous character in the string. If none,
+ should be 0.
+
+
+</pre>
+<div>
+thischar,
+</div>
+<pre>
+ The current character to request spacing info for.
+
+
+</pre>
+<div>
+nextchar
+</div>
+<pre>
+ The previous character in the string. If none,
+ should be 0.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

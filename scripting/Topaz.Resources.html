@@ -1,0 +1,716 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Singleton">
+<div class="typetag">
+(Singleton)</br>
+</div>
+<div>
+<h1 id="Topaz.Resources">
+Topaz.Resources
+</h1>
+<pre>
+ Manages assets and acts as a repository for them.
+
+ Many projects require thats some external data be 
+ loaded in during the running of the program. The Resources 
+ module provides a means to accomplish this.
+ Using standardized pathing and built-in IO translators,
+ this module will translate data for you.
+
+ Often in projects, the same asset will be used in multiple parts within 
+ the program. This module will resuse assets already loaded to provide a quick,
+ transparent way to quickly access assets.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Resources.html#fetchAsset">
+fetchAsset()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Resources.html#createAsset">
+createAsset()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Resources.html#loadAsset">
+loadAsset()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Resources.html#loadAssetData">
+loadAssetData()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Resources.html#loadAssetBase64">
+loadAssetBase64()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Resources.html#writeAsset">
+writeAsset()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Resources.html#removeAsset">
+removeAsset()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Resources.html#isExtensionSupport">
+isExtensionSupport()
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+String
+</span>
+<span class="VariableName">
+ path
+</span>
+
+</div>
+<pre>
+ Current path for reading / writing operations. In cases where 
+ a partial path is given when using resource features 
+ that references the database, this path will be assumed 
+ to be the "current directory".
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="Topaz.Asset.html#Topaz.Asset">
+Topaz.Asset
+</a>
+
+</h5>
+<h3 id="fetchAsset">
+fetchAsset(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Asset.html#Topaz.Asset.TYPE">
+Topaz.Asset.TYPE
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+type
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Either creates a new asset if the given name doesn't exist, or 
+ returns an existing asset.
+ In the case that a new asset needs to be created, 
+ if the fileType is not able to be interpreted, then 
+ undefined is returned. This is only checked if the name doesn't exist.
+ In the case that a new asset is created, the returned asset 
+ can then be used directly to load data. See asset.h
+ 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+type
+</div>
+<pre>
+ The asset type.
+
+</pre>
+<div>
+name
+</div>
+<pre>
+ The unique name of the asset.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="Topaz.Asset.html#Topaz.Asset">
+Topaz.Asset
+</a>
+
+</h5>
+<h3 id="createAsset">
+createAsset(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Asset.html#Topaz.Asset.TYPE">
+Topaz.Asset.TYPE
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+type
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new asset with an auto-generated name.
+ The name will be registered with the resources instance and 
+ can be used to refer to the asset.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+type
+</div>
+<pre>
+ The asset type.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="Topaz.Asset.html#Topaz.Asset">
+Topaz.Asset
+</a>
+
+</h5>
+<h3 id="loadAsset">
+loadAsset(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+extension
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+path
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Convenience function that attempts to load a new asset 
+ from the filesystem directly. This is recommended for small assets that are 
+ effectively instanteous. If a more robust solution is needed,
+ consider using the C interface to extend scripting features.
+
+ "name" is used as the name of the asset. For functions that refer to 
+ asset names to uniquely identify an asset such as fetchAsset().
+
+ "path" is used as the filesystem path to read the asset from. This assumes the 
+ current path is Topaz.Resources.path 
+
+ "fileType" is the extension of the file used to determine with IO Translator 
+ to use to interpret data.
+
+ Like with fetchAsset, if an asset of the given name 
+ already exists, the preloaded asset is returned. If not, 
+ then a new asset is created whos name will match the path given.
+ Then, the data is attempted to be loaded from disk. The name given is 
+ first checked to see if its a partial path relative to 
+ the resources's resource path (Topaz.Resources.path). Then 
+ its interpreted as a full path.
+ If the data could not be inerpreted as the given type, or the source 
+ data is unavailable, undefined is returned.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+extension
+</div>
+<pre>
+ The extension / filetype to attempt to read with. i.e. 'png'
+
+</pre>
+<div>
+path
+</div>
+<pre>
+ The path to the asset.
+
+</pre>
+<div>
+name
+</div>
+<pre>
+ The unique name to give to the asset.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="Topaz.Asset.html#Topaz.Asset">
+Topaz.Asset
+</a>
+
+</h5>
+<h3 id="loadAssetData">
+loadAssetData(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+extension
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Array
+</th>
+<th class="FunctionArgumentName">
+bytes
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Equivalent to topaz_resources_load_asset, except instead of reading 
+ from the filsystem, raw byte data is read instead. Each member of 
+ the array is expected to be a byte value (0-255)
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+extension
+</div>
+<pre>
+ The extension / filetype to attempt to read with. i.e. 'png'
+
+</pre>
+<div>
+bytes
+</div>
+<pre>
+ The raw data for the asset. Read as if contiguous bytes.
+
+</pre>
+<div>
+name
+</div>
+<pre>
+ The unique name to give to the asset.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="Topaz.Asset.html#Topaz.Asset">
+Topaz.Asset
+</a>
+
+</h5>
+<h3 id="loadAssetBase64">
+loadAssetBase64(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+extension
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+base64
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Equivalent to topaz_resources_load_asset, except instead of reading
+ from the filesystem, raw byte data is generated from an encoded
+ base64 string.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+extension
+</div>
+<pre>
+ The extension / filetype to attempt to read with. i.e. 'png'
+
+</pre>
+<div>
+base64
+</div>
+<pre>
+ The raw data for the asset. Read as a base64 string.
+
+</pre>
+<div>
+name
+</div>
+<pre>
+ The unique name to give to the asset.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Boolean
+</h5>
+<h3 id="writeAsset">
+writeAsset(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Asset.html#Topaz.Asset">
+Topaz.Asset
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+asset
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+extension
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+path
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Writes an asset to the filesystem at the outputpath 
+ given relative to the resources path.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+asset
+</div>
+<pre>
+ The asset to write.
+
+</pre>
+<div>
+extension
+</div>
+<pre>
+ The type to write the asset as.
+
+</pre>
+<div>
+path
+</div>
+<pre>
+ The output path to write to. This is system-dependent based on the filesystem backend.
+ See Topaz.Filesystem for more information.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="removeAsset">
+removeAsset(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes the asset by name.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+name
+</div>
+<pre>
+ Name of the asset to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Boolean
+</h5>
+<h3 id="isExtensionSupport">
+isExtensionSupport(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+extension
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns whether a particular file extension is supported.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+extension
+</div>
+<pre>
+ The name of the file extension / type to request.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

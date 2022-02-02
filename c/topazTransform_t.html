@@ -1,0 +1,978 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazTransform_t">
+topazTransform_t
+</h1>
+<pre>
+
+    A hierarchical transform object.
+  
+    Allows for chaining transformation information including
+    position, rotation, and scaling. Because Transforms are hierarchical,
+    each has a local transform and a global transform.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazTransform_t.html#topaz_transform_create">
+topaz_transform_create()
+</a>
+
+</div>
+<div>
+<a href="topazTransform_t.html#topaz_transform_destroy">
+topaz_transform_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazTransform_t.html#topaz_transform_reset">
+topaz_transform_reset()
+</a>
+
+</div>
+<div>
+<a href="topazTransform_t.html#topaz_transform_get_rotation">
+topaz_transform_get_rotation()
+</a>
+
+</div>
+<div>
+<a href="topazTransform_t.html#topaz_transform_get_position">
+topaz_transform_get_position()
+</a>
+
+</div>
+<div>
+<a href="topazTransform_t.html#topaz_transform_get_scale">
+topaz_transform_get_scale()
+</a>
+
+</div>
+<div>
+<a href="topazTransform_t.html#topaz_transform_rotation">
+topaz_transform_rotation()
+</a>
+
+</div>
+<div>
+<a href="topazTransform_t.html#topaz_transform_position">
+topaz_transform_position()
+</a>
+
+</div>
+<div>
+<a href="topazTransform_t.html#topaz_transform_scale">
+topaz_transform_scale()
+</a>
+
+</div>
+<div>
+<a href="topazTransform_t.html#topaz_transform_set_reverse_translation">
+topaz_transform_set_reverse_translation()
+</a>
+
+</div>
+<div>
+<a href="topazTransform_t.html#topaz_transform_get_matrix">
+topaz_transform_get_matrix()
+</a>
+
+</div>
+<div>
+<a href="topazTransform_t.html#topaz_transform_needs_update">
+topaz_transform_needs_update()
+</a>
+
+</div>
+<div>
+<a href="topazTransform_t.html#topaz_transform_add_callback">
+topaz_transform_add_callback()
+</a>
+
+</div>
+<div>
+<a href="topazTransform_t.html#topaz_transform_remove_callback">
+topaz_transform_remove_callback()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</h5>
+<h3 id="topaz_transform_create">
+topaz_transform_create()
+</h3>
+<pre>
+ Creates a new transform object 
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_transform_destroy">
+topaz_transform_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+transform
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys a transform object 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+transform
+</div>
+<pre>
+ Transform to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_transform_reset">
+topaz_transform_reset(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+transform
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Rests the transform to the initial transform state.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+transform
+</div>
+<pre>
+ Transform to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_transform_get_rotation">
+topaz_transform_get_rotation(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+transform
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets a read-only, quick reference to the rotation component.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+transform
+</div>
+<pre>
+ The transform to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_transform_get_position">
+topaz_transform_get_position(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+transform
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets a read-only, quick reference to the position component.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+transform
+</div>
+<pre>
+ The transform to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_transform_get_scale">
+topaz_transform_get_scale(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+transform
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets a read-only, quick reference to the scale component.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+transform
+</div>
+<pre>
+ The transform to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_transform_rotation">
+topaz_transform_rotation(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+transform
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a writable reference to the rotation component. 
+ Once called, flags the node to recalculate its transforms
+ on the following frame.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+transform
+</div>
+<pre>
+ The transform to query. It will be marked for updating after this call in case 
+ the transform property is changed.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_transform_position">
+topaz_transform_position(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+transform
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a writable reference to the position component. 
+ Once called, flags the node to recalculate its transforms
+ on the following frame.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+transform
+</div>
+<pre>
+ The transform to query. It will be marked for updating after this call in case 
+ the transform property is changed.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_transform_scale">
+topaz_transform_scale(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+transform
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a writable reference to the scale component. 
+ Once called, flags the node to recalculate its transforms
+ on the following frame.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+transform
+</div>
+<pre>
+ The transform to query. It will be marked for updating after this call in case 
+ the transform property is changed.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_transform_set_reverse_translation">
+topaz_transform_set_reverse_translation(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+transform,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+reverse
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets whether to reverse the node's interpretation of 
+ of translation for transform calculation. Rarely useful.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+transform,
+</div>
+<pre>
+ The transform to modify.
+
+</pre>
+<div>
+reverse
+</div>
+<pre>
+ Whether to reverse.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</h5>
+<h3 id="topaz_transform_get_matrix">
+topaz_transform_get_matrix(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+transform
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the transform matrix representative
+ of this Transform. At this time, any requests to modify 
+ the transform are processed. If any such request was made, 
+ the transform is updated and any OnTransformUpdate functors 
+ are called.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+transform
+</div>
+<pre>
+ The transform to query. It might internally trigger to update
+ if the transform is invalidated.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_transform_needs_update">
+topaz_transform_needs_update(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+transform
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns whether an update to this transform is 
+ pending.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+transform
+</div>
+<pre>
+ Returns whether the transform needs to process updates.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_transform_callback">
+(*topaz_transform_callback)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+transform,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+callbackData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ A callback for when a transform commits queued changes. 
+ Individual properties of a transform (position, rotation, etc) 
+ are editable parts of the transform, but will need to be 
+ compiled into a matrix. 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+transform,
+</div>
+<pre>
+ The transform that was updated.
+
+</pre>
+<div>
+callbackData
+</div>
+<pre>
+ The data bound to the callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_transform_add_callback">
+topaz_transform_add_callback(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+transform,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topaz_transform_callback">
+topaz_transform_callback
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+callback,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+userData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a transform update.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+transform,
+</div>
+<pre>
+ The transform to modify.
+
+</pre>
+<div>
+callback,
+</div>
+<pre>
+ Function called when the transform.
+ The first argument is the transform in question.
+ The last argument is the userdata.
+
+</pre>
+<div>
+userData
+</div>
+<pre>
+ Data to bind to the callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_transform_remove_callback">
+topaz_transform_remove_callback(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topaz_transform_callback">
+topaz_transform_callback
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+callback,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+userData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes the given callback
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+callback,
+</div>
+<pre>
+ The callback to remove.
+
+</pre>
+<div>
+userData
+</div>
+<pre>
+ The callback data bound to the callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

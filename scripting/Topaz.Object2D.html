@@ -1,0 +1,1042 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="Topaz.Object2D">
+Topaz.Object2D
+</h1>
+<i>
+- inherits from: <a href="Topaz.Component.html#Topaz.Component">
+Topaz.Component
+</a>
+
+</i>
+<pre>
+ Provides simple, physics-like behavior to objects, allowign for 
+ collisions and velocity control.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div>
+</br><b>Static Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Object2D.html#addVelocity">
+addVelocity()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Object2D.html#addVelocityTowards">
+addVelocityTowards()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Object2D.html#setVelocity">
+setVelocity()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Object2D.html#setVelocityTowards">
+setVelocityTowards()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Object2D.html#halt">
+halt()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Object2D.html#resetMotion">
+resetMotion()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Object2D.html#setColliderRadial">
+setColliderRadial()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Object2D.html#setGroupInteraction">
+setGroupInteraction()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Object2D.html#Topaz.Object2D.GROUP">
+Topaz.Object2D.GROUP
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ frictionX
+</span>
+
+</div>
+<pre>
+ Gets/Sets the amount of resistance to speed measured as a percentile of the speed per update.
+ Every frame, only the amount percent of the host entity's velocity is retained. For example,
+ if friction is specified to be .05, every frame 57013220300f the Entity's speed will be lost.
+ This is applied in the horizontal direction.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ fractionY
+</span>
+
+</div>
+<pre>
+ Gets/Sets the amount of resistance to speed measured as a percentile of the speed per update.
+ Every frame, only the amount percent of the host entity's velocity is retained. For example,
+ if friction is specified to be .05, every frame 57013220300f the Entity's speed will be lost.
+ This is applied in the vertical direction.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ direction
+</span>
+
+</div>
+<pre>
+ Sets/Gets the current direction that the entity is traveling in degrees.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ velocityX
+</span>
+
+</div>
+<pre>
+ Sets/Gets the horizontal component of the current velocity.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ velocityY
+</span>
+
+</div>
+<pre>
+ Sets/Gets the vertical component of the current velocity.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ speed
+</span>
+
+</div>
+<pre>
+ Sets/Gets the speed, maintaining direction.
+
+</pre>
+<div>
+<span class="VariableType">
+Object
+</span>
+<span class="VariableName">
+ nextPosition
+</span>
+
+</div>
+<pre>
+ Returns the position of the Entity after another frame of movement.
+ Read-only.
+
+</pre>
+<div>
+<span class="VariableType">
+Object
+</span>
+<span class="VariableName">
+ lastPosition
+</span>
+
+</div>
+<pre>
+ Returns the position of the Entity from the previous frame.
+ Read-only.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.Object2D.html#Topaz.Object2D.GROUP">
+Topaz.Object2D.GROUP
+</a>
+
+</span>
+<span class="VariableName">
+ group
+</span>
+
+</div>
+<pre>
+ Sets/Gets the object's collision group. The default is Group A.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Array
+</span>
+<span class="VariableName">
+ collider
+</span>
+
+</div>
+<pre>
+ If set, creates a collider from a collection of X, Y value pairs
+ It is assumed that the polygon is formed by making lines between these points 
+ in the order presented within the array. It is assumed that the center of the object 
+ is at 0, 0. When read, the collider points are returned.
+
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.Entity.html#Topaz.Entity">
+Topaz.Entity
+</a>
+
+</span>
+<span class="VariableName">
+ lastCollided
+</span>
+
+</div>
+<pre>
+ Returns the last entity that collided with this one.
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.Object2D.GROUP">
+Topaz.Object2D.GROUP
+</h3>
+<pre>
+ Enumerator of all possible collision groups available for use 
+ within Topaz.Object2D. By default, all objects belong to group A.
+
+</pre>
+<table>
+<tr>
+<th>
+A
+</th>
+<td>
+ Collision group A
+
+</td>
+</tr>
+<tr>
+<th>
+B
+</th>
+<td>
+ Collision group B
+
+</td>
+</tr>
+<tr>
+<th>
+C
+</th>
+<td>
+ Collision group C
+
+</td>
+</tr>
+<tr>
+<th>
+D
+</th>
+<td>
+ Collision group D
+
+</td>
+</tr>
+<tr>
+<th>
+E
+</th>
+<td>
+ Collision group E
+
+</td>
+</tr>
+<tr>
+<th>
+F
+</th>
+<td>
+ Collision group F
+
+</td>
+</tr>
+<tr>
+<th>
+G
+</th>
+<td>
+ Collision group G
+
+</td>
+</tr>
+<tr>
+<th>
+H
+</th>
+<td>
+ Collision group H
+
+</td>
+</tr>
+<tr>
+<th>
+I
+</th>
+<td>
+ Collision group I
+
+</td>
+</tr>
+<tr>
+<th>
+J
+</th>
+<td>
+ Collision group J
+
+</td>
+</tr>
+<tr>
+<th>
+K
+</th>
+<td>
+ Collision group K
+
+</td>
+</tr>
+<tr>
+<th>
+L
+</th>
+<td>
+ Collision group L
+
+</td>
+</tr>
+<tr>
+<th>
+M
+</th>
+<td>
+ Collision group M
+
+</td>
+</tr>
+<tr>
+<th>
+N
+</th>
+<td>
+ Collision group N
+
+</td>
+</tr>
+<tr>
+<th>
+O
+</th>
+<td>
+ Collision group O
+
+</td>
+</tr>
+<tr>
+<th>
+P
+</th>
+<td>
+ Collision group P
+
+</td>
+</tr>
+<tr>
+<th>
+Q
+</th>
+<td>
+ Collision group Q
+
+</td>
+</tr>
+<tr>
+<th>
+R
+</th>
+<td>
+ Collision group R
+
+</td>
+</tr>
+<tr>
+<th>
+S
+</th>
+<td>
+ Collision group S
+
+</td>
+</tr>
+<tr>
+<th>
+T
+</th>
+<td>
+ Collision group T
+
+</td>
+</tr>
+<tr>
+<th>
+U
+</th>
+<td>
+ Collision group U
+
+</td>
+</tr>
+<tr>
+<th>
+V
+</th>
+<td>
+ Collision group V
+
+</td>
+</tr>
+<tr>
+<th>
+W
+</th>
+<td>
+ Collision group W
+
+</td>
+</tr>
+<tr>
+<th>
+X
+</th>
+<td>
+ Collision group X
+
+</td>
+</tr>
+<tr>
+<th>
+Y
+</th>
+<td>
+ Collision group Y
+
+</td>
+</tr>
+<tr>
+<th>
+Z
+</th>
+<td>
+ Collision group Z
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setGroupInteraction">
+setGroupInteraction(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Object2D.html#Topaz.Object2D.GROUP">
+Topaz.Object2D.GROUP
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+thisGroup
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Object2D.html#Topaz.Object2D.GROUP">
+Topaz.Object2D.GROUP
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+otherGroup
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Boolean
+</th>
+<th class="FunctionArgumentName">
+interact
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets whether groups should interact. By default, only Group A interacts with Group A
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+thisGroup
+</div>
+<pre>
+ First interaction group.
+
+</pre>
+<div>
+otherGroup
+</div>
+<pre>
+ Other interaction group.
+
+</pre>
+<div>
+interact
+</div>
+<pre>
+ Whether to interact.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="addVelocity">
+addVelocity(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+amount
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+direction
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Compounds a velocity vector with the current velocity
+ factor is the velocity amount to add. Can be negative.
+ direction is that degree direction to apply the velocity in degrees.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+amount
+</div>
+<pre>
+ The velocity amount to add.
+
+</pre>
+<div>
+direction
+</div>
+<pre>
+ The direction to add it in, in degrees. 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="addVelocityTowards">
+addVelocityTowards(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+amount
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+target
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+offset
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_object2d_add_velocity, but the direction is toward a 
+ global position.
+ factor is the amount of speed to add in that direction.
+ directionOffset is how much to offset the direction from.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+amount
+</div>
+<pre>
+ The velocity amount to add.
+
+</pre>
+<div>
+target
+</div>
+<pre>
+ The position vector to add velocity towards, determining the direction to add velocity.
+
+</pre>
+<div>
+offset
+</div>
+<pre>
+ The offset from that positional direction.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setVelocity">
+setVelocity(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+amount
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+direction
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the current velocity
+ factor is the velocity amount to add. Can be negative.
+ direction is that degree direction to apply the velocity in degrees.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+amount
+</div>
+<pre>
+ The velocity amount to add.
+
+</pre>
+<div>
+direction
+</div>
+<pre>
+ The direction to add it in, in degrees. 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setVelocityTowards">
+setVelocityTowards(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+amount
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+target
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+offset
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as SetVelocity, but the direction is toward a 
+ global position.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+amount
+</div>
+<pre>
+ The velocity amount to add.
+
+</pre>
+<div>
+target
+</div>
+<pre>
+ The position vector to add velocity towards, determining the direction to add velocity.
+
+</pre>
+<div>
+offset
+</div>
+<pre>
+ The offset from that positional direction.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="halt">
+halt()
+</h3>
+<pre>
+ Reduces the speed of the Entity to 0.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="resetMotion">
+resetMotion()
+</h3>
+<pre>
+ Resets the motion path of the Object2D collider.
+ Normally, all collisions take into account the motion from previous position
+ to current. resetMotion() eliminates this motion, 
+ allowing for discontinuous motion.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setColliderRadial">
+setColliderRadial(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+radius
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+numIterations
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a radial collider about 0, 0 with the given radius and 
+ number of sides.
+ Modifies the collider attribute.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+radius
+</div>
+<pre>
+ The radius of the new collider.
+
+</pre>
+<div>
+numIterations
+</div>
+<pre>
+ The number of sides of the collider.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

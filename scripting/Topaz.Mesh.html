@@ -1,0 +1,424 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="Topaz.Mesh">
+Topaz.Mesh
+</h1>
+<i>
+- inherits from: <a href="Topaz.Asset.html#Topaz.Asset">
+Topaz.Asset
+</a>
+
+</i>
+<pre>
+ A collection of vertex data and indices into 
+ the collection to form 3D meshes.
+
+ Vertices in topaz meshes are laid out like so:
+     3 values for position (x, y, z)
+     3 values for normals  (x, y, z) 
+     2 values for UVs / texture coordinates (u, v)
+     4 values for user data
+ Collections of indices are referred to as "objects", meshes 
+ may contain any number of objects.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Mesh.html#setVertex">
+setVertex()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Mesh.html#getVertex">
+getVertex()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Mesh.html#addObject">
+addObject()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Mesh.html#removeObject">
+removeObject()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Mesh.html#setObject">
+setObject()
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+Int
+</span>
+<span class="VariableName">
+ vertexCount
+</span>
+
+</div>
+<pre>
+ Sets/Gets the total number of vertices within the mesh.
+ Note that setting the vertex count may trigger an internal 
+ resize of buffers for storing vertices. The vertexCount must be set 
+ before reading / writing to vertices.
+
+</pre>
+<div>
+<span class="VariableType">
+Array
+</span>
+<span class="VariableName">
+ vertices
+</span>
+
+</div>
+<pre>
+ Sets/Gets the raw vertex data as a simple array of Numbers.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Int
+</span>
+<span class="VariableName">
+ objectCount
+</span>
+
+</div>
+<pre>
+ Returns the current object count.
+ Read-only.
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setVertex">
+setVertex(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+i
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Array
+</th>
+<th class="FunctionArgumentName">
+values
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets a specific vertex's data.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+i
+</div>
+<pre>
+ The index of the vertex to modify.
+
+</pre>
+<div>
+values
+</div>
+<pre>
+ A simple array of Numbers to update the vertex to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Array
+</h5>
+<h3 id="getVertex">
+getVertex(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+i
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets a specific vertex's data.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+i
+</div>
+<pre>
+ The index of the vertex to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="addObject">
+addObject(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Array
+</th>
+<th class="FunctionArgumentName">
+indices
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a new object.  This function creates a new instance
+ and its index is returned. This index can be used with topaz_mesh_get_object 
+ to modify and read from.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+indices
+</div>
+<pre>
+ Optional array of indices to initialize the object with.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="removeObject">
+removeObject(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+i
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes the specified object.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+i
+</div>
+<pre>
+ The index of the object to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setObject">
+setObject(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+i
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Array
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes the specified object.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+i
+</div>
+<pre>
+ The index of the object to remove.
+
+</pre>
+<div>
+value
+</div>
+<pre>
+ The array of indices to initialize the object with.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

@@ -1,0 +1,869 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="Topaz.Automation">
+Topaz.Automation
+</h1>
+<i>
+- inherits from: <a href="Topaz.Component.html#Topaz.Component">
+Topaz.Component
+</a>
+
+</i>
+<pre>
+ Automation allows for complex and generic animation.
+ By specifying timing and transformation functions,
+ Automations can be used to animate anything, from colors,
+ to movement, to user-defined constructs.
+ 
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Automation.html#addKeyframe">
+addKeyframe()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Automation.html#addVectorKeyframe">
+addVectorKeyframe()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Automation.html#clear">
+clear()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Automation.html#blend">
+blend()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Automation.html#smooth">
+smooth()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Automation.html#addFromString">
+addFromString()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Automation.html#skipTo">
+skipTo()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Automation.html#resume">
+resume()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Automation.html#pause">
+pause()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Automation.html#vectorAt">
+vectorAt()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Automation.html#at">
+at()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Automation.html#Topaz.Automation.FUNCTION">
+Topaz.Automation.FUNCTION
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ length
+</span>
+
+</div>
+<pre>
+ Gets the length of the automation. This is the total accumulative
+ keyframe offsets within the automation. The automation length 
+ is meant to convey how long the automation is in a time-agnostic way.
+ The length of the automation is not necessarily how long in seconds 
+ or frames the automation is.
+ Read-only.
+
+</pre>
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ durationFrames
+</span>
+
+</div>
+<pre>
+ Sets the real duration of the automation.
+ This is how long it takes to get through the automation in 
+ frames. If an automation is currently running, the automation 
+ is reset.
+ Write-only
+
+</pre>
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ durationSeconds
+</span>
+
+</div>
+<pre>
+ Sets the real duration of the automation.
+ This is how long it takes to get through the automation
+ in seconds. If an automation is currently running,
+ the automation is reset.
+ Write-only
+
+</pre>
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ duration
+</span>
+
+</div>
+<pre>
+ Gets the duration of the automation in either frames or seconds.
+
+</pre>
+<div>
+<span class="VariableType">
+Boolean
+</span>
+<span class="VariableName">
+ looped
+</span>
+
+</div>
+<pre>
+ When its looped, the automation will start over 
+ when the animato is done
+
+</pre>
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ speed
+</span>
+
+</div>
+<pre>
+ Gets/Sets the speed multiplier for the automation.
+ The default is 1.0.
+
+</pre>
+<div>
+<span class="VariableType">
+String
+</span>
+<span class="VariableName">
+ string
+</span>
+
+</div>
+<pre>
+ When read, compiles the current automation's keyframes into a string.
+ When written to, sets the automation from a string. This removes all 
+ the existing keyframes and replaces them with the 
+ the keyframes from the compiled string.
+
+</pre>
+<div>
+<span class="VariableType">
+Object
+</span>
+<span class="VariableName">
+ vector
+</span>
+
+</div>
+<pre>
+ Returns the current vector value within the automation 
+
+
+</pre>
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ value
+</span>
+
+</div>
+<pre>
+ Returns the value within the automation.
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.Automation.FUNCTION">
+Topaz.Automation.FUNCTION
+</h3>
+<pre>
+ Enumerator for the different available automation 
+ functions. Every automation can have functions associated with it
+ that describe how values change over time. These primitive 
+ functions can be string together to make virtually any 
+ value description.
+ See Topaz.Automation.
+
+</pre>
+<table>
+<tr>
+<th>
+NONE
+</th>
+<td>
+ The value instantaneously becomes the end value.
+
+</td>
+</tr>
+<tr>
+<th>
+LINEAR
+</th>
+<td>
+ The value linearly becomes the end value.
+
+</td>
+</tr>
+<tr>
+<th>
+ACCEL
+</th>
+<td>
+ The value follows a bezier curve, where the value starts slow then accelerates to the end value.
+
+</td>
+</tr>
+<tr>
+<th>
+SLOW
+</th>
+<td>
+ The value follows a bezier curve, where the value starts quickly then slows.
+
+</td>
+</tr>
+<tr>
+<th>
+SOFT_ACCEL
+</th>
+<td>
+ The value follows a bezier curve, where the value starts slow then accelerates to the end value, but more mildly.
+
+</td>
+</tr>
+<tr>
+<th>
+SOFT_SLOW
+</th>
+<td>
+ The value follows a bezier curve, where the value starts quickly then slows, but more mildly.
+
+</td>
+</tr>
+<tr>
+<th>
+RANDOM
+</th>
+<td>
+ The value becomes any value between begin and end when it is re-sampled.
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="addKeyframe">
+addKeyframe(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Automation.html#Topaz.Automation.FUNCTION">
+Topaz.Automation.FUNCTION
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+function
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+offset
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a keyframe to the automation.
+ Every automation holds an automation, an automation 
+ is a collection of sequential keyframes that describe 
+ how a value should change over time.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+value
+</div>
+<pre>
+ The value for the keyframe. Once this keyframe is 
+ reached, the automation will take on this value.
+
+</pre>
+<div>
+function
+</div>
+<pre>
+ The traveling function that describes how 
+ the next keyframe's value should be reached. 
+
+</pre>
+<div>
+offset
+</div>
+<pre>
+ The offset from the end of the last keyframe.
+ This can be querried with the length property.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="addVectorKeyframe">
+addVectorKeyframe(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Automation.html#Topaz.Automation.FUNCTION">
+Topaz.Automation.FUNCTION
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+function
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+offset
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_automation_add_keyframe, except the 
+ value is a vector. 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+value
+</div>
+<pre>
+ The value for the keyframe. Once this keyframe is 
+ reached, the automation will take on this value.
+
+</pre>
+<div>
+function
+</div>
+<pre>
+ The traveling function that describes how 
+ the next keyframe's value should be reached. 
+
+</pre>
+<div>
+offset
+</div>
+<pre>
+ The offset from the end of the last keyframe.
+ This can be querried with the length property.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="clear">
+clear()
+</h3>
+<pre>
+ Removes all keyframes from an automation.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="blend">
+blend(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Automation.html#Topaz.Automation">
+Topaz.Automation
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+other
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ The values for each keyframe are averaged and 
+ set back into this automation.
+ This may create additional keyframes to 
+ facilitate
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+other
+</div>
+<pre>
+ The automation to blend with.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="smooth">
+smooth()
+</h3>
+<pre>
+ Smooths the keyframe values across the current 
+ average.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="addFromString">
+addFromString(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+string
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds an automation to this automation, but 
+ the automation is in string form.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+string
+</div>
+<pre>
+ The automation string.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="skipTo">
+skipTo(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+location
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Skip to a part of the automation. The value must be between or 
+ equal to 0 and the value of topaz_automation_get_length()
+ The value is modulo the length of the automation. Note that 
+ this is in keyframe units.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+location
+</div>
+<pre>
+ The value to skip to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="resume">
+resume()
+</h3>
+<pre>
+ Pauses resumes the automation.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="pause">
+pause()
+</h3>
+<pre>
+ Pauses the automation.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Object
+</h5>
+<h3 id="vectorAt">
+vectorAt(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+progress
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the vector animated based on the keyframes 
+ and the given progress within the automation. Progress is 
+ 0 to 1 but looped.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+progress
+</div>
+<pre>
+ The progress along the automation.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="at">
+at(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+progress
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the float animated based on the keyframes 
+ and the given progress within the automation. Progress is 
+ 0 to 1 but looped.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+progress
+</div>
+<pre>
+ The progress along the automation.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

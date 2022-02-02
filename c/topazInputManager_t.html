@@ -1,0 +1,2525 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazInputManager_t">
+topazInputManager_t
+</h1>
+<pre>
+
+ Interacts with device drivers to retrieve the requested input information
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazInputManager_t.html#topaz_input_manager_create">
+topaz_input_manager_create()
+</a>
+
+</div>
+<div>
+<a href="topazInputManager_t.html#topaz_input_manager_destroy">
+topaz_input_manager_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazInputManager_t.html#topaz_input_manager_get_backend">
+topaz_input_manager_get_backend()
+</a>
+
+</div>
+<div>
+<a href="topazInputManager_t.html#topaz_input_manager_get_api">
+topaz_input_manager_get_api()
+</a>
+
+</div>
+<div>
+<a href="topazInputManager_t.html#topaz_input_manager_id_to_string">
+topaz_input_manager_id_to_string()
+</a>
+
+</div>
+<div>
+<a href="topazInputManager_t.html#topaz_input_manager_handle_events">
+topaz_input_manager_handle_events()
+</a>
+
+</div>
+<div>
+<a href="topazInputManager_t.html#topaz_input_manager_query_device">
+topaz_input_manager_query_device()
+</a>
+
+</div>
+<div>
+<a href="topazInputManager_t.html#topaz_input_manager_query_auxiliary_devices">
+topaz_input_manager_query_auxiliary_devices()
+</a>
+
+</div>
+<div>
+<a href="topazInputManager_t.html#topaz_input_manager_max_devices">
+topaz_input_manager_max_devices()
+</a>
+
+</div>
+<div>
+<a href="topazInputManager_t.html#topaz_input_manager_set_focus">
+topaz_input_manager_set_focus()
+</a>
+
+</div>
+<div>
+<a href="topazInputManager_t.html#topaz_input_manager_get_focus">
+topaz_input_manager_get_focus()
+</a>
+
+</div>
+<div>
+<a href="topazInputManager_t.html#topaz_input_manager_show_virtual_keyboard">
+topaz_input_manager_show_virtual_keyboard()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazInputManager_t.html#topazKey">
+topazKey
+</a>
+
+</div>
+<div>
+<a href="topazInputManager_t.html#topazInputManager_DefaultDevice">
+topazInputManager_DefaultDevice
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazKey">
+topazKey
+</h3>
+<pre>
+ Standard input buttons for built-in device types.
+
+
+</pre>
+<table>
+<tr>
+<th>
+=0,
+</th>
+<td>
+ Not an input.
+
+</td>
+</tr>
+<tr>
+<th>
+1,
+</th>
+<td>
+ The 0 key.
+
+</td>
+</tr>
+<tr>
+<th>
+2,
+</th>
+<td>
+ The 1 key.
+
+</td>
+</tr>
+<tr>
+<th>
+3,
+</th>
+<td>
+ The 2 key.
+
+</td>
+</tr>
+<tr>
+<th>
+4,
+</th>
+<td>
+ The 3 key.
+
+</td>
+</tr>
+<tr>
+<th>
+5,
+</th>
+<td>
+ The 4 key.
+
+</td>
+</tr>
+<tr>
+<th>
+6,
+</th>
+<td>
+ The 5 key.
+
+</td>
+</tr>
+<tr>
+<th>
+7,
+</th>
+<td>
+ The 6 key.
+
+</td>
+</tr>
+<tr>
+<th>
+8,
+</th>
+<td>
+ The 7 key.
+
+</td>
+</tr>
+<tr>
+<th>
+9,
+</th>
+<td>
+ The 8 key.
+
+</td>
+</tr>
+<tr>
+<th>
+10,
+</th>
+<td>
+ The 9 key.
+
+</td>
+</tr>
+<tr>
+<th>
+11,
+</th>
+<td>
+ The a key.
+
+</td>
+</tr>
+<tr>
+<th>
+12,
+</th>
+<td>
+ The b key.
+
+</td>
+</tr>
+<tr>
+<th>
+13,
+</th>
+<td>
+ The c key.
+
+</td>
+</tr>
+<tr>
+<th>
+14,
+</th>
+<td>
+ The d key.
+
+</td>
+</tr>
+<tr>
+<th>
+15,
+</th>
+<td>
+ The e key.
+
+</td>
+</tr>
+<tr>
+<th>
+16,
+</th>
+<td>
+ The f key.
+
+</td>
+</tr>
+<tr>
+<th>
+17,
+</th>
+<td>
+ The g key.
+
+</td>
+</tr>
+<tr>
+<th>
+18,
+</th>
+<td>
+ The h key.
+
+</td>
+</tr>
+<tr>
+<th>
+19,
+</th>
+<td>
+ The i key.
+
+</td>
+</tr>
+<tr>
+<th>
+20,
+</th>
+<td>
+ The j key.
+
+</td>
+</tr>
+<tr>
+<th>
+21,
+</th>
+<td>
+ The k key.
+
+</td>
+</tr>
+<tr>
+<th>
+22,
+</th>
+<td>
+ The l key.
+
+</td>
+</tr>
+<tr>
+<th>
+23,
+</th>
+<td>
+ The m key.
+
+</td>
+</tr>
+<tr>
+<th>
+24,
+</th>
+<td>
+ The n key.
+
+</td>
+</tr>
+<tr>
+<th>
+25,
+</th>
+<td>
+ The o key.
+
+</td>
+</tr>
+<tr>
+<th>
+26,
+</th>
+<td>
+ The p key.
+
+</td>
+</tr>
+<tr>
+<th>
+27,
+</th>
+<td>
+ The q key.
+
+</td>
+</tr>
+<tr>
+<th>
+28,
+</th>
+<td>
+ The r key.
+
+</td>
+</tr>
+<tr>
+<th>
+29,
+</th>
+<td>
+ The s key.
+
+</td>
+</tr>
+<tr>
+<th>
+30,
+</th>
+<td>
+ The t key.
+
+</td>
+</tr>
+<tr>
+<th>
+31,
+</th>
+<td>
+ The u key.
+
+</td>
+</tr>
+<tr>
+<th>
+32,
+</th>
+<td>
+ The v key.
+
+</td>
+</tr>
+<tr>
+<th>
+33,
+</th>
+<td>
+ The w key.
+
+</td>
+</tr>
+<tr>
+<th>
+34,
+</th>
+<td>
+ The x key.
+
+</td>
+</tr>
+<tr>
+<th>
+35,
+</th>
+<td>
+ The y key.
+
+</td>
+</tr>
+<tr>
+<th>
+36,
+</th>
+<td>
+ The z key.
+
+</td>
+</tr>
+<tr>
+<th>
+37,
+</th>
+<td>
+ The lshift key.
+
+</td>
+</tr>
+<tr>
+<th>
+38,
+</th>
+<td>
+ The rshift key.
+
+</td>
+</tr>
+<tr>
+<th>
+39,
+</th>
+<td>
+ The lctrl key.
+
+</td>
+</tr>
+<tr>
+<th>
+40,
+</th>
+<td>
+ The rctrl key.
+
+</td>
+</tr>
+<tr>
+<th>
+41,
+</th>
+<td>
+ The lalt key.
+
+</td>
+</tr>
+<tr>
+<th>
+42,
+</th>
+<td>
+ The ralt key.
+
+</td>
+</tr>
+<tr>
+<th>
+43,
+</th>
+<td>
+ The tab key.
+
+</td>
+</tr>
+<tr>
+<th>
+44,
+</th>
+<td>
+ The F1 key.
+
+</td>
+</tr>
+<tr>
+<th>
+45,
+</th>
+<td>
+ The F2 key.
+
+</td>
+</tr>
+<tr>
+<th>
+46,
+</th>
+<td>
+ The F3 key.
+
+</td>
+</tr>
+<tr>
+<th>
+47,
+</th>
+<td>
+ The F4 key.
+
+</td>
+</tr>
+<tr>
+<th>
+48,
+</th>
+<td>
+ The F5 key.
+
+</td>
+</tr>
+<tr>
+<th>
+49,
+</th>
+<td>
+ The F6 key.
+
+</td>
+</tr>
+<tr>
+<th>
+50,
+</th>
+<td>
+ The F7 key.
+
+</td>
+</tr>
+<tr>
+<th>
+51,
+</th>
+<td>
+ The F8 key.
+
+</td>
+</tr>
+<tr>
+<th>
+52,
+</th>
+<td>
+ The F9 key.
+
+</td>
+</tr>
+<tr>
+<th>
+53,
+</th>
+<td>
+ The F10 key.
+
+</td>
+</tr>
+<tr>
+<th>
+54,
+</th>
+<td>
+ The F11 key.
+
+</td>
+</tr>
+<tr>
+<th>
+55,
+</th>
+<td>
+ The F12 key.
+
+</td>
+</tr>
+<tr>
+<th>
+100,
+</th>
+<td>
+ The up key.
+
+</td>
+</tr>
+<tr>
+<th>
+101,
+</th>
+<td>
+ The down key.
+
+</td>
+</tr>
+<tr>
+<th>
+102,
+</th>
+<td>
+ The left key.
+
+</td>
+</tr>
+<tr>
+<th>
+103,
+</th>
+<td>
+ The right key.
+
+</td>
+</tr>
+<tr>
+<th>
+104,
+</th>
+<td>
+ The minus key.
+
+</td>
+</tr>
+<tr>
+<th>
+105,
+</th>
+<td>
+ The equal key.
+
+</td>
+</tr>
+<tr>
+<th>
+106,
+</th>
+<td>
+ The backspace key.
+
+</td>
+</tr>
+<tr>
+<th>
+107,
+</th>
+<td>
+ The grave key.
+
+</td>
+</tr>
+<tr>
+<th>
+108,
+</th>
+<td>
+ The esc key.
+
+</td>
+</tr>
+<tr>
+<th>
+109,
+</th>
+<td>
+ The home key.
+
+</td>
+</tr>
+<tr>
+<th>
+110,
+</th>
+<td>
+ The pageUp key.
+
+</td>
+</tr>
+<tr>
+<th>
+111,
+</th>
+<td>
+ The pageDown key.
+
+</td>
+</tr>
+<tr>
+<th>
+112,
+</th>
+<td>
+ The end key.
+
+</td>
+</tr>
+<tr>
+<th>
+113,
+</th>
+<td>
+ The backslash key.
+
+</td>
+</tr>
+<tr>
+<th>
+114,
+</th>
+<td>
+ The lbracket key.
+
+</td>
+</tr>
+<tr>
+<th>
+115,
+</th>
+<td>
+ The rbracket key.
+
+</td>
+</tr>
+<tr>
+<th>
+116,
+</th>
+<td>
+ The semicolon key.
+
+</td>
+</tr>
+<tr>
+<th>
+117,
+</th>
+<td>
+ The apostrophe key.
+
+</td>
+</tr>
+<tr>
+<th>
+118,
+</th>
+<td>
+ The frontslash key.
+
+</td>
+</tr>
+<tr>
+<th>
+119,
+</th>
+<td>
+ The enter key.
+
+</td>
+</tr>
+<tr>
+<th>
+120,
+</th>
+<td>
+ The delete key.
+
+</td>
+</tr>
+<tr>
+<th>
+121,
+</th>
+<td>
+ The numpad0 key.
+
+</td>
+</tr>
+<tr>
+<th>
+122,
+</th>
+<td>
+ The numpad1 key.
+
+</td>
+</tr>
+<tr>
+<th>
+123,
+</th>
+<td>
+ The numpad2 key.
+
+</td>
+</tr>
+<tr>
+<th>
+124,
+</th>
+<td>
+ The numpad3 key.
+
+</td>
+</tr>
+<tr>
+<th>
+125,
+</th>
+<td>
+ The numpad4 key.
+
+</td>
+</tr>
+<tr>
+<th>
+126,
+</th>
+<td>
+ The numpad5 key.
+
+</td>
+</tr>
+<tr>
+<th>
+127,
+</th>
+<td>
+ The numpad6 key.
+
+</td>
+</tr>
+<tr>
+<th>
+128,
+</th>
+<td>
+ The numpad7 key.
+
+</td>
+</tr>
+<tr>
+<th>
+129,
+</th>
+<td>
+ The numpad8 key.
+
+</td>
+</tr>
+<tr>
+<th>
+130,
+</th>
+<td>
+ The numpad9 key.
+
+</td>
+</tr>
+<tr>
+<th>
+131,
+</th>
+<td>
+ The prtscr key.
+
+</td>
+</tr>
+<tr>
+<th>
+132,
+</th>
+<td>
+ The lsuper key.
+
+</td>
+</tr>
+<tr>
+<th>
+133,
+</th>
+<td>
+ The rsuper key.
+
+</td>
+</tr>
+<tr>
+<th>
+134,
+</th>
+<td>
+ The space key.
+
+</td>
+</tr>
+<tr>
+<th>
+135,
+</th>
+<td>
+ The insert key.
+
+</td>
+</tr>
+<tr>
+<th>
+136,
+</th>
+<td>
+ The comma key.
+
+</td>
+</tr>
+<tr>
+<th>
+137,
+</th>
+<td>
+ The period key.
+
+</td>
+</tr>
+<tr>
+<th>
+138,
+</th>
+<td>
+ The world1 key.
+
+</td>
+</tr>
+<tr>
+<th>
+139,
+</th>
+<td>
+ The world2 key.
+
+</td>
+</tr>
+<tr>
+<th>
+140,
+</th>
+<td>
+ The world3 key.
+
+</td>
+</tr>
+<tr>
+<th>
+141,
+</th>
+<td>
+ The world4 key.
+
+</td>
+</tr>
+<tr>
+<th>
+142,
+</th>
+<td>
+ The world5 key.
+
+</td>
+</tr>
+<tr>
+<th>
+143,
+</th>
+<td>
+ The world6 key.
+
+</td>
+</tr>
+<tr>
+<th>
+144,
+</th>
+<td>
+ The world7 key.
+
+</td>
+</tr>
+<tr>
+<th>
+145,
+</th>
+<td>
+ The world8 key.
+
+</td>
+</tr>
+<tr>
+<th>
+146,
+</th>
+<td>
+ The world9 key.
+
+</td>
+</tr>
+<tr>
+<th>
+256,
+</th>
+<td>
+ The 0th pointer button.
+
+</td>
+</tr>
+<tr>
+<th>
+257,
+</th>
+<td>
+ The 1st pointer button.
+
+</td>
+</tr>
+<tr>
+<th>
+258,
+</th>
+<td>
+ The 2nd pointer button.
+
+</td>
+</tr>
+<tr>
+<th>
+259,
+</th>
+<td>
+ The pointer x axis.
+
+</td>
+</tr>
+<tr>
+<th>
+260,
+</th>
+<td>
+ The pointer y axis.
+
+</td>
+</tr>
+<tr>
+<th>
+261,
+</th>
+<td>
+ The pointer wheel axis.
+
+</td>
+</tr>
+<tr>
+<th>
+300,
+</th>
+<td>
+ The a pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+301,
+</th>
+<td>
+ The b pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+302,
+</th>
+<td>
+ The c pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+303,
+</th>
+<td>
+ The x pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+304,
+</th>
+<td>
+ The y pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+305,
+</th>
+<td>
+ The r pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+306,
+</th>
+<td>
+ The l pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+307,
+</th>
+<td>
+ The r2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+308,
+</th>
+<td>
+ The l2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+309,
+</th>
+<td>
+ The r3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+310,
+</th>
+<td>
+ The l3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+311,
+</th>
+<td>
+ The start pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+312,
+</th>
+<td>
+ The select pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+313,
+</th>
+<td>
+ The b13 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+314,
+</th>
+<td>
+ The b14 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+315,
+</th>
+<td>
+ The b15 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+316,
+</th>
+<td>
+ The b16 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+317,
+</th>
+<td>
+ The b17 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+318,
+</th>
+<td>
+ The b18 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+319,
+</th>
+<td>
+ The b19 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+320,
+</th>
+<td>
+ The b20 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+321,
+</th>
+<td>
+ The b21 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+322,
+</th>
+<td>
+ The b22 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+323,
+</th>
+<td>
+ The b23 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+324,
+</th>
+<td>
+ The b24 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+325,
+</th>
+<td>
+ The b25 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+326,
+</th>
+<td>
+ The b26 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+327,
+</th>
+<td>
+ The b27 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+328,
+</th>
+<td>
+ The b28 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+329,
+</th>
+<td>
+ The b29 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+330,
+</th>
+<td>
+ The b30 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+331,
+</th>
+<td>
+ The b31 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+332,
+</th>
+<td>
+ The b32 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+400,
+</th>
+<td>
+ The axisX pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+401,
+</th>
+<td>
+ The axisY pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+402,
+</th>
+<td>
+ The axisZ pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+403,
+</th>
+<td>
+ The axisX2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+404,
+</th>
+<td>
+ The axisY2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+405,
+</th>
+<td>
+ The axisZ2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+406,
+</th>
+<td>
+ The axisX3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+407,
+</th>
+<td>
+ The axisY3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+408,
+</th>
+<td>
+ The axisZ3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+409,
+</th>
+<td>
+ The axisX4 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+410,
+</th>
+<td>
+ The axisY4 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+411,
+</th>
+<td>
+ The axisZ4 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+412,
+</th>
+<td>
+ The axisX5 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+413,
+</th>
+<td>
+ The axisY5 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+414,
+</th>
+<td>
+ The axisZ5 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+415,
+</th>
+<td>
+ The axisX6 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+416,
+</th>
+<td>
+ The axisY6 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+417,
+</th>
+<td>
+ The axisZ6 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+450,
+</th>
+<td>
+ The axisR pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+451,
+</th>
+<td>
+ The axisL pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+452,
+</th>
+<td>
+ The axisR2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+453,
+</th>
+<td>
+ The axisL2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+454,
+</th>
+<td>
+ The axisR3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+455,
+</th>
+<td>
+ The axisL3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+456,
+</th>
+<td>
+ The axisR4 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+457,
+</th>
+<td>
+ The axisL4 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+511,
+</th>
+<td>
+ The options pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+512
+</th>
+<td>
+ Number of built-in inputs.
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazInputManager_DefaultDevice">
+topazInputManager_DefaultDevice
+</h3>
+<pre>
+ Preset device IDs
+ See topaz_input_manager_query_device()
+
+
+</pre>
+<table>
+<tr>
+<th>
+topazInputManager_DefaultDevice_Keyboard
+</th>
+<td>
+ The standard device ID for the system keyboard.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazInputManager_DefaultDevice_Mouse
+</th>
+<td>
+ The standard device ID for the system pointer/mouse.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazInputManager_DefaultDevice_Touchpad
+</th>
+<td>
+ The standard device ID for the system touchpad
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazInputManager_DefaultDevice_Pad1
+</th>
+<td>
+ The standard device ID for the gamepad, slot 1
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazInputManager_DefaultDevice_Pad2
+</th>
+<td>
+ The standard device ID for the gamepad, slot 2
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazInputManager_DefaultDevice_Pad3
+</th>
+<td>
+ The standard device ID for the gamepad, slot 3
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazInputManager_DefaultDevice_Pad4
+</th>
+<td>
+ The standard device ID for the gamepad, slot 4
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazInputManager_DefaultDevice_Count
+</th>
+<td>
+ The count of default devices.
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazInputManager_t.html#topazInputManager_t">
+topazInputManager_t
+</a>
+
+</h5>
+<h3 id="topaz_input_manager_create">
+topaz_input_manager_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazInputManagerAPI_t
+</th>
+<th class="FunctionArgumentName">
+api
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new audio manager object. 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The topaz context.
+
+</pre>
+<div>
+backend,
+</div>
+<pre>
+ The backend to implement the backend's features.
+
+</pre>
+<div>
+api
+</div>
+<pre>
+ The raw API to implement the backend's features.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_input_manager_destroy">
+topaz_input_manager_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazInputManager_t.html#topazInputManager_t">
+topazInputManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+input
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys and cleans up an audio manager object
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+input
+</div>
+<pre>
+ The input manager to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</h5>
+<h3 id="topaz_input_manager_get_backend">
+topaz_input_manager_get_backend(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazInputManager_t.html#topazInputManager_t">
+topazInputManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+input
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the backend for this audio manager object.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+input
+</div>
+<pre>
+ The input to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+topazInputManagerAPI_t
+</h5>
+<h3 id="topaz_input_manager_get_api">
+topaz_input_manager_get_api(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazInputManager_t.html#topazInputManager_t">
+topazInputManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+input
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the API for this audio manager.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+input
+</div>
+<pre>
+ The input to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_input_manager_id_to_string">
+topaz_input_manager_id_to_string(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a read-only string representation of 
+ the given input id.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+id
+</div>
+<pre>
+ Id to get a string version of. 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_input_manager_handle_events">
+topaz_input_manager_handle_events(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazInputManager_t.html#topazInputManager_t">
+topazInputManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+input
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Updates the state of registered devices.
+ Returns whether or not there were new input events that were pulled  
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+input
+</div>
+<pre>
+ The input to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazInputDevice_t.html#topazInputDevice_t">
+topazInputDevice_t
+</a>
+
+</h5>
+<h3 id="topaz_input_manager_query_device">
+topaz_input_manager_query_device(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazInputManager_t.html#topazInputManager_t">
+topazInputManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+input,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+ID
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a reference to the internally maintained input device.
+ Do not free or modify the contents of the device. The first few slots 
+ up to topazInputManager_NumDefaultDevices will match the device expected.
+ If the device is unsupported, NULL will be returned.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+input,
+</div>
+<pre>
+ The input manager to query.
+
+</pre>
+<div>
+ID
+</div>
+<pre>
+ The ID to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_input_manager_query_auxiliary_devices">
+topaz_input_manager_query_auxiliary_devices(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazInputManager_t.html#topazInputManager_t">
+topazInputManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+input,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+IDs
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the number of additional devices available.
+ up to MaxDevices(). Typically, any overflow devices that weren't able to 
+ fit in the first 4 slots will be put here.
+ Given an array of sise MaxDevices(), IDs will be filled 
+ with the index to a device available through QueryDevice that isnt 
+ a default device.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+input,
+</div>
+<pre>
+ The input manager to query.
+
+</pre>
+<div>
+IDs
+</div>
+<pre>
+ The devices from the input manager that will be populated.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_input_manager_max_devices">
+topaz_input_manager_max_devices(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazInputManager_t.html#topazInputManager_t">
+topazInputManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+input
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Maximum number of supported. Will always be at least NumDefaultDevices in count
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+input
+</div>
+<pre>
+ The input manager to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_input_manager_set_focus">
+topaz_input_manager_set_focus(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazInputManager_t.html#topazInputManager_t">
+topazInputManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+input,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the focus on which to query input from.
+ On multi-display systems, such as a desktop environment,
+ input is based around the context of the focused display.
+ On some implementations, such a distinction (and as a result, this function)  is not necessary
+ may not be necessary, but this will almost 
+ always be necessary for modern environments.
+ Passing in nullptr should disable input until a 
+ valid display is given.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+input,
+</div>
+<pre>
+ The input manager to modify.
+
+</pre>
+<div>
+display
+</div>
+<pre>
+ The display to focus on. 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</h5>
+<h3 id="topaz_input_manager_get_focus">
+topaz_input_manager_get_focus(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazInputManager_t.html#topazInputManager_t">
+topazInputManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+input
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the current focus. The default is NULL
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+input
+</div>
+<pre>
+ The input manager to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_input_manager_show_virtual_keyboard">
+topaz_input_manager_show_virtual_keyboard(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazInputManager_t.html#topazInputManager_t">
+topazInputManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+inputManager,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+state
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Attempts to open a virtual keyboard. This is intended to 
+ follow the same input detection as a normal keyboard, so no additional
+ behavior is required or guaranteed outside of the conceptual idea 
+ of the opening of a virtual keyboard. By default, this does nothing.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+inputManager,
+</div>
+<pre>
+ The input manager to request.
+
+</pre>
+<div>
+state
+</div>
+<pre>
+ whether to show the virtual keyboard. 
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

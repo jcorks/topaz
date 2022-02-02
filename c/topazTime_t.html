@@ -1,0 +1,458 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazTime_t">
+topazTime_t
+</h1>
+<pre>
+ An abstraction for millisecond resolution timing.
+ This short set of utilities allows for timing 
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazTime_t.html#topaz_time_create">
+topaz_time_create()
+</a>
+
+</div>
+<div>
+<a href="topazTime_t.html#topaz_time_destroy">
+topaz_time_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazTime_t.html#topaz_time_get_backend">
+topaz_time_get_backend()
+</a>
+
+</div>
+<div>
+<a href="topazTime_t.html#topaz_time_get_api">
+topaz_time_get_api()
+</a>
+
+</div>
+<div>
+<a href="topazTime_t.html#topaz_time_sleep_ms">
+topaz_time_sleep_ms()
+</a>
+
+</div>
+<div>
+<a href="topazTime_t.html#topaz_time_ms_since_startup">
+topaz_time_ms_since_startup()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazTime_t.html#topazTime_t">
+topazTime_t
+</a>
+
+</h5>
+<h3 id="topaz_time_create">
+topaz_time_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazTimeAPI_t
+</th>
+<th class="FunctionArgumentName">
+api
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new time object
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The topaz context.
+
+</pre>
+<div>
+backend,
+</div>
+<pre>
+ The backend to implement the backend's features.
+
+</pre>
+<div>
+api
+</div>
+<pre>
+ The raw API to implement the backend's features.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_time_destroy">
+topaz_time_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTime_t.html#topazTime_t">
+topazTime_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+t
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys and cleans up a time API
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+t
+</div>
+<pre>
+ The time instance to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</h5>
+<h3 id="topaz_time_get_backend">
+topaz_time_get_backend(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTime_t.html#topazTime_t">
+topazTime_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+t
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the backend for this time object.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+t
+</div>
+<pre>
+ The time instance to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+topazTimeAPI_t
+</h5>
+<h3 id="topaz_time_get_api">
+topaz_time_get_api(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTime_t.html#topazTime_t">
+topazTime_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+t
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the API for this time.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+t
+</div>
+<pre>
+ The time instance to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_time_sleep_ms">
+topaz_time_sleep_ms(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTime_t.html#topazTime_t">
+topazTime_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+t,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+double
+</th>
+<th class="FunctionArgumentName">
+ms
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Designates the main thread to sleep for the given 
+ number of milliseconds.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+t,
+</div>
+<pre>
+ The time instance.
+
+</pre>
+<div>
+ms
+</div>
+<pre>
+ The time amount to sleep.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+double
+</h5>
+<h3 id="topaz_time_ms_since_startup">
+topaz_time_ms_since_startup(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTime_t.html#topazTime_t">
+topazTime_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+t
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the number of milliseconds that have passed since 
+ the creation of this time instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+t
+</div>
+<pre>
+ The time instance to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

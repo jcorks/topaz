@@ -1,0 +1,838 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazMesh_t">
+topazMesh_t
+</h1>
+<pre>
+
+ 3D object defined by triangle primitives.
+
+ A mesh contains 2 components: the mesh itself and a series of objects.
+ The Mesh itself provides the base data: vertex positions, normals,
+ UVs, you name it. A MeshObject contains the actual application of that source data, expressing what
+ vertices to use, the material to render the vertices with, etc.
+ Using the Mesh - MeshObject reloationship aptly can allow for flexible
+ control over performance vs. memory cost.
+
+ An object is a collection of faces 
+ specified with indices to vertices. For mesh objects, these will be 
+ indices in groups of 3.
+
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazMesh_t.html#topaz_mesh_create">
+topaz_mesh_create()
+</a>
+
+</div>
+<div>
+<a href="topazMesh_t.html#topaz_mesh_set_vertex_count">
+topaz_mesh_set_vertex_count()
+</a>
+
+</div>
+<div>
+<a href="topazMesh_t.html#topaz_mesh_define_vertices">
+topaz_mesh_define_vertices()
+</a>
+
+</div>
+<div>
+<a href="topazMesh_t.html#topaz_mesh_get_vertex">
+topaz_mesh_get_vertex()
+</a>
+
+</div>
+<div>
+<a href="topazMesh_t.html#topaz_mesh_set_vertex">
+topaz_mesh_set_vertex()
+</a>
+
+</div>
+<div>
+<a href="topazMesh_t.html#topaz_mesh_get_vertex_count">
+topaz_mesh_get_vertex_count()
+</a>
+
+</div>
+<div>
+<a href="topazMesh_t.html#topaz_mesh_add_object">
+topaz_mesh_add_object()
+</a>
+
+</div>
+<div>
+<a href="topazMesh_t.html#topaz_mesh_get_object">
+topaz_mesh_get_object()
+</a>
+
+</div>
+<div>
+<a href="topazMesh_t.html#topaz_mesh_remove_object">
+topaz_mesh_remove_object()
+</a>
+
+</div>
+<div>
+<a href="topazMesh_t.html#topaz_mesh_get_object_count">
+topaz_mesh_get_object_count()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazMesh_t.html#topazMesh_VertexAttribute">
+topazMesh_VertexAttribute
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazMesh_VertexAttribute">
+topazMesh_VertexAttribute
+</h3>
+<pre>
+ The type of vertex attribute.
+
+
+</pre>
+<table>
+<tr>
+<th>
+topazMesh_VertexAttribute_Position
+</th>
+<td>
+  Position of the vertex. 3 components: xyz.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazMesh_VertexAttribute_Normal
+</th>
+<td>
+ The normal vector of the vertex. 3 components: xyz.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazMesh_VertexAttribute_UV
+</th>
+<td>
+ The texture cooridates of the vertex. 2 components: xy.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazMesh_VertexAttribute_UserData
+</th>
+<td>
+ User-defined data. 4 components: xyz.
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</h5>
+<h3 id="topaz_mesh_create">
+topaz_mesh_create()
+</h3>
+<pre>
+ Creates a new, empty mesh.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_mesh_set_vertex_count">
+topaz_mesh_set_vertex_count(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+mesh,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+newCount
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the number of vertices that the mesh contains.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+mesh,
+</div>
+<pre>
+ The mesh to modify
+
+</pre>
+<div>
+newCount
+</div>
+<pre>
+ The new vertex count
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_mesh_define_vertices">
+topaz_mesh_define_vertices(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+mesh,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+vertices
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the raw vertices for the mesh. This also sets the vertex count.
+ The array type is topazRenderer_3D_Vertex_t
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+mesh,
+</div>
+<pre>
+ The mesh to modify.
+
+</pre>
+<div>
+vertices
+</div>
+<pre>
+ The new vertices to be copied into the mesh.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_mesh_get_vertex">
+topaz_mesh_get_vertex(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+mesh,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazMesh_t.html#topazMesh_VertexAttribute">
+topazMesh_VertexAttribute
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+attribute,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+index
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets data from a specific vertex. If the 
+ vertex doesnt exist, a placeholder value is returned.
+ This value is valid until the next call of the function 
+ with the same mesh.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+mesh,
+</div>
+<pre>
+ The mesh to query.
+
+</pre>
+<div>
+attribute,
+</div>
+<pre>
+ Which vertex attribute to retrieve.
+
+</pre>
+<div>
+index
+</div>
+<pre>
+ The vertex index.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_mesh_set_vertex">
+topaz_mesh_set_vertex(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+mesh,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazMesh_t.html#topazMesh_VertexAttribute">
+topazMesh_VertexAttribute
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+attribute,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+index,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+data
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets data from a specific vertex. If the 
+ vertex doesnt exist, nothing happens
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+mesh,
+</div>
+<pre>
+ The mesh to modify.
+
+</pre>
+<div>
+attribute,
+</div>
+<pre>
+ The attribute to modify
+
+</pre>
+<div>
+index,
+</div>
+<pre>
+ The vertex index to modify.
+
+</pre>
+<div>
+data
+</div>
+<pre>
+ The raw data to copy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_mesh_get_vertex_count">
+topaz_mesh_get_vertex_count(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+mesh
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the number of vertex within this mesh.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+mesh
+</div>
+<pre>
+ The mesh to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_mesh_add_object">
+topaz_mesh_add_object(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+mesh
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a new object.  This function creates a new instance
+ and its index is returned. This index can be used with topaz_mesh_get_object 
+ to modify and read from.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+mesh
+</div>
+<pre>
+ The mesh to add an object to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_mesh_get_object">
+topaz_mesh_get_object(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+mesh,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+index
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the array of face indices for the corresponding index.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+mesh,
+</div>
+<pre>
+ The mesh to retrieve an object from.
+
+</pre>
+<div>
+index
+</div>
+<pre>
+ The object index.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_mesh_remove_object">
+topaz_mesh_remove_object(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+mesh,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+index
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes the object specified. No action is taken if the index 
+ doesn't exist.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+mesh,
+</div>
+<pre>
+ The mesh to remove an object from.
+
+</pre>
+<div>
+index
+</div>
+<pre>
+ The index of the object to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_mesh_get_object_count">
+topaz_mesh_get_object_count(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+mesh
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the number of objects that the mesh object holds.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+mesh
+</div>
+<pre>
+ The mesh to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

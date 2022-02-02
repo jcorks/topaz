@@ -1,0 +1,533 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="Topaz.Text2D">
+Topaz.Text2D
+</h1>
+<i>
+- inherits from: <a href="Topaz.Component.html#Topaz.Component">
+Topaz.Component
+</a>
+
+</i>
+<pre>
+ Expresses text in 2D space as a component.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Text2D.html#setColor">
+setColor()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Text2D.html#setColorSection">
+setColorSection()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Text2D.html#getCharX">
+getCharX()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Text2D.html#getCharY">
+getCharY()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Text2D.html#setAttribute">
+setAttribute()
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+String
+</span>
+<span class="VariableName">
+ text
+</span>
+
+</div>
+<pre>
+ Sets/Gets the current text to display.
+
+</pre>
+<div>
+<span class="VariableType">
+String
+</span>
+<span class="VariableName">
+ font
+</span>
+
+</div>
+<pre>
+ The name of the font to use. Should match the registered 
+ font name through topaz's font manager. See 
+ Topaz.FontManager.registerFont().
+
+</pre>
+<div>
+<span class="VariableType">
+Int
+</span>
+<span class="VariableName">
+ size
+</span>
+
+</div>
+<pre>
+ The pixel size of the text to appear.
+ Default is 12.
+
+</pre>
+<div>
+<span class="VariableType">
+Int
+</span>
+<span class="VariableName">
+ extentWidth
+</span>
+
+</div>
+<pre>
+ Gets the width of the text without transformation.
+ Read-only.
+
+</pre>
+<div>
+<span class="VariableType">
+Int
+</span>
+<span class="VariableName">
+ extentHeight
+</span>
+
+</div>
+<pre>
+ Gets the height of the text without transformation.
+ Read-only.
+
+</pre>
+<div>
+<span class="VariableType">
+Object
+</span>
+<span class="VariableName">
+ position
+</span>
+
+</div>
+<pre>
+ Sets/Gets the position of the Text2D with 
+ the host entity as the parent transform.
+
+</pre>
+<div>
+<span class="VariableType">
+Object
+</span>
+<span class="VariableName">
+ rotation
+</span>
+
+</div>
+<pre>
+ Sets/Gets the rotation of the Text2D with 
+ the host entity as the parent transform.
+
+</pre>
+<div>
+<span class="VariableType">
+Object
+</span>
+<span class="VariableName">
+ scale
+</span>
+
+</div>
+<pre>
+ Sets/Gets the scale of the Text2D 
+ with the host entity as the parent transform.
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setColor">
+setColor(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+color
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the color for all characters.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+color
+</div>
+<pre>
+ The color to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setColorSection">
+setColorSection(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+from
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+to
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+color
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the color for certain characters.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+from
+</div>
+<pre>
+ The start character index to set the color.
+
+</pre>
+<div>
+to
+</div>
+<pre>
+ The end character index to set the color.
+
+</pre>
+<div>
+color
+</div>
+<pre>
+ The color to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Int
+</h5>
+<h3 id="getCharX">
+getCharX(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+index
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the x position of the character at the given index.
+ This refers to its top-left.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+index
+</div>
+<pre>
+ The index of the character to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Int
+</h5>
+<h3 id="getCharY">
+getCharY(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+index
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the x position of the character at the given index.
+ This refers to its top-left.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+index
+</div>
+<pre>
+ The index of the character to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setAttribute">
+setAttribute(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.html#Topaz.RENDERER.ATTRIBUTE">
+Topaz.RENDERER.ATTRIBUTE
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+attribute
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Topaz.Renderer.Attribute
+</th>
+<th class="FunctionArgumentName">
+attribute
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Modifies a render parameter. 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+attribute
+</div>
+<pre>
+ Determines how to interpret the next value.
+ If PRIMITIVE, val is expected to be a value within TOPAZ.RENDERER.PRIMITIVE
+ If ALPHA_RULE, val is expected to be a value within TOPAZ.RENDERER.ALPHA_RULE
+ If DEPTH_TEST, val is expected to be a value within TOPAZ.RENDERER.DEPTH_TEST
+ If ETCH_RULE,  val is expected to be a value within TOPAZ.RENDERER.ETCH_RULE 
+ if TEXTURE_FILTER_HINT, val is expected to be a value within TOPAZ.RENDERER.TEXTURE_FILTER_HINT
+
+</pre>
+<div>
+value
+</div>
+<pre>
+ The new value. How its interpreted depends on param.
+
+</pre>
+<div>
+attribute
+</div>
+<pre>
+ Determines how to interpret the next value.
+ If PRIMITIVE, the return value is expected to be a value within TOPAZ.RENDERER.PRIMITIVE
+ If ALPHA_RULE, the return value is expected to be a value within TOPAZ.RENDERER.ALPHA_RULE
+ If DEPTH_TEST, the return value is expected to be a value within TOPAZ.RENDERER.DEPTH_TEST
+ If ETCH_RULE,  the return value is expected to be a value within TOPAZ.RENDERER.ETCH_RULE 
+ if TEXTURE_FILTER_HINT, the return value is expected to be a value within TOPAZ.RENDERER.TEXTURE_FILTER_HINT
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

@@ -1,0 +1,1431 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazShape2D_t">
+topazShape2D_t
+</h1>
+<pre>
+ Can express basic 2D objects, such as images and shapes.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_create">
+topaz_shape2d_create()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_get_color">
+topaz_shape2d_get_color()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_set_color">
+topaz_shape2d_set_color()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_get_node">
+topaz_shape2d_get_node()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_get_anim_speed">
+topaz_shape2d_get_anim_speed()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_set_anim_speed">
+topaz_shape2d_set_anim_speed()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_get_center">
+topaz_shape2d_get_center()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_set_center">
+topaz_shape2d_set_center()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_form_rectangle">
+topaz_shape2d_form_rectangle()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_form_image">
+topaz_shape2d_form_image()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_form_image_scaled">
+topaz_shape2d_form_image_scaled()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_form_image_frame">
+topaz_shape2d_form_image_frame()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_form_image_frame_scaled">
+topaz_shape2d_form_image_frame_scaled()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_form_radial">
+topaz_shape2d_form_radial()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_form_triangles">
+topaz_shape2d_form_triangles()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_form_lines">
+topaz_shape2d_form_lines()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_set_attributes">
+topaz_shape2d_set_attributes()
+</a>
+
+</div>
+<div>
+<a href="topazShape2D_t.html#topaz_shape2d_get_attributes">
+topaz_shape2d_get_attributes()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</h5>
+<h3 id="topaz_shape2d_create">
+topaz_shape2d_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new shape2d object
+ Use component_destroy to release.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The topaz context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazColor_t.html#topazColor_t">
+topazColor_t
+</a>
+
+</h5>
+<h3 id="topaz_shape2d_get_color">
+topaz_shape2d_get_color(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the color of the object.
+ The default color is #000000 (black)
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d
+</div>
+<pre>
+ The shape2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_shape2d_set_color">
+topaz_shape2d_set_color(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazColor_t.html#topazColor_t">
+topazColor_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+color
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the color of the object.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d,
+</div>
+<pre>
+ The shape2d to modify.
+
+</pre>
+<div>
+color
+</div>
+<pre>
+ The color to use.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</h5>
+<h3 id="topaz_shape2d_get_node">
+topaz_shape2d_get_node(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the trasform for the object
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d
+</div>
+<pre>
+ The shape2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_shape2d_get_anim_speed">
+topaz_shape2d_get_anim_speed(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the animation speed of the image. This is how quickly 
+ the object will flip through image frames. The time is returned in seconds.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d
+</div>
+<pre>
+ The shape2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_shape2d_set_anim_speed">
+topaz_shape2d_set_anim_speed(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+speed
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the animation speed of the image. The time is returned in seconds.
+ The default is 1 / 60th of a second.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d,
+</div>
+<pre>
+ The shape2d to modify
+
+</pre>
+<div>
+speed
+</div>
+<pre>
+ The new speed to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_shape2d_get_center">
+topaz_shape2d_get_center(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the center point of the shape2d from which local 
+ transforms are applied. The default is 0, 0
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d
+</div>
+<pre>
+ The shape2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_shape2d_set_center">
+topaz_shape2d_set_center(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+center
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the center point of the shape2d.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d,
+</div>
+<pre>
+ The shape2d to modify.
+
+</pre>
+<div>
+center
+</div>
+<pre>
+ The center position.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_shape2d_form_rectangle">
+topaz_shape2d_form_rectangle(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+width,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+height
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Forms the object into a triangle. The Shape2D origin is the top-left of the
+ rectangle. Width and height are in pixels.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d,
+</div>
+<pre>
+ The shape2d to modify.
+
+</pre>
+<div>
+width,
+</div>
+<pre>
+ The width of the rectangle.
+
+</pre>
+<div>
+height
+</div>
+<pre>
+ The height of the rectangle.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_shape2d_form_image">
+topaz_shape2d_form_image(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+asset
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Forms the object into the shape and visual of an image.
+ If the image has multiple frames, the image is drawn as an animation
+ accoring to topaz_shape2d_get_anim_speed
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d,
+</div>
+<pre>
+ The shape2d to modify.
+
+</pre>
+<div>
+asset
+</div>
+<pre>
+ The image asset to use as the source.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_shape2d_form_image_scaled">
+topaz_shape2d_form_image_scaled(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+asset,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+width,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+height
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_shape2d_form_image, except a specific width/height 
+ can be given. If so, the image will be rescaled to match this width/height.
+ If the asset is omitted, the same asset is used as last call.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d,
+</div>
+<pre>
+ The shape2d to modify.
+
+</pre>
+<div>
+asset,
+</div>
+<pre>
+ The image asset to use as the source.
+
+</pre>
+<div>
+width,
+</div>
+<pre>
+ The custom width of the shape2d.
+
+</pre>
+<div>
+height
+</div>
+<pre>
+ The custom height of the shape2d.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_shape2d_form_image_frame">
+topaz_shape2d_form_image_frame(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+asset,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+frame
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Forms the object into a specific frame of the given image asset.
+ The given frame will always be valid. If its beyond the number of frames 
+ in the image asset, the the frame index will be equal to frame modulo
+ the total frame count. If the asset is omitted, the same asset is used as last call.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d,
+</div>
+<pre>
+ The shape2d to modify.
+
+</pre>
+<div>
+asset,
+</div>
+<pre>
+ The image asset to use as source.
+
+</pre>
+<div>
+frame
+</div>
+<pre>
+ The frame of the image asset to use.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_shape2d_form_image_frame_scaled">
+topaz_shape2d_form_image_frame_scaled(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+asset,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+frame,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+forcedWidth,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+forcedHeight
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_shape2d_form_image_frame, except with a forced width and 
+ height, in pixels.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d,
+</div>
+<pre>
+ The shape2d to modify.
+
+</pre>
+<div>
+asset,
+</div>
+<pre>
+ The image asset to use as source.
+
+</pre>
+<div>
+frame,
+</div>
+<pre>
+ The frame of the image asset to use.
+
+</pre>
+<div>
+forcedWidth,
+</div>
+<pre>
+ The custom width of the shape2d.
+
+</pre>
+<div>
+forcedHeight
+</div>
+<pre>
+ The custom height of the shape2d.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_shape2d_form_radial">
+topaz_shape2d_form_radial(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+radius,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+numIterations
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Forms the object into an estimated circle in triangles. numIterations
+ refers to how many triangles to form it from. The higher this number, the 
+ more "smooth" the circle will appear. This also can be used to make 
+ simple geometric objects of equal-length sides. For example, using numIterations 
+ of 3 will yield an equalateral triangle.
+ 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d,
+</div>
+<pre>
+ The component to modify.
+
+</pre>
+<div>
+radius,
+</div>
+<pre>
+ The radius of the radial object.
+
+</pre>
+<div>
+numIterations
+</div>
+<pre>
+ The number of sides to shape.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_shape2d_form_triangles">
+topaz_shape2d_form_triangles(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+vertices
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Forms the object into a generic set of triangles. The given array 
+ should be populated with topazVector_t objects.
+ The points are interpreted as positions and are expected to be in groups of 3.
+ If a non-multiple-of-three number of points is given,
+ the remainder points are ignored.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d,
+</div>
+<pre>
+ The shape2d to modify.
+
+</pre>
+<div>
+vertices
+</div>
+<pre>
+ The source vertices of the shape2d
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_shape2d_form_lines">
+topaz_shape2d_form_lines(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+vertices
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Forms a collection of line segments.
+ If an odd number of points are given, the last point is ignored.
+ The array should be the a collection of topazVector_t objects.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d,
+</div>
+<pre>
+ The shape2d to modify.
+
+</pre>
+<div>
+vertices
+</div>
+<pre>
+ The vertices for the lines.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_shape2d_set_attributes">
+topaz_shape2d_set_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRenderer_t.html#topazRenderer_Attributes_t">
+topazRenderer_Attributes_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+attributes
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the rendering attributes.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d,
+</div>
+<pre>
+ The shape2d to modify
+
+</pre>
+<div>
+attributes
+</div>
+<pre>
+ The new process attributes.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazRenderer_t.html#topazRenderer_Attributes_t">
+topazRenderer_Attributes_t
+</a>
+
+</h5>
+<h3 id="topaz_shape2d_get_attributes">
+topaz_shape2d_get_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+shape2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the rendering attributes.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+shape2d
+</div>
+<pre>
+ The shape2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

@@ -1,0 +1,1498 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Module">
+<div class="typetag">
+(Module)</br>
+</div>
+<div>
+<h1 id="Topaz">
+Topaz
+</h1>
+<pre>
+
+ The context instance for the toolkit. 
+ Most data within the topaz project is contextualized
+ under some a topaz instance at some level, so it is 
+ often that a topaz context is needed.
+
+ In the scripting content, only one Topaz instance
+ is accessible.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.html#run">
+run()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#pause">
+pause()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#pauseNow">
+pauseNow()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#resume">
+resume()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#iterate">
+iterate()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#step">
+step()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#draw">
+draw()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#attachPreManager">
+attachPreManager()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#attachPreManagerUnpausable">
+attachPreManagerUnpausable()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#attachPostManager">
+attachPostManager()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#attachPostManagerUnpausable">
+attachPostManagerUnpausable()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#quit">
+quit()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#wait">
+wait()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#log">
+log()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#toBase64">
+toBase64()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#fromBase64">
+fromBase64()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#debug">
+debug()
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#enableConsole">
+enableConsole()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.html#Topaz.RENDERER.ATTRIBUTE">
+Topaz.RENDERER.ATTRIBUTE
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#Topaz.RENDERER.ETCH_RULE">
+Topaz.RENDERER.ETCH_RULE
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#Topaz.RENDERER.PRIMITIVE">
+Topaz.RENDERER.PRIMITIVE
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#Topaz.RENDERER.DEPTHTEST">
+Topaz.RENDERER.DEPTHTEST
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#Topaz.RENDERER.ALPHA_RULE">
+Topaz.RENDERER.ALPHA_RULE
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#Topaz.RENDERER.TEXTURE_FILTER_HINT">
+Topaz.RENDERER.TEXTURE_FILTER_HINT
+</a>
+
+</div>
+<div>
+<a href="Topaz.html#Topaz.RENDERER.LAYER">
+Topaz.RENDERER.LAYER
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+<a href="Topaz.Entity.html#Topaz.Entity">
+Topaz.Entity
+</a>
+
+</span>
+<span class="VariableName">
+ root
+</span>
+
+</div>
+<pre>
+ Gets/sets the toplevel Entity. 
+
+ From here, you can 
+ set the Entity that holds the toplevel of the project. 
+ By default there is none.
+ From this entity, all other entities will be updated.
+ topaz handles entities in a hierarchical structure,
+ so the root must be populated and managed.
+
+</pre>
+<div>
+<span class="VariableType">
+Boolean
+</span>
+<span class="VariableName">
+ isPaused
+</span>
+
+</div>
+<pre>
+  returns whether the engine is in a paused or broken state.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ time
+</span>
+
+</div>
+<pre>
+ Gets the number of milliseconds since creating this context.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Int
+</span>
+<span class="VariableName">
+ versionMicro
+</span>
+
+</div>
+<pre>
+ The micro version number for topaz.
+
+</pre>
+<div>
+<span class="VariableType">
+Int
+</span>
+<span class="VariableName">
+ versionMajor
+</span>
+
+</div>
+<pre>
+ The major version number for topaz.
+
+</pre>
+<div>
+<span class="VariableType">
+Int
+</span>
+<span class="VariableName">
+ versionMinor
+</span>
+
+</div>
+<pre>
+ The minor version number for topaz.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.Filesystem.html#Topaz.Filesystem">
+Topaz.Filesystem
+</a>
+
+</span>
+<span class="VariableName">
+ </br>
+</span>
+
+</div>
+<pre>
+ Singleton for Filesystem-related tools.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.Input.html#Topaz.Input">
+Topaz.Input
+</a>
+
+</span>
+<span class="VariableName">
+ </br>
+</span>
+
+</div>
+<pre>
+ Singleton for Input-related symbols.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.Audio.html#Topaz.Audio">
+Topaz.Audio
+</a>
+
+</span>
+<span class="VariableName">
+ </br>
+</span>
+
+</div>
+<pre>
+ Singleton for Audio-related symbols.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.Resources.html#Topaz.Resources">
+Topaz.Resources
+</a>
+
+</span>
+<span class="VariableName">
+ </br>
+</span>
+
+</div>
+<pre>
+ Singleton for Resource-related symbols.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.FontManager.html#Topaz.FontManager">
+Topaz.FontManager
+</a>
+
+</span>
+<span class="VariableName">
+ </br>
+</span>
+
+</div>
+<pre>
+ Singleton for FontManager-related symbols.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.ViewManager.html#Topaz.ViewManager">
+Topaz.ViewManager
+</a>
+
+</span>
+<span class="VariableName">
+ </br>
+</span>
+
+</div>
+<pre>
+ Singleton for ViewManager-related symbols.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.Vector.html#Topaz.Vector">
+Topaz.Vector
+</a>
+
+</span>
+<span class="VariableName">
+ </br>
+</span>
+
+</div>
+<pre>
+ Singleton for Vector-related utilities.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.Color.html#Topaz.Color">
+Topaz.Color
+</a>
+
+</span>
+<span class="VariableName">
+ </br>
+</span>
+
+</div>
+<pre>
+ Singleton for Color-related utilities.
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.RENDERER.ATTRIBUTE">
+Topaz.RENDERER.ATTRIBUTE
+</h3>
+<pre>
+ The parameters control more fine operations when rendering the 
+ the objects.
+
+
+</pre>
+<table>
+<tr>
+<th>
+PRIMITIVE
+</th>
+<td>
+ The geometric primitive to use when interpreting vertices.
+
+
+</td>
+</tr>
+<tr>
+<th>
+ALPHA_RULE
+</th>
+<td>
+ The transparency rule for the 2D object.
+
+
+</td>
+</tr>
+<tr>
+<th>
+DEPTH_TEST
+</th>
+<td>
+ The transparency rule for the 2D object.
+
+
+</td>
+</tr>
+<tr>
+<th>
+ETCH_RULE
+</th>
+<td>
+ The currently set etch rule, which determines how the 
+ etch rules is applied when rendering this 2d object.
+
+
+</td>
+</tr>
+<tr>
+<th>
+TEXTURE_FILTER_HINT
+</th>
+<td>
+ The texturing hint for the 2D object.
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.RENDERER.ETCH_RULE">
+Topaz.RENDERER.ETCH_RULE
+</h3>
+<pre>
+ Allows for etching, which will ignore rendered results if they arent in the etch.
+ Etch regions last until next frame by default.
+
+
+</pre>
+<table>
+<tr>
+<th>
+NO_ETCHING
+</th>
+<td>
+ Default, no etching is done
+
+
+</td>
+</tr>
+<tr>
+<th>
+DEFINE
+</th>
+<td>
+ Along with whatever is being drawn, the etch region is defined. 
+ Etches are only defined in ares where the depth test passes
+
+
+</td>
+</tr>
+<tr>
+<th>
+UNDEFINE
+</th>
+<td>
+ Along with whatever is being drawn, the etch region is undefined if 
+ defined within the frame.
+
+
+</td>
+</tr>
+<tr>
+<th>
+IN
+</th>
+<td>
+ Only shows things that fall within the etch region
+
+
+</td>
+</tr>
+<tr>
+<th>
+OUT
+</th>
+<td>
+ Only shows things that fall OUTSIDE the etch region
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.RENDERER.PRIMITIVE">
+Topaz.RENDERER.PRIMITIVE
+</h3>
+<pre>
+ Defines the polygon type.
+
+
+</pre>
+<table>
+<tr>
+<th>
+TRIANGLE
+</th>
+<td>
+ Triangle primitive. The most basic and versatile.
+
+
+</td>
+</tr>
+<tr>
+<th>
+LINE
+</th>
+<td>
+ Line primitive. 
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.RENDERER.DEPTHTEST">
+Topaz.RENDERER.DEPTHTEST
+</h3>
+<pre>
+ Defines the depth test, meaning the rule that determines which objects are to be 
+ to be drawn in front or behind. "Less" is the standard for 3D, which allows polygons 
+ with a lower depth to be drawn in front. "NoTest" is standard for 2D, which 
+ allows graphics drawn later to be on top.
+
+
+</pre>
+<table>
+<tr>
+<th>
+LESS
+</th>
+<td>
+ Generated framebuffer elements whose calculated depth are less
+ will be in front.
+
+
+</td>
+</tr>
+<tr>
+<th>
+LEQ
+</th>
+<td>
+ Generated framebuffer elements whose calculated depth are <=
+ will be in front.
+
+
+</td>
+</tr>
+<tr>
+<th>
+GREATER
+</th>
+<td>
+ Generated framebuffer elements whose calculated depth are greater
+ will be in front.
+
+
+</td>
+</tr>
+<tr>
+<th>
+GEQ
+</th>
+<td>
+ Generated framebuffer elements whose calculated depth are >=
+ will be in front.
+
+
+</td>
+</tr>
+<tr>
+<th>
+EQUAL
+</th>
+<td>
+ Generated framebuffer elements whole calculated depth is equal to 
+ whats in the depth buffer
+
+</td>
+</tr>
+<tr>
+<th>
+NONE
+</th>
+<td>
+ No depth test is calculated. All elements pass.
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.RENDERER.ALPHA_RULE">
+Topaz.RENDERER.ALPHA_RULE
+</h3>
+<pre>
+ Allows for differenct transparency effects 
+
+
+</pre>
+<table>
+<tr>
+<th>
+ALLOW
+</th>
+<td>
+ allows for standard "fade" transparency. What we're all used to
+
+
+</td>
+</tr>
+<tr>
+<th>
+OPAQUE
+</th>
+<td>
+ Ignores transparency
+
+
+</td>
+</tr>
+<tr>
+<th>
+TRANSLUCENT
+</th>
+<td>
+ Additive blending, which adds the result color ontop of whats already 
+ there.
+
+
+</td>
+</tr>
+<tr>
+<th>
+INVISIBLE
+</th>
+<td>
+ Makes the drawn objects invisible. Note that etching and depth 
+ information may still be written.
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.RENDERER.TEXTURE_FILTER_HINT">
+Topaz.RENDERER.TEXTURE_FILTER_HINT
+</h3>
+<pre>
+ Defines the texture filter hint. Linear will 
+ texture all subsequent textures bilinearly, giving 
+ a smoother look to textures when scaled up.
+ Hints may be ignored by the renderer
+
+
+</pre>
+<table>
+<tr>
+<th>
+LINEAR
+</th>
+<td>
+ Linear filtering of textures.
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.RENDERER.LAYER">
+Topaz.RENDERER.LAYER
+</h3>
+<pre>
+ Data component of the a framebuffer.
+
+
+</pre>
+<table>
+<tr>
+<th>
+COLOR
+</th>
+<td>
+ RGBA component.
+
+
+</td>
+</tr>
+<tr>
+<th>
+DEPTH
+</th>
+<td>
+ Depth component.
+
+
+</td>
+</tr>
+<tr>
+<th>
+ETCH
+</th>
+<td>
+ Etch component.
+
+
+</td>
+</tr>
+<tr>
+<th>
+ALL
+</th>
+<td>
+ All components.
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="run">
+run()
+</h3>
+<pre>
+ Begins the Engine execution loop.
+
+ Once run is initiated, all drawing to the screen and logic updating
+ is automated. While running, it is also possible to utilize the
+ debugging features such as the console and Entity debugger.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="pause">
+pause()
+</h3>
+<pre>
+ Pauses the Engine execution loop.
+
+ Once in a paused state, only critical objects (managers marked with pausable == false),
+ will be updated.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="pauseNow">
+pauseNow()
+</h3>
+<pre>
+ Immediately pauses the execution loop.
+
+ Like Pause() but disrupts the engine immediately rather than safely waiting 
+ until the next iteration. Most useful for debugging purposes.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="resume">
+resume()
+</h3>
+<pre>
+  Resumes from a paused or broken state.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="iterate">
+iterate()
+</h3>
+<pre>
+ Updates the main engine.
+
+ Does not include frame throttling
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="step">
+step()
+</h3>
+<pre>
+ Performs a stepping operation for the entire engine. This is normally
+ called through topaz_context_iterate(), which is called by topaz_context_run().
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="draw">
+draw()
+</h3>
+<pre>
+ Performs a drawing operation for the entire engine. This is normally
+ called through topaz_context_iterate(), which is called by topaz_context_run().
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="attachPreManager">
+attachPreManager(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Entity.html#Topaz.Entity">
+Topaz.Entity
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+manager
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Attaches a management-type entity.
+
+ If pausable is false, the manager will continue to update even when 
+ the engine is in a paused state.
+ Managers are kept separate from the root entity tree and are unaffected
+ switching of the root entity.
+ the pre_manager* calls ensure that these managers are stepped/drawn BEFORE 
+ the normal entity tree. 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+manager
+</div>
+<pre>
+ The entity to become a manager.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="attachPreManagerUnpausable">
+attachPreManagerUnpausable(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Entity.html#Topaz.Entity">
+Topaz.Entity
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+manager
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_context_attach_pre_manager, but the when the pause 
+ state is entered, these managers are unaffected.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+manager
+</div>
+<pre>
+ The entity to become a manager.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="attachPostManager">
+attachPostManager(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Entity.html#Topaz.Entity">
+Topaz.Entity
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+manager
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_context_attach_pre_manager, but the manager is updated 
+ AFTER the main entity tree.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+manager
+</div>
+<pre>
+ The entity to become a manager.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="attachPostManagerUnpausable">
+attachPostManagerUnpausable(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Entity.html#Topaz.Entity">
+Topaz.Entity
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+manager
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_context_attach_post_manager, but the manager is updated 
+ even when the paused state is entered
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+manager
+</div>
+<pre>
+ The entity to become a manager.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="quit">
+quit()
+</h3>
+<pre>
+ Ends the context execution loop.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="wait">
+wait(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+FPS
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sleeps until the time required for the target frames-per-second is reached.
+ The actual resolution is machine-dependent, but it tends to be millisecond resolution.
+ This will pause the main thread.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+FPS
+</div>
+<pre>
+ The target updates per second.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="log">
+log(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+message
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Boolean
+</th>
+<th class="FunctionArgumentName">
+newline
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Prints to the registered topaz console. If one arg is given,
+ A new line is always printed. Else, the second argument 
+ is used to determine whether the line should advance 
+ after printing.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+message
+</div>
+<pre>
+ The string to print.
+
+</pre>
+<div>
+newline
+</div>
+<pre>
+ Whether to add a newline. (Optional)
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+string
+</h5>
+<h3 id="toBase64">
+toBase64(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Array
+</th>
+<th class="FunctionArgumentName">
+bytes
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Given an array of byte (0-255) values, a base64-formatted
+ string will be returned.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bytes
+</div>
+<pre>
+ The bytes to convert.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="Topaz.Data.html#Topaz.Data">
+Topaz.Data
+</a>
+
+</h5>
+<h3 id="fromBase64">
+fromBase64(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+string
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Given a base64 string, a Topaz.Data asset will be returned 
+ allowing a means to access the raw data. If the string 
+ is invalid, undefined is returned.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+string
+</div>
+<pre>
+ The string to convert.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="debug">
+debug()
+</h3>
+<pre>
+ Pauses the engine's execution at the current scripting 
+ calling context and enables the debugger. The debugger is 
+ accessible via console.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="enableConsole">
+enableConsole()
+</h3>
+<pre>
+ Enables console interaction with the current script context
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

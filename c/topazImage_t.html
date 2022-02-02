@@ -1,0 +1,985 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazImage_t">
+topazImage_t
+</h1>
+<pre>
+    Hold image information. An image within topaz can be multiple frames
+    which can be used a variety of ways (animation, sprite map, etc.)
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazImage_t.html#topaz_image_create">
+topaz_image_create()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_create_empty">
+topaz_image_create_empty()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_add_frame">
+topaz_image_add_frame()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_get_frame">
+topaz_image_get_frame()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_remove_frame">
+topaz_image_remove_frame()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_get_frame_count">
+topaz_image_get_frame_count()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_get_width">
+topaz_image_get_width()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_get_height">
+topaz_image_get_height()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_resize">
+topaz_image_resize()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_add_texture_event_notify">
+topaz_image_add_texture_event_notify()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_remove_texture_event_notify">
+topaz_image_remove_texture_event_notify()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_frame_set_from_texture">
+topaz_image_frame_set_from_texture()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_frame_set_data">
+topaz_image_frame_set_data()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_frame_get_texture">
+topaz_image_frame_get_texture()
+</a>
+
+</div>
+<div>
+<a href="topazImage_t.html#topaz_image_frame_get_rgba_data">
+topaz_image_frame_get_rgba_data()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazImage_t.html#topazImage_TextureEvent">
+topazImage_TextureEvent
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazImage_Frame_t">
+topazImage_Frame_t
+</h1>
+<pre>
+ An individual frame of information that holds pixel data.
+ Images contain 1 or more frames.
+
+</pre>
+<div class="PublicSymbols">
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</h5>
+<h3 id="topaz_image_create">
+topaz_image_create()
+</h3>
+<pre>
+ Creates a new image object
+ Use asset_destroy to release.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</h5>
+<h3 id="topaz_image_create_empty">
+topaz_image_create_empty()
+</h3>
+<pre>
+ Creates a new image object, but without 
+ any loading behavior. This allows for creating custom 
+ images 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazImage_t.html#topazImage_Frame_t">
+topazImage_Frame_t
+</a>
+
+</h5>
+<h3 id="topaz_image_add_frame">
+topaz_image_add_frame()
+</h3>
+<pre>
+ Creates a new frame after the existing frames.
+ The new frame is returned for convenience.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazImage_t.html#topazImage_Frame_t">
+topazImage_Frame_t
+</a>
+
+</h5>
+<h3 id="topaz_image_get_frame">
+topaz_image_get_frame()
+</h3>
+<pre>
+ Returns the index'th frame within the image.
+ If the index is out of bounds, index1176310300paz_iamge_get_frame_count() is used.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_image_remove_frame">
+topaz_image_remove_frame()
+</h3>
+<pre>
+ Removes the index'th frame from the image. If none exists
+ no action is taken.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_image_get_frame_count">
+topaz_image_get_frame_count()
+</h3>
+<pre>
+ Returns the number of frames within the image.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_image_get_width">
+topaz_image_get_width()
+</h3>
+<pre>
+ Returns the width of the image
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_image_get_height">
+topaz_image_get_height()
+</h3>
+<pre>
+ Returns the height of the image
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_image_resize">
+topaz_image_resize(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+image,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+width,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+height
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Resets the width/height of the image.
+ Afterwhich, the contents of all frames are undefined
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+image,
+</div>
+<pre>
+ The image to modify.
+
+</pre>
+<div>
+width,
+</div>
+<pre>
+ The new width of the image.
+
+</pre>
+<div>
+height
+</div>
+<pre>
+ The new height of the image.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazImage_TextureEvent">
+topazImage_TextureEvent
+</h3>
+<pre>
+ Different events for textures.
+
+</pre>
+<table>
+<tr>
+<th>
+topazImage_TextureEvent_Removed
+</th>
+<td>
+ This callback is called BEFORE texture is removed.
+
+</td>
+</tr>
+<tr>
+<th>
+topazImage_TextureEvent_Changed
+</th>
+<td>
+ This callback is valled when refetching the frame's texture 
+ will yield a different texture object.
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_image_texture_event_callback">
+(*topaz_image_texture_event_callback)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+image,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+frame,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazImage_t.html#topazImage_TextureEvent">
+topazImage_TextureEvent
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+event,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+data
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Callback set with topaz_image_add_texture_event_notify().
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+image,
+</div>
+<pre>
+ The image whose texture is getting removed.
+
+</pre>
+<div>
+frame,
+</div>
+<pre>
+ The frame of the texture getting removed.
+
+</pre>
+<div>
+event,
+</div>
+<pre>
+ The event for the texture,
+
+</pre>
+<div>
+data
+</div>
+<pre>
+ The associated data.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_image_add_texture_event_notify">
+topaz_image_add_texture_event_notify(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+image,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazImage_t.html#topaz_image_texture_event_callback">
+topaz_image_texture_event_callback
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+callback,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+data
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a callback to be run when the internal topazTexture_t of 
+ a frame is removed and should no longer be used. 
+ This can happen for actions such as:
+ - image resizing
+ - frame removal
+ - texture replacement
+
+ This is mostly used within topaz itself to make sure that 
+ things using topazImage_t instances can efficiently know 
+ when to stop using a texture and when to refetch a texture.
+
+ A unique ID to the notification is returned. This can 
+ be used to remove the callback.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+image,
+</div>
+<pre>
+ The image to return.
+
+</pre>
+<div>
+callback,
+</div>
+<pre>
+ The callback to be called when the image resizes.
+
+</pre>
+<div>
+data
+</div>
+<pre>
+ The data to associate with the callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_image_remove_texture_event_notify">
+topaz_image_remove_texture_event_notify(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+image,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+callbackID
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes a texture event notify callback.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+image,
+</div>
+<pre>
+ The image to remove a notify from.
+
+</pre>
+<div>
+callbackID
+</div>
+<pre>
+ The callback to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_image_frame_set_from_texture">
+topaz_image_frame_set_from_texture(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazImage_t.html#topazImage_Frame_t">
+topazImage_Frame_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+frame,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRenderer_t.html#topazRenderer_Texture_t">
+topazRenderer_Texture_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+texture
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates an image frame from a pre-existing texture.
+ Every frame has its own texture, so a new texture 
+ is created as a clone of the given one.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+frame,
+</div>
+<pre>
+ Frame to modify.
+
+</pre>
+<div>
+texture
+</div>
+<pre>
+ Texture to clone from. 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_image_frame_set_data">
+topaz_image_frame_set_data(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazImage_t.html#topazImage_Frame_t">
+topazImage_Frame_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+frame,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint8_t
+</th>
+<th class="FunctionArgumentName">
+rgbdaData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the RGBA pixel data within the image according 
+ to the width and height of the frame. This assumes that 
+ the given buffer is at least width*height*4 bytes large.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+frame,
+</div>
+<pre>
+ Frame to modify.
+
+</pre>
+<div>
+rgbdaData
+</div>
+<pre>
+ Texture data to read from and copy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazRenderer_t.html#topazRenderer_Texture_t">
+topazRenderer_Texture_t
+</a>
+
+</h5>
+<h3 id="topaz_image_frame_get_texture">
+topaz_image_frame_get_texture(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazImage_t.html#topazImage_Frame_t">
+topazImage_Frame_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+frame
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the texture handle for the frame.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+frame
+</div>
+<pre>
+ The frame to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_image_frame_get_rgba_data">
+topaz_image_frame_get_rgba_data(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazImage_t.html#topazImage_Frame_t">
+topazImage_Frame_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+frame
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a new array with rgba data of the image frame.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+frame
+</div>
+<pre>
+ The frame to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

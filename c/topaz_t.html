@@ -1,0 +1,2054 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topaz_t">
+topaz_t
+</h1>
+<pre>
+
+ The context instance for the toolkit. 
+ Most data within the topaz project is contextualized
+ under some a topaz instance at some level, so it is 
+ often that a topaz context is needed.
+
+ Contexts must be created and destroyed, and are not 
+ automatically created.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topaz_t.html#topaz_context_create">
+topaz_context_create()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_create_from_system">
+topaz_context_create_from_system()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_create_empty">
+topaz_context_create_empty()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_system">
+topaz_context_get_system()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_destroy">
+topaz_context_destroy()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_run">
+topaz_context_run()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_pause">
+topaz_context_pause()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_pause_now">
+topaz_context_pause_now()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_resume">
+topaz_context_resume()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_iterate">
+topaz_context_iterate()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_step">
+topaz_context_step()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_draw">
+topaz_context_draw()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_is_paused">
+topaz_context_is_paused()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_root">
+topaz_context_get_root()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_set_root">
+topaz_context_set_root()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_attach_pre_manager">
+topaz_context_attach_pre_manager()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_attach_pre_manager_unpausable">
+topaz_context_attach_pre_manager_unpausable()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_attach_post_manager">
+topaz_context_attach_post_manager()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_attach_post_manager_unpausable">
+topaz_context_attach_post_manager_unpausable()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_quit">
+topaz_context_quit()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_wait">
+topaz_context_wait()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_time">
+topaz_context_get_time()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_parameter">
+topaz_context_get_parameter()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_set_parameter">
+topaz_context_set_parameter()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_parameter_names">
+topaz_context_get_parameter_names()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_filesystem">
+topaz_context_get_filesystem()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_font_manager">
+topaz_context_get_font_manager()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_input">
+topaz_context_get_input()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_view_manager">
+topaz_context_get_view_manager()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_script_manager">
+topaz_context_get_script_manager()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_resources">
+topaz_context_get_resources()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_console">
+topaz_context_get_console()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_graphics">
+topaz_context_get_graphics()
+</a>
+
+</div>
+<div>
+<a href="topaz_t.html#topaz_context_get_audio">
+topaz_context_get_audio()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</h5>
+<h3 id="topaz_context_create">
+topaz_context_create()
+</h3>
+<pre>
+ Creates a new topaz context. Default system backends are used.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</h5>
+<h3 id="topaz_context_create_from_system">
+topaz_context_create_from_system(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_t">
+topazSystem_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+system
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new topaz context with the given topazSystem_t configuration.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+system
+</div>
+<pre>
+ The pre-configured system instance to use.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</h5>
+<h3 id="topaz_context_create_empty">
+topaz_context_create_empty()
+</h3>
+<pre>
+ Creates an empty topaz context with no environment-specific 
+ behavior. Not particularly useful.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazSystem_t.html#topazSystem_t">
+topazSystem_t
+</a>
+
+</h5>
+<h3 id="topaz_context_get_system">
+topaz_context_get_system()
+</h3>
+<pre>
+ Gets the system that belongs to the context.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_destroy">
+topaz_context_destroy()
+</h3>
+<pre>
+ Destroys and frees the topaz context.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_context_run">
+topaz_context_run(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Begins the Engine execution loop.
+
+ Once run is initiated, all drawing to the screen and logic updating
+ is automated. While running, it is also possible to utilize the
+ debugging features such as the console and Entity debugger.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to run.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_pause">
+topaz_context_pause(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Pauses the Engine execution loop.
+
+ Once in a paused state, only critical objects (managers marked with pausable == false),
+ will be updated.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to pause.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_pause_now">
+topaz_context_pause_now(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Immediately pauses the execution loop.
+
+ Like Pause() but disrupts the engine immediately rather than safely waiting 
+ until the next iteration. Most useful for debugging purposes.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to break.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_resume">
+topaz_context_resume(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+  Resumes from a paused or broken state.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to resume.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_iterate">
+topaz_context_iterate(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Updates the main engine.
+
+ Does not include frame throttling
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to iterate.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_step">
+topaz_context_step(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Performs a stepping operation for the entire engine. This is normally
+ called through topaz_context_iterate(), which is called by topaz_context_run().
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to step.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_draw">
+topaz_context_draw(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Performs a drawing operation for the entire engine. This is normally
+ called through topaz_context_iterate(), which is called by topaz_context_run().
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to draw.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_context_is_paused">
+topaz_context_is_paused(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+  returns whether the engine is in a paused or broken state.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</h5>
+<h3 id="topaz_context_get_root">
+topaz_context_get_root(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the toplevel Entity. 
+
+ From here, you can 
+ set the Entity that holds the toplevel of the project. 
+ By default there is none.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_set_root">
+topaz_context_set_root(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+newRoot
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the root entity for the context.
+ From this entity, all other entities will be updated.
+ topaz handles entities in a hierarchical structure,
+ so the root must be populated and managed.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The context to modify.
+
+</pre>
+<div>
+newRoot
+</div>
+<pre>
+ The new root to use.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_attach_pre_manager">
+topaz_context_attach_pre_manager(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+topaz,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Attaches a management-type entity.
+
+ If pausable is false, the manager will continue to update even when 
+ the engine is in a paused state.
+ Managers are kept separate from the root entity tree and are unaffected
+ switching of the root entity.
+ the pre_manager* calls ensure that these managers are stepped/drawn BEFORE 
+ the normal entity tree. 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+topaz,
+</div>
+<pre>
+ The context to modify.
+
+</pre>
+<div>
+entity
+</div>
+<pre>
+ The entity to become a manager.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_attach_pre_manager_unpausable">
+topaz_context_attach_pre_manager_unpausable(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+topaz,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_context_attach_pre_manager, but the when the pause 
+ state is entered, these managers are unaffected.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+topaz,
+</div>
+<pre>
+ The context to modify.
+
+</pre>
+<div>
+entity
+</div>
+<pre>
+ The entity to become a manager.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_attach_post_manager">
+topaz_context_attach_post_manager(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+topaz,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_context_attach_pre_manager, but the manager is updated 
+ AFTER the main entity tree.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+topaz,
+</div>
+<pre>
+ The context to modify.
+
+</pre>
+<div>
+entity
+</div>
+<pre>
+ The entity to become a manager.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_attach_post_manager_unpausable">
+topaz_context_attach_post_manager_unpausable(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+topaz,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_context_attach_post_manager, but the manager is updated 
+ even when the paused state is entered
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+topaz,
+</div>
+<pre>
+ The context to modify.
+
+</pre>
+<div>
+entity
+</div>
+<pre>
+ The entity to become a manager.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_quit">
+topaz_context_quit(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Ends the context execution loop.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to quit.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_context_wait">
+topaz_context_wait(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+FPS
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sleeps until the time required for the target frames-per-second is reached.
+ The actual resolution is machine-dependent, but it tends to be millisecond resolution.
+ This will pause the main thread.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The context to wait with.
+
+</pre>
+<div>
+FPS
+</div>
+<pre>
+ The target updates per second.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint64_t
+</h5>
+<h3 id="topaz_context_get_time">
+topaz_context_get_time(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the number of milliseconds since creating this context.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_context_get_parameter">
+topaz_context_get_parameter(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+paramName
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the specified parameter.
+
+ List of known parameters:
+
+     "version-micro"     - micro version
+     "version-minor"     - minor version 
+     "version-major"     - major version 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The context to query.
+
+</pre>
+<div>
+paramName
+</div>
+<pre>
+ The paramter to retrieve a value from.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_context_set_parameter">
+topaz_context_set_parameter(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+paramName,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets a parameter. Some parameters are read-only. In such a case, 
+ 0 is returned.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The context to modify.
+
+</pre>
+<div>
+paramName,
+</div>
+<pre>
+ The parameter to set.
+
+</pre>
+<div>
+value
+</div>
+<pre>
+ The new value of the parameter.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_context_get_parameter_names">
+topaz_context_get_parameter_names(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves an array of all parameter names known.
+ The array should be freed when done.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazFilesystem_t.html#topazFilesystem_t">
+topazFilesystem_t
+</a>
+
+</h5>
+<h3 id="topaz_context_get_filesystem">
+topaz_context_get_filesystem(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new, standard filesys instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The relevant context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazFontManager_t.html#topazFontManager_t">
+topazFontManager_t
+</a>
+
+</h5>
+<h3 id="topaz_context_get_font_manager">
+topaz_context_get_font_manager(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the font manager for the topaz instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The relevant context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazInput_t.html#topazInput_t">
+topazInput_t
+</a>
+
+</h5>
+<h3 id="topaz_context_get_input">
+topaz_context_get_input(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the standard input instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The relevant context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazViewManager_t.html#topazViewManager_t">
+topazViewManager_t
+</a>
+
+</h5>
+<h3 id="topaz_context_get_view_manager">
+topaz_context_get_view_manager(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the standard view manager instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The relevant context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazScriptManager_t.html#topazScriptManager_t">
+topazScriptManager_t
+</a>
+
+</h5>
+<h3 id="topaz_context_get_script_manager">
+topaz_context_get_script_manager(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the standard script manager
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The relevant context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazResources_t.html#topazResources_t">
+topazResources_t
+</a>
+
+</h5>
+<h3 id="topaz_context_get_resources">
+topaz_context_get_resources(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the standard resources instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The relevant context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</h5>
+<h3 id="topaz_context_get_console">
+topaz_context_get_console(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the console for the topaz instance
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The relevant context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazGraphics_t.html#topazGraphics_t">
+topazGraphics_t
+</a>
+
+</h5>
+<h3 id="topaz_context_get_graphics">
+topaz_context_get_graphics(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the graphics instance for the topaz context.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The relevant context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</h5>
+<h3 id="topaz_context_get_audio">
+topaz_context_get_audio(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the audio instance.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The relevant context.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

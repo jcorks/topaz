@@ -1,0 +1,1158 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazArray_t">
+topazArray_t
+</h1>
+<pre>
+ Dynamically resizing container
+
+ Standard containers in many languages, this will hold shallow data
+ and resize itself as need be. 
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazArray_t.html#topaz_array_create">
+topaz_array_create()
+</a>
+
+</div>
+<div>
+<a href="topazArray_t.html#topaz_array_destroy">
+topaz_array_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazArray_t.html#topaz_array_temporary_from_static_array">
+topaz_array_temporary_from_static_array()
+</a>
+
+</div>
+<div>
+<a href="topazArray_t.html#topaz_array_empty">
+topaz_array_empty()
+</a>
+
+</div>
+<div>
+<a href="topazArray_t.html#topaz_array_clone">
+topaz_array_clone()
+</a>
+
+</div>
+<div>
+<a href="topazArray_t.html#topaz_array_get_size">
+topaz_array_get_size()
+</a>
+
+</div>
+<div>
+<a href="topazArray_t.html#topaz_array_get_type_size">
+topaz_array_get_type_size()
+</a>
+
+</div>
+<div>
+<a href="topazArray_t.html#topaz_array_push_n">
+topaz_array_push_n()
+</a>
+
+</div>
+<div>
+<a href="topazArray_t.html#topaz_array_remove">
+topaz_array_remove()
+</a>
+
+</div>
+<div>
+<a href="topazArray_t.html#topaz_array_lower_bound">
+topaz_array_lower_bound()
+</a>
+
+</div>
+<div>
+<a href="topazArray_t.html#topaz_array_insert_n">
+topaz_array_insert_n()
+</a>
+
+</div>
+<div>
+<a href="topazArray_t.html#topaz_array_get_data">
+topaz_array_get_data()
+</a>
+
+</div>
+<div>
+<a href="topazArray_t.html#topaz_array_clear">
+topaz_array_clear()
+</a>
+
+</div>
+<div>
+<a href="topazArray_t.html#topaz_array_set_size">
+topaz_array_set_size()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_array_create">
+topaz_array_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+sizeofType
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a new, empty array 
+
+ sizeofType refers to the size of the elements that the array will hold 
+ the most convenient way to do this is to use "sizeof()"
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+sizeofType
+</div>
+<pre>
+ Size of the object that the array should hold.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_array_destroy">
+topaz_array_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+array
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys the container and buffer that it manages.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+array
+</div>
+<pre>
+ The array to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_array_temporary_from_static_array">
+topaz_array_temporary_from_static_array(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+array,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+sizeofType,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+length
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a temporary array whos data is managed for you.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+array,
+</div>
+<pre>
+ The data to populate the temporary array for you.
+
+</pre>
+<div>
+sizeofType,
+</div>
+<pre>
+ Size of the object within the input array.
+
+</pre>
+<div>
+length
+</div>
+<pre>
+ The object count that the array holds.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="TOPAZ_ARRAY_CAST__D__,__T__,__L__">
+TOPAZ_ARRAY_CAST__D__,__T__,__L__
+</h3>
+<pre>
+ Convenience call for topaz_array_temperator_from_static_array() 
+ The first argument is the array pointer
+ The second argument is the type of each member within the array 
+ The third argument is the number of members in the array
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_array_empty">
+topaz_array_empty()
+</h3>
+<pre>
+ Returns an empty, read-only array. 
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_array_clone">
+topaz_array_clone(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+array
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Clones an entire array, returning a new array instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+array
+</div>
+<pre>
+ The source array to clone.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_array_get_size">
+topaz_array_get_size(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+array
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the size of the array
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+array
+</div>
+<pre>
+ The array to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_array_get_type_size">
+topaz_array_get_type_size(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+array
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the size of each element in bytes.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+array
+</div>
+<pre>
+ The array to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_array_push__A__,__VAL__">
+topaz_array_push__A__,__VAL__
+</h3>
+<pre>
+ Adds an additional element to the array.
+
+ The value given should be an addressable value. For example a 
+ value "12" will not be able to be pushed, but if 
+ setting a variable ahead of time and adding 
+ "i = 12; topaz_array_push(array, i);" would work.
+ Example:
+
+     int i = 0;
+     topazArray_t * arr = topaz_array_create(sizeof(int));
+     topaz_array_push(arr, i);
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_array_at__A__,__T__,__I__">
+topaz_array_at__A__,__T__,__I__
+</h3>
+<pre>
+ Gets the value at the given index.
+ Example:
+     
+     int i = 42;
+     topazArray_t * arr = topaz_array_create(sizeof(int));
+     topaz_array_push(arr, i);
+     printf("167350464", topaz_array_at(arr, 0));
+
+ The above example would print 42.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_array_push_n">
+topaz_array_push_n(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+array,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+element,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+count
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a contiguous set of elements to the array 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+array,
+</div>
+<pre>
+ The array to modify.
+
+</pre>
+<div>
+element,
+</div>
+<pre>
+ An input array of data. The element array is assumed to be 
+ aligned to the size of the topaz array's object size.
+
+</pre>
+<div>
+count
+</div>
+<pre>
+ The number of items within the element array.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_array_remove">
+topaz_array_remove(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+array,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+index
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes a specific member of the array
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+array,
+</div>
+<pre>
+ The array to modify.
+
+</pre>
+<div>
+index
+</div>
+<pre>
+ The index to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_array_comparator">
+(*topaz_array_comparator)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+a,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Compares 2 elements within an array.
+ Each points to an element within an array; this is used 
+ for topaz_array_lower_bound(). Its expected that 
+ the return value returns whether A is "less" than B.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a,
+</div>
+<pre>
+ Pointer to array element A.
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ Pointer to array element B.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_array_lower_bound">
+topaz_array_lower_bound(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+array,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+element,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topaz_array_comparator">
+topaz_array_comparator
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+less
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the index that this element should be inserted into 
+ given that the rest of the array is sorted. If the element is 
+ greater than the rest of the array's elements, the index 
+ after the array is returned.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+array,
+</div>
+<pre>
+ The array to query.
+
+</pre>
+<div>
+element,
+</div>
+<pre>
+ The element in question
+    
+
+</pre>
+<div>
+less
+</div>
+<pre>
+ Returns whether the value that a points to is "less" than 
+ the value that b points to.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_array_insert__A__,__I__,__V__">
+topaz_array_insert__A__,__I__,__V__
+</h3>
+<pre>
+ Inserts the given value at the given position. If the position 
+ is above or equal to the size of the array, the new element is 
+ placed at the end.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_array_insert_n">
+topaz_array_insert_n(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+array,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+index,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+element,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+count
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Inserts the given number of elements at the given index.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+array,
+</div>
+<pre>
+ The array to insert data into.
+
+</pre>
+<div>
+index,
+</div>
+<pre>
+ The index to insert at.
+
+</pre>
+<div>
+element,
+</div>
+<pre>
+ The source data to insert into the array.
+
+</pre>
+<div>
+count
+</div>
+<pre>
+ The number of elements to insert.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_array_get_data">
+topaz_array_get_data(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+array
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets a pointer to the raw data of the array
+ This pointer is guaranteed to be a contiguous memory block of the 
+ current state of the array. It is editable.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+array
+</div>
+<pre>
+ The array to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_array_clear">
+topaz_array_clear(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+array
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Clears the contents of the array.
+ After this operation, the size of the array
+ is 0.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+array
+</div>
+<pre>
+ The array to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_array_set_size">
+topaz_array_set_size(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+array,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+size
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the size of the array
+ If the array were to be larger than it could account for,
+ this invokes an internal resize
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+array,
+</div>
+<pre>
+ The array to modify.
+
+</pre>
+<div>
+size
+</div>
+<pre>
+ The new size. 
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

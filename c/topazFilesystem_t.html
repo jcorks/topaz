@@ -1,0 +1,943 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazFilesystem_t">
+topazFilesystem_t
+</h1>
+<pre>
+ An abstraction for filsystems allows for more flexible management 
+ of runtime assets, including reading assets from remote sources,
+ multithreaded asset loading, ROM devices / files as directory sources,
+ as well as traditional / fully-fledged filesystem access.
+ 
+ 
+ 
+ The filesystem is abstracted as a tree structure of "nodes".
+ Each node contains any number of child objects. There are 2 types of 
+ child objects: nodes, and files, each of which can be represented 
+ as a string.
+ 
+ topaz_filesystem_query can be used to get all child object names from 
+ the currently set path.
+
+ If a child object is a node, its name can be used as an argument to 
+ go_to_child(). If the object is a file, can be used with the read() function 
+ to acquire its data.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazFilesystem_t.html#topaz_filesystem_create">
+topaz_filesystem_create()
+</a>
+
+</div>
+<div>
+<a href="topazFilesystem_t.html#topaz_filesystem_destroy">
+topaz_filesystem_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazFilesystem_t.html#topaz_filesystem_get_backend">
+topaz_filesystem_get_backend()
+</a>
+
+</div>
+<div>
+<a href="topazFilesystem_t.html#topaz_filesystem_get_api">
+topaz_filesystem_get_api()
+</a>
+
+</div>
+<div>
+<a href="topazFilesystem_t.html#topaz_filesystem_get_path">
+topaz_filesystem_get_path()
+</a>
+
+</div>
+<div>
+<a href="topazFilesystem_t.html#topaz_filesystem_get_path_from_string">
+topaz_filesystem_get_path_from_string()
+</a>
+
+</div>
+<div>
+<a href="topazFilesystem_t.html#topaz_filesystem_path_as_string">
+topaz_filesystem_path_as_string()
+</a>
+
+</div>
+<div>
+<a href="topazFilesystem_t.html#topaz_filesystem_path_get_name">
+topaz_filesystem_path_get_name()
+</a>
+
+</div>
+<div>
+<a href="topazFilesystem_t.html#topaz_filesystem_path_get_parent">
+topaz_filesystem_path_get_parent()
+</a>
+
+</div>
+<div>
+<a href="topazFilesystem_t.html#topaz_filesystem_path_get_children">
+topaz_filesystem_path_get_children()
+</a>
+
+</div>
+<div>
+<a href="topazFilesystem_t.html#topaz_filesystem_path_read">
+topaz_filesystem_path_read()
+</a>
+
+</div>
+<div>
+<a href="topazFilesystem_t.html#topaz_filesystem_path_write">
+topaz_filesystem_path_write()
+</a>
+
+</div>
+<div>
+<a href="topazFilesystem_t.html#topaz_filesystem_expunge">
+topaz_filesystem_expunge()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazFilesystem_t.html#topazFilesystem_DefaultNode">
+topazFilesystem_DefaultNode
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazFilesystem_t.html#topazFilesystem_t">
+topazFilesystem_t
+</a>
+
+</h5>
+<h3 id="topaz_filesystem_create">
+topaz_filesystem_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazFilesystemAPI_t
+</th>
+<th class="FunctionArgumentName">
+api
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new filesystem object. The starting path is 
+ the same upon first creating the filsys instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The topaz context.
+
+</pre>
+<div>
+backend,
+</div>
+<pre>
+ The backend to implement the backend's features.
+
+</pre>
+<div>
+api
+</div>
+<pre>
+ The raw API to implement the backend's features.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_filesystem_destroy">
+topaz_filesystem_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFilesystem_t.html#topazFilesystem_t">
+topazFilesystem_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+filesystem
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys and cleans up a filesystem API
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+filesystem
+</div>
+<pre>
+ The filesystem to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</h5>
+<h3 id="topaz_filesystem_get_backend">
+topaz_filesystem_get_backend(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFilesystem_t.html#topazFilesystem_t">
+topazFilesystem_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+filesystem
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the backend for this filesystem object.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+filesystem
+</div>
+<pre>
+ The filesystem to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+topazFilesystemAPI_t
+</h5>
+<h3 id="topaz_filesystem_get_api">
+topaz_filesystem_get_api(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFilesystem_t.html#topazFilesystem_t">
+topazFilesystem_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+filesystem
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the API for this htem.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+filesystem
+</div>
+<pre>
+ The filesystem to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazFilesystem_DefaultNode">
+topazFilesystem_DefaultNode
+</h3>
+<pre>
+ The filesystem instance will have built in paths available 
+ for topaz applications to read from/write to. Since filesystem path 
+ objects need to come from preexisting filesystem
+
+</pre>
+<table>
+<tr>
+<th>
+topazFilesystem_DefaultNode_Resources
+</th>
+<td>
+ The filesystem location for where data for the program is preferred.
+
+</td>
+</tr>
+<tr>
+<th>
+topazFilesystem_DefaultNode_Topaz
+</th>
+<td>
+ The filesystem location for where the topaz binary is located.
+
+</td>
+</tr>
+<tr>
+<th>
+topazFilesystem_DefaultNode_UserData
+</th>
+<td>
+ Filesystem location where user data should be located as suggested by the system. 
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+topazFilesystem_Path_t
+</h5>
+<h3 id="topaz_filesystem_get_path">
+topaz_filesystem_get_path()
+</h3>
+<pre>
+ Gets a read-only built-in filesystem path.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+topazFilesystem_Path_t
+</h5>
+<h3 id="topaz_filesystem_get_path_from_string">
+topaz_filesystem_get_path_from_string(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFilesystem_t.html#topazFilesystem_t">
+topazFilesystem_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fs,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazFilesystem_Path_t
+</th>
+<th class="FunctionArgumentName">
+from,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+partialOrFull
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a new filesystem path from a string representation of a 
+ path. On systems that support partial / relative paths, they will be 
+ from the "from" parameter path. If no such path on the filesystem 
+ can be found, NULL is returned.
+ If "from" is NULL, it is assumed that the last argument is 
+ a full path on the filesystem. The last argument is a partial 
+ if and only if "from" is non-null.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fs,
+</div>
+<pre>
+ The filesystem to use.
+
+</pre>
+<div>
+from,
+</div>
+<pre>
+ The base path. if none, can be NULL
+
+</pre>
+<div>
+partialOrFull
+</div>
+<pre>
+ The string representation of the path.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_filesystem_path_as_string">
+topaz_filesystem_path_as_string(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+topazFilesystem_Path_t
+</th>
+<th class="FunctionArgumentName">
+path
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets a read-only string representing the path.
+ For most filesystems, this is a "fully qualified" path.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+path
+</div>
+<pre>
+ The path to get a string form of.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_filesystem_path_get_name">
+topaz_filesystem_path_get_name(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+topazFilesystem_Path_t
+</th>
+<th class="FunctionArgumentName">
+path
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets a read-only string representing the name.
+ For most filesystems, this is just the file name.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+path
+</div>
+<pre>
+ The path to get a string form of.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+topazFilesystem_Path_t
+</h5>
+<h3 id="topaz_filesystem_path_get_parent">
+topaz_filesystem_path_get_parent(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+topazFilesystem_Path_t
+</th>
+<th class="FunctionArgumentName">
+path
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the parent filesystem path of the given path. 
+ If none, NULL is returned.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+path
+</div>
+<pre>
+ The filesystem path.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_filesystem_path_get_children">
+topaz_filesystem_path_get_children(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+topazFilesystem_Path_t
+</th>
+<th class="FunctionArgumentName">
+path
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets an array of children filesystem paths.
+ If none, the array returned is empty. 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+path
+</div>
+<pre>
+ The path to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazRbuffer_t.html#topazRbuffer_t">
+topazRbuffer_t
+</a>
+
+</h5>
+<h3 id="topaz_filesystem_path_read">
+topaz_filesystem_path_read(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+topazFilesystem_Path_t
+</th>
+<th class="FunctionArgumentName">
+path
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a buffer of data represented at the given path.
+ This buffer must be freed by the caller (topaz_rbuffer_destroy).
+ If the filesystem path is invalid or the file cannot be read,
+ NULL is returned.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+path
+</div>
+<pre>
+ The filesystem path.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_filesystem_path_write">
+topaz_filesystem_path_write(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+topazFilesystem_Path_t
+</th>
+<th class="FunctionArgumentName">
+path,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+name,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazWbuffer_t.html#topazWbuffer_t">
+topazWbuffer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+data
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Writes the given buffer to a file on the filesystem.
+ Name should refer to the name of the file to write.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+path,
+</div>
+<pre>
+ The filesystem path.
+
+</pre>
+<div>
+name,
+</div>
+<pre>
+ The name of the file.
+
+</pre>
+<div>
+data
+</div>
+<pre>
+ The buffer.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_filesystem_expunge">
+topaz_filesystem_expunge(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFilesystem_t.html#topazFilesystem_t">
+topazFilesystem_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fs
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Normally, all created filesystem paths are kept 
+ until the filesystem instance is destroyed.
+ This function will free all filesystem paths in use. 
+ This is usually not necessary, but might be needed 
+ for more complex uses of the filesystem instance.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fs
+</div>
+<pre>
+ The filesystem to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

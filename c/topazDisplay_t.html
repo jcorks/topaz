@@ -1,0 +1,2379 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazDisplay_t">
+topazDisplay_t
+</h1>
+<pre>
+
+ An abstraction for the environment's means of 
+ displaying rendered information.
+
+ In most contexts / systems, the display is a window within the 
+ desktop environment. On embedded systems, this may be the entire
+ screen display.
+
+ Because of the flexibility / variation in what a display can be
+ some backends may choose to implement features differently
+ or omit features altogether where appropriate.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazDisplay_t.html#topaz_display_create">
+topaz_display_create()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_destroy">
+topaz_display_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_get_2d_camera">
+topaz_display_get_2d_camera()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_get_3d_camera">
+topaz_display_get_3d_camera()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_get_framebuffer">
+topaz_display_get_framebuffer()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_use_framebuffer">
+topaz_display_use_framebuffer()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_get_main_framebuffer">
+topaz_display_get_main_framebuffer()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_clear_main_framebuffer">
+topaz_display_clear_main_framebuffer()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_capture_main_framebuffer">
+topaz_display_capture_main_framebuffer()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_get_backend">
+topaz_display_get_backend()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_get_api">
+topaz_display_get_api()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_set_parameter">
+topaz_display_set_parameter()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_is_parameter_modifiable">
+topaz_display_is_parameter_modifiable()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_get_parameter">
+topaz_display_get_parameter()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_auto_clear_framebuffer">
+topaz_display_auto_clear_framebuffer()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_set_name">
+topaz_display_set_name()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_add_parameter_callback">
+topaz_display_add_parameter_callback()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_add_close_callback">
+topaz_display_add_close_callback()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_remove_callback">
+topaz_display_remove_callback()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_update">
+topaz_display_update()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_supported_framebuffers">
+topaz_display_supported_framebuffers()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_get_system_handle_type">
+topaz_display_get_system_handle_type()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_get_system_handle">
+topaz_display_get_system_handle()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_get_system_event_type">
+topaz_display_get_system_event_type()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_get_last_system_event">
+topaz_display_get_last_system_event()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_get_current_clipboard">
+topaz_display_get_current_clipboard()
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topaz_display_set_current_clipboard">
+topaz_display_set_current_clipboard()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazDisplay_t.html#topazDisplay_ViewPolicy">
+topazDisplay_ViewPolicy
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topazDisplay_Handle">
+topazDisplay_Handle
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topazDisplay_Event">
+topazDisplay_Event
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topazDisplay_Parameter">
+topazDisplay_Parameter
+</a>
+
+</div>
+<div>
+<a href="topazDisplay_t.html#topazDisplay_Framebuffer">
+topazDisplay_Framebuffer
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazDisplay_ViewPolicy">
+topazDisplay_ViewPolicy
+</h3>
+<pre>
+  Controls how the Display displays Rendered data.
+
+
+</pre>
+<table>
+<tr>
+<th>
+topazDisplay_ViewPolicy_None
+</th>
+<td>
+ The Display will show the attached Framebuffer's contents with no transformation
+ The visual is stretched over the width and height of the display.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_ViewPolicy_MatchSize
+</th>
+<td>
+ The Display will resize the attached Framebuffer to match the windows dimensions
+ whenever the window is resized.
+ This is the default.
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazDisplay_Handle">
+topazDisplay_Handle
+</h3>
+<pre>
+  The variety of system handle types that Display can represent.
+
+
+</pre>
+<table>
+<tr>
+<th>
+topazDisplay_Handle_X11Display
+</th>
+<td>
+ The display handle is an X11Display instance. In this case, the display is a window in an X11 environment
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Handle_WINAPIHandle
+</th>
+<td>
+ The display handle is a MS Windows HWND instance.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Handle_GLFWwindow
+</th>
+<td>
+ THe display handle is a GLFWwindow instance.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Handle_Unknown
+</th>
+<td>
+ The handle's type is not known and should not be relied on.
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazDisplay_Event">
+topazDisplay_Event
+</h3>
+<pre>
+ The varienty of system event types that Display can give.
+
+
+</pre>
+<table>
+<tr>
+<th>
+topazDisplay_Event_X11Event
+</th>
+<td>
+ The event is a pointer to a topazArray_t of <XEvent>.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Event_WINAPIMsg
+</th>
+<td>
+ The event is a pointer to a topazArray_t of <MSG>.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Event_Unknown
+</th>
+<td>
+< The event's type is not known and should not be relied on.
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazDisplay_Parameter">
+topazDisplay_Parameter
+</h3>
+<pre>
+ On most systems, displays have a variety of features that can be 
+ controlled. This provides a generic interface into those features,
+ where a request can be posted to change a parameter via 
+ topaz_display_set_parameter().
+
+
+</pre>
+<table>
+<tr>
+<th>
+topazDisplay_Parameter_X
+</th>
+<td>
+ Controls the X position of the display. 
+
+ Usually, this is relative to whatever environment
+ the display exists in. For example, in a desktop environment, this could be
+ an offset from the DE's origin. If the display does not support moving,
+ no action is taken.
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Parameter_Y
+</th>
+<td>
+ Controls the Y position of the display. 
+
+ Usually, this is relative to whatever environment
+ the display exists in. For example, in a desktop environment, this could be
+ an offset from the DE's origin. If the display does not support moving,
+ no action is taken.
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Parameter_Width
+</th>
+<td>
+ The width of the display.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Parameter_Height
+</th>
+<td>
+ The height of the display.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Parameter_Show
+</th>
+<td>
+ Controls whether the display is shown.
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Parameter_Fullscreen
+</th>
+<td>
+ Set the display into a fullscreen context. If fullscreen is not supported,
+ no action is taken.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Parameter_LockClientResize
+</th>
+<td>
+ Controls prevention of resizing on the user's side. 
+
+ For example,
+ in a desktop environment, this would disable the feature of resizing
+ the window.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Parameter_LockClientPosition
+</th>
+<td>
+ Attempts to prevent moving on the user's side. 
+ 
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Parameter_ViewPolicy
+</th>
+<td>
+ Controls how the Renderer's information is displayed. The default policy is "MatchSize"
+ See ViewPolicy for more information. 
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Parameter_InputFocus
+</th>
+<td>
+ Returns whether the display has user input focus. On display implementations
+ where this doesnt apply, i.e. where there is only one logical display available,,
+ this will always return true. 
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazDisplay_Framebuffer">
+topazDisplay_Framebuffer
+</h3>
+<pre>
+ Every display has built in framebuffers that can be 
+ used and exchanged between for advanced rendering effects.
+
+
+</pre>
+<table>
+<tr>
+<th>
+topazDisplay_Framebuffer_A
+</th>
+<td>
+ The default framebuffer.
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Framebuffer_B
+</th>
+<td>
+ The second framebuffer.
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Framebuffer_C
+</th>
+<td>
+ The 3rd framebuffer.
+
+</td>
+</tr>
+<tr>
+<th>
+topazDisplay_Framebuffer_D
+</th>
+<td>
+ The 4th framebuffer.
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_callback">
+(*topaz_display_callback)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+data
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Callback for responding to display events,
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display responding to the event.
+
+</pre>
+<div>
+data
+</div>
+<pre>
+ The data bound to the callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_parameter_callback">
+(*topaz_display_parameter_callback)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_Parameter">
+topazDisplay_Parameter
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+param,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+data
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Callback for responding to display events,
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display responding to the event.
+
+</pre>
+<div>
+param,
+</div>
+<pre>
+ The parameter that was successfully changed.
+
+</pre>
+<div>
+data
+</div>
+<pre>
+ The data bound to the callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</h5>
+<h3 id="topaz_display_create">
+topaz_display_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazDisplayAPI_t
+</th>
+<th class="FunctionArgumentName">
+api
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new display object. Usually you can use topaz_view_manager_create_display() 
+ instead of calling this function directly.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The topaz context.
+
+</pre>
+<div>
+backend,
+</div>
+<pre>
+ The backend to implement the backend's features.
+
+</pre>
+<div>
+api
+</div>
+<pre>
+ The raw API to implement the backend's features.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_destroy">
+topaz_display_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys and cleans up a display API
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display
+</div>
+<pre>
+ The display to destroy
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</h5>
+<h3 id="topaz_display_get_2d_camera">
+topaz_display_get_2d_camera(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the camera associated with the display thats 
+ used for 2d operations. This camera is used when the display is set as 
+ the main display. see topazViewManager_t
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display
+</div>
+<pre>
+ The display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</h5>
+<h3 id="topaz_display_get_3d_camera">
+topaz_display_get_3d_camera(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the camera associated with the display thats 
+ used for 3d operations. This camera is used when the display is set as 
+ the main display. see topazViewManager_t
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display
+</div>
+<pre>
+ The display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazRenderer_t.html#topazRenderer_Framebuffer_t">
+topazRenderer_Framebuffer_t
+</a>
+
+</h5>
+<h3 id="topaz_display_get_framebuffer">
+topaz_display_get_framebuffer(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_Framebuffer">
+topazDisplay_Framebuffer
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+f
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the framebuffer specified.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The disply in question.
+
+</pre>
+<div>
+f
+</div>
+<pre>
+ The framebuffer to get.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_use_framebuffer">
+topaz_display_use_framebuffer(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the framebuffer as the main framebuffer. This framebuffer 
+ is rendered into the display every frame.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazRenderer_t.html#topazRenderer_Framebuffer_t">
+topazRenderer_Framebuffer_t
+</a>
+
+</h5>
+<h3 id="topaz_display_get_main_framebuffer">
+topaz_display_get_main_framebuffer(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the framebuffer currently in use.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display
+</div>
+<pre>
+ The disply in question.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_clear_main_framebuffer">
+topaz_display_clear_main_framebuffer(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+
+</th>
+<th class="FunctionArgumentName">
+topazRenderer_DataLayer
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Forces clearing of the results of drawing stored within the current framebuffer.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display to modify
+
+</pre>
+<div>
+topazRenderer_DataLayer
+</div>
+<pre>
+ which information channel to clear.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_capture_main_framebuffer">
+topaz_display_capture_main_framebuffer(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+image
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the contents of the current framebuffer and 
+ puts the data into an image asset frame. 
+ The input image is cleared, resized to match the 
+ framebuffer size, and given one frame which matches the 
+ the framebuffer data.
+
+ NOTE: in general, this operation is considered "slow" as 
+ it requires a lot of communication between the backend 
+ renderer and engine, which are most likely on different 
+ devices. Use sparringly!
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display to query.
+
+</pre>
+<div>
+image
+</div>
+<pre>
+ The image to populate.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</h5>
+<h3 id="topaz_display_get_backend">
+topaz_display_get_backend(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the backend for this display object.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display
+</div>
+<pre>
+ The display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+topazDisplayAPI_t
+</h5>
+<h3 id="topaz_display_get_api">
+topaz_display_get_api(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the API for this display.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display
+</div>
+<pre>
+ The display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_set_parameter">
+topaz_display_set_parameter(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Requests to set a parameter within the display. Once the 
+ the parameter is applied, parameters callbacks may be called 
+ on your behalf to alert the change.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display to modify.
+
+</pre>
+<div>
+value
+</div>
+<pre>
+ The new value of the parameter.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_display_is_parameter_modifiable">
+topaz_display_is_parameter_modifiable(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ System backends may not use or be authorized 
+ to modify certain parameters. This can be used 
+ return whether a parameter is meaningful and 
+ editable.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_display_get_parameter">
+topaz_display_get_parameter(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the current value of the parameter.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_auto_clear_framebuffer">
+topaz_display_auto_clear_framebuffer(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+autoUpdate
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets whether clearing of the framebuffer's contents is done automatically. 
+ The default is "true".
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display to modify.
+
+</pre>
+<div>
+autoUpdate
+</div>
+<pre>
+ Whether to auto-update.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_set_name">
+topaz_display_set_name(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the name of the display. On some systems, this can, for example,
+ set the title bar of the application to the specified name.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display to modify.
+
+</pre>
+<div>
+name
+</div>
+<pre>
+ The new displayName
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_display_add_parameter_callback">
+topaz_display_add_parameter_callback(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topaz_display_parameter_callback">
+topaz_display_parameter_callback
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+callback,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+data
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds an additional callback function to be be called after
+ the occurance of a display parameter change. When parameters 
+ are changed, they are done so as requests; the display backend 
+ may apply these parameters asynchronously. To handle this,
+ the backend will post a callback when parameters are applied.
+ Callbacks are run in the order that they
+ were added in.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display to add a callback to.
+
+</pre>
+<div>
+callback,
+</div>
+<pre>
+ The callback to add.
+
+</pre>
+<div>
+data
+</div>
+<pre>
+ The data to bind to the callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_display_add_close_callback">
+topaz_display_add_close_callback(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topaz_display_callback">
+topaz_display_callback
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+callback,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+data
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds an additional callback function to be be called after
+ the occurance of a closing event.
+
+ Typically on desktop systems,
+ this is triggered by pressing the close button on the window
+ associated with the Display. Callbacks are run in the order that they
+ were added in.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display to add a callback to.
+
+</pre>
+<div>
+callback,
+</div>
+<pre>
+ The callback to add.
+
+</pre>
+<div>
+data
+</div>
+<pre>
+ The data to bind to the callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_remove_callback">
+topaz_display_remove_callback(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes the callback by id.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display to modify.
+
+</pre>
+<div>
+id
+</div>
+<pre>
+ The callback to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_update">
+topaz_display_update(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Updates display with input visual data that is 
+ populated in the internal framebuffer.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display
+</div>
+<pre>
+ The display to update.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_display_supported_framebuffers">
+topaz_display_supported_framebuffers(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the framebuffer types that this renderer supports.
+ Should the framebuffer not match one of the given types, the framebuffer 
+ attachment will fail
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display
+</div>
+<pre>
+ The display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazDisplay_t.html#topazDisplay_Handle">
+topazDisplay_Handle
+</a>
+
+</h5>
+<h3 id="topaz_display_get_system_handle_type">
+topaz_display_get_system_handle_type(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the type associated with data returned by 
+ GetSystemHandle. Meant for internal use, but can be handy when
+ doing weird things.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display
+</div>
+<pre>
+ The display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_get_system_handle">
+topaz_display_get_system_handle(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns an implementation-specific handle that represents this
+ Display or this Display's properties. Meant for internal use, but can 
+ be handy when doing weird things.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display
+</div>
+<pre>
+ The display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazDisplay_t.html#topazDisplay_Event">
+topazDisplay_Event
+</a>
+
+</h5>
+<h3 id="topaz_display_get_system_event_type">
+topaz_display_get_system_event_type(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the type of the system events returned by 
+ GetLastSystemEvent(). Like getting the system handle, it's mostly meant for internal 
+ use, but can come in handy when doing weird things.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display
+</div>
+<pre>
+ The display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_get_last_system_event">
+topaz_display_get_last_system_event(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns an implementation-specific value that represents the 
+ last processed event generated form the display. It is guaranteed to be updated
+ after Update() has been called and is valid until the next Update() call.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display
+</div>
+<pre>
+ The display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_display_get_current_clipboard">
+topaz_display_get_current_clipboard(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the current contents of the clipboard, if applicable.
+ This buffer is owned by the caller.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display
+</div>
+<pre>
+ The display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_display_set_current_clipboard">
+topaz_display_set_current_clipboard(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazDisplay_t.html#topazDisplay_t">
+topazDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+display,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+contents
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the current contents of the clipboard, if applicable.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+display,
+</div>
+<pre>
+ The display to modify.
+
+</pre>
+<div>
+contents
+</div>
+<pre>
+ The new contents of the clipboard.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

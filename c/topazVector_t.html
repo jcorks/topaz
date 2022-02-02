@@ -1,0 +1,1604 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazVector_t">
+topazVector_t
+</h1>
+<pre>
+ A hybrid class suitable for both 2D and 3D
+ positional and physical operations.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazVector_t.html#topaz_vector_reset">
+topaz_vector_reset()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_from_xyz">
+topaz_vector_from_xyz()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_from_string">
+topaz_vector_from_string()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_get_length">
+topaz_vector_get_length()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_get_distance">
+topaz_vector_get_distance()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_normalize">
+topaz_vector_normalize()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_cross">
+topaz_vector_cross()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_dot">
+topaz_vector_dot()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_floor">
+topaz_vector_floor()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_rotation_x_diff">
+topaz_vector_rotation_x_diff()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_rotation_x_diff_relative">
+topaz_vector_rotation_x_diff_relative()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_rotation_x">
+topaz_vector_rotation_x()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_rotation_y_diff">
+topaz_vector_rotation_y_diff()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_rotation_y_diff_relative">
+topaz_vector_rotation_y_diff_relative()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_rotation_y">
+topaz_vector_rotation_y()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_rotation_z_diff">
+topaz_vector_rotation_z_diff()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_rotation_z_diff_relative">
+topaz_vector_rotation_z_diff_relative()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_rotation_z">
+topaz_vector_rotation_z()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_rotate_x">
+topaz_vector_rotate_x()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_rotate_y">
+topaz_vector_rotate_y()
+</a>
+
+</div>
+<div>
+<a href="topazVector_t.html#topaz_vector_rotate_z">
+topaz_vector_rotate_z()
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+float
+</span>
+<span class="VariableName">
+ x
+</span>
+
+</div>
+<pre>
+ The first component of the vector.
+
+</pre>
+<div>
+<span class="VariableType">
+float
+</span>
+<span class="VariableName">
+ y
+</span>
+
+</div>
+<pre>
+ The second component of the vector.
+
+</pre>
+<div>
+<span class="VariableType">
+float
+</span>
+<span class="VariableName">
+ z
+</span>
+
+</div>
+<pre>
+ The third component of the vector.
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_vector_reset">
+topaz_vector_reset(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+vector
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Initializes x, y, and z to 0.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+vector
+</div>
+<pre>
+ The vector to reset.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_vector_from_xyz">
+topaz_vector_from_xyz(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+x,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+y,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+z
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Shorthand initializer for x, y, and z.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+x,
+</div>
+<pre>
+ The x component.
+
+</pre>
+<div>
+y,
+</div>
+<pre>
+ The y component.
+
+</pre>
+<div>
+z
+</div>
+<pre>
+ The z component.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_vector_from_string">
+topaz_vector_from_string(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+input
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Attempts to convert an input string into a vector.
+
+ The format of the text is 2 to 3 floating point numbers separated by
+ any counts of either whitespace or generally accepted separation characters:
+    ,<>(){}[]
+
+ The point here is to allow instantiation from natural mathematical notations
+ which depend on the usage of the Vector. Examples of valid input:
+
+ topaz_vector_from_string(TOPAZ_STR_CAST("{1, 4, 5}"));
+ topaz_vector_from_string(TOPAZ_STR_CAST("1 4 5"));
+ topaz_vector_from_string(TOPAZ_STR_CAST("<1 4 5>"));
+ topaz_vector_from_string(TOPAZ_STR_CAST("[1 4 5]"));
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+input
+</div>
+<pre>
+ Formatted data for the vector.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_vec_x__V__">
+topaz_vec_x__V__
+</h3>
+<pre>
+ Returns the positional X of the vector
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_vec_y__V__">
+topaz_vec_y__V__
+</h3>
+<pre>
+ Returns the positional Y of the vector
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_vec_z__V__">
+topaz_vec_z__V__
+</h3>
+<pre>
+ Returns the positional Z of the vector
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_vector_get_length">
+topaz_vector_get_length(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+vector
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the length of the vector.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+vector
+</div>
+<pre>
+ The vector to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_vector_get_distance">
+topaz_vector_get_distance(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+pos0,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+pos1
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the distance of this vector to the other vector.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+pos0,
+</div>
+<pre>
+ The first positional vector.
+
+</pre>
+<div>
+pos1
+</div>
+<pre>
+ The second positional vector.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_vector_normalize">
+topaz_vector_normalize(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the vector to a magnitude of 1. The source vector is returned it.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a
+</div>
+<pre>
+ The vector to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_vector_cross">
+topaz_vector_cross(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+A,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+B
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the cross product: A x B
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+A,
+</div>
+<pre>
+ Vector A
+
+</pre>
+<div>
+B
+</div>
+<pre>
+ Vector B
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_vector_dot">
+topaz_vector_dot(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+A,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+B
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the dot product.: A . B
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+A,
+</div>
+<pre>
+ Vector A
+
+</pre>
+<div>
+B
+</div>
+<pre>
+ Vector B
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_vector_floor">
+topaz_vector_floor(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the X Y Z to integer values.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a
+</div>
+<pre>
+ The vector whose components will be floored.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_vector_rotation_x_diff">
+topaz_vector_rotation_x_diff(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the YZ angle between the 2
+ vectors in relation to the origin in degrees
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a,
+</div>
+<pre>
+ The positional vector to measure from.
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ The positional vector to measure to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_vector_rotation_x_diff_relative">
+topaz_vector_rotation_x_diff_relative(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the angle between the 2
+ vectors in relation to (*this) in degrees
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a,
+</div>
+<pre>
+ The positional vector to measure from.
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ The positional vector to measure to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_vector_rotation_x">
+topaz_vector_rotation_x(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the angle of the vector in degrees about the X axis
+
+ If a vector has length zero in these dimensions
+ , the angle is always zero.
+ The rotation is about the directional vector (1, 0, 0) and
+ Positive rotation is towards the positive Z direction.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a
+</div>
+<pre>
+ The positional vector to measure to (from 0,0,0).
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_vector_rotation_y_diff">
+topaz_vector_rotation_y_diff(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the zx angle between the 2
+ vectors in relation to the origin in degrees
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a,
+</div>
+<pre>
+ The positional vector to measure from.
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ The positional vector to measure to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_vector_rotation_y_diff_relative">
+topaz_vector_rotation_y_diff_relative(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the angle between the 2
+ vectors in relation to (*this) in degrees
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a,
+</div>
+<pre>
+ The positional vector to measure from.
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ The positional vector to measure to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_vector_rotation_y">
+topaz_vector_rotation_y(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the angle of the vector about the Y axis in degrees
+
+ If a vector has length zero in these dimensions
+ , the angle is always zero.
+ The rotation is about the directional vector (0, 1, 0)
+ Positive rotation is towards the positive X direction.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a
+</div>
+<pre>
+ The positional vector to measure to (from 0,0,0).
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_vector_rotation_z_diff">
+topaz_vector_rotation_z_diff(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the XY angle between the 2
+ vectors in relation to the origin in degrees
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a,
+</div>
+<pre>
+ The positional vector to measure from.
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ The positional vector to measure to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_vector_rotation_z_diff_relative">
+topaz_vector_rotation_z_diff_relative(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the angle between the 2
+ vectors in relation to (*this) in degrees
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a,
+</div>
+<pre>
+ The positional vector to measure from.
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ The positional vector to measure to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_vector_rotation_z">
+topaz_vector_rotation_z(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the angle of the vector about the Z axis in degrees
+ These deals with angles between the x and y axes.
+ XY is most useful for 2D angles and transformations.
+ If a vector has length zero in these dimensions
+ , the angle is always zero.
+ The rotation is about the directional vector (0, 0, 1).
+ Positive rotation is towards the positive Y direction.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a
+</div>
+<pre>
+ The positional vector to measure to (from 0,0,0).
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_vector_rotate_x">
+topaz_vector_rotate_x(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+vector,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+amt
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the result of rotating the vector
+ by the specified degrees about the center
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+vector,
+</div>
+<pre>
+ The vector to rotate.
+
+</pre>
+<div>
+amt
+</div>
+<pre>
+ The amount to rotate in degrees.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_vector_rotate_y">
+topaz_vector_rotate_y(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+vector,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+amt
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the result of rotating the vector
+ by the specified degrees about the center
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+vector,
+</div>
+<pre>
+ The vector to rotate.
+
+</pre>
+<div>
+amt
+</div>
+<pre>
+ The amount to rotate in degrees.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_vector_rotate_z">
+topaz_vector_rotate_z(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+vector,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+amt
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the result of rotating the vector
+ by the specified degrees about the center
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+vector,
+</div>
+<pre>
+ The vector to rotate.
+
+</pre>
+<div>
+amt
+</div>
+<pre>
+ The amount to rotate in degrees.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

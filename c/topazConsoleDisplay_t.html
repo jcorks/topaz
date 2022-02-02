@@ -1,0 +1,1057 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</h1>
+<pre>
+ Defines a visual interface for interacting with a console.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazConsoleDisplay_t.html#topaz_console_display_create">
+topaz_console_display_create()
+</a>
+
+</div>
+<div>
+<a href="topazConsoleDisplay_t.html#topaz_console_display_destroy">
+topaz_console_display_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazConsoleDisplay_t.html#topaz_console_display_get_backend">
+topaz_console_display_get_backend()
+</a>
+
+</div>
+<div>
+<a href="topazConsoleDisplay_t.html#topaz_console_display_get_api">
+topaz_console_display_get_api()
+</a>
+
+</div>
+<div>
+<a href="topazConsoleDisplay_t.html#topaz_console_display_clear">
+topaz_console_display_clear()
+</a>
+
+</div>
+<div>
+<a href="topazConsoleDisplay_t.html#topaz_console_display_add_text">
+topaz_console_display_add_text()
+</a>
+
+</div>
+<div>
+<a href="topazConsoleDisplay_t.html#topaz_console_display_new_line">
+topaz_console_display_new_line()
+</a>
+
+</div>
+<div>
+<a href="topazConsoleDisplay_t.html#topaz_console_display_get_line_count">
+topaz_console_display_get_line_count()
+</a>
+
+</div>
+<div>
+<a href="topazConsoleDisplay_t.html#topaz_console_display_get_line">
+topaz_console_display_get_line()
+</a>
+
+</div>
+<div>
+<a href="topazConsoleDisplay_t.html#topaz_console_display_send_input">
+topaz_console_display_send_input()
+</a>
+
+</div>
+<div>
+<a href="topazConsoleDisplay_t.html#topaz_console_display_enable">
+topaz_console_display_enable()
+</a>
+
+</div>
+<div>
+<a href="topazConsoleDisplay_t.html#topaz_console_display_add_input_callback">
+topaz_console_display_add_input_callback()
+</a>
+
+</div>
+<div>
+<a href="topazConsoleDisplay_t.html#topaz_console_display_remove_input_callback">
+topaz_console_display_remove_input_callback()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</h5>
+<h3 id="topaz_console_display_create">
+topaz_console_display_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazConsoleDisplayAPI_t
+</th>
+<th class="FunctionArgumentName">
+api
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new console display instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The topaz context
+
+</pre>
+<div>
+backend,
+</div>
+<pre>
+ The backend to implement the backend's features.
+
+</pre>
+<div>
+api
+</div>
+<pre>
+ The raw API to implement the backend's features.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_display_destroy">
+topaz_console_display_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cDisplay
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys and cleans up a console display instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cDisplay
+</div>
+<pre>
+ The console display to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</h5>
+<h3 id="topaz_console_display_get_backend">
+topaz_console_display_get_backend(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cDisplay
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the backend for this console display.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cDisplay
+</div>
+<pre>
+ The console display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+topazConsoleDisplayAPI_t
+</h5>
+<h3 id="topaz_console_display_get_api">
+topaz_console_display_get_api(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cDisplay
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the API for this console display.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cDisplay
+</div>
+<pre>
+ The console display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_display_clear">
+topaz_console_display_clear(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cDisplay
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Clears all lines from the console display. 
+ After this call, the line history is also cleared.
+ This means topaz_console_display_get_line_count() will return 0 and 
+ all topaz_console_display_get_line() calls will return the empty string.
+ 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cDisplay
+</div>
+<pre>
+ The console display to clear.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_display_add_text">
+topaz_console_display_add_text(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cDisplay,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+text,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazColor_t.html#topazColor_t">
+topazColor_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+color
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds text to the current line in the given color.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cDisplay,
+</div>
+<pre>
+ The console display to modify.
+
+</pre>
+<div>
+text,
+</div>
+<pre>
+ The text to add to the current line.
+
+</pre>
+<div>
+color
+</div>
+<pre>
+ The color of the text to add.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_display_new_line">
+topaz_console_display_new_line(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cDisplay
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a line to the console display. This line becomes the next line to 
+ be display. This increases the line count by 1. The line count prior 
+ to this call becomes this new line's index. This index can be used with 
+ topaz_console_display_get_line().
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cDisplay
+</div>
+<pre>
+ The console display to add a new line to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_console_display_get_line_count">
+topaz_console_display_get_line_count(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cDisplay
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the count of lines that were added to the console display.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cDisplay
+</div>
+<pre>
+ The console display to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_console_display_get_line">
+topaz_console_display_get_line(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cDisplay,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+line
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets a read-only copy of the line for the given index.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cDisplay,
+</div>
+<pre>
+ The console display to query.
+
+</pre>
+<div>
+line
+</div>
+<pre>
+ The line to read.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_display_send_input">
+topaz_console_display_send_input(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cDisplay,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+input
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sends input as if it came from the console. This is indistinguishable from 
+ externally generated input.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cDisplay,
+</div>
+<pre>
+ The console display to send input to.
+
+</pre>
+<div>
+input
+</div>
+<pre>
+ The text to send.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_display_enable">
+topaz_console_display_enable(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cDisplay,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+enabled
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Enables or disables the console display.
+ 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cDisplay,
+</div>
+<pre>
+ The console display to toggle.
+
+</pre>
+<div>
+enabled
+</div>
+<pre>
+ Whether to enable.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_display_input_callback">
+(*topaz_console_display_input_callback)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cDisplay,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+line,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+userData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Callback called by the console display if the user sends 
+ input to the console display. A full line of input is 
+ will be returned. The input isn't printed back to 
+ the console display, so it is up to the callback itself 
+ to print it to the display when applicable.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cDisplay,
+</div>
+<pre>
+ The console display that received the event.
+
+</pre>
+<div>
+line,
+</div>
+<pre>
+ The text received. 
+
+</pre>
+<div>
+userData
+</div>
+<pre>
+ Data bound to the console display. 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_console_display_add_input_callback">
+topaz_console_display_add_input_callback(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cDisplay,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topaz_console_display_input_callback">
+topaz_console_display_input_callback
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+callback,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+data
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds an input callback to be called when input from the user is 
+ received. The ID of the callback is returned. This callback can
+ be used to remove the callback.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cDisplay,
+</div>
+<pre>
+ The console display to add an input hook to.
+
+</pre>
+<div>
+callback,
+</div>
+<pre>
+ The callback to add.
+
+</pre>
+<div>
+data
+</div>
+<pre>
+ The data to bind to the callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_display_remove_input_callback">
+topaz_console_display_remove_input_callback(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsoleDisplay_t.html#topazConsoleDisplay_t">
+topazConsoleDisplay_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cDisplay,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes an added callback. If the ID doesnt refer to a 
+ input callback, then no action is taken.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cDisplay,
+</div>
+<pre>
+ The console display to remove a callback from.
+
+</pre>
+<div>
+id
+</div>
+<pre>
+ The id of the callback to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

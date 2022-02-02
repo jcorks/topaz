@@ -1,0 +1,2532 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Singleton">
+<div class="typetag">
+(Singleton)</br>
+</div>
+<div>
+<h1 id="Topaz.Input">
+Topaz.Input
+</h1>
+<pre>
+ Manages input devices to provide convenient access 
+ to inputs and generated input events.
+
+ In topaz, input is split into three types of 
+ device classes: pointers, keyboards, and pads.
+ Any device can have any type of input. 
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Input.html#addKeyboardListener">
+addKeyboardListener()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Input.html#addPointerListener">
+addPointerListener()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Input.html#addPadListener">
+addPadListener()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Input.html#addMappedListener">
+addMappedListener()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Input.html#removeListener">
+removeListener()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Input.html#getState">
+getState()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Input.html#getPadState">
+getPadState()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Input.html#getMappedState">
+getMappedState()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Input.html#setDeadzone">
+setDeadzone()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Input.html#queryPads">
+queryPads()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Input.html#addUnicodeListener">
+addUnicodeListener()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Input.html#removeUnicodeListener">
+removeUnicodeListener()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Input.html#Topaz.Input.KEY">
+Topaz.Input.KEY
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+Int
+</span>
+<span class="VariableName">
+ DEFAULT_INPUT_COUNT
+</span>
+
+</div>
+<pre>
+ The number of enum values reserved for built-in buttons.
+
+</pre>
+<div>
+<span class="VariableType">
+Object
+</span>
+<span class="VariableName">
+ mouse
+</span>
+
+</div>
+<pre>
+ Convenience getter that returns the current 
+ position of the mouse (pointer 0) as a 2-dimensional vector.
+ Read-only
+
+</pre>
+<div>
+<span class="VariableType">
+Object
+</span>
+<span class="VariableName">
+ mouseDelta
+</span>
+
+</div>
+<pre>
+ Convenience getter that returns the last change 
+ of the position of the mouse (pointer 0) as a 2-dimensional vector.
+ Read-only
+
+</pre>
+<div>
+<span class="VariableType">
+Number
+</span>
+<span class="VariableName">
+ mouseWheel
+</span>
+
+</div>
+<pre>
+ Convenience function that returns the current wheel state 
+ of the mouse (pointer 0).
+ Read-only
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.Input.KEY">
+Topaz.Input.KEY
+</h3>
+<pre>
+ Standard input buttons for built-in device types.
+
+</pre>
+<table>
+<tr>
+<th>
+_0
+</th>
+<td>
+ The 0 key.
+
+</td>
+</tr>
+<tr>
+<th>
+_1
+</th>
+<td>
+ The 1 key.
+
+</td>
+</tr>
+<tr>
+<th>
+_2
+</th>
+<td>
+ The 2 key.
+
+</td>
+</tr>
+<tr>
+<th>
+_3
+</th>
+<td>
+ The 3 key.
+
+</td>
+</tr>
+<tr>
+<th>
+_4
+</th>
+<td>
+ The 4 key.
+
+</td>
+</tr>
+<tr>
+<th>
+_5
+</th>
+<td>
+ The 5 key.
+
+</td>
+</tr>
+<tr>
+<th>
+_6
+</th>
+<td>
+ The 6 key.
+
+</td>
+</tr>
+<tr>
+<th>
+_7
+</th>
+<td>
+ The 7 key.
+
+</td>
+</tr>
+<tr>
+<th>
+_8
+</th>
+<td>
+ The 8 key.
+
+</td>
+</tr>
+<tr>
+<th>
+_9
+</th>
+<td>
+ The 9 key.
+
+</td>
+</tr>
+<tr>
+<th>
+A
+</th>
+<td>
+ The a key.
+
+</td>
+</tr>
+<tr>
+<th>
+B
+</th>
+<td>
+ The b key.
+
+</td>
+</tr>
+<tr>
+<th>
+C
+</th>
+<td>
+ The c key.
+
+</td>
+</tr>
+<tr>
+<th>
+D
+</th>
+<td>
+ The d key.
+
+</td>
+</tr>
+<tr>
+<th>
+E
+</th>
+<td>
+ The e key.
+
+</td>
+</tr>
+<tr>
+<th>
+F
+</th>
+<td>
+ The f key.
+
+</td>
+</tr>
+<tr>
+<th>
+G
+</th>
+<td>
+ The g key.
+
+</td>
+</tr>
+<tr>
+<th>
+H
+</th>
+<td>
+ The h key.
+
+</td>
+</tr>
+<tr>
+<th>
+I
+</th>
+<td>
+ The i key.
+
+</td>
+</tr>
+<tr>
+<th>
+J
+</th>
+<td>
+ The j key.
+
+</td>
+</tr>
+<tr>
+<th>
+K
+</th>
+<td>
+ The k key.
+
+</td>
+</tr>
+<tr>
+<th>
+L
+</th>
+<td>
+ The l key.
+
+</td>
+</tr>
+<tr>
+<th>
+M
+</th>
+<td>
+ The m key.
+
+</td>
+</tr>
+<tr>
+<th>
+N
+</th>
+<td>
+ The n key.
+
+</td>
+</tr>
+<tr>
+<th>
+O
+</th>
+<td>
+ The o key.
+
+</td>
+</tr>
+<tr>
+<th>
+P
+</th>
+<td>
+ The p key.
+
+</td>
+</tr>
+<tr>
+<th>
+Q
+</th>
+<td>
+ The q key.
+
+</td>
+</tr>
+<tr>
+<th>
+R
+</th>
+<td>
+ The r key.
+
+</td>
+</tr>
+<tr>
+<th>
+S
+</th>
+<td>
+ The s key.
+
+</td>
+</tr>
+<tr>
+<th>
+T
+</th>
+<td>
+ The t key.
+
+</td>
+</tr>
+<tr>
+<th>
+U
+</th>
+<td>
+ The u key.
+
+</td>
+</tr>
+<tr>
+<th>
+V
+</th>
+<td>
+ The v key.
+
+</td>
+</tr>
+<tr>
+<th>
+W
+</th>
+<td>
+ The w key.
+
+</td>
+</tr>
+<tr>
+<th>
+X
+</th>
+<td>
+ The x key.
+
+</td>
+</tr>
+<tr>
+<th>
+Y
+</th>
+<td>
+ The y key.
+
+</td>
+</tr>
+<tr>
+<th>
+Z
+</th>
+<td>
+ The z key.
+
+</td>
+</tr>
+<tr>
+<th>
+L_SHIFT
+</th>
+<td>
+ The lshift key.
+
+</td>
+</tr>
+<tr>
+<th>
+R_SHIFT
+</th>
+<td>
+ The rshift key.
+
+</td>
+</tr>
+<tr>
+<th>
+L_CTRL
+</th>
+<td>
+ The lctrl key.
+
+</td>
+</tr>
+<tr>
+<th>
+R_CTRL
+</th>
+<td>
+ The rctrl key.
+
+</td>
+</tr>
+<tr>
+<th>
+L_ALT
+</th>
+<td>
+ The lalt key.
+
+</td>
+</tr>
+<tr>
+<th>
+R_ALT
+</th>
+<td>
+ The ralt key.
+
+</td>
+</tr>
+<tr>
+<th>
+TAB
+</th>
+<td>
+ The tab key.
+
+</td>
+</tr>
+<tr>
+<th>
+F1
+</th>
+<td>
+ The F1 key.
+
+</td>
+</tr>
+<tr>
+<th>
+F2
+</th>
+<td>
+ The F2 key.
+
+</td>
+</tr>
+<tr>
+<th>
+F3
+</th>
+<td>
+ The F3 key.
+
+</td>
+</tr>
+<tr>
+<th>
+F4
+</th>
+<td>
+ The F4 key.
+
+</td>
+</tr>
+<tr>
+<th>
+F5
+</th>
+<td>
+ The F5 key.
+
+</td>
+</tr>
+<tr>
+<th>
+F6
+</th>
+<td>
+ The F6 key.
+
+</td>
+</tr>
+<tr>
+<th>
+F7
+</th>
+<td>
+ The F7 key.
+
+</td>
+</tr>
+<tr>
+<th>
+F8
+</th>
+<td>
+ The F8 key.
+
+</td>
+</tr>
+<tr>
+<th>
+F9
+</th>
+<td>
+ The F9 key.
+
+</td>
+</tr>
+<tr>
+<th>
+F10
+</th>
+<td>
+ The F10 key.
+
+</td>
+</tr>
+<tr>
+<th>
+F11
+</th>
+<td>
+ The F11 key.
+
+</td>
+</tr>
+<tr>
+<th>
+F12
+</th>
+<td>
+ The F12 key.
+
+</td>
+</tr>
+<tr>
+<th>
+UP
+</th>
+<td>
+ The up arrow key.
+
+</td>
+</tr>
+<tr>
+<th>
+DOWN
+</th>
+<td>
+ The down arrow key.
+
+</td>
+</tr>
+<tr>
+<th>
+LEFT
+</th>
+<td>
+ The left arrow key.
+
+</td>
+</tr>
+<tr>
+<th>
+RIGHT
+</th>
+<td>
+ The right arrow key.
+
+</td>
+</tr>
+<tr>
+<th>
+MINUS
+</th>
+<td>
+ The minus key.
+
+</td>
+</tr>
+<tr>
+<th>
+EQUAL
+</th>
+<td>
+ The equal key.
+
+</td>
+</tr>
+<tr>
+<th>
+BACKSPACE
+</th>
+<td>
+ The backspace key.
+
+</td>
+</tr>
+<tr>
+<th>
+GRAVE
+</th>
+<td>
+ The grave key.
+
+</td>
+</tr>
+<tr>
+<th>
+ESC
+</th>
+<td>
+ The esc key.
+
+</td>
+</tr>
+<tr>
+<th>
+HOME
+</th>
+<td>
+ The home key.
+
+</td>
+</tr>
+<tr>
+<th>
+PAGE_UP
+</th>
+<td>
+ The pageUp key.
+
+</td>
+</tr>
+<tr>
+<th>
+PAGE_DOWN
+</th>
+<td>
+ The pageDown key.
+
+</td>
+</tr>
+<tr>
+<th>
+END
+</th>
+<td>
+ The end key.
+
+</td>
+</tr>
+<tr>
+<th>
+BACKSLASH
+</th>
+<td>
+ The backslash key.
+
+</td>
+</tr>
+<tr>
+<th>
+L_BRACKET
+</th>
+<td>
+ The lbracket key.
+
+</td>
+</tr>
+<tr>
+<th>
+R_BRACKET
+</th>
+<td>
+ The rbracket key.
+
+</td>
+</tr>
+<tr>
+<th>
+SEMICOLON
+</th>
+<td>
+ The semicolon key.
+
+</td>
+</tr>
+<tr>
+<th>
+APOSTROPHE
+</th>
+<td>
+ The apostrophe key.
+
+</td>
+</tr>
+<tr>
+<th>
+FRONTSLASH
+</th>
+<td>
+ The frontslash key.
+
+</td>
+</tr>
+<tr>
+<th>
+ENTER
+</th>
+<td>
+ The enter key.
+
+</td>
+</tr>
+<tr>
+<th>
+DELETE
+</th>
+<td>
+ The delete key.
+
+</td>
+</tr>
+<tr>
+<th>
+NUMPAD_0
+</th>
+<td>
+ The numpad0 key.
+
+</td>
+</tr>
+<tr>
+<th>
+NUMPAD_1
+</th>
+<td>
+ The numpad1 key.
+
+</td>
+</tr>
+<tr>
+<th>
+NUMPAD_2
+</th>
+<td>
+ The numpad2 key.
+
+</td>
+</tr>
+<tr>
+<th>
+NUMPAD_3
+</th>
+<td>
+ The numpad3 key.
+
+</td>
+</tr>
+<tr>
+<th>
+NUMPAD_4
+</th>
+<td>
+ The numpad4 key.
+
+</td>
+</tr>
+<tr>
+<th>
+NUMPAD_5
+</th>
+<td>
+ The numpad5 key.
+
+</td>
+</tr>
+<tr>
+<th>
+NUMPAD_6
+</th>
+<td>
+ The numpad6 key.
+
+</td>
+</tr>
+<tr>
+<th>
+NUMPAD_7
+</th>
+<td>
+ The numpad7 key.
+
+</td>
+</tr>
+<tr>
+<th>
+NUMPAD_8
+</th>
+<td>
+ The numpad8 key.
+
+</td>
+</tr>
+<tr>
+<th>
+NUMPAD_9
+</th>
+<td>
+ The numpad9 key.
+
+</td>
+</tr>
+<tr>
+<th>
+PRINT_SCREEN
+</th>
+<td>
+ The prtscr key.
+
+</td>
+</tr>
+<tr>
+<th>
+L_SUPER
+</th>
+<td>
+ The lsuper key.
+
+</td>
+</tr>
+<tr>
+<th>
+R_SUPER
+</th>
+<td>
+ The rsuper key.
+
+</td>
+</tr>
+<tr>
+<th>
+SPACE
+</th>
+<td>
+ The space key.
+
+</td>
+</tr>
+<tr>
+<th>
+INSERT
+</th>
+<td>
+ The insert key.
+
+</td>
+</tr>
+<tr>
+<th>
+COMMA
+</th>
+<td>
+ The comma key.
+
+</td>
+</tr>
+<tr>
+<th>
+PERIOD
+</th>
+<td>
+ The period key.
+
+</td>
+</tr>
+<tr>
+<th>
+WORLD_1
+</th>
+<td>
+ The world1 key.
+
+</td>
+</tr>
+<tr>
+<th>
+WORLD_2
+</th>
+<td>
+ The world2 key.
+
+</td>
+</tr>
+<tr>
+<th>
+WORLD_3
+</th>
+<td>
+ The world3 key.
+
+</td>
+</tr>
+<tr>
+<th>
+WORLD_4
+</th>
+<td>
+ The world4 key.
+
+</td>
+</tr>
+<tr>
+<th>
+WORLD_5
+</th>
+<td>
+ The world5 key.
+
+</td>
+</tr>
+<tr>
+<th>
+WORLD_6
+</th>
+<td>
+ The world6 key.
+
+</td>
+</tr>
+<tr>
+<th>
+WORLD_7
+</th>
+<td>
+ The world7 key.
+
+</td>
+</tr>
+<tr>
+<th>
+WORLD_8
+</th>
+<td>
+ The world8 key.
+
+</td>
+</tr>
+<tr>
+<th>
+WORLD_9
+</th>
+<td>
+ The world9 key.
+
+</td>
+</tr>
+<tr>
+<th>
+WHEEL
+</th>
+<td>
+ The pointer wheel axis.
+
+</td>
+</tr>
+<tr>
+<th>
+R2
+</th>
+<td>
+ The r2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+L2
+</th>
+<td>
+ The l2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+R3
+</th>
+<td>
+ The r3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+L3
+</th>
+<td>
+ The l3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+START
+</th>
+<td>
+ The start pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+SELECT
+</th>
+<td>
+ The select pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B13
+</th>
+<td>
+ The b13 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B14
+</th>
+<td>
+ The b14 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B15
+</th>
+<td>
+ The b15 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B16
+</th>
+<td>
+ The b16 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B17
+</th>
+<td>
+ The b17 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B18
+</th>
+<td>
+ The b18 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B19
+</th>
+<td>
+ The b19 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B20
+</th>
+<td>
+ The b20 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B21
+</th>
+<td>
+ The b21 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B22
+</th>
+<td>
+ The b22 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B23
+</th>
+<td>
+ The b23 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B24
+</th>
+<td>
+ The b24 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B25
+</th>
+<td>
+ The b25 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B26
+</th>
+<td>
+ The b26 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B27
+</th>
+<td>
+ The b27 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B28
+</th>
+<td>
+ The b28 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B29
+</th>
+<td>
+ The b29 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B30
+</th>
+<td>
+ The b30 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B31
+</th>
+<td>
+ The b31 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+B32
+</th>
+<td>
+ The b32 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_X
+</th>
+<td>
+ The axisX pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_Y
+</th>
+<td>
+ The axisY pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_Z
+</th>
+<td>
+ The axisZ pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_X2
+</th>
+<td>
+ The axisX2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_Y2
+</th>
+<td>
+ The axisY2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_Z2
+</th>
+<td>
+ The axisZ2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_X3
+</th>
+<td>
+ The axisX3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_Y3
+</th>
+<td>
+ The axisY3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_Z3
+</th>
+<td>
+ The axisZ3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_X4
+</th>
+<td>
+ The axisX4 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_Y4
+</th>
+<td>
+ The axisY4 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_Z4
+</th>
+<td>
+ The axisZ4 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_X5
+</th>
+<td>
+ The axisX5 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_Y5
+</th>
+<td>
+ The axisY5 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_Z5
+</th>
+<td>
+ The axisZ5 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_X6
+</th>
+<td>
+ The axisX6 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_Y6
+</th>
+<td>
+ The axisY6 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_Z6
+</th>
+<td>
+ The axisZ6 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_R
+</th>
+<td>
+ The axisR pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_L
+</th>
+<td>
+ The axisL pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_R2
+</th>
+<td>
+ The axisR2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_L2
+</th>
+<td>
+ The axisL2 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_R3
+</th>
+<td>
+ The axisR3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_L3
+</th>
+<td>
+ The axisL3 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_R4
+</th>
+<td>
+ The axisR4 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+AXIS_L4
+</th>
+<td>
+ The axisL4 pad input.
+
+</td>
+</tr>
+<tr>
+<th>
+OPTIONS
+</th>
+<td>
+ The options pad input.
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Int
+</h5>
+<h3 id="addKeyboardListener">
+addKeyboardListener(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onPress
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onActive
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onRelease
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onUpdate
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a new listener object for the keyboard, calling the given 
+ functions when the relevant event is detected. 
+ An ID to the listener is returned. This ID is used for removing the listener.
+
+ When the corresponding event occurs, the callback will be triggered.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+onPress
+</div>
+<pre>
+ onPress: arguments = (input)
+     Function called upon pressing of the input.
+     Press means: from 0 to non-zero.
+
+
+</pre>
+<div>
+onActive
+</div>
+<pre>
+ onActive: arguments = (input, value)
+     Function called every update the input is non-zero.
+
+
+</pre>
+<div>
+onRelease
+</div>
+<pre>
+ onRelease: arguments = (input)
+     Function called upon releasing of the input.
+     Release means: from non-zero to 0
+
+
+</pre>
+<div>
+onUpdate
+</div>
+<pre>
+ onUpdate: arguments = (input, value)
+     Function called when the device posts a new event for this 
+     input. The value may or may not be changed. (some implementations
+     may post new events to the device, but the value could be the same
+     even when this happens)
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Int
+</h5>
+<h3 id="addPointerListener">
+addPointerListener(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onPress
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onActive
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onRelease
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onUpdate
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a new listener object for the pointer, calling the given 
+ functions when the relevant event is detected. 
+ An ID to the listener is returned. This ID is used for removing the listener.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+onPress
+</div>
+<pre>
+ onPress: arguments = (input)
+     Function called upon pressing of the input.
+     Press means: from 0 to non-zero.
+
+
+</pre>
+<div>
+onActive
+</div>
+<pre>
+ onActive: arguments = (input, value)
+     Function called every update the input is non-zero.
+
+
+</pre>
+<div>
+onRelease
+</div>
+<pre>
+ onRelease: arguments = (input)
+     Function called upon releasing of the input.
+     Release means: from non-zero to 0
+
+
+</pre>
+<div>
+onUpdate
+</div>
+<pre>
+ onUpdate: arguments = (input, value)
+     Function called when the device posts a new event for this 
+     input. The value may or may not be changed. (some implementations
+     may post new events to the device, but the value could be the same
+     even when this happens)
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Int
+</h5>
+<h3 id="addPadListener">
+addPadListener(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onPress
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onActive
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onRelease
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onUpdate
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+padID
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a new listener object for an input pad, calling the given 
+ functions when the relevant event is detected. 
+ An ID to the listener is returned. This ID is used for removing the listener.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+onPress
+</div>
+<pre>
+ onPress: arguments = (input)
+     Function called upon pressing of the input.
+     Press means: from 0 to non-zero.
+
+
+</pre>
+<div>
+onActive
+</div>
+<pre>
+ onActive: arguments = (input, value)
+     Function called every update the input is non-zero.
+
+
+</pre>
+<div>
+onRelease
+</div>
+<pre>
+ onRelease: arguments = (input)
+     Function called upon releasing of the input.
+     Release means: from non-zero to 0
+
+
+</pre>
+<div>
+onUpdate
+</div>
+<pre>
+ onUpdate: arguments = (input, value)
+     Function called when the device posts a new event for this 
+     input. The value may or may not be changed. (some implementations
+     may post new events to the device, but the value could be the same
+     even when this happens)
+
+</pre>
+<div>
+padID
+</div>
+<pre>
+ The pad index to listen to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Int
+</h5>
+<h3 id="addMappedListener">
+addMappedListener(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onPress
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onActive
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onRelease
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onUpdate
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a new listener object for an mapped input, calling the given 
+ functions when the relevant event is detected. 
+ An ID to the listener is returned. This ID is used for removing the listener.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+onPress
+</div>
+<pre>
+ onPress: arguments = (input)
+     Function called upon pressing of the input.
+     Press means: from 0 to non-zero.
+
+
+</pre>
+<div>
+onActive
+</div>
+<pre>
+ onActive: arguments = (input, value)
+     Function called every update the input is non-zero.
+
+
+</pre>
+<div>
+onRelease
+</div>
+<pre>
+ onRelease: arguments = (input)
+     Function called upon releasing of the input.
+     Release means: from non-zero to 0
+
+
+</pre>
+<div>
+onUpdate
+</div>
+<pre>
+ onUpdate: arguments = (input, value)
+     Function called when the device posts a new event for this 
+     input. The value may or may not be changed. (some implementations
+     may post new events to the device, but the value could be the same
+     even when this happens)
+
+</pre>
+<div>
+name
+</div>
+<pre>
+ The mapped string to listen to. 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="removeListener">
+removeListener(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes an input listener.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+id
+</div>
+<pre>
+ The listener to remove. Expected to be the return value of an addListener() call.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="getState">
+getState(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Input
+</th>
+<th class="FunctionArgumentName">
+input
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the current state of the device input
+ This is most useful for keyboards. 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+input
+</div>
+<pre>
+ The input value to query. Usually of type topazKey. 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="getPadState">
+getPadState(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+pad
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+TOPAZ.INPUT
+</th>
+<th class="FunctionArgumentName">
+input
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the current state of the device input for a given pad.
+ See queryPads() for available pads.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+pad
+</div>
+<pre>
+ The index of the pad to query.
+
+</pre>
+<div>
+input
+</div>
+<pre>
+ The input to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="getMappedState">
+getMappedState(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+input
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the current state of the device input for a mapped input
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+input
+</div>
+<pre>
+ The mapped name.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setDeadzone">
+setDeadzone(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+pad
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+TOPAZ.INPUT
+</th>
+<th class="FunctionArgumentName">
+input
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+deadzone
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets a deadzone for an input, meaning that if an input is detected that is below 
+ the given threshold, it is ignored.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+pad
+</div>
+<pre>
+ The pad index to modify.
+
+</pre>
+<div>
+input
+</div>
+<pre>
+ The input key to set a deadzone. Mostly useful for pad axes inputs
+
+</pre>
+<div>
+deadzone
+</div>
+<pre>
+ The deadzone amount. If an input value's absolute value is 
+ below this amount, then the input will be ignored.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Array
+</h5>
+<h3 id="queryPads">
+queryPads()
+</h3>
+<pre>
+ Returns an array of Ints signifying corrently connected 
+ input pads.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Object
+</h5>
+<h3 id="addUnicodeListener">
+addUnicodeListener(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onNewUnicode
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+onRepeatUnicode
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a new unicode listener, which will call the given functions 
+ when relevant unicode events are detected. If the engine is paused, 
+ unicode events arent processed.
+ 
+ When the corresponding event occurs, the callback will be triggered.
+ On a US keyboard, the following special key signals exist:
+ 17  -> left
+ 18  -> up
+ 19  -> right 
+ 20  -> down
+
+ For all keyboards, the following special characters exist:
+ 32  -> newline 
+ 8   -> backspace
+
+
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+onNewUnicode
+</div>
+<pre>
+ onNewUnicode: arguments = (unicode)
+     New incoming unicode character is detected.
+
+</pre>
+<div>
+onRepeatUnicode
+</div>
+<pre>
+ onRepeatUnicode: arguments = (unicode)
+     A unicode value is being requested to be processed multiple times 
+     in a row.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="removeUnicodeListener">
+removeUnicodeListener(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes an input listener.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+id
+</div>
+<pre>
+ Listener to remove. Expected to be return value from addUnicodeListener()
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

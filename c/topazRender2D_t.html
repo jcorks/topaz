@@ -1,0 +1,813 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazRender2D_t">
+topazRender2D_t
+</h1>
+<pre>
+
+ Base object to render a 2D object.
+ 
+ In topaz, 2D objects are rendered and treated as a subset of 
+ 3D object functionality: all 2D renderable objects are expressed
+ in triangles made of vertices, each editable. But unlike
+ 3D, the z component is ignored, and there is no interface to 
+ a backend programmable pipeline. Because of this, 2D operations are 
+, in general, easier to work with but somewhat limited. In theory 
+ most operations would be recreatable using topaz' 3D features.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazRender2D_t.html#topaz_render2d_create">
+topaz_render2d_create()
+</a>
+
+</div>
+<div>
+<a href="topazRender2D_t.html#topaz_render2d_destroy">
+topaz_render2d_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazRender2D_t.html#topaz_render2d_set_attributes">
+topaz_render2d_set_attributes()
+</a>
+
+</div>
+<div>
+<a href="topazRender2D_t.html#topaz_render2d_get_attributes">
+topaz_render2d_get_attributes()
+</a>
+
+</div>
+<div>
+<a href="topazRender2D_t.html#topaz_render2d_get_absolute">
+topaz_render2d_get_absolute()
+</a>
+
+</div>
+<div>
+<a href="topazRender2D_t.html#topaz_render2d_set_absolute">
+topaz_render2d_set_absolute()
+</a>
+
+</div>
+<div>
+<a href="topazRender2D_t.html#topaz_render2d_set_texture">
+topaz_render2d_set_texture()
+</a>
+
+</div>
+<div>
+<a href="topazRender2D_t.html#topaz_render2d_get_spatial">
+topaz_render2d_get_spatial()
+</a>
+
+</div>
+<div>
+<a href="topazRender2D_t.html#topaz_render2d_get_vertices">
+topaz_render2d_get_vertices()
+</a>
+
+</div>
+<div>
+<a href="topazRender2D_t.html#topaz_render2d_set_vertices">
+topaz_render2d_set_vertices()
+</a>
+
+</div>
+<div>
+<a href="topazRender2D_t.html#topaz_render2d_get_render_data">
+topaz_render2d_get_render_data()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazRender2D_t.html#topazRender2D_t">
+topazRender2D_t
+</a>
+
+</h5>
+<h3 id="topaz_render2d_create">
+topaz_render2d_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRenderer_t.html#topazRenderer_2D_t">
+topazRenderer_2D_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+renderer,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+spatial
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new 2d object. If a collection of 
+ render2d objects are used, you may pass a pre-existing 
+ spatial object, which will be used to generate the local transform 
+ for the object. Else, passing NULL will prompt the render2d 
+ instance to create its own.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+renderer,
+</div>
+<pre>
+ The 2D renderer to bind to this render2d instance.
+
+</pre>
+<div>
+spatial
+</div>
+<pre>
+ The spatial reference to associate with this instance. If NULL,
+ a new one will be created.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_render2d_destroy">
+topaz_render2d_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRender2D_t.html#topazRender2D_t">
+topazRender2D_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys the 2d object.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r2d
+</div>
+<pre>
+ The render2d instance to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_render2d_set_attributes">
+topaz_render2d_set_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRender2D_t.html#topazRender2D_t">
+topazRender2D_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRenderer_t.html#topazRenderer_Attributes_t">
+topazRenderer_Attributes_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+attribs
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the rendering attributes
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r2d,
+</div>
+<pre>
+ The render2d to modify.
+
+</pre>
+<div>
+attribs
+</div>
+<pre>
+ The attributes to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazRenderer_t.html#topazRenderer_Attributes_t">
+topazRenderer_Attributes_t
+</a>
+
+</h5>
+<h3 id="topaz_render2d_get_attributes">
+topaz_render2d_get_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRender2D_t.html#topazRender2D_t">
+topazRender2D_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the rendering attributes.
+ Default is topazRenderer_TextureFilterHint_Linear
+            topazRenderer_EtchRule_Out
+            topazRenderer_DepthTest_None
+            topazRenderer_AlphaRule_Allow
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r2d
+</div>
+<pre>
+ The render2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_render2d_get_absolute">
+topaz_render2d_get_absolute(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRender2D_t.html#topazRender2D_t">
+topazRender2D_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets whether this 2D object is renderered in abolute coordinates
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r2d
+</div>
+<pre>
+ The render2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_render2d_set_absolute">
+topaz_render2d_set_absolute(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRender2D_t.html#topazRender2D_t">
+topazRender2D_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+state
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets whether drawing calculations from the node should be interpreted as absolute 
+ pixel values on the display or should be within the hierarchy. 
+ The default is false.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r2d,
+</div>
+<pre>
+ The render2d to modify.
+
+</pre>
+<div>
+state
+</div>
+<pre>
+ Whether to be absolute.    
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_render2d_set_texture">
+topaz_render2d_set_texture(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRender2D_t.html#topazRender2D_t">
+topazRender2D_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRenderer_t.html#topazRenderer_Texture_t">
+topazRenderer_Texture_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+tex
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the texture to use with this 2D object.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r2d,
+</div>
+<pre>
+ The render2d to modify.
+
+</pre>
+<div>
+tex
+</div>
+<pre>
+ The texture to use with this render2d instance.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</h5>
+<h3 id="topaz_render2d_get_spatial">
+topaz_render2d_get_spatial(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRender2D_t.html#topazRender2D_t">
+topazRender2D_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the spatial object for this 2D instance
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r2d
+</div>
+<pre>
+ The render2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_render2d_get_vertices">
+topaz_render2d_get_vertices(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRender2D_t.html#topazRender2D_t">
+topazRender2D_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the vertices for this 2d object.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r2d
+</div>
+<pre>
+ The render2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_render2d_set_vertices">
+topaz_render2d_set_vertices(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRender2D_t.html#topazRender2D_t">
+topazRender2D_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+vertices
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the vertices 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r2d,
+</div>
+<pre>
+ The render2d to modify
+
+</pre>
+<div>
+vertices
+</div>
+<pre>
+ The vertices to be copied into the render2d, replacing the old vertices.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_render2d_get_render_data">
+topaz_render2d_get_render_data(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRender2D_t.html#topazRender2D_t">
+topazRender2D_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRenderer_t.html#topazRenderer_Attributes_t">
+topazRenderer_Attributes_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+attribs
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves information needed to render this object with the low-level
+ renderer
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r2d,
+</div>
+<pre>
+ The render2d to pull from.
+
+</pre>
+<div>
+attribs
+</div>
+<pre>
+ The process attributes to populate. 
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

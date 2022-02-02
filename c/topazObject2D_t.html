@@ -1,0 +1,2238 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazObject2D_t">
+topazObject2D_t
+</h1>
+<pre>
+
+ Provides simple, physics-like behavior to objects, allowign for 
+ collisions and velocity control.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_create">
+topaz_object2d_create()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_add_velocity">
+topaz_object2d_add_velocity()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_add_velocity_towards">
+topaz_object2d_add_velocity_towards()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_set_velocity">
+topaz_object2d_set_velocity()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_set_velocity_towards">
+topaz_object2d_set_velocity_towards()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_set_friction_x">
+topaz_object2d_set_friction_x()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_set_friction_y">
+topaz_object2d_set_friction_y()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_get_friction_x">
+topaz_object2d_get_friction_x()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_get_friction_y">
+topaz_object2d_get_friction_y()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_get_direction">
+topaz_object2d_get_direction()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_halt">
+topaz_object2d_halt()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_reset_motion">
+topaz_object2d_reset_motion()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_get_velocity_x">
+topaz_object2d_get_velocity_x()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_get_velocity_y">
+topaz_object2d_get_velocity_y()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_set_velocity_x">
+topaz_object2d_set_velocity_x()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_set_velocity_y">
+topaz_object2d_set_velocity_y()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_get_speed">
+topaz_object2d_get_speed()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_set_speed">
+topaz_object2d_set_speed()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_get_next_position">
+topaz_object2d_get_next_position()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_get_last_position">
+topaz_object2d_get_last_position()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_set_group">
+topaz_object2d_set_group()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_get_group">
+topaz_object2d_get_group()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_set_group_interaction">
+topaz_object2d_set_group_interaction()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_set_collider">
+topaz_object2d_set_collider()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_set_collider_radial">
+topaz_object2d_set_collider_radial()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_get_collider">
+topaz_object2d_get_collider()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_get_last_collided">
+topaz_object2d_get_last_collided()
+</a>
+
+</div>
+<div>
+<a href="topazObject2D_t.html#topaz_object2d_set_unit_lock">
+topaz_object2d_set_unit_lock()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazObject2D_t.html#topazObject2D_Group">
+topazObject2D_Group
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazObject2D_Group">
+topazObject2D_Group
+</h3>
+<pre>
+ Determines the collision group that the object is a part of.
+ Collision groups mediate which objects should collide with which.
+ Using topaz_object2d_set_group_interation(), collision groups can 
+ be set.
+
+
+</pre>
+<table>
+<tr>
+<th>
+topazObject2D_Group_A
+</th>
+<td>
+ Group A.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_B
+</th>
+<td>
+ Group B.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_C
+</th>
+<td>
+ Group C.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_D
+</th>
+<td>
+ Group D.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_E
+</th>
+<td>
+ Group E.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_F
+</th>
+<td>
+ Group F.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_G
+</th>
+<td>
+ Group G.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_H
+</th>
+<td>
+ Group H.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_I
+</th>
+<td>
+ Group I.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_J
+</th>
+<td>
+ Group J.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_K
+</th>
+<td>
+ Group K.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_L
+</th>
+<td>
+ Group L.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_M
+</th>
+<td>
+ Group M.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_N
+</th>
+<td>
+ Group N.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_O
+</th>
+<td>
+ Group O.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_P
+</th>
+<td>
+ Group P.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_Q
+</th>
+<td>
+ Group Q.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_R
+</th>
+<td>
+ Group R.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_S
+</th>
+<td>
+ Group S.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_T
+</th>
+<td>
+ Group T.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_U
+</th>
+<td>
+ Group U.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_V
+</th>
+<td>
+ Group V.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_W
+</th>
+<td>
+ Group W.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_X
+</th>
+<td>
+ Group X.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_Y
+</th>
+<td>
+ Group Y.
+
+</td>
+</tr>
+<tr>
+<th>
+topazObject2D_Group_Z
+</th>
+<td>
+ Group Z.
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</h5>
+<h3 id="topaz_object2d_create">
+topaz_object2d_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new object2d object
+ Use component_destroy to release.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The topaz context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_add_velocity">
+topaz_object2d_add_velocity(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+factor,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+directionDegrees
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Compounds a velocity vector with the current velocity
+ factor is the velocity amount to add. Can be negative.
+ direction is that degree direction to apply the velocity in degrees.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d,
+</div>
+<pre>
+ The object2d to modify.
+
+</pre>
+<div>
+factor,
+</div>
+<pre>
+ The velocity amount to add.
+
+</pre>
+<div>
+directionDegrees
+</div>
+<pre>
+ The direction to add it in, in degrees.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_add_velocity_towards">
+topaz_object2d_add_velocity_towards(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+factor,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+point,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+directionOffset
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_object2d_add_velocity, but the direction is toward a 
+ global position.
+ factor is the amount of speed to add in that direction.
+ directionOffset is how much to offset the direction from.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d,
+</div>
+<pre>
+ The object2d to modify.
+
+</pre>
+<div>
+factor,
+</div>
+<pre>
+ The velocity amount to add.
+
+</pre>
+<div>
+point,
+</div>
+<pre>
+ The position vector to add velocity towards, determining the direction to add velocity.
+
+</pre>
+<div>
+directionOffset
+</div>
+<pre>
+ The offset from that positional direction.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_set_velocity">
+topaz_object2d_set_velocity(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+factor,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+direction
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the current velocity
+ factor is the velocity amount to add. Can be negative.
+ direction is that degree direction to apply the velocity in degrees.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d,
+</div>
+<pre>
+ The object2d to modify.
+
+</pre>
+<div>
+factor,
+</div>
+<pre>
+ The amount of velocity to set as.
+
+</pre>
+<div>
+direction
+</div>
+<pre>
+ The direction in degrees to set the velocity for.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_set_velocity_towards">
+topaz_object2d_set_velocity_towards(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+factor,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+point,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+directionOffset
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_object2d_set_velocity, but the direction is toward a 
+ global position.
+ factor is the amount of speed to add in that direction.
+ directionOffset is how much to offset the direction from.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d,
+</div>
+<pre>
+ The object2d to modify.
+
+</pre>
+<div>
+factor,
+</div>
+<pre>
+ The velocity amount to add.
+
+</pre>
+<div>
+point,
+</div>
+<pre>
+ The position vector to set velocity towards, determining the direction to set velocity.
+
+</pre>
+<div>
+directionOffset
+</div>
+<pre>
+ The offset from that positional direction.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_set_friction_x">
+topaz_object2d_set_friction_x(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+amt
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the amount of resistance to speed measured as a percentile of the speed per update.
+ Every frame, only the amount percent of the host entity's velocity is retained. For example,
+ if amt is specified to be .05, every frame 51176310300f the Entity's speed will be lost.
+ This is applied in the horizontal direction.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d,
+</div>
+<pre>
+ The object2d to modify.
+
+</pre>
+<div>
+amt
+</div>
+<pre>
+ The mount of friction to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_set_friction_y">
+topaz_object2d_set_friction_y(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+amt
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_object2d_set_friction_x(), except applied in the vertical direction.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d,
+</div>
+<pre>
+ The object2d to modify.
+
+</pre>
+<div>
+amt
+</div>
+<pre>
+ The mount of friction to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_object2d_get_friction_x">
+topaz_object2d_get_friction_x(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the x direction friction. Starts at 0.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d
+</div>
+<pre>
+ The object2d To query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_object2d_get_friction_y">
+topaz_object2d_get_friction_y(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the y direction friction. Starts at 0.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d
+</div>
+<pre>
+ The object2d To query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_object2d_get_direction">
+topaz_object2d_get_direction(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the current direction that the entity is traveling in degrees.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d
+</div>
+<pre>
+ The object2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_halt">
+topaz_object2d_halt(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Reduces the speed of the Entity to 0.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d
+</div>
+<pre>
+ The object2d to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_reset_motion">
+topaz_object2d_reset_motion(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Resets the motion path of the Object2D collider.
+ Normally, all collisions take into account the motion from previous position
+ to current. topaz_object_reset_motion() eliminates this motion, 
+ allowing for discontinuous motion.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d
+</div>
+<pre>
+ The object2d to reset.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_object2d_get_velocity_x">
+topaz_object2d_get_velocity_x(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the horizontal component of the current velocity.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d
+</div>
+<pre>
+ The object2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_object2d_get_velocity_y">
+topaz_object2d_get_velocity_y(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the vertical component of the current velocity.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d
+</div>
+<pre>
+ The object2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_set_velocity_x">
+topaz_object2d_set_velocity_x(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+amt
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the vertical velocity for the component.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d,
+</div>
+<pre>
+ The object2d to modify.
+
+</pre>
+<div>
+amt
+</div>
+<pre>
+ The new velocity.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_set_velocity_y">
+topaz_object2d_set_velocity_y(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+amt
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the vertical velocity for the component.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d,
+</div>
+<pre>
+ The object2d to modify.
+
+</pre>
+<div>
+amt
+</div>
+<pre>
+ The new velocity amount. 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_object2d_get_speed">
+topaz_object2d_get_speed(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the speed of the object.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d
+</div>
+<pre>
+ The object2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_set_speed">
+topaz_object2d_set_speed(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+speed
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the speed of the object in the current direction
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d,
+</div>
+<pre>
+ The object2d to modify.
+
+</pre>
+<div>
+speed
+</div>
+<pre>
+ The new speed.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_object2d_get_next_position">
+topaz_object2d_get_next_position(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the position of the Entity after another frame of movement.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d
+</div>
+<pre>
+ The object2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_object2d_get_last_position">
+topaz_object2d_get_last_position(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the previous position of the entity
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d
+</div>
+<pre>
+ The object2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_set_group">
+topaz_object2d_set_group(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazObject2D_t.html#topazObject2D_Group">
+topazObject2D_Group
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+group
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the object's collision group. The default is topazObject2D_Group_A.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d,
+</div>
+<pre>
+ The object2d to modify.
+
+</pre>
+<div>
+group
+</div>
+<pre>
+ The new collision group.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazObject2D_t.html#topazObject2D_Group">
+topazObject2D_Group
+</a>
+
+</h5>
+<h3 id="topaz_object2d_get_group">
+topaz_object2d_get_group(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the object's collision group. The default is topazObject2D_Group_A.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d
+</div>
+<pre>
+ The object2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_set_group_interaction">
+topaz_object2d_set_group_interaction(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazObject2D_t.html#topazObject2D_Group">
+topazObject2D_Group
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazObject2D_t.html#topazObject2D_Group">
+topazObject2D_Group
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+b,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+shouldInteract
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets whether groups should interact. By default, only Group_A interacts with Group_A
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The topaz context
+
+</pre>
+<div>
+a,
+</div>
+<pre>
+ The first group in the interaction
+
+</pre>
+<div>
+b,
+</div>
+<pre>
+ The second group in the interaction
+
+</pre>
+<div>
+shouldInteract
+</div>
+<pre>
+ Whether to interact or not.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_set_collider">
+topaz_object2d_set_collider(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+points
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a collider from a collection of topazVector_t 2D point coordinates
+ It is assumed that the polygon is formed by making lines between these points 
+ in the order presented within the array. It is assumed that the center of the object 
+ is at 0, 0.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d,
+</div>
+<pre>
+ The object2d to modify.
+
+</pre>
+<div>
+points
+</div>
+<pre>
+ The new points for the collider.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_set_collider_radial">
+topaz_object2d_set_collider_radial(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+radius,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+numSub
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a radial collider about 0, 0 with the given radius and 
+ number of sides.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d,
+</div>
+<pre>
+ The object2d to modify.
+
+</pre>
+<div>
+radius,
+</div>
+<pre>
+ The radius of the new collider.
+
+</pre>
+<div>
+numSub
+</div>
+<pre>
+ The number of sides of the collider.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_object2d_get_collider">
+topaz_object2d_get_collider(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the points that consitute the collider.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d
+</div>
+<pre>
+ The object2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</h5>
+<h3 id="topaz_object2d_get_last_collided">
+topaz_object2d_get_last_collided(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+o2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the last entity that collided with this one.
+ If none, return topaz_entity_null();
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+o2d
+</div>
+<pre>
+ The object2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_object2d_set_unit_lock">
+topaz_object2d_set_unit_lock()
+</h3>
+<pre>
+ Sets whether to bind the calculated positions 
+ to whole units only. The default is false.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

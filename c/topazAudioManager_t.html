@@ -1,0 +1,956 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazAudioManager_t">
+topazAudioManager_t
+</h1>
+<pre>
+ Handles the nitty-gritty of audio.
+ The AudioManager must continuously process any pushed data.
+ Under most implementations, a threaded approach would be most appropriate.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazAudioManager_t.html#topaz_audio_manager_create">
+topaz_audio_manager_create()
+</a>
+
+</div>
+<div>
+<a href="topazAudioManager_t.html#topaz_audio_manager_destroy">
+topaz_audio_manager_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazAudioManager_t.html#topaz_audio_manager_get_backend">
+topaz_audio_manager_get_backend()
+</a>
+
+</div>
+<div>
+<a href="topazAudioManager_t.html#topaz_audio_manager_get_api">
+topaz_audio_manager_get_api()
+</a>
+
+</div>
+<div>
+<a href="topazAudioManager_t.html#topaz_audio_manager_connect">
+topaz_audio_manager_connect()
+</a>
+
+</div>
+<div>
+<a href="topazAudioManager_t.html#topaz_audio_manager_set_sample_rate">
+topaz_audio_manager_set_sample_rate()
+</a>
+
+</div>
+<div>
+<a href="topazAudioManager_t.html#topaz_audio_manager_get_sample_rate">
+topaz_audio_manager_get_sample_rate()
+</a>
+
+</div>
+<div>
+<a href="topazAudioManager_t.html#topaz_audio_manager_is_underrun">
+topaz_audio_manager_is_underrun()
+</a>
+
+</div>
+<div>
+<a href="topazAudioManager_t.html#topaz_audio_manager_enable_output">
+topaz_audio_manager_enable_output()
+</a>
+
+</div>
+<div>
+<a href="topazAudioManager_t.html#topaz_audio_manager_set_volume_multiplier">
+topaz_audio_manager_set_volume_multiplier()
+</a>
+
+</div>
+<div>
+<a href="topazAudioManager_t.html#topaz_audio_manager_get_volume_multiplier">
+topaz_audio_manager_get_volume_multiplier()
+</a>
+
+</div>
+<div>
+<a href="topazAudioManager_t.html#topaz_audio_manager_get_current_output_sample">
+topaz_audio_manager_get_current_output_sample()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</h5>
+<h3 id="topaz_audio_manager_create">
+topaz_audio_manager_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazAudioManagerAPI_t
+</th>
+<th class="FunctionArgumentName">
+api
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new audio manager object. 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The topaz context.
+
+</pre>
+<div>
+backend,
+</div>
+<pre>
+ The backend to implement the backend's features.
+
+</pre>
+<div>
+api
+</div>
+<pre>
+ The raw API to implement the backend's features.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_manager_destroy">
+topaz_audio_manager_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audioMan
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys and cleans up an audio manager object
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audioMan
+</div>
+<pre>
+ The audio manager to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</h5>
+<h3 id="topaz_audio_manager_get_backend">
+topaz_audio_manager_get_backend(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audioMan
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the backend for this audio manager object.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audioMan
+</div>
+<pre>
+ The audio manager to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+topazAudioManagerAPI_t
+</h5>
+<h3 id="topaz_audio_manager_get_api">
+topaz_audio_manager_get_api(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audioMan
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the API for this audio manager.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audioMan
+</div>
+<pre>
+ The audio manager to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_manager_stream_callback">
+(*topaz_audio_manager_stream_callback)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audioMan,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+sampleCount,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+audioSamples,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+callbackData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Callback that delivers process data. The format is in
+ 2 channel, interleaved form, meaning that the samples should be organized
+ in an interleaved channel format. In most device setups, the 
+ odd samples are for the left speaker, and the
+ even samples are for the right speaker
+ each sample is a floating point number
+ and expected to be normalized between -1 and 1.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audioMan,
+</div>
+<pre>
+ The audio manager to process data.
+
+</pre>
+<div>
+sampleCount,
+</div>
+<pre>
+ The number of floating point values
+
+</pre>
+<div>
+audioSamples,
+</div>
+<pre>
+ The raw, normalized audio data.
+ This buffer should be written to.
+
+</pre>
+<div>
+callbackData
+</div>
+<pre>
+ The data bound with with callback 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_audio_manager_connect">
+topaz_audio_manager_connect(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audioMan,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudioManager_t.html#topaz_audio_manager_stream_callback">
+topaz_audio_manager_stream_callback
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+callback,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+callbackData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Makes the connection to hardware to attempt to
+ bring the backend to a usable state. Returns whether or 
+ not the connection was successfully made. Else,
+ it is recommended to try again.
+ NOTE: the callback may be run on another thread.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audioMan,
+</div>
+<pre>
+ The audio manager to modify.
+
+</pre>
+<div>
+callback,
+</div>
+<pre>
+ The callback to deliver the audiostream to the backend.
+
+</pre>
+<div>
+callbackData
+</div>
+<pre>
+ user data.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_manager_set_sample_rate">
+topaz_audio_manager_set_sample_rate(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audioMan,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+sampleRate
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the number of samples second.
+ The default is 44100.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audioMan,
+</div>
+<pre>
+ The audio manager to modify.
+
+</pre>
+<div>
+sampleRate
+</div>
+<pre>
+ The sample rate.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_audio_manager_get_sample_rate">
+topaz_audio_manager_get_sample_rate(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audioMan
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ returns the current sample rate in kHz
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audioMan
+</div>
+<pre>
+ The audio manager to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_audio_manager_is_underrun">
+topaz_audio_manager_is_underrun(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audioMan
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns whether or not the AudioManager is in an underrun state
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audioMan
+</div>
+<pre>
+ The audio manager to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_manager_enable_output">
+topaz_audio_manager_enable_output(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audioMan,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+enable
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Enables or disables output
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audioMan,
+</div>
+<pre>
+ The audio manager to modify.
+
+</pre>
+<div>
+enable
+</div>
+<pre>
+ Whether to enable.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_manager_set_volume_multiplier">
+topaz_audio_manager_set_volume_multiplier(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audioMan,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+amt
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the volume multipler. This value
+ is clamped to 0 and 1 and represents a scale
+ applied to all samples before interpretation.
+ the default is .5;
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audioMan,
+</div>
+<pre>
+ The audio manager to modify
+
+</pre>
+<div>
+amt
+</div>
+<pre>
+ The volume amount.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_audio_manager_get_volume_multiplier">
+topaz_audio_manager_get_volume_multiplier(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audioMan
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the current column multiplier.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audioMan
+</div>
+<pre>
+ The audio manager to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_audio_manager_get_current_output_sample">
+topaz_audio_manager_get_current_output_sample(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audioMan
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ gets an approximate output sample at the time of calling
+ from one of the channels.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audioMan
+</div>
+<pre>
+ The audio manager to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

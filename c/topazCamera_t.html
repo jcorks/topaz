@@ -1,0 +1,637 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazCamera_t">
+topazCamera_t
+</h1>
+<pre>
+
+
+    The symbolic viewing port for the engine.
+    It acts as the bridge between the rendered scene and the viewer.
+    Any number of Cameras can be maintained, but only one may be used at a time.
+    See graphics.h for swapping between which camera is used for the display.
+
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazCamera_t.html#topaz_camera_create">
+topaz_camera_create()
+</a>
+
+</div>
+<div>
+<a href="topazCamera_t.html#topaz_camera_set_type">
+topaz_camera_set_type()
+</a>
+
+</div>
+<div>
+<a href="topazCamera_t.html#topaz_camera_look_at">
+topaz_camera_look_at()
+</a>
+
+</div>
+<div>
+<a href="topazCamera_t.html#topaz_camera_screen_to_world">
+topaz_camera_screen_to_world()
+</a>
+
+</div>
+<div>
+<a href="topazCamera_t.html#topaz_camera_world_to_screen">
+topaz_camera_world_to_screen()
+</a>
+
+</div>
+<div>
+<a href="topazCamera_t.html#topaz_camera_get_view_transform">
+topaz_camera_get_view_transform()
+</a>
+
+</div>
+<div>
+<a href="topazCamera_t.html#topaz_camera_get_projection_transform">
+topaz_camera_get_projection_transform()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazCamera_t.html#topazCamera_Type">
+topazCamera_Type
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazCamera_Type">
+topazCamera_Type
+</h3>
+<pre>
+ The type dictates how the camera should be updated.
+
+
+</pre>
+<table>
+<tr>
+<th>
+topazCamera_Type_Perspective3D
+</th>
+<td>
+ Indicates use for 3D perspective 
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazCamera_Type_Orthographic
+</th>
+<td>
+ Indicates that no distortion via perspective should take place.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazCamera_Type_Manual
+</th>
+<td>
+ Indicates that no updates to the camera's view or projection
+ matrix will be done by the camera itself and that the user 
+ be updaing the transforms on their own.
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</h5>
+<h3 id="topaz_camera_create">
+topaz_camera_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new camera instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ topaz instance reference.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_camera_set_type">
+topaz_camera_set_type(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+camera,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazCamera_t.html#topazCamera_Type">
+topazCamera_Type
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+type
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the type of the camera.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+camera,
+</div>
+<pre>
+ Camera to have its type set
+
+</pre>
+<div>
+type
+</div>
+<pre>
+ The type to use
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_camera_look_at">
+topaz_camera_look_at(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+camera,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+target,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+up
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ When called, the camera will orient itself so that it "looks"
+ at the given point in 3D space
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+camera,
+</div>
+<pre>
+ The camera to modify
+
+</pre>
+<div>
+target,
+</div>
+<pre>
+ The 3D position of the focal target that the camera should look at
+
+</pre>
+<div>
+up
+</div>
+<pre>
+ What vector direction constitutes the "Up" position of the camera.
+ This helps determine rotations of the camera.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_camera_screen_to_world">
+topaz_camera_screen_to_world(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+camera,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+coord
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Given a point on the screen, returns the unprojected point in 
+ world-space. The z value of the given point is interpreted as a depth.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+camera,
+</div>
+<pre>
+ The camera to use.
+
+</pre>
+<div>
+coord
+</div>
+<pre>
+ The screen coordinate with Z coordinate to use.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_camera_world_to_screen">
+topaz_camera_world_to_screen(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+camera,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+coord
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Given a point in world space, returns a projected point in screen space
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+camera,
+</div>
+<pre>
+ The camera to use.
+
+</pre>
+<div>
+coord
+</div>
+<pre>
+ The world-coordinate to use.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</h5>
+<h3 id="topaz_camera_get_view_transform">
+topaz_camera_get_view_transform(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+camera
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the buffer that the camera uses as its resultant 
+ viewing transform.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+camera
+</div>
+<pre>
+ The camera to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</h5>
+<h3 id="topaz_camera_get_projection_transform">
+topaz_camera_get_projection_transform(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+camera
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the buffer that the camera uses as its resultant 
+ projection transform.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+camera
+</div>
+<pre>
+ The camera to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

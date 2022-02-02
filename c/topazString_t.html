@@ -1,0 +1,1806 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazString_t">
+topazString_t
+</h1>
+<pre>
+
+ Holds an array of characters, usually meant to convey text.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazString_t.html#topaz_string_create">
+topaz_string_create()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_create_from_c_str">
+topaz_string_create_from_c_str()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_clone">
+topaz_string_clone()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_base64_from_bytes">
+topaz_string_base64_from_bytes()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_base64_to_bytes">
+topaz_string_base64_to_bytes()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_destroy">
+topaz_string_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_temporary_from_c_str">
+topaz_string_temporary_from_c_str()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_set">
+topaz_string_set()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_clear">
+topaz_string_clear()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_concat_printf">
+topaz_string_concat_printf()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_concat">
+topaz_string_concat()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_get_substr">
+topaz_string_get_substr()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_get_c_str">
+topaz_string_get_c_str()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_get_length">
+topaz_string_get_length()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_get_char">
+topaz_string_get_char()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_set_char">
+topaz_string_set_char()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_append_char">
+topaz_string_append_char()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_get_byte_length">
+topaz_string_get_byte_length()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_get_byte_data">
+topaz_string_get_byte_data()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_test_contains">
+topaz_string_test_contains()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_test_eq">
+topaz_string_test_eq()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_topaz_compare">
+topaz_string_topaz_compare()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_chain_start">
+topaz_string_chain_start()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_chain_current">
+topaz_string_chain_current()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_chain_is_end">
+topaz_string_chain_is_end()
+</a>
+
+</div>
+<div>
+<a href="topazString_t.html#topaz_string_chain_proceed">
+topaz_string_chain_proceed()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_string_create">
+topaz_string_create()
+</h3>
+<pre>
+ Creates a new, empty string. 
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_string_create_from_c_str">
+topaz_string_create_from_c_str(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+char
+</th>
+<th class="FunctionArgumentName">
+fmt,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+...
+</th>
+<th class="FunctionArgumentName">
+/varargs/
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new string initialized with the contents of the given C-string 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fmt,
+</div>
+<pre>
+ The format string.
+
+</pre>
+<div>
+/varargs/
+</div>
+<pre>
+ The variable args following the format.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_string_clone">
+topaz_string_clone(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+str
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new string as a copy of the given string 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+str
+</div>
+<pre>
+ The string to clone.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_string_base64_from_bytes">
+topaz_string_base64_from_bytes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+uint8_t
+</th>
+<th class="FunctionArgumentName">
+buffer,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+size
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new base64-encoded string from a raw byte buffer.
+ This then can be used with topaz_string_decode_base64() to retrieve 
+ a raw byte buffer once more.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+buffer,
+</div>
+<pre>
+ The raw byte buffer to encode into a base64 string.
+
+</pre>
+<div>
+size
+</div>
+<pre>
+ The length of the buffer in bytes.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint8_t
+</h5>
+<h3 id="topaz_string_base64_to_bytes">
+topaz_string_base64_to_bytes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+string,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+size
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns and allocates a new byte buffer 
+ and its size iff the given string is 
+ correctly formatted as base64.
+ If the string is not correctly encoded,
+ NULL is returned and the size set to 0.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+string,
+</div>
+<pre>
+ The string encoded into base64.
+
+</pre>
+<div>
+size
+</div>
+<pre>
+ The size of the buffer returned.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_string_destroy">
+topaz_string_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+str
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys and frees a topaz string 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+str
+</div>
+<pre>
+ The string to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_string_temporary_from_c_str">
+topaz_string_temporary_from_c_str(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+char
+</th>
+<th class="FunctionArgumentName">
+cstr
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a temporary string built from the given cstring 
+ It is meant as a convenience function, but it has the following 
+ restrictions:
+     - This must only be used on the main thread. It is not thread-safe
+     - The reference fizzles after subsequent calls to this function. 
+       The string must only be used for quick operations. 
+
+ If your use case does not adhere to these, you should 
+ allocate a new string instead.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+cstr
+</div>
+<pre>
+ The cstring to cast as a topaz string.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="TOPAZ_STR_CAST__s__">
+TOPAZ_STR_CAST__s__
+</h3>
+<pre>
+ A shorter form of topaz_string_temporary_from_c_str().
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_string_set">
+topaz_string_set(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+A,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+B
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the contents of the string A to the contents of string B
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+A,
+</div>
+<pre>
+ The string to add to.
+
+</pre>
+<div>
+B
+</div>
+<pre>
+ The string to copy from.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_string_clear">
+topaz_string_clear(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+str
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Resets the contents of the string.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+str
+</div>
+<pre>
+ The string to clear.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_string_concat_printf">
+topaz_string_concat_printf(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+str,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+char
+</th>
+<th class="FunctionArgumentName">
+format,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+...
+</th>
+<th class="FunctionArgumentName">
+/varargs/
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds the given C printf-formatted string and accompanying arguments 
+ to the given string.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+str,
+</div>
+<pre>
+ The string to add to.
+
+</pre>
+<div>
+format,
+</div>
+<pre>
+ The format of the incoming variable arguments.
+
+</pre>
+<div>
+/varargs/
+</div>
+<pre>
+ The variable arguments, indicated by format.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_string_concat">
+topaz_string_concat(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+str,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+src
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds the given string B to the end of the given string A.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+str,
+</div>
+<pre>
+ The string to add to.
+
+</pre>
+<div>
+src
+</div>
+<pre>
+ The string to copy from.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_string_get_substr">
+topaz_string_get_substr(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+str,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+from,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+to
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a read-only copy of a portion of the given string 
+ from and to denote character indices. The substring is valid until 
+ the next call to this function with the same input string.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+str,
+</div>
+<pre>
+ The string to read from.
+
+</pre>
+<div>
+from,
+</div>
+<pre>
+ The start index.
+
+</pre>
+<div>
+to
+</div>
+<pre>
+ The end index.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+char
+</h5>
+<h3 id="topaz_string_get_c_str">
+topaz_string_get_c_str(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+str
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets a read-only pointer to a c-string representation of the 
+ string.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+str
+</div>
+<pre>
+ The string to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_string_get_length">
+topaz_string_get_length(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+str
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the number of characters within the string.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+str
+</div>
+<pre>
+ The string to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_string_get_char">
+topaz_string_get_char(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+position
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the character within the string that the given 
+ 0-indexed position. If the position is invalid, 0 is returned.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+,
+</div>
+<pre>
+ The string to query.
+
+</pre>
+<div>
+position
+</div>
+<pre>
+ The position index within the string.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_string_set_char">
+topaz_string_set_char(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+position,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the character within the string at the given 
+ 0-indexed position. If an invalid position, no action is taken
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+,
+</div>
+<pre>
+ The string to modify.
+
+</pre>
+<div>
+position,
+</div>
+<pre>
+ The position within the string to modify
+
+</pre>
+<div>
+value
+</div>
+<pre>
+ The new value within the string.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_string_append_char">
+topaz_string_append_char(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+string,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a character to the end of the string
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+string,
+</div>
+<pre>
+ The string to append to.
+
+</pre>
+<div>
+value
+</div>
+<pre>
+ The value of the character to add to the string.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_string_get_byte_length">
+topaz_string_get_byte_length(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+str
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the byte length of the data representation 
+ of this string. Depending on the context, this could 
+ match the length of the string, or it could be wider.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+str
+</div>
+<pre>
+ the string to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_string_get_byte_data">
+topaz_string_get_byte_data(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+str
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the byte data pointer for this strings. Its length is equal to 
+ topaz_string_get_byte_length()
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+str
+</div>
+<pre>
+ the string to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_string_test_contains">
+topaz_string_test_contains(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+str,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+substr
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns whether substr is found within the given string 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+str,
+</div>
+<pre>
+ The string to search through.
+
+</pre>
+<div>
+substr
+</div>
+<pre>
+ The string to search for.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_string_test_eq">
+topaz_string_test_eq(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+str,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+other
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns wither 2 strings are equivalent 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+str,
+</div>
+<pre>
+ The string to test equivalence.
+
+</pre>
+<div>
+other
+</div>
+<pre>
+ The other string to test.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_string_topaz_compare">
+topaz_string_topaz_compare(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Compares the 2 strings in a sort-ready fashion:
+ Returns < 0 if a alphabetically comes before b
+ Returns > 0 if a alphabetically comes after b
+ Returns = 0 if a and b are equivalent
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a,
+</div>
+<pre>
+ The first string to compare.
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ The second string to compare.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_string_chain_start">
+topaz_string_chain_start(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+t,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+delimiters
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Chain functions can be used to 
+ work on strings in a token-like fashion.
+ Each token is referred to as a "link" in the chain.
+ Resets the chain state of the string. Using topaz_string_chain_current()
+ will return the first token according to the delimiters given.
+ The first link is returned. If no such link exists, an empty 
+ link is returned.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+t,
+</div>
+<pre>
+ the string to start the chaining.
+
+</pre>
+<div>
+delimiters
+</div>
+<pre>
+ The delimiters 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_string_chain_current">
+topaz_string_chain_current(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+t
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the current link in the chain.
+ If the end has been reached, this is an empty string.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+t
+</div>
+<pre>
+ The string to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_string_chain_is_end">
+topaz_string_chain_is_end(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+t
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns whether the last link in the chain has been reached.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+t
+</div>
+<pre>
+ The string to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_string_chain_proceed">
+topaz_string_chain_proceed(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+t
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Goes to the next token in the chain and returns that token.
+ The new token is returned.
+ 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+t
+</div>
+<pre>
+ The string to proceed in its chain.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

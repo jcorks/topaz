@@ -1,0 +1,845 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazMatrix_t">
+topazMatrix_t
+</h1>
+<pre>
+ A generic, row-major matrix 
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazMatrix_t.html#topaz_matrix_set_identity">
+topaz_matrix_set_identity()
+</a>
+
+</div>
+<div>
+<a href="topazMatrix_t.html#topaz_matrix_transform">
+topaz_matrix_transform()
+</a>
+
+</div>
+<div>
+<a href="topazMatrix_t.html#topaz_matrix_to_string">
+topaz_matrix_to_string()
+</a>
+
+</div>
+<div>
+<a href="topazMatrix_t.html#topaz_matrix_transpose">
+topaz_matrix_transpose()
+</a>
+
+</div>
+<div>
+<a href="topazMatrix_t.html#topaz_matrix_invert">
+topaz_matrix_invert()
+</a>
+
+</div>
+<div>
+<a href="topazMatrix_t.html#topaz_matrix_reverse_majority">
+topaz_matrix_reverse_majority()
+</a>
+
+</div>
+<div>
+<a href="topazMatrix_t.html#topaz_matrix_multiply">
+topaz_matrix_multiply()
+</a>
+
+</div>
+<div>
+<a href="topazMatrix_t.html#topaz_matrix_rotate_by_angles">
+topaz_matrix_rotate_by_angles()
+</a>
+
+</div>
+<div>
+<a href="topazMatrix_t.html#topaz_matrix_translate">
+topaz_matrix_translate()
+</a>
+
+</div>
+<div>
+<a href="topazMatrix_t.html#topaz_matrix_scale">
+topaz_matrix_scale()
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+float
+</span>
+<span class="VariableName">
+ data16
+</span>
+
+</div>
+<pre>
+ Data for the matrix, elements are laid out 
+ linearly in memory, starting with the topleft,
+ then laying out rows.
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_matrix_set_identity">
+topaz_matrix_set_identity(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+m
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the matrix to the identity matrix, removing all transformations.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+m
+</div>
+<pre>
+ Matrix to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_matrix_transform">
+topaz_matrix_transform(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+m,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+point
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Convenience function that transforms the 
+ given point and returns its result.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+m,
+</div>
+<pre>
+ The matrix to use as source.
+
+</pre>
+<div>
+point
+</div>
+<pre>
+ The point to transform.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_matrix_to_string">
+topaz_matrix_to_string(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+m
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a string containing info on the transform.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+m
+</div>
+<pre>
+ The source matrix.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_matrix_transpose">
+topaz_matrix_transpose(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+m
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Transposes the matrix.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+m
+</div>
+<pre>
+ The matrix to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_matrix_invert">
+topaz_matrix_invert(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+m
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Inverts the matrix.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+m
+</div>
+<pre>
+ The matrix to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_matrix_reverse_majority">
+topaz_matrix_reverse_majority(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+m
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Reverse the majority of the matrix.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+m
+</div>
+<pre>
+ The matrix to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_matrix_ptr__M__">
+topaz_matrix_ptr__M__
+</h3>
+<pre>
+ Returns the internal representation of the TransformMatrix.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</h5>
+<h3 id="topaz_matrix_multiply">
+topaz_matrix_multiply(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+a,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Multiplies 2 matrices.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a,
+</div>
+<pre>
+ The first operand of the multiplication.
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ The second operand of the multiplication.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_matrix_rotate_by_angles">
+topaz_matrix_rotate_by_angles(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+m,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+x,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+y,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+z
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Rotates the matrix about the Euler angles psi, theta, and phi.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+m,
+</div>
+<pre>
+ The transform matrix to modify.
+
+</pre>
+<div>
+x,
+</div>
+<pre>
+ The psi (x) rotation angle.
+
+</pre>
+<div>
+y,
+</div>
+<pre>
+ The theta (y) rotation angle.
+
+</pre>
+<div>
+z
+</div>
+<pre>
+ The phi (z) rotation angle.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_matrix_translate">
+topaz_matrix_translate(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+m,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+x,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+y,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+z
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Expresses a translation by x, y, and z
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+m,
+</div>
+<pre>
+ The transform matrix to modify.
+
+</pre>
+<div>
+x,
+</div>
+<pre>
+ The x displacement.
+
+</pre>
+<div>
+y,
+</div>
+<pre>
+ The y displacement.
+
+</pre>
+<div>
+z
+</div>
+<pre>
+ The z displacement.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_matrix_scale">
+topaz_matrix_scale(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+m,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+x,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+y,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+z
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Expresses a scaling in the x, y, and z directions.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+m,
+</div>
+<pre>
+ The transform matrix to modify.
+
+</pre>
+<div>
+x,
+</div>
+<pre>
+ The x scale modifier.
+
+</pre>
+<div>
+y,
+</div>
+<pre>
+ The y scale modifier.
+
+</pre>
+<div>
+z
+</div>
+<pre>
+ The z scale modifier.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

@@ -1,0 +1,578 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazGraphics_t">
+topazGraphics_t
+</h1>
+<pre>
+ The main graphics controller. It manages the context's renderer 
+ and attempts to make interaction with it more efficient.
+ Usually, its usage is implicit; a user will rarely need to 
+ interact with the graphics controller. However, if advanced 
+ features are needed, the graphics controller is part of the 
+ main pathway to access lower-level graphics features.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazGraphics_t.html#topaz_graphics_create">
+topaz_graphics_create()
+</a>
+
+</div>
+<div>
+<a href="topazGraphics_t.html#topaz_graphics_destroy">
+topaz_graphics_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazGraphics_t.html#topaz_graphics_get_renderer">
+topaz_graphics_get_renderer()
+</a>
+
+</div>
+<div>
+<a href="topazGraphics_t.html#topaz_graphics_get_renderer_2d">
+topaz_graphics_get_renderer_2d()
+</a>
+
+</div>
+<div>
+<a href="topazGraphics_t.html#topaz_graphics_request_draw_2d">
+topaz_graphics_request_draw_2d()
+</a>
+
+</div>
+<div>
+<a href="topazGraphics_t.html#topaz_graphics_request_draw_3d">
+topaz_graphics_request_draw_3d()
+</a>
+
+</div>
+<div>
+<a href="topazGraphics_t.html#topaz_graphics_sync">
+topaz_graphics_sync()
+</a>
+
+</div>
+<div>
+<a href="topazGraphics_t.html#topaz_graphics_reset_scene">
+topaz_graphics_reset_scene()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazGraphics_t.html#topazGraphics_t">
+topazGraphics_t
+</a>
+
+</h5>
+<h3 id="topaz_graphics_create">
+topaz_graphics_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new graphics instance. This is normally not necessary to call, as 
+ topaz_t has a default instance that it generates for you. 
+ See topaz_context_get_graphics();
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_graphics_destroy">
+topaz_graphics_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazGraphics_t.html#topazGraphics_t">
+topazGraphics_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+graphics
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys and frees a topaz input instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+graphics
+</div>
+<pre>
+ The graphics instance.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazRenderer_t.html#topazRenderer_t">
+topazRenderer_t
+</a>
+
+</h5>
+<h3 id="topaz_graphics_get_renderer">
+topaz_graphics_get_renderer(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazGraphics_t.html#topazGraphics_t">
+topazGraphics_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+graphics
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the backend rendering object for this topaz instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+graphics
+</div>
+<pre>
+ The graphics to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazRenderer_t.html#topazRenderer_2D_t">
+topazRenderer_2D_t
+</a>
+
+</h5>
+<h3 id="topaz_graphics_get_renderer_2d">
+topaz_graphics_get_renderer_2d(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazGraphics_t.html#topazGraphics_t">
+topazGraphics_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+graphics
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the backend 2d-specific rendering object for this topaz instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+graphics
+</div>
+<pre>
+ The graphics to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_graphics_request_draw_2d">
+topaz_graphics_request_draw_2d(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazGraphics_t.html#topazGraphics_t">
+topazGraphics_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+graphics,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRender2D_t.html#topazRender2D_t">
+topazRender2D_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Applies a render2d object to the renderer. This may not be immediate, but will 
+ attempt to be grouped together to accelerate the rendering process
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+graphics,
+</div>
+<pre>
+ The graphics to access.
+
+</pre>
+<div>
+r2d
+</div>
+<pre>
+ The render2d to draw.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_graphics_request_draw_3d">
+topaz_graphics_request_draw_3d(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazGraphics_t.html#topazGraphics_t">
+topazGraphics_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+g,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazRenderer_3D_t
+</th>
+<th class="FunctionArgumentName">
+d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRenderer_t.html#topazRenderer_Attributes_t">
+topazRenderer_Attributes_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+att
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Applies a 3D renderering object to the renderer.
+ A thin wrapper for topaz_renderer_draw_3d.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+g,
+</div>
+<pre>
+ The graphics instance to access.
+
+</pre>
+<div>
+d,
+</div>
+<pre>
+ The 3D instance.
+
+</pre>
+<div>
+att
+</div>
+<pre>
+ Processing attributes for the object.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_graphics_sync">
+topaz_graphics_sync(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazGraphics_t.html#topazGraphics_t">
+topazGraphics_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+graphics
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Ensures that all graphics operations have finished and are pushed 
+ to attached displays.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+graphics
+</div>
+<pre>
+ The graphics instance to sync.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_graphics_reset_scene">
+topaz_graphics_reset_scene(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazGraphics_t.html#topazGraphics_t">
+topazGraphics_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+graphics
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Clears the current display and resets any requested 2d drawn objects.
+ 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+graphics
+</div>
+<pre>
+ The graphics instance to reset.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

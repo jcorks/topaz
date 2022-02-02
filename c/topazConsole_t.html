@@ -1,0 +1,1528 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazConsole_t">
+topazConsole_t
+</h1>
+<pre>
+ The console is an object that controls a 
+ viewable text log and command interface. Consoles 
+ are especially useful for debugging purposes while 
+ within a running program.
+
+ Main features include: posting different 
+ kinds of "messages" (logs) to the console for viewing,
+ inserting custom debugging commands,
+ attaching to scripting instances for built-in 
+ debugging (if available), and more.
+
+ The console is not enabled by default. Enabling it will 
+ show the console using the preferred system backend for ConsoleDisplays.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazConsole_t.html#topaz_console_create">
+topaz_console_create()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_destroy">
+topaz_console_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_enable">
+topaz_console_enable()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_print">
+topaz_console_print()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_print_message">
+topaz_console_print_message()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_print_color">
+topaz_console_print_color()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_add_text_color">
+topaz_console_add_text_color()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_attach_script">
+topaz_console_attach_script()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_run">
+topaz_console_run()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_get_default_command_context">
+topaz_console_get_default_command_context()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_command_context_create">
+topaz_console_command_context_create()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_command_context_destroy">
+topaz_console_command_context_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_push_command_context">
+topaz_console_push_command_context()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_pop_command_context">
+topaz_console_pop_command_context()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_command_context_add_command">
+topaz_console_command_context_add_command()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_command_context_set_default_handler">
+topaz_console_command_context_set_default_handler()
+</a>
+
+</div>
+<div>
+<a href="topazConsole_t.html#topaz_console_command_context_set_prompt">
+topaz_console_command_context_set_prompt()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazConsole_t.html#topazConsole_MessageType_t">
+topazConsole_MessageType_t
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="topazConsole_MessageType_t">
+topazConsole_MessageType_t
+</h3>
+<pre>
+ Defines different types of messages.
+
+
+</pre>
+<table>
+<tr>
+<th>
+topazConsole_MessageType_Normal
+</th>
+<td>
+ Message type for normal messages.
+ These do not include any additional information
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazConsole_MessageType_Debug
+</th>
+<td>
+ Message type for debugging messages.
+ Includes "Debug" as well as the time when posted.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazConsole_MessageType_Warning
+</th>
+<td>
+ Message type for warning messages.
+ Includes "Warning" as well as the time when posted.
+
+
+</td>
+</tr>
+<tr>
+<th>
+topazConsole_MessageType_Error
+</th>
+<td>
+ Message type for error messages.
+ Includes "Error" as well as the time when posted.
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</h5>
+<h3 id="topaz_console_create">
+topaz_console_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a console instance. This is normally not necessary to call, as 
+ topaz_t has a default instance that it generates for you. 
+ See topaz_context_get_console()
+ Note that all the topazConsole_t instances use the same console display.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The topaz context instance.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_destroy">
+topaz_console_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+console
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys and frees a topaz console instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+console
+</div>
+<pre>
+ The console to display.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_enable">
+topaz_console_enable(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+console,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+enable
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Enables or disables the console. The default state is the console is disabled.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+console,
+</div>
+<pre>
+ The console to set the state of.
+
+</pre>
+<div>
+enable
+</div>
+<pre>
+ Whether to enable the console.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_print">
+topaz_console_print(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+console,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+message
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Prints a line to the console
+ This is equivalent to topaz_console_print_type() with the 
+ message type as topazConsole_MessageType_Normal
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+console,
+</div>
+<pre>
+ The console to print to.
+
+</pre>
+<div>
+message
+</div>
+<pre>
+ The text to print.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_print_message">
+topaz_console_print_message(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+console,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+message,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_MessageType_t">
+topazConsole_MessageType_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+type
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Prints a line to the console
+ The message type includes a specific color and header 
+ strings to make it more clear what type the message is 
+ once displayed.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+console,
+</div>
+<pre>
+ The console to print to.
+
+</pre>
+<div>
+message,
+</div>
+<pre>
+ The text to print.
+
+</pre>
+<div>
+type
+</div>
+<pre>
+ The type of the message.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_print_color">
+topaz_console_print_color(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+console,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+message,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazColor_t.html#topazColor_t">
+topazColor_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+color
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Prints a color line to the console.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+console,
+</div>
+<pre>
+ The console to print to.
+
+</pre>
+<div>
+message,
+</div>
+<pre>
+ The text to print.
+
+</pre>
+<div>
+color
+</div>
+<pre>
+ The color to print it as.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_add_text_color">
+topaz_console_add_text_color(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+console,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+message,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazColor_t.html#topazColor_t">
+topazColor_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+color
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a colored text to the console.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+console,
+</div>
+<pre>
+ The console to print to.
+
+</pre>
+<div>
+message,
+</div>
+<pre>
+ The text to print.
+
+</pre>
+<div>
+color
+</div>
+<pre>
+ The color to print it as.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_attach_script">
+topaz_console_attach_script(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+console,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazScript_t.html#topazScript_t">
+topazScript_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+script
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Attaches a script context to the console.
+ Once attached, debugging features will be available
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+console,
+</div>
+<pre>
+ The console to attach to.
+
+</pre>
+<div>
+script
+</div>
+<pre>
+ The scripting instance to attach.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_console_run">
+topaz_console_run(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+console,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+command
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Runs a command.
+ Command syntax:
+
+     commandName[SEPARATOR]arg0[SEPARATOR]arg1[SEPARATOR]...
+
+ Where [SEPARATOR] can be any of the following symbols:
+ ()[]{},.;:
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+console,
+</div>
+<pre>
+ The console to run a command in.
+
+</pre>
+<div>
+command
+</div>
+<pre>
+ The command to run.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazConsole_CommandContext_t">
+topazConsole_CommandContext_t
+</h1>
+<pre>
+
+    A command context is the basic means by which 
+    the console can understand commands. The command context 
+    holds all the keywords for valid commands at a given time.
+
+    By pushing and popping command contexts, it is possible to create 
+    advanced commands with choices built in.
+
+    By default, the default command context is pushed
+
+
+</pre>
+<div class="PublicSymbols">
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazConsole_t.html#topazConsole_CommandContext_t">
+topazConsole_CommandContext_t
+</a>
+
+</h5>
+<h3 id="topaz_console_get_default_command_context">
+topaz_console_get_default_command_context(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+console
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the default command context.
+ This can be used to add commands to or aid in controlling the 
+ context stack.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+console
+</div>
+<pre>
+ The parent console of this context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazConsole_t.html#topazConsole_CommandContext_t">
+topazConsole_CommandContext_t
+</a>
+
+</h5>
+<h3 id="topaz_console_command_context_create">
+topaz_console_command_context_create()
+</h3>
+<pre>
+ Creates a new console command context.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_command_context_destroy">
+topaz_console_command_context_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_CommandContext_t">
+topazConsole_CommandContext_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys a console command context.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_push_command_context">
+topaz_console_push_command_context(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+console,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_CommandContext_t">
+topazConsole_CommandContext_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Pushes a command context to the top of the stack. 
+ All commands will be read from this context.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+console,
+</div>
+<pre>
+ The console to push the command context to.
+
+</pre>
+<div>
+context
+</div>
+<pre>
+ The context to become current.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_pop_command_context">
+topaz_console_pop_command_context(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+console
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Pops the top context.
+ If the stack is empty, the default context is used. 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+console
+</div>
+<pre>
+ The console to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="*topaz_console_command_callback">
+(**topaz_console_command_callback)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_t">
+topazConsole_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+console,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+callbackData,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+args,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fullCommand
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ A console command function. When a user enters a command,
+ the corresponding topaz_console_command_callback() is called.
+ In the console, the user may give arguments the the command. 
+ These are passed to the callback as read-only strings within the
+ "args" array.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+console,
+</div>
+<pre>
+ The console receiving the command.
+
+</pre>
+<div>
+callbackData,
+</div>
+<pre>
+ The data bound to the callback.
+
+</pre>
+<div>
+args,
+</div>
+<pre>
+ A read-only array of arguments. Each member is a topazString_t *
+
+</pre>
+<div>
+fullCommand
+</div>
+<pre>
+ The full, uncomidified string entered by the user.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_command_context_add_command">
+topaz_console_command_context_add_command(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_CommandContext_t">
+topazConsole_CommandContext_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+command,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topaz_console_command_callback
+</th>
+<th class="FunctionArgumentName">
+callback,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+data
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a custom command. If the user enters a command matching the given
+ string.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The context to add a command to.
+
+</pre>
+<div>
+command,
+</div>
+<pre>
+ The command string itself.
+
+</pre>
+<div>
+callback,
+</div>
+<pre>
+ The callback to be called if a user enters this command
+
+</pre>
+<div>
+data
+</div>
+<pre>
+ The data to bind to this callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_command_context_set_default_handler">
+topaz_console_command_context_set_default_handler(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_CommandContext_t">
+topazConsole_CommandContext_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topaz_console_command_callback
+</th>
+<th class="FunctionArgumentName">
+handler,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+callbackData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a default handler. This will be called for a context 
+ if an unrecognized command is given to the context.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The context to modify.
+
+</pre>
+<div>
+handler,
+</div>
+<pre>
+ The default handler to call.
+
+</pre>
+<div>
+callbackData
+</div>
+<pre>
+ The data to bind to the callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_console_command_context_set_prompt">
+topaz_console_command_context_set_prompt(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazConsole_t.html#topazConsole_CommandContext_t">
+topazConsole_CommandContext_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+header
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the header prompt text to show within the console.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The context to modify.
+
+</pre>
+<div>
+header
+</div>
+<pre>
+ The string prompt.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

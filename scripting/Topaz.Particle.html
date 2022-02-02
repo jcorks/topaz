@@ -1,0 +1,544 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="Topaz.Particle">
+Topaz.Particle
+</h1>
+<pre>
+ The specification of a particle. This is used as a roadmap to 
+ generate a real particle instance using Topaz.ParticleEmitter2D.emit()
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Particle.html#setAttribute">
+setAttribute()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Particle.html#setNoiseMin">
+setNoiseMin()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Particle.html#setNoiseMax">
+setNoiseMax()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Particle.html#setFunction">
+setFunction()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Particle.html#Topaz.Particle.PROPERTY">
+Topaz.Particle.PROPERTY
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+String
+</span>
+<span class="VariableName">
+ string
+</span>
+
+</div>
+<pre>
+ When read, returns string representation of the particle's
+ state, allowing for saving / loading the state of the particle.
+ When written, sets the particle specification from a string.
+ This string is assumed to have come from a
+ previously read particle string.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.Image.html#Topaz.Image">
+Topaz.Image
+</a>
+
+</span>
+<span class="VariableName">
+ image
+</span>
+
+</div>
+<pre>
+ Sets the base image to use for the particle.
+ Write-only.
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.Particle.PROPERTY">
+Topaz.Particle.PROPERTY
+</h3>
+<pre>
+ Enumerator for different particle properties.
+ See Topaz.Particle
+
+</pre>
+<table>
+<tr>
+<th>
+DURATION
+</th>
+<td>
+ The duration of the particle.
+
+</td>
+</tr>
+<tr>
+<th>
+SCALE_X
+</th>
+<td>
+ The X-scale of the particle.
+
+</td>
+</tr>
+<tr>
+<th>
+SCALE_Y
+</th>
+<td>
+ The Y-scale of the particle.
+
+</td>
+</tr>
+<tr>
+<th>
+SCALE_MULTIPLIER
+</th>
+<td>
+ The total multiplier for the scale.
+
+</td>
+</tr>
+<tr>
+<th>
+ROTATION
+</th>
+<td>
+ The rotation of the particle in degrees.
+
+</td>
+</tr>
+<tr>
+<th>
+DIRECTION
+</th>
+<td>
+ The direction that the particle is headed. Under 0 degree rotation
+ which is the default, +/- speedX translates to right and left movement.
+ +/- speedY translates to down and upward movement respectively.
+
+</td>
+</tr>
+<tr>
+<th>
+SPEED_X
+</th>
+<td>
+ Speed in the X direction.
+
+</td>
+</tr>
+<tr>
+<th>
+SPEED_Y
+</th>
+<td>
+ Speed in the y direction.
+
+</td>
+</tr>
+<tr>
+<th>
+RED
+</th>
+<td>
+ Red color of the particle.
+
+</td>
+</tr>
+<tr>
+<th>
+GREEN
+</th>
+<td>
+ green color of the particle.
+
+</td>
+</tr>
+<tr>
+<th>
+BLUE
+</th>
+<td>
+ Blue color of the particle.
+
+</td>
+</tr>
+<tr>
+<th>
+ALPHA
+</th>
+<td>
+ Alpha (transparency) of the particle.
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setAttribute">
+setAttribute(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.html#Topaz.RENDERER.ATTRIBUTE">
+Topaz.RENDERER.ATTRIBUTE
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+attribute
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+val
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Modifies a render parameter.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+attribute
+</div>
+<pre>
+ Determines how to interpret the next value.
+ If PRIMITIVE, val is expected to be a value within TOPAZ.RENDERER.PRIMITIVE
+ If ALPHA_RULE, val is expected to be a value within TOPAZ.RENDERER.ALPHA_RULE
+ If DEPTH_TEST, val is expected to be a value within TOPAZ.RENDERER.DEPTH_TEST
+ If ETCH_RULE,  val is expected to be a value within TOPAZ.RENDERER.ETCH_RULE 
+ if TEXTURE_FILTER_HINT, val is expected to be a value within TOPAZ.RENDERER.TEXTURE_FILTER_HINT
+
+</pre>
+<div>
+val
+</div>
+<pre>
+ The new value. How its interpreted depends on param.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setNoiseMin">
+setNoiseMin(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Particle.html#Topaz.Particle.PROPERTY">
+Topaz.Particle.PROPERTY
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+property
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ The minimum value for the attribute to start.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+property
+</div>
+<pre>
+ The property to modify.
+
+</pre>
+<div>
+value
+</div>
+<pre>
+ The value to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setNoiseMax">
+setNoiseMax(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Particle.html#Topaz.Particle.PROPERTY">
+Topaz.Particle.PROPERTY
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+property
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ The maximum value for the attribute to start.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+property
+</div>
+<pre>
+ The property to modify.
+
+</pre>
+<div>
+value
+</div>
+<pre>
+ The value to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setFunction">
+setFunction(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Particle.html#Topaz.Particle.PROPERTY">
+Topaz.Particle.PROPERTY
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+property
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets how the particle property modifies its value over 
+ its duration. animString is expected to be output from
+ topaz_automation_to_string() which will describe 
+ how the value changes from the start of its life to the end.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+property
+</div>
+<pre>
+ The property to modify.
+
+</pre>
+<div>
+value
+</div>
+<pre>
+ The automation state string.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

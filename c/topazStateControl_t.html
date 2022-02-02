@@ -1,0 +1,568 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazStateControl_t">
+topazStateControl_t
+</h1>
+<pre>
+ Adds a state machine mechanism to the entity.
+ Each StateControl instance is effectively a dynamic state machine.  
+ After desgnating what states exist within the machine using
+ topaz_state_control_add(), the machine can be run using topaz_state_control_execute(). 
+ Using each state's on_step, it will iterate till halted or its state altered.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazStateControl_t.html#topaz_state_control_create">
+topaz_state_control_create()
+</a>
+
+</div>
+<div>
+<a href="topazStateControl_t.html#topaz_state_control_add">
+topaz_state_control_add()
+</a>
+
+</div>
+<div>
+<a href="topazStateControl_t.html#topaz_state_control_remove">
+topaz_state_control_remove()
+</a>
+
+</div>
+<div>
+<a href="topazStateControl_t.html#topaz_state_control_execute">
+topaz_state_control_execute()
+</a>
+
+</div>
+<div>
+<a href="topazStateControl_t.html#topaz_state_control_halt">
+topaz_state_control_halt()
+</a>
+
+</div>
+<div>
+<a href="topazStateControl_t.html#topaz_state_control_is_halted">
+topaz_state_control_is_halted()
+</a>
+
+</div>
+<div>
+<a href="topazStateControl_t.html#topaz_state_control_get_current">
+topaz_state_control_get_current()
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+struct
+</span>
+<span class="VariableName">
+ topazStateControl_Loop_t{
+</span>
+
+</div>
+<pre>
+ Designates execution instructions for a state.
+ During each state, different logic is designated to run to control
+ what happens during this state and when the state should be altered.
+ The on_step of the state loop is is meant to hold the bulk of the logic. 
+ The on_draw can be used to produce visual effects associated with the state.
+ The state may be changed any time using Execute.
+
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</h5>
+<h3 id="topaz_state_control_create">
+topaz_state_control_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new state control component.
+ Use component_destroy to release.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The topaz context
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_state_control_add">
+topaz_state_control_add(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+control,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+stateName,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+
+</th>
+<th class="FunctionArgumentName">
+topazStateControl_Loop_t
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets up a new valid state.
+ If an existing state fo the same name exists, it is updated.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+control,
+</div>
+<pre>
+ The state control to modify.
+
+</pre>
+<div>
+stateName,
+</div>
+<pre>
+ The name of the new state.
+
+</pre>
+<div>
+topazStateControl_Loop_t
+</div>
+<pre>
+ The data for the state loop.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_state_control_remove">
+topaz_state_control_remove(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+control,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+stateName
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes the state.
+ No action is taken if the tag does not refer to a valid state.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+control,
+</div>
+<pre>
+ The component to modify.
+
+</pre>
+<div>
+stateName
+</div>
+<pre>
+ The name of the state to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_state_control_execute">
+topaz_state_control_execute(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+control,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+stateName
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Begins the state machine execution loop from the given state.
+ If begin state does not refer to a valid state, no action is taken.
+ If done in the middle of a state loop function, any queued 
+ function calls are cancelled.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+control,
+</div>
+<pre>
+ The state control to modify.
+
+</pre>
+<div>
+stateName
+</div>
+<pre>
+ The state to change to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_state_control_halt">
+topaz_state_control_halt(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+control
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Stops all current execution.
+ If done during a state loop, all remaining state loop functions 
+ that would have executed are cancelled.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+control
+</div>
+<pre>
+ The state control to halt.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_state_control_is_halted">
+topaz_state_control_is_halted(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+control
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns whether or not the machine is in a halted state.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+control
+</div>
+<pre>
+ The state control to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_state_control_get_current">
+topaz_state_control_get_current(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+control
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the current state tag. If no execution state is active, the empty string is returned.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+control
+</div>
+<pre>
+ The state control to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

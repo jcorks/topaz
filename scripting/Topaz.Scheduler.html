@@ -1,0 +1,543 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="Topaz.Scheduler">
+Topaz.Scheduler
+</h1>
+<i>
+- inherits from: <a href="Topaz.Component.html#Topaz.Component">
+Topaz.Component
+</a>
+
+</i>
+<pre>
+ Allows for running of functions at regular intervals.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Scheduler.html#constructor">
+constructor()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Scheduler.html#startTask">
+startTask()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Scheduler.html#endTask">
+endTask()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Scheduler.html#endAllTasks">
+endAllTasks()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Scheduler.html#pause">
+pause()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Scheduler.html#resume">
+resume()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Scheduler.html#getTaskIntervalRemaining">
+getTaskIntervalRemaining()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Scheduler.html#Topaz.Scheduler.MODE">
+Topaz.Scheduler.MODE
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+Array
+</span>
+<span class="VariableName">
+ tasks
+</span>
+
+</div>
+<pre>
+ Returns an array of the names of all tasks currently running.
+ Read-only.
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.Scheduler.MODE">
+Topaz.Scheduler.MODE
+</h3>
+<pre>
+ Enumerator for different scheduler modes.
+ See Topaz.Scheduler
+
+</pre>
+<table>
+<tr>
+<th>
+TIME
+</th>
+<td>
+ Tells the scheduler to measure with real time.
+
+</td>
+</tr>
+<tr>
+<th>
+FRAME
+</th>
+<td>
+ Tells the scheduler to measyre with frames.
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="constructor">
+constructor(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Scheduler.html#Topaz.Scheduler.MODE">
+Topaz.Scheduler.MODE
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+mode
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ The constructor requires a mode.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+mode
+</div>
+<pre>
+ The mode to use.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+String
+</h5>
+<h3 id="startTask">
+startTask(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+taskName
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+interval
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+intervalDelay
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+callback.
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Assigns a new task for the scheduler to process. Once 
+ the interval time has elapsed, the callback will be called.
+
+ The name of the task is only returned for simple tasks. See the 
+ taskName argument for more info. 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+taskName
+</div>
+<pre>
+         The name of the task. The existence of this key determines 
+         whether this is a "simple task" or a "full task". Simple
+         tasks only contain an interval property and a callback,
+         all other keys of the argument are ignored. Full tasks 
+         are expected to have properties for the callback, internal,
+         taskName, and intervalDelay.
+
+</pre>
+<div>
+interval
+</div>
+<pre>
+         How often the task will run. If the mode is topazScheduler_Mode_Time,
+         the interval is a time in milliseconds. If the mode is 
+         topazScheduler_Mode_Frame, the the interval is the number 
+         of frames.
+
+</pre>
+<div>
+intervalDelay
+</div>
+<pre>
+         The initial delay before the task starts being measured.
+
+</pre>
+<div>
+callback.
+</div>
+<pre>
+         Callback is called when the interval expires.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="endTask">
+endTask(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Halts the task with the given name.
+ If no such task exists, no action is taken.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+name
+</div>
+<pre>
+ The name of the task to remove. 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="endAllTasks">
+endAllTasks()
+</h3>
+<pre>
+ Ends all tasks currently running by this scheduler.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="pause">
+pause(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Stops processing and timing of tasks until topaz_scheduler_resume() is called.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+name
+</div>
+<pre>
+ The scheduler to pause.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="resume">
+resume(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Resumes processing of tasks once more. If the scheduler was not 
+ paused, no action is taken.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+name
+</div>
+<pre>
+ The scheduler to resume.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="getTaskIntervalRemaining">
+getTaskIntervalRemaining(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the interval amount before the task interval
+ is next complete.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+name
+</div>
+<pre>
+ The name of the task to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

@@ -1,0 +1,966 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazText2D_t">
+topazText2D_t
+</h1>
+<pre>
+ Component that, when attached, produces a simple 2D text visual.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazText2D_t.html#topaz_text2d_create">
+topaz_text2d_create()
+</a>
+
+</div>
+<div>
+<a href="topazText2D_t.html#topaz_text2d_set_text">
+topaz_text2d_set_text()
+</a>
+
+</div>
+<div>
+<a href="topazText2D_t.html#topaz_text2d_set_font">
+topaz_text2d_set_font()
+</a>
+
+</div>
+<div>
+<a href="topazText2D_t.html#topaz_text2d_get_text">
+topaz_text2d_get_text()
+</a>
+
+</div>
+<div>
+<a href="topazText2D_t.html#topaz_text2d_get_extent_width">
+topaz_text2d_get_extent_width()
+</a>
+
+</div>
+<div>
+<a href="topazText2D_t.html#topaz_text2d_get_extent_height">
+topaz_text2d_get_extent_height()
+</a>
+
+</div>
+<div>
+<a href="topazText2D_t.html#topaz_text2d_get_char_x">
+topaz_text2d_get_char_x()
+</a>
+
+</div>
+<div>
+<a href="topazText2D_t.html#topaz_text2d_get_char_y">
+topaz_text2d_get_char_y()
+</a>
+
+</div>
+<div>
+<a href="topazText2D_t.html#topaz_text2d_get_node">
+topaz_text2d_get_node()
+</a>
+
+</div>
+<div>
+<a href="topazText2D_t.html#topaz_text2d_set_color_section">
+topaz_text2d_set_color_section()
+</a>
+
+</div>
+<div>
+<a href="topazText2D_t.html#topaz_text2d_set_color">
+topaz_text2d_set_color()
+</a>
+
+</div>
+<div>
+<a href="topazText2D_t.html#topaz_text2d_set_attributes">
+topaz_text2d_set_attributes()
+</a>
+
+</div>
+<div>
+<a href="topazText2D_t.html#topaz_text2d_get_attributes">
+topaz_text2d_get_attributes()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</h5>
+<h3 id="topaz_text2d_create">
+topaz_text2d_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new text component with no text.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The topaz context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_text2d_set_text">
+topaz_text2d_set_text(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+text2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+text
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the text content for the text2d object.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+text2d,
+</div>
+<pre>
+ The text2d to modify.
+
+</pre>
+<div>
+text
+</div>
+<pre>
+ The text to copy as source into the text2d.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_text2d_set_font">
+topaz_text2d_set_font(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+c,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fontName,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+pixelSize
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the font for the text 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+c,
+</div>
+<pre>
+ The text2d to modify
+
+</pre>
+<div>
+fontName,
+</div>
+<pre>
+ The name of the font to use. Should match the registered 
+ font name through topaz's font manager. See 
+ topaz_font_manager_register_font().
+
+</pre>
+<div>
+pixelSize
+</div>
+<pre>
+ The pixel size of the text to appear.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_text2d_get_text">
+topaz_text2d_get_text(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+text2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the text being displayed by the component.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+text2d
+</div>
+<pre>
+ The text2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_text2d_get_extent_width">
+topaz_text2d_get_extent_width(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+text2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the width of the text without transformation.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+text2d
+</div>
+<pre>
+ The text2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_text2d_get_extent_height">
+topaz_text2d_get_extent_height(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+text2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the height of the text without transformation.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+text2d
+</div>
+<pre>
+ The text2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_text2d_get_char_x">
+topaz_text2d_get_char_x(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+text2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+charIndex
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the x position of the character at the given index.
+ This refers to its top-left.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+text2d,
+</div>
+<pre>
+ The text2d to query.
+
+</pre>
+<div>
+charIndex
+</div>
+<pre>
+ The index of the character to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+float
+</h5>
+<h3 id="topaz_text2d_get_char_y">
+topaz_text2d_get_char_y(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+text2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+charIndex
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the x position of the character at the given index.
+ This refers to its top-left.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+text2d,
+</div>
+<pre>
+ The text2d to query.
+
+</pre>
+<div>
+charIndex
+</div>
+<pre>
+ The index of the character to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</h5>
+<h3 id="topaz_text2d_get_node">
+topaz_text2d_get_node(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+text2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gest the node transform for the text
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+text2d
+</div>
+<pre>
+ The text2d to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_text2d_set_color_section">
+topaz_text2d_set_color_section(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+text2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+fromIndex,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+toIndex,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazColor_t.html#topazColor_t">
+topazColor_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+color
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the color for certain characters.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+text2d,
+</div>
+<pre>
+ The text2d to modify.
+
+</pre>
+<div>
+fromIndex,
+</div>
+<pre>
+ The start character index to set the color.
+
+</pre>
+<div>
+toIndex,
+</div>
+<pre>
+ The end character index to set the color.
+
+</pre>
+<div>
+color
+</div>
+<pre>
+ The color to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_text2d_set_color">
+topaz_text2d_set_color(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+text2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazColor_t.html#topazColor_t">
+topazColor_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+color
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the color for all characters.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+text2d,
+</div>
+<pre>
+ The text2d to modify.
+
+</pre>
+<div>
+color
+</div>
+<pre>
+ The color to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_text2d_set_attributes">
+topaz_text2d_set_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+text2d,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRenderer_t.html#topazRenderer_Attributes_t">
+topazRenderer_Attributes_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+attribute
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the rendering attributes.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+text2d,
+</div>
+<pre>
+ The text to modify
+
+</pre>
+<div>
+attribute
+</div>
+<pre>
+ The new process attributes.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazRenderer_t.html#topazRenderer_Attributes_t">
+topazRenderer_Attributes_t
+</a>
+
+</h5>
+<h3 id="topaz_text2d_get_attributes">
+topaz_text2d_get_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+text2d
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the rendering attributes.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+text2d
+</div>
+<pre>
+ The text to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

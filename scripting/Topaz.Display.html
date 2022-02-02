@@ -1,0 +1,1030 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="Topaz.Display">
+Topaz.Display
+</h1>
+<pre>
+
+ An abstraction for the environment's means of 
+ displaying rendered information.
+
+ In most contexts / systems, the display is a window within the 
+ desktop environment. On embedded systems, this may be the entire
+ screen display.
+
+ Because of the flexibility / variation in what a display can be
+ some backends may choose to implement features differently
+ or omit features altogether where appropriate.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Display.html#destroy">
+destroy()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Display.html#resize">
+resize()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Display.html#addParameterCallback">
+addParameterCallback()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Display.html#addCloseCallback">
+addCloseCallback()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Display.html#removeCallback">
+removeCallback()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Display.html#getParameter">
+getParameter()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Display.html#setParameter">
+setParameter()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Display.html#getFramebuffer">
+getFramebuffer()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Display.html#useFramebuffer">
+useFramebuffer()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Display.html#clearMainFramebuffer">
+clearMainFramebuffer()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Display.html#captureMainFramebuffer">
+captureMainFramebuffer()
+</a>
+
+</div>
+
+</div>
+<div>
+</br><b>Enumerators:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Display.html#Topaz.Display.FRAMEBUFFER">
+Topaz.Display.FRAMEBUFFER
+</a>
+
+</div>
+<div>
+<a href="Topaz.Display.html#Topaz.Display.VIEW_POLICY">
+Topaz.Display.VIEW_POLICY
+</a>
+
+</div>
+<div>
+<a href="Topaz.Display.html#Topaz.Display.PARAMETER">
+Topaz.Display.PARAMETER
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+Int
+</span>
+<span class="VariableName">
+ width
+</span>
+
+</div>
+<pre>
+ Returns the width of the display.
+ Read-only.
+
+</pre>
+<div>
+<span class="VariableType">
+Int
+</span>
+<span class="VariableName">
+ height
+</span>
+
+</div>
+<pre>
+ Returns the height of the display.
+ Read-only.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.Entity.html#Topaz.Entity">
+Topaz.Entity
+</a>
+
+</span>
+<span class="VariableName">
+ camera2d
+</span>
+
+</div>
+<pre>
+ Retrieves the camera associated with the display thats 
+ used for 2d operations. This camera is used when the display is set as 
+ the main display. see topazViewManager_t
+ Read-only.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.Entity.html#Topaz.Entity">
+Topaz.Entity
+</a>
+
+</span>
+<span class="VariableName">
+ camera3d
+</span>
+
+</div>
+<pre>
+ Retrieves the camera associated with the display thats 
+ used for 3d operations. This camera is used when the display is set as 
+ the main display. see topazViewManager_t
+ Read-only.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.Framebuffer.html#Topaz.Framebuffer">
+Topaz.Framebuffer
+</a>
+
+</span>
+<span class="VariableName">
+ framebuffer
+</span>
+
+</div>
+<pre>
+ The current framebuffer in use.
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.Display.FRAMEBUFFER">
+Topaz.Display.FRAMEBUFFER
+</h3>
+<pre>
+ Every display has built in framebuffers that can be 
+ used and exchanged between for advanced rendering effects.
+
+
+</pre>
+<table>
+<tr>
+<th>
+A
+</th>
+<td>
+ The default framebuffer.
+
+</td>
+</tr>
+<tr>
+<th>
+B
+</th>
+<td>
+ The second framebuffer. 
+
+</td>
+</tr>
+<tr>
+<th>
+C
+</th>
+<td>
+ The 3rd framebuffer.
+
+</td>
+</tr>
+<tr>
+<th>
+D
+</th>
+<td>
+ The 4th framebuffer.
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.Display.VIEW_POLICY">
+Topaz.Display.VIEW_POLICY
+</h3>
+<pre>
+  Controls how the Display displays Rendered data.
+
+
+</pre>
+<table>
+<tr>
+<th>
+NONE
+</th>
+<td>
+ The Display will show the attached Framebuffer's contents with no transformation
+ The visual is stretched over the width and height of the display.
+
+
+</td>
+</tr>
+<tr>
+<th>
+MATCH_SIZE
+</th>
+<td>
+ The Display will resize the attached Framebuffer to match the windows dimensions
+ whenever the window is resized.
+ This is the default.
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Enumerator">
+<div class="typetag">
+(Enumerator)</br>
+</div>
+<div>
+<h3 id="Topaz.Display.PARAMETER">
+Topaz.Display.PARAMETER
+</h3>
+<pre>
+ On most systems, displays have a variety of features that can be 
+ controlled. This provides a generic interface into those features,
+ where a request can be posted to change a parameter via 
+ topaz_display_set_parameter().
+
+
+</pre>
+<table>
+<tr>
+<th>
+X
+</th>
+<td>
+ Controls the X position of the display. 
+
+ Usually, this is relative to whatever environment
+ the display exists in. For example, in a desktop environment, this could be
+ an offset from the DE's origin. If the display does not support moving,
+ no action is taken.
+
+</td>
+</tr>
+<tr>
+<th>
+Y
+</th>
+<td>
+ Controls the Y position of the display. 
+
+ Usually, this is relative to whatever environment
+ the display exists in. For example, in a desktop environment, this could be
+ an offset from the DE's origin. If the display does not support moving,
+ no action is taken.
+
+</td>
+</tr>
+<tr>
+<th>
+WIDTH
+</th>
+<td>
+ The width of the display.
+
+
+</td>
+</tr>
+<tr>
+<th>
+HEIGHT
+</th>
+<td>
+ The height of the display.
+
+
+</td>
+</tr>
+<tr>
+<th>
+SHOW
+</th>
+<td>
+ Controls whether the display is shown.
+
+</td>
+</tr>
+<tr>
+<th>
+FULLSCREEN
+</th>
+<td>
+ Set the display into a fullscreen context. If fullscreen is not supported,
+ no action is taken.
+
+
+</td>
+</tr>
+<tr>
+<th>
+LOCK_CLIENT_RESIZE
+</th>
+<td>
+ Controls prevention of resizing on the user's side. 
+
+ For example,
+ in a desktop environment, this would disable the feature of resizing
+ the window.
+
+
+</td>
+</tr>
+<tr>
+<th>
+LOCK_CLIENT_POSITION
+</th>
+<td>
+ Attempts to prevent moving on the user's side. 
+ 
+
+</td>
+</tr>
+<tr>
+<th>
+VIEW_POLICY
+</th>
+<td>
+ Controls how the Renderer's information is displayed. The default policy is "MatchSize"
+ See ViewPolicy for more information. 
+
+
+</td>
+</tr>
+<tr>
+<th>
+INPUT_FOCUS
+</th>
+<td>
+ Returns whether the display has user input focus. On display implementations
+ where this doesnt apply, i.e. where there is only one logical display available,,
+ this will always return true. 
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="destroy">
+destroy()
+</h3>
+<pre>
+ Destroys the display.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="resize">
+resize(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+width
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+height
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Resizes the display. If the display does not support resizing, no action is taken.
+    
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+width
+</div>
+<pre>
+ The new width.
+
+</pre>
+<div>
+height
+</div>
+<pre>
+ The new height.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Int
+</h5>
+<h3 id="addParameterCallback">
+addParameterCallback(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+func
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds an additional callback function to be called 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+func
+</div>
+<pre>
+ The callback to add.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Int
+</h5>
+<h3 id="addCloseCallback">
+addCloseCallback(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Function
+</th>
+<th class="FunctionArgumentName">
+func
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds an additional callback function to be called after
+ the occurance of a closing event.
+
+ Typically on desktop systems,
+ this is triggered by pressing the close button on the window
+ associated with the Display. Callbacks are run in the order that they
+ were added in. The ID is returned.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+func
+</div>
+<pre>
+ The callback to add.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="removeCallback">
+removeCallback(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes the callback by id.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+id
+</div>
+<pre>
+ The callback to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Int
+</h5>
+<h3 id="getParameter">
+getParameter(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Display.html#Topaz.Display.PARAMETER">
+Topaz.Display.PARAMETER
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+parameter
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets a parameter from the display.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+parameter
+</div>
+<pre>
+ The parameter to retrieve.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Int
+</h5>
+<h3 id="setParameter">
+setParameter(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Display.html#Topaz.Display.PARAMETER">
+Topaz.Display.PARAMETER
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+parameter
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets a parameter from the display.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+parameter
+</div>
+<pre>
+ The parameter to modify.
+
+</pre>
+<div>
+value
+</div>
+<pre>
+ The new value for the parameter.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="Topaz.Framebuffer.html#Topaz.Framebuffer">
+Topaz.Framebuffer
+</a>
+
+</h5>
+<h3 id="getFramebuffer">
+getFramebuffer(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Display.html#Topaz.Display.FRAMEBUFFER">
+Topaz.Display.FRAMEBUFFER
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the framebuffer specified.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+id
+</div>
+<pre>
+ The framebuffer to get.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="useFramebuffer">
+useFramebuffer(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Display.html#Topaz.Display.FRAMEBUFFER">
+Topaz.Display.FRAMEBUFFER
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the framebuffer as the main framebuffer. This framebuffer 
+ is rendered into the display every frame.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+id
+</div>
+<pre>
+ The framebuffer to use.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="clearMainFramebuffer">
+clearMainFramebuffer(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.html#Topaz.RENDERER.LAYER">
+Topaz.RENDERER.LAYER
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+layer
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Forces clearing of the results of drawing stored within the current framebuffer.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+layer
+</div>
+<pre>
+ What data to clear from the framebuffer
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="captureMainFramebuffer">
+captureMainFramebuffer(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Image.html#Topaz.Image">
+Topaz.Image
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+capture
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the contents of the current framebuffer and 
+ puts the data into an image asset frame. 
+ The input image is cleared, resized to match the 
+ framebuffer size, and given one frame which matches the 
+ the framebuffer data.
+
+ NOTE: in general, this operation is considered "slow" as 
+ it requires a lot of communication between the backend 
+ renderer and engine, which are most likely on different 
+ devices. Use sparringly!
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+capture
+</div>
+<pre>
+ The image to populate.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

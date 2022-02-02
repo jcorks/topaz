@@ -1,0 +1,985 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazParticle_t">
+topazParticle_t
+</h1>
+<pre>
+ The specification of a particle. This is used as a roadmap to 
+ generate a real particle instance using topaz_particle_emitter_2d_emit()
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazParticle_t.html#topaz_particle_create">
+topaz_particle_create()
+</a>
+
+</div>
+<div>
+<a href="topazParticle_t.html#topaz_particle_destroy">
+topaz_particle_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazParticle_t.html#topaz_particle_set_from_string">
+topaz_particle_set_from_string()
+</a>
+
+</div>
+<div>
+<a href="topazParticle_t.html#topaz_particle_to_string">
+topaz_particle_to_string()
+</a>
+
+</div>
+<div>
+<a href="topazParticle_t.html#topaz_particle_set_attributes">
+topaz_particle_set_attributes()
+</a>
+
+</div>
+<div>
+<a href="topazParticle_t.html#topaz_particle_get_attributes">
+topaz_particle_get_attributes()
+</a>
+
+</div>
+<div>
+<a href="topazParticle_t.html#topaz_particle_set_image">
+topaz_particle_set_image()
+</a>
+
+</div>
+<div>
+<a href="topazParticle_t.html#topaz_particle_set_noise_min">
+topaz_particle_set_noise_min()
+</a>
+
+</div>
+<div>
+<a href="topazParticle_t.html#topaz_particle_set_noise_max">
+topaz_particle_set_noise_max()
+</a>
+
+</div>
+<div>
+<a href="topazParticle_t.html#topaz_particle_set_function">
+topaz_particle_set_function()
+</a>
+
+</div>
+<div>
+<a href="topazParticle_t.html#topaz_particle_emitter_2d_create">
+topaz_particle_emitter_2d_create()
+</a>
+
+</div>
+<div>
+<a href="topazParticle_t.html#topaz_particle_emitter_2d_set_particle">
+topaz_particle_emitter_2d_set_particle()
+</a>
+
+</div>
+<div>
+<a href="topazParticle_t.html#topaz_particle_emitter_2d_set_independent">
+topaz_particle_emitter_2d_set_independent()
+</a>
+
+</div>
+<div>
+<a href="topazParticle_t.html#topaz_particle_emitter_2d_emit">
+topaz_particle_emitter_2d_emit()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazParticle_t.html#topazParticle_t">
+topazParticle_t
+</a>
+
+</h5>
+<h3 id="topaz_particle_create">
+topaz_particle_create()
+</h3>
+<pre>
+ Creates a new particle specification.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_particle_destroy">
+topaz_particle_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazParticle_t.html#topazParticle_t">
+topazParticle_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+part
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys the particle.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+part
+</div>
+<pre>
+ The particle to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_particle_set_from_string">
+topaz_particle_set_from_string(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazParticle_t.html#topazParticle_t">
+topazParticle_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+part,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+str
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the particle specification from a string.
+ This string is assumed to have come from a
+ topaz_particle_to_string() call.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+part,
+</div>
+<pre>
+ The particle to modify.
+
+</pre>
+<div>
+str
+</div>
+<pre>
+ The string to read from.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_particle_to_string">
+topaz_particle_to_string(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazParticle_t.html#topazParticle_t">
+topazParticle_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+part
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a read-only string representation of the particle's
+ state, allowing for saving / loading the state of the particle.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+part
+</div>
+<pre>
+ The particle to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_particle_set_attributes">
+topaz_particle_set_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazParticle_t.html#topazParticle_t">
+topazParticle_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+part,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRenderer_t.html#topazRenderer_Attributes_t">
+topazRenderer_Attributes_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+attribs
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Modifies a the rendering attributes.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+part,
+</div>
+<pre>
+ The particle to modify
+
+</pre>
+<div>
+attribs
+</div>
+<pre>
+ New attributes.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazRenderer_t.html#topazRenderer_Attributes_t">
+topazRenderer_Attributes_t
+</a>
+
+</h5>
+<h3 id="topaz_particle_get_attributes">
+topaz_particle_get_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazParticle_t.html#topazParticle_t">
+topazParticle_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+part
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the current attributes for particle rendering.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+part
+</div>
+<pre>
+ The particle to query
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_particle_set_image">
+topaz_particle_set_image(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazParticle_t.html#topazParticle_t">
+topazParticle_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+part,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+image
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the image
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+part,
+</div>
+<pre>
+ The particle to modify.
+
+</pre>
+<div>
+image
+</div>
+<pre>
+ The name of the asset image to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_particle_set_noise_min">
+topaz_particle_set_noise_min(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazParticle_t.html#topazParticle_t">
+topazParticle_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+part,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazParticle_Property
+</th>
+<th class="FunctionArgumentName">
+prop,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ The minimum value for the attribute to start.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+part,
+</div>
+<pre>
+ The particle to modify.
+
+</pre>
+<div>
+prop,
+</div>
+<pre>
+ The property to modify.
+
+</pre>
+<div>
+value
+</div>
+<pre>
+ The value to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_particle_set_noise_max">
+topaz_particle_set_noise_max(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazParticle_t.html#topazParticle_t">
+topazParticle_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+part,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazParticle_Property
+</th>
+<th class="FunctionArgumentName">
+prop,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ The maximum value for the attribute to start.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+part,
+</div>
+<pre>
+ The particle to modify.
+
+</pre>
+<div>
+prop,
+</div>
+<pre>
+ The property to modify.
+
+</pre>
+<div>
+value
+</div>
+<pre>
+ The value to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_particle_set_function">
+topaz_particle_set_function(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazParticle_t.html#topazParticle_t">
+topazParticle_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+part,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazParticle_Property
+</th>
+<th class="FunctionArgumentName">
+prop,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+animString
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets how the particle property modifies its value over 
+ its duration. animString is expected to be output from
+ topaz_automation_to_string() which will describe 
+ how the value changes from the start of its life to the end.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+part,
+</div>
+<pre>
+ The particle to modify.
+
+</pre>
+<div>
+prop,
+</div>
+<pre>
+ The property to modify.
+
+</pre>
+<div>
+animString
+</div>
+<pre>
+ The automation state string.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</h5>
+<h3 id="topaz_particle_emitter_2d_create">
+topaz_particle_emitter_2d_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new particle emitter entity.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ the topaz context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_particle_emitter_2d_set_particle">
+topaz_particle_emitter_2d_set_particle(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+emitter,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazParticle_t.html#topazParticle_t">
+topazParticle_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+particle
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets which particle that this emitter should emit.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+emitter,
+</div>
+<pre>
+ The emitter to modify.
+
+</pre>
+<div>
+particle
+</div>
+<pre>
+ The particle that acts as a specification 
+ for future particles produced by the emitter.
+ Its information is copied into the emitter.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_particle_emitter_2d_set_independent">
+topaz_particle_emitter_2d_set_independent()
+</h3>
+<pre>
+ Emits a particle with position tracking it global/root entity space.
+ That is, when the emitter moves, the particle will not move with it.
+ Only the emitters position at the time of emission will be used
+ for the particle.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_particle_emitter_2d_emit">
+topaz_particle_emitter_2d_emit(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+emitter,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+count
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_particle_emitter_2d_emit, except will be emitted count 
+ number of times
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+emitter,
+</div>
+<pre>
+ The emitter to emit from.
+
+</pre>
+<div>
+count
+</div>
+<pre>
+ The number of particles to emit.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

@@ -1,0 +1,499 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazBin_t">
+topazBin_t
+</h1>
+<pre>
+ Tags a pointer with a unique value ID. Mostly useful for internal 
+ implementations of ID systems where validation is needed.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazBin_t.html#topaz_bin_create">
+topaz_bin_create()
+</a>
+
+</div>
+<div>
+<a href="topazBin_t.html#topaz_bin_destroy">
+topaz_bin_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazBin_t.html#topaz_bin_add">
+topaz_bin_add()
+</a>
+
+</div>
+<div>
+<a href="topazBin_t.html#topaz_bin_contains">
+topaz_bin_contains()
+</a>
+
+</div>
+<div>
+<a href="topazBin_t.html#topaz_bin_fetch">
+topaz_bin_fetch()
+</a>
+
+</div>
+<div>
+<a href="topazBin_t.html#topaz_bin_remove">
+topaz_bin_remove()
+</a>
+
+</div>
+<div>
+<a href="topazBin_t.html#topaz_bin_get_all">
+topaz_bin_get_all()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazBin_t.html#topazBin_t">
+topazBin_t
+</a>
+
+</h5>
+<h3 id="topaz_bin_create">
+topaz_bin_create()
+</h3>
+<pre>
+ Creates a new bin to add objects to.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_bin_destroy">
+topaz_bin_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazBin_t.html#topazBin_t">
+topazBin_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bin
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys the bin.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bin
+</div>
+<pre>
+ The bin to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_bin_add">
+topaz_bin_add(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazBin_t.html#topazBin_t">
+topazBin_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bin,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+object
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds an object to the bin, its ID tag is returned.
+ The object must not be NULL.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bin,
+</div>
+<pre>
+ The bin to add to.
+
+</pre>
+<div>
+object
+</div>
+<pre>
+ The pointer to add to the bin.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_bin_contains">
+topaz_bin_contains(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazBin_t.html#topazBin_t">
+topazBin_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bin,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns whether the bin contains the given value.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bin,
+</div>
+<pre>
+ The bin to query.
+
+</pre>
+<div>
+id
+</div>
+<pre>
+ The ID to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_bin_fetch">
+topaz_bin_fetch(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazBin_t.html#topazBin_t">
+topazBin_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bin,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the object matched with the ID tag. If none exists
+ NULL is returned.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bin,
+</div>
+<pre>
+ The bin to query.
+
+</pre>
+<div>
+id
+</div>
+<pre>
+ The object ID to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_bin_remove">
+topaz_bin_remove(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazBin_t.html#topazBin_t">
+topazBin_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bin,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes an object from the bin.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bin,
+</div>
+<pre>
+ The bin to remove objects from.
+
+</pre>
+<div>
+id
+</div>
+<pre>
+ The object ID to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_bin_get_all">
+topaz_bin_get_all(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazBin_t.html#topazBin_t">
+topazBin_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bin
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns an array of void * containing all 
+ objects within the bin. Its a new array and must be destroyed by 
+ the user.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bin
+</div>
+<pre>
+ The bin to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

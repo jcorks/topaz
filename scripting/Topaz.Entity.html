@@ -1,0 +1,983 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="Topaz.Entity">
+Topaz.Entity
+</h1>
+<pre>
+    Basic interactive object.
+ 
+    Entities are the main classes that are extended to meet abstractions for your 
+    multimedia project. By defining attributes the you can dynamically extend 
+    entities. By attaching components you can extend the entity further.
+
+    Entities are also inherently hierarchical. By Attach()ing other Entities,
+    you can create trees of self-managed Entities.
+
+    NULL is not accepted as an argument for any entity functions.
+    Instead, use the topaz_entity_null() value to represent this 
+    no-entity state. 
+
+
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Entity.html#remove">
+remove()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Entity.html#nthChild">
+nthChild()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Entity.html#step">
+step()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Entity.html#draw">
+draw()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Entity.html#attach">
+attach()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Entity.html#detach">
+detach()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Entity.html#query">
+query()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Entity.html#search">
+search()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Entity.html#setPriorityFirst">
+setPriorityFirst()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Entity.html#setPriorityLast">
+setPriorityLast()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Entity.html#add">
+add()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Entity.html#addAfter">
+addAfter()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Entity.html#queryComponent">
+queryComponent()
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+Boolean
+</span>
+<span class="VariableName">
+ isValid
+</span>
+
+</div>
+<pre>
+ Returns whether this instance is valid or not.
+ Read-only.
+
+</pre>
+<div>
+<span class="VariableType">
+Int
+</span>
+<span class="VariableName">
+ childCount
+</span>
+
+</div>
+<pre>
+ The number of child entities.
+ Read-only.
+
+</pre>
+<div>
+<span class="VariableType">
+Array
+</span>
+<span class="VariableName">
+ children
+</span>
+
+</div>
+<pre>
+ Returns all child entities
+
+ Entities are ordered by priority, where the first entity
+ is guaranteed to be the one with the lowest Priority value.
+ If the entity is not valid, the contents are undefined.
+
+ The Array may be set with a new Array containing the new children
+ to attach.
+
+</pre>
+<div>
+<span class="VariableType">
+<a href="Topaz.Entity.html#Topaz.Entity">
+Topaz.Entity
+</a>
+
+</span>
+<span class="VariableName">
+ parent
+</span>
+
+</div>
+<pre>
+ Sets/Gets the parent entity. This will 
+ automatically detach / attach the entities involved.
+
+</pre>
+<div>
+<span class="VariableType">
+Int
+</span>
+<span class="VariableName">
+ priority
+</span>
+
+</div>
+<pre>
+ Sets / Gets the priority.
+ Priority determines the order in which this
+ entity is updated. A lower priority means it will be drawn and updated earlier.
+ It is undefined which entity is updated first if both have the same priority.
+
+</pre>
+<div>
+<span class="VariableType">
+Object
+</span>
+<span class="VariableName">
+ rotation
+</span>
+
+</div>
+<pre>
+ Sets / Gets the rotation of the entity.
+
+</pre>
+<div>
+<span class="VariableType">
+Object
+</span>
+<span class="VariableName">
+ position
+</span>
+
+</div>
+<pre>
+ Sets / Gets the position of the entity.
+
+</pre>
+<div>
+<span class="VariableType">
+Object
+</span>
+<span class="VariableName">
+ scale
+</span>
+
+</div>
+<pre>
+ Sets / Gets the scale of the entity.
+
+</pre>
+<div>
+<span class="VariableType">
+Object
+</span>
+<span class="VariableName">
+ globalPosition
+</span>
+
+</div>
+<pre>
+ Gets the global position of the entity.
+
+</pre>
+<div>
+<span class="VariableType">
+Boolean
+</span>
+<span class="VariableName">
+ isStepping
+</span>
+
+</div>
+<pre>
+ Returns wether or not the Engine is handling calling Step() automatically,
+ taking Into account the Entity's hierarchy.
+ (Read-only)
+
+
+</pre>
+<div>
+<span class="VariableType">
+Boolean
+</span>
+<span class="VariableName">
+ isDrawing
+</span>
+
+</div>
+<pre>
+ Returns wether or not the Engine is handling calling Draw() automatically,
+ taking Into account the Entity's hierarchy.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Boolean
+</span>
+<span class="VariableName">
+ stepping
+</span>
+
+</div>
+<pre>
+ Whether the engine should call Step() automatically for this entity.
+ Note that topaz_entity_step() calls also manage components and child entities.
+ The default is true.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Boolean
+</span>
+<span class="VariableName">
+ drawing
+</span>
+
+</div>
+<pre>
+ Whether the engine should call Draw() automatically for this entity.
+ Note that topaz_entity_draw() calls also manage components and child entities.
+ The default is true.
+
+
+</pre>
+<div>
+<span class="VariableType">
+String
+</span>
+<span class="VariableName">
+ name
+</span>
+
+</div>
+<pre>
+ Sets/Gets the name of the entity.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Array
+</span>
+<span class="VariableName">
+ components
+</span>
+
+</div>
+<pre>
+ If read, returns an Array of all attached components.
+ If written to, removes all current components and 
+ instead attaches all the given components.
+
+</pre>
+<div>
+<span class="VariableType">
+Function
+</span>
+<span class="VariableName">
+ onStep
+</span>
+
+</div>
+<pre>
+ The function to run every step.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Function
+</span>
+<span class="VariableName">
+ onDraw
+</span>
+
+</div>
+<pre>
+ The function to run every draw frame.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Function
+</span>
+<span class="VariableName">
+ onPreStep
+</span>
+
+</div>
+<pre>
+ The function to run before every step.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Function
+</span>
+<span class="VariableName">
+ onPreDraw
+</span>
+
+</div>
+<pre>
+ The function to run before every draw frame
+
+
+</pre>
+<div>
+<span class="VariableType">
+Function
+</span>
+<span class="VariableName">
+ onAttach
+</span>
+
+</div>
+<pre>
+ The function to run when attaching this entity to a parent.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Function
+</span>
+<span class="VariableName">
+ onDetach
+</span>
+
+</div>
+<pre>
+ The function to run when detaching this entity to a parent.
+
+
+</pre>
+<div>
+<span class="VariableType">
+Function
+</span>
+<span class="VariableName">
+ onRemove
+</span>
+
+</div>
+<pre>
+ The function to run when this entity is removed.
+
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="remove">
+remove(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes the entity. After this call, uses of the entity will be invalid.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ The component to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="Topaz.Entity.html#Topaz.Entity">
+Topaz.Entity
+</a>
+
+</h5>
+<h3 id="nthChild">
+nthChild(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Int
+</th>
+<th class="FunctionArgumentName">
+n
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the n'th child Entity.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+n
+</div>
+<pre>
+ The index to query.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="step">
+step()
+</h3>
+<pre>
+ Updates this entity, all child entities, and components.
+ Normally this is called for you under the topaz context.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="draw">
+draw()
+</h3>
+<pre>
+ Updates this entity, all child entities, and components
+ Normally this is called for you under the topaz context.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="attach">
+attach(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Entity.html#Topaz.Entity">
+Topaz.Entity
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Attaches a child entity to this entity.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The child entity.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="detach">
+detach()
+</h3>
+<pre>
+ Detaches the entity from its parent.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="Topaz.Entity.html#Topaz.Entity">
+Topaz.Entity
+</a>
+
+</h5>
+<h3 id="query">
+query(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the first child entity with the given name.
+ Only the immediate children are checked.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+name
+</div>
+<pre>
+ The name to search.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="Topaz.Entity.html#Topaz.Entity">
+Topaz.Entity
+</a>
+
+</h5>
+<h3 id="search">
+search(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the first child entity with the given name, but 
+ searches recursively.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+name
+</div>
+<pre>
+ The name to search.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setPriorityFirst">
+setPriorityFirst()
+</h3>
+<pre>
+ Sends the entity to be the first entity to be updated.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="setPriorityLast">
+setPriorityLast()
+</h3>
+<pre>
+ Sends the entity to be the last eneity to be updated.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="add">
+add(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Component.html#Topaz.Component">
+Topaz.Component
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Attaches a component to this entity.
+
+ Once attached, the component's
+ Step and Draw functions will be called before this entity's Step and Draw.
+ 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ The component to add to the entity.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="addAfter">
+addAfter(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="Topaz.Component.html#Topaz.Component">
+Topaz.Component
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same addComponent, but the component is updated 
+ after this entity's step and draw functions.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+component
+</div>
+<pre>
+ The component to add to the entity.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="Topaz.Component.html#Topaz.Component">
+Topaz.Component
+</a>
+
+</h5>
+<h3 id="queryComponent">
+queryComponent(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+String
+</th>
+<th class="FunctionArgumentName">
+tag
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the first component with the given tag.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+tag
+</div>
+<pre>
+ The tag to search within the entity.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

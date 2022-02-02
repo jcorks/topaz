@@ -1,0 +1,1 @@
+const doclinks = {"0":"index"}

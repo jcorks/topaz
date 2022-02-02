@@ -1,0 +1,582 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazFontManager_t">
+topazFontManager_t
+</h1>
+<pre>
+ Font managers are responsible for 
+ controlling interactions with topaz and multiple, distinct fonts.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazFontManager_t.html#topaz_font_manager_create">
+topaz_font_manager_create()
+</a>
+
+</div>
+<div>
+<a href="topazFontManager_t.html#topaz_font_manager_destroy">
+topaz_font_manager_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazFontManager_t.html#topaz_font_manager_register_font">
+topaz_font_manager_register_font()
+</a>
+
+</div>
+<div>
+<a href="topazFontManager_t.html#topaz_font_manager_get_renderer">
+topaz_font_manager_get_renderer()
+</a>
+
+</div>
+<div>
+<a href="topazFontManager_t.html#topaz_font_manager_get_renderer_any">
+topaz_font_manager_get_renderer_any()
+</a>
+
+</div>
+<div>
+<a href="topazFontManager_t.html#topaz_font_manager_preload_glyphs">
+topaz_font_manager_preload_glyphs()
+</a>
+
+</div>
+<div>
+<a href="topazFontManager_t.html#topaz_font_manager_unregister_font">
+topaz_font_manager_unregister_font()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazFontManager_t.html#topazFontManager_t">
+topazFontManager_t
+</a>
+
+</h5>
+<h3 id="topaz_font_manager_create">
+topaz_font_manager_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new font manager. 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_font_manager_destroy">
+topaz_font_manager_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFontManager_t.html#topazFontManager_t">
+topazFontManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fontManager
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys and frees a topaz font manager instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fontManager
+</div>
+<pre>
+ The font manager to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_font_manager_register_font">
+topaz_font_manager_register_font(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFontManager_t.html#topazFontManager_t">
+topazFontManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fontManager,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+dataAsset
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a new font to be registered with the font manager 
+ by name. The name for the font is the unique name of the 
+ asset loaded within the topaz instance's resource instance. 
+ In most circumstances, this name is one used 
+ to refer to the font from topaz's point of view.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fontManager,
+</div>
+<pre>
+ The font manager to register the new font with
+
+</pre>
+<div>
+dataAsset
+</div>
+<pre>
+ The name of the asset that contains the raw font data, specific 
+ to the backend. The asset type needs to be 
+ a raw data asset.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazFontRenderer_t.html#topazFontRenderer_t">
+topazFontRenderer_t
+</a>
+
+</h5>
+<h3 id="topaz_font_manager_get_renderer">
+topaz_font_manager_get_renderer(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFontManager_t.html#topazFontManager_t">
+topazFontManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fontManager,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fontName
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the font renderer for the specific font requested.
+ The font name should be the original font data asset's name.
+ If no such renderer exists, NULL is returned.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fontManager,
+</div>
+<pre>
+ The font manager to query.
+
+</pre>
+<div>
+fontName
+</div>
+<pre>
+ The name of the font to get the renderer for.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazFontRenderer_t.html#topazFontRenderer_t">
+topazFontRenderer_t
+</a>
+
+</h5>
+<h3 id="topaz_font_manager_get_renderer_any">
+topaz_font_manager_get_renderer_any(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFontManager_t.html#topazFontManager_t">
+topazFontManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fontManager
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the first available font renderer 
+ that the manager is aware of.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fontManager
+</div>
+<pre>
+ The font manager to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_font_manager_preload_glyphs">
+topaz_font_manager_preload_glyphs(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFontManager_t.html#topazFontManager_t">
+topazFontManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+f,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fontName,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+sizeRequest,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+characters
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Convenience function to get tell the font renderer 
+ to transfer characters glyphs into textures ahead of time
+ for the requested font, size, and characters.
+ This can speed up processing time when first displaying characters.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+f,
+</div>
+<pre>
+ The font manager to work with.
+
+</pre>
+<div>
+fontName,
+</div>
+<pre>
+ The name of the font to preload.
+
+</pre>
+<div>
+sizeRequest,
+</div>
+<pre>
+ The size of the font to preload.
+
+</pre>
+<div>
+characters
+</div>
+<pre>
+ A string of characters to preload.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_font_manager_unregister_font">
+topaz_font_manager_unregister_font(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazFontManager_t.html#topazFontManager_t">
+topazFontManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fontManager,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+fontName
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes the font from the manager by name.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+fontManager,
+</div>
+<pre>
+ The font manager to modify.
+
+</pre>
+<div>
+fontName
+</div>
+<pre>
+ The name of the font to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

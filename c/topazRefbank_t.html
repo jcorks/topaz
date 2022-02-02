@@ -1,0 +1,778 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazRefbank_t">
+topazRefbank_t
+</h1>
+<pre>
+    A simple, generic reference counter
+
+    Refbank represents a generic, multi-instance reference counter.
+    Refbank manages a number of accounts. Each account 
+    signifies a set of references. Accounts are uniquely identified
+    by the user supplied object T and are automatically created once
+    topaz_refbank_deposit is called. Each account has a reference 
+    balance associated with it. Once an account balance has reached 
+    0 or less, the account is removed. If an AccountRemover is set,
+    the AccountRemover callback will be run on the account before removal.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazRefbank_t.html#topaz_refbank_create">
+topaz_refbank_create()
+</a>
+
+</div>
+<div>
+<a href="topazRefbank_t.html#topaz_refbank_destroy">
+topaz_refbank_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazRefbank_t.html#topaz_refbank_deposit">
+topaz_refbank_deposit()
+</a>
+
+</div>
+<div>
+<a href="topazRefbank_t.html#topaz_refbank_increment">
+topaz_refbank_increment()
+</a>
+
+</div>
+<div>
+<a href="topazRefbank_t.html#topaz_refbank_withdraw">
+topaz_refbank_withdraw()
+</a>
+
+</div>
+<div>
+<a href="topazRefbank_t.html#topaz_refbank_decrement">
+topaz_refbank_decrement()
+</a>
+
+</div>
+<div>
+<a href="topazRefbank_t.html#topaz_refbank_balance">
+topaz_refbank_balance()
+</a>
+
+</div>
+<div>
+<a href="topazRefbank_t.html#topaz_refbank_remove_all">
+topaz_refbank_remove_all()
+</a>
+
+</div>
+<div>
+<a href="topazRefbank_t.html#topaz_refbank_set_account_remover">
+topaz_refbank_set_account_remover()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazRefbank_t.html#topazRefbank_t">
+topazRefbank_t
+</a>
+
+</h5>
+<h3 id="topaz_refbank_create">
+topaz_refbank_create()
+</h3>
+<pre>
+ Creates a new, empty refbank 
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_refbank_destroy">
+topaz_refbank_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRefbank_t.html#topazRefbank_t">
+topazRefbank_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bank
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys a Refbank
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bank
+</div>
+<pre>
+ The refbank to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_refbank_deposit">
+topaz_refbank_deposit(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRefbank_t.html#topazRefbank_t">
+topazRefbank_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bank,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+account,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+amount
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a reference count amount.
+ 
+ If a reference count deposite call would yeild a deposit greater than
+ UINT32_MAX, the account is set to UINT32_MAX. (UINT32_MAX is defined in cstdint.h)
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bank,
+</div>
+<pre>
+ The refbank to deposit a reference to.
+
+</pre>
+<div>
+account,
+</div>
+<pre>
+ The object representing the reference to add counts to
+
+</pre>
+<div>
+amount
+</div>
+<pre>
+ The reference count amount to add. The default is one.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_refbank_increment">
+topaz_refbank_increment(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRefbank_t.html#topazRefbank_t">
+topazRefbank_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bank,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+account
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_refbank_deposit, except it only enters one reference.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bank,
+</div>
+<pre>
+ The refbank to modify.
+
+</pre>
+<div>
+account
+</div>
+<pre>
+ The account within the refbank to increment the count.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_refbank_withdraw">
+topaz_refbank_withdraw(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRefbank_t.html#topazRefbank_t">
+topazRefbank_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bank,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+account,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+amount
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Deduct a reference count amount.
+
+ If a reference withdrawl would result in a balance of 0 or lower, the 
+ AccountRemover is called with the account and is removed.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bank,
+</div>
+<pre>
+ The refbank to modify.
+
+</pre>
+<div>
+account,
+</div>
+<pre>
+ The object representing the reference to remove counts from.
+
+</pre>
+<div>
+amount
+</div>
+<pre>
+ The reference count amount to deduct. The default is one.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_refbank_decrement">
+topaz_refbank_decrement(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRefbank_t.html#topazRefbank_t">
+topazRefbank_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bank,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+account
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_refbank_widthdraw, except only one reference is deducted
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bank,
+</div>
+<pre>
+ The refbank to modify.
+
+</pre>
+<div>
+account
+</div>
+<pre>
+ The object representing the reference to remove counts from.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_refbank_balance">
+topaz_refbank_balance(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRefbank_t.html#topazRefbank_t">
+topazRefbank_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+account
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the number of reference counts accumulated in the account.
+
+ If the count does not exist, 0 is returned.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+,
+</div>
+<pre>
+ The refbank to query
+
+</pre>
+<div>
+account
+</div>
+<pre>
+ The account to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_refbank_remove_all">
+topaz_refbank_remove_all(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRefbank_t.html#topazRefbank_t">
+topazRefbank_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bank
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes all accounts and runs the AccountRemover on all
+ accounts.
+ 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bank
+</div>
+<pre>
+ The refbank to modify
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_refbank_account_remover">
+(*topaz_refbank_account_remover)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRefbank_t.html#topazRefbank_t">
+topazRefbank_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bank,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+account,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+userData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Function to be called when a refbank's account reaches 0.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bank,
+</div>
+<pre>
+ The refbank that triggered the event.
+
+</pre>
+<div>
+account,
+</div>
+<pre>
+ The account that triggered the event.
+
+</pre>
+<div>
+userData
+</div>
+<pre>
+ The bound data to the callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_refbank_set_account_remover">
+topaz_refbank_set_account_remover(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRefbank_t.html#topazRefbank_t">
+topazRefbank_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+bank,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRefbank_t.html#topaz_refbank_account_remover">
+topaz_refbank_account_remover
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+remover,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+data
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the account remover callback.
+
+ The lifetime of the source object should match the lifetime of this RefBank
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+bank,
+</div>
+<pre>
+ The refbank to modify.
+
+</pre>
+<div>
+remover,
+</div>
+<pre>
+ Function to be called when the account has exhausted all references
+
+</pre>
+<div>
+data
+</div>
+<pre>
+ Data to be passed to the function
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

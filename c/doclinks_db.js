@@ -1,0 +1,1 @@
+const doclinks = {"0":"About","1":"Download","2":"Contact"}

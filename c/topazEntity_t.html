@@ -1,0 +1,2661 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazEntity_t">
+topazEntity_t
+</h1>
+<pre>
+    Basic interactive object.
+ 
+    Entities are the main classes that are extended to meet abstractions for your 
+    multimedia project. By defining attributes the you can dynamically extend 
+    entities. By attaching components you can extend the entity further.
+
+    Entities are also inherently hierarchical. By Attach()ing other Entities,
+    you can create trees of self-managed Entities.
+
+    NULL is not accepted as an argument for any entity functions.
+    Instead, use the topaz_entity_null() value to represent this 
+    no-entity state. 
+
+
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazEntity_t.html#topaz_entity_create">
+topaz_entity_create()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_create_with_attributes">
+topaz_entity_create_with_attributes()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_set_attributes">
+topaz_entity_set_attributes()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_get_attributes">
+topaz_entity_get_attributes()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_is_valid">
+topaz_entity_is_valid()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_sweep">
+topaz_entity_sweep()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_remove">
+topaz_entity_remove()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_get_children">
+topaz_entity_get_children()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_step">
+topaz_entity_step()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_draw">
+topaz_entity_draw()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_attach">
+topaz_entity_attach()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_detach">
+topaz_entity_detach()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_get_parent">
+topaz_entity_get_parent()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_query">
+topaz_entity_query()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_search">
+topaz_entity_search()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_set_priority">
+topaz_entity_set_priority()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_set_priority_last">
+topaz_entity_set_priority_last()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_set_priority_first">
+topaz_entity_set_priority_first()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_get_priority">
+topaz_entity_get_priority()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_get_rotation">
+topaz_entity_get_rotation()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_get_position">
+topaz_entity_get_position()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_get_scale">
+topaz_entity_get_scale()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_rotation">
+topaz_entity_rotation()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_position">
+topaz_entity_position()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_scale">
+topaz_entity_scale()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_get_global_position">
+topaz_entity_get_global_position()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_get_spatial">
+topaz_entity_get_spatial()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_is_stepping">
+topaz_entity_is_stepping()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_is_drawing">
+topaz_entity_is_drawing()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_set_stepping">
+topaz_entity_set_stepping()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_set_drawing">
+topaz_entity_set_drawing()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_get_stepping">
+topaz_entity_get_stepping()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_get_drawing">
+topaz_entity_get_drawing()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_add_component">
+topaz_entity_add_component()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_add_component_after">
+topaz_entity_add_component_after()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_get_components">
+topaz_entity_get_components()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_query_component">
+topaz_entity_query_component()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_remove_component">
+topaz_entity_remove_component()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_set_name">
+topaz_entity_set_name()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_get_name">
+topaz_entity_get_name()
+</a>
+
+</div>
+<div>
+<a href="topazEntity_t.html#topaz_entity_null">
+topaz_entity_null()
+</a>
+
+</div>
+
+</div>
+<div>
+</br></br><b>Public Variables:</b></br></br>
+</div>
+<div class="PublicMembers">
+<div>
+<span class="VariableType">
+struct
+</span>
+<span class="VariableName">
+ topazEntity_Attributes_t{
+</span>
+
+</div>
+<pre>
+ Attributes that define the behavior of a 
+ an entity.
+
+
+</pre>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_attribute_callback">
+(*topaz_entity_attribute_callback)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+data
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Standard function for all entity attribute callbacks
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity,
+</div>
+<pre>
+ The entity interacting with the callback.
+
+</pre>
+<div>
+data
+</div>
+<pre>
+ The data bound to this callback.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_create">
+topaz_entity_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new entity.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The topaz context.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_create_with_attributes">
+topaz_entity_create_with_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazEntity_Attributes_t
+</th>
+<th class="FunctionArgumentName">
+attribs
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new entity with attributes
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context,
+</div>
+<pre>
+ The topaz context.
+
+</pre>
+<div>
+attribs
+</div>
+<pre>
+ The attributes to assign to this entity.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_set_attributes">
+topaz_entity_set_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+topazEntity_Attributes_t
+</th>
+<th class="FunctionArgumentName">
+attribs
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the attributes for the entity. Attributes determine how the 
+ entity changes over time. 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity,
+</div>
+<pre>
+ The entity to modify.
+
+</pre>
+<div>
+attribs
+</div>
+<pre>
+ The new attributes.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+topazEntity_Attributes_t
+</h5>
+<h3 id="topaz_entity_get_attributes">
+topaz_entity_get_attributes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the attributes of an entity.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_entity_is_valid">
+topaz_entity_is_valid(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns whether this instance is valid or not.
+ If the given pointer was not returned from a topaz_entity_create*() 
+ call, behavior is undefined.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_sweep">
+topaz_entity_sweep()
+</h3>
+<pre>
+ Physically destroys entities that were marked for deletion prior.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_remove">
+topaz_entity_remove(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Flags an entity for destruction. This destroys all attached components 
+ and child entities as well. The entity isn't actually destroyed until
+ topaz_entity_sweep() is called. This is normally called at the end of a context 
+ iteration for you.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_get_children">
+topaz_entity_get_children(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns all child entities
+
+ Entities are ordered by priority, where the first entity
+ is guaranteed to be the one with the lowest Priority value.
+ If the entity is not valid, the contents are undefined.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_step">
+topaz_entity_step(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Updates this entity, all child entities, and components.
+ Normally this is called for you under the topaz context.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to step.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_draw">
+topaz_entity_draw(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Updates this entity, all child entities, and components
+ Normally this is called for you under the topaz context.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to draw.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_attach">
+topaz_entity_attach(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+child
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Attaches a child entity to this entity.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity,
+</div>
+<pre>
+ The entity to act as parent.
+
+</pre>
+<div>
+child
+</div>
+<pre>
+ The child entity.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_detach">
+topaz_entity_detach(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+child
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Detaches the entity from its parent.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+child
+</div>
+<pre>
+ The child entity to detach from the parent.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_get_parent">
+topaz_entity_get_parent(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the parent entity. If none returns NULL.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_query">
+topaz_entity_query(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+parent,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the first child entity with the given name.
+ Only the immediate children are checked.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+parent,
+</div>
+<pre>
+ The parent entity to search.
+
+</pre>
+<div>
+name
+</div>
+<pre>
+ The name to search.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_search">
+topaz_entity_search(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+searchRoot,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+name
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the first child entity with the given name, but 
+ searches recursively.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+searchRoot,
+</div>
+<pre>
+ The top-most entity to search from.
+
+</pre>
+<div>
+name
+</div>
+<pre>
+ The name to search.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_set_priority">
+topaz_entity_set_priority(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+priority
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Alters the priority of this entity.
+
+ Priorty determines the order in which this
+ entity is updated. A lower priority means it will be drawn and updated earlier.
+ It is undefined which entity is updated first if both have the same priority.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity,
+</div>
+<pre>
+ The entity to modify.
+
+</pre>
+<div>
+priority
+</div>
+<pre>
+ The new priority to set.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_set_priority_last">
+topaz_entity_set_priority_last(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sends the entity to be the last eneity to be updated.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_set_priority_first">
+topaz_entity_set_priority_first(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sends the entity to be the first entity to be updated.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_entity_get_priority">
+topaz_entity_get_priority(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the priority of this entity. This determines its order within its parent entity.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_get_rotation">
+topaz_entity_get_rotation(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Convenience function for getting a read-only reference to 
+ the rotation.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_get_position">
+topaz_entity_get_position(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Convenience function for getting a read-only reference to 
+ the position.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_get_scale">
+topaz_entity_get_scale(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Convenience function for getting a read-only reference to 
+ the scale.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_rotation">
+topaz_entity_rotation(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Convenience function for getting a writeable reference to 
+ the rotation.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_position">
+topaz_entity_position(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Convenience function for getting a writeable reference to 
+ the position.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_scale">
+topaz_entity_scale(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Convenience function for getting a writeable reference to 
+ the scale.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_get_global_position">
+topaz_entity_get_global_position(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the position of the entity taking into account parent entity transforms
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_get_spatial">
+topaz_entity_get_spatial(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets a reference to the spatial reference.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_entity_is_stepping">
+topaz_entity_is_stepping(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns wether or not the Engine is handling calling Step() automatically,
+ taking into account the Entity's hierarchy.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_entity_is_drawing">
+topaz_entity_is_drawing(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns wether or not the Engine is handling calling Draw() automatically,
+ taking into account the Entity's hierarchy.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_set_stepping">
+topaz_entity_set_stepping(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+trueOrFalse
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Whether the engine should call Step() automatically for this entity.
+ Note that topaz_entity_step() calls also manage components and child entities.
+ The default is true.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+,
+</div>
+<pre>
+ The entity to modify.
+
+</pre>
+<div>
+trueOrFalse
+</div>
+<pre>
+ Whether to enable stepping.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_set_drawing">
+topaz_entity_set_drawing(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+trueOrFalse
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Whether the engine should call Draw() automatically for this entity.
+ Note that topaz_entity_draw() calls also manage components and child entities.
+ The default is true.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity,
+</div>
+<pre>
+ The entity to modify.
+
+</pre>
+<div>
+trueOrFalse
+</div>
+<pre>
+ Whether to enable drawing.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_entity_get_stepping">
+topaz_entity_get_stepping(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns whether this entity is currently stepping.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_entity_get_drawing">
+topaz_entity_get_drawing(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns whether this entity is currently drawing.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_add_component">
+topaz_entity_add_component(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Attaches a component to this entity.
+
+ Once attached, the component's
+ Step and Draw functions will be called before this entity's Step and Draw.
+ 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity,
+</div>
+<pre>
+ The entity to add a component to.
+
+</pre>
+<div>
+component
+</div>
+<pre>
+ The component to add to the entity.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_add_component_after">
+topaz_entity_add_component_after(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Same as topaz_entity_add_component(), but the component is updated 
+ after this entity's Step and Draw functions.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity,
+</div>
+<pre>
+ The entity to add a component to.
+
+</pre>
+<div>
+component
+</div>
+<pre>
+ The component to add to the entity.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_get_components">
+topaz_entity_get_components(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns all components
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to get components from.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_query_component">
+topaz_entity_query_component(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+tag
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the first component with the given tag.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity,
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+<div>
+tag
+</div>
+<pre>
+ The tag to search within the entity.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_remove_component">
+topaz_entity_remove_component(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+component
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes the given component from the entity.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity,
+</div>
+<pre>
+ The entity to remove a component from.
+
+</pre>
+<div>
+component
+</div>
+<pre>
+ The component to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_entity_set_name">
+topaz_entity_set_name(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+newName
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the name of the entity. Once set, it will not change.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity,
+</div>
+<pre>
+ The entity to modify.
+
+</pre>
+<div>
+newName
+</div>
+<pre>
+ The new name for the entity.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_get_name">
+topaz_entity_get_name(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+entity
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the name of the entity.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+entity
+</div>
+<pre>
+ The entity to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazEntity_t.html#topazEntity_t">
+topazEntity_t
+</a>
+
+</h5>
+<h3 id="topaz_entity_null">
+topaz_entity_null()
+</h3>
+<pre>
+ Returns the "NULL" entity, which represents an entity that doesn't 
+ exist. NULL is not accepted as an argument for any entity functions, 
+ nor should any entity functions return 0x0 NULL. Instead, 
+ topaz_entity_null() is used. topaz_entity_null() is the same for the 
+ duration of the program.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="TOPAZ_ENULL">
+TOPAZ_ENULL
+</h3>
+<pre>
+ A define which provides an expression equivalent to topaz_entity_null()
+
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

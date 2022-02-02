@@ -1,0 +1,894 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazSpatial_t">
+topazSpatial_t
+</h1>
+<pre>
+
+    A hierarchical transform object.
+ 
+    Allows for chaining transformation information including
+    position, rotation, and scaling. Because spatial objects are hierarchical,
+    each has a local transform and a global transform.
+
+
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazSpatial_t.html#topaz_spatial_create">
+topaz_spatial_create()
+</a>
+
+</div>
+<div>
+<a href="topazSpatial_t.html#topaz_spatial_destroy">
+topaz_spatial_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazSpatial_t.html#topaz_spatial_reset">
+topaz_spatial_reset()
+</a>
+
+</div>
+<div>
+<a href="topazSpatial_t.html#topaz_spatial_get_node">
+topaz_spatial_get_node()
+</a>
+
+</div>
+<div>
+<a href="topazSpatial_t.html#topaz_spatial_get_global_transform">
+topaz_spatial_get_global_transform()
+</a>
+
+</div>
+<div>
+<a href="topazSpatial_t.html#topaz_spatial_replace_transform">
+topaz_spatial_replace_transform()
+</a>
+
+</div>
+<div>
+<a href="topazSpatial_t.html#topaz_spatial_set_as_parent">
+topaz_spatial_set_as_parent()
+</a>
+
+</div>
+<div>
+<a href="topazSpatial_t.html#topaz_spatial_invalidate">
+topaz_spatial_invalidate()
+</a>
+
+</div>
+<div>
+<a href="topazSpatial_t.html#topaz_spatial_check_update">
+topaz_spatial_check_update()
+</a>
+
+</div>
+<div>
+<a href="topazSpatial_t.html#topaz_spatial_update_model_transforms">
+topaz_spatial_update_model_transforms()
+</a>
+
+</div>
+<div>
+<a href="topazSpatial_t.html#topaz_spatial_add_update_callback">
+topaz_spatial_add_update_callback()
+</a>
+
+</div>
+<div>
+<a href="topazSpatial_t.html#topaz_spatial_remove_update_callback">
+topaz_spatial_remove_update_callback()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</h5>
+<h3 id="topaz_spatial_create">
+topaz_spatial_create()
+</h3>
+<pre>
+ Creates a spatial object.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_spatial_destroy">
+topaz_spatial_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+spatial
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys a spatial object
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+spatial
+</div>
+<pre>
+ Spatial instance to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_spatial_reset">
+topaz_spatial_reset(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+spatial
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Resets the spatial back to the default state
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+spatial
+</div>
+<pre>
+ Spatial instance to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</h5>
+<h3 id="topaz_spatial_get_node">
+topaz_spatial_get_node(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+spatial
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the transform for this spatial object alone.
+ Modifications to it affect the global transform calculations
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+spatial
+</div>
+<pre>
+ Spatial instance to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazMatrix_t.html#topazMatrix_t">
+topazMatrix_t
+</a>
+
+</h5>
+<h3 id="topaz_spatial_get_global_transform">
+topaz_spatial_get_global_transform(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+spatial
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the transform matrix that represets this Transform and its 
+ child parent transforms. If changes have been queued for children 
+ transforms or this one, those changes are applied.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+spatial
+</div>
+<pre>
+ Spatial instance to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_spatial_replace_transform">
+topaz_spatial_replace_transform(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+spatial,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazTransform_t.html#topazTransform_t">
+topazTransform_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+trans
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Swaps the built in transform for the given transform 
+ pass nullptr to return the transform back to the default.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+spatial,
+</div>
+<pre>
+ Spatial to update.
+
+</pre>
+<div>
+trans
+</div>
+<pre>
+ Transform to bind to the spatial. The lifetime of the transform 
+ should be at least as long as the spatials'
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_spatial_set_as_parent">
+topaz_spatial_set_as_parent(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+child,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+newParent
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the given spatial object as a child of this one
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+child,
+</div>
+<pre>
+ The child in the operation.
+
+</pre>
+<div>
+newParent
+</div>
+<pre>
+ The parent in the operation.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_spatial_invalidate">
+topaz_spatial_invalidate(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+spatial
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ invalidates this transfrom manually, causing itself and children to update 
+ upon next request for its transform.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+spatial
+</div>
+<pre>
+ The spatial to invalidate and mark for updating.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_spatial_check_update">
+topaz_spatial_check_update(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+spatial
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Checks for an update to the spatial object.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+spatial
+</div>
+<pre>
+ The spatial to update if applicable.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_spatial_update_model_transforms">
+topaz_spatial_update_model_transforms(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+spatial,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRenderer_t.html#topazRenderer_Buffer_t">
+topazRenderer_Buffer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a 16-float array that signifies the internal transform array.
+ This is intended for quick renderer upload. This will always
+ reflect the global transform
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+spatial,
+</div>
+<pre>
+ The spatial to query.
+
+</pre>
+<div>
+id
+</div>
+<pre>
+ The renderer buffer to populate.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_spatial_update_callback">
+(*topaz_spatial_update_callback)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+spatial,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+userData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Callback for when a spatial update is pushed through.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+spatial,
+</div>
+<pre>
+ Spatial that received the callback
+
+</pre>
+<div>
+userData
+</div>
+<pre>
+ User data bound to the callback
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_spatial_add_update_callback">
+topaz_spatial_add_update_callback(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+spatial,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topaz_spatial_update_callback">
+topaz_spatial_update_callback
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+cb,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+userData
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Function called when the spatial object 
+ changes it transform in 3D space. This can be triggered 
+ either by local changes or by hierarchy changes.
+ An ID to the added callback is returned, which can 
+ be used to remove it in the future.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+spatial,
+</div>
+<pre>
+ The spatial to add a callback to.
+
+</pre>
+<div>
+cb,
+</div>
+<pre>
+ Callback to add.
+
+</pre>
+<div>
+userData
+</div>
+<pre>
+ User data for the callback
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_spatial_remove_update_callback">
+topaz_spatial_remove_update_callback(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSpatial_t.html#topazSpatial_t">
+topazSpatial_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+spatial,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Removes the specified callback 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+spatial,
+</div>
+<pre>
+ The spatial to modify.
+
+</pre>
+<div>
+id
+</div>
+<pre>
+ The callback ID to remove.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

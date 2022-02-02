@@ -1,0 +1,1194 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazAudio_t">
+topazAudio_t
+</h1>
+<pre>
+ Module that handles all audio related functionality.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazAudio_t.html#topaz_audio_create">
+topaz_audio_create()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_destroy">
+topaz_audio_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_update">
+topaz_audio_update()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_play_sound">
+topaz_audio_play_sound()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_channel_halt">
+topaz_audio_channel_halt()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_channel_set_volume">
+topaz_audio_channel_set_volume()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_channel_set_panning">
+topaz_audio_channel_set_panning()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_get_manager">
+topaz_audio_get_manager()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_playback_set_volume">
+topaz_audio_playback_set_volume()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_playback_set_panning">
+topaz_audio_playback_set_panning()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_playback_set_repeat">
+topaz_audio_playback_set_repeat()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_playback_seek">
+topaz_audio_playback_seek()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_playback_stop">
+topaz_audio_playback_stop()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_playback_pause">
+topaz_audio_playback_pause()
+</a>
+
+</div>
+<div>
+<a href="topazAudio_t.html#topaz_audio_playback_resume">
+topaz_audio_playback_resume()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</h5>
+<h3 id="topaz_audio_create">
+topaz_audio_create(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topaz_t.html#topaz_t">
+topaz_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+context
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a new auto instance. Normally not necessary; the topaz 
+ context has an audio instance of its own.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+context
+</div>
+<pre>
+ The context to use.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_destroy">
+topaz_audio_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys and frees a topaz audio instance.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio
+</div>
+<pre>
+ The audio instance to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_update">
+topaz_audio_update(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Updates the audio engine. This is normally done for you 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio
+</div>
+<pre>
+ The audio instance to update.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint32_t
+</h5>
+<h3 id="topaz_audio_play_sound">
+topaz_audio_play_sound(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAsset_t.html#topazAsset_t">
+topazAsset_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+asset,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint8_t
+</th>
+<th class="FunctionArgumentName">
+channel
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Queues sound for immediate playback and returns 
+ a playback ID that can be used to interact with the 
+ sound.
+
+ A playback ID represents a sound of audio that is currently
+ undergoing playback. As such, you can use it to modify how the
+ corresponding audio is playing. Because typical playback systems are done on
+ separate threads, the reflection of changes caused by the calling of
+ these functions is not immediately guaranteed.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio,
+</div>
+<pre>
+ The audio module to play.
+
+</pre>
+<div>
+asset,
+</div>
+<pre>
+ The sound to play.
+
+</pre>
+<div>
+channel
+</div>
+<pre>
+ The channel to send the audio block to play on.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_channel_halt">
+topaz_audio_channel_halt(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint8_t
+</th>
+<th class="FunctionArgumentName">
+channel
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Stops all sounds currently playing on a channel.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio,
+</div>
+<pre>
+ The audio module to modify.
+
+</pre>
+<div>
+channel
+</div>
+<pre>
+ The channel to to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_channel_set_volume">
+topaz_audio_channel_set_volume(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint8_t
+</th>
+<th class="FunctionArgumentName">
+channel,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+amt
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the volume for the given channel
+ 0.f denotes minimum volume and 1.f maximum.
+ The values are clipped if they are beyond these bounds.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio,
+</div>
+<pre>
+ The audio module to modify.
+
+</pre>
+<div>
+channel,
+</div>
+<pre>
+ The channel to to modify.
+
+</pre>
+<div>
+amt
+</div>
+<pre>
+ The amount, from 0 to 1. Will be clamped.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_channel_set_panning">
+topaz_audio_channel_set_panning(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint8_t
+</th>
+<th class="FunctionArgumentName">
+channel,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+amt
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the panning for the entire channel.
+ 0.f denotes all the way to the left and 1.f all the way to the right.
+ The values are clipped if they are beyond these bounds.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio,
+</div>
+<pre>
+ The audio module to modify.
+
+</pre>
+<div>
+channel,
+</div>
+<pre>
+ The channel to to modify.
+
+</pre>
+<div>
+amt
+</div>
+<pre>
+ The amount, from 0 to 1. Will be clamped.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazAudioManager_t.html#topazAudioManager_t">
+topazAudioManager_t
+</a>
+
+</h5>
+<h3 id="topaz_audio_get_manager">
+topaz_audio_get_manager(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the audio manager instance for this audio module.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio
+</div>
+<pre>
+ The audio module to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_playback_set_volume">
+topaz_audio_playback_set_volume(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+id,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+v
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the volume of the ActiveSound.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio,
+</div>
+<pre>
+ The audio instance.
+
+</pre>
+<div>
+id,
+</div>
+<pre>
+ The active sound to modify.
+
+</pre>
+<div>
+v
+</div>
+<pre>
+ The new volume to use. The value is clamped to the range 0.f and 1.f.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_playback_set_panning">
+topaz_audio_playback_set_panning(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+id,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+v
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the panning.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio,
+</div>
+<pre>
+ The audio instance.
+
+</pre>
+<div>
+id,
+</div>
+<pre>
+ The active sound to modify.
+
+</pre>
+<div>
+v
+</div>
+<pre>
+ The new panning. The value is clamped to the range 0.f and 1.f.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_playback_set_repeat">
+topaz_audio_playback_set_repeat(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+id,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets whether the sound should be replayed once it finishes.
+
+ The default is not to repeat.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio,
+</div>
+<pre>
+ The audio instance.
+
+</pre>
+<div>
+id,
+</div>
+<pre>
+ The active sound to modify.
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ If true, the sound will repeat. If false, the sound will not repeat.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_playback_seek">
+topaz_audio_playback_seek(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+id,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+f
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the progress in the sound to play from.
+
+ f is interpreted as a fraction of the progress of the sound,
+ where 0 is the beginning of the sound and 1 is the end of the sound.
+ The value is clamped to this range.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio,
+</div>
+<pre>
+ The audio instance.
+
+</pre>
+<div>
+id,
+</div>
+<pre>
+ The active sound to modify.
+
+</pre>
+<div>
+f
+</div>
+<pre>
+ The place in the sound to continue playback from.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_playback_stop">
+topaz_audio_playback_stop(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+  Halts the sound.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio,
+</div>
+<pre>
+ The audio instance.
+
+</pre>
+<div>
+id
+</div>
+<pre>
+ The active sound to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_playback_pause">
+topaz_audio_playback_pause(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Pauses the sound if it was playing.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio,
+</div>
+<pre>
+ The audio instance.
+
+</pre>
+<div>
+id
+</div>
+<pre>
+ The active sound to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_audio_playback_resume">
+topaz_audio_playback_resume(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazAudio_t.html#topazAudio_t">
+topazAudio_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+audio,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint32_t
+</th>
+<th class="FunctionArgumentName">
+id
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Resumes the sound's playback if it was Pause()ed.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+audio,
+</div>
+<pre>
+ The audio instance.
+
+</pre>
+<div>
+id
+</div>
+<pre>
+ The active sound to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

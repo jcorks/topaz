@@ -1,0 +1,803 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazRbuffer_t">
+topazRbuffer_t
+</h1>
+<pre>
+
+    Rbuffer ("Read Buffer") handles input data. Once instantiated
+    with a target, the Rbuffer can then easily read and process binary data.
+    Rbuffers are the most effective for unpacking data, especially data
+    that is packed in accordance to OutBuffer routines, as all
+    OutBuffer writing functions mirror the reading functions of Rbuffer.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazRbuffer_t.html#topaz_rbuffer_create">
+topaz_rbuffer_create()
+</a>
+
+</div>
+<div>
+<a href="topazRbuffer_t.html#topaz_rbuffer_destroy">
+topaz_rbuffer_destroy()
+</a>
+
+</div>
+<div>
+<a href="topazRbuffer_t.html#topaz_rbuffer_open">
+topaz_rbuffer_open()
+</a>
+
+</div>
+<div>
+<a href="topazRbuffer_t.html#topaz_rbuffer_read_string">
+topaz_rbuffer_read_string()
+</a>
+
+</div>
+<div>
+<a href="topazRbuffer_t.html#topaz_rbuffer_read_bytes">
+topaz_rbuffer_read_bytes()
+</a>
+
+</div>
+<div>
+<a href="topazRbuffer_t.html#topaz_rbuffer_get_buffer">
+topaz_rbuffer_get_buffer()
+</a>
+
+</div>
+<div>
+<a href="topazRbuffer_t.html#topaz_rbuffer_get_buffer_nnull">
+topaz_rbuffer_get_buffer_nnull()
+</a>
+
+</div>
+<div>
+<a href="topazRbuffer_t.html#topaz_rbuffer_go_to_byte">
+topaz_rbuffer_go_to_byte()
+</a>
+
+</div>
+<div>
+<a href="topazRbuffer_t.html#topaz_rbuffer_get_size">
+topaz_rbuffer_get_size()
+</a>
+
+</div>
+<div>
+<a href="topazRbuffer_t.html#topaz_rbuffer_get_bytes_left">
+topaz_rbuffer_get_bytes_left()
+</a>
+
+</div>
+<div>
+<a href="topazRbuffer_t.html#topaz_rbuffer_is_empty">
+topaz_rbuffer_is_empty()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazRbuffer_t.html#topazRbuffer_t">
+topazRbuffer_t
+</a>
+
+</h5>
+<h3 id="topaz_rbuffer_create">
+topaz_rbuffer_create()
+</h3>
+<pre>
+ Creates a new, empty input buffer 
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_rbuffer_destroy">
+topaz_rbuffer_destroy(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRbuffer_t.html#topazRbuffer_t">
+topazRbuffer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Destroys an input buffer 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r
+</div>
+<pre>
+ The Rbuffer to destroy.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_rbuffer_open">
+topaz_rbuffer_open(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRbuffer_t.html#topazRbuffer_t">
+topazRbuffer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint8_t
+</th>
+<th class="FunctionArgumentName">
+data,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint64_t
+</th>
+<th class="FunctionArgumentName">
+size
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+  Opens a raw buffer to read from.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r,
+</div>
+<pre>
+ The Rbuffer to modify. Any prior Rbuffer information 
+ is cleared.
+
+</pre>
+<div>
+data,
+</div>
+<pre>
+ The data buffer of raw bytes to read from.
+ The data is copied into the rbuffer.
+
+</pre>
+<div>
+size
+</div>
+<pre>
+ Number of bytes of the data buffer to read validly.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_rbuffer_read_string">
+topaz_rbuffer_read_string(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRbuffer_t.html#topazRbuffer_t">
+topazRbuffer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint64_t
+</th>
+<th class="FunctionArgumentName">
+nBytes
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the next nBytes as a topazString.
+ The string is valid until the next call to this function with this buffer.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r,
+</div>
+<pre>
+ The rbuffer to read from.
+
+</pre>
+<div>
+nBytes
+</div>
+<pre>
+ The number of bytes to read.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_rbuffer_read_bytes">
+topaz_rbuffer_read_bytes(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRbuffer_t.html#topazRbuffer_t">
+topazRbuffer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint64_t
+</th>
+<th class="FunctionArgumentName">
+numBytes
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the next n bytes.
+ 
+ If there are less than numBytes remaining,
+ the remaining bytes are returned.
+ The array is valid until the next call to this function with this buffer.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r,
+</div>
+<pre>
+ The rbuffer to read from.
+
+</pre>
+<div>
+numBytes
+</div>
+<pre>
+ Byte count to read.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_rbuffer_get_buffer">
+topaz_rbuffer_get_buffer(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRbuffer_t.html#topazRbuffer_t">
+topazRbuffer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint64_t
+</th>
+<th class="FunctionArgumentName">
+numBytes
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a pointer to raw data 
+ of length numBytes. If there isnt enough space to service 
+ numBytes, NULL is returned.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r,
+</div>
+<pre>
+ The rbuffer to query.
+
+</pre>
+<div>
+numBytes
+</div>
+<pre>
+ The number of bytes to read validly.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_rbuffer_get_buffer_nnull">
+topaz_rbuffer_get_buffer_nnull(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRbuffer_t.html#topazRbuffer_t">
+topazRbuffer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint64_t
+</th>
+<th class="FunctionArgumentName">
+numBytes
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Similar to topaz_rbuffer_get_buffer, but 
+ in the case that numBytes exceeds size, an 
+ empty buffer is returned rather than NULL.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r,
+</div>
+<pre>
+ The rbuffer to query.
+
+</pre>
+<div>
+numBytes
+</div>
+<pre>
+ The number of bytes to read validly.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_rbuffer_read__B__,__T__">
+topaz_rbuffer_read__B__,__T__
+</h3>
+<pre>
+ Reads the next sizeof(T) bytes and returns a T object with
+ its state set to the read contents.
+
+ Note: If used with user objects, be aware that this only performs a shallow copy
+ If not enough bytes are left to acoomodate the data object, the contents are undefined.
+
+ __B__ is the buffer.
+ __T__ is the type.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_rbuffer_go_to_byte">
+topaz_rbuffer_go_to_byte(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRbuffer_t.html#topazRbuffer_t">
+topazRbuffer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+uint64_t
+</th>
+<th class="FunctionArgumentName">
+byte
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Set the buffer position byte.
+
+ If this operation were to go beyond the last valid index,
+ it will move to the very last index.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r,
+</div>
+<pre>
+ The rbuffer to seek within.
+
+</pre>
+<div>
+byte
+</div>
+<pre>
+ The position in bytes to seet to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint64_t
+</h5>
+<h3 id="topaz_rbuffer_get_size">
+topaz_rbuffer_get_size(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRbuffer_t.html#topazRbuffer_t">
+topazRbuffer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ returns the size of the buffer in bytes.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r
+</div>
+<pre>
+ The rbuffer to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+uint64_t
+</h5>
+<h3 id="topaz_rbuffer_get_bytes_left">
+topaz_rbuffer_get_bytes_left(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRbuffer_t.html#topazRbuffer_t">
+topazRbuffer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the number of bytes left in the buffer.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r
+</div>
+<pre>
+ The rbuffer to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_rbuffer_is_empty">
+topaz_rbuffer_is_empty(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazRbuffer_t.html#topazRbuffer_t">
+topazRbuffer_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+r
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns whether or not all data has been read.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+r
+</div>
+<pre>
+ The rbuffer to query. 
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

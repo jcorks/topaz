@@ -1,0 +1,1439 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Singleton">
+<div class="typetag">
+(Singleton)</br>
+</div>
+<div>
+<h1 id="Topaz.Vector">
+Topaz.Vector
+</h1>
+<pre>
+ Utility functions to work with 
+ Vector objects, which are plain objects 
+ that have x,y, and/or z number attributes.
+
+</pre>
+<div>
+</br><b>Static Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.getDistance">
+Topaz.Vector.getDistance()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.normalize">
+Topaz.Vector.normalize()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.cross">
+Topaz.Vector.cross()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.dot">
+Topaz.Vector.dot()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.floor">
+Topaz.Vector.floor()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.rotationXDiff">
+Topaz.Vector.rotationXDiff()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.rotationXDiffRelative">
+Topaz.Vector.rotationXDiffRelative()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.rotationX">
+Topaz.Vector.rotationX()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.rotationYDiff">
+Topaz.Vector.rotationYDiff()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.rotationYDiffRelative">
+Topaz.Vector.rotationYDiffRelative()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.rotationY">
+Topaz.Vector.rotationY()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.rotationZDiff">
+Topaz.Vector.rotationZDiff()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.rotationZDiffRelative">
+Topaz.Vector.rotationZDiffRelative()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.rotationZ">
+Topaz.Vector.rotationZ()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.rotateX">
+Topaz.Vector.rotateX()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.rotateY">
+Topaz.Vector.rotateY()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.rotateZ">
+Topaz.Vector.rotateZ()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.length">
+Topaz.Vector.length()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.add">
+Topaz.Vector.add()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.subtract">
+Topaz.Vector.subtract()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.multiply">
+Topaz.Vector.multiply()
+</a>
+
+</div>
+<div>
+<a href="Topaz.Vector.html#Topaz.Vector.divide">
+Topaz.Vector.divide()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="Topaz.Vector.getDistance">
+Topaz.Vector.getDistance(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+from
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+to
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the distance of this vector to the other vector.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+from
+</div>
+<pre>
+ The first positional vector.
+
+</pre>
+<div>
+to
+</div>
+<pre>
+ The second positional vector.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="Topaz.Vector.normalize">
+Topaz.Vector.normalize(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+value
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the vector to a magnitude of 1. 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+value
+</div>
+<pre>
+ The vector to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Object
+</h5>
+<h3 id="Topaz.Vector.cross">
+Topaz.Vector.cross(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+a
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the cross product: A x B
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a
+</div>
+<pre>
+ Vector B
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ Vector B
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Object
+</h5>
+<h3 id="Topaz.Vector.dot">
+Topaz.Vector.dot(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+a
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the dot product: A . B
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a
+</div>
+<pre>
+ Vector B
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ Vector B
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="Topaz.Vector.floor">
+Topaz.Vector.floor(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+value;
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the X Y Z to integer values.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+value;
+</div>
+<pre>
+ The vector to modify.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="Topaz.Vector.rotationXDiff">
+Topaz.Vector.rotationXDiff(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+from
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+to
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the YZ angle between the 2
+ vectors in relation to the origin in degrees
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+from
+</div>
+<pre>
+ The positional vector to measure from.
+
+</pre>
+<div>
+to
+</div>
+<pre>
+ The positional vector to measure to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="Topaz.Vector.rotationXDiffRelative">
+Topaz.Vector.rotationXDiffRelative(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+from
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+to
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the angle between the 2
+ vectors in relation to this in degrees
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+from
+</div>
+<pre>
+ The positional vector to measure from.
+
+</pre>
+<div>
+to
+</div>
+<pre>
+ The positional vector to measure to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="Topaz.Vector.rotationX">
+Topaz.Vector.rotationX(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+of
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the angle of the vector in degrees about the X axis
+
+ If a vector has length zero in these dimensions
+ , the angle is always zero.
+ The rotation is about the directional vector (1, 0, 0) and
+ Positive rotation is towards the positive Z direction.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+of
+</div>
+<pre>
+ The positional vector to measure.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="Topaz.Vector.rotationYDiff">
+Topaz.Vector.rotationYDiff(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+from
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+to
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the zx angle between the 2
+ vectors in relation to the origin in degrees
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+from
+</div>
+<pre>
+ The positional vector to measure from.
+
+</pre>
+<div>
+to
+</div>
+<pre>
+ The positional vector to measure to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="Topaz.Vector.rotationYDiffRelative">
+Topaz.Vector.rotationYDiffRelative(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+from
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+to
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the angle between the 2
+ vectors in relation to this in degrees
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+from
+</div>
+<pre>
+ The positional vector to measure from.
+
+</pre>
+<div>
+to
+</div>
+<pre>
+ The positional vector to measure to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="Topaz.Vector.rotationY">
+Topaz.Vector.rotationY(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+of
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the angle of the vector about the Y axis in degrees
+
+ If a vector has length zero in these dimensions
+ , the angle is always zero.
+ The rotation is about the directional vector (0, 1, 0)
+ Positive rotation is towards the positive X direction.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+of
+</div>
+<pre>
+ The positional vector to measure.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="Topaz.Vector.rotationZDiff">
+Topaz.Vector.rotationZDiff(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+from
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+to
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the XY angle between the 2
+ vectors in relation to the origin in degrees
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+from
+</div>
+<pre>
+ The positional vector to measure from.
+
+</pre>
+<div>
+to
+</div>
+<pre>
+ The positional vector to measure to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="Topaz.Vector.rotationZDiffRelative">
+Topaz.Vector.rotationZDiffRelative(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+from
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+to
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the angle between the 2
+ vectors in relation to this in degrees
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+from
+</div>
+<pre>
+ The positional vector to measure from.
+
+</pre>
+<div>
+to
+</div>
+<pre>
+ The positional vector to measure to.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="Topaz.Vector.rotationZ">
+Topaz.Vector.rotationZ(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+of
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the angle of the vector about the Z axis in degrees
+ These deals with angles between the x and y axes.
+ XY is most useful for 2D angles and transformations.
+ If a vector has length zero in these dimensions
+ , the angle is always zero.
+ The rotation is about the directional vector (0, 0, 1).
+ Positive rotation is towards the positive Y direction.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+of
+</div>
+<pre>
+ The positional vector to measure.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="Topaz.Vector.rotateX">
+Topaz.Vector.rotateX(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+vector
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+amt
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the result of rotating the vector
+ by the specified degrees about the center
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+vector
+</div>
+<pre>
+ The vector to rotate.
+
+</pre>
+<div>
+amt
+</div>
+<pre>
+ The amount to rotate in degrees.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="Topaz.Vector.rotateY">
+Topaz.Vector.rotateY(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+vector
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+amt
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the result of rotating the vector
+ by the specified degrees about the center
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+vector
+</div>
+<pre>
+ The vector to rotate.
+
+</pre>
+<div>
+amt
+</div>
+<pre>
+ The amount to rotate in degrees.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+
+</h5>
+<h3 id="Topaz.Vector.rotateZ">
+Topaz.Vector.rotateZ(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+vector
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Number
+</th>
+<th class="FunctionArgumentName">
+amt
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the result of rotating the vector
+ by the specified degrees about the center
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+vector
+</div>
+<pre>
+ The vector to rotate.
+
+</pre>
+<div>
+amt
+</div>
+<pre>
+ The amount to rotate in degrees. 
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Number
+</h5>
+<h3 id="Topaz.Vector.length">
+Topaz.Vector.length()
+</h3>
+<pre>
+ Returns the length of the vector.
+ Write-only.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Object
+</h5>
+<h3 id="Topaz.Vector.add">
+Topaz.Vector.add(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+a
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds 2 vector objects.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a
+</div>
+<pre>
+ The first operand
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ The second operand
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Object
+</h5>
+<h3 id="Topaz.Vector.subtract">
+Topaz.Vector.subtract(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+a
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Subtracts 2 vector objects.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a
+</div>
+<pre>
+ The first operand
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ The second operand
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Object
+</h5>
+<h3 id="Topaz.Vector.multiply">
+Topaz.Vector.multiply(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+a
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Multiplies 2 vector objects.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a
+</div>
+<pre>
+ The first operand
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ The second operand
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="StaticFunction">
+<div class="typetag">
+(StaticFunction)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+Object
+</h5>
+<h3 id="Topaz.Vector.divide">
+Topaz.Vector.divide(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+a
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+Object
+</th>
+<th class="FunctionArgumentName">
+b
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Divides 2 vector objects.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+a
+</div>
+<pre>
+ The first operand
+
+</pre>
+<div>
+b
+</div>
+<pre>
+ The second operand
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

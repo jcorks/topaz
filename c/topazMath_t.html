@@ -1,0 +1,355 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazMath_t">
+topazMath_t
+</h1>
+<pre>
+ Collection of math-related utilities.
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazMath_t.html#topaz_math_parallaxize">
+topaz_math_parallaxize()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_math_pi">
+topaz_math_pi
+</h3>
+<pre>
+ Standard PI value used by topaz.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_math_clamp__VAL__,__MIN__,__MAX__">
+topaz_math_clamp__VAL__,__MIN__,__MAX__
+</h3>
+<pre>
+ Clamping bounds the first argument, val, to be within min and max.
+ If val is less than min, it is set to min. If it is greater than max,
+ va; is set to max.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_math_snap__VAL__,__SUBDIV__">
+topaz_math_snap__VAL__,__SUBDIV__
+</h3>
+<pre>
+ Snapping binds a value, i, to the nearest multiple of a value,
+ subdiv.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_math_to_radians__VAL__">
+topaz_math_to_radians__VAL__
+</h3>
+<pre>
+ Converts input degrees to radians
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_math_to_degrees__VAL__">
+topaz_math_to_degrees__VAL__
+</h3>
+<pre>
+ Converts input radians to degrees.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_math_is_point_within_bounds__POS__,__ORIGIN__,__W__,__H__">
+topaz_math_is_point_within_bounds__POS__,__ORIGIN__,__W__,__H__
+</h3>
+<pre>
+ Returns whether the given topazVector_t, pos, is within a box formed 
+ by the topazVector_t boxorigin as the topleft and w/h as the width/height
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_math_is_point_within_range__P1__,__P2__,__RANGE__">
+topaz_math_is_point_within_range__P1__,__P2__,__RANGE__
+</h3>
+<pre>
+ Returns within the distance between the topazVector_t p1 and p2
+ is less than range
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_math_lerp__VAL__,__END__,__STEP__">
+topaz_math_lerp__VAL__,__END__,__STEP__
+</h3>
+<pre>
+ Returns linear interpolation of val to end with a ratio step.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Macro">
+<div class="typetag">
+(Macro)</br>
+</div>
+<div>
+<h3 id="topaz_math_lerp_simple__VAL__,__END__">
+topaz_math_lerp_simple__VAL__,__END__
+</h3>
+<pre>
+ Returns a simple linear interpolation
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</h5>
+<h3 id="topaz_math_parallaxize">
+topaz_math_parallaxize(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+pos,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazVector_t.html#topazVector_t">
+topazVector_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+camera,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+screenWidth,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+screenHeight,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+float
+</th>
+<th class="FunctionArgumentName">
+screenMaxDepth
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns a vector position, to emulate parallax given a maximum regression depth
+ 
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+pos,
+</div>
+<pre>
+ The source point position in world space (2D) + z 
+ coordiate.
+
+</pre>
+<div>
+camera,
+</div>
+<pre>
+ Camera position in world space.
+
+</pre>
+<div>
+screenWidth,
+</div>
+<pre>
+ View width in pixels.
+
+</pre>
+<div>
+screenHeight,
+</div>
+<pre>
+ View height in pixels.
+
+</pre>
+<div>
+screenMaxDepth
+</div>
+<pre>
+ Maximum depth.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>

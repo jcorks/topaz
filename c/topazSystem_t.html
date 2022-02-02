@@ -1,0 +1,1876 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>topaz Documentation</title>
+  <meta name="description" content="documentation page">
+  <meta name="author" content="https://github.com/jcorks/topaz/">
+
+  <link rel="stylesheet" href="../style.css?v=1.0">
+
+</head>
+
+<body>
+<div class="navarea">
+<img src="../logoreduced.png"class="navlogo">
+
+</img>
+<div class="navbar"id="navbar">
+
+</div>
+
+</div>
+<div>
+<div class="navlist">
+<div>
+<input class="navsearch-input"id="searchbar"type="search"onchange="docext_on_input()"oninput="docext_on_input()">
+
+</input>
+
+</div>
+<div id="searchresults">
+
+</div>
+
+</div>
+<div class="symbollist">
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazSystem_t">
+topazSystem_t
+</h1>
+<pre>
+
+    Bundles and abstracts system-level middleware that topaz 
+    uses to implement the engine.
+
+
+</pre>
+<div>
+</br><b>Member Functions:</b></br></br>
+</div>
+<div class="PublicSymbols">
+<div>
+<a href="topazSystem_t.html#topaz_system_backend_bind">
+topaz_system_backend_bind()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_backend_get_topaz_major_version">
+topaz_system_backend_get_topaz_major_version()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_backend_get_topaz_minor_version">
+topaz_system_backend_get_topaz_minor_version()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_backend_get_topaz_micro_version">
+topaz_system_backend_get_topaz_micro_version()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_backend_get_name">
+topaz_system_backend_get_name()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_backend_get_version">
+topaz_system_backend_get_version()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_backend_get_author">
+topaz_system_backend_get_author()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_backend_get_description">
+topaz_system_backend_get_description()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_backend_pre_step">
+topaz_system_backend_pre_step()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_backend_post_step">
+topaz_system_backend_post_step()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_backend_pre_draw">
+topaz_system_backend_pre_draw()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_backend_post_draw">
+topaz_system_backend_post_draw()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_backend_get_user_data">
+topaz_system_backend_get_user_data()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_configure">
+topaz_system_configure()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_create_default">
+topaz_system_create_default()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_set_backend_handler">
+topaz_system_set_backend_handler()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_is_backend_available">
+topaz_system_is_backend_available()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_get_available_backends">
+topaz_system_get_available_backends()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_create_backend">
+topaz_system_create_backend()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_config_add_handler">
+topaz_system_config_add_handler()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_pre_step">
+topaz_system_pre_step()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_post_step">
+topaz_system_post_step()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_pre_draw">
+topaz_system_pre_draw()
+</a>
+
+</div>
+<div>
+<a href="topazSystem_t.html#topaz_system_post_draw">
+topaz_system_post_draw()
+</a>
+
+</div>
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="Class">
+<div class="typetag">
+(Class)</br>
+</div>
+<div>
+<h1 id="topazSystem_Backend_t">
+topazSystem_Backend_t
+</h1>
+<pre>
+ Represents a discrete API implementation for a system.
+
+ Backends are built to handle function calls and 
+ data external to the main topaz codebase.
+
+
+</pre>
+<div class="PublicSymbols">
+
+</div>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_system_backend_update_callback">
+(*topaz_system_backend_update_callback)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend,
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Callback for when backends update themselves.
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend,
+</div>
+<pre>
+ The backend to be updated.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_system_backend_bind">
+topaz_system_backend_bind(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+name,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+version,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+author,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+description,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topaz_system_backend_update_callback">
+topaz_system_backend_update_callback
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+on_pre_step,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topaz_system_backend_update_callback">
+topaz_system_backend_update_callback
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+on_post_step,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topaz_system_backend_update_callback">
+topaz_system_backend_update_callback
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+on_pre_draw,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topaz_system_backend_update_callback">
+topaz_system_backend_update_callback
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+on_post_draw,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+userData,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+topazMajorVersion,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+topazMinorVersion,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+int
+</th>
+<th class="FunctionArgumentName">
+topazMicroVersion
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Populates the backend with information.
+ Only allowed to be called within backend_callback calls 
+ given to topaz_system_config_add_handler
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend,
+</div>
+<pre>
+ The backend to bind data to.
+
+</pre>
+<div>
+name,
+</div>
+<pre>
+ The name of the backend.
+
+</pre>
+<div>
+version,
+</div>
+<pre>
+ The version of the backend
+
+</pre>
+<div>
+author,
+</div>
+<pre>
+ The author of the backend
+
+</pre>
+<div>
+description,
+</div>
+<pre>
+ A description of the backend
+
+</pre>
+<div>
+on_pre_step,
+</div>
+<pre>
+ Called when the backend is stepped. Backend is passed.
+  
+
+</pre>
+<div>
+on_post_step,
+</div>
+<pre>
+ Called after all the backends are stepped. Backend is passed.
+
+
+</pre>
+<div>
+on_pre_draw,
+</div>
+<pre>
+ Called when the backend is drawn. Backend is passed.
+
+
+</pre>
+<div>
+on_post_draw,
+</div>
+<pre>
+ Called after all the backends have drawn. Backend is passed.
+
+
+</pre>
+<div>
+userData,
+</div>
+<pre>
+ User-provided data.
+
+
+</pre>
+<div>
+topazMajorVersion,
+</div>
+<pre>
+ Topaz major version number
+
+
+</pre>
+<div>
+topazMinorVersion,
+</div>
+<pre>
+ Topaz minor version number
+
+
+</pre>
+<div>
+topazMicroVersion
+</div>
+<pre>
+ Topaz micro version number
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_system_backend_get_topaz_major_version">
+topaz_system_backend_get_topaz_major_version(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the major version of the topaz library 
+ that this backend was built with.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend
+</div>
+<pre>
+ The backend to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_system_backend_get_topaz_minor_version">
+topaz_system_backend_get_topaz_minor_version(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the minor version of the topaz library 
+ that this backend was built with.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend
+</div>
+<pre>
+ The backend to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_system_backend_get_topaz_micro_version">
+topaz_system_backend_get_topaz_micro_version(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns the micro version of the topaz library 
+ that this backend was build with.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend
+</div>
+<pre>
+ The backend to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_system_backend_get_name">
+topaz_system_backend_get_name(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the name of this backend.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend
+</div>
+<pre>
+ The backend to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_system_backend_get_version">
+topaz_system_backend_get_version(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the name of this backend.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend
+</div>
+<pre>
+ The backend to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_system_backend_get_author">
+topaz_system_backend_get_author(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the author name 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend
+</div>
+<pre>
+ The backend to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</h5>
+<h3 id="topaz_system_backend_get_description">
+topaz_system_backend_get_description(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets the description 
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend
+</div>
+<pre>
+ The backend to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_system_backend_pre_step">
+topaz_system_backend_pre_step(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Steps the backend
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend
+</div>
+<pre>
+ The backend to step.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_system_backend_post_step">
+topaz_system_backend_post_step(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Posts that initialization has finished
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend
+</div>
+<pre>
+ The backend to step.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_system_backend_pre_draw">
+topaz_system_backend_pre_draw(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Draws the backend
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend
+</div>
+<pre>
+ The backend to draw.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_system_backend_post_draw">
+topaz_system_backend_post_draw(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Posts that initialization has finished
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend
+</div>
+<pre>
+ The backend to draw.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_system_backend_get_user_data">
+topaz_system_backend_get_user_data(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Retrieves the user data associated with the backend.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backend
+</div>
+<pre>
+ The backend to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_system_configure">
+topaz_system_configure()
+</h3>
+<pre>
+ Called to register support system backends for this 
+ instance. Only needs to be called once, but should be called 
+ before any other call to topaz_system_ family of functions
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazSystem_t.html#topazSystem_t">
+topazSystem_t
+</a>
+
+</h5>
+<h3 id="topaz_system_create_default">
+topaz_system_create_default()
+</h3>
+<pre>
+ Creates an system instance that uses the first 
+ added backend handlers as the defaults.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_system_set_backend_handler">
+topaz_system_set_backend_handler(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_t">
+topazSystem_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+system,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backendType,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backendName
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Sets the backend implementation used for the backend specified.
+ Sucess is returned.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+system,
+</div>
+<pre>
+ The system to modify.
+
+</pre>
+<div>
+backendType,
+</div>
+<pre>
+ The type of backend in string form.
+
+</pre>
+<div>
+backendName
+</div>
+<pre>
+ The name of the backend to use.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_system_is_backend_available">
+topaz_system_is_backend_available(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backendType,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backendName
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns whether the given backend is available for the given type.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backendType,
+</div>
+<pre>
+ The backend type.
+
+</pre>
+<div>
+backendName
+</div>
+<pre>
+ The name of the backend.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_system_get_available_backends">
+topaz_system_get_available_backends(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backendType
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Returns an array of const topazString_t * values 
+ containing all the available backend names for a particular type.
+ The array must be freed (but the strings are read-only).
+ If no such type exists or if no backends exist 
+ for the type, an empty array is returned.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backendType
+</div>
+<pre>
+ The type of backend to query.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</h5>
+<h3 id="topaz_system_create_backend">
+topaz_system_create_backend(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_t">
+topazSystem_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+system,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backendType,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+APImappingPtr
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Creates a backend instance using the currently set backend.
+ The handlers set within topaz_system_configure() will pre-load 
+ the "default" set of backends, but they may be switched with 
+ topaz_system_set_backend().
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+system,
+</div>
+<pre>
+ The system to create a backend from.
+
+</pre>
+<div>
+backendType,
+</div>
+<pre>
+ The type of backend to create.
+
+</pre>
+<div>
+APImappingPtr
+</div>
+<pre>
+ A pointer to the API structure that the backend should 
+ populate with API functions of its ownership.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="FunctionPointer">
+<div class="typetag">
+(FunctionPointer)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_system_backend_handler">
+(*topaz_system_backend_handler)(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_t">
+topazSystem_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+system,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_Backend_t">
+topazSystem_Backend_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backend,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+void
+</th>
+<th class="FunctionArgumentName">
+api
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Callback to actually populate a backend's API.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+system,
+</div>
+<pre>
+ The source system managing / owning the backend.
+
+</pre>
+<div>
+backend,
+</div>
+<pre>
+ The backend instance to modify within the backend
+
+</pre>
+<div>
+api
+</div>
+<pre>
+ A pointer to the API instance for the backend,
+ which needs to be casted to the appropriate
+ API type based on the backend type advertised.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+int
+</h5>
+<h3 id="topaz_system_config_add_handler">
+topaz_system_config_add_handler(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backendType,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazString_t.html#topazString_t">
+topazString_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+backendName,
+</th>
+
+</tr>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topaz_system_backend_handler">
+topaz_system_backend_handler
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+handler
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Adds a new backend to be recognized by the system.
+ Success is returned. Once its added, the backend can be 
+ passed as a backend argument for topaz_system_set_backend. The first 
+ backend of a certain type added will be the so-called "default"
+ backend handler for that type.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+backendType,
+</div>
+<pre>
+ The kind of backend.
+
+
+</pre>
+<div>
+backendName,
+</div>
+<pre>
+ The unique name of the backend
+
+
+</pre>
+<div>
+handler
+</div>
+<pre>
+ The function to be called that populates a new 
+ backend instance and API. The API is specific to the backend.
+
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_system_pre_step">
+topaz_system_pre_step(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_t">
+topazSystem_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+system
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Pre-steps all backends. This is normally called within the topaz_context
+ before the engine's managers and entities
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+system
+</div>
+<pre>
+ The system to step.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_system_post_step">
+topaz_system_post_step(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_t">
+topazSystem_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+system
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Post-steps all backends. This is normally called within the topaz_context
+ after the engine's managers and entities
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+system
+</div>
+<pre>
+ The system to step.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_system_pre_draw">
+topaz_system_pre_draw(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_t">
+topazSystem_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+system
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Pre-draws all backends. This is normally called within the topaz_context
+ before the engine's managers and entities
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+system
+</div>
+<pre>
+ The system to draw.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_system_post_draw">
+topaz_system_post_draw(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazSystem_t.html#topazSystem_t">
+topazSystem_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+system
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Post-draws all backends. This is normally called within the topaz_context
+ after the engine's managers and entities
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+system
+</div>
+<pre>
+ The system to draw.
+
+</pre>
+
+</div>
+</br>
+</div>
+
+</div>
+
+</div>
+<i class="symbollist credits">
+Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+</i>
+
+</body>
+<script src="searchindex_db.js"></script>
+<script src="doclinks_db.js"></script>
+<script src="../docext.js"></script>
+</html>
