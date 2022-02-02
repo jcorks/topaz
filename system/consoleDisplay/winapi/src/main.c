@@ -141,7 +141,7 @@ static void term_clear(topazConsoleDisplay_t * d, void * data) {
 
 static void term_enable(topazConsoleDisplay_t * d, void * data, int enable) {
     WINAPITerm * term = data;
-    if (enable) {
+    if (enable && !term->file) {
         FreeConsole();
         AllocConsole();
         DWORD dwMode = 0;
@@ -162,7 +162,7 @@ static void term_enable(topazConsoleDisplay_t * d, void * data, int enable) {
         }
 
 
-    } else {
+    } else if (term->file && !enable) {
         FreeConsole();
         ShowWindow(GetConsoleWindow(), FALSE);
         term->file = NULL;  
