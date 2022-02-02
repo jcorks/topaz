@@ -1,0 +1,18 @@
+/// Welcome to the Topaz project.
+///
+/// <i>This is still under HEAVY development; this page pretty 
+/// much just for access to the documentation pages for 
+/// testing and previewing.</i>
+///
+/// Topaz is a multimedia toolkit designed to be 
+/// small and portable.
+///
+/// Main ways to use it are:
+/// - As a standalone binary that runs scripts and bundles.
+/// - Embedded within another program.
+///
+/// Documentation:
+/// <a href="scripting/Topaz.html"> Scripting API documentation. </a>
+/// <a href="c/Topaz.html"> C API documentation. </a>
+/// 
+docpage index

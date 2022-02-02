@@ -4,15 +4,23 @@
 Topaz.enableConsole();
 
 generateDocumentation(
+    langHint:'None', 
+    sourcePath:'../src/top', 
+    outputPath:'../',
+    resourcePath: './'
+);
+generateDocumentation(
     langHint:'C',    
     sourcePath:'../../include/topaz/',
-    outputPath:'../c/'
+    outputPath:'../c/',
+    resourcePath: '../'
 );
-/*generateDocumentation(
+generateDocumentation(
     langHint:'None', 
     sourcePath:'../src/scripting/', 
-    outputPath:'../scripting/'
-);*/
+    outputPath:'../scripting/',
+    resourcePath: '../'
+);
 
 
 Topaz.quit();

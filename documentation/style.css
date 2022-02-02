@@ -10,6 +10,13 @@
 
 }
 
+.credits {
+  font-family: codeText;
+  font-size: 8pt;
+  margin: 15px;
+  padding:14px;
+}
+
 .navarea {
     margin-left: 265px;
 }

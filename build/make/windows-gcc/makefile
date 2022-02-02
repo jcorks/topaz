@@ -6,7 +6,7 @@
 # InputManager -> GLFW
 # Renderer -> OpenGL3+
 # Time -> WINAPI
-# Scripting -> DuktapeJS
+# Scripting -> Matte
 # ConsoleDisplay -> WINAPI
 # FontRenderer -> Freetype
 # IOTranslators:
