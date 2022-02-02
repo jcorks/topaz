@@ -12,7 +12,7 @@ mesh.vertices = [
 
 mesh.addObject();
 mesh.setObject(
-    index:0, 
+    i:0, 
     value:[
         0, 1, 2,
         2, 3, 0
