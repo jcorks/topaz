@@ -1,4 +1,11 @@
 # topaz
-Multimedia toolkit in portable C
+Embeddable Multimedia toolkit in portable C
+Includes a standalone scripting interface
+using a language called Matte which gives 
+access to most C symbols.
 
-Work in progress, but meant to be essentially a stripped down version of https://github.com/jcorks/Dynacoe/
+STILL UNDER HEAVY DEVELOPMENT.
+
+Documentation @ https://jcorks.github.io/topaz/
+
+Matte language overview @ https://jcorks.github.io/matte/doc-quick.html
