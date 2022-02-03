@@ -69,45 +69,12 @@ void topaz_view_manager_destroy(
 
 
 
-/// Creates a new Display with the given w and h in pixels.
-///
-topazDisplay_t * topaz_view_manager_create_display(
-    /// The view manager to create a display with
-    topazViewManager_t * viewMan, 
-
-    /// Optional display name.
-    const topazString_t * displayName, 
-
-    /// Initialized width.
-    int w, 
-
-    /// Initialized height.
-    int h
-);
-
-/// Same as topaz_view_manager_create_display(), but it also sets 
-/// the new display as the main display for you.
-///
-topazDisplay_t * topaz_view_manager_create_main(
-    /// The view manager to create a display with
-    topazViewManager_t * viewMan, 
-
-    /// Optional display name.
-    const topazString_t * displayName, 
-
-    /// Initialized width.
-    int w, 
-
-    /// Initialized height.
-    int h
-);
-
 
 
 /// Same as topaz_view_manager_create_main, except the width and height
 /// are set as 640 and 480 respectively.
 ///
-topazDisplay_t * topaz_view_manager_create_main_default(
+topazDisplay_t * topaz_view_manager_create_display(
     /// The view manager to create a display with
     topazViewManager_t * viewMan, 
 
@@ -126,34 +93,15 @@ void topaz_view_manager_destroy_display(
     topazDisplay_t * display
 );
 
-
-/// Sets the given display as the one to update and draw to.
-/// NULL is accepted, and will result in no display being updated.
-///
-void topaz_view_manager_set_main(
-    /// The view manager to modify.
-    topazViewManager_t * viewMan, 
-
-    /// The display to set as a main display.
-    topazDisplay_t * display
-);
-
 /// Gets the current main display. If none is set, NULL is returned.
 /// 
-topazDisplay_t * topaz_view_manager_get_main(
+topazDisplay_t * topaz_view_manager_get_default(
     /// The view manager to query.
     topazViewManager_t * viewMan
 );
 
 
 
-/// Forces the main display to reflect the last rendered visual.
-/// Normally called for you by the engine.
-///
-void topaz_view_manager_update_view(
-    /// The view manager to update.
-    topazViewManager_t * viewMan
-);
 
 
 /// Gets the current main display's clipboard contents
@@ -173,22 +121,6 @@ void topaz_view_manager_set_clipboard_from_string(
     const topazString_t * clipboardData
 );
 
-/// Convenience function to get the view width of the main display. If 
-/// none, -1 is returned.
-///
-int topaz_view_manager_get_view_width(
-    /// The view manager to query
-    const topazViewManager_t * viewMan
-);
-
-/// Convenience function to get the view height of the main display. If 
-/// none, -1 is returned.
-///
-int topaz_view_manager_get_view_height(
-    /// The view manager to query
-    const topazViewManager_t * viewMan
-);
-
 
 /// Gets an array of all displays registered under the 
 /// this view manager.
@@ -199,6 +131,14 @@ const topazArray_t * topaz_view_manager_get_all(
 );
 
 
+/// Gets an array of all displays registered under the 
+/// this view manager that are active. The array should 
+/// be destroyed when done.
+///
+topazArray_t * topaz_view_manager_get_all_active(
+    /// The view manager to query
+    const topazViewManager_t * viewMan
+);
 
 
 #endif

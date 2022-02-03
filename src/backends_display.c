@@ -27,12 +27,14 @@ struct topazDisplay_t {
     int autoRefresh;
     void * apiData;
 
-    int params[topazDisplay_Parameter_InputFocus];
 
-
+    topazEntity_t * root;
     topazArray_t * resizeCBs;
     topazArray_t * closeCBs;
+
     int cbPool;
+    float params[topazDisplay_Parameter_InputFocus];
+
 };
 
 
@@ -78,7 +80,8 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
     out->autoRefresh = TRUE;
     topaz_context_attach_post_manager(ctx, out->camera2d);
     topaz_context_attach_post_manager(ctx, out->camera3d);
-    
+    out->root = topaz_entity_null();
+
     out->resizeCBs = topaz_array_create(sizeof(DisplayCB));
     out->closeCBs = topaz_array_create(sizeof(DisplayCB));
 
@@ -101,7 +104,11 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
         topazDisplay_Parameter_Height, 
         480
     );
-
+    topaz_display_set_parameter(
+        out, 
+        topazDisplay_Parameter_Active, 
+        1
+    );
 
     return out;
 }
@@ -159,7 +166,7 @@ topazEntity_t * topaz_display_get_3d_camera(topazDisplay_t * t) {
 void topaz_display_set_parameter(
     topazDisplay_t * t,
     topazDisplay_Parameter p,
-    int value
+    float value
 ) {
     t->params[p] = value;
     t->api.display_request_parameter_change(
@@ -171,7 +178,7 @@ void topaz_display_set_parameter(
 }
 
 
-int topaz_display_get_parameter(
+float topaz_display_get_parameter(
     const topazDisplay_t * display,
     topazDisplay_Parameter p
 ) {
@@ -185,8 +192,13 @@ int topaz_display_is_parameter_modifiable(topazDisplay_t * t, topazDisplay_Param
 }
 
 
+topazEntity_t * topaz_display_get_root(const topazDisplay_t * t) {
+    return t->root;
+}
 
-
+void topaz_display_set_root(topazDisplay_t * t, topazEntity_t * r) {
+    t->root = r;
+}
 
 
 
@@ -239,7 +251,7 @@ void topaz_display_remove_callback(topazDisplay_t * t, int cb) {
 void topaz_display_signal_parameter_change(
     topazDisplay_t * t, 
     topazDisplay_Parameter param, 
-    int value
+    float value
 ) {
     
 
@@ -257,8 +269,8 @@ void topaz_display_signal_parameter_change(
             topazRenderer_Framebuffer_t * fb = t->fbs[t->currentfb];
             topaz_renderer_framebuffer_resize(
                 fb,
-                t->params[topazDisplay_Parameter_Width], 
-                t->params[topazDisplay_Parameter_Height]
+                (int)t->params[topazDisplay_Parameter_Width], 
+                (int)t->params[topazDisplay_Parameter_Height]
             );
         }
     }

@@ -1,27 +1,26 @@
 #include <topaz/modules/view_manager.h>
+#include <topaz/modules/graphics.h>
 #include <topaz/backends/display.h>
 #include <topaz/camera.h>
 
-TSO_SCRIPT_API_FN(view_manager_api__set_main) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
 
+
+
+TSO_SCRIPT_API_FN(view_manager_api__get_default) {
     topazViewManager_t * vm = topaz_context_get_view_manager(((topazScriptManager_t*)context)->ctx);
-    
-    topaz_view_manager_set_main(
-        vm,
-        native
-    );    
-    TSO_NO_RETURN;
-}
+    topazDisplay_t * d = topaz_view_manager_get_default(vm);
 
+    topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(d);
+    if (a) return topaz_script_object_from_object(script, a);
 
-TSO_SCRIPT_API_FN(view_manager_api__get_main) {
-    topazViewManager_t * vm = topaz_context_get_view_manager(((topazScriptManager_t*)context)->ctx);
-    topazDisplay_t * d = topaz_view_manager_get_main(vm);
     TSO_OBJECT_NEW_VALUE(d, TSO_OBJECT_ID__DISPLAY, NULL, NULL);
+    TSO_OBJECT_KEEP_REF(d);
     return object;
 }
+
+
+
+
 
 TSO_SCRIPT_API_FN(view_manager_api__get_clipboard_as_string) {
     topazViewManager_t * vm = topaz_context_get_view_manager(((topazScriptManager_t*)context)->ctx);
@@ -53,6 +52,7 @@ TSO_SCRIPT_API_FN(view_manager_api__set_clipboard_from_string) {
 TSO_SCRIPT_API_FN(display_api__destroy) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
+    TSO_OBJECT_UNKEEP_REF(arg0, native);
     topaz_script_object_reference_set_native_data(arg0, NULL, 0);    
     topaz_display_destroy(native);
     TSO_NO_RETURN;
@@ -60,18 +60,42 @@ TSO_SCRIPT_API_FN(display_api__destroy) {
 
 TSO_SCRIPT_API_FN(view_manager_api__create_display) {
     topazViewManager_t * vm = topaz_context_get_view_manager(((topazScriptManager_t*)context)->ctx);
-    topazDisplay_t * ptr = topaz_view_manager_create_display(vm, TOPAZ_STR_CAST(""), 640, 480);
+    topazDisplay_t * ptr = topaz_view_manager_create_display(vm, TOPAZ_STR_CAST(""));
     // creates new object and sets native pointer
     TSO_OBJECT_NEW_VALUE(ptr, TSO_OBJECT_ID__DISPLAY, NULL, NULL);
+    TSO_OBJECT_KEEP_REF(ptr);
     return object;
 }
+TSO_SCRIPT_API_FN(view_manager_api__get_display_count) {
+    topazViewManager_t * vm = topaz_context_get_view_manager(((topazScriptManager_t*)context)->ctx);
+    return topaz_script_object_from_int(
+        script, 
+        topaz_array_get_size(topaz_view_manager_get_all(vm))
+    );
+}
+TSO_SCRIPT_API_FN(view_manager_api__get_display) {
+    TSO_ARG_0;
+    topazViewManager_t * vm = topaz_context_get_view_manager(((topazScriptManager_t*)context)->ctx);
+    uint32_t index = topaz_script_object_as_int(arg0);
+    const topazArray_t * displays = topaz_view_manager_get_all(vm);
+    if (index >= topaz_array_get_size(displays)) TSO_NO_RETURN;
+
+    topazDisplay_t * d = topaz_array_at(displays, topazDisplay_t *, index);
+    topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(d);
+    if (a) return topaz_script_object_from_object(script, a);
+
+    TSO_OBJECT_NEW_VALUE(d, TSO_OBJECT_ID__DISPLAY, NULL, NULL);
+    return object;
+}
+
+
 
 TSO_SCRIPT_API_FN(display_api__get_parameter) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
 
-    return topaz_script_object_from_int(
+    return topaz_script_object_from_number(
         script, 
         topaz_display_get_parameter(
             native,
@@ -85,6 +109,7 @@ TSO_SCRIPT_API_FN(display_api__is_parameter_modifiable) {
     TSO_ARG_1;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
 
+
     return topaz_script_object_from_int(
         script, 
         topaz_display_is_parameter_modifiable(
@@ -94,6 +119,28 @@ TSO_SCRIPT_API_FN(display_api__is_parameter_modifiable) {
     );
 }
 
+TSO_SCRIPT_API_FN(display_api__get_root) {
+    TSO_ARG_0;
+    TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
+
+    topazEntity_t * e = topaz_display_get_root(native);
+    if (e && e != topaz_entity_null()) {
+        topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(e);
+        if (a) return topaz_script_object_from_object(script, a);
+        TSO_OBJECT_NEW_VALUE(e, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
+        return object;
+    }
+    TSO_NO_RETURN;
+}
+
+TSO_SCRIPT_API_FN(display_api__set_root) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
+    TSO_NATIVIZE_1(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
+    topaz_display_set_root(native, native1);    
+    TSO_NO_RETURN;
+}
 
 TSO_SCRIPT_API_FN(display_api__set_parameter) {
     TSO_ARG_0;
@@ -104,7 +151,7 @@ TSO_SCRIPT_API_FN(display_api__set_parameter) {
     topaz_display_set_parameter(
         native,
         topaz_script_object_as_int(arg1),
-        topaz_script_object_as_int(arg2)
+        topaz_script_object_as_number(arg2)
     );
     TSO_NO_RETURN;
 }
@@ -320,8 +367,8 @@ TSO_SCRIPT_API_FN(framebuffer_api__resize) {
     TSO_NATIVIZE(topazRenderer_Framebuffer_t *, TSO_OBJECT_ID__FRAMEBUFFER);
 
     topaz_renderer_framebuffer_resize(native, 
-        topaz_script_object_as_int(arg1),
-        topaz_script_object_as_int(arg2)
+        topaz_script_object_as_number(arg1),
+        topaz_script_object_as_number(arg2)
     );
     TSO_NO_RETURN;
 }
@@ -352,17 +399,20 @@ TSO_SCRIPT_API_FN(framebuffer_api__set_filtered_hint) {
 
 
 static void add_refs__view_manager_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_view_manager__set_main", view_manager_api__set_main, 1);
-    TS_MAP_NATIVE_FN("topaz_view_manager__get_main", view_manager_api__get_main, 0);
+    TS_MAP_NATIVE_FN("topaz_view_manager__get_default", view_manager_api__get_default, 0);
     TS_MAP_NATIVE_FN("topaz_view_manager__get_clipboard_as_string", view_manager_api__get_clipboard_as_string, 0);
     TS_MAP_NATIVE_FN("topaz_view_manager__set_clipboard_from_string", view_manager_api__set_clipboard_from_string, 1);
     TS_MAP_NATIVE_FN("topaz_view_manager__create_display", view_manager_api__create_display, 0);
+    TS_MAP_NATIVE_FN("topaz_view_manager__get_display_count", view_manager_api__get_display_count, 0);
+    TS_MAP_NATIVE_FN("topaz_view_manager__get_display", view_manager_api__get_display, 1);
 
 
     TS_MAP_NATIVE_FN("topaz_display__destroy", display_api__destroy, 1);
     TS_MAP_NATIVE_FN("topaz_display__get_parameter", display_api__get_parameter, 2);
     TS_MAP_NATIVE_FN("topaz_display__set_parameter", display_api__set_parameter, 3);
     TS_MAP_NATIVE_FN("topaz_display__is_parameter_modifiable", display_api__is_parameter_modifiable, 2);
+    TS_MAP_NATIVE_FN("topaz_display__get_root", display_api__get_root, 1);
+    TS_MAP_NATIVE_FN("topaz_display__set_root", display_api__set_root, 2);
 
     TS_MAP_NATIVE_FN("topaz_display__add_parameter_callback", display_api__add_parameter_callback, 2);
     TS_MAP_NATIVE_FN("topaz_display__add_close_callback", display_api__add_close_callback, 2);

@@ -57,10 +57,10 @@ DEALINGS IN THE SOFTWARE.
 
 typedef struct {
     GLFWwindow * window;
-    int w;
-    int h;
-    int x;
-    int y;
+    float w;
+    float h;
+    float x;
+    float y;
     int lockClientPosition;
     GLint program;
     GLuint vbo;
@@ -75,20 +75,63 @@ static void glfw_fb_size_change(
     int h
 ) {
     TopazGLFWWindow * d = glfwGetWindowUserPointer(win);
-    d->w = w;
-    d->h = h;
+    if ((int)d->w != (int)w) {
+        d->w = w;
+    }
     topaz_display_signal_parameter_change(
         d->source,
         topazDisplay_Parameter_Width,
-        w
+        d->w
     );
+    if ((int)d->h != (int)h) {
+        d->h = h;
+    }
     topaz_display_signal_parameter_change(
         d->source,
         topazDisplay_Parameter_Height,
 
-        h
+        d->h
+    );
+
+}
+
+static void glfw_fb_pos_change(
+    GLFWwindow * win, 
+    int x, 
+    int y
+) {
+    TopazGLFWWindow * d = glfwGetWindowUserPointer(win);
+    if ((int)d->x != (int)x) {
+        d->x = x;
+    }
+    topaz_display_signal_parameter_change(
+        d->source,
+        topazDisplay_Parameter_X,
+        d->x
+    );
+    if ((int)d->y != (int)y) {
+        d->y = y;
+    }
+    topaz_display_signal_parameter_change(
+        d->source,
+        topazDisplay_Parameter_Y,
+
+        d->y
     );
 }
+
+static void glfw_fb_focus_change(
+    GLFWwindow * win, 
+    int focused
+) {
+    TopazGLFWWindow * d = glfwGetWindowUserPointer(win);
+    topaz_display_signal_parameter_change(
+        d->source,
+        topazDisplay_Parameter_InputFocus,
+        focused
+    );
+}
+
 
 static void glfw_fb_close(
     GLFWwindow * win
@@ -105,6 +148,8 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
     GLFWwindow * wOld = glfwGetCurrentContext();
     w->window = glfwCreateWindow(640, 480, "topaz", NULL, glfwGetCurrentContext());
     glfwSetFramebufferSizeCallback(w->window, glfw_fb_size_change);
+    glfwSetWindowFocusCallback(w->window, glfw_fb_focus_change);
+
     glfwSetWindowCloseCallback(w->window, glfw_fb_close);
     glfwSetWindowUserPointer(w->window, w);
 
@@ -112,10 +157,9 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
     w->source  = api;
 
 
-    w->w = 640;
-    w->h = 480;
+    w->w = 0;
+    w->h = 0;
     w->x = w->y = 0;
-
 
 
     w->program = glCreateProgram();
@@ -228,11 +272,10 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
 
     int x, y;    
     glfwGetWindowPos(w->window, &x, &y);
+    w->x = x;
+    w->y = y;
     topaz_display_signal_parameter_change(api, topazDisplay_Parameter_X, x);
     topaz_display_signal_parameter_change(api, topazDisplay_Parameter_Y, y);
-    topaz_display_signal_parameter_change(api, topazDisplay_Parameter_Width, 640);
-    topaz_display_signal_parameter_change(api, topazDisplay_Parameter_Height, 480);
-
 
     return w;
 }
@@ -248,7 +291,7 @@ static void topaz_glfw_request_parameter_change(
     topazDisplay_t * dispSrc, 
     void * api, 
     topazDisplay_Parameter param, 
-    int value
+    float value
 ) {
     TopazGLFWWindow * d = api;  
 
@@ -269,11 +312,17 @@ static void topaz_glfw_request_parameter_change(
         break;
       case topazDisplay_Parameter_X:
         d->x = value;
+        glfwSetWindowPosCallback(d->window, NULL);
         glfwSetWindowPos(d->window, d->x, d->y);
+        glfwSetWindowPosCallback(d->window, glfw_fb_pos_change);
+        glfw_fb_pos_change(d->window, d->x, d->y);
         break;
       case topazDisplay_Parameter_Y:
         d->y = value;
+        glfwSetWindowPosCallback(d->window, NULL);
         glfwSetWindowPos(d->window, d->x, d->y);
+        glfwSetWindowPosCallback(d->window, glfw_fb_pos_change);
+        glfw_fb_pos_change(d->window, d->x, d->y);
         break;
 
       case topazDisplay_Parameter_Show:
@@ -284,6 +333,11 @@ static void topaz_glfw_request_parameter_change(
             
         break;
         
+
+      case topazDisplay_Parameter_InputFocus: 
+        if (value > 0.5) 
+            glfwRequestWindowAttention(d->window);
+        break;
       case topazDisplay_Parameter_Fullscreen:
               /*
         TopazGLFWWindow * d = api;      

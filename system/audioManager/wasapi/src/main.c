@@ -306,10 +306,10 @@ static DWORD topaz_wasapi_main(void * a) {
                     break;
                 }
                 default:;
-                    assert(!"UNSUPPORTED BUFFER BIT CONFIG");
+                    //assert(!"UNSUPPORTED BUFFER BIT CONFIG");
                 }
             } else {
-                assert(!"UNSUPPORTED CHANNEL COUNT");
+                //assert(!"UNSUPPORTED CHANNEL COUNT");
             }
             //printf("WROTE %d SAMPLES\n", frameSamples);
             //fflush(stdout);

@@ -240,5 +240,6 @@ manager.children = [
     Input_List.new()
 ];
 
-// Finally, insert the base of the tree into topaz itself.
-Topaz.root = manager;
+// Finally, insert the base of the tree into 
+// the default display itself.
+Topaz.defaultDisplay.root = manager;

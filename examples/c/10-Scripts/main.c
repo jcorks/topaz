@@ -114,7 +114,7 @@ int main(int argc, char ** argv) {
 
 
     // Optional
-    topazDisplay_t * display = topaz_view_manager_create_main_default(topaz_context_get_view_manager(ctx), TOPAZ_STR_CAST("Scripting"));
+    topazDisplay_t * display = topaz_view_manager_create_display(topaz_context_get_view_manager(ctx), TOPAZ_STR_CAST(""));
 
     // add behavior for system X button
     topaz_display_add_close_callback(

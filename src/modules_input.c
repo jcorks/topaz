@@ -57,6 +57,7 @@ typedef struct {
 } InputState;
 
 struct topazInput_t {
+    topaz_t * ctx;
     topazInputManager_t * manager;
 
     int previousUnicode;
@@ -70,8 +71,6 @@ struct topazInput_t {
     topazTable_t * stringListeners;  //[string] -> array[input listeners]
 
     DeviceState ** devices; 
-    topazDisplay_t * focus;
-    topazEntity_t * contextEnt;
     topaz_t * context;
     topazArray_t * queriedPads;
     topazArray_t * unicodeListeners;
@@ -321,30 +320,9 @@ struct DeviceState {
 
 
 
-static void input_ent__step(topazEntity_t * e, void * data) {
-    topazInput_t * t = data;
+void topaz_input_poll(topazInput_t * t) {
 
-
-    // Set the focus to the display that has input focus (which
-    // isnt necessarily the main display);
-    {
-        const topazArray_t * dpys = topaz_view_manager_get_all(topaz_context_get_view_manager(t->context));
-        topazDisplay_t * focus = NULL;
-        uint32_t i;
-        uint32_t len = topaz_array_get_size(dpys);
-        for(i = 0; i < len; ++i) {
-            focus = topaz_array_at(dpys, topazDisplay_t*, i);
-            if (focus) {
-                break;
-            }
-            focus = NULL;
-        }
-        topaz_input_manager_set_focus(t->manager, focus);
-        t->focus = focus;
-    }
-
-
-
+    topaz_input_manager_set_focus(t->manager, topaz_context_get_iteration_display(t->ctx));
     // pool raw events
     topaz_input_manager_handle_events(t->manager);
 
@@ -380,7 +358,7 @@ topazInput_t * topaz_input_create(topaz_t * context) {
         );
         out->manager = topaz_input_manager_create(context, ref, api);
     }
- 
+    out->ctx = context;
     out->stringMapInput = topaz_table_create_hash_topaz_string();
     out->inputMapString = topaz_table_create_hash_buffer(sizeof(MappedInputData));
     out->stringListeners = topaz_table_create_hash_topaz_string();
@@ -392,19 +370,12 @@ topazInput_t * topaz_input_create(topaz_t * context) {
 
     uint32_t i;
 
-    topazEntity_Attributes_t attribs = {};
-    attribs.on_step = (topaz_entity_attribute_callback) input_ent__step;
-    attribs.userData = out;
 
-    out->contextEnt = topaz_entity_create_with_attributes(context, &attribs);
     for(i = 0; i < topazInputManager_DefaultDevice_Count; ++i) {
         out->devices[i] = device_state_create(out);
     }
 
-    topaz_context_attach_pre_manager_unpausable(
-        context,
-        out->contextEnt
-    );
+
 
     out->context = context;
     return out;
@@ -715,7 +686,6 @@ void get_unicode(topazInput_t * t, float prevState, const topazInputDevice_Event
 
 
 int mouse_x_device_to_world_2d(const topazInput_t * t, int x) {
-    if (!t->focus) return 0;
     return  // camera position x +
             // x * (camera render width / view width )
             x;
@@ -723,7 +693,6 @@ int mouse_x_device_to_world_2d(const topazInput_t * t, int x) {
 
 
 int mouse_y_device_to_world_2d(const topazInput_t * t, int y) {
-    if (!t->focus) return 0;
     return  // camera position y +
             // y * (camera render height / view height )
             y;

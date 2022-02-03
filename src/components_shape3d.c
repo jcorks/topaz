@@ -89,7 +89,7 @@ typedef struct {
 
 static void shape3d__on_draw(topazComponent_t * c, Shape3D * s) {
     // need to recommit buffers;
-    topazEntity_t * cam = topaz_display_get_3d_camera(topaz_view_manager_get_main(topaz_context_get_view_manager(s->ctx)));
+    topazEntity_t * cam = topaz_display_get_3d_camera(topaz_context_get_iteration_display(s->ctx));
     topazMatrix_t modelview = topaz_matrix_multiply(
         topaz_camera_get_view_transform(cam),
         topaz_spatial_get_global_transform(s->spatial)

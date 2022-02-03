@@ -183,7 +183,7 @@ topazVector_t topaz_camera_screen_to_world(topazEntity_t * e, const topazVector_
     TopazCamera * c = camera__retrieve(e);
 
 
-    topazDisplay_t * d = topaz_view_manager_get_main(topaz_context_get_view_manager(c->ctx));
+    topazDisplay_t * d = topaz_context_get_iteration_display(c->ctx);
     topazRenderer_Framebuffer_t * fb = topaz_display_get_main_framebuffer(d);
 
     float w = topaz_renderer_framebuffer_get_width(fb);
@@ -211,7 +211,7 @@ topazVector_t topaz_camera_screen_to_world(topazEntity_t * e, const topazVector_
 topazVector_t topaz_camera_world_to_screen(topazEntity_t * e, const topazVector_t * p) {
     TopazCamera * c = camera__retrieve(e);
 
-    topazDisplay_t * d = topaz_view_manager_get_main(topaz_context_get_view_manager(c->ctx));
+    topazDisplay_t * d = topaz_context_get_iteration_display(c->ctx);
     topazRenderer_Framebuffer_t * fb = topaz_display_get_main_framebuffer(d);
 
     float w = topaz_renderer_framebuffer_get_width(fb);
@@ -354,7 +354,7 @@ void camera__on_step(topazEntity_t * e, void * data) {
 
 
     if (c->type == topazCamera_Type_Orthographic) {
-        topazDisplay_t * d = topaz_view_manager_get_main(topaz_context_get_view_manager(c->ctx));
+        topazDisplay_t * d = topaz_context_get_iteration_display(c->ctx);
         topazRenderer_Framebuffer_t * fb = topaz_display_get_main_framebuffer(d);
         int w = topaz_renderer_framebuffer_get_width(fb);
         int h = topaz_renderer_framebuffer_get_height(fb);

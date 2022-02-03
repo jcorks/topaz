@@ -132,8 +132,13 @@ entity.position = {x:200, y:200};
 // Topaz manages entities in the form of a tree, so     
 // entities naturally can have children entities 
 // and a parent entity. The root is the very base of the tree.
+// On top of that, each display (or window) can have its 
+// own hierarchy.
+//  
 // Since we are only making one entity, we will just 
-// set the entity has the root itself.
+// set the entity has the root itself. And, because the scripting 
+// environment creates a window for us (the "defaultDisplay"),
+// we can just use this display directly.
 //
 // Normally, the root will be more symbolic than physical,
 // think of a "room" in a game.
@@ -141,4 +146,4 @@ entity.position = {x:200, y:200};
 // The tree can be manipulated while running to control 
 // runtime efficiency for the program.
 //
-Topaz.root = entity;
+Topaz.defaultDisplay.root = entity;

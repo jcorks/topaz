@@ -348,13 +348,6 @@ static int topaz_glfw_im_handle_events(topazInputManager_t * imSrc, void * userD
 
 static void topaz_glfw_im_set_focus(topazInputManager_t * imSrc, void * userData, topazDisplay_t * disp) {
     GLFWIM * im = userData;
-    if (im->ctx) {
-        topaz_table_remove(glfww2im, im->ctx);                  
-        glfwSetKeyCallback(im->ctx, NULL);
-        glfwSetCursorPosCallback(im->ctx, NULL);
-        im->ctx = NULL;
-        im->focus = NULL;
-    }
     if (disp && topaz_display_get_system_handle_type(disp) == topazDisplay_Handle_GLFWwindow) {
         if (im->ctx == topaz_display_get_system_handle(disp)) {
             return;

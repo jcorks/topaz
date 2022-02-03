@@ -123,7 +123,7 @@ LIBS :=  -lvorbisfile  -lwinmm -lvorbis -logg -lharfbuzz -lfreetype -lharfbuzz -
 
 
 %.o: %.c 
-	$(CC) -c $(FLAGS) $(DEFS) $(INCS) $< -o $@
+	$(CC) -O2 -c $(FLAGS) $(DEFS) $(INCS) $< -o $@
 
 all: $(OBJS)
 	@echo linking 

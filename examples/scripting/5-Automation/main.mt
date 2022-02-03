@@ -104,5 +104,5 @@
         RectangleSlow.new()
     ];
 
-    Topaz.root = root;
+    Topaz.defaultDisplay.root = root;
 };

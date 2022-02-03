@@ -36,17 +36,6 @@ TSO_SCRIPT_API_FN(topaz_api__iterate) {
     TSO_NO_RETURN;
 }
 
-TSO_SCRIPT_API_FN(topaz_api__step) {
-    topazScriptManager_t * mgr = context;
-    topaz_context_step(mgr->ctx);
-    TSO_NO_RETURN;
-}
-
-TSO_SCRIPT_API_FN(topaz_api__draw) {
-    topazScriptManager_t * mgr = context;
-    topaz_context_draw(mgr->ctx);
-    TSO_NO_RETURN;
-}
 
 TSO_SCRIPT_API_FN(topaz_api__is_paused) {
     topazScriptManager_t * mgr = context;
@@ -54,25 +43,7 @@ TSO_SCRIPT_API_FN(topaz_api__is_paused) {
 }
 
 
-TSO_SCRIPT_API_FN(topaz_api__get_root) {
-    topazScriptManager_t * mgr = context;
-    topazEntity_t * e = topaz_context_get_root(mgr->ctx);
-    if (e && e != topaz_entity_null()) {
-        topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(e);
-        if (a) return topaz_script_object_from_object(script, a);
-        TSO_OBJECT_NEW_VALUE(e, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
-        return object;
-    }
-    TSO_NO_RETURN;
-}
 
-TSO_SCRIPT_API_FN(topaz_api__set_root) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-    topazScriptManager_t * mgr = context;
-    topaz_context_set_root(mgr->ctx, native);    
-    TSO_NO_RETURN;
-}
 
 TSO_SCRIPT_API_FN(topaz_api__attach_pre_manager) {
     TSO_ARG_0;
@@ -239,11 +210,7 @@ static void add_refs__topaz_api(topazScript_t * script, topazScriptManager_t * c
     TS_MAP_NATIVE_FN("topaz__pause_now", topaz_api__pause_now, 0);
     TS_MAP_NATIVE_FN("topaz__resume", topaz_api__resume, 0);
     TS_MAP_NATIVE_FN("topaz__iterate", topaz_api__iterate, 0);
-    TS_MAP_NATIVE_FN("topaz__step", topaz_api__step, 0);
-    TS_MAP_NATIVE_FN("topaz__draw", topaz_api__draw, 0);
     TS_MAP_NATIVE_FN("topaz__is_paused", topaz_api__is_paused, 0);
-    TS_MAP_NATIVE_FN("topaz__get_root", topaz_api__get_root, 0);
-    TS_MAP_NATIVE_FN("topaz__set_root", topaz_api__set_root, 1);
     TS_MAP_NATIVE_FN("topaz__attach_pre_manager", topaz_api__attach_pre_manager, 1);
     TS_MAP_NATIVE_FN("topaz__attach_pre_manager_unpausable", topaz_api__attach_pre_manager_unpausable, 1);
     TS_MAP_NATIVE_FN("topaz__attach_post_manager", topaz_api__attach_post_manager, 1);

@@ -91,6 +91,22 @@ enum Topaz.Display.PARAMETER
     ///
     eval INPUT_FOCUS
 
+    /// Determines whether the display is active. Active displays are regularly updated 
+    /// by topaz, which means input is polled, their root is run, and data is shown 
+    /// on it. Displays are active by default
+    eval ACTIVE
+
+
+/// Gets/sets the toplevel Entity for this display 
+///
+/// From here, you can 
+/// set the Entity that holds the toplevel of the project. 
+/// By default there is none.
+/// From this entity, all other entities will be updated.
+/// Topaz handles entities in a hierarchical structure,
+/// so the root must be populated for the hierarchy to 
+/// update.
+@Topaz.Entity root
 
 
 
@@ -184,13 +200,23 @@ func captureMainFramebuffer ->
 
 
 
-/// Returns the width of the display.
-/// Read-only.
-@Int width
+/// Sets / gets the width of the display.
+@Number width
 
-/// Returns the height of the display.
-/// Read-only.
-@Int height
+/// Sets / gets the height of the display.
+@Number height
+
+/// Sets / gets the X position of the display.
+@Number x  
+
+/// Sets / gets the Y position of the display.
+@Number y
+
+/// Sets / gets whether the display is active.
+@Boolean active
+
+/// Sets / gets whether the display is focused.
+@Boolean focused
 
 
 /// Retrieves the camera associated with the display thats 

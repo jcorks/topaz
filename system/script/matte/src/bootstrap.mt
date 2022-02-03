@@ -471,37 +471,7 @@
                 }
             );
         };
-        @__ViewManager__ = ::<={
-            @: topaz_view_manager__set_main = getExternalFunction(name:'topaz_view_manager__set_main');
-            @: topaz_view_manager__get_main = getExternalFunction(name:'topaz_view_manager__get_main');
-            @: topaz_view_manager__set_clipboard_from_string = getExternalFunction(name:'topaz_view_manager__set_clipboard_from_string');
-            @: topaz_view_manager__get_clipboard_as_string = getExternalFunction(name:'topaz_view_manager__get_clipboard_as_string');
-            return class(
-                name : 'Topaz.ViewManager',        
-                define :::(this) { 
 
-                    this.interface = {
-                        mainDisplay : {
-                            set ::(value){ 
-                                topaz_view_manager__set_main(a:value.native);
-                            },
-                            get ::{ 
-                                return __Topaz__.Display.new(native:topaz_view_manager__get_main());
-                            }
-                        },
-        
-                        clipboard : {
-                            set ::(value){ 
-                                topaz_view_manager__set_clipboard_from_string(a:value);
-                            },
-                            get ::{ 
-                                return topaz_view_manager__get_clipboard_as_string();
-                            }
-                        }
-                    };
-                }
-            ).new();
-        };
         @__Display__ = ::<={
             @:topaz_view_manager__create_display = getExternalFunction(name:'topaz_view_manager__create_display');
             @:topaz_display__destroy = getExternalFunction(name:'topaz_display__destroy');
@@ -517,6 +487,8 @@
             @:topaz_display__get_camera_2d = getExternalFunction(name:'topaz_display__get_camera_2d');
             @:topaz_display__get_camera_3d = getExternalFunction(name:'topaz_display__get_camera_3d');
             @:topaz_display__get_main_framebuffer = getExternalFunction(name:'topaz_display__get_main_framebuffer');
+            @:topaz_display__set_root = getExternalFunction(name:'topaz_display__set_root');
+            @:topaz_display__get_root = getExternalFunction(name:'topaz_display__get_root');
             return class(
                 name : 'Topaz.Display',        
                 inherits : [__Native__],
@@ -536,7 +508,8 @@
                         LOCK_CLIENT_RESIZE : 6,
                         LOCK_CLIENT_POSITION : 7,
                         VIEW_POLICY : 8,
-                        INPUT_FOCUS : 9
+                        INPUT_FOCUS : 9,
+                        ACTIVE : 10
                     },
                     
                     FRAMEBUFFER : {
@@ -563,7 +536,7 @@
         
                         resize : ::(width, height){ 
                             topaz_display__set_parameter(a:impl, b:2, c:width);
-                            topaz_display__set_parameter(a:impl, b:3, c:width);
+                            topaz_display__set_parameter(a:impl, b:3, c:height);
                         },
         
                         addParameterCallback : ::(func){ 
@@ -620,7 +593,50 @@
                                 topaz_display__set_parameter(a:impl, b:3, c:value);
                             }
                         },
+                        root : {
+                            get : ::(){ 
+                                return topaz_display__get_root(a:impl, b:0);
+                            },
+                            set : ::(value){ 
+                                topaz_display__set_root(a:impl, b:value.native);
+                            }
+                        },
+                        x : {
+                            get : ::(){ 
+                                return topaz_display__get_parameter(a:impl, b:0);
+                            },
+                            set : ::(value){ 
+                                topaz_display__set_parameter(a:impl, b:0, c:value);
+                            }
+                        },
         
+                        y : {
+                            get : ::(){ 
+                                return topaz_display__get_parameter(a:impl, b:1);
+                            },
+                            set : ::(value){ 
+                                topaz_display__set_parameter(a:impl, b:1, c:value);
+                            }
+                        },
+
+                        active : {
+                            get :: {
+                                return topaz_display__get_parameter(a:impl, b:10) > 0.5;
+                            },
+
+                            set ::(value) {
+                                topaz_display__set_parameter(a:impl, b:10, c:value);
+                            }
+                        },
+
+                        focused : {
+                            get :: {
+                                return topaz_display__get_parameter(a:impl, b:9) > 0.5;
+                            },
+                            set ::(value) {
+                                topaz_display__set_parameter(a:impl, b:9, c:value);
+                            }
+                        },
         
                         camera2d : {
                             get : ::(){ 
@@ -2883,8 +2899,6 @@
         @:topaz__log = getExternalFunction(name:'topaz__log');
         @:topaz__to_base64 = getExternalFunction(name:'topaz__to_base64');
         @:topaz__from_base64 = getExternalFunction(name:'topaz__from_base64');
-        @:topaz__set_root = getExternalFunction(name:'topaz__set_root');
-        @:topaz__get_root = getExternalFunction(name:'topaz__get_root');
         @:topaz__is_paused = getExternalFunction(name:'topaz__is_paused');
         @:topaz__get_time = getExternalFunction(name:'topaz__get_time');
         @:topaz__get_version_minor = getExternalFunction(name:'topaz__get_version_minor');
@@ -2892,6 +2906,12 @@
         @:topaz__get_version_major = getExternalFunction(name:'topaz__get_version_major');
         @:topaz__debug = getExternalFunction(name:'topaz__debug');
         @:topaz__enable_console = getExternalFunction(name:'topaz__enable_console');
+        @: topaz_view_manager__get_default = getExternalFunction(name:'topaz_view_manager__get_default');
+        @: topaz_view_manager__get_display_count = getExternalFunction(name:'topaz_view_manager__get_display_count');
+        @: topaz_view_manager__get_display = getExternalFunction(name:'topaz_view_manager__get_display');
+        @:topaz_view_manager__get_clipboard_as_string = getExternalFunction(name:'topaz_view_manager__get_clipboard_as_string');
+        @:topaz_view_manager__set_clipboard_from_string = getExternalFunction(name:'topaz_view_manager__set_clipboard_from_string');
+
         @:RENDERER =  {
             ATTRIBUTE : {
                 PRIMITIVE : 0,
@@ -2951,8 +2971,6 @@
             pauseNow : getExternalFunction(name:'topaz__pause_now'),
             resume : getExternalFunction(name:'topaz__resume'),
             iterate : getExternalFunction(name:'topaz__iterate'),
-            step : getExternalFunction(name:'topaz__step'),
-            draw : getExternalFunction(name:'topaz__draw'),
             attachPreManager : ::(manager){topaz__attach_pre_manager(a:manager.native);},        
             attachPreManagerUnpausable : ::(manager){topaz__attach_pre_manager_unpausable(a:manager.native);},        
             attachPostManager : ::(manager){topaz__attach_post_manager(a:manager.native);},        
@@ -2969,16 +2987,6 @@
             },
             enableConsole ::{
                 topaz__enable_console();
-            },
-            root : {
-                set : ::(value){ 
-                    return topaz__set_root(a:value.native);
-                },
-
-                get : ::(){ 
-                    @o = topaz__get_root();
-                    when(o != empty) o.__ctx;
-                }
             },
             
             isPaused : {
@@ -3009,12 +3017,42 @@
                 }
             },
 
-            
+            defaultDisplay : {
+                get ::{ 
+                    @f = topaz_view_manager__get_default();
+                    when (f == empty) empty;
+                    when (f.__ctx != empty) f.__ctx;
+                    return __Display__.new(native:f);      
+                }
+            },
+
+
+            displays : {
+                get ::{
+                    @:out = [];
+                    for(in:[0, topaz_view_manager__get_display_count()], do:::(i){
+                        @f = topaz_view_manager__get_display(a:i);
+                        when (f == empty) empty;
+                        when (f.__ctx != empty) f.__ctx;
+                        return __Display__.new(native:f);    
+                        out[i] = f;
+                    });
+                    return out;
+                }
+            },
+
+            clipboard : {
+                set ::(value){ 
+                    topaz_view_manager__set_clipboard_from_string(a:value);
+                },
+                get ::{ 
+                    return topaz_view_manager__get_clipboard_as_string();
+                }
+            },
             
     
             Filesystem  : {get : ::(){return __Filesystem__; }},
             RNG         : {get : ::(){return __RNG__; }},
-            ViewManager : {get : ::(){return __ViewManager__; }},
             Display     : {get : ::(){return __Display__; }},
             Framebuffer : {get : ::(){return __Framebuffer__; }},
             Asset       : {get : ::(){return __Asset__; }},

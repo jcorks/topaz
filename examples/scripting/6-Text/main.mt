@@ -45,6 +45,6 @@ ent.update(text:'Hello world!\nThis is text.');
 
 
 ent.position = {x:200, y:200};
-Topaz.root = ent;
+Topaz.defaultDisplay.root = ent;
 
 

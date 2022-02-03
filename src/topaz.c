@@ -32,6 +32,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/topaz.h>
 #include <topaz/backends/time.h>
 #include <topaz/backends/filesystem.h>
+#include <topaz/backends/display.h>
 #include <topaz/modules/graphics.h>
 #include <topaz/modules/script_manager.h>
 #include <topaz/modules/input.h>
@@ -58,7 +59,6 @@ struct topaz_t {
     topazSystem_t * system;
     
     topazTable_t * params;
-    topazEntity_t * universe;
     topazEntity_t * managersPre;
     topazEntity_t * managersPreNP;
     topazEntity_t * managersPost;
@@ -79,6 +79,7 @@ struct topaz_t {
 
     topazFilesystem_t * fsRef;
     topazTime_t * timeRef;
+    topazDisplay_t * display;
     double frameEnd;
     double frameStart;
     
@@ -130,7 +131,6 @@ topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
     topaz_table_insert(out->params, TOPAZ_STR_CAST("version-major"), topaz_string_create_from_c_str("%d", TOPAZ__VERSION__MAJOR));
     
 
-    out->universe = topaz_entity_null();
     out->managersPre = topaz_entity_create(out);
     out->managersPreNP = topaz_entity_create(out);
     out->managersPost = topaz_entity_create(out);
@@ -176,7 +176,6 @@ void topaz_context_destroy(topaz_t * t) {
     
 
 
-    topaz_entity_remove(t->universe);
     topaz_entity_remove(t->managersPre);
     topaz_entity_remove(t->managersPreNP);
     topaz_entity_remove(t->managersPost);
@@ -256,6 +255,7 @@ void topaz_context_resume(topaz_t * t) {
 }
     
 void topaz_context_step(topaz_t * t) {
+    topazEntity_t * root = topaz_display_get_root(t->display);
     /////// step 
     // Order:
     /*
@@ -276,10 +276,7 @@ void topaz_context_step(topaz_t * t) {
     
     topaz_system_pre_step(t->system);
     
-    if (!t->paused) {
-        topaz_entity_step(t->managersPre);
-    }    
-    topaz_entity_step(t->managersPreNP);
+
     
     len = topaz_array_get_size(t->modules);
     for(i = 0; i < len; ++i) {
@@ -291,8 +288,8 @@ void topaz_context_step(topaz_t * t) {
     }
 
     if (!t->paused) {
-        if (topaz_entity_is_valid(t->universe))
-            topaz_entity_step(t->universe);
+        if (topaz_entity_is_valid(root))
+            topaz_entity_step(root);
     }
     
     for(i = 0; i < len; ++i) {
@@ -302,20 +299,21 @@ void topaz_context_step(topaz_t * t) {
         if (api->on_step) api->on_step(e, api->userData);
     }
     
-    
-    if (!t->paused) {
-        topaz_entity_step(t->managersPost);
-    }    
-    topaz_entity_step(t->managersPostNP);
+
 
     topaz_system_post_step(t->system);
 
-    topaz_entity_sweep();
+
 }
 
-
+topazDisplay_t * topaz_context_get_iteration_display(
+    topaz_t * context
+) {
+    return context->display;
+}
 void topaz_context_draw(topaz_t * t) {
-    
+    topazEntity_t * root = topaz_display_get_root(t->display);
+
     
     /////// render 
     // Order:
@@ -338,10 +336,7 @@ void topaz_context_draw(topaz_t * t) {
     topaz_system_pre_draw(t->system);
 
 
-    if (!t->paused) {
-        topaz_entity_draw(t->managersPre);
-    }    
-    topaz_entity_draw(t->managersPreNP);
+
 
     len = topaz_array_get_size(t->modules);
     for(i = 0; i < len; ++i) {
@@ -353,8 +348,8 @@ void topaz_context_draw(topaz_t * t) {
     }
 
     if (!t->paused) {
-        if (topaz_entity_is_valid(t->universe))
-            topaz_entity_draw(t->universe);
+        if (topaz_entity_is_valid(root))
+            topaz_entity_draw(root);
     }
     
     for(i = 0; i < len; ++i) {
@@ -366,35 +361,54 @@ void topaz_context_draw(topaz_t * t) {
     }
     
     
-    if (!t->paused) {
-        topaz_entity_draw(t->managersPost);
-    }    
-    topaz_entity_draw(t->managersPostNP);
+
     topaz_system_post_draw(t->system);
 
     topaz_graphics_sync(t->graphics);
 }
 
 void topaz_context_iterate(topaz_t * t) {
-    topaz_context_step(t);
-    topaz_context_draw(t);
+
+    if (!t->paused) {
+        topaz_entity_step(t->managersPre);
+    }    
+    topaz_entity_step(t->managersPreNP);
+    
+    topazArray_t * views = topaz_view_manager_get_all_active(t->viewManager);
+    uint32_t len = topaz_array_get_size(views);
+    uint32_t i;
+    for(i = 0; i < len; ++i) {
+        topazDisplay_t * d = topaz_array_at(views, topazDisplay_t *, i);
+        t->display = d;
+        topazRenderer_Framebuffer_t * fb = topaz_display_get_main_framebuffer(d);
+        topaz_renderer_attach_target(
+            topaz_graphics_get_renderer(
+                topaz_context_get_graphics(t)
+            ),
+            fb
+        );
+        topaz_input_poll(t->input);
+        topaz_display_update(d);
+        topaz_graphics_reset_scene(t->graphics);
+        topaz_context_step(t);
+        topaz_context_draw(t);
+        topaz_graphics_sync(t->graphics);
+    }
+    t->display = NULL;
+    topaz_array_destroy(views);
+    if (!t->paused) {
+        topaz_entity_step(t->managersPost);
+    }    
+    topaz_entity_step(t->managersPostNP);
+
+    topaz_entity_sweep();
     topaz_audio_update(t->audio);
-    topaz_view_manager_update_view(t->viewManager);
-    topaz_graphics_reset_scene(t->graphics);
 }
 
 int topaz_context_is_paused(const topaz_t * t) {
     return t->paused;
 }
 
-
-topazEntity_t * topaz_context_get_root(const topaz_t * t) {
-    return t->universe;
-}
-
-void topaz_context_set_root(topaz_t * t, topazEntity_t * u) {
-    t->universe = u;
-}
 
 
 void topaz_context_attach_pre_manager(topaz_t * t, topazEntity_t * id) {

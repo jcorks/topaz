@@ -89,7 +89,7 @@ void topaz_graphics_request_draw_2d(topazGraphics_t * g, topazRender2D_t * objec
     uint32_t objectID = topaz_render2d_get_render_data(object, &attribs);
     set_display_mode_2d(g, &attribs);
 
-    topazDisplay_t * d = topaz_view_manager_get_main(topaz_context_get_view_manager(g->ctx));
+    topazDisplay_t * d = topaz_context_get_iteration_display(g->ctx);
     if (!d) return;
 
     topazRenderer_Framebuffer_t * fb = topaz_display_get_main_framebuffer(d);    

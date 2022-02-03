@@ -89,4 +89,4 @@
 
 @v = Emitter.new();
 v.position = {x:200, y:200};
-Topaz.root = v;
+Topaz.defaultDisplay.root = v;

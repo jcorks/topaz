@@ -61,7 +61,7 @@ typedef struct topazDisplayAPI_t topazDisplayAPI_t;
 // function for backend to signal a resize event.
 // Both user requested resizes AND external resizes should end up calling 
 // this from the backend.
-void topaz_display_signal_parameter_change(topazDisplay_t *, topazDisplay_Parameter, int value);
+void topaz_display_signal_parameter_change(topazDisplay_t *, topazDisplay_Parameter, float value);
 
 // function for backend to signal a close event.
 // Both user requested resizes AND external close events should end up calling 
@@ -79,7 +79,7 @@ struct topazDisplayAPI_t {
 
 
 
-    void (*display_request_parameter_change)   (topazDisplay_t *, void *, topazDisplay_Parameter, int value);
+    void (*display_request_parameter_change)   (topazDisplay_t *, void *, topazDisplay_Parameter, float value);
     int (*display_is_parameter_modifiable)   (topazDisplay_t *, void *, topazDisplay_Parameter);
 
     void (*display_set_name)            (topazDisplay_t *, void *, const topazString_t *);

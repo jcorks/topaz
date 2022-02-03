@@ -46,7 +46,7 @@ typedef struct topazArray_t topazArray_t;
 typedef struct topazString_t topazString_t;
 typedef struct topazFontManager_t topazFontManager_t;
 typedef struct topazAudio_t topazAudio_t;
-
+typedef struct topazDisplay_t topazDisplay_t;
 
 
 ///
@@ -168,28 +168,7 @@ int topaz_context_is_paused(
 );
 
 
-/// Returns the toplevel Entity. 
-///
-/// From here, you can 
-/// set the Entity that holds the toplevel of the project. 
-/// By default there is none.
-topazEntity_t *topaz_context_get_root(
-    /// The context to query.
-    const topaz_t * context
-);
 
-
-/// Sets the root entity for the context.
-/// From this entity, all other entities will be updated.
-/// topaz handles entities in a hierarchical structure,
-/// so the root must be populated and managed.
-void topaz_context_set_root(
-    /// The context to modify.
-    topaz_t * context, 
-
-    /// The new root to use.
-    topazEntity_t * newRoot
-);
 
 
 /// Attaches a management-type entity.
@@ -198,8 +177,9 @@ void topaz_context_set_root(
 /// the engine is in a paused state.
 /// Managers are kept separate from the root entity tree and are unaffected
 /// switching of the root entity.
-/// the pre_manager* calls ensure that these managers are stepped/drawn BEFORE 
+/// the pre_manager* calls ensure that these managers are stepped BEFORE 
 /// the normal entity tree. 
+/// Managers are never drawn.
 ///
 void topaz_context_attach_pre_manager(
     /// The context to modify.
@@ -308,7 +288,12 @@ topazArray_t * topaz_context_get_parameter_names(
 
 
 
-
+/// Gets the current iteration display.
+/// This is the display thats currently getting 
+/// modified. If none, returns NULL.
+topazDisplay_t * topaz_context_get_iteration_display(
+    topaz_t * context
+);
 
 /// Creates a new, standard filesys instance.
 ///

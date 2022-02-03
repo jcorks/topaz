@@ -171,6 +171,11 @@ enum topazDisplay_Parameter {
     /// this will always return true. 
     ///
     topazDisplay_Parameter_InputFocus,
+    /// Returns whether the display is active. Active displays have their roots update 
+    /// and the results reflected on the display. Active displays also have input polled for.
+    /// Newly created windows are active by default.
+    topazDisplay_Parameter_Active
+
 };
 
 /// Every display has built in framebuffers that can be 
@@ -347,7 +352,7 @@ void topaz_display_set_parameter(
     /// The parameter to modify.
     topazDisplay_Parameter,
     /// The new value of the parameter.
-    int value
+    float value
 );
 
 
@@ -363,7 +368,7 @@ int topaz_display_is_parameter_modifiable(
 );
 
 /// Returns the current value of the parameter.
-int topaz_display_get_parameter(
+float topaz_display_get_parameter(
     /// The display to query.
     const topazDisplay_t * display,
     /// The parameter to query.
@@ -451,7 +456,28 @@ void topaz_display_remove_callback(
 );
 
 
+/// Returns the toplevel Entity. 
+///
+/// From here, you can 
+/// set the Entity that holds the toplevel of the project. 
+/// By default there is none.
+topazEntity_t *topaz_display_get_root(
+    /// The context to query.
+    const topazDisplay_t * display
+);
 
+
+/// Sets the root entity for the context.
+/// From this entity, all other entities will be updated.
+/// topaz handles entities in a hierarchical structure,
+/// so the root must be populated and managed.
+void topaz_display_set_root(
+    /// The context to modify.
+    topazDisplay_t * display, 
+
+    /// The new root to use.
+    topazEntity_t * newRoot
+);
 
 
 

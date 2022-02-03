@@ -92,4 +92,4 @@ b.scale = {x:0.7, y:0.3, z:0.3};
 
 
 a.children = [b];
-Topaz.root = a;
+Topaz.defaultDisplay.root = a;

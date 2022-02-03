@@ -193,25 +193,15 @@ func resume ->
 /// Does not include frame throttling
 func iterate -> 
 
-/// Performs a stepping operation for the entire engine. This is normally
-/// called through topaz_context_iterate(), which is called by topaz_context_run().
-///
-func step ->
-
-/// Performs a drawing operation for the entire engine. This is normally
-/// called through topaz_context_iterate(), which is called by topaz_context_run().
-///
-func draw ->
 
 
 /// Attaches a management-type entity.
 ///
 /// If pausable is false, the manager will continue to update even when 
 /// the engine is in a paused state.
-/// Managers are kept separate from the root entity tree and are unaffected
-/// switching of the root entity.
 /// the pre_manager* calls ensure that these managers are stepped/drawn BEFORE 
-/// the normal entity tree. 
+/// the normal entity tree. Manager entities and their children are 
+/// not drawn.
 ///
 func attachPreManager ->
     
@@ -304,15 +294,22 @@ func enableConsole ->
 
 
 
-/// Gets/sets the toplevel Entity. 
+
+
+/// Gets the default display, which is the first display created.
 ///
-/// From here, you can 
-/// set the Entity that holds the toplevel of the project. 
-/// By default there is none.
-/// From this entity, all other entities will be updated.
-/// topaz handles entities in a hierarchical structure,
-/// so the root must be populated and managed.
-@Topaz.Entity root
+@Topaz.Display defaultDisplay
+
+/// Gets an array of all displays.
+///
+@Array displays
+
+/// Gets/Sets the current main display's clipboard contents
+/// as a string. On most systems, there is only one 
+/// clipboard for the system. The clipboard is 
+/// associated with the defaultDisplay.
+@String clipboard
+
 
 
 
@@ -354,8 +351,6 @@ func enableConsole ->
 /// Singleton for FontManager-related symbols.
 @Topaz.FontManager </br>
 
-/// Singleton for ViewManager-related symbols.
-@Topaz.ViewManager </br>
 
 /// Singleton for Vector-related utilities.
 @Topaz.Vector </br>

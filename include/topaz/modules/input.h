@@ -402,8 +402,11 @@ void topaz_input_unmap(
 );
 
 
-
-
+/// Polls for input.
+void topaz_input_poll(
+    /// The input to poll.
+    topazInput_t * t
+);
 
 /// Convenience function that returns the current pointer x position.
 ///
