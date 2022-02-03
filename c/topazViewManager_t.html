@@ -78,38 +78,14 @@ topaz_view_manager_create_display()
 
 </div>
 <div>
-<a href="topazViewManager_t.html#topaz_view_manager_create_main">
-topaz_view_manager_create_main()
-</a>
-
-</div>
-<div>
-<a href="topazViewManager_t.html#topaz_view_manager_create_main_default">
-topaz_view_manager_create_main_default()
-</a>
-
-</div>
-<div>
 <a href="topazViewManager_t.html#topaz_view_manager_destroy_display">
 topaz_view_manager_destroy_display()
 </a>
 
 </div>
 <div>
-<a href="topazViewManager_t.html#topaz_view_manager_set_main">
-topaz_view_manager_set_main()
-</a>
-
-</div>
-<div>
-<a href="topazViewManager_t.html#topaz_view_manager_get_main">
-topaz_view_manager_get_main()
-</a>
-
-</div>
-<div>
-<a href="topazViewManager_t.html#topaz_view_manager_update_view">
-topaz_view_manager_update_view()
+<a href="topazViewManager_t.html#topaz_view_manager_get_default">
+topaz_view_manager_get_default()
 </a>
 
 </div>
@@ -126,20 +102,14 @@ topaz_view_manager_set_clipboard_from_string()
 
 </div>
 <div>
-<a href="topazViewManager_t.html#topaz_view_manager_get_view_width">
-topaz_view_manager_get_view_width()
-</a>
-
-</div>
-<div>
-<a href="topazViewManager_t.html#topaz_view_manager_get_view_height">
-topaz_view_manager_get_view_height()
-</a>
-
-</div>
-<div>
 <a href="topazViewManager_t.html#topaz_view_manager_get_all">
 topaz_view_manager_get_all()
+</a>
+
+</div>
+<div>
+<a href="topazViewManager_t.html#topaz_view_manager_get_all_active">
+topaz_view_manager_get_all_active()
 </a>
 
 </div>
@@ -285,211 +255,6 @@ topazString_t
 
 </th>
 <th class="FunctionArgumentName">
-displayName,
-</th>
-
-</tr>
-<tr>
-<th class="FunctionArgumentType">
-int
-</th>
-<th class="FunctionArgumentName">
-w,
-</th>
-
-</tr>
-<tr>
-<th class="FunctionArgumentType">
-int
-</th>
-<th class="FunctionArgumentName">
-h
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
-</h3>
-<pre>
- Creates a new Display with the given w and h in pixels.
-
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-viewMan,
-</div>
-<pre>
- The view manager to create a display with
-
-</pre>
-<div>
-displayName,
-</div>
-<pre>
- Optional display name.
-
-</pre>
-<div>
-w,
-</div>
-<pre>
- Initialized width.
-
-</pre>
-<div>
-h
-</div>
-<pre>
- Initialized height.
-
-</pre>
-
-</div>
-</br>
-</div>
-<div class="Function">
-<div class="typetag">
-(Function)</br>
-</div>
-<div>
-<h5 class="FunctionReturnValue">
-<a href="topazDisplay_t.html#topazDisplay_t">
-topazDisplay_t
-</a>
-
-</h5>
-<h3 id="topaz_view_manager_create_main">
-topaz_view_manager_create_main(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazViewManager_t.html#topazViewManager_t">
-topazViewManager_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-viewMan,
-</th>
-
-</tr>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazString_t.html#topazString_t">
-topazString_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-displayName,
-</th>
-
-</tr>
-<tr>
-<th class="FunctionArgumentType">
-int
-</th>
-<th class="FunctionArgumentName">
-w,
-</th>
-
-</tr>
-<tr>
-<th class="FunctionArgumentType">
-int
-</th>
-<th class="FunctionArgumentName">
-h
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
-</h3>
-<pre>
- Same as topaz_view_manager_create_display(), but it also sets 
- the new display as the main display for you.
-
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-viewMan,
-</div>
-<pre>
- The view manager to create a display with
-
-</pre>
-<div>
-displayName,
-</div>
-<pre>
- Optional display name.
-
-</pre>
-<div>
-w,
-</div>
-<pre>
- Initialized width.
-
-</pre>
-<div>
-h
-</div>
-<pre>
- Initialized height.
-
-</pre>
-
-</div>
-</br>
-</div>
-<div class="Function">
-<div class="typetag">
-(Function)</br>
-</div>
-<div>
-<h5 class="FunctionReturnValue">
-<a href="topazDisplay_t.html#topazDisplay_t">
-topazDisplay_t
-</a>
-
-</h5>
-<h3 id="topaz_view_manager_create_main_default">
-topaz_view_manager_create_main_default(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazViewManager_t.html#topazViewManager_t">
-topazViewManager_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-viewMan,
-</th>
-
-</tr>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazString_t.html#topazString_t">
-topazString_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
 displayName
 </th>
 
@@ -600,81 +365,13 @@ display
 </div>
 <div>
 <h5 class="FunctionReturnValue">
-void
-</h5>
-<h3 id="topaz_view_manager_set_main">
-topaz_view_manager_set_main(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazViewManager_t.html#topazViewManager_t">
-topazViewManager_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-viewMan,
-</th>
-
-</tr>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazDisplay_t.html#topazDisplay_t">
-topazDisplay_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-display
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
-</h3>
-<pre>
- Sets the given display as the one to update and draw to.
- NULL is accepted, and will result in no display being updated.
-
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-viewMan,
-</div>
-<pre>
- The view manager to modify.
-
-</pre>
-<div>
-display
-</div>
-<pre>
- The display to set as a main display.
-
-</pre>
-
-</div>
-</br>
-</div>
-<div class="Function">
-<div class="typetag">
-(Function)</br>
-</div>
-<div>
-<h5 class="FunctionReturnValue">
 <a href="topazDisplay_t.html#topazDisplay_t">
 topazDisplay_t
 </a>
 
 </h5>
-<h3 id="topaz_view_manager_get_main">
-topaz_view_manager_get_main(
+<h3 id="topaz_view_manager_get_default">
+topaz_view_manager_get_default(
 </h3>
 <table>
 <tr>
@@ -707,55 +404,6 @@ viewMan
 </div>
 <pre>
  The view manager to query.
-
-</pre>
-
-</div>
-</br>
-</div>
-<div class="Function">
-<div class="typetag">
-(Function)</br>
-</div>
-<div>
-<h5 class="FunctionReturnValue">
-void
-</h5>
-<h3 id="topaz_view_manager_update_view">
-topaz_view_manager_update_view(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazViewManager_t.html#topazViewManager_t">
-topazViewManager_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-viewMan
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
-</h3>
-<pre>
- Forces the main display to reflect the last rendered visual.
- Normally called for you by the engine.
-
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-viewMan
-</div>
-<pre>
- The view manager to update.
 
 </pre>
 
@@ -886,104 +534,6 @@ clipboardData
 </div>
 <div>
 <h5 class="FunctionReturnValue">
-int
-</h5>
-<h3 id="topaz_view_manager_get_view_width">
-topaz_view_manager_get_view_width(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazViewManager_t.html#topazViewManager_t">
-topazViewManager_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-viewMan
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
-</h3>
-<pre>
- Convenience function to get the view width of the main display. If 
- none, -1 is returned.
-
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-viewMan
-</div>
-<pre>
- The view manager to query
-
-</pre>
-
-</div>
-</br>
-</div>
-<div class="Function">
-<div class="typetag">
-(Function)</br>
-</div>
-<div>
-<h5 class="FunctionReturnValue">
-int
-</h5>
-<h3 id="topaz_view_manager_get_view_height">
-topaz_view_manager_get_view_height(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazViewManager_t.html#topazViewManager_t">
-topazViewManager_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-viewMan
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
-</h3>
-<pre>
- Convenience function to get the view height of the main display. If 
- none, -1 is returned.
-
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-viewMan
-</div>
-<pre>
- The view manager to query
-
-</pre>
-
-</div>
-</br>
-</div>
-<div class="Function">
-<div class="typetag">
-(Function)</br>
-</div>
-<div>
-<h5 class="FunctionReturnValue">
 <a href="topazArray_t.html#topazArray_t">
 topazArray_t
 </a>
@@ -1030,12 +580,65 @@ viewMan
 </div>
 </br>
 </div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
+<a href="topazArray_t.html#topazArray_t">
+topazArray_t
+</a>
+
+</h5>
+<h3 id="topaz_view_manager_get_all_active">
+topaz_view_manager_get_all_active(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazViewManager_t.html#topazViewManager_t">
+topazViewManager_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+viewMan
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Gets an array of all displays registered under the 
+ this view manager that are active. The array should 
+ be destroyed when done.
+
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+viewMan
+</div>
+<pre>
+ The view manager to query
+
+</pre>
+
+</div>
+</br>
+</div>
 
 </div>
 
 </div>
 <i class="symbollist credits">
-Generated by Topaz v0.2.0. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
+Generated by Topaz v0.2.1. Johnathan Corkery, 2022. <a href="https://github.com/jcorks/topaz">https://github.com/jcorks/topaz</a>
 </i>
 
 </body>
