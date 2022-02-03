@@ -52,7 +52,10 @@ Topaz.Component
 
 </i>
 <pre>
- Allows for running of functions at regular intervals.
+ Allows for running of functions at regular intervals,
+ or firing of a callback after a delay.
+ To stop a scheduler, destroy it.
+
 
 </pre>
 <div>
@@ -62,24 +65,6 @@ Topaz.Component
 <div>
 <a href="Topaz.Scheduler.html#constructor">
 constructor()
-</a>
-
-</div>
-<div>
-<a href="Topaz.Scheduler.html#startTask">
-startTask()
-</a>
-
-</div>
-<div>
-<a href="Topaz.Scheduler.html#endTask">
-endTask()
-</a>
-
-</div>
-<div>
-<a href="Topaz.Scheduler.html#endAllTasks">
-endAllTasks()
 </a>
 
 </div>
@@ -115,26 +100,6 @@ Topaz.Scheduler.MODE
 </div>
 
 </div>
-<div>
-</br></br><b>Public Variables:</b></br></br>
-</div>
-<div class="PublicMembers">
-<div>
-<span class="VariableType">
-Array
-</span>
-<span class="VariableName">
- tasks
-</span>
-
-</div>
-<pre>
- Returns an array of the names of all tasks currently running.
- Read-only.
-
-</pre>
-
-</div>
 
 </div>
 </br>
@@ -149,7 +114,6 @@ Topaz.Scheduler.MODE
 </h3>
 <pre>
  Enumerator for different scheduler modes.
- See Topaz.Scheduler
 
 </pre>
 <table>
@@ -167,7 +131,7 @@ TIME
 FRAME
 </th>
 <td>
- Tells the scheduler to measyre with frames.
+ Tells the scheduler to measure with frames.
 
 </td>
 </tr>
@@ -200,47 +164,12 @@ mode
 </th>
 
 </tr>
-
-</table>
-<h3>
-)
-</h3>
-<pre>
- The constructor requires a mode.
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-mode
-</div>
-<pre>
- The mode to use.
-
-</pre>
-
-</div>
-</br>
-</div>
-<div class="Function">
-<div class="typetag">
-(Function)</br>
-</div>
-<div>
-<h5 class="FunctionReturnValue">
-String
-</h5>
-<h3 id="startTask">
-startTask(
-</h3>
-<table>
 <tr>
 <th class="FunctionArgumentType">
-String
+Boolean
 </th>
 <th class="FunctionArgumentName">
-taskName
+justOnce
 </th>
 
 </tr>
@@ -267,7 +196,7 @@ intervalDelay
 Function
 </th>
 <th class="FunctionArgumentName">
-callback.
+callback
 </th>
 
 </tr>
@@ -277,47 +206,54 @@ callback.
 )
 </h3>
 <pre>
- Assigns a new task for the scheduler to process. Once 
- the interval time has elapsed, the callback will be called.
-
- The name of the task is only returned for simple tasks. See the 
- taskName argument for more info. 
+ The scheduler is set up in its constructor.
+ The scheduler timing begins immediately.
 
 </pre>
 <div>
 <b>Arguments:</b></br></br>
 </div>
 <div>
-taskName
+mode
 </div>
 <pre>
-         The name of the task. The existence of this key determines 
-         whether this is a "simple task" or a "full task". Simple
-         tasks only contain an interval property and a callback,
-         all other keys of the argument are ignored. Full tasks 
-         are expected to have properties for the callback, internal,
-         taskName, and intervalDelay.
+ The mode to use.
+
+</pre>
+<div>
+justOnce
+</div>
+<pre>
+ Whether to have the scheduler run the callback only 
+ once, or to continuously run it. 
+
+ NOTE: despite it only running once, the scheduler 
+ will still exist after this. Once it ends, you can 
+ either reset() it to start again, or destroy() it 
+
 
 </pre>
 <div>
 interval
 </div>
 <pre>
-         How often the task will run. If the mode is topazScheduler_Mode_Time,
-         the interval is a time in milliseconds. If the mode is 
-         topazScheduler_Mode_Frame, the the interval is the number 
-         of frames.
+ How often the task will run. If the mode is topazScheduler_Mode_Time,
+ the interval is a time in milliseconds. If the mode is 
+ topazScheduler_Mode_Frame, the the interval is the number 
+ of frames. This is only useful if the scheduler calls 
+ the callback repeatedly.
 
 </pre>
 <div>
 intervalDelay
 </div>
 <pre>
-         The initial delay before the task starts being measured.
+ The initial delay before the task starts being measured.
+ If running "justOnce", this is the delay to use.
 
 </pre>
 <div>
-callback.
+callback
 </div>
 <pre>
          Callback is called when the interval expires.
@@ -335,103 +271,12 @@ callback.
 <h5 class="FunctionReturnValue">
 
 </h5>
-<h3 id="endTask">
-endTask(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-String
-</th>
-<th class="FunctionArgumentName">
-name
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
-</h3>
-<pre>
- Halts the task with the given name.
- If no such task exists, no action is taken.
-
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-name
-</div>
-<pre>
- The name of the task to remove. 
-
-</pre>
-
-</div>
-</br>
-</div>
-<div class="Function">
-<div class="typetag">
-(Function)</br>
-</div>
-<div>
-<h5 class="FunctionReturnValue">
-
-</h5>
-<h3 id="endAllTasks">
-endAllTasks()
-</h3>
-<pre>
- Ends all tasks currently running by this scheduler.
-
-
-</pre>
-
-</div>
-</br>
-</div>
-<div class="Function">
-<div class="typetag">
-(Function)</br>
-</div>
-<div>
-<h5 class="FunctionReturnValue">
-
-</h5>
 <h3 id="pause">
-pause(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-String
-</th>
-<th class="FunctionArgumentName">
-name
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
+pause()
 </h3>
 <pre>
  Stops processing and timing of tasks until topaz_scheduler_resume() is called.
 
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-name
-</div>
-<pre>
- The scheduler to pause.
 
 </pre>
 
@@ -447,36 +292,11 @@ name
 
 </h5>
 <h3 id="resume">
-resume(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-String
-</th>
-<th class="FunctionArgumentName">
-name
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
+resume()
 </h3>
 <pre>
  Resumes processing of tasks once more. If the scheduler was not 
  paused, no action is taken.
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-name
-</div>
-<pre>
- The scheduler to resume.
 
 </pre>
 
@@ -492,36 +312,11 @@ name
 Number
 </h5>
 <h3 id="getTaskIntervalRemaining">
-getTaskIntervalRemaining(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-String
-</th>
-<th class="FunctionArgumentName">
-name
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
+getTaskIntervalRemaining()
 </h3>
 <pre>
  Gets the interval amount before the task interval
  is next complete.
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-name
-</div>
-<pre>
- The name of the task to query.
 
 </pre>
 

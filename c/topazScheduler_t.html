@@ -61,30 +61,6 @@ topaz_scheduler_create()
 
 </div>
 <div>
-<a href="topazScheduler_t.html#topaz_scheduler_start_task">
-topaz_scheduler_start_task()
-</a>
-
-</div>
-<div>
-<a href="topazScheduler_t.html#topaz_scheduler_start_task_simple">
-topaz_scheduler_start_task_simple()
-</a>
-
-</div>
-<div>
-<a href="topazScheduler_t.html#topaz_scheduler_end_task">
-topaz_scheduler_end_task()
-</a>
-
-</div>
-<div>
-<a href="topazScheduler_t.html#topaz_scheduler_get_tasks">
-topaz_scheduler_get_tasks()
-</a>
-
-</div>
-<div>
 <a href="topazScheduler_t.html#topaz_scheduler_pause">
 topaz_scheduler_pause()
 </a>
@@ -93,6 +69,12 @@ topaz_scheduler_pause()
 <div>
 <a href="topazScheduler_t.html#topaz_scheduler_resume">
 topaz_scheduler_resume()
+</a>
+
+</div>
+<div>
+<a href="topazScheduler_t.html#topaz_scheduler_reset">
+topaz_scheduler_reset()
 </a>
 
 </div>
@@ -194,75 +176,16 @@ topazScheduler_Mode
 
 </th>
 <th class="FunctionArgumentName">
-mode
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
-</h3>
-<pre>
- Creates a new state control component.
- Use component_destroy to release.
-
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-context,
-</div>
-<pre>
- The topaz context.
-
-</pre>
-<div>
-mode
-</div>
-<pre>
- The mode for the scheduler.
-
-</pre>
-
-</div>
-</br>
-</div>
-<div class="Function">
-<div class="typetag">
-(Function)</br>
-</div>
-<div>
-<h5 class="FunctionReturnValue">
-void
-</h5>
-<h3 id="topaz_scheduler_start_task">
-topaz_scheduler_start_task(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazComponent_t.html#topazComponent_t">
-topazComponent_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-scheduler,
+mode,
 </th>
 
 </tr>
 <tr>
 <th class="FunctionArgumentType">
-<a href="topazString_t.html#topazString_t">
-topazString_t
-</a>
-
+int
 </th>
 <th class="FunctionArgumentName">
-taskName,
+justOnce,
 </th>
 
 </tr>
@@ -311,27 +234,34 @@ callbackData
 )
 </h3>
 <pre>
- Assigns a new task for the scheduler to process. Once 
- the interval time has elapsed, the callback will be called.
- Callback is called when the interval expires with the given callbackData
- as argument.
+ Creates a new state control component.
+ Use component_destroy to release.
+
 
 </pre>
 <div>
 <b>Arguments:</b></br></br>
 </div>
 <div>
-scheduler,
+context,
 </div>
 <pre>
- The scheduler to add a task to.
+ The topaz context.
 
 </pre>
 <div>
-taskName,
+mode,
 </div>
 <pre>
- The name of the task to add.
+ The mode for the scheduler.
+
+</pre>
+<div>
+justOnce,
+</div>
+<pre>
+ Whether the scheduler should repeat or 
+ only fire once.
 
 </pre>
 <div>
@@ -363,231 +293,6 @@ callbackData
 </div>
 <pre>
  The data to bind to the callback.
-
-</pre>
-
-</div>
-</br>
-</div>
-<div class="Function">
-<div class="typetag">
-(Function)</br>
-</div>
-<div>
-<h5 class="FunctionReturnValue">
-<a href="topazString_t.html#topazString_t">
-topazString_t
-</a>
-
-</h5>
-<h3 id="topaz_scheduler_start_task_simple">
-topaz_scheduler_start_task_simple(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazComponent_t.html#topazComponent_t">
-topazComponent_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-scheduler,
-</th>
-
-</tr>
-<tr>
-<th class="FunctionArgumentType">
-uint32_t
-</th>
-<th class="FunctionArgumentName">
-interval,
-</th>
-
-</tr>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazComponent_t.html#topaz_component_attribute_callback">
-topaz_component_attribute_callback
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-callback,
-</th>
-
-</tr>
-<tr>
-<th class="FunctionArgumentType">
-void
-</th>
-<th class="FunctionArgumentName">
-callbackData
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
-</h3>
-<pre>
- Same as topaz_scheduler_start_task except will simplified inputs:
- - No interval delay is given
- - a default name is generated 
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-scheduler,
-</div>
-<pre>
- The scheduler to add a task to.
-
-</pre>
-<div>
-interval,
-</div>
-<pre>
- How often the task will run. If the mode is topazScheduler_Mode_Time,
- the interval is a time in milliseconds. If the mode is 
- topazScheduler_Mode_Frame, the the interval is the number 
- of frames.
-
-</pre>
-<div>
-callback,
-</div>
-<pre>
- The callback to call when the task's interval is reached.
-
-</pre>
-<div>
-callbackData
-</div>
-<pre>
- The data to bind to the callback.
-
-</pre>
-
-</div>
-</br>
-</div>
-<div class="Function">
-<div class="typetag">
-(Function)</br>
-</div>
-<div>
-<h5 class="FunctionReturnValue">
-void
-</h5>
-<h3 id="topaz_scheduler_end_task">
-topaz_scheduler_end_task(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazComponent_t.html#topazComponent_t">
-topazComponent_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-scheduler,
-</th>
-
-</tr>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazString_t.html#topazString_t">
-topazString_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-name
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
-</h3>
-<pre>
- Halts the task with the given name.
- If no such task exists, no action is taken.
-
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-scheduler,
-</div>
-<pre>
- The scheduler to remove a task from.
-
-</pre>
-<div>
-name
-</div>
-<pre>
- The name of the task to remove. 
-
-</pre>
-
-</div>
-</br>
-</div>
-<div class="Function">
-<div class="typetag">
-(Function)</br>
-</div>
-<div>
-<h5 class="FunctionReturnValue">
-<a href="topazArray_t.html#topazArray_t">
-topazArray_t
-</a>
-
-</h5>
-<h3 id="topaz_scheduler_get_tasks">
-topaz_scheduler_get_tasks(
-</h3>
-<table>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazComponent_t.html#topazComponent_t">
-topazComponent_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-scheduler
-</th>
-
-</tr>
-
-</table>
-<h3>
-)
-</h3>
-<pre>
- Gets all tasks being maintained for the scheduler
- A read-only array of topazString_t * is returned.
-
-</pre>
-<div>
-<b>Arguments:</b></br></br>
-</div>
-<div>
-scheduler
-</div>
-<pre>
- The scheduler to query.
 
 </pre>
 
@@ -696,6 +401,54 @@ scheduler
 </div>
 <div>
 <h5 class="FunctionReturnValue">
+void
+</h5>
+<h3 id="topaz_scheduler_reset">
+topaz_scheduler_reset(
+</h3>
+<table>
+<tr>
+<th class="FunctionArgumentType">
+<a href="topazComponent_t.html#topazComponent_t">
+topazComponent_t
+</a>
+
+</th>
+<th class="FunctionArgumentName">
+scheduler
+</th>
+
+</tr>
+
+</table>
+<h3>
+)
+</h3>
+<pre>
+ Resets the remaining interval 
+ to the initial amount and begins the timing process again
+
+</pre>
+<div>
+<b>Arguments:</b></br></br>
+</div>
+<div>
+scheduler
+</div>
+<pre>
+ The scheduler to reset.
+
+</pre>
+
+</div>
+</br>
+</div>
+<div class="Function">
+<div class="typetag">
+(Function)</br>
+</div>
+<div>
+<h5 class="FunctionReturnValue">
 uint64_t
 </h5>
 <h3 id="topaz_scheduler_get_task_interval_remaining">
@@ -710,19 +463,7 @@ topazComponent_t
 
 </th>
 <th class="FunctionArgumentName">
-scheduler,
-</th>
-
-</tr>
-<tr>
-<th class="FunctionArgumentType">
-<a href="topazString_t.html#topazString_t">
-topazString_t
-</a>
-
-</th>
-<th class="FunctionArgumentName">
-name
+scheduler
 </th>
 
 </tr>
@@ -740,17 +481,10 @@ name
 <b>Arguments:</b></br></br>
 </div>
 <div>
-scheduler,
+scheduler
 </div>
 <pre>
  The scheduler to query.
-
-</pre>
-<div>
-name
-</div>
-<pre>
- The name of the task to query.
 
 </pre>
 
