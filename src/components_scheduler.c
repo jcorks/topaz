@@ -61,21 +61,10 @@ typedef struct {
 } TaskCallback;
 
 typedef struct {
-    topazString_t * name;
-    uint64_t stamp;
-    uint64_t interval;
-    uint64_t intervalDelay;
-    TaskCallback callback;
-} Task;
-
-
-typedef struct {
     #ifdef TOPAZDC_DEBUG
     char * MAGIC_ID;
     #endif
 
-    // low volume, no need for str hash
-    topazArray_t * tasks;
 
     // context 
     topaz_t * ctx;
@@ -85,57 +74,24 @@ typedef struct {
     uint64_t pauseStartAt;
     
 
-    // Marks whether the names array will need updates before 
-    // requested next
-    int needsNameUpdate;
 
     /// Whether the scheduler is time or framebased
     int isTime;
 
+    int repeat;
+
     /// only used for frames.
     uint64_t frameSrc;
 
-    topazArray_t * names;
+
+    uint64_t stamp;
+    uint64_t interval;
+    uint64_t intervalDelay;
+    uint64_t intervalInitial;
+    TaskCallback callback;
+
 } Scheduler;
 
-
-
-
-Task * scheduler__task_new(Scheduler * s, const topazString_t * name) {
-    Task * out = calloc(1, sizeof(Task));
-    out->name = topaz_string_clone(name);
-    topaz_array_push(s->tasks, out);
-    s->needsNameUpdate = TRUE;
-    return out;
-}
-
-void scheduler__task_destroy(Task * s) {
-    topaz_string_destroy(s->name);
-    free(s);
-}
-
-Task * scheduler__task_get(Scheduler * s, const topazString_t * name) {
-    uint32_t i;
-    for(i = 0; i < topaz_array_get_size(s->tasks); ++i) {
-        if (topaz_string_test_eq(topaz_array_at(s->tasks, Task*, i)->name, name)) {
-            return topaz_array_at(s->tasks, Task*, i);
-        }
-    }
-    return NULL;
-}
-
-
-void scheduler__task_remove(Scheduler * s, const topazString_t * name) {
-    uint32_t i;
-    for(i = 0; i < topaz_array_get_size(s->tasks); ++i) {
-        Task * t = topaz_array_at(s->tasks, Task*, i);
-        if (topaz_string_test_eq(t->name, name)) {
-            scheduler__task_destroy(t);
-            topaz_array_remove(s->tasks, i);
-            return;
-        }
-    }
-}
 
 
 
@@ -148,7 +104,7 @@ void scheduler__task_remove(Scheduler * s, const topazString_t * name) {
 
 
 static void scheduler__on_step(topazComponent_t * c, Scheduler * s) {
-    if (s->pauseStartAt) return;
+    if (s->pauseStartAt || s->repeat == -1) return;
 
     uint32_t i;
     uint32_t len;
@@ -159,44 +115,19 @@ static void scheduler__on_step(topazComponent_t * c, Scheduler * s) {
         s->frameSrc++;
         timeNow = s->frameSrc;
     }
-
-
-    topazArray_t * a = topaz_array_create(sizeof(TaskCallback));
     
-    // tasks can remove themselves, so copy the array
-    len = topaz_array_get_size(s->tasks);
-    for(i = 0; i < len; ++i) {
-        Task * t = topaz_array_at(s->tasks, Task *, i);
-        
-        if (timeNow >= t->stamp + t->interval + t->intervalDelay) {
-            t->stamp = timeNow;
-            t->intervalDelay = 0;
-            //t->cb(c, t->cbData);
-            topaz_array_push(a, t->callback);
-        }
+    uint64_t marker = s->intervalDelay ? s->intervalDelay : s->interval;
+
+    if (timeNow >= s->stamp + marker) {
+        s->stamp += marker;
+        s->intervalDelay = 0;
+        s->callback.fn(c, s->callback.data);
+        if (s->repeat == 0) s->repeat = -1;
     }
-    
-    for(i = 0; i < topaz_array_get_size(a); ++i) {
-        TaskCallback cb = topaz_array_at(a, TaskCallback, i);
-        cb.fn(c, cb.data);
-    }
-    topaz_array_destroy(a);
 }
 
 // free everything
 static void scheduler__on_destroy(topazComponent_t * c, Scheduler * s) {
-    uint32_t i;
-    for(i = 0; i < topaz_array_get_size(s->tasks); ++i) {
-        scheduler__task_destroy(topaz_array_at(s->tasks, Task*, i));
-    }
-    uint32_t len = topaz_array_get_size(s->names);
-    for(i = 0; i < len; ++i) {
-        topaz_string_destroy(topaz_array_at(s->names, topazString_t *, i));
-    }
-
-    topaz_array_destroy(s->tasks);
-    topaz_array_destroy(s->names);
-
     free(s);
 }
 
@@ -214,17 +145,37 @@ static Scheduler * scheduler__retrieve(topazComponent_t * c) {
 
 
 
-topazComponent_t * topaz_scheduler_create(topaz_t * t, topazScheduler_Mode mode) {
+topazComponent_t * topaz_scheduler_create(
+    topaz_t * t, 
+    topazScheduler_Mode mode,
+    int justOnce,
+    uint32_t interval,
+    uint32_t intervalDelay,
+
+
+    topaz_component_attribute_callback callback,
+    void * callbackData
+    
+) {
     Scheduler * data = calloc(1, sizeof(Scheduler));
 
     #ifdef TOPAZDC_DEBUG
     data->MAGIC_ID = MAGIC_ID__SCHEDULER;
     #endif
 
-    data->tasks = topaz_array_create(sizeof(Task*));
-    data->names = topaz_array_create(sizeof(topazString_t *));
     data->ctx = t;
     data->isTime = mode == topazScheduler_Mode_Time;
+    data->repeat = !justOnce;
+    data->stamp = data->isTime ? topaz_context_get_time(data->ctx) : data->frameSrc;
+
+
+    data->interval = interval;
+    data->intervalDelay = intervalDelay;
+    data->intervalInitial = intervalDelay;
+
+    data->callback.fn = callback;
+    data->callback.data = callbackData;
+
 
     // create base component and assign attribs
     topazComponent_Attributes_t attribs;
@@ -234,64 +185,11 @@ topazComponent_t * topaz_scheduler_create(topaz_t * t, topazScheduler_Mode mode)
     attribs.on_destroy = (topaz_component_attribute_callback) scheduler__on_destroy;
 
     attribs.userData = data;
+
     return topaz_component_create_with_attributes(TOPAZ_STR_CAST("Scheduler"), t, &attribs);
 }
 
 
-void topaz_scheduler_start_task(
-    topazComponent_t *      c, 
-    const topazString_t *   taskName, 
-    uint32_t                interval,
-    uint32_t                intervalDelay,
-
-    topaz_component_attribute_callback callback,
-    void *                             callbackData
-) {
-    Scheduler * s = scheduler__retrieve(c);
-
-    
-    Task * t = scheduler__task_new(s, taskName);
-    t->interval = interval;
-    t->stamp = s->isTime ? topaz_context_get_time(s->ctx) : s->frameSrc;
-    t->interval = interval;
-    t->intervalDelay = intervalDelay;
-
-    t->callback.fn = callback;
-    t->callback.data = callbackData;
-
-    
-}
-
-
-
-const topazString_t * topaz_scheduler_start_task_simple(
-    topazComponent_t * c,
-    uint32_t interval,
-
-    topaz_component_attribute_callback callback,
-    void *                             callbackData
-) {
-    static int id=0;
-
-    Scheduler * s = scheduler__retrieve(c);
-
-    topazString_t * tag = topaz_string_create_from_c_str("_SCHTASK%d", id++);
-    topaz_scheduler_start_task(c, tag, interval, 0, callback, callbackData);
-
-    Task * task = scheduler__task_get(s, tag);
-    topaz_string_destroy(tag);
-
-    if (!task) return TOPAZ_STR_CAST("");
-    return task->name;
-}
-
-
-
-
-void topaz_scheduler_end_task(topazComponent_t * c, const topazString_t * name) {
-    Scheduler * s = scheduler__retrieve(c);
-    scheduler__task_remove(s, name);
-}
 
 
 void topaz_scheduler_pause(topazComponent_t * c) {
@@ -299,54 +197,34 @@ void topaz_scheduler_pause(topazComponent_t * c) {
     s->pauseStartAt = s->isTime ? topaz_context_get_time(s->ctx) : s->frameSrc;
 }
 
+void topaz_scheduler_reset(topazComponent_t * c) {
+    Scheduler * s = scheduler__retrieve(c);
+    if (s->repeat == -1) s->repeat = 0;
+    s->stamp = s->isTime ? topaz_context_get_time(s->ctx) : s->frameSrc;
+    s->intervalDelay = s->intervalInitial;
+
+}
+
+
+
 
 void topaz_scheduler_resume(topazComponent_t * c) {
     Scheduler * s = scheduler__retrieve(c);
-    uint32_t i;
+    if (!s->pauseStartAt) return;
     uint64_t diff = (s->isTime ? topaz_context_get_time(s->ctx) : s->frameSrc) - s->pauseStartAt;
-    for(i = 0; i < topaz_array_get_size(s->tasks); ++i) {
-        topaz_array_at(s->tasks, Task *, i)->stamp += diff;
-    }
+    s->stamp += diff;
     s->pauseStartAt = 0;
 }
 
-const topazArray_t * topaz_scheduler_get_tasks(topazComponent_t * c) {
-    Scheduler * s = scheduler__retrieve(c);
-    if (s->needsNameUpdate) {
-        uint32_t i;
-        uint32_t len = topaz_array_get_size(s->names);
-        for(i = 0; i < len; ++i) {
-            topaz_string_destroy(topaz_array_at(s->names, topazString_t *, i));
-        }
-        topaz_array_set_size(s->names, 0);
 
-        len = topaz_array_get_size(s->tasks);
-        for(i = 0; i < len; ++i) {
-            topazString_t * name = topaz_string_clone(topaz_array_at(s->tasks, Task *, i)->name);
-            topaz_array_push(s->names, name);
-        }
-        s->needsNameUpdate = 0;
-    }
-
-    return s->names;
-
-}
 
 
 uint64_t topaz_scheduler_get_task_interval_remaining(
-    topazComponent_t * c,
-    const topazString_t * name
+    topazComponent_t * c
 ) {
-    Scheduler * s = scheduler__retrieve(c);
-    uint32_t i;
-    for(i = 0; i < topaz_array_get_size(s->tasks); ++i) {
-        Task * t = topaz_array_at(s->tasks, Task*, i);
-        if (topaz_string_test_eq(t->name, name)) {
-            uint64_t nextEnd = (t->stamp + t->interval + t->intervalDelay);
-            uint64_t timeNow = s->isTime ? topaz_context_get_time(s->ctx) : s->frameSrc;
-            return nextEnd < timeNow ? 0 : nextEnd - timeNow;
-        }
-    }
-    return 0;
+    Scheduler * t = scheduler__retrieve(c);
+    uint64_t nextEnd = (t->stamp + t->interval + t->intervalDelay);
+    uint64_t timeNow = t->isTime ? topaz_context_get_time(t->ctx) : t->frameSrc;
+    return nextEnd < timeNow ? 0 : nextEnd - timeNow;
 }
 

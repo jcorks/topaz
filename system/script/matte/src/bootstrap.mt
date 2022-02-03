@@ -283,6 +283,9 @@
                                   (3): ::<={
                                     impl = nativeCreate(a:args[0], b:args[1], c:args[2]);
                                   },
+                                  (5): ::<={
+                                    impl = nativeCreate(a:args[0], b:args[1], c:args[2], d:args[3], e:args[4]);
+                                  },
                                   default:
                                     error(detail:'Too many arguments to dispatch native create call')
                                 };
@@ -2104,14 +2107,10 @@
 
         @__Scheduler__ = ::<={
             @:topaz_scheduler__create = getExternalFunction(name:'topaz_scheduler__create');
-            @:topaz_scheduler__start_task = getExternalFunction(name:'topaz_scheduler__start_task');
-            @:topaz_scheduler__start_task_simple = getExternalFunction(name:'topaz_scheduler__start_task_simple');
-            @:topaz_scheduler__end_task = getExternalFunction(name:'topaz_scheduler__end_task');
             @:topaz_scheduler__pause = getExternalFunction(name:'topaz_scheduler__pause');
             @:topaz_scheduler__resume = getExternalFunction(name:'topaz_scheduler__resume');
+            @:topaz_scheduler__reset = getExternalFunction(name:'topaz_scheduler__reset');
             @:topaz_scheduler__get_task_interval_remaining = getExternalFunction(name:'topaz_scheduler__get_task_interval_remaining');
-            @:topaz_scheduler__get_task_count = getExternalFunction(name:'topaz_scheduler__get_task_count');
-            @:topaz_scheduler__get_task = getExternalFunction(name:'topaz_scheduler__get_task');
 
 
             return class(
@@ -2125,71 +2124,37 @@
                 },
                 define : ::(this){ 
                     @impl;
-                    this.constructor = ::(native) {
+                    this.constructor = ::(mode, justOnce, interval, intervalDelay, callback, native) {
                         // whoops, the component constructor already made a generic component native.
                         // destroy it and make a real one
                         this.native.__ctx.destroy();
 
                         impl = this.bindNative(
                             instance : native,
-                            nativeCreate : topaz_scheduler__create
+                            nativeCreate : topaz_scheduler__create,
+                            args : [mode, if (justOnce == empty) false else justOnce , interval, intervalDelay, callback]
                         );
                         return this;
                     };
                     
                     
                     this.interface = {
-                        startTask : ::(taskName, interval => Number, intervalDelay, callback){ 
-                            return if (taskName != empty) ::<={
-                                topaz_scheduler__start_task(
-                                    a:impl,
-                                    b:taskName,
-                                    c:interval,
-                                    d:intervalDelay,
-                                    e:callback
-                                );
-                                return taskName;
-                            } else ::<={
-                                return topaz_scheduler__start_task_simple(
-                                    a:impl,
-                                    b:interval,
-                                    c:callback
-                                );
-                            };
+                    
+                        pause : ::(){ 
+                            topaz_scheduler__pause(a:impl);
                         },
                         
-                        endTask : ::(name){ 
-                            topaz_scheduler__end_task(a:impl, b:name);
+                        resume : ::() { 
+                            topaz_scheduler__resume(a:impl);
                         },
 
-                        endAllTasks :: {
-                            @len = topaz_scheduler__get_task_count(a:impl);
-                            for(in:[0, len], do:::(i) {
-                                this.endTask(name:topaz_scheduler__get_task(a:impl, b:i));
-                            });
-                        },
-                    
-                        pause : ::(name){ 
-                            topaz_scheduler__pause(a:impl, b:name);
-                        },
-                        
-                        resume : ::(name) { 
-                            topaz_scheduler__resume(a:impl, b:name);
+                        reset ::() {
+                            topaz_scheduler__reset(a:impl);
+
                         },
                         
                         getTaskIntervalRemaining : ::(name){ 
-                            return topaz_scheduler__get_task_interval_remaining(a:impl, b:name);
-                        },
-                        
-                        tasks : {
-                            get : ::(){ 
-                                @out = [];
-                                @len = topaz_scheduler__get_task_count(a:impl);
-                                for(in:[0, len], do:::(i) {
-                                    out[i] = topaz_scheduler__get_task(a:impl, b:i);
-                                });
-                                return out;
-                            }
+                            return topaz_scheduler__get_task_interval_remaining(a:impl);
                         }
                     };
                 } 
