@@ -20,9 +20,10 @@ TSO_SCRIPT_API_FN(text2d_api__set_font) {
     TSO_ARG_1;
     TSO_ARG_2;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);   
+    TSO_NATIVIZE_1(topazAsset_t *, TSO_OBJECT_TYPE__ASSET);   
     topaz_text2d_set_font(
         native, 
-        topaz_script_object_as_string(arg1),
+        native1,
         topaz_script_object_as_int(arg2)
     );
     TSO_NO_RETURN;

@@ -68,7 +68,7 @@ typedef struct {
     topazString_t * text;
     topazSpatial_t * spatial;
     int currentSize;
-    topazString_t * fontName;
+    topazAsset_t * font;
 
     float width;
     float height;
@@ -150,7 +150,7 @@ topazComponent_t * topaz_text2d_create(topaz_t * t) {
     data->attribs.alphaRule = topazRenderer_AlphaRule_Allow;
     data->attribs.etchRule  = topazRenderer_EtchRule_NoEtching;
     data->attribs.textureFilter = topazRenderer_TextureFilterHint_Linear;
-    data->fontName = topaz_string_create();
+    data->font = NULL;
     // create base component and assign attribs
     topazComponent_Attributes_t attribs;
     memset(&attribs, 0, sizeof(topazComponent_Attributes_t));
@@ -194,7 +194,7 @@ const topazRenderer_Attributes_t * topaz_text2d_get_attributes(
     return &t->attribs;
 }
 
-static void text2d_update__full(Text2D * t, const topazString_t * str, const topazString_t * fontName, int pixelSize) {
+static void text2d_update__full(Text2D * t, const topazString_t * str, const topazAsse_t * font, int pixelSize) {
     uint32_t i;
     uint32_t len;
 
@@ -204,7 +204,7 @@ static void text2d_update__full(Text2D * t, const topazString_t * str, const top
 
 
     // get context
-    topazFontRenderer_t * fontRenderer = topaz_font_manager_get_renderer(topaz_context_get_font_manager(t->ctx), t->fontName);
+    topazFontRenderer_t * fontRenderer = topaz_font_manager_get_renderer(topaz_context_get_font_manager(t->ctx), t->font);
 
     
     
@@ -220,9 +220,9 @@ static void text2d_update__full(Text2D * t, const topazString_t * str, const top
         }
     }
     
-    if (!topaz_string_test_eq(t->fontName, fontName)) {
-        topaz_string_set(t->fontName, fontName);
-        fontRenderer = topaz_font_manager_get_renderer(topaz_context_get_font_manager(t->ctx), t->fontName);        
+    if (font != t->font) {
+        t->font = font;
+        fontRenderer = topaz_font_manager_get_renderer(topaz_context_get_font_manager(t->ctx), t->font);        
     }
     
 
@@ -461,7 +461,7 @@ static void text2d_update__full(Text2D * t, const topazString_t * str, const top
 
 // adds additional text to an existing text2d instance thats of the same font and size.
 // quite a bit 
-static void text2d_update__add(Text2D * t, const topazString_t * str, const topazString_t * fontName, int pixelSize) {
+static void text2d_update__add(Text2D * t, const topazString_t * str, const topazAsset_t * font, int pixelSize) {
     uint32_t i;
     uint32_t len;
 
@@ -471,7 +471,7 @@ static void text2d_update__add(Text2D * t, const topazString_t * str, const topa
 
 
     // get context
-    topazFontRenderer_t * fontRenderer = topaz_font_manager_get_renderer(topaz_context_get_font_manager(t->ctx), t->fontName);
+    topazFontRenderer_t * fontRenderer = topaz_font_manager_get_renderer(topaz_context_get_font_manager(t->ctx), t->font);
     
     uint32_t oldLen = topaz_string_get_length(t->text);
     // update source data
@@ -687,7 +687,7 @@ static void text2d_update__add(Text2D * t, const topazString_t * str, const topa
     free(fme);
 }
 
-static void text2d_update(Text2D * t, const topazString_t * str, const topazString_t * fontName, int pixelSize) {
+static void text2d_update(Text2D * t, const topazString_t * str, const topazAsset_t * font, int pixelSize) {
     uint32_t i;
     uint32_t len, lenNew;
 
@@ -700,13 +700,13 @@ static void text2d_update(Text2D * t, const topazString_t * str, const topazStri
 
 
     // pixel size / font changed... need a full reset
-    if (!topaz_string_test_eq(t->fontName, fontName) || t->currentSize != pixelSize) {
+    if (t->font != font || t->currentSize != pixelSize) {
 
-        text2d_update__full(t, str, fontName, pixelSize);
+        text2d_update__full(t, str, font, pixelSize);
 
     // different string entirely
     } else if (i == 0) { 
-        text2d_update__full(t, str, fontName, pixelSize);
+        text2d_update__full(t, str, font, pixelSize);
 
 
     // same string, no change needed
@@ -715,11 +715,11 @@ static void text2d_update(Text2D * t, const topazString_t * str, const topazStri
 
     // current string is the base, new content being added.
     } else if (lenNew > len && i == len) {
-        text2d_update__add(t, str, fontName, pixelSize);
+        text2d_update__add(t, str, font, pixelSize);
 
     // default full update.
     } else {
-        text2d_update__full(t, str, fontName, pixelSize);
+        text2d_update__full(t, str, font, pixelSize);
     }
 
 
@@ -727,14 +727,14 @@ static void text2d_update(Text2D * t, const topazString_t * str, const topazStri
 
 void topaz_text2d_set_font(
     topazComponent_t * c,
-    const topazString_t * fontName,
+    const topazAsset_t * font,
     int pixelSize
 ) {
     Text2D * t = text2d__retrieve(c);
     text2d_update(
         t,
         t->text,
-        fontName,
+        font
         pixelSize
     );
 }
@@ -748,7 +748,7 @@ void topaz_text2d_set_text(
     text2d_update(
         t, 
         str,
-        t->fontName,
+        t->font,
         t->currentSize
     );
 }

@@ -92,32 +92,60 @@ const topazString_t * topaz_resources_get_path(const topazResources_t * r) {
 }
 
 
-topazAsset_t * topaz_resources_load_asset(
+
+
+topazAsset_t * topaz_resources_create_asset(
     topazResources_t * r,
-    const topazString_t * extension,
-    const topazString_t * path,
     const topazString_t * name
 ) {
+    int custname = 0;
+    if (!name) {
+        custname = 1;
+        static int ref = 0;
+        topazString_t * name = topaz_string_create_from_c_str(
+            "$TOPAZASSET_%d", ref++
+        );
+        // failsafe
+        while (topaz_table_find(r->name2asset, name)) {
+            topaz_string_concat_printf(name, "%d", rand());
+        }
+    } else {
+        if (topaz_table_find(
+            r->name2asset,
+            name
+        )) return NULL;
+    }
 
-    topazAsset_t * asset = topaz_table_find(
+    asset = topaz_data_create(r->ctx, name);
+    topaz_table_insert(
+        r->name2asset,
+        name,
+        asset
+    );
+    if (custname) topaz_string_destroy(name);
+    return asset;
+}
+
+topazAsset_t * topaz_resources_fetch_asset(
+    topazResources_t * r,
+    const topazString_t * name
+) {
+    return topaz_table_find(
         r->name2asset,
         name
     );
+    return asset;
+}
 
-    
-    // already loaded! return
-    if (asset) return asset;
-
-
-    // invalid extension if not created, return NULL'
-    topazIOX_t * dec = topaz_table_find(r->ioxs, extension);
-    if (!dec) return NULL;
-
-    // Create a new asset of the type
-    asset = topaz_resources_fetch_asset(r, topaz_iox_get_asset_type(dec), name);
-
-    // could fail if the type is unsupported. Shouldnt happen though.
-    if (!asset) return NULL;
+topazAsset_t * topaz_resources_create_asset_from_path(
+    topazResources_t * r,
+    const topazString_t * path,
+    const topazString_t * name
+) {
+    topazAsset_t * a = topaz_resources_create_asset(r, name);
+    if (!a) {
+        return;
+    }
 
     // at this point, we want a data buffer 
     topazFilesystem_t * fs = topaz_context_get_filesystem(r->ctx);
@@ -139,27 +167,40 @@ topazAsset_t * topaz_resources_load_asset(
         return NULL;
     } 
 
+    // populate data asset
+    topaz_data_set(
+        a,
+        topaz_rbuffer_read_bytes(
+            data,
+            topaz_rbuffer_get_size(data)
+        )
+    );
 
-    // load in data into asset
-    if (!topaz_iox_load(
-        dec,
-        asset,
-        topaz_rbuffer_get_buffer(data, topaz_rbuffer_get_size(data)),
-        topaz_rbuffer_get_size(data)
-    )) {
-        topaz_rbuffer_destroy(data);
-        topaz_asset_destroy(asset);
-        topaz_table_remove(r->name2asset, name);
-        return NULL;
-    }
     topaz_rbuffer_destroy(data);
-    return asset;
+    return a;
+}
+topazAsset_t * topaz_resources_create_asset_from_bytes(
+    topazResources_t * r,
+    const topazArray_t * data,
+    const topazString_t * name
+) {
+    topazAsset_t * a = topaz_resources_create_asset(r, name);
+    if (!a) {
+        return;
+    }
+
+    topaz_data_set(
+        a,
+        data
+    );
+
+    return a;
 }
 
 
-topazAsset_t * topaz_resources_load_asset_base64(
+
+topazAsset_t * topaz_resources_create_asset_from_base64(
     topazResources_t * r,
-    const topazString_t * extension,
     const topazString_t * data,
     const topazString_t * name
 ) {
@@ -168,57 +209,66 @@ topazAsset_t * topaz_resources_load_asset_base64(
     if (!buffer) {
         return NULL;
     }
-    topazAsset_t * out = topaz_resources_load_asset_data(
+    return topaz_resources_create_asset_from_bytes(
         r, 
         extension, 
         TOPAZ_ARRAY_CAST(buffer, uint8_t, size), 
         name
     );
-    return out;
 }
 
 
-topazAsset_t * topaz_resources_load_asset_data(
+
+
+
+topazAsset_t * topaz_resources_load_asset(
     topazResources_t * r,
     const topazString_t * extension,
-    const topazArray_t * data,
-    const topazString_t * name
+    topazAsset_t * srcAsset
 ) {
+    if (topaz_asset_get_type(srcAsset) != topazAsset_Type_Data) {
+        return NULL;
+    }
 
-    topazAsset_t * asset = topaz_table_find(
-        r->name2asset,
-        name
-    );
-
-    
-    // already loaded! return
-    if (asset) return asset;
-
-
-    // invalid extension if not created, return NULL'
+    // invalid extension if not created, return NULL
     topazIOX_t * dec = topaz_table_find(r->ioxs, extension);
     if (!dec) return NULL;
+    const topazString_t * name = topaz_asset_get_name(srcAsset);
+    // Create a new asset based on which kind it is.
+    switch(topaz_iox_get_asset_type(dev)) {
+      case topazAsset_Type_Data:  asset    = topaz_data_create(r->ctx, name);  break;
+      case topazAsset_Type_Image: asset    = topaz_image_create(r->ctx, name); break;
+      case topazAsset_Type_Sound: asset    = topaz_sound_create(r->ctx, name); break;
+      case topazAsset_Type_Material: asset = topaz_material_create(r->ctx, name); break;
+      case topazAsset_Type_Mesh:  asset    = topaz_mesh_create(r->ctx, name); break;
+      default:
+        return NULL;
+    }
 
-    // Create a new asset of the type
-    asset = topaz_resources_fetch_asset(r, topaz_iox_get_asset_type(dec), name);
-
-    // could fail if the type is unsupported. Shouldnt happen though.
-    if (!asset) return NULL;
+    const topazArray_t * srcData = topaz_data_get_as_bytes(srcAsset);
 
     // load in data into asset
     if (!topaz_iox_load(
         dec,
         asset,
-        topaz_array_get_data(data),
-        topaz_array_get_size(data)
+        topaz_array_get_data(srcData),
+        topaz_array_get_size(srcData)
     )) {
         topaz_asset_destroy(asset);
-        topaz_table_remove(r->name2asset, name);
         return NULL;
     }
 
+    topaz_table_insert(
+        r->name2asset,
+        name,
+        asset
+    );
+    topaz_asset_destroy(srcAsset);
     return asset;
 }
+
+
+
 
 
 int topaz_resources_write_asset(
@@ -263,75 +313,8 @@ int topaz_resources_write_asset(
     return success;
 }
 
-topazAsset_t * topaz_resources_create_asset(
-    topazResources_t * r,
-    topazAsset_Type type
-) {
-    static int ref = 0;
-    topazString_t * name = topaz_string_create_from_c_str(
-        "$TOPAZASSET_%d", ref++
-    );
-    // failsafe
-    while (topaz_table_find(r->name2asset, name)) {
-        topaz_string_concat_printf(name, "%d", rand());
-    }
-    topazAsset_t * out = topaz_resources_fetch_asset(
-        r,
-        type,
-        name
-    );
-    topaz_string_destroy(name);
-    return out;
-}
 
 
-topazAsset_t * topaz_resources_fetch_asset(
-    topazResources_t * r,
-    topazAsset_Type type,
-    const topazString_t * name
-) {
-    topazAsset_t * asset = topaz_table_find(
-        r->name2asset,
-        name
-    );
-    if (asset) return asset;
-    
-    switch(type) {
-      case topazAsset_Type_Image:
-        asset = topaz_image_create(r->ctx, name);
-        break;
-
-      case topazAsset_Type_Data:
-        asset = topaz_data_create(r->ctx, name);
-        break;
-        
-      case topazAsset_Type_Sound:
-        asset = topaz_sound_create(r->ctx, name);
-        break;
-
-      case topazAsset_Type_Material:
-        asset = topaz_material_create(r->ctx, name);
-        break;
-      case topazAsset_Type_Mesh:
-        asset = topaz_mesh_create(r->ctx, name);
-        break;
-
-      default:
-        #ifdef TOPAZDC_DEBUG
-            printf("Unsupported resource type!!\n");
-        #endif
-        return NULL;
-        
-
-    }
-
-    topaz_table_insert(
-        r->name2asset,
-        name,
-        asset
-    );
-    return asset;
-}
 
 
 

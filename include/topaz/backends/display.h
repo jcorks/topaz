@@ -174,7 +174,11 @@ enum topazDisplay_Parameter {
     /// Returns whether the display is active. Active displays have their roots update 
     /// and the results reflected on the display. Active displays also have input polled for.
     /// Newly created windows are active by default.
-    topazDisplay_Parameter_Active
+    topazDisplay_Parameter_Active,
+
+    /// Whether to show display decorations. On most systems this implies things 
+    /// like a titlebar, resize controls, etc.
+    topazDisplay_Parameter_Decorated
 
 };
 

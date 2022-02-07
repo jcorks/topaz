@@ -218,6 +218,10 @@ func captureMainFramebuffer ->
 /// Sets / gets whether the display is focused.
 @Boolean focused
 
+/// Sets / gets whether the display is decorated. The default is true.
+/// On most systems, this means having a title bar and other items
+/// attached to a window in a normal state.
+@Boolean decorated
 
 /// Retrieves the camera associated with the display thats 
 /// used for 2d operations. This camera is used when the display is set as 

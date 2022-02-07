@@ -80,6 +80,9 @@ enum topazAsset_Type {
     topazAsset_Type_Particle,
 
     /// The asset is raw bytes / text.
+    /// When assets are first loaded from an external source, 
+    /// they will be of this type. They can then by changed into 
+    /// other asset types using topaz_resources_asset_load()
     ///
     topazAsset_Type_Data,
 

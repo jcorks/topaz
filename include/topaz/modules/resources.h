@@ -49,6 +49,11 @@ typedef struct topazIOX_t topazIOX_t;
 /// Often in projects, the same asset will be used in multiple parts within 
 /// the program. This module will resuse assets already loaded to provide a quick,
 /// transparent way to quickly access assets.
+///
+/// The general flow is this:
+/// - Using raw data (loaded from the filesystem, a different source, etc) make 
+///   a new asset. This is a pure "data" asset 
+/// - Translate the asset into something else, such as an image, or audio
 typedef struct topazResources_t topazResources_t;
 
 
@@ -98,65 +103,72 @@ const topazString_t * topaz_resources_get_path(
 
 
 
-/// Convenience function that attempts to load a new asset 
-/// from the filesystem directly. This is recommended for small assets that are 
-/// effectively instanteous. If a more robust solution is needed,
-/// consider topaz_resources_fetch_asset() + topaz_resources_get_translator
+
+/// Creates a new asset. Assets
+/// are, by default, Data assets, which are just 
+/// byte blocks. To convert to something else, use 
+/// topaz_resource_load_asset.
+/// If the name already exists, NULL is returned.
 ///
-/// "name" is used as the name of the asset. For functions that refer to 
-/// asset names to uniquely identify an asset such as topaz_resources_fetch_asset().
-///
-/// "path" is used as the filesystem path to read the asset from. This assumes the 
-/// current path is topaz_resources_get_path() and is guaranteed to behave as if 
-/// from topaz_filesys_read(). 
-///
-/// "fileType" is the extension of the file used to determine with IO Translator 
-/// to use to interpret data.
-///
-/// Like with topaz_resources_fetch_asset, if an asset of the given name 
-/// already exists, the preloaded asset is returned. If not, 
-/// then a new asset is created whos name will match the path given.
-/// Then, the data is attempted to be loaded from disk. The name given is 
-/// first checked to see if its a partial path relative to 
-/// the resources's resource path (topaz_resources_set_path()). Then 
-/// its interpreted as a full path.
-/// If the data could not be inerpreted as the given type, or the source 
-/// data is unavailable, NULL is returned.
-///
-topazAsset_t * topaz_resources_load_asset(
-    /// The resource instance to load with.
+/// If name is NULL, a unique name is auto-generated
+topazAsset_t * topaz_resources_create_asset(
     topazResources_t * res,
-    /// The extension / filetype to attempt to read with.
-    const topazString_t * fileType,
+    /// The unique name of the asset.
+    const topazString_t * name
+);
+
+/// Returns the existing asset referred to by the given name.
+/// If there is none, NULL is returned.
+topazAsset_t * topaz_resources_fetch_asset(
+    /// The resource instance to fetch with/
+    topazResources_t * res,
+    /// The unique name of the asset.
+    const topazString_t * name
+);
+
+
+
+/// Creates an asset, but looks in the 
+/// filesystem for an item at the given path.
+/// If found, it reads the bytes and stores them 
+/// within a new asset.
+///
+/// After this process, the asset will be loaded as a 
+/// data asset, meaning it is just a collection of 
+/// bytes. The asset can then be re-interpreted
+/// as another kind of asset using topaz_resources_load_asset()
+///
+/// If an asset with the name already exists or the 
+/// filesystem cannot load the item specified, NULL is 
+/// returned, and no other change is made.
+topazAsset_t * topaz_resources_create_asset_from_path(
+    topazResources_t * res,
     /// The path to the asset.
     const topazString_t * path,
     /// The unique name to give to the asset.
     const topazString_t * name
 );
 
-/// Equivalent to topaz_resources_load_asset, except instead of reading 
-/// from the filsystem, raw byte data is read instead.
+/// Equivalent to topaz_resources_create_asset_from_path, 
+/// except instead of reading from the filsystem, 
+/// raw byte data is read instead.
 ///
-topazAsset_t * topaz_resources_load_asset_data(
+topazAsset_t * topaz_resources_create_asset_from_bytes(
     /// The resource instance to load with.
     topazResources_t * res,
-    /// The extension / filetype to attempt to read with.
-    const topazString_t * fileType,
     /// The raw data for the asset. Read as if contiguous bytes.
     const topazArray_t * data,
     /// The unique name to give to the asset.
     const topazString_t * name
 );
 
-/// Equivalent to topaz_resources_load_asset, except instead of reading
+/// Equivalent to topaz_resources_create_asset_from_path, except instead of reading
 /// from the filesystem, raw byte data is generated from an encoded
 /// base64 string.
 ///
-topazAsset_t * topaz_resources_load_asset_base64(
+topazAsset_t * topaz_resources_create_asset_from_base64(
     /// The resource instance to load with.
     topazResources_t * res,
-    /// The extension / filetype to attempt to read with.
-    const topazString_t * fileType,
     /// The raw data for the asset. Read as a base64 string.
     const topazString_t * data,
     /// The unique name to give to the asset.
@@ -166,11 +178,30 @@ topazAsset_t * topaz_resources_load_asset_base64(
 
 
 
+/// Converts an existing data asset
+/// "fileType" is the extension of the file used to determine which IO Translator 
+/// to use to interpret data.
+///
+/// Using
+///
+topazAsset_t * topaz_resources_load_asset(
+    /// The resource instance to load with.
+    topazResources_t * res,
+    /// The extension / filetype to attempt load as
+    const topazString_t * fileType,
+    // the asset to load
+    topazAsset_t *
+);
+
+
+
+
+
 /// Writes an asset to the filesystem at the outputpath 
 /// given relative to the resources path.
 ///
 int topaz_resources_write_asset(
-    /// The resource instance to write with.
+    /// The resource instance to write with. 
     topazResources_t * res,
 
     /// The asset to write.
@@ -184,32 +215,10 @@ int topaz_resources_write_asset(
 );
 
 
-/// Creates a new asset with an auto-generated name.
-/// The name will be registered with the resources instance and 
-/// can be used to refer to the asset.
-topazAsset_t * topaz_resources_create_asset(
-    /// The resource instance to fetch with/
-    topazResources_t * res,
-    /// The asset type.
-    topazAsset_Type type
-);
 
-/// Either creates a new asset if the given name doesn't exist, or 
-/// returns an existing asset.
-/// In the case that a new asset needs to be created, 
-/// if the fileType is not able to be interpreted, then 
-/// NULL is returned. This is only checked if the name doesn't exist.
-/// In the case that a new asset is created, the returned asset 
-/// can then be used directly to load data. See asset.h
-/// 
-topazAsset_t * topaz_resources_fetch_asset(
-    /// The resource instance to fetch with/
-    topazResources_t * res,
-    /// The asset type.
-    topazAsset_Type type,
-    /// The unique name of the asset.
-    const topazString_t * name
-);
+
+
+
 
 /// Fetches a translator for the given filetype. The translator can be used for 
 /// fine control over timing and loading of assets. 

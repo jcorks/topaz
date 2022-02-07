@@ -512,7 +512,8 @@
                         LOCK_CLIENT_POSITION : 7,
                         VIEW_POLICY : 8,
                         INPUT_FOCUS : 9,
-                        ACTIVE : 10
+                        ACTIVE : 10,
+                        DECORATED:11
                     },
                     
                     FRAMEBUFFER : {
@@ -639,6 +640,16 @@
                             set ::(value) {
                                 topaz_display__set_parameter(a:impl, b:9, c:value);
                             }
+                        },
+
+                        decorated : {
+                            get :: {
+                                return topaz_display__get_parameter(a:impl, b:11) > 0.5;
+                            },
+                            set ::(value) {
+                                topaz_display__set_parameter(a:impl, b:11, c:value);
+                            }
+
                         },
         
                         camera2d : {
@@ -1429,9 +1440,9 @@
         @__Resources__ = ::<={
             @:topaz_resources__fetch_asset = getExternalFunction(name:'topaz_resources__fetch_asset');
             @:topaz_resources__create_asset = getExternalFunction(name:'topaz_resources__create_asset');
+            @:topaz_resources__create_asset_from_bytes = getExternalFunction(name:'topaz_resources__create_asset_from_bytes');
+            @:topaz_resources__create_asset_from_base64 = getExternalFunction(name:'topaz_resources__create_asset_from_base64');
             @:topaz_resources__load_asset = getExternalFunction(name:'topaz_resources__load_asset');
-            @:topaz_resources__load_asset_data = getExternalFunction(name:'topaz_resources__load_asset_data');
-            @:topaz_resources__load_asset_base64 = getExternalFunction(name:'topaz_resources__load_asset_base64');
             @:topaz_resources__write_asset = getExternalFunction(name:'topaz_resources__write_asset');
             @:topaz_resources__remove_asset = getExternalFunction(name:'topaz_resources__remove_asset');
             @:topaz_resources__is_extension_supported = getExternalFunction(name:'topaz_resources__is_extension_supported');
@@ -1456,24 +1467,28 @@
                 
                 
                     this.interface = {
-                        fetchAsset : ::(type, name){ 
-                            return _rawAssetToInstance(impl:topaz_resources__fetch_asset(a:type, b:name));
+                        fetchAsset : ::(name){ 
+                            return _rawAssetToInstance(impl:topaz_resources__fetch_asset(a::name));
                         },
 
-                        createAsset : ::(type) { 
-                            return _rawAssetToInstance(impl:topaz_resources__create_asset(a:type));
+                        createAsset : ::(name, bytes, path, base64) { 
+                            when (path != empty) ::<= {
+                                return _rawAssetToInstance(impl:topaz_resources__create_asset_from_path(a:path, b:name));                            
+                            };
+                            when (bytes != empty) ::<= {
+                                return _rawAssetToInstance(impl:topaz_resources__create_asset_from_bytes(a:bytes, b:name));                            
+                            };
+                            when (base64 != empty) ::<= {
+                                return _rawAssetToInstance(impl:topaz_resources__create_asset_from_base64(a:base64, b:name));                            
+                            };
+
+                            return _rawAssetToInstance(impl:topaz_resources__create_asset(a:name));
                         },
 
-                        loadAsset : ::(extension, path, name) { 
-                            return _rawAssetToInstance(impl:topaz_resources__load_asset(a:extension, b:path, c:name));
+                        loadAsset : ::(extension, asset) { 
+                            return _rawAssetToInstance(impl:topaz_resources__load_asset(a:extension, b:asset.native));
                         },
 
-                        loadAssetData : ::(extension, bytes, name) { 
-                            return _rawAssetToInstance(impl:topaz_resources__load_asset_data(a:extension, b:bytes, c:name));
-                        },
-                        loadAssetBase64 : ::(extension, base64, name) { 
-                            return _rawAssetToInstance(impl:topaz_resources__load_asset_base64(a:extension, b:base64, c:name));
-                        },
 
 
                         writeAsset : ::(asset, extension, path) { 
@@ -1511,16 +1526,16 @@
                 name : 'Topaz.FontManager',        
                 define : ::(this) { 
                     this.interface = {
-                        registerFont : ::(name){ 
-                            topaz_font_manager__register_font(a:name);
+                        registerFont : ::(asset){ 
+                            topaz_font_manager__register_font(a:asset);
                         },
 
-                        preloadGlyphs : ::(name, sizeRequest, characters){ 
-                            topaz_font_manager__preload_glyphs(a:name, b:sizeRequest, c:characters);
+                        preloadGlyphs : ::(asset, sizeRequest, characters){ 
+                            topaz_font_manager__preload_glyphs(a:asset, b:sizeRequest, c:characters);
                         },
 
-                        unregisterFont : ::(name){ 
-                            topaz_font_manager__unregister_font(a:name);
+                        unregisterFont : ::(asset){ 
+                            topaz_font_manager__unregister_font(a:asset);
                         }        
                     };
                 }

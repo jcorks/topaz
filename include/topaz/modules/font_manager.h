@@ -69,14 +69,16 @@ void topaz_font_manager_destroy(
 /// In most circumstances, this name is one used 
 /// to refer to the font from topaz's point of view.
 ///
-void topaz_font_manager_register_font(
+/// Returns success.
+///
+int topaz_font_manager_register_font(
     /// The font manager to register the new font with
     topazFontManager_t * fontManager,
     
     /// The name of the asset that contains the raw font data, specific 
     /// to the backend. The asset type needs to be 
     /// a raw data asset.
-    const topazString_t * dataAsset
+    const topazAsset_t * asset
 );
 
 
@@ -88,7 +90,7 @@ topazFontRenderer_t * topaz_font_manager_get_renderer(
     topazFontManager_t * fontManager,
     
     /// The name of the font to get the renderer for.
-    const topazString_t * fontName
+    const topazAsset_t * asset
 );
 
 
@@ -109,7 +111,7 @@ void topaz_font_manager_preload_glyphs(
     topazFontManager_t * f,
     
     /// The name of the font to preload.
-    const topazString_t * fontName,
+    const topazAsset_t * font
     
     /// The size of the font to preload.
     int sizeRequest,
@@ -124,7 +126,7 @@ void topaz_font_manager_unregister_font(
     topazFontManager_t * fontManager,
     
     /// The name of the font to remove.
-    const topazString_t * fontName
+    const topazAsset_t * font
 );
 
 

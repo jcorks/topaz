@@ -69,10 +69,9 @@ void topaz_text2d_set_font(
     /// The text2d to modify
     topazComponent_t * c,
     
-    /// The name of the font to use. Should match the registered 
-    /// font name through topaz's font manager. See 
-    /// topaz_font_manager_register_font().
-    const topazString_t * fontName,
+    /// The font to use. Should be a registered font asset.
+    /// See topaz_font_manager_register_font().
+    const topazAsset_t * font,
     
     /// The pixel size of the text to appear.
     int pixelSize

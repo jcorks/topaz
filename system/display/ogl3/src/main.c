@@ -338,6 +338,10 @@ static void topaz_glfw_request_parameter_change(
         if (value > 0.5) 
             glfwRequestWindowAttention(d->window);
         break;
+
+      case topazDisplay_Parameter_Decorated:
+        glfwSetWindowAttrib(d->window, GLFW_DECORATED, (int)value);
+        break;
       case topazDisplay_Parameter_Fullscreen:
               /*
         TopazGLFWWindow * d = api;      
