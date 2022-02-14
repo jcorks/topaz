@@ -20,6 +20,7 @@ src = [
     'src/assets_sound.c',
     'src/assets_material.c',
     'src/assets_mesh.c',
+    'src/assets_bundle.c',
     'src/backends_audio_manager.c',
     'src/backends_console_display.c',
     'src/backends_display.c',

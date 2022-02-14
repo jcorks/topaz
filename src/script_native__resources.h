@@ -61,6 +61,7 @@ TSO_SCRIPT_API_FN(resources_api__fetch_asset) {
       case topazAsset_Type_Sound:     type |= TSO_OBJECT_ID__SOUND; break;
       case topazAsset_Type_Material:  type |= TSO_OBJECT_ID__MATERIAL; break;
       case topazAsset_Type_Mesh:      type |= TSO_OBJECT_ID__MESH; break;
+      case topazAsset_Type_Bundle:    type |= TSO_OBJECT_ID__BUNDLE; break;
       default:;
     }
 
@@ -160,20 +161,23 @@ TSO_SCRIPT_API_FN(resources_api__load_asset) {
     topazAsset_t * asset = topaz_resources_load_asset(
         r,
         topaz_script_object_as_string(arg0),
-        native1,
+        native1
     );
  
     if (!asset)
         TSO_NO_RETURN;
-    TSO_OBJECT_UNKEEP_REF(native1);
+        
+    topazScript_Object_t * o = TSO_OBJECT_FETCH_KEPT_NATIVE(native1);
+    TSO_OBJECT_UNKEEP_REF(o, native1);
 
     int type = TSO_OBJECT_TYPE__ASSET;
     switch(topaz_asset_get_type(asset)) {
-      case topazAsset_Type_Image:  type |= TSO_OBJECT_ID__IMAGE; break;
-      case topazAsset_Type_Data:   type |= TSO_OBJECT_ID__DATA; break;
-      case topazAsset_Type_Sound:  type |= TSO_OBJECT_ID__SOUND; break;
+      case topazAsset_Type_Image:     type |= TSO_OBJECT_ID__IMAGE; break;
+      case topazAsset_Type_Data:      type |= TSO_OBJECT_ID__DATA; break;
+      case topazAsset_Type_Sound:     type |= TSO_OBJECT_ID__SOUND; break;
       case topazAsset_Type_Material:  type |= TSO_OBJECT_ID__MATERIAL; break;
       case topazAsset_Type_Mesh:      type |= TSO_OBJECT_ID__MESH; break;
+      case topazAsset_Type_Bundle:    type |= TSO_OBJECT_ID__BUNDLE; break;
       default:;
     }
 
@@ -204,12 +208,13 @@ TSO_SCRIPT_API_FN(resources_api__write_asset) {
 
 TSO_SCRIPT_API_FN(resources_api__remove_asset) {
     TSO_ARG_0;
+    TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_TYPE__ASSET);           
 
 
     topazResources_t * r = topaz_context_get_resources(((topazScriptManager_t*)context)->ctx);
     topaz_resources_remove_asset(
         r,
-        topaz_script_object_as_string(arg0)
+        native
     );
 
     TSO_NO_RETURN;

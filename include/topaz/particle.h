@@ -37,6 +37,7 @@ typedef struct topazEntity_t topazEntity_t;
 typedef struct topazString_t topazString_t;
 typedef struct topazRenderer_Attributes_t topazRenderer_Attributes_t;
 typedef struct topaz_t topaz_t;
+typedef struct topazAsset_t topazAsset_t;
 
 /// The specification of a particle. This is used as a roadmap to 
 /// generate a real particle instance using topaz_particle_emitter_2d_emit()
@@ -88,7 +89,10 @@ enum topazParticle_Property {
 
 /// Creates a new particle specification.
 ///
-topazParticle_t * topaz_particle_create();
+topazParticle_t * topaz_particle_create(
+    /// the topaz context
+    topaz_t * context
+);
 
 
 /// Destroys the particle.
@@ -137,8 +141,8 @@ void topaz_particle_set_image(
     /// The particle to modify.
     topazParticle_t * part,
 
-    /// The name of the asset image to set.
-    const topazString_t * image
+    /// The asset image to set.
+    topazAsset_t * image
 );
 
 

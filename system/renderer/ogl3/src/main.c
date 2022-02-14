@@ -44,7 +44,6 @@ DEALINGS IN THE SOFTWARE.
 
 
 
-static intptr_t api_nothing(){return 0;}
 
 
 
@@ -52,7 +51,7 @@ static void topaz_api_gl3__create(topazRendererAPI_t * api, topazRenderer_CoreAP
     api->implementationData = topaz_gl3_create();
 }
 
-static void topaz_api_gl3__destroy(topazRendererAPI_t * api, topazRenderer_CoreAPI_t * core) {
+static void topaz_api_gl3__destroy(topazRendererAPI_t * api) {
     topaz_gl3_destroy(api->implementationData);
 }
 
@@ -137,7 +136,7 @@ static void topaz_api_gl3__renderer_draw_3d(
     topaz_gl3_program_render(
         program,
         vertices,
-        ids ? ids[1] : NULL,
+        ids ? ids[1] : 0,
         topaz_array_get_data(indices), 
         topaz_array_get_size(indices)
     );
@@ -217,7 +216,7 @@ static void * topaz_api_gl3__renderer_program_get_fallback(
     topazRendererAPI_t * api
 ) {
     
-    return topaz_gl3_get_default_program(api);
+    return topaz_gl3_get_default_program(api->implementationData);
 }
 
 static void topaz_api_gl3__renderer_program_destroy(

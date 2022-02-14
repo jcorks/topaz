@@ -271,7 +271,7 @@ topazArray_t * topaz_system_get_available_backends(
     for(topaz_table_iter_start(iter, table);
         !topaz_table_iter_is_end(iter);
         topaz_table_iter_proceed(iter)) {
-        topazString_t * key = topaz_table_iter_get_key(iter);
+        const topazString_t * key = topaz_table_iter_get_key(iter);
         topaz_array_push(out, key);
     }
     return out;

@@ -181,7 +181,7 @@ static int ogg_stream_finish(
         while(1) {
             int size = ov_read(
                 &oggFile,
-                block,
+                (char*)block,
                 TOPAZOGGBUFFERSIZE,
                 0, 2, 0, &section // matches sound format.
             );

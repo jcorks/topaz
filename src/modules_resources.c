@@ -17,6 +17,7 @@
 #include <topaz/assets/sound.h>
 #include <topaz/assets/material.h>
 #include <topaz/assets/mesh.h>
+#include <topaz/assets/bundle.h>
 
 #ifdef TOPAZDC_DEBUG
 #include <assert.h>
@@ -102,12 +103,12 @@ topazAsset_t * topaz_resources_create_asset(
     if (!name) {
         custname = 1;
         static int ref = 0;
-        topazString_t * name = topaz_string_create_from_c_str(
+        name = topaz_string_create_from_c_str(
             "$TOPAZASSET_%d", ref++
         );
         // failsafe
         while (topaz_table_find(r->name2asset, name)) {
-            topaz_string_concat_printf(name, "%d", rand());
+            topaz_string_concat_printf((topazString_t*)name, "%d", rand());
         }
     } else {
         if (topaz_table_find(
@@ -116,13 +117,13 @@ topazAsset_t * topaz_resources_create_asset(
         )) return NULL;
     }
 
-    asset = topaz_data_create(r->ctx, name);
+    topazAsset_t * asset = topaz_data_create(r->ctx, name);
     topaz_table_insert(
         r->name2asset,
         name,
         asset
     );
-    if (custname) topaz_string_destroy(name);
+    if (custname) topaz_string_destroy((topazString_t *)name);
     return asset;
 }
 
@@ -134,7 +135,6 @@ topazAsset_t * topaz_resources_fetch_asset(
         r->name2asset,
         name
     );
-    return asset;
 }
 
 topazAsset_t * topaz_resources_create_asset_from_path(
@@ -144,7 +144,7 @@ topazAsset_t * topaz_resources_create_asset_from_path(
 ) {
     topazAsset_t * a = topaz_resources_create_asset(r, name);
     if (!a) {
-        return;
+        return NULL;
     }
 
     // at this point, we want a data buffer 
@@ -162,7 +162,7 @@ topazAsset_t * topaz_resources_create_asset_from_path(
 
     // check to see if read failed.
     if (!data) {
-        topaz_asset_destroy(asset);
+        topaz_asset_destroy(a);
         topaz_table_remove(r->name2asset, name);
         return NULL;
     } 
@@ -186,7 +186,7 @@ topazAsset_t * topaz_resources_create_asset_from_bytes(
 ) {
     topazAsset_t * a = topaz_resources_create_asset(r, name);
     if (!a) {
-        return;
+        return NULL;
     }
 
     topaz_data_set(
@@ -211,7 +211,6 @@ topazAsset_t * topaz_resources_create_asset_from_base64(
     }
     return topaz_resources_create_asset_from_bytes(
         r, 
-        extension, 
         TOPAZ_ARRAY_CAST(buffer, uint8_t, size), 
         name
     );
@@ -229,13 +228,41 @@ topazAsset_t * topaz_resources_load_asset(
     if (topaz_asset_get_type(srcAsset) != topazAsset_Type_Data) {
         return NULL;
     }
+    
+    
+    /// SPECIAL CASE: bundles.
+    /// The have their own name and an internal translation feature.
+    if (topaz_string_test_eq(extension, TOPAZ_STR_CAST("bundle"))) {
+        const topazArray_t * srcData = topaz_data_get_as_bytes(srcAsset);
+        topazAsset_t * bundle = topaz_bundle_create_from_data(
+            r->ctx, 
+            topaz_array_get_data(srcData),
+            topaz_array_get_size(srcData)
+        );
+        if (!bundle) return NULL;
+        topaz_table_insert(
+            r->name2asset,
+            topaz_asset_get_name(srcAsset),
+            NULL
+        );
+        
+        topaz_asset_destroy(srcAsset);
+        topaz_table_insert(
+            r->name2asset,
+            topaz_asset_get_name(bundle),
+            bundle
+        );
+        
+        return bundle;
+    }
 
     // invalid extension if not created, return NULL
     topazIOX_t * dec = topaz_table_find(r->ioxs, extension);
     if (!dec) return NULL;
     const topazString_t * name = topaz_asset_get_name(srcAsset);
     // Create a new asset based on which kind it is.
-    switch(topaz_iox_get_asset_type(dev)) {
+    topazAsset_t * asset;
+    switch(topaz_iox_get_asset_type(dec)) {
       case topazAsset_Type_Data:  asset    = topaz_data_create(r->ctx, name);  break;
       case topazAsset_Type_Image: asset    = topaz_image_create(r->ctx, name); break;
       case topazAsset_Type_Sound: asset    = topaz_sound_create(r->ctx, name); break;
@@ -319,14 +346,10 @@ int topaz_resources_write_asset(
 
 
 
-void topaz_resources_remove_asset(topazResources_t * r, const topazString_t * name) {
-    topazAsset_t * asset = topaz_table_find(
-        r->name2asset,
-        name
-    );
+void topaz_resources_remove_asset(topazResources_t * r, topazAsset_t * asset) {
     if (asset) {
+        topaz_table_remove(r->name2asset, topaz_asset_get_name(asset));    
         topaz_asset_destroy(asset);
-        topaz_table_remove(r->name2asset, name);
     }
 }
 

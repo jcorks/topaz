@@ -62,4 +62,7 @@ void topaz_gl3_commit_process_attribs(topazGL3_t *, const topazRenderer_Attribut
 // glFinish()?
 void topaz_gl3_sync(topazGL3_t *);
 
+// gets the default dynamic program.
+topazGL3_Program_t * topaz_gl3_get_default_program(topazGL3_t *);
+
 #endif

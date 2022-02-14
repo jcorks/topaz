@@ -1,5 +1,6 @@
 #include <topaz/backends/script.h>
 
+/*
 TSO_SCRIPT_API_FN(script_api__import) {
     TSO_ARG_0;
 
@@ -10,7 +11,7 @@ TSO_SCRIPT_API_FN(script_api__import) {
 
     TSO_NO_RETURN;
 }
-
+*/
 
 static void add_refs__script_api(topazScript_t * script, topazScriptManager_t * context) {
     //TS_MAP_NATIVE_FN("topaz_script__import", script_api__import, 1);

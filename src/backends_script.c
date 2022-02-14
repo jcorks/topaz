@@ -15,7 +15,7 @@
 #endif
 
 typedef struct {
-    topaz_script_native_function fn;
+    topaz_script_event_function fn;
     void * fndata;
 
 } EventHandler;
@@ -305,7 +305,7 @@ topazScript_Object_t * topaz_script_create_empty_object(
 void topaz_script_set_handler(
     topazScript_t * s, 
     topazScript_Event_t ev, 
-    topaz_script_native_function fn, 
+    topaz_script_event_function fn, 
     void * data) {
     
     s->handlers[ev].fn = fn;
@@ -811,7 +811,7 @@ void topaz_script_notify_command(topazScript_t * s, int cmd, topazString_t * str
     topaz_string_destroy(str);
 }
 
-
+/*
 static const topazString_t * topaz_script_apply_import_path(
     topazScript_t * s,
     const topazString_t * path
@@ -855,7 +855,7 @@ static void topaz_script_push_import_path(
         topaz_array_push(s->importPathStack, parent);
     }
 }
-
+*/
 // Pops the current directory.
 static void topaz_script_pop_import_path(
     topazScript_t * s
@@ -877,32 +877,11 @@ int topaz_script_import(
     topazResources_t * r = topaz_context_get_resources(script->ctx);
     // first, raw path is used. This should handle any special files 
     // and direct paths.
-    topazAsset_t * src = topaz_resources_load_asset(
+    topazAsset_t * src = topaz_resources_fetch_asset(
         r,
-        TOPAZ_STR_CAST("txt"),
-        path,
         path
     );
 
-
-    if (!src) {
-        const topazString_t * a = topaz_script_apply_import_path(script, path);
-        // if the raw path fails, use the relative interpreter path
-        src = a ? topaz_resources_load_asset(
-            r,
-            TOPAZ_STR_CAST("txt"),
-            a,
-            path
-        ) : NULL;
-        if (src) {
-            topaz_script_push_import_path(script, a);
-        }
-    } else {
-        topaz_script_push_import_path(script, path);
-    }
-
-
-    
 
     if (src) {
         topazString_t * srcStr = topaz_data_get_as_string(src);

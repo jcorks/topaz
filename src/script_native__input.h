@@ -243,7 +243,6 @@ TSO_SCRIPT_API_FN(input_api__remove_listener) {
     );
     if (!l) TSO_NO_RETURN;
     
-    int tag = 1;
     ScriptInputListener * ldata = l->userData;
     topaz_input_remove_listener(input, topaz_script_object_as_int(arg0));
     topaz_script_object_reference_unref(ldata->obj);

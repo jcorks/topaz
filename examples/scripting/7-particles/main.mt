@@ -30,11 +30,17 @@
         @ramp100 = a.string;
         
         
-        Topaz.Resources.loadAsset(extension:'png', path:'base.png', name:'example');
+        @:image = Topaz.Resources.loadAsset(
+            extension:'png', 
+            asset:Topaz.Resources.createAsset(
+                path:'base.png', 
+                name:'example'
+            )
+        );
 
 
         @particle = Topaz.Particle.new();
-        particle.image = 'example';
+        particle.image = image;
 
         particle.setAttribute(attribute:Topaz.RENDERER.ATTRIBUTE.ALPHA_RULE,  value:Topaz.RENDERER.ALPHA_RULE.ALLOW);
         particle.setAttribute(attribute:Topaz.RENDERER.ATTRIBUTE.ETCH_RULE,   value:Topaz.RENDERER.ETCH_RULE.NOETCHING);

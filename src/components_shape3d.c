@@ -215,7 +215,7 @@ topazTransform_t * topaz_shape3d_get_node(
 }
 
 static void topaz_shape3d_texture_event0(
-    topazImage_t * img,
+    topazAsset_t * a,
     int frame,
     topazImage_TextureEvent event,
     void * data
@@ -235,7 +235,7 @@ static void topaz_shape3d_texture_event0(
 }   
 
 static void topaz_shape3d_texture_event1(
-    topazImage_t * img,
+    topazAsset_t * a,
     int frame,
     topazImage_TextureEvent event,
     void * data
@@ -256,7 +256,7 @@ static void topaz_shape3d_texture_event1(
 
 
 static void topaz_shape3d_texture_event2(
-    topazImage_t * img,
+    topazAsset_t * a,
     int frame,
     topazImage_TextureEvent event,
     void * data
@@ -315,7 +315,7 @@ void topaz_shape3d_set_texture(
         s->d3.sampleTexture2 = topaz_image_frame_get_texture(image);
         s->slot2_id = topaz_image_add_texture_event_notify(src, topaz_shape3d_texture_event2, s);
         s->frame2_old = 0;
-        s->slot2_old = image;
+        s->slot2_old = src;
         break;
     
       default:;

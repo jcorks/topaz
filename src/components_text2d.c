@@ -68,7 +68,7 @@ typedef struct {
     topazString_t * text;
     topazSpatial_t * spatial;
     int currentSize;
-    topazAsset_t * font;
+    const topazAsset_t * font;
 
     float width;
     float height;
@@ -194,7 +194,7 @@ const topazRenderer_Attributes_t * topaz_text2d_get_attributes(
     return &t->attribs;
 }
 
-static void text2d_update__full(Text2D * t, const topazString_t * str, const topazAsse_t * font, int pixelSize) {
+static void text2d_update__full(Text2D * t, const topazString_t * str, const topazAsset_t * font, int pixelSize) {
     uint32_t i;
     uint32_t len;
 
@@ -734,7 +734,7 @@ void topaz_text2d_set_font(
     text2d_update(
         t,
         t->text,
-        font
+        font,
         pixelSize
     );
 }

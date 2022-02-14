@@ -62,8 +62,8 @@ int topaz_font_manager_register_font(
     topazFontManager_t * fontManager,
     const topazAsset_t * asset
 ) {
-    if (topaz_asset_get_type(font) != topazAsset_Type_Data)) return 0;
-    const topazString_t * fontName = topaz_asset_get_name(font);
+    if (topaz_asset_get_type(asset) != topazAsset_Type_Data) return 0;
+    const topazString_t * fontName = topaz_asset_get_name(asset);
     topazFontRenderer_t * f = topaz_table_find(
         fontManager->registered, 
         fontName
@@ -71,7 +71,7 @@ int topaz_font_manager_register_font(
     if (f) {
         topaz_font_manager_unregister_font(
             fontManager, 
-            fontName
+            asset
         );
     }
 
@@ -86,8 +86,8 @@ int topaz_font_manager_register_font(
 
     topaz_font_renderer_set_font_data(
         f,
-        topaz_array_get_data(topaz_data_get_as_bytes(asset)),
-        topaz_array_get_size(topaz_data_get_as_bytes(asset))
+        topaz_array_get_data(topaz_data_get_as_bytes((topazAsset_t*)asset)),
+        topaz_array_get_size(topaz_data_get_as_bytes((topazAsset_t*)asset))
     );
     
     topaz_table_insert(
@@ -108,6 +108,7 @@ topazFontRenderer_t * topaz_font_manager_get_renderer(
     /// The name of the font to get the renderer for.
     const topazAsset_t * font
 ) {
+    if (font == NULL) return NULL;
     return topaz_table_find(fontManager->registered, topaz_asset_get_name(font));
 }
 
@@ -138,7 +139,7 @@ void topaz_font_manager_preload_glyphs(
     /// A string of characters to preload.
     const topazString_t * characters
 ) {
-    topazFontRenderer_t * r = topaz_table_find(fontManager->registered, topaz_asset_get_name(fontName));
+    topazFontRenderer_t * r = topaz_table_find(fontManager->registered, topaz_asset_get_name(font));
     if (!r) return;
     // the ref is never unref'd: it is assumed that 
     // the cached glyphs stay cached until the font is requested to be unregistered

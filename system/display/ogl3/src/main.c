@@ -157,8 +157,8 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
     w->source  = api;
 
 
-    w->w = 0;
-    w->h = 0;
+    w->w = 64;
+    w->h = 64;
     w->x = w->y = 0;
 
 

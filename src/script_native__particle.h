@@ -17,7 +17,8 @@ static topazScript_Object_t * particle_api__cleanup(
 
 
 TSO_SCRIPT_API_FN(particle_api__create) {
-    topazParticle_t * ptr = topaz_particle_create();
+    topazScriptManager_t * scriptManager = context;
+    topazParticle_t * ptr = topaz_particle_create(scriptManager->ctx);
 
     // creates new object and sets native pointer
     TSO_OBJECT_NEW_VALUE(ptr, TSO_OBJECT_ID__PARTICLE, particle_api__cleanup, ptr);
@@ -45,8 +46,9 @@ TSO_SCRIPT_API_FN(particle_api__set_image) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazParticle_t *, TSO_OBJECT_ID__PARTICLE);
+    TSO_NATIVIZE_1(topazAsset_t *, TSO_OBJECT_TYPE__ASSET);   
 
-    topaz_particle_set_image(native, topaz_script_object_as_string(arg1));
+    topaz_particle_set_image(native, native1);
     TSO_NO_RETURN; 
 }
 TSO_SCRIPT_API_FN(particle_api__get_attribute) {

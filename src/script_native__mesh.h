@@ -84,8 +84,6 @@ TSO_SCRIPT_API_FN(mesh_api__set_vertex) {
     int index = topaz_script_object_as_int(arg1);
     if (index < 0 || index >= len) TSO_NO_RETURN;
     
-    int type = topaz_script_object_as_int(arg2);
-    
 
 
 

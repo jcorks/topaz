@@ -165,7 +165,7 @@ int test__object2d_advanced() {
     topaz_entity_add_component(ent1, o1);
 
     topazEntity_t * root = topaz_entity_create(ctx);
-    topaz_context_set_root(ctx, root);
+    //topaz_context_set_root(ctx, root);
     topaz_entity_attach(root, ent0);
     topaz_entity_attach(root, ent1);
 

@@ -33,7 +33,7 @@ struct topazDisplay_t {
     topazArray_t * closeCBs;
 
     int cbPool;
-    float params[topazDisplay_Parameter_InputFocus];
+    float params[topazDisplay_Parameter_Decorated+1];
 
 };
 
@@ -88,7 +88,8 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
 
     out->apiData = out->api.display_create(out, ctx);
 
-
+    out->params[topazDisplay_Parameter_Width] = 640;
+    out->params[topazDisplay_Parameter_Height] = 480;
     topaz_display_set_parameter(
         out, 
         topazDisplay_Parameter_ViewPolicy, 

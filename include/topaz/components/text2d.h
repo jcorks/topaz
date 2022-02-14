@@ -39,7 +39,7 @@ typedef struct topazComponent_t topazComponent_t;
 typedef struct topazString_t topazString_t;
 typedef struct topaz_t topaz_t;
 typedef struct topazTransform_t topazTransform_t;
-
+typedef struct topazAsset_t topazAsset_t;
     
 /// Component that, when attached, produces a simple 2D text visual.
 typedef struct topazText2D_t topazText2D_t;

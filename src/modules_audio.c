@@ -743,7 +743,6 @@ void topaz_asb_clean(TopazAudioSoundBank * bank) {
         const topazString_t * str  = topaz_table_iter_get_key(iter);
         if (topaz_resources_fetch_asset(
             res,
-            topazAsset_Type_Sound,
             str        
         ) != asset) {
             str = topaz_string_clone(str);

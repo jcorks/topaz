@@ -41,14 +41,19 @@ topazEntity_t * rectangle_create(topaz_t * ctx) {
 
 
     topazViewManager_t * vm = topaz_context_get_view_manager(ctx);
+    topazDisplay_t * d = topaz_view_manager_get_default(vm);
+    topazRenderer_Framebuffer_t * fb = topaz_display_get_framebuffer(
+        d, 
+        topazDisplay_Framebuffer_A
+    );
     topaz_shape2d_form_rectangle(
         shape,
-        topaz_view_manager_get_view_width(vm) / 2,
-        topaz_view_manager_get_view_height(vm) / 2
+        topaz_renderer_framebuffer_get_width(fb) / 2,
+        topaz_renderer_framebuffer_get_height(fb) / 2
     );
     topazVector_t center = topaz_vector_from_xyz(
-        topaz_view_manager_get_view_width(vm) / 4,
-        topaz_view_manager_get_view_height(vm) / 4,
+        topaz_renderer_framebuffer_get_width(fb) / 4,
+        topaz_renderer_framebuffer_get_height(fb) / 4,
         0
     );
     topaz_shape2d_set_center(
@@ -62,8 +67,8 @@ topazEntity_t * rectangle_create(topaz_t * ctx) {
     topaz_input_add_keyboard_listener(topaz_context_get_input(ctx), &l);    
 
 
-    topaz_entity_position(e)->x += topaz_view_manager_get_view_width(vm) / 2;
-    topaz_entity_position(e)->y += topaz_view_manager_get_view_height(vm) / 2;
+    topaz_entity_position(e)->x += topaz_renderer_framebuffer_get_width(fb) / 2;
+    topaz_entity_position(e)->y += topaz_renderer_framebuffer_get_height(fb) / 2;
 
 
     topaz_entity_add_component(e, shape);

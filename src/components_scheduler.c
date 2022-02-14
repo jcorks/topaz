@@ -106,8 +106,6 @@ typedef struct {
 static void scheduler__on_step(topazComponent_t * c, Scheduler * s) {
     if (s->pauseStartAt || s->repeat == -1) return;
 
-    uint32_t i;
-    uint32_t len;
     uint64_t timeNow;
     if (s->isTime) {
         timeNow = topaz_context_get_time(s->ctx);

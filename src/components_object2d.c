@@ -1115,8 +1115,8 @@ static topazArray_t * spatial_map_get_collisions(smap_t * m) {
             const void * collisionKey = topaz_table_iter_get_key(iter);
         
             smapCollision_t c = {
-                ((uint32_t)collisionKey)%m->numObjects,
-                ((uint32_t)collisionKey)/m->numObjects
+                ((uintptr_t)collisionKey)%m->numObjects,
+                ((uintptr_t)collisionKey)/m->numObjects
             };
 
             topaz_array_push(out, c);

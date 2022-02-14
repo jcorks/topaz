@@ -1,11 +1,21 @@
 @:Topaz = import(module:'Topaz');
 @:class = import(module:'Matte.Core.Class');
 
+
+
+@:font = Topaz.Resources.createAsset(
+    path:"PublicSans-Regular.ttf",
+    name:"MyFont"
+);
+Topaz.FontManager.registerFont(asset:font);
+
+
+
 @:StringVisual = class(
     inherits : [Topaz.Entity],
     define:::(this) {
         @visual = Topaz.Text2D.new();    
-        visual.font = 'MyFont';
+        visual.font = font;
         visual.size =  40;
 
 
@@ -27,15 +37,6 @@
 );
 
 
-
-Topaz.Resources.loadAsset(
-    extension:"", // asset extension,
-    path:"PublicSans-Regular.ttf",
-    name:"MyFont"
-);
-
-
-Topaz.FontManager.registerFont(name:'MyFont');
 
 
 

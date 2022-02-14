@@ -161,11 +161,9 @@ TSO_SCRIPT_API_FN(topaz_api__from_base64) {
     }
     topazScriptManager_t * mgr = context;
     topazResources_t * resources = topaz_context_get_resources(mgr->ctx);
-    topaz_resources_remove_asset(resources, TOPAZ_STR_CAST("topaz_api__from_base64"));
-    topazAsset_t * asset = topaz_resources_fetch_asset(resources, topazAsset_Type_Data, TOPAZ_STR_CAST("topaz_api__from_base64"));
+    topazAsset_t * asset = topaz_resources_fetch_asset(resources, TOPAZ_STR_CAST("topaz_api__from_base64"));
     if (!asset) {
-        free(data);
-        TSO_NO_RETURN;
+        asset = topaz_resources_create_asset(resources, TOPAZ_STR_CAST("topaz_api__from_base64"));
     }
 
     topaz_data_set(

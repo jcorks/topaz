@@ -226,7 +226,7 @@ static topazString_t * topaz_filesystem_posix__path_string_get_name(
     uint32_t len = topaz_string_get_length(path);
     for(i = len - 1; i != 0; --i) {
         if (topaz_string_get_char(path, i) == '/') {
-            return topaz_string_get_substr(path, i+1, len-1);
+            return (topazString_t*)topaz_string_get_substr(path, i+1, len-1);
         }
     }
     return topaz_string_create();

@@ -527,7 +527,6 @@ static uint8_t * topaz_matte_import(
     topazResources_t * res = topaz_context_get_resources(t);
     topazAsset_t * asset = topaz_resources_fetch_asset(
         res,
-        topazAsset_Type_Data,
         TOPAZ_STR_CAST(matte_string_get_c_str(importPath))
     );
     if (!asset) {

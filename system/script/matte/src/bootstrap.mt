@@ -544,11 +544,11 @@
                         },
         
                         addParameterCallback : ::(func){ 
-                            return topaz_display__add_parameter_callback(a:impl, b:func);
+                            return topaz_display__add_parameter_callback(a:impl, b:::(a, b){func(display:a, parameter:b);});
                         },
         
                         addCloseCallback : ::(func){
-                            return topaz_display__add_close_callback(a:impl, b:func);
+                            return topaz_display__add_close_callback(a:impl, b:::(a){func(display:a);});
                         },
         
                         removeCallback : ::(id){ 
@@ -1398,6 +1398,112 @@
             );
         };
         
+        @__Bundle__ = ::<={
+            topaz_bundle__create_empty = getExternalFunction(name:'topaz_bundle__create_empty');
+            topaz_bundle__add_item = getExternalFunction(name:'topaz_bundle__add_item');
+            topaz_bundle__clear = getExternalFunction(name:'topaz_bundle__clear');
+
+            topaz_bundle__get_version_major = getExternalFunction(name:'topaz_bundle__get_version_major');
+            topaz_bundle__get_version_minor = getExternalFunction(name:'topaz_bundle__get_version_minor');
+            topaz_bundle__get_version_micro = getExternalFunction(name:'topaz_bundle__get_version_micro');
+
+            topaz_bundle__get_description = getExternalFunction(name:'topaz_bundle__get_description');
+            topaz_bundle__get_author = getExternalFunction(name:'topaz_bundle__get_author');
+            topaz_bundle__get_depends_count = getExternalFunction(name:'topaz_bundle__get_depends_count');
+            topaz_bundle__get_depends_nth_version = getExternalFunction(name:'topaz_bundle__get_depends_nth_version');
+            topaz_bundle__get_depends_nth_name = getExternalFunction(name:'topaz_bundle__get_depends_nth_name');
+
+            return class(
+                name : 'Topaz.Data',        
+                inherits : [__Asset__],
+                define : ::(this) { 
+                    @impl;
+                    this.constructor = ::(native, json){
+                        return if (json == empty) ::<={
+                            this.constructor[__Asset__](native:native);
+                            impl = this.native;
+                            return this;
+                        } else ::<={
+                        
+                            /*
+                            {
+                                name: 
+                                version : {
+                                    major:
+                                    minor:
+                                    micro:
+                                },                            
+                                description:
+                                author:
+                                depends : [
+                                    {
+                                        name:
+                                        version:
+                                    }                                  
+                                ],
+                                items : [
+                                    {
+                                        name:
+                                        extension:
+                                        path: 
+                                    }                                
+                                ]                            
+                            }
+                            */
+                            @:jsonFormatted = {
+                                bundledName : json.name,
+                                versionMajor : json.version.major,
+                                versionMinor : json.version.minor,
+                                versionMicro : json.version.micro,
+                                description  : json.description,
+                                author       : json.author
+                                
+
+                            };
+                            
+                            @:dependsNames = [];
+                            @:dependsVersions = [];
+                            for(in:[0, Object.length(of:json.depends)], do:::(i) {
+                                dependsNames[i]   = json.depends[i].name;
+                                dependsVersion[i] = json.depends[i].version;
+                            });
+                              
+                            
+                            
+                            @impl = this.bindNative(
+                                instance : native,
+                                args : [
+                                    jsonFormatted,
+                                    dependsNames,
+                                    dependsVersions                                    
+                                ]
+                            );
+                            
+                            
+                            foreach(in:json.items, do:::(k, item) {
+                                @:itemAsset = __Resources__.createAsset(path:item.path, name:item.name);
+                                topaz_bundle__add_item(
+                                    a:native,
+                                    b:item.name,
+                                    c:item.extension,
+                                    d:itemAsset                                        
+                                );
+                            });
+                            return this;                        
+                        };
+                    };
+                    this.interface = {
+                        
+
+                    };
+                    
+                }                
+            
+            );
+
+
+        };
+        
         @__Sound__ = ::<={
             @:topaz_sound__get_sample_count = getExternalFunction(name:'topaz_sound__get_sample_count');
             @:topaz_sound__get_nth_sample_left = getExternalFunction(name:'topaz_sound__get_nth_sample_left');
@@ -1440,6 +1546,7 @@
         @__Resources__ = ::<={
             @:topaz_resources__fetch_asset = getExternalFunction(name:'topaz_resources__fetch_asset');
             @:topaz_resources__create_asset = getExternalFunction(name:'topaz_resources__create_asset');
+            @:topaz_resources__create_asset_from_path = getExternalFunction(name:'topaz_resources__create_asset_from_path');
             @:topaz_resources__create_asset_from_bytes = getExternalFunction(name:'topaz_resources__create_asset_from_bytes');
             @:topaz_resources__create_asset_from_base64 = getExternalFunction(name:'topaz_resources__create_asset_from_base64');
             @:topaz_resources__load_asset = getExternalFunction(name:'topaz_resources__load_asset');
@@ -1468,7 +1575,7 @@
                 
                     this.interface = {
                         fetchAsset : ::(name){ 
-                            return _rawAssetToInstance(impl:topaz_resources__fetch_asset(a::name));
+                            return _rawAssetToInstance(impl:topaz_resources__fetch_asset(a:name));
                         },
 
                         createAsset : ::(name, bytes, path, base64) { 
@@ -1527,15 +1634,15 @@
                 define : ::(this) { 
                     this.interface = {
                         registerFont : ::(asset){ 
-                            topaz_font_manager__register_font(a:asset);
+                            topaz_font_manager__register_font(a:asset.native);
                         },
 
                         preloadGlyphs : ::(asset, sizeRequest, characters){ 
-                            topaz_font_manager__preload_glyphs(a:asset, b:sizeRequest, c:characters);
+                            topaz_font_manager__preload_glyphs(a:asset.native, b:sizeRequest, c:characters);
                         },
 
                         unregisterFont : ::(asset){ 
-                            topaz_font_manager__unregister_font(a:asset);
+                            topaz_font_manager__unregister_font(a:asset.native);
                         }        
                     };
                 }
@@ -2041,7 +2148,7 @@
                         return this;
                     };
                     
-                    @fontState;
+                    @fontState = {};
                     @sizeState;
                     
                     this.interface = {
@@ -2054,7 +2161,7 @@
                             get : ::()  {return fontState;},
                             set : ::(value) { 
                                 fontState = value;
-                                topaz_text2d__set_font(a:impl, b:fontState, c:sizeState);
+                                topaz_text2d__set_font(a:impl, b:fontState.native, c:sizeState);
                             }
                         },
                         
@@ -2062,7 +2169,7 @@
                             get : ::()  {return sizeState;},
                             set : ::(value) { 
                                 sizeState = value;
-                                topaz_text2d__set_font(a:impl, b:fontState, c:sizeState);
+                                topaz_text2d__set_font(a:impl, b:fontState.native, c:sizeState);
                             }
                         },
                         
@@ -2832,7 +2939,7 @@
                         },
 
                         string : {get : ::() {return topaz_particle__to_string(a:impl);}, set : ::(value){topaz_particle__set_from_string(a:impl, b:value);}}, 
-                        image :  {set : ::(value) {return topaz_particle__set_image(a:impl, b:value);}}
+                        image :  {set : ::(value) {return topaz_particle__set_image(a:impl, b:value.native);}}
                     };
                 }        
             );

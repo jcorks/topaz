@@ -111,7 +111,7 @@ void topaz_font_manager_preload_glyphs(
     topazFontManager_t * f,
     
     /// The name of the font to preload.
-    const topazAsset_t * font
+    const topazAsset_t * font,
     
     /// The size of the font to preload.
     int sizeRequest,

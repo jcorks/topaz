@@ -222,9 +222,9 @@ static TopazImage * image__retrieve(const topazAsset_t * a) {
     return ret;
 }
 
-static int image__asset_callback_empty(topazAsset_t * asset, const void * dataIn, uint64_t size) {
-    return TRUE;
-}
+//static int image__asset_callback_empty(topazAsset_t * asset, const void * dataIn, uint64_t size) {
+//    return TRUE;
+//}
 
 
 

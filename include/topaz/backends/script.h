@@ -110,6 +110,18 @@ typedef topazScript_Object_t * (*topaz_script_native_function)(
 );
 
 
+/// Function that is called from the scripting context.
+typedef void (*topaz_script_event_function)(
+    /// The script generating the call.
+    topazScript_t * script, 
+
+    /// Arguments for the event.
+    const topazArray_t *, 
+
+    /// Data bound to the function.
+    void * userData
+);
+
 
 
 /// The object's type define it's behavior and 
@@ -312,7 +324,7 @@ void topaz_script_set_handler(
     /// The event to set a handler for.
     topazScript_Event_t event, 
     /// The function to call when an event is triggered.
-    topaz_script_native_function function, 
+    topaz_script_event_function function, 
     /// The data to bind to the function
     void * data
 );

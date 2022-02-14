@@ -26,8 +26,9 @@ typedef struct {
 } ParticleProperty;
 
 struct topazParticle_t {
+    topaz_t * ctx;
     // asset name for image.
-    topazString_t * image;
+    topazAsset_t * image;
     // all parameters for render2d within emitter
     topazRenderer_Attributes_t attribs;
 
@@ -42,10 +43,14 @@ struct topazParticle_t {
 
 /// Creates a new particle specification.
 ///
-topazParticle_t * topaz_particle_create() {
+topazParticle_t * topaz_particle_create(topaz_t * ctx) {
     topazParticle_t * out = calloc(1, sizeof(topazParticle_t));
-    out->image = topaz_string_create_from_c_str("topaz.square");
+
+    topazResources_t * resources = topaz_context_get_resources(ctx);
+
+    out->image = topaz_resources_fetch_asset(resources, TOPAZ_STR_CAST("topaz.square"));
     out->state = topaz_string_create();
+    out->ctx = ctx;
 
     uint32_t i;
     for(i = 0; i < PROP_COUNT; ++i) {
@@ -60,7 +65,6 @@ void topaz_particle_destroy(
     /// The particle to destroy.
     topazParticle_t * part
 ) {
-    topaz_string_destroy(part->image);
     topaz_string_destroy(part->state);
     uint32_t i;
     for(i = 0; i < PROP_COUNT; ++i) {
@@ -90,9 +94,9 @@ void topaz_particle_set_from_string(
     topazString_t * next;
 
     int vernum = READ_INT;
-          next = READ_STR;
+          next = (topazString_t*)READ_STR;
     int count = 0;
-    topaz_string_set(part->image, next);
+    part->image = topaz_resources_fetch_asset(topaz_context_get_resources(part->ctx), next);
 
 
 
@@ -105,7 +109,7 @@ void topaz_particle_set_from_string(
 
     if (vernum == 1) {
         while(!topaz_string_chain_is_end(src) && count < PROP_COUNT) {
-            next =  READ_STR;
+            next =  (topazString_t*)READ_STR;
             topaz_string_set(part->props[count].anim, next);
             part->props[count].noiseMin = READ_NUM;
             part->props[count].noiseMax = READ_NUM;
@@ -134,7 +138,8 @@ const topazString_t * topaz_particle_to_string(
     topazParticle_t * part
 ) {
     topaz_string_clear(part->state);
-    topaz_string_concat_printf(part->state, "1|%s|", topaz_string_get_c_str(part->image));
+    
+    topaz_string_concat_printf(part->state, "1|%s|", topaz_string_get_c_str(topaz_asset_get_name(part->image)));
 
     topaz_string_concat_printf(part->state, "%d|", part->attribs.depthTest);
     topaz_string_concat_printf(part->state, "%d|", part->attribs.alphaRule);
@@ -179,9 +184,10 @@ const topazRenderer_Attributes_t * topaz_particle_get_attributes(
 /// Sets the image
 void topaz_particle_set_image(
     topazParticle_t * part,
-    const topazString_t * p
+    topazAsset_t * p
 ) {
-    topaz_string_set(part->image, p);
+    if (topaz_asset_get_type(p) != topazAsset_Type_Image) return;
+    part->image = p;
 }
 
 
@@ -427,11 +433,7 @@ void topaz_particle_emitter_2d_set_particle(
 
 
     // transfer texture to render brush
-    topazAsset_t * image = topaz_resources_fetch_asset(
-        topaz_context_get_resources(emitter->ctx),
-        topazAsset_Type_Image,
-        p->image
-    );
+    topazAsset_t * image = p->image;
 
     emitter->attribs = p->attribs; 
 

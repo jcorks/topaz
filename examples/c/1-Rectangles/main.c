@@ -7,7 +7,7 @@
 
 int main() {
     topaz_t * ctx = topaz_context_create();
-    topaz_view_manager_create_main_default(topaz_context_get_view_manager(ctx), TOPAZ_STR_CAST("Example"));
+    topazDisplay_t * d = topaz_view_manager_create_display(topaz_context_get_view_manager(ctx), TOPAZ_STR_CAST("Example"));
 
     topazEntity_t * r = topaz_entity_create(ctx);
 
@@ -19,7 +19,7 @@ int main() {
     topaz_entity_attach(r, e0);
     topaz_entity_attach(r, e1);
 
-    topaz_context_set_root(ctx, r);
+    topaz_display_set_root(d, r);
 
 
     /*{

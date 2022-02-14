@@ -237,8 +237,8 @@ void topaz_resources_remove_asset(
     /// The resource instance to remove from.
     topazResources_t * res,
 
-    /// The name of the asset to search and remove.
-    const topazString_t * name
+    /// The asset to remove.
+    topazAsset_t * asset
 );
 
 /// Returns whether a particular extension is supported.

@@ -82,6 +82,7 @@ struct topaz_t {
     topazDisplay_t * display;
     double frameEnd;
     double frameStart;
+    double frameNext;
     
     int quit;
     int paused;
@@ -161,7 +162,7 @@ topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
         const topazEntity_Attributes_t * api = topaz_entity_get_attributes(e);
         if (api->on_attach) api->on_attach(e, api->userData);
     }
-
+    out->frameNext = topaz_context_get_time(out);
     return out;
 }
 
@@ -437,18 +438,18 @@ void topaz_context_quit(topaz_t * t) {
 #include <time.h>
 void topaz_context_wait(topaz_t * t, int FPS) {
     double frameDuration = 1000.0 / ((float)FPS);
-    t->frameEnd = topaz_context_get_time(t);
+    t->frameNext += frameDuration;
 
-    double goal = t->frameStart + frameDuration;
-
-    while(t->frameEnd < goal) {
-        int ms = (goal - t->frameEnd) / 2.0;
+    double n = topaz_context_get_time(t);
+    // -1 lets it wiggle around the target time rather than require at or past.
+    while(n < t->frameNext-0.5) {
+        int ms = (t->frameNext - n) / 2.0;
         topaz_time_sleep_ms(t->timeRef, ms);
-        t->frameEnd = topaz_context_get_time(t);
+        n = topaz_context_get_time(t);
     }
 
-    t->frameStart = topaz_context_get_time(t);
 }
+
 
 
 const topazString_t * topaz_get_parameter(const topaz_t * t, const topazString_t * str) {
