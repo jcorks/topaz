@@ -75,13 +75,14 @@ static int collider_will_contain_point(const tcollider_t *, const topazVector_t 
 static void collider_update_transition(tcollider_t *, const topazVector_t * after);
 
 // Returns whether the colliders in the current state will collide
-static int collides_with(const tcollider_t *, const tcollider_t * otherd);
+// and if so, the general area where it will happen
+static int collides_with(const tcollider_t *, const tcollider_t * otherd, topazVector_t *);
 
-// Gets the last entity that was collided with
-static topazEntity_t * collider_get_last_collided(const tcollider_t *);
+// Gets the last entity and position that was collided with
+static topazEntity_t * collider_get_last_collided(const tcollider_t *, topazVector_t *);
 
 // Sets the entity last collided with
-static void collider_set_last_collided(tcollider_t *, topazEntity_t *);
+static void collider_set_last_collided(tcollider_t *, topazEntity_t *, const topazVector_t *);
 
 // Gets the bounding box that represents the area the collider covers
 const bbox_t * collider_get_moment_bounds(const tcollider_t *);
@@ -300,7 +301,6 @@ void topaz_object2d_add_velocity_towards(
 ) {
     TopazObject2D_t * s = object2d__retrieve(c);
 
-    topazVector_t delta;    
     topazVector_t src = {0};
 
     src = topaz_matrix_transform(
@@ -312,10 +312,8 @@ void topaz_object2d_add_velocity_towards(
         &src
     );
     
-    delta.x = p->x - src.x;
-    delta.y = p->y - src.y;
 
-    float direction = topaz_vector_rotation_z(&delta) + directionOffset;
+    float direction = topaz_vector_point_at_2d(&src, p) + directionOffset;
 
     s->speedX += factor * (cos((topaz_math_pi / 180.f) * direction));
     s->speedY += factor * (sin((topaz_math_pi / 180.f) * direction));
@@ -343,13 +341,9 @@ void topaz_object2d_set_velocity_towards(
 ) {
     TopazObject2D_t * s = object2d__retrieve(c);
 
-    topazVector_t delta;    
     topazVector_t src = topaz_entity_get_global_position(topaz_component_get_host(c));
     
-    delta.x = p->x - src.x;
-    delta.y = p->y - src.y;
-
-    float direction = topaz_vector_rotation_z(&delta) + directionOffset;
+    float direction = topaz_vector_point_at_2d(&src, p) + directionOffset;
 
     s->speedX = factor * (cos((topaz_math_pi / 180.f) * direction));
     s->speedY = factor * (sin((topaz_math_pi / 180.f) * direction));
@@ -392,7 +386,8 @@ float topaz_object2d_get_friction_y(const topazComponent_t * c) {
 float topaz_object2d_get_direction(topazComponent_t * c) {
     TopazObject2D_t * s = object2d__retrieve(c);    
     topazVector_t speed = {s->speedX, s->speedY, 0};
-    return topaz_vector_rotation_z(&speed);
+    topazVector_t origin = {};
+    return topaz_vector_point_at_2d(&origin, &speed);
 }
 
 void topaz_object2d_halt(topazComponent_t * c) {
@@ -511,11 +506,14 @@ const topazArray_t * topaz_object2d_get_collider(
 
 
 topazEntity_t * topaz_object2d_get_last_collided(
-    topazComponent_t * c
+    topazComponent_t * c,
+    topazVector_t * p
 ) {
     TopazObject2D_t * s = object2d__retrieve(c);    
-    return collider_get_last_collided(s->collider);
+    return collider_get_last_collided(s->collider, p);
 }
+
+
 
 
 
@@ -534,7 +532,7 @@ typedef struct {
 
 
 // returns whether 2 lines intersect. Used extensively for colliders
-static int line_intersect(const cline_t * l0, const cline_t * l1) {
+static int line_intersect(const cline_t * l0, const cline_t * l1, topazVector_t * intersect) {
     // "LeMothe's Method"
     float s1_x = l0->b.x - l0->a.x;
     float s1_y = l0->b.y - l0->a.y;
@@ -546,7 +544,9 @@ static int line_intersect(const cline_t * l0, const cline_t * l1) {
     float s = (- s1_y * (l0->a.x - l1->a.x) + s1_x * (l0->a.y - l1->a.y)) / (-s2_x * s1_y + s1_x * s2_y);
     float t = (  s2_x * (l0->a.y - l1->a.y) - s2_y * (l0->a.x - l1->a.x)) / (-s2_x * s1_y + s1_x * s2_y);
 
-    if (s >= 0 && s <= 1 && t>= 0 && t <= 1) {
+    if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
+        intersect->x = l0->a.x + (t * s1_x);
+        intersect->y = l0->a.y + (t * s1_y);
         return 1;
     }
     return 0;
@@ -563,6 +563,7 @@ struct tcollider_t {
     int stationary;
     int isSet;
     topazEntity_t * lastCollided;
+    topazVector_t lastCollidedPosition;
 };
 
 tcollider_t * collider_create() {
@@ -783,7 +784,8 @@ void collider_update_transition(
 
 int collides_with(
     const tcollider_t * c, 
-    const tcollider_t * other
+    const tcollider_t * other,
+    topazVector_t * intersect
 ) {
     
     uint32_t smearSize_self  = topaz_array_get_size(c->smear);
@@ -793,7 +795,8 @@ int collides_with(
         for(n = 0; n < smearSize_other; ++n) {
             if (line_intersect(
                 &topaz_array_at(    c->smear, cline_t, i),
-                &topaz_array_at(other->smear, cline_t, n)
+                &topaz_array_at(other->smear, cline_t, n),
+                intersect
             )) {
                 return 1;
             }
@@ -806,6 +809,7 @@ int collides_with(
             other,
             &topaz_array_at(c->smear, cline_t, i).a
         )) {
+            *intersect = topaz_array_at(c->smear, cline_t, i).a;
             return 1;
         }
     }
@@ -817,6 +821,7 @@ int collides_with(
             c,
             &topaz_array_at(other->smear, cline_t, i).a
         )) {
+            *intersect = topaz_array_at(other->smear, cline_t, i).a;
             return 1;
         }
     }
@@ -826,12 +831,14 @@ int collides_with(
 }
 
 
-topazEntity_t * collider_get_last_collided(const tcollider_t * c) {
+topazEntity_t * collider_get_last_collided(const tcollider_t * c, topazVector_t * p) {
+    if (p) *p = c->lastCollidedPosition;
     return c->lastCollided;
 }
 
-void collider_set_last_collided(tcollider_t * c, topazEntity_t * e) {
+void collider_set_last_collided(tcollider_t * c, topazEntity_t * e, const topazVector_t * col) {
     c->lastCollided = e;
+    c->lastCollidedPosition = *col;
 }
 
 const bbox_t * collider_get_moment_bounds(const tcollider_t * c) {
@@ -1382,7 +1389,7 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
     TopazObject2D_t * current;
     TopazObject2D_t * other;
     uint32_t mapN;
-
+    topazVector_t intersect;
 
     uint32_t mapCount = topaz_array_get_size(allintersect);
     for(mapN = 0; mapN < mapCount; ++mapN) {
@@ -1410,12 +1417,13 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
             // do full collision detection
             if (collides_with(
                     current->collider,
-                      other->collider               
+                      other->collider,
+                    &intersect               
             )) {
                 topazEntity_t * currentHost = topaz_component_get_host(objects[possible.self]);
                 topazEntity_t * otherHost   = topaz_component_get_host(objects[possible.other]);
-                collider_set_last_collided(current->collider, otherHost);
-                collider_set_last_collided(other->collider,   currentHost);
+                collider_set_last_collided(current->collider, otherHost, &intersect);
+                collider_set_last_collided(other->collider,   currentHost, &intersect);
                 topaz_component_emit_event(objects[possible.self],  TOPAZ_STR_CAST("on-collide"), otherHost,   NULL);
                 topaz_component_emit_event(objects[possible.other], TOPAZ_STR_CAST("on-collide"), currentHost, NULL);
             }

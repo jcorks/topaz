@@ -101,18 +101,13 @@ TSO_SCRIPT_API_FN(bundle_api__add_item) {
         topaz_script_object_as_string(arg2),
         native3        
     );
-}
-
-
-
-
-
-TSO_SCRIPT_API_FN(bundle_api__clear) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__BUNDLE);   
-    topaz_bundle_clear(native);
     TSO_NO_RETURN;
 }
+
+
+
+
+
 
 TSO_SCRIPT_API_FN(bundle_api__get_description) {
     TSO_ARG_0;
@@ -193,14 +188,37 @@ TSO_SCRIPT_API_FN(bundle_api__get_depends_nth_version) {
     return topaz_script_object_from_string(script, topaz_array_at(n, topazString_t *, index));
 }
 
+TSO_SCRIPT_API_FN(bundle_api__get_byte_count) {
+    TSO_ARG_0;
+    TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__BUNDLE);  
+    uint32_t len; 
+    topaz_bundle_get_packed_data(native, &len);
+    return topaz_script_object_from_int(script, len);
+}
+
+TSO_SCRIPT_API_FN(bundle_api__get_nth_byte) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__BUNDLE);   
+    uint32_t size;
+    const uint8_t * data = topaz_bundle_get_packed_data(native, &size);
+    
+    int index = topaz_script_object_as_int(arg1);
+    if (index < 0 || index >= size) {
+        script_error(script, "Bundle asset: byte request is out of bounds.");
+        TSO_NO_RETURN;
+    }
+    return topaz_script_object_from_int(script, data[index]);
+}
+
 static void add_refs__bundle_api(topazScript_t * script, topazScriptManager_t * context) {
     // member functions
     TS_MAP_NATIVE_FN("topaz_bundle__create_empty", bundle_api__create_empty, 3);
     
     TS_MAP_NATIVE_FN("topaz_bundle__add_item", bundle_api__add_item, 4);
-    TS_MAP_NATIVE_FN("topaz_bundle__clear", bundle_api__get_version_major, 1);
     
-        
+    TS_MAP_NATIVE_FN("topaz_bundle__get_byte_count", bundle_api__get_byte_count, 1);        
+    TS_MAP_NATIVE_FN("topaz_bundle__get_nth_byte", bundle_api__get_nth_byte, 1);        
     TS_MAP_NATIVE_FN("topaz_bundle__get_version_major", bundle_api__get_version_major, 1);
     TS_MAP_NATIVE_FN("topaz_bundle__get_version_minor", bundle_api__get_version_minor, 1);
     TS_MAP_NATIVE_FN("topaz_bundle__get_version_micro", bundle_api__get_version_micro, 1);

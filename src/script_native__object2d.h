@@ -308,7 +308,7 @@ TSO_SCRIPT_API_FN(object2d_api__get_last_collided) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
 
-    topazEntity_t * out = topaz_object2d_get_last_collided(native);
+    topazEntity_t * out = topaz_object2d_get_last_collided(native, NULL);
     if (out) {
         topazScript_Object_t * a = TSO_OBJECT_FETCH_KEPT_NATIVE(out);
         if (a) return topaz_script_object_from_object(script, a);
@@ -318,6 +318,17 @@ TSO_SCRIPT_API_FN(object2d_api__get_last_collided) {
     }
     TSO_NO_RETURN;
 }
+
+TSO_SCRIPT_API_FN(object2d_api__get_last_collided_position) {
+    TSO_ARG_0;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
+
+    topazVector_t * v = calloc(1, sizeof(topazVector_t));
+    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
+    topaz_object2d_get_last_collided(native, v);
+    return out;
+}
+
 
 static void add_refs__object2d_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz_object2d__create", object2d_api__create, 0);
@@ -355,5 +366,6 @@ static void add_refs__object2d_api(topazScript_t * script, topazScriptManager_t 
     TS_MAP_NATIVE_FN("topaz_object2d__get_collider_point", object2d_api__get_collider_point, 2);
 
     TS_MAP_NATIVE_FN("topaz_object2d__get_last_collided", object2d_api__get_last_collided, 1);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_last_collided_position", object2d_api__get_last_collided_position, 1);
 
 }

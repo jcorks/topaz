@@ -423,7 +423,10 @@ const topazArray_t * topaz_object2d_get_collider(
 /// If none, return topaz_entity_null();
 topazEntity_t * topaz_object2d_get_last_collided(
     /// The object2d to query.
-    topazComponent_t * o2d
+    topazComponent_t * o2d,
+    
+    /// The position estimation where the collision happened.
+    topazVector_t * 
 );
 
 

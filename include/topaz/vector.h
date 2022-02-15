@@ -156,151 +156,40 @@ topazVector_t * topaz_vector_floor(
 
 
 
-/// Returns the YZ angle between the 2
-/// vectors in relation to the origin in degrees
-float topaz_vector_rotation_x_diff(
-    /// The positional vector to measure from.
-    const topazVector_t * a, 
 
-    /// The positional vector to measure to.
-    const topazVector_t * b
-);
-
-/// Returns the angle between the 2
-/// vectors in relation to (*this) in degrees
-float topaz_vector_rotation_x_diff_relative(
-    /// The positional vector to measure from.
-    const topazVector_t * a, 
-
-    /// The positional vector to measure to.
-    const topazVector_t * b
+/// Reflects a directional 2D vector "direction"
+/// off a direction 2D vector "surface" and returns the result
+/// as a direction vector of the reflection 
+topazVector_t topaz_vector_reflect_2d(
+    /// The initial direction to reflect
+    topazVector_t * direction,
+    
+    /// The surface to reflect from.
+    topazVector_t * surface
 );
 
 
-
-/// Returns the angle of the vector in degrees about the X axis
-///
-/// If a vector has length zero in these dimensions
-/// , the angle is always zero.
-/// The rotation is about the directional vector (1, 0, 0) and
-/// Positive rotation is towards the positive Z direction.
-///
-float topaz_vector_rotation_x(
-    /// The positional vector to measure to (from 0,0,0).
-    const topazVector_t * a
+/// Returns an xyz rotation vector that, then used 
+/// in a rotation matrix (such as in entities), 
+/// will orient itself as if facing to the point p1
+/// from point p0, where "up" is the direction 
+/// of how to orient the face-wise rotation.
+topazVector_t topaz_vector_look_at_rotation(
+    /// Where we are looking from.
+    const topazVector_t * p0,
+    
+    /// Where we are looking to.
+    const topazVector_t * p1,
+    
+    /// Direction to anchor the rotation
+    const topazVector_t * up
 );
 
 
-
-
-
-
-/// Returns the zx angle between the 2
-/// vectors in relation to the origin in degrees
-float topaz_vector_rotation_y_diff(
-    /// The positional vector to measure from.
-    const topazVector_t * a, 
-
-    /// The positional vector to measure to.
-    const topazVector_t * b
+float topaz_vector_point_at_2d(
+    const topazVector_t * p0,
+    const topazVector_t * p1
 );
-
-/// Returns the angle between the 2
-/// vectors in relation to (*this) in degrees
-float topaz_vector_rotation_y_diff_relative(
-    /// The positional vector to measure from.
-    const topazVector_t * a, 
-
-    /// The positional vector to measure to.
-    const topazVector_t * b
-);
-
-/// Returns the angle of the vector about the Y axis in degrees
-///
-/// If a vector has length zero in these dimensions
-/// , the angle is always zero.
-/// The rotation is about the directional vector (0, 1, 0)
-/// Positive rotation is towards the positive X direction.
-float topaz_vector_rotation_y(
-    /// The positional vector to measure to (from 0,0,0).
-    const topazVector_t * a
-);
-
-
-
-
-
-
-/// Returns the XY angle between the 2
-/// vectors in relation to the origin in degrees
-float topaz_vector_rotation_z_diff(
-    /// The positional vector to measure from.
-    const topazVector_t * a, 
-
-    /// The positional vector to measure to.
-    const topazVector_t * b
-);
-
-/// Returns the angle between the 2
-/// vectors in relation to (*this) in degrees
-float topaz_vector_rotation_z_diff_relative(
-    /// The positional vector to measure from.
-    const topazVector_t * a, 
-
-    /// The positional vector to measure to.
-    const topazVector_t * b
-);
-
-
-/// Returns the angle of the vector about the Z axis in degrees
-/// These deals with angles between the x and y axes.
-/// XY is most useful for 2D angles and transformations.
-/// If a vector has length zero in these dimensions
-/// , the angle is always zero.
-/// The rotation is about the directional vector (0, 0, 1).
-/// Positive rotation is towards the positive Y direction.
-///
-float topaz_vector_rotation_z(
-    /// The positional vector to measure to (from 0,0,0).
-    const topazVector_t * a
-);
-
-
-
-/// Returns the result of rotating the vector
-/// by the specified degrees about the center
-topazVector_t * topaz_vector_rotate_x(
-    /// The vector to rotate.
-    topazVector_t * vector, 
-
-    /// The amount to rotate in degrees.
-    float amt
-);
-
-/// Returns the result of rotating the vector
-/// by the specified degrees about the center
-topazVector_t * topaz_vector_rotate_y(
-    /// The vector to rotate.
-    topazVector_t * vector, 
-
-    /// The amount to rotate in degrees.
-    float amt
-);
-
-/// Returns the result of rotating the vector
-/// by the specified degrees about the center
-topazVector_t * topaz_vector_rotate_z(
-    /// The vector to rotate.
-    topazVector_t * vector, 
-
-    /// The amount to rotate in degrees.
-    float amt
-);
-
-
-
-
-
 
 
 

@@ -165,6 +165,58 @@ TSO_SCRIPT_API_FN(vector_api__cross) {
     *outNative = v;
     return out;
 }
+TSO_SCRIPT_API_FN(vector_api__reflect_2d) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
+    TSO_NATIVIZE_1(topazVector_t *, TSO_OBJECT_ID__VECTOR);
+
+    topazVector_t v = topaz_vector_reflect_2d(
+        native,
+        native1
+    );
+
+    topazVector_t * outNative;
+    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, outNative);
+
+    *outNative = v;
+    return out;
+}
+
+TSO_SCRIPT_API_FN(vector_api__point_at_2d) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
+    TSO_NATIVIZE_1(topazVector_t *, TSO_OBJECT_ID__VECTOR);
+
+    float r = topaz_vector_point_at_2d(
+        native,
+        native1
+    );
+
+    return topaz_script_object_from_number(script, r);
+}
+
+TSO_SCRIPT_API_FN(vector_api__look_at_rotation) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
+    TSO_NATIVIZE_1(topazVector_t *, TSO_OBJECT_ID__VECTOR);
+    TSO_NATIVIZE_2(topazVector_t *, TSO_OBJECT_ID__VECTOR);
+
+    topazVector_t v = topaz_vector_look_at_rotation(
+        native,
+        native1,
+        native2
+    );
+
+    topazVector_t * outNative;
+    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, outNative);
+
+    *outNative = v;
+    return out;
+}
 
 TSO_SCRIPT_API_FN(vector_api__dot) {
     TSO_ARG_0;
@@ -191,173 +243,6 @@ TSO_SCRIPT_API_FN(vector_api__floor) {
 
 
 
-TSO_SCRIPT_API_FN(vector_api__rotation_x_diff) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-    TSO_NATIVIZE_1(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-
-    return topaz_script_object_from_number(
-        script,
-        topaz_vector_rotation_x_diff(
-            native,
-            native1
-        )
-    );    
-}
-
-TSO_SCRIPT_API_FN(vector_api__rotation_x_diff_relative) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-    TSO_NATIVIZE_1(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-
-    return topaz_script_object_from_number(
-        script,
-        topaz_vector_rotation_x_diff_relative(
-            native,
-            native1
-        )
-    );    
-}
-
-TSO_SCRIPT_API_FN(vector_api__rotation_x) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-
-    return topaz_script_object_from_number(
-        script,
-        topaz_vector_rotation_x(
-            native
-        )
-    );    
-}
-
-TSO_SCRIPT_API_FN(vector_api__rotation_y_diff) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-    TSO_NATIVIZE_1(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-
-    return topaz_script_object_from_number(
-        script,
-        topaz_vector_rotation_y_diff(
-            native,
-            native1
-        )
-    );    
-}
-
-TSO_SCRIPT_API_FN(vector_api__rotation_y_diff_relative) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-    TSO_NATIVIZE_1(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-
-    return topaz_script_object_from_number(
-        script,
-        topaz_vector_rotation_y_diff_relative(
-            native,
-            native1
-        )
-    );    
-}
-
-TSO_SCRIPT_API_FN(vector_api__rotation_y) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-
-    return topaz_script_object_from_number(
-        script,
-        topaz_vector_rotation_y(
-            native
-        )
-    );    
-}
-
-TSO_SCRIPT_API_FN(vector_api__rotation_z_diff) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-    TSO_NATIVIZE_1(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-
-    return topaz_script_object_from_number(
-        script,
-        topaz_vector_rotation_z_diff(
-            native,
-            native1
-        )
-    );    
-}
-
-TSO_SCRIPT_API_FN(vector_api__rotation_z_diff_relative) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-    TSO_NATIVIZE_1(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-
-    return topaz_script_object_from_number(
-        script,
-        topaz_vector_rotation_z_diff_relative(
-            native,
-            native1
-        )
-    );    
-}
-
-TSO_SCRIPT_API_FN(vector_api__rotation_z) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-
-    return topaz_script_object_from_number(
-        script,
-        topaz_vector_rotation_z(
-            native
-        )
-    );    
-}
-
-
-TSO_SCRIPT_API_FN(vector_api__rotate_x) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-
-
-    topaz_vector_rotate_x(
-        native,
-        topaz_script_object_as_number(arg1)
-    );
-    TSO_NO_RETURN;
-}
-
-
-TSO_SCRIPT_API_FN(vector_api__rotate_y) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-
-
-    topaz_vector_rotate_y(
-        native,
-        topaz_script_object_as_number(arg1)
-    );
-    TSO_NO_RETURN;
-}
-
-
-TSO_SCRIPT_API_FN(vector_api__rotate_z) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazVector_t *, TSO_OBJECT_ID__VECTOR);
-
-
-    topaz_vector_rotate_z(
-        native,
-        topaz_script_object_as_number(arg1)
-    );
-    TSO_NO_RETURN;
-}
 
 
 
@@ -369,22 +254,14 @@ static void add_refs__vector_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_vector__get_distance", vector_api__get_distance, 2);
     TS_MAP_NATIVE_FN("topaz_vector__normalize", vector_api__normalize, 1);
     TS_MAP_NATIVE_FN("topaz_vector__cross", vector_api__cross, 2);
+    TS_MAP_NATIVE_FN("topaz_vector__reflect_2d", vector_api__reflect_2d, 2);
+    TS_MAP_NATIVE_FN("topaz_vector__point_at_2d", vector_api__point_at_2d, 2);
+    TS_MAP_NATIVE_FN("topaz_vector__look_at_rotation", vector_api__look_at_rotation, 3);
     TS_MAP_NATIVE_FN("topaz_vector__dot", vector_api__dot, 2);
     TS_MAP_NATIVE_FN("topaz_vector__floor", vector_api__floor, 1);
-    TS_MAP_NATIVE_FN("topaz_vector__rotation_x_diff", vector_api__rotation_x_diff, 2);
-    TS_MAP_NATIVE_FN("topaz_vector__rotation_x_diff_relative", vector_api__rotation_x_diff_relative, 2);
-    TS_MAP_NATIVE_FN("topaz_vector__rotation_x", vector_api__rotation_x, 1);
-    TS_MAP_NATIVE_FN("topaz_vector__rotation_y_diff", vector_api__rotation_y_diff, 2);
-    TS_MAP_NATIVE_FN("topaz_vector__rotation_y_diff_relative", vector_api__rotation_y_diff_relative, 2);
-    TS_MAP_NATIVE_FN("topaz_vector__rotation_y", vector_api__rotation_y, 1);
-    TS_MAP_NATIVE_FN("topaz_vector__rotation_z_diff", vector_api__rotation_z_diff, 2);
-    TS_MAP_NATIVE_FN("topaz_vector__rotation_z_diff_relative", vector_api__rotation_z_diff_relative, 2);
-    TS_MAP_NATIVE_FN("topaz_vector__rotation_z", vector_api__rotation_z, 1);
-    
-    // these modify the existing vector
-    TS_MAP_NATIVE_FN("topaz_vector__rotate_x", vector_api__rotate_x, 2);
-    TS_MAP_NATIVE_FN("topaz_vector__rotate_y", vector_api__rotate_y, 2);
-    TS_MAP_NATIVE_FN("topaz_vector__rotate_z", vector_api__rotate_z, 2);
+
+
+
     
     TS_MAP_NATIVE_FN("topaz_vector__set_x", vector_api__x_set, 2);
     TS_MAP_NATIVE_FN("topaz_vector__get_x", vector_api__x_get, 1);

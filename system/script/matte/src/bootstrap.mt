@@ -67,20 +67,11 @@
     @:topaz_vector__get_distance = getExternalFunction(name:'topaz_vector__get_distance');
     @:topaz_vector__normalize = getExternalFunction(name:'topaz_vector__normalize');
     @:topaz_vector__cross = getExternalFunction(name:'topaz_vector__cross');
+    @:topaz_vector__reflect_2d = getExternalFunction(name:'topaz_vector__reflect_2d');
+    @:topaz_vector__look_at_rotation = getExternalFunction(name:'topaz_vector__look_at_rotation');
+    @:topaz_vector__point_at_2d = getExternalFunction(name:'topaz_vector__point_at_2d');
     @:topaz_vector__dot = getExternalFunction(name:'topaz_vector__dot');
     @:topaz_vector__floor = getExternalFunction(name:'topaz_vector__floor');
-    @:topaz_vector__rotation_x_diff = getExternalFunction(name:'topaz_vector__rotation_x_diff');
-    @:topaz_vector__rotation_x_diff_relative = getExternalFunction(name:'topaz_vector__rotation_x_diff_relative');
-    @:topaz_vector__rotation_y_diff = getExternalFunction(name:'topaz_vector__rotation_y_diff');
-    @:topaz_vector__rotation_y_diff_relative = getExternalFunction(name:'topaz_vector__rotation_y_diff_relative');
-    @:topaz_vector__rotation_z_diff = getExternalFunction(name:'topaz_vector__rotation_z_diff');
-    @:topaz_vector__rotation_z_diff_relative = getExternalFunction(name:'topaz_vector__rotation_z_diff_relative');
-    @:topaz_vector__rotation_x = getExternalFunction(name:'topaz_vector__rotation_x');
-    @:topaz_vector__rotation_y = getExternalFunction(name:'topaz_vector__rotation_y');
-    @:topaz_vector__rotation_z = getExternalFunction(name:'topaz_vector__rotation_z');
-    @:topaz_vector__rotate_x = getExternalFunction(name:'topaz_vector__rotate_x');
-    @:topaz_vector__rotate_y = getExternalFunction(name:'topaz_vector__rotate_y');
-    @:topaz_vector__rotate_z = getExternalFunction(name:'topaz_vector__rotate_z');
     @:topaz_vector__get_length = getExternalFunction(name:'topaz_vector__get_length');
 
     @:statepush = ::(v) {
@@ -126,6 +117,27 @@
             statepull(v:out);
             return out;
         },
+        
+        reflect2D ::(direction, surface) {
+            statepush(v:direction);
+            statepush(v:surface);
+            @out = {native:topaz_vector__reflect_2d(a:direction.native, b:surface.native)};
+            statepull(v:out);
+            return out;        
+        },
+        lookAtRotation ::(from, to, up) {
+            statepush(v:from);
+            statepush(v:to);
+            statepush(v:up);
+            @out = {native:topaz_vector__look_at_rotation(a:from.native, b:to.native, c:up.native)};
+            statepull(v:out);
+            return out;        
+        },
+        pointAt2D ::(from, to) {
+            statepush(v:from);
+            statepush(v:to);
+            return topaz_vector__point_at_2d(a:from.native, b:to.native);
+        },
 
         dot ::(a, b){ 
             statepush(v:a);
@@ -139,74 +151,6 @@
             statepull(v:value);
         },
         
-        rotationXDiff ::(from, to){ 
-            statepush(v:from);
-            statepush(v:to);
-            return topaz_vector__rotation_x_diff(a:from.native, b:to.native);
-        },
-        
-        rotationXDiffRelative ::(from, to){ 
-            statepush(v:from);
-            statepush(v:to);
-            return topaz_vector__rotation_x_diff_relative(a:from.native, b:to.native);
-        },
-        
-        rotationX ::(of) { 
-            statepush(v:of);
-            return topaz_vector__rotation_x(a:of.native);
-        },
-        
-        rotationYDiff ::(from, to) { 
-            statepush(v:from);
-            statepush(v:to);
-            return topaz_vector__rotation_y_diff(a:from.native, b:to.native);
-        },
-        
-        rotationYDiffRelative ::(from, to){ 
-            statepush(v:from);
-            statepush(v:to);
-            return topaz_vector__rotation_y_diff_relative(a:from.native, b:to.native);
-        },
-        
-        rotationY : ::(of){ 
-            statepush(v:of);
-            return topaz_vector__rotation_y(a:of.native);
-        },
-        
-        rotationZDiff : ::(from, to){
-            statepush(v:from);
-            statepush(v:to); 
-            return topaz_vector__rotation_z_diff(a:from.native, b:to.native);
-        },
-        
-        rotationZDiffRelative : ::(from, to){
-            statepush(v:from);
-            statepush(v:to);
-            return topaz_vector__rotation_z_diff_relative(a:from.native, b:to.native);
-        },
-        
-        rotationZ : ::(of){ 
-            statepush(v:of);
-            return topaz_vector__rotation_z(a:of.native);
-        },
-        
-        rotateX : ::(vector, amt){ 
-            statepush(v:vector);
-            topaz_vector__rotate_x(a:vector.native, b:amt);
-            statepull(v:vector);
-        },
-        
-        rotateY : ::(vector, amt){ 
-            statepush(v:vector);
-            topaz_vector__rotate_y(a:vector.native, b:amt);
-            statepull(v:vector);
-        },
-        
-        rotateZ : ::(vector, amt){ 
-            statepush(v:vector);
-            topaz_vector__rotate_y(a:vector.native, b:amt);
-            statepull(v:vector);
-        },
 
         length : ::(of){
             statepush(v:of);
@@ -1399,19 +1343,20 @@
         };
         
         @__Bundle__ = ::<={
-            topaz_bundle__create_empty = getExternalFunction(name:'topaz_bundle__create_empty');
-            topaz_bundle__add_item = getExternalFunction(name:'topaz_bundle__add_item');
-            topaz_bundle__clear = getExternalFunction(name:'topaz_bundle__clear');
+            @:topaz_bundle__create_empty = getExternalFunction(name:'topaz_bundle__create_empty');
+            @:topaz_bundle__add_item = getExternalFunction(name:'topaz_bundle__add_item');
+            @:topaz_bundle__get_byte_count = getExternalFunction(name:'topaz_bundle__get_byte_count');
+            @:topaz_bundle__get_nth_byte = getExternalFunction(name:'topaz_bundle__get_nth_byte');
 
-            topaz_bundle__get_version_major = getExternalFunction(name:'topaz_bundle__get_version_major');
-            topaz_bundle__get_version_minor = getExternalFunction(name:'topaz_bundle__get_version_minor');
-            topaz_bundle__get_version_micro = getExternalFunction(name:'topaz_bundle__get_version_micro');
+            @:topaz_bundle__get_version_major = getExternalFunction(name:'topaz_bundle__get_version_major');
+            @:topaz_bundle__get_version_minor = getExternalFunction(name:'topaz_bundle__get_version_minor');
+            @:topaz_bundle__get_version_micro = getExternalFunction(name:'topaz_bundle__get_version_micro');
 
-            topaz_bundle__get_description = getExternalFunction(name:'topaz_bundle__get_description');
-            topaz_bundle__get_author = getExternalFunction(name:'topaz_bundle__get_author');
-            topaz_bundle__get_depends_count = getExternalFunction(name:'topaz_bundle__get_depends_count');
-            topaz_bundle__get_depends_nth_version = getExternalFunction(name:'topaz_bundle__get_depends_nth_version');
-            topaz_bundle__get_depends_nth_name = getExternalFunction(name:'topaz_bundle__get_depends_nth_name');
+            @:topaz_bundle__get_description = getExternalFunction(name:'topaz_bundle__get_description');
+            @:topaz_bundle__get_author = getExternalFunction(name:'topaz_bundle__get_author');
+            @:topaz_bundle__get_depends_count = getExternalFunction(name:'topaz_bundle__get_depends_count');
+            @:topaz_bundle__get_depends_nth_version = getExternalFunction(name:'topaz_bundle__get_depends_nth_version');
+            @:topaz_bundle__get_depends_nth_name = getExternalFunction(name:'topaz_bundle__get_depends_nth_name');
 
             return class(
                 name : 'Topaz.Data',        
@@ -1465,7 +1410,7 @@
                             @:dependsVersions = [];
                             for(in:[0, Object.length(of:json.depends)], do:::(i) {
                                 dependsNames[i]   = json.depends[i].name;
-                                dependsVersion[i] = json.depends[i].version;
+                                dependsVersions[i] = json.depends[i].version;
                             });
                               
                             
@@ -1492,9 +1437,48 @@
                             return this;                        
                         };
                     };
+                    @:impl = this.native;            
                     this.interface = {
-                        
-
+                         bytes : {
+                            get :: {
+                                @:bytes = [];
+                                for(in:[0, topaz_bundle__get_byte_count(a:impl)], do:::(i) {
+                                    bytes[i] = topaz_bundle__get_nth_byte(a:impl, b:i);
+                                });
+                                return bytes;
+                            }
+                         },
+                         
+                         description : {
+                            get :: {
+                                return topaz_bundle__get_description(a:impl);
+                            }
+                         },
+                         author : {
+                            get :: {
+                                return topaz_bundle__get_author(a:impl);
+                            }
+                         },
+                         version : {
+                            get :: {
+                                return {
+                                    major : topaz_bundle__get_version_major(a:impl),
+                                    minor : topaz_bundle__get_version_minor(a:impl),
+                                    micro : topaz_bundle__get_version_micro(a:impl)                                    
+                                };
+                            }
+                         },
+                         depends : {
+                            get :: {
+                                @:deps = [];
+                                for(in:[0, topaz_bundle__get_depends_count(a:impl)], do:::(i) {
+                                    deps[i] = {
+                                        name: topaz_bundle__get_depends_nth_name(a:impl, b:i),
+                                        version: topaz_bundle__get_depends_nth_version(a:impl, b:i)
+                                    };
+                                });
+                            }
+                         }
                     };
                     
                 }                
@@ -2369,6 +2353,7 @@
             @:topaz_object2d__set_collider_radial = getExternalFunction(name:'topaz_object2d__set_collider_radial');
             @:topaz_object2d__get_collider_len = getExternalFunction(name:'topaz_object2d__get_collider_len');
             @:topaz_object2d__get_last_collided = getExternalFunction(name:'topaz_object2d__get_last_collided');
+            @:topaz_object2d__get_last_collided_position = getExternalFunction(name:'topaz_object2d__get_last_collided_position');
             @:topaz_object2d__get_collider_point = getExternalFunction(name:'topaz_object2d__get_collider_point');
             return class(
                 name : 'Topaz.Object2D',        
@@ -2519,7 +2504,11 @@
 
                         lastCollided : {
                             get : ::()  {return __Topaz__.Entity.new(native:topaz_object2d__get_last_collided(a:impl));} 
+                        },
+                        lastCollidedPosition : {
+                            get : ::()  {return Vector.fromnative(native:topaz_object2d__get_last_collided_position(a:impl));} 
                         }
+
                     };                
                 }
             );

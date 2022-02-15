@@ -30,6 +30,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include <topaz/compat.h>
 #include <topaz/vector.h>
+#include <topaz/matrix.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -130,138 +131,146 @@ topazVector_t * topaz_vector_floor(topazVector_t * t) {
 
 
 
-
-float topaz_vector_rotation_x_diff(const topazVector_t * a, const topazVector_t * b) {
-    // If any inputs are undefined in this plane, return 0
-    if ((a->y == 0.f && a->z == 0.f) || (b->y == 0.f && b->z == 0.f)) return 0;
-	float out = topaz_vector_rotation_x(b) - topaz_vector_rotation_x(a);
-	if (out < 0) out += 360.f;
-	return out;
+topazVector_t topaz_vector_reflect_2d(
+    /// The initial direction to reflect
+    topazVector_t * direction,
+    
+    /// The surface to reflect from.
+    topazVector_t * surface
+) {
+    topazVector_t out;
+    topazVector_t normal = topaz_vector_cross(
+        direction,
+        surface
+    );    
+    
+    topaz_vector_normalize(&normal);
+    float dn = topaz_vector_dot(direction, &normal);
+    
+    out.x = direction->x - 2*dn*normal.x;
+    out.y = direction->y - 2*dn*normal.y;
+    return out;
 }
 
-float topaz_vector_rotation_x_diff_relative(const topazVector_t * a, const topazVector_t * b) {
-    topazVector_t o;
-    o.x = b->x - a->x;
-    o.y = b->y - a->y;
-    o.z = b->z - a->z;
-	return topaz_vector_rotation_x(&o);
+
+
+// adapted from GluLookAt source
+void glhLookAtf2(
+    topazMatrix_t * matrix, 
+    const topazVector_t * eyePosition3D,              
+    const topazVector_t * center3D,
+    const topazVector_t * upVector3D
+) {
+    topazVector_t forward, side, up;
+    topazMatrix_t matrix2;
+    topazMatrix_t resultMatrix;
+    // --------------------
+    forward.x = center3D->x - eyePosition3D->x;
+    forward.y = center3D->y - eyePosition3D->y;
+    forward.z = center3D->z - eyePosition3D->z;
+    topaz_vector_normalize(&forward);
+    // --------------------
+    // Side = forward x up
+    side = topaz_vector_cross(&forward, upVector3D);
+    topaz_vector_normalize(&side);
+    // --------------------
+    // Recompute up as: up = side x forward
+    up = topaz_vector_cross(&side, &forward);
+    // --------------------
+    matrix2.data[0] = side.x;
+    matrix2.data[1] = side.y;
+    matrix2.data[2] = side.z;
+    matrix2.data[3] = 0.0;
+    // --------------------
+    matrix2.data[4] = up.x;
+    matrix2.data[5] = up.y;
+    matrix2.data[6] = up.z;
+    matrix2.data[7] = 0.0;
+    // --------------------
+    matrix2.data[8] = -forward.x;
+    matrix2.data[9] = -forward.y;
+    matrix2.data[10] = -forward.z;
+    matrix2.data[11] = 0.0;
+    // --------------------
+    matrix2.data[12] = matrix2.data[13] = matrix2.data[14] = 0.0;
+    matrix2.data[15] = 1.0;
+    // --------------------
+    resultMatrix = topaz_matrix_multiply(matrix, &matrix2);
+    topaz_matrix_translate(&resultMatrix,
+        -eyePosition3D->x, 
+        -eyePosition3D->y, 
+        -eyePosition3D->z
+    );
+    // --------------------
+    memcpy(matrix->data, resultMatrix.data, 16*sizeof(float));
 }
 
-float topaz_vector_rotation_x(const topazVector_t * a) {
-	float dProduct = (a->y); // reduced dot product based around 0-degree vector {0, 1, 0}
+topazVector_t topaz_vector_look_at_rotation(
+    const topazVector_t * p0,
+    const topazVector_t * p1,
+    const topazVector_t * up
+) {
+    topazVector_t upReal = *up;
+    topaz_vector_normalize(&upReal);
+    topazMatrix_t m;
+    topaz_matrix_set_identity(&m);
+    glhLookAtf2(
+        &m, 
+        p0,
+        p1,
+        &upReal
+    );
+    
+    
+    // psi (yx) -> x
+    // theta -> y 
+    // phi (o/)-> z
+    float psi, theta, phi;
+    if (fabs(m.data[8]) != 1) {
+        theta = -asin(m.data[8]); float ct = cos(theta);
+        psi   = atan2(m.data[9] / ct, m.data[10] / ct);
+        phi   = atan2(m.data[4] / ct, m.data[0]  / ct); 
+    } else {
+        phi   = 0;
+        if (m.data[8] == -1) {
+            theta = PI_DOUBLE / 2;
+            psi   = atan2(m.data[1], m.data[2]);
+        } else {
+            theta = -PI_DOUBLE / 2;
+            psi   = atan2(-m.data[1], -m.data[2]);
+        }
+    }
+    topazVector_t rotation = {
+        psi*(180/M_PI), theta*(180/M_PI), phi*(180/M_PI)    
+    };
+    printf("%f %f %f\n", rotation.x, rotation.y, rotation.z);
+    return rotation;
+}
+
+
+float topaz_vector_point_at_2d(
+    const topazVector_t * p0,
+    const topazVector_t * p1
+) {
+    topazVector_t a = {
+        p1->x - p0->x,
+        p1->y - p0->y,
+        0
+    };
+	float dProduct = (a.x); // reduced dot product based around 0-degree vector {1, 0, 0}
     float lengthPlane_this = 1.f;
-    float lengthPlane_in   = sqrt(a->z*a->z + a->y* a->y);
+    float lengthPlane_in   = sqrt(a.x*a.x + a.y* a.y);
     if (lengthPlane_in == 0.f)
         return 0.f;
 
     float cAngle = acos(dProduct / (lengthPlane_in * lengthPlane_this));
-	if (a->z < 0) cAngle = -cAngle + (PI_DOUBLE * 2.0);
-	return (cAngle * (180.0 / PI_DOUBLE));
+	if (a.y < 0) cAngle = -cAngle + (M_PI * 2.0);
+	return (cAngle * (180.0 / M_PI));
+
 }
 
 
 
-
-
-
-float topaz_vector_rotation_y_diff(const topazVector_t * a, const topazVector_t * b) {
-    // If any inputs are undefined in this plane, return 0
-    if ((a->x == 0.f && a->z == 0.f) || (b->x == 0.f && b->z == 0.f)) return 0;
-	float out = topaz_vector_rotation_y(b) - topaz_vector_rotation_y(a);
-	if (out < 0) out += 360.f;
-	return out;
-}
-
-float topaz_vector_rotation_y_diff_relative(const topazVector_t * a, const topazVector_t * b) {
-    topazVector_t o;
-    o.x = b->x - a->x;
-    o.y = b->y - a->y;
-    o.z = b->z - a->z;
-	return topaz_vector_rotation_y(&o);
-}
-
-float topaz_vector_rotation_y(const topazVector_t * a) {
-	float dProduct = (a->z); // reduced dot product based around 0-degree vector {0, 1, 0}
-    float lengthPlane_this = 1.f;
-    float lengthPlane_in   = sqrt(a->x*a->x + a->z* a->z);
-    if (lengthPlane_in == 0.f)
-        return 0.f;
-
-    float cAngle = acos(dProduct / (lengthPlane_in * lengthPlane_this));
-	if (a->x < 0) cAngle = -cAngle + (PI_DOUBLE * 2.0);
-	return (cAngle * (180.0 / PI_DOUBLE));
-}
-
-
-
-
-float topaz_vector_rotation_z_diff(const topazVector_t * a, const topazVector_t * b) {
-    // If any inputs are undefined in this plane, return 0
-    if ((a->x == 0.f && a->y == 0.f) || (b->x == 0.f && b->y == 0.f)) return 0;
-	float out = topaz_vector_rotation_z(b) - topaz_vector_rotation_z(a);
-	if (out < 0) out += 360.f;
-	return out;
-}
-
-float topaz_vector_rotation_z_diff_relative(const topazVector_t * a, const topazVector_t * b) {
-    topazVector_t o;
-    o.x = b->x - a->x;
-    o.y = b->y - a->y;
-    o.z = b->z - a->z;
-	return topaz_vector_rotation_z(&o);
-}
-
-float topaz_vector_rotation_z(const topazVector_t * a) {
-	float dProduct = (a->x); // reduced dot product based around 0-degree vector {1, 0, 0}
-    float lengthPlane_this = 1.f;
-    float lengthPlane_in   = sqrt(a->x*a->x + a->y* a->y);
-    if (lengthPlane_in == 0.f)
-        return 0.f;
-
-    float cAngle = acos(dProduct / (lengthPlane_in * lengthPlane_this));
-	if (a->y < 0) cAngle = -cAngle + (PI_DOUBLE * 2.0);
-	return (cAngle * (180.0 / PI_DOUBLE));
-}
-
-
-
-topazVector_t * topaz_vector_rotate_x(topazVector_t * a, float f) {
-    float x = a->x;
-    float y = a->y;
-    float z = a->z;
-
-    a->x = x;
-    a->y = y * cos(f * (PI_DOUBLE / 180.0)) - z * sin(f * (PI_DOUBLE / 180.0));
-    a->z = z * cos(f * (PI_DOUBLE / 180.0)) + y * sin(f * (PI_DOUBLE / 180.0));
-
-    return a;
-}
-
-
-topazVector_t * topaz_vector_rotate_y(topazVector_t * a, float f) {
-    float x = a->x;
-    float y = a->y;
-    float z = a->z;
-
-    a->x = x * cos(f * (PI_DOUBLE / 180.0)) + z * sin(f * (PI_DOUBLE / 180.0));
-    a->y = y;
-    a->z = z * cos(f * (PI_DOUBLE / 180.0)) - x * sin(f * (PI_DOUBLE / 180.0));
-
-    return a;
-}
-
-
-topazVector_t * topaz_vector_rotate_z(topazVector_t * a, float f) {
-    float x = a->x;
-    float y = a->y;
-    float z = a->z;
-
-    a->x = x * cos(f * (PI_DOUBLE / 180.0)) - y * sin(f * (PI_DOUBLE / 180.0));
-    a->y = y * cos(f * (PI_DOUBLE / 180.0)) + x * sin(f * (PI_DOUBLE / 180.0));
-    a->z = z;
-
-    return a;
-}
 
 
 
