@@ -397,7 +397,16 @@ void topaz_object2d_halt(topazComponent_t * c) {
 }
 
 void topaz_object2d_reset_motion(topazComponent_t * c) {
-    // TODO
+    topazEntity_t * e = topaz_component_get_host(c);
+    if (!e) return;
+    TopazObject2D_t * object = object2d__retrieve(c);    
+    // essentially removes the smear
+    topazVector_t v = *topaz_entity_get_position(e);
+    collider_update_transition(
+        object->collider,
+        &v
+    );        
+
 }
 
 float topaz_object2d_get_velocity_x(const topazComponent_t * c) {
@@ -485,12 +494,12 @@ void topaz_object2d_set_collider_radial(
     uint32_t numPts
 ) {
     TopazObject2D_t * s = object2d__retrieve(c);    
-    topazVector_t * inpts = malloc(numPts*sizeof(topazVector_t));
+    topazVector_t * inpts = calloc(numPts, sizeof(topazVector_t));
      
     float RADIAN_MAX = 3.14159265359*2;
     for(uint32_t i = 0; i < numPts; ++i) {
-        inpts[i].x = cos(i / RADIAN_MAX) * radius;
-        inpts[i].y = sin(i / RADIAN_MAX) * radius;
+        inpts[i].x = cos((i / (float)numPts)*RADIAN_MAX) * radius;
+        inpts[i].y = sin((i / (float)numPts)*RADIAN_MAX) * radius;
     }
     collider_set_from_points(s->collider, TOPAZ_ARRAY_CAST(inpts, topazVector_t, numPts));
     free(inpts);
@@ -1401,7 +1410,8 @@ static void t2dm_on_step(topazEntity_t * e, T2DMData * m) {
             smapCollision_t possible = topaz_array_at(collisions, smapCollision_t, i);
             current = topaz_component_get_attributes(objects[possible.self])->userData;
             other   = topaz_component_get_attributes(objects[possible.other])->userData;
-
+            
+            if (current == other) continue;
 
 
             // too far, would not result in a collision

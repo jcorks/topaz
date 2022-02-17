@@ -133,22 +133,35 @@ topazVector_t * topaz_vector_floor(topazVector_t * t) {
 
 topazVector_t topaz_vector_reflect_2d(
     /// The initial direction to reflect
-    topazVector_t * direction,
+    topazVector_t * directionSrc,
     
     /// The surface to reflect from.
-    topazVector_t * surface
+    topazVector_t * surfaceSrc
 ) {
     topazVector_t out;
-    topazVector_t normal = topaz_vector_cross(
-        direction,
-        surface
-    );    
     
-    topaz_vector_normalize(&normal);
-    float dn = topaz_vector_dot(direction, &normal);
+    topazVector_t direction = *directionSrc;
+    direction.z = 0;
+    topazVector_t surface = *surfaceSrc;
+    surface.z = 0;
+    topaz_vector_normalize(&direction);
+    topaz_vector_normalize(&surface);
+
+    // flip the direction
+    direction.x *= -1;
+    direction.y *= -1;
     
-    out.x = direction->x - 2*dn*normal.x;
-    out.y = direction->y - 2*dn*normal.y;
+    // truncate the surface over its overlap so that we get a perpendicular angle
+    float overlap = topaz_vector_dot(&direction, &surface);
+    surface.x *= overlap;
+    surface.y *= overlap;
+
+    topaz_vector_normalize(&surface);
+
+    float dn = topaz_vector_dot(&direction, &surface);
+    
+    out.x = direction.x - 2*dn*surface.x;
+    out.y = direction.y - 2*dn*surface.y;
     return out;
 }
 
@@ -243,7 +256,6 @@ topazVector_t topaz_vector_look_at_rotation(
     topazVector_t rotation = {
         psi*(180/M_PI), theta*(180/M_PI), phi*(180/M_PI)    
     };
-    printf("%f %f %f\n", rotation.x, rotation.y, rotation.z);
     return rotation;
 }
 
