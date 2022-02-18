@@ -23,7 +23,13 @@ typedef struct {
     float noiseMin;
     // random max
     float noiseMax;
+
+    // offset from creation of particle
+    float offsetMin;
+    float offsetMax;
+
 } ParticleProperty;
+
 
 struct topazParticle_t {
     topaz_t * ctx;
@@ -217,6 +223,30 @@ void topaz_particle_set_noise_max(
 
 }
 
+
+void topaz_particle_set_offset_min(
+    /// The particle to modify.
+    topazParticle_t * part,
+    /// The property to modify.
+    topazParticle_Property prop,
+    float value
+) {
+    if (prop < 0 || prop >= PROP_COUNT) return;
+    part->props[prop].offsetMin = value;
+}
+
+void topaz_particle_set_offset_max(
+    /// The particle to modify.
+    topazParticle_t * part,
+    /// The property to modify.
+    topazParticle_Property prop,
+    float value
+) {
+    if (prop < 0 || prop >= PROP_COUNT) return;
+    part->props[prop].offsetMax = value;
+
+}
+
 /// Sets how the particle property modifies its value over 
 /// its duration. animString is expected to be output from
 /// topaz_automation_to_string() which will describe 
@@ -244,6 +274,9 @@ struct ActiveParticle {
     float duration;
     float at;
 
+    float offset[PROP_COUNT];
+
+
     // next particle in chain
     ActiveParticle * next;
     // previous in chain.
@@ -258,6 +291,8 @@ typedef struct {
     topazComponent_t * propsActive[PROP_COUNT];
     float propsMinNoise[PROP_COUNT];    
     float propsMaxNoise[PROP_COUNT];    
+    float propsMinOffset[PROP_COUNT];    
+    float propsMaxOffset[PROP_COUNT];    
 
 
     // all active particles, linked list
@@ -280,9 +315,9 @@ typedef struct {
 } TopazEmitter;
 
 
-static float get_prop_value(TopazEmitter * e, topazParticle_Property p, float at) {
+static float get_prop_value(TopazEmitter * e, topazParticle_Property p, ActiveParticle * part) {
     float noise = e->propsMinNoise[p] + topaz_rng_next_value(e->rng)*(e->propsMaxNoise[p] - e->propsMinNoise[p]);
-    return noise + topaz_automation_at(e->propsActive[p], at);
+    return noise + topaz_automation_at(e->propsActive[p], part->at) + part->offset[p];
 }
 
 
@@ -298,32 +333,35 @@ static void update_active_particle(TopazEmitter * e, ActiveParticle * p) {
         return;
     }
     // 0 - 1 of where we are in the animation
-    p->at = p->life / p->duration; 
+    p->at = (p->duration - p->life) / p->duration; 
 
 
-    float direction =  get_prop_value(e, topazParticle_Property__Direction,p->at);
-    float speedX =    get_prop_value(e, topazParticle_Property__SpeedX,p->at);
-    float speedY =    get_prop_value(e, topazParticle_Property__SpeedY,p->at);
+    float direction =  get_prop_value(e, topazParticle_Property__Direction,p);
+    float speedX =    get_prop_value(e, topazParticle_Property__SpeedX,p);
+    float speedY =    get_prop_value(e, topazParticle_Property__SpeedY,p);
 
 
     p->position.x += speedX * cos(direction * M_PI * (1/180.0));
     p->position.y += speedY * sin(direction * M_PI * (1/180.0));
 
     p->life-=1;
+    p->life += e->propsMinNoise[topazParticle_Property__Duration] + topaz_rng_next_value(e->rng)*(e->propsMaxNoise[topazParticle_Property__Duration] - e->propsMinNoise[topazParticle_Property__Duration]);
 }
 
 
 static void render_active_particle(TopazEmitter * e, ActiveParticle * p) {
-    float scaleX =    get_prop_value(e, topazParticle_Property__ScaleX,p->at);
-    float scaleY =    get_prop_value(e, topazParticle_Property__ScaleY,p->at);
-    float scaleMult = get_prop_value(e, topazParticle_Property__ScaleMultiplier,p->at);
+    float scaleX =    get_prop_value(e, topazParticle_Property__ScaleX,p);
+    float scaleY =    get_prop_value(e, topazParticle_Property__ScaleY,p);
+    float scaleMult = get_prop_value(e, topazParticle_Property__ScaleMultiplier,p);
 
-    float red =    get_prop_value(e, topazParticle_Property__Red,p->at);
-    float blue =    get_prop_value(e, topazParticle_Property__Blue,p->at);
-    float green =    get_prop_value(e, topazParticle_Property__Green,p->at);
-    float alpha =    get_prop_value(e, topazParticle_Property__Alpha,p->at);
+    float red =    get_prop_value(e, topazParticle_Property__Red,p);
+    float blue =    get_prop_value(e, topazParticle_Property__Blue,p);
+    float green =    get_prop_value(e, topazParticle_Property__Green,p);
+    float alpha =    get_prop_value(e, topazParticle_Property__Alpha,p);
 
-    float rotation =  get_prop_value(e, topazParticle_Property__Rotation,p->at);
+
+
+    float rotation =  get_prop_value(e, topazParticle_Property__Rotation,p);
 
     topazTransform_t * transform = topaz_spatial_get_node(topaz_render2d_get_spatial(p->visual));
 
@@ -451,6 +489,9 @@ void topaz_particle_emitter_2d_set_particle(
         topaz_automation_set_from_string(emitter->propsActive[i], p->props[i].anim);
         emitter->propsMaxNoise[i] = p->props[i].noiseMax;
         emitter->propsMinNoise[i] = p->props[i].noiseMin;
+        emitter->propsMaxOffset[i] = p->props[i].offsetMax;
+        emitter->propsMinOffset[i] = p->props[i].offsetMin;
+
     }
 }
 
@@ -483,9 +524,13 @@ static void particle_emit(
         &emitter->attribs
     );
     
-    p->duration = emitter->propsMinNoise[topazParticle_Property__Duration] + topaz_rng_next_value(emitter->rng)*(emitter->propsMaxNoise[topazParticle_Property__Duration] - emitter->propsMinNoise[topazParticle_Property__Duration]);    
+    p->duration = (emitter->propsMinOffset[topazParticle_Property__Duration] + topaz_rng_next_value(emitter->rng)*(emitter->propsMaxOffset[topazParticle_Property__Duration] - emitter->propsMinOffset[topazParticle_Property__Duration]));    
     p->position = topaz_entity_get_global_position(e);
     p->life = p->duration;
+    int i;
+    for(i = 0; i < PROP_COUNT; ++i) {
+        p->offset[i] = emitter->propsMinOffset[i] + topaz_rng_next_value(emitter->rng)*(emitter->propsMaxOffset[i] - emitter->propsMinOffset[i]);
+    }
     if (!emitter->active) {
         emitter->active = p;
     } else {

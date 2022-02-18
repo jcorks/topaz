@@ -91,9 +91,13 @@ return class(
                     otherPhys.velocityY += toOther.y;
                     
                 } else ::<={
-                    this.position = selfPhys.lastPosition;
+                    this.position = {
+                        x: this.position.x,
+                        y: selfPhys.lastPosition.y
+                    };
                     selfPhys.resetMotion();
                     selfPhys.velocityY *= -0.5;
+                    selfPhys.velocityX *= 0.95;
                     if (Number.abs(of:selfPhys.velocityY) < 2) selfPhys.velocityY = 0;
                 };
                             

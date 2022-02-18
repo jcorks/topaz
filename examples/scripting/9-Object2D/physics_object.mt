@@ -16,8 +16,6 @@ return class(
             if (static) ::<={
                 o2d.group = constants.FLOOR_GROUP;
                 
-                o2d.frictionX = 0.02;
-                o2d.frictionY = 0.02;
             } else ::<= {
                 o2d.group = constants.BALL_GROUP;
                 

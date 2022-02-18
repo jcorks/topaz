@@ -2198,8 +2198,19 @@
                             set : ::(value){Vector.statepush(v:value);topaz_text2d__set_scale(a:impl, b:value.native);} 
                         },
                         
-                        setAttribute : ::(attribute, value){ 
-                            topaz_text2d__set_attribute(a:impl, b:attribute, c:value);
+                        setAttributes : ::(primitive, alphaRule, depthTest, etchRule, textureFilterHint){
+                            if (primitive != empty) topaz_text2d__set_attribute(a:impl, b:0, c:primitive);
+                            if (alphaRule != empty) topaz_text2d__set_attribute(a:impl, b:1, c:alphaRule);
+                            if (depthTest != empty) topaz_text2d__set_attribute(a:impl, b:2, c:depthTest);
+                            if (etchRule  != empty) topaz_text2d__set_attribute(a:impl, b:3, c:etchRule);
+                            if (textureFilterHint != empty) topaz_text2d__set_attribute(a:impl, b:4, c:textureFilterHint);
+
+                            /*PRIMITIVE : 0,
+                            ALPHA_RULE : 1,
+                            DEPTH_TEST : 2,
+                            ETCH_RULE : 3,
+                            TEXTURE_FILTER_HINT : 4*/
+
                         },
                         
                         getAttribute : ::(attribute){ 
@@ -2601,8 +2612,12 @@
                             set : ::(value){topaz_shape2d__form_triangles(a:impl, b:value); _tris = value;} 
                         },
 
-                        setAttribute : ::(attribute, value) { 
-                            topaz_shape2d__set_attribute(a:impl, b:attribute, c:value);
+                        setAttributes : ::(primitive, alphaRule, depthTest, etchRule, textureFilterHint){
+                            if (primitive != empty) topaz_shape2d__set_attribute(a:impl, b:0, c:primitive);
+                            if (alphaRule != empty) topaz_shape2d__set_attribute(a:impl, b:1, c:alphaRule);
+                            if (depthTest != empty) topaz_shape2d__set_attribute(a:impl, b:2, c:depthTest);
+                            if (etchRule  != empty) topaz_shape2d__set_attribute(a:impl, b:3, c:etchRule);
+                            if (textureFilterHint != empty) topaz_shape2d__set_attribute(a:impl, b:4, c:textureFilterHint);
                         },
 
                         getAttribute : ::(attribute) { 
@@ -2697,8 +2712,12 @@
                             set : ::(value){Vector.statepush(v:value);topaz_shape3d__set_scale(a:impl, b:value.native);} 
                         },
 
-                        setAttribute : ::(attribute, value){ 
-                            topaz_shape3d__set_attribute(a:impl, b:attribute, c:value);
+                        setAttributes : ::(primitive, alphaRule, depthTest, etchRule, textureFilterHint){
+                            if (primitive != empty) topaz_shape3d__set_attribute(a:impl, b:0, c:primitive);
+                            if (alphaRule != empty) topaz_shape3d__set_attribute(a:impl, b:1, c:alphaRule);
+                            if (depthTest != empty) topaz_shape3d__set_attribute(a:impl, b:2, c:depthTest);
+                            if (etchRule  != empty) topaz_shape3d__set_attribute(a:impl, b:3, c:etchRule);
+                            if (textureFilterHint != empty) topaz_shape3d__set_attribute(a:impl, b:4, c:textureFilterHint);
                         },
 
                         getAttribute : ::(attribute){ 
@@ -2876,6 +2895,8 @@
             @:topaz_particle__set_attribute = getExternalFunction(name:'topaz_particle__set_attribute');
             @:topaz_particle__set_noise_min = getExternalFunction(name:'topaz_particle__set_noise_min');
             @:topaz_particle__set_noise_max = getExternalFunction(name:'topaz_particle__set_noise_max');
+            @:topaz_particle__set_offset_min = getExternalFunction(name:'topaz_particle__set_offset_min');
+            @:topaz_particle__set_offset_max = getExternalFunction(name:'topaz_particle__set_offset_max');
             @:topaz_particle__set_function = getExternalFunction(name:'topaz_particle__set_function');
             @:topaz_particle__to_string = getExternalFunction(name:'topaz_particle__to_string');
             @:topaz_particle__set_from_string = getExternalFunction(name:'topaz_particle__set_from_string');
@@ -2911,20 +2932,90 @@
                     };
                     
                     this.interface = {
-                        setAttribute : ::(attribute, value) { 
-                            topaz_particle__set_attribute(a:impl, b:attribute, c:value);
+                        setAttributes : ::(primitive, alphaRule, depthTest, etchRule, textureFilterHint){
+                            if (primitive != empty) topaz_particle__set_attribute(a:impl, b:0, c:primitive);
+                            if (alphaRule != empty) topaz_particle__set_attribute(a:impl, b:1, c:alphaRule);
+                            if (depthTest != empty) topaz_particle__set_attribute(a:impl, b:2, c:depthTest);
+                            if (etchRule  != empty) topaz_particle__set_attribute(a:impl, b:3, c:etchRule);
+                            if (textureFilterHint != empty) topaz_particle__set_attribute(a:impl, b:4, c:textureFilterHint);
                         },
 
-                        setNoiseMin : ::(property, value) { 
-                            topaz_particle__set_noise_min(a:impl, b:property, c:value);
+                        setNoiseMin : ::(duration, scaleX, scaleY, scaleMultiplier, rotation, direction, speedX, speedY, red, green, blue, alpha) { 
+                            if (duration != empty) topaz_particle__set_noise_min(a:impl, b:0, c:duration);
+                            if (scaleX   != empty) topaz_particle__set_noise_min(a:impl, b:1, c:scaleX);
+                            if (scaleY   != empty) topaz_particle__set_noise_min(a:impl, b:2, c:scaleY);
+                            if (scaleMultiplier   != empty) topaz_particle__set_noise_min(a:impl, b:3, c:scaleMultiplier);
+                            if (rotation != empty) topaz_particle__set_noise_min(a:impl, b:4, c:rotation);
+                            if (direction != empty) topaz_particle__set_noise_min(a:impl, b:5, c:direction);
+                            if (speedX   != empty) topaz_particle__set_noise_min(a:impl, b:6, c:speedX);
+                            if (speedY   != empty) topaz_particle__set_noise_min(a:impl, b:7, c:speedY);
+                            if (red   != empty) topaz_particle__set_noise_min(a:impl, b:8, c:red);
+                            if (green   != empty) topaz_particle__set_noise_min(a:impl, b:9, c:green);
+                            if (blue   != empty) topaz_particle__set_noise_min(a:impl, b:10, c:blue);
+                            if (alpha != empty) topaz_particle__set_noise_min(a:impl, b:11, c:alpha);
+
                         },
 
-                        setNoiseMax : ::(property, value) { 
-                            topaz_particle__set_noise_max(a:impl, b:property, c:value);
+                        setNoiseMax : ::(duration, scaleX, scaleY, scaleMultiplier, rotation, direction, speedX, speedY, red, green, blue, alpha) { 
+                            if (duration != empty) topaz_particle__set_noise_max(a:impl, b:0, c:duration);
+                            if (scaleX   != empty) topaz_particle__set_noise_max(a:impl, b:1, c:scaleX);
+                            if (scaleY   != empty) topaz_particle__set_noise_max(a:impl, b:2, c:scaleY);
+                            if (scaleMultiplier   != empty) topaz_particle__set_noise_max(a:impl, b:3, c:scaleMultiplier);
+                            if (rotation != empty) topaz_particle__set_noise_max(a:impl, b:4, c:rotation);
+                            if (direction != empty) topaz_particle__set_noise_max(a:impl, b:5, c:direction);
+                            if (speedX   != empty) topaz_particle__set_noise_max(a:impl, b:6, c:speedX);
+                            if (speedY   != empty) topaz_particle__set_noise_max(a:impl, b:7, c:speedY);
+                            if (red   != empty) topaz_particle__set_noise_max(a:impl, b:8, c:red);
+                            if (green   != empty) topaz_particle__set_noise_max(a:impl, b:9, c:green);
+                            if (blue   != empty) topaz_particle__set_noise_max(a:impl, b:10, c:blue);
+                            if (alpha != empty) topaz_particle__set_noise_max(a:impl, b:11, c:alpha);
                         },
 
-                        setFunction : ::(property, value) { 
-                            topaz_particle__set_function(a:impl, b:property, c:value);
+
+                        setOffsetMin : ::(duration, scaleX, scaleY, scaleMultiplier, rotation, direction, speedX, speedY, red, green, blue, alpha) { 
+                            if (duration != empty) topaz_particle__set_offset_min(a:impl, b:0, c:duration);
+                            if (scaleX   != empty) topaz_particle__set_offset_min(a:impl, b:1, c:scaleX);
+                            if (scaleY   != empty) topaz_particle__set_offset_min(a:impl, b:2, c:scaleY);
+                            if (scaleMultiplier   != empty) topaz_particle__set_offset_min(a:impl, b:3, c:scaleMultiplier);
+                            if (rotation != empty) topaz_particle__set_offset_min(a:impl, b:4, c:rotation);
+                            if (direction != empty) topaz_particle__set_offset_min(a:impl, b:5, c:direction);
+                            if (speedX   != empty) topaz_particle__set_offset_min(a:impl, b:6, c:speedX);
+                            if (speedY   != empty) topaz_particle__set_offset_min(a:impl, b:7, c:speedY);
+                            if (red   != empty) topaz_particle__set_offset_min(a:impl, b:8, c:red);
+                            if (green   != empty) topaz_particle__set_offset_min(a:impl, b:9, c:green);
+                            if (blue   != empty) topaz_particle__set_offset_min(a:impl, b:10, c:blue);
+                            if (alpha != empty) topaz_particle__set_offset_min(a:impl, b:11, c:alpha);
+
+                        },
+
+                        setOffsetMax : ::(duration, scaleX, scaleY, scaleMultiplier, rotation, direction, speedX, speedY, red, green, blue, alpha) { 
+                            if (duration != empty) topaz_particle__set_offset_max(a:impl, b:0, c:duration);
+                            if (scaleX   != empty) topaz_particle__set_offset_max(a:impl, b:1, c:scaleX);
+                            if (scaleY   != empty) topaz_particle__set_offset_max(a:impl, b:2, c:scaleY);
+                            if (scaleMultiplier   != empty) topaz_particle__set_offset_max(a:impl, b:3, c:scaleMultiplier);
+                            if (rotation != empty) topaz_particle__set_offset_max(a:impl, b:4, c:rotation);
+                            if (direction != empty) topaz_particle__set_offset_max(a:impl, b:5, c:direction);
+                            if (speedX   != empty) topaz_particle__set_offset_max(a:impl, b:6, c:speedX);
+                            if (speedY   != empty) topaz_particle__set_offset_max(a:impl, b:7, c:speedY);
+                            if (red   != empty) topaz_particle__set_offset_max(a:impl, b:8, c:red);
+                            if (green   != empty) topaz_particle__set_offset_max(a:impl, b:9, c:green);
+                            if (blue   != empty) topaz_particle__set_offset_max(a:impl, b:10, c:blue);
+                            if (alpha != empty) topaz_particle__set_offset_max(a:impl, b:11, c:alpha);
+                        },
+
+                        setFunctions : ::(duration, scaleX, scaleY, scaleMultiplier, rotation, direction, speedX, speedY, red, green, blue, alpha) { 
+                            if (duration != empty) topaz_particle__set_function(a:impl, b:0, c:duration);
+                            if (scaleX   != empty) topaz_particle__set_function(a:impl, b:1, c:scaleX);
+                            if (scaleY   != empty) topaz_particle__set_function(a:impl, b:2, c:scaleY);
+                            if (scaleMultiplier   != empty) topaz_particle__set_function(a:impl, b:3, c:scaleMultiplier);
+                            if (rotation != empty) topaz_particle__set_function(a:impl, b:4, c:rotation);
+                            if (direction != empty) topaz_particle__set_function(a:impl, b:5, c:direction);
+                            if (speedX   != empty) topaz_particle__set_function(a:impl, b:6, c:speedX);
+                            if (speedY   != empty) topaz_particle__set_function(a:impl, b:7, c:speedY);
+                            if (red   != empty) topaz_particle__set_function(a:impl, b:8, c:red);
+                            if (green   != empty) topaz_particle__set_function(a:impl, b:9, c:green);
+                            if (blue   != empty) topaz_particle__set_function(a:impl, b:10, c:blue);
+                            if (alpha != empty) topaz_particle__set_function(a:impl, b:11, c:alpha);
                         },
 
                         string : {get : ::() {return topaz_particle__to_string(a:impl);}, set : ::(value){topaz_particle__set_from_string(a:impl, b:value);}}, 

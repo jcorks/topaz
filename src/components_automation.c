@@ -158,7 +158,7 @@ static topazVector_t animate_at(float at, TAKeyframe * frames, uint32_t len) {
         topazVector_t out = {};
         return out;
     }
-    if (at < frames->when) return frames->value;
+    if (at <= frames->when) return frames->value;
     uint32_t i;
     for(i = 0; i < len-1; ++i, frames++) {
         if (at >= frames->when &&
@@ -610,7 +610,7 @@ topazVector_t topaz_automation_vector_at(
 ) {
     TopazAutomation * a = automation__retrieve(automation);   
     return animate_at(
-        fmod(progress, 1)*topaz_automation_get_length(automation),
+        progress,
         topaz_array_get_data(a->keyframes),
         topaz_array_get_size(a->keyframes)
     );
@@ -625,7 +625,7 @@ float topaz_automation_at(
 ) {
     TopazAutomation * a = automation__retrieve(automation);   
     return animate_at(
-        fmod(progress, 1)*topaz_automation_get_length(automation),
+        progress,
         topaz_array_get_data(a->keyframes),
         topaz_array_get_size(a->keyframes)
     ).x;

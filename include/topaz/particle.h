@@ -146,7 +146,7 @@ void topaz_particle_set_image(
 );
 
 
-/// The minimum value for the attribute to start.
+/// The minimum value for the attribute to be applied every query
 ///
 void topaz_particle_set_noise_min(
     /// The particle to modify.
@@ -159,6 +159,29 @@ void topaz_particle_set_noise_min(
 /// The maximum value for the attribute to start.
 ///
 void topaz_particle_set_noise_max(
+    /// The particle to modify.
+    topazParticle_t * part,
+    /// The property to modify.
+    topazParticle_Property prop,
+    /// The value to set.
+    float value
+);
+
+/// The minimum value for the attribute to be applied every query
+///
+void topaz_particle_set_offset_min(
+    /// The particle to modify.
+    topazParticle_t * part,
+    /// The property to modify.
+    topazParticle_Property prop,
+    /// The value to set.
+    float value
+);
+
+
+/// The maximum value for an offset of an attribute
+///
+void topaz_particle_set_offset_max(
     /// The particle to modify.
     topazParticle_t * part,
     /// The property to modify.

@@ -108,6 +108,34 @@ TSO_SCRIPT_API_FN(particle_api__set_noise_max) {
     );
     TSO_NO_RETURN; 
 }
+
+
+TSO_SCRIPT_API_FN(particle_api__set_offset_min) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_NATIVIZE(topazParticle_t *, TSO_OBJECT_ID__PARTICLE);
+
+    topaz_particle_set_offset_min(
+        native, 
+        topaz_script_object_as_int(arg1),
+        topaz_script_object_as_number(arg2)
+    );
+    TSO_NO_RETURN; 
+}
+TSO_SCRIPT_API_FN(particle_api__set_offset_max) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_NATIVIZE(topazParticle_t *, TSO_OBJECT_ID__PARTICLE);
+
+    topaz_particle_set_offset_max(
+        native, 
+        topaz_script_object_as_int(arg1),
+        topaz_script_object_as_number(arg2)
+    );
+    TSO_NO_RETURN; 
+}
 TSO_SCRIPT_API_FN(particle_api__set_function) {
     TSO_ARG_0;
     TSO_ARG_1;
@@ -136,6 +164,8 @@ static void add_refs__particle_api(topazScript_t * script, topazScriptManager_t 
     TS_MAP_NATIVE_FN("topaz_particle__get_attribute", particle_api__get_attribute, 2);
     TS_MAP_NATIVE_FN("topaz_particle__set_noise_min", particle_api__set_noise_min, 3);
     TS_MAP_NATIVE_FN("topaz_particle__set_noise_max", particle_api__set_noise_max, 3);
+    TS_MAP_NATIVE_FN("topaz_particle__set_offset_min", particle_api__set_offset_min, 3);
+    TS_MAP_NATIVE_FN("topaz_particle__set_offset_max", particle_api__set_offset_max, 3);
     TS_MAP_NATIVE_FN("topaz_particle__set_function", particle_api__set_function, 3);
 
     
