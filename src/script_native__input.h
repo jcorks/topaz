@@ -388,6 +388,7 @@ TSO_SCRIPT_API_FN(input_api__remove_unicode_listener) {
 
 TSO_SCRIPT_API_FN(input_api__mouse_x) {
     topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
+
     return topaz_script_object_from_number(
         script, 
         topaz_input_mouse_x(

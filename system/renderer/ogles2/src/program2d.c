@@ -174,8 +174,8 @@ void topaz_es2_p2d_render(
         topazMatrix_t out;
         projection_orthographic(
             &out, 
-            0, ctx->width,
-            0, ctx->height,
+            -ctx->width/2, ctx->width/2,
+            ctx->height/2, -ctx->height/2,
             1000, -1000
         );
 

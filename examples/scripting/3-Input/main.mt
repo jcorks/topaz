@@ -63,23 +63,19 @@
             // that corresponds to the arrow.
 
             if (Topaz.Input.getState(input:Topaz.Input.KEY.UP)) ::<={
-                // The add() function for vectors allows the creation 
-                // of a new vector by summing the x, y, and z components
-                // of the source vector and argument vector.
-                this.position = Topaz.Vector.add(a:this.position, b:{x:0, y:-1});            
+                this.position.y += 1;            
             };
 
             if (Topaz.Input.getState(input:Topaz.Input.KEY.DOWN)) ::<={
-                this.position = Topaz.Vector.add(a:this.position, b:{x:0, y:1});            
+                this.position.y -= 1;           
             };
 
             if (Topaz.Input.getState(input:Topaz.Input.KEY.LEFT)) ::<={
-                this.position = Topaz.Vector.add(a:this.position, b:{x:-1, y:0});            
+                this.position.x -= 1;            
             };
 
-
             if (Topaz.Input.getState(input:Topaz.Input.KEY.RIGHT)) ::<={
-                this.position = Topaz.Vector.add(a:this.position, b:{x:1, y:0});            
+                this.position += 1;         
             };
 
             // The left/right/middle button can be polled using 
@@ -165,20 +161,20 @@
             onActive :::(input, value) {
                 match(input) {
                   (Topaz.Input.KEY.W):::<={
-                    this.position = Topaz.Vector.add(a:this.position, b:{x:0, y:-1});            
+                    this.position.y += 1;          
                   },
 
                   (Topaz.Input.KEY.S):::<={
-                    this.position = Topaz.Vector.add(a:this.position, b:{x:0, y:1});            
+                    this.position.y -= 1;           
                   },
 
                   (Topaz.Input.KEY.A):::<={
-                    this.position = Topaz.Vector.add(a:this.position, b:{x:-1, y:0});            
+                    this.position.x -= 1;          
                   },
                     
 
                   (Topaz.Input.KEY.D):::<={
-                    this.position = Topaz.Vector.add(a:this.position, b:{x:1, y:0});            
+                    this.position.x += 1;       
                   }
                 };
             }
@@ -205,11 +201,11 @@
                 if (clicking) ::<={
                     match(input) {
                       (Topaz.Input.POINTER.X):::<={
-                        this.position = {x:value, y:this.position.y};
+                        this.position.x = value;
                       },
 
                       (Topaz.Input.POINTER.Y):::<={
-                        this.position = {x:this.position.x, y:value};
+                        this.position.y = value;
                       }
                     };
                 };

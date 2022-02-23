@@ -505,6 +505,25 @@ void topaz_object2d_set_collider_radial(
     free(inpts);
 }
 
+void topaz_object2d_set_collider_rectangle(
+    topazComponent_t * c,
+    float width,
+    float height
+) {
+    TopazObject2D_t * s = object2d__retrieve(c);    
+    topazVector_t inpts[4];
+    inpts[0].x = -width/2;
+    inpts[0].y = -height/2;
+    inpts[1].x =  width/2;
+    inpts[1].y = -height/2;
+    inpts[2].x =  width/2;
+    inpts[2].y =  height/2;
+    inpts[3].x = -width/2;
+    inpts[3].y =  height/2;
+
+    collider_set_from_points(s->collider, TOPAZ_ARRAY_CAST(inpts, topazVector_t, 4));
+}
+
 const topazArray_t * topaz_object2d_get_collider(
     const topazComponent_t * c
 ) {

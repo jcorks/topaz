@@ -59,6 +59,9 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 #define TSO_ARG_4 topazScript_Object_t * arg4 = args[4];
 #define TSO_ARG_5 topazScript_Object_t * arg5 = args[5];
 #define TSO_ARG_6 topazScript_Object_t * arg6 = args[6];
+#define TSO_ARG_7 topazScript_Object_t * arg7 = args[7];
+#define TSO_ARG_8 topazScript_Object_t * arg8 = args[8];
+#define TSO_ARG_9 topazScript_Object_t * arg9 = args[9];
 
 // Retrieves argN as a native object of the given type.
 // If it is not the given type, an error is "thrown".

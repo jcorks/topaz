@@ -117,11 +117,11 @@ entity.setColor(value:Topaz.Color.parse(string:'purple'));
 
 
 // The default position for an entity is 0,0,0,
-// so we'll want to move it. Note how we set the center 
+// Which is the center of the display. Note how we set the center 
 // of the Shape2D component already: topaz is inherently 
 // hierarchical: objects will use the position / rotation / scale 
 // of things that they are attached to. 
-entity.position = {x:200, y:200};
+
 
 
 // Even though we've created the our rectangle entity,

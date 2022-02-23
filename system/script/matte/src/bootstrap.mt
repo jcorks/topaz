@@ -1,6 +1,9 @@
 
 @class = import(module:'Matte.Core.Class');
 
+
+
+@Topaz;
 @:Color = ::<={
     @:topaz_color__create = getExternalFunction(name:'topaz_color__create');
     @:topaz_color__set_rgba = getExternalFunction(name:'topaz_color__set_rgba');
@@ -59,11 +62,6 @@
 
 
 @:Vector = ::<={
-    @:topaz_vector__create = getExternalFunction(name:'topaz_vector__create');
-    @:topaz_vector__set_xyz = getExternalFunction(name:'topaz_vector__set_xyz');
-    @:topaz_vector__get_x = getExternalFunction(name:'topaz_vector__get_x');
-    @:topaz_vector__get_y = getExternalFunction(name:'topaz_vector__get_y');
-    @:topaz_vector__get_z = getExternalFunction(name:'topaz_vector__get_z');
     @:topaz_vector__get_distance = getExternalFunction(name:'topaz_vector__get_distance');
     @:topaz_vector__normalize = getExternalFunction(name:'topaz_vector__normalize');
     @:topaz_vector__cross = getExternalFunction(name:'topaz_vector__cross');
@@ -74,120 +72,241 @@
     @:topaz_vector__floor = getExternalFunction(name:'topaz_vector__floor');
     @:topaz_vector__get_length = getExternalFunction(name:'topaz_vector__get_length');
 
-    @:statepush = ::(v) {
-        if (v.native == empty) ::<={
-            if (v.x == empty || Number.isNaN(value:v.x)) v.x = 0;
-            if (v.y == empty || Number.isNaN(value:v.y)) v.y = 0;
-            if (v.z == empty || Number.isNaN(value:v.z)) v.z = 0;
-            v.native = topaz_vector__create(a:v.x, b:v.y, c:v.z);
-        } else ::<={
-            topaz_vector__set_xyz(a:v.native, b:v.x, c:v.y, d:v.z);
-        };
+    @updateTarget;
+
+    @:updateVectorNative ::(a, b, c) {
+        updateTarget.x = a;
+        updateTarget.y = b;
+        updateTarget.z = c;
     };
 
-    @:statepull = ::(v) {
-        v.x = topaz_vector__get_x(a:v.native);
-        v.y = topaz_vector__get_y(a:v.native);
-        v.z = topaz_vector__get_z(a:v.native);
-    };
+    // Vector.Expression << {x:0, y:1} - {}
+    @VectorExpression = class(
+        name : 'VectorExpression',
+        define:::(this) {
+            @x = 0; @y = 0; @z = 0;
+
+            this.interface = {
+                x : {
+                    get :: {
+                        return x;
+                    },
+
+                    set ::(value) {
+                        x = value;
+                    }
+                },
+                y : {
+                    get :: {
+                        return y;
+                    },
+
+                    set ::(value) {
+                        y = value;
+                    }
+                },
+                z : {
+                    get :: {
+                        return z;
+                    },
+
+                    set ::(value) {
+                        z = value;
+                    }
+                }
+
+            };
+
+
+
+            this.attributes = {
+                (Number) : ::(value) {
+                    @:out = VectorExpression.new();
+                    out.x = value;
+                    out.y = value;
+                    out.z = value;
+                    return out;                    
+                },
+
+                (Object) : ::(value) {
+                    @:out = VectorExpression.new();
+                    out.x = value.x;
+                    out.y = value.y;
+                    out.z = value.z;
+                    return out;                
+                },
+
+                '<<' : ::(value) {
+                    @:out = VectorExpression.new();
+                    out.x = value.x;
+                    out.y = value.y;
+                    out.z = value.z;
+                    return out;
+                },
+
+                '+' : ::(value) {
+                    @:out = VectorExpression.new();
+                    if (value.x != empty) out.x = this.x + value.x;
+                    if (value.y != empty) out.y = this.y + value.y;
+                    if (value.z != empty) out.z = this.z + value.z;
+                    return out;
+                },
+
+                '-' : ::(other) {
+                    @:out = VectorExpression.new();
+                    out.x = this.x - other.x;
+                    out.y = this.y - other.y;
+                    out.z = this.z - other.z;
+                    return out;
+                },
+
+                '*' : ::(other) {
+                    @:out = VectorExpression.new();
+                    out.x = this.x * other.x;
+                    out.y = this.y * other.y;
+                    out.z = this.z * other.z;
+                    return out;
+                },
+
+                '/' : ::(other) {
+                    @:out = VectorExpression.new();
+                    out.x = this.x / other.x;
+                    out.y = this.y / other.y;
+                    out.z = this.z / other.z;
+                    return out;
+                }
+
+            };
+        }
+    );
+
 
     return {
-        statepush : statepush,
-        statepull : statepull,
-        fromnative ::(native) {
-            @:out = {native:native};
-            statepull(v:out);
-            return out;
+
+        length : ::(of){
+            return topaz_vector__get_length(a:of.x, b:of.y, c:of.z);
         },
+
+        _updateRemote ::(target) {
+            updateTarget = target;
+            return updateVectorNative;
+        },
+
         getDistance ::(from, to){ 
-            statepush(v:from); statepush(v:to);
-            return topaz_vector__get_distance(a:from.native, b:to.native);
+            return topaz_vector__get_distance(
+                a:from.x, b:from.y, c:from.z,
+                d:to.x,   e:to.y,   f:to.z 
+            );
         },
         
         normalize ::(value){ 
-            statepush(v:value);
-            topaz_vector__normalize(a:value.native);   
-            statepull(v:value);
+            updateTarget = value;
+            topaz_vector__normalize(a:value.x, b:value.y, c:value.z, d:updateVectorNative);   
         },
         
         cross ::(a, b){ 
-            statepush(v:a);
-            statepush(v:b);
-            @out = {native:topaz_vector__cross(a:a.native, b:b.native)};
-            statepull(v:out);
-            return out;
+            updateTarget = {};
+            topaz_vector__cross(
+                a:a.x, b:a.y, c:a.z,
+                d:b.x, e:b.y, f:b.z,
+                g:updateVectorNative
+            );
+            return updateTarget;
         },
         
         reflect2D ::(direction, surface) {
-            statepush(v:direction);
-            statepush(v:surface);
-            @out = {native:topaz_vector__reflect_2d(a:direction.native, b:surface.native)};
-            statepull(v:out);
-            return out;        
+            updateTarget = {};
+            topaz_vector__reflect_2d(
+                a:direction.x, b:direction.y, c:direction.z,
+                d:surface.x,   e:surface.y,   f:surface.z,
+                g:updateVectorNative
+            );
+            return updateTarget;
         },
         lookAtRotation ::(from, to, up) {
-            statepush(v:from);
-            statepush(v:to);
-            statepush(v:up);
-            @out = {native:topaz_vector__look_at_rotation(a:from.native, b:to.native, c:up.native)};
-            statepull(v:out);
-            return out;        
+            updateTarget = {};
+            topaz_vector__look_at_rotation(
+                a:from.x, b:from.y, c:from.z,
+                d:to.x,   e:to.y,   f:to.z,
+                g:up.x,   h:up.y,   h:up.z,
+                i:updateVectorNative
+            );
+            return updateTarget;        
         },
         pointAt2D ::(from, to) {
-            statepush(v:from);
-            statepush(v:to);
-            return topaz_vector__point_at_2d(a:from.native, b:to.native);
+            return topaz_vector__point_at_2d(
+                a:from.x, b:from.y, c:from.z,
+                d:to.x,   e:to.y,   f:to.z
+            );
         },
 
         dot ::(a, b){ 
-            statepush(v:a);
-            statepush(v:b);
-            return topaz_vector__dot(a:a.native, b:b.native);
+            return topaz_vector__dot(
+                a:a.x, b:a.y, c:a.z,
+                d:b.x, e:b.y, f:b.z
+            );
         },
 
         floor ::(value){ 
-            statepush(v:value);
-            topaz_vector__floor(a:value.native);
-            statepull(v:value);
+            updateTarget = value;
+            topaz_vector__floor(a:value.native, b:updateVectorNative);
+            return value;
         },
         
 
-        length : ::(of){
-            statepush(v:of);
-            return topaz_vector__get_length(a:of.native);
-        },
-        
-        add : ::(a, b){ 
-            statepush(v:a);
-            statepush(v:b);
-            return {x:a.x + b.x, y:a.y + b.y, z:a.z + b.z};
-        },
-        
-        subtract : ::(a, b){ 
-            statepush(v:a);
-            statepush(v:b);
-            return {x:a.x - b.x, y:a.y - b.y, z:a.z - b.z};
-        },
 
-        multiply : ::(a, b){ 
-            statepush(v:a);
-            statepush(v:b);
-            return {x:a.x * b.x, y:a.y * b.y, z:a.z * b.z};
-        },
-        
-        divide : ::(a, b){ 
-            statepush(v:a);
-            statepush(v:b);
-            return {x:a.x / b.x, y:a.y / b.y, z:a.z / b.z};
-        }
         
 
+        expression :  VectorExpression.new()
     };
 };
 
+@:ManagedVector = class(
+    define:::(this) {
+        @set_x;
+        @set_y;
+        @set_z;
+        @get_x;
+        @get_y;
+        @get_z;
+        @native;
+        this.constructor = ::(native_, getx, gety, getz, setx, sety, setz){
+            set_x = setx;
+            set_y = sety;
+            set_z = setz;
+            get_x = getx;
+            get_y = gety;
+            get_z = getz;
+            native = native_;
+            return this;
+        };
 
+        this.interface = {
+            x : {
+                get :: {return get_x(a:native);},
+                set ::(value) {
+                    set_x(a:native, b:value);
+                }               
+            },
 
-@Topaz = class(
+            y : {
+                get :: {return get_y(a:native);},
+                set ::(value) {
+                    set_y(a:native, b:value);
+                }               
+            },
+
+            z : {
+                get :: {return get_z(a:native);},
+                set ::(value) {
+                    set_z(a:native, b:value);
+                }               
+            }
+        };
+    }
+);
+
+Topaz = class(
     define :::(this){ 
         @__Topaz__ = this;
 
@@ -1654,13 +1773,27 @@
             @:topaz_entity__set_priority = getExternalFunction(name:'topaz_entity__set_priority');
             @:topaz_entity__set_priority_last = getExternalFunction(name:'topaz_entity__set_priority_last');
             @:topaz_entity__set_priority_first = getExternalFunction(name:'topaz_entity__set_priority_first');
-            @:topaz_entity__get_rotation = getExternalFunction(name:'topaz_entity__get_rotation');
-            @:topaz_entity__get_position = getExternalFunction(name:'topaz_entity__get_position');
-            @:topaz_entity__get_scale = getExternalFunction(name:'topaz_entity__get_scale');
-            @:topaz_entity__set_rotation = getExternalFunction(name:'topaz_entity__set_rotation');
-            @:topaz_entity__set_position = getExternalFunction(name:'topaz_entity__set_position');
-            @:topaz_entity__set_scale = getExternalFunction(name:'topaz_entity__set_scale');
-            @:topaz_entity__get_global_position = getExternalFunction(name:'topaz_entity__get_global_position');
+            @:topaz_entity__get_rotation_x = getExternalFunction(name:'topaz_entity__get_rotation_x');
+            @:topaz_entity__get_rotation_y = getExternalFunction(name:'topaz_entity__get_rotation_y');
+            @:topaz_entity__get_rotation_z = getExternalFunction(name:'topaz_entity__get_rotation_z');
+            @:topaz_entity__get_position_x = getExternalFunction(name:'topaz_entity__get_position_x');
+            @:topaz_entity__get_position_y = getExternalFunction(name:'topaz_entity__get_position_y');
+            @:topaz_entity__get_position_z = getExternalFunction(name:'topaz_entity__get_position_z');
+            @:topaz_entity__get_scale_x = getExternalFunction(name:'topaz_entity__get_scale_x');
+            @:topaz_entity__get_scale_y = getExternalFunction(name:'topaz_entity__get_scale_y');
+            @:topaz_entity__get_scale_z = getExternalFunction(name:'topaz_entity__get_scale_z');
+            @:topaz_entity__set_rotation_x = getExternalFunction(name:'topaz_entity__set_rotation_x');
+            @:topaz_entity__set_rotation_y = getExternalFunction(name:'topaz_entity__set_rotation_y');
+            @:topaz_entity__set_rotation_z = getExternalFunction(name:'topaz_entity__set_rotation_z');
+            @:topaz_entity__set_position_x = getExternalFunction(name:'topaz_entity__set_position_x');
+            @:topaz_entity__set_position_y = getExternalFunction(name:'topaz_entity__set_position_y');
+            @:topaz_entity__set_position_z = getExternalFunction(name:'topaz_entity__set_position_z');
+            @:topaz_entity__set_scale_x = getExternalFunction(name:'topaz_entity__set_scale_x');
+            @:topaz_entity__set_scale_y = getExternalFunction(name:'topaz_entity__set_scale_y');
+            @:topaz_entity__set_scale_z = getExternalFunction(name:'topaz_entity__set_scale_z');
+            @:topaz_entity__get_global_position_x = getExternalFunction(name:'topaz_entity__get_global_position_x');
+            @:topaz_entity__get_global_position_y = getExternalFunction(name:'topaz_entity__get_global_position_y');
+            @:topaz_entity__get_global_position_z = getExternalFunction(name:'topaz_entity__get_global_position_z');
             @:topaz_entity__is_stepping = getExternalFunction(name:'topaz_entity__is_stepping');
             @:topaz_entity__is_drawing = getExternalFunction(name:'topaz_entity__is_drawing');
             @:topaz_entity__get_drawing = getExternalFunction(name:'topaz_entity__get_drawing');
@@ -1698,6 +1831,11 @@
                         };
                         return this;
                     };
+
+                    @position;
+                    @rotation;
+                    @scale;
+                    @globalPosition;
                     
                     this.interface = {
                         isValid : {
@@ -1808,25 +1946,93 @@
                         },
         
                         rotation : {
-                            get : ::()  {return Vector.fromnative(native:topaz_entity__get_rotation(a:this.native));}, 
-                            set : ::(value) {Vector.statepush(v:value);topaz_entity__set_rotation(a:this.native, b:value.native);} 
+                            get : ::()  {
+                                if (rotation == empty)
+                                    rotation = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_entity__get_rotation_x,
+                                        gety: topaz_entity__get_rotation_y,
+                                        getz: topaz_entity__get_rotation_z,
+
+                                        setx: topaz_entity__set_rotation_x,
+                                        sety: topaz_entity__set_rotation_y,
+                                        setz: topaz_entity__set_rotation_z
+                                    );
+
+
+                                return rotation;
+                            },
+                            set : ::(value) {
+                                if (value.x != empty) topaz_entity__set_rotation_x(a:this.native, b:value.x);
+                                if (value.y != empty) topaz_entity__set_rotation_y(a:this.native, b:value.y);
+                                if (value.z != empty) topaz_entity__set_rotation_z(a:this.native, b:value.z);
+                            } 
                         },
 
         
                         position : {
-                            get : ::()   {return Vector.fromnative(native:topaz_entity__get_position(a:this.native)); }, 
-                            set : ::(value)  {Vector.statepush(v:value);topaz_entity__set_position(a:this.native, b:value.native);} 
+                            get : ::()  {
+                                if (position == empty)
+                                    position = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_entity__get_position_x,
+                                        gety: topaz_entity__get_position_y,
+                                        getz: topaz_entity__get_position_z,
+
+                                        setx: topaz_entity__set_position_x,
+                                        sety: topaz_entity__set_position_y,
+                                        setz: topaz_entity__set_position_z
+                                    );
+
+
+                                return position;
+                            },
+                            set : ::(value) {
+                                if (value.x != empty) topaz_entity__set_position_x(a:this.native, b:value.x);
+                                if (value.y != empty) topaz_entity__set_position_y(a:this.native, b:value.y);
+                                if (value.z != empty) topaz_entity__set_position_z(a:this.native, b:value.z);
+                            } 
                         },
                         
                         scale : {
-                            get : ::()  {return Vector.fromnative(native:topaz_entity__get_scale(a:this.native));}, 
-                            set : ::(value) {Vector.statepush(v:value);topaz_entity__set_scale(a:this.native, b:value.native);}
+                            get : ::()  {
+                                if (scale == empty)
+                                    scale = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_entity__get_scale_x,
+                                        gety: topaz_entity__get_scale_y,
+                                        getz: topaz_entity__get_scale_z,
+
+                                        setx: topaz_entity__set_scale_x,
+                                        sety: topaz_entity__set_scale_y,
+                                        setz: topaz_entity__set_scale_z
+                                    );
+
+
+                                return scale;
+                            },
+                            set : ::(value) {
+                                if (value.x != empty) topaz_entity__set_scale_x(a:this.native, b:value.x);
+                                if (value.y != empty) topaz_entity__set_scale_y(a:this.native, b:value.y);
+                                if (value.z != empty) topaz_entity__set_scale_z(a:this.native, b:value.z);
+                            }                         
                         },
                         
                         globalPosition : {
-                            get : ::() {return Vector.fromnative(native:topaz_entity__get_global_position(a:this.native));} 
+                            get :: {
+                                if (globalPosition == empty)
+                                    globalPosition = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_entity__get_global_position_x,
+                                        gety: topaz_entity__get_global_position_y,
+                                        getz: topaz_entity__get_global_position_z
+                                    );
+
+
+                                return globalPosition;
+                            }
                         },
-                        
+
                         isStepping : {
                             get : ::() {return topaz_entity__is_stepping(a:this.native);}
                         },
@@ -2106,12 +2312,24 @@
             @:topaz_text2d__get_extent_height = getExternalFunction(name:'topaz_text2d__get_extent_height');
             @:topaz_text2d__get_char_x = getExternalFunction(name:'topaz_text2d__get_char_x');
             @:topaz_text2d__get_char_y = getExternalFunction(name:'topaz_text2d__get_char_y');
-            @:topaz_text2d__get_position = getExternalFunction(name:'topaz_text2d__get_position');
-            @:topaz_text2d__set_position = getExternalFunction(name:'topaz_text2d__set_position');
-            @:topaz_text2d__set_scale = getExternalFunction(name:'topaz_text2d__set_scale');
-            @:topaz_text2d__get_scale = getExternalFunction(name:'topaz_text2d__get_scale');
-            @:topaz_text2d__set_rotation = getExternalFunction(name:'topaz_text2d__set_rotation');
-            @:topaz_text2d__get_rotation = getExternalFunction(name:'topaz_text2d__get_rotation');
+            @:topaz_text2d__get_position_x = getExternalFunction(name:'topaz_text2d__get_position_x');
+            @:topaz_text2d__get_position_y = getExternalFunction(name:'topaz_text2d__get_position_y');
+            @:topaz_text2d__get_position_z = getExternalFunction(name:'topaz_text2d__get_position_z');
+            @:topaz_text2d__set_position_x = getExternalFunction(name:'topaz_text2d__set_position_x');
+            @:topaz_text2d__set_position_y = getExternalFunction(name:'topaz_text2d__set_position_y');
+            @:topaz_text2d__set_position_z = getExternalFunction(name:'topaz_text2d__set_position_z');
+            @:topaz_text2d__set_scale_x = getExternalFunction(name:'topaz_text2d__set_scale_x');
+            @:topaz_text2d__set_scale_y = getExternalFunction(name:'topaz_text2d__set_scale_y');
+            @:topaz_text2d__set_scale_z = getExternalFunction(name:'topaz_text2d__set_scale_z');
+            @:topaz_text2d__get_scale_x = getExternalFunction(name:'topaz_text2d__get_scale_x');
+            @:topaz_text2d__get_scale_y = getExternalFunction(name:'topaz_text2d__get_scale_y');
+            @:topaz_text2d__get_scale_z = getExternalFunction(name:'topaz_text2d__get_scale_z');
+            @:topaz_text2d__set_rotation_x = getExternalFunction(name:'topaz_text2d__set_rotation_x');
+            @:topaz_text2d__set_rotation_y = getExternalFunction(name:'topaz_text2d__set_rotation_y');
+            @:topaz_text2d__set_rotation_z = getExternalFunction(name:'topaz_text2d__set_rotation_z');
+            @:topaz_text2d__get_rotation_x = getExternalFunction(name:'topaz_text2d__get_rotation_x');
+            @:topaz_text2d__get_rotation_y = getExternalFunction(name:'topaz_text2d__get_rotation_y');
+            @:topaz_text2d__get_rotation_z = getExternalFunction(name:'topaz_text2d__get_rotation_z');
             @:topaz_text2d__set_attribute = getExternalFunction(name:'topaz_text2d__set_attribute');
             @:topaz_text2d__get_attribute = getExternalFunction(name:'topaz_text2d__get_attribute');
 
@@ -2135,6 +2353,10 @@
                     @fontState = {};
                     @sizeState;
                     
+                    @position;
+                    @scale;
+                    @rotation;
+
                     this.interface = {
                         text : {
                             get : ::() {return topaz_text2d__get_text(a:impl);},
@@ -2183,19 +2405,77 @@
                             return topaz_text2d__get_char_y(a:impl, b:index);
                         },
                         
-                        position : {
-                            get : ::() {return Vector.fromnative(native:topaz_text2d__get_position(a:impl));}, 
-                            set : ::(value){Vector.statepush(v:value);topaz_text2d__set_position(a:impl, b:value.native);} 
-                        },
-                        
                         rotation : {
-                            get : ::() {return Vector.fromnative(native:topaz_text2d__get_rotation(a:impl));},
-                            set : ::(value){Vector.statepush(v:value);topaz_text2d__set_rotation(a:impl, b:value.native);} 
+                            get : ::()  {
+                                if (rotation == empty)
+                                    rotation = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_text2d__get_rotation_x,
+                                        gety: topaz_text2d__get_rotation_y,
+                                        getz: topaz_text2d__get_rotation_z,
+
+                                        setx: topaz_text2d__set_rotation_x,
+                                        sety: topaz_text2d__set_rotation_y,
+                                        setz: topaz_text2d__set_rotation_z
+                                    );
+
+
+                                return rotation;
+                            },
+                            set : ::(value) {
+                                if (value.x != empty) topaz_text2d__set_rotation_x(a:this.native, b:value.x);
+                                if (value.y != empty) topaz_text2d__set_rotation_y(a:this.native, b:value.y);
+                                if (value.z != empty) topaz_text2d__set_rotation_z(a:this.native, b:value.z);
+                            } 
+                        },
+
+        
+                        position : {
+                            get : ::()  {
+                                if (position == empty)
+                                    position = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_text2d__get_position_x,
+                                        gety: topaz_text2d__get_position_y,
+                                        getz: topaz_text2d__get_position_z,
+
+                                        setx: topaz_text2d__set_position_x,
+                                        sety: topaz_text2d__set_position_y,
+                                        setz: topaz_text2d__set_position_z
+                                    );
+
+
+                                return position;
+                            },
+                            set : ::(value) {
+                                if (value.x != empty) topaz_text2d__set_position_x(a:this.native, b:value.x);
+                                if (value.y != empty) topaz_text2d__set_position_y(a:this.native, b:value.y);
+                                if (value.z != empty) topaz_text2d__set_position_z(a:this.native, b:value.z);
+                            } 
                         },
                         
                         scale : {
-                            get : ::() {return Vector.fromnative(native:topaz_text2d__get_scale(a:impl));}, 
-                            set : ::(value){Vector.statepush(v:value);topaz_text2d__set_scale(a:impl, b:value.native);} 
+                            get : ::()  {
+                                if (scale == empty)
+                                    scale = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_text2d__get_scale_x,
+                                        gety: topaz_text2d__get_scale_y,
+                                        getz: topaz_text2d__get_scale_z,
+
+                                        setx: topaz_text2d__set_scale_x,
+                                        sety: topaz_text2d__set_scale_y,
+                                        setz: topaz_text2d__set_scale_z
+                                    );
+
+
+                                return scale;
+                            },
+                            set : ::(value) {
+                                if (value.x != empty) topaz_text2d__set_scale_x(a:this.native, b:value.x);
+                                if (value.y != empty) topaz_text2d__set_scale_y(a:this.native, b:value.y);
+                                if (value.z != empty) topaz_text2d__set_scale_z(a:this.native, b:value.z);
+                            }                         
                         },
                         
                         setAttributes : ::(primitive, alphaRule, depthTest, etchRule, textureFilterHint){
@@ -2362,10 +2642,12 @@
             @:topaz_object2d__set_unit_lock = getExternalFunction(name:'topaz_object2d__set_unit_lock');
             @:topaz_object2d__set_collider = getExternalFunction(name:'topaz_object2d__set_collider');
             @:topaz_object2d__set_collider_radial = getExternalFunction(name:'topaz_object2d__set_collider_radial');
+            @:topaz_object2d__set_collider_rectangle = getExternalFunction(name:'topaz_object2d__set_collider_rectangle');
             @:topaz_object2d__get_collider_len = getExternalFunction(name:'topaz_object2d__get_collider_len');
             @:topaz_object2d__get_last_collided = getExternalFunction(name:'topaz_object2d__get_last_collided');
             @:topaz_object2d__get_last_collided_position = getExternalFunction(name:'topaz_object2d__get_last_collided_position');
-            @:topaz_object2d__get_collider_point = getExternalFunction(name:'topaz_object2d__get_collider_point');
+            @:topaz_object2d__get_collider_point_x = getExternalFunction(name:'topaz_object2d__get_collider_point_x');
+            @:topaz_object2d__get_collider_point_y = getExternalFunction(name:'topaz_object2d__get_collider_point_y');
             return class(
                 name : 'Topaz.Object2D',        
                 inherits :[__Component__],
@@ -2426,8 +2708,7 @@
                         },
 
                         addVelocityTowards : ::(amount, target, offset) { 
-                            Vector.statepush(v:target);
-                            topaz_object2d__add_velocity_towards(a:impl, b:amount, c:target.native, d:offset);
+                            topaz_object2d__add_velocity_towards(a:impl, b:amount, c:target.x, d:target.y, e:offset);
                         },
 
                         setVelocity : ::(amount, direction) { 
@@ -2435,8 +2716,7 @@
                         },
 
                         setVelocityTowards : ::(amount, target, offset) { 
-                            Vector.statepush(v:target);
-                            topaz_object2d__set_velocity_towards(a:impl, b:amount, c:target.native, d:offset);
+                            topaz_object2d__set_velocity_towards(a:impl, b:amount, c:target.x, d:target.y, e:offset);
                         },
 
 
@@ -2482,10 +2762,18 @@
                         },
 
                         nextPosition : {
-                            get : ::()  {return Vector.fromnative(native:topaz_object2d__get_next_position(a:impl));} 
+                            get : ::()  {
+                                @:out = {};
+                                topaz_object2d__get_next_position(a:impl, b:Vector._updateRemote(target:out));
+                                return out;
+                            } 
                         },
                         lastPosition : {
-                            get : ::()  {return Vector.fromnative(native:topaz_object2d__get_last_position(a:impl));} 
+                            get : ::()  {
+                                @:out = {};
+                                topaz_object2d__get_last_position(a:impl, b:Vector._updateRemote(target:out));
+                                return out;
+                            } 
                         },
                         group : {
                             get : ::()  {return topaz_object2d__get_group(a:impl);}, 
@@ -2501,15 +2789,17 @@
                             set : ::(value) {_collider=value; topaz_object2d__set_collider(a:impl, b:value);} 
                         },
 
+                        setColliderRectangle ::(width, height) {
+                            topaz_object2d__set_collider_rectangle(a:impl, b:width, c:height);
+                        },
                         setColliderRadial : ::(radius, numIterations) { 
                             topaz_object2d__set_collider_radial(a:impl, b:radius, c:numIterations);
                             _collider = [];
                             @iter = 0;
                             @len = topaz_object2d__get_collider_len(a:impl);
                             for(in:[0, len], do:::(i) {
-                                @pt = topaz_object2d__get_collider_point(a:impl, b:i);
-                                _collider[iter] = pt.x; iter += 1;
-                                _collider[iter] = pt.y; iter += 1;
+                                _collider[iter] = topaz_object2d__get_collider_point_x(a:impl, b:i); iter += 1;
+                                _collider[iter] = topaz_object2d__get_collider_point_y(a:impl, b:i); iter += 1;
                             });
                         },
 
@@ -2517,7 +2807,11 @@
                             get : ::()  {return __Topaz__.Entity.new(native:topaz_object2d__get_last_collided(a:impl));} 
                         },
                         lastCollidedPosition : {
-                            get : ::()  {return Vector.fromnative(native:topaz_object2d__get_last_collided_position(a:impl));} 
+                            get : ::()  {
+                                @:out = {};
+                                topaz_object2d__get_last_collided_position(a:impl, b:Vector._updateRemote(target:out));
+                                return out;
+                            } 
                         }
 
                     };                
@@ -2532,14 +2826,30 @@
             @:topaz_shape2d__set_color = getExternalFunction(name:'topaz_shape2d__set_color');
             @:topaz_shape2d__get_anim_speed = getExternalFunction(name:'topaz_shape2d__get_anim_speed');
             @:topaz_shape2d__set_anim_speed = getExternalFunction(name:'topaz_shape2d__set_anim_speed');
-            @:topaz_shape2d__get_center = getExternalFunction(name:'topaz_shape2d__get_center');
-            @:topaz_shape2d__set_center = getExternalFunction(name:'topaz_shape2d__set_center');
-            @:topaz_shape2d__set_position = getExternalFunction(name:'topaz_shape2d__set_position');
-            @:topaz_shape2d__get_position = getExternalFunction(name:'topaz_shape2d__get_position');
-            @:topaz_shape2d__set_rotation = getExternalFunction(name:'topaz_shape2d__set_rotation');
-            @:topaz_shape2d__get_rotation = getExternalFunction(name:'topaz_shape2d__get_rotation');
-            @:topaz_shape2d__set_scale = getExternalFunction(name:'topaz_shape2d__set_scale');
-            @:topaz_shape2d__get_scale = getExternalFunction(name:'topaz_shape2d__get_scale');
+            @:topaz_shape2d__get_center_x = getExternalFunction(name:'topaz_shape2d__get_center_x');
+            @:topaz_shape2d__get_center_y = getExternalFunction(name:'topaz_shape2d__get_center_y');
+            @:topaz_shape2d__get_center_z = getExternalFunction(name:'topaz_shape2d__get_center_z');
+            @:topaz_shape2d__set_center_x = getExternalFunction(name:'topaz_shape2d__set_center_x');
+            @:topaz_shape2d__set_center_y = getExternalFunction(name:'topaz_shape2d__set_center_y');
+            @:topaz_shape2d__set_center_z = getExternalFunction(name:'topaz_shape2d__set_center_z');
+            @:topaz_shape2d__set_position_x = getExternalFunction(name:'topaz_shape2d__set_position_x');
+            @:topaz_shape2d__set_position_y = getExternalFunction(name:'topaz_shape2d__set_position_y');
+            @:topaz_shape2d__set_position_z = getExternalFunction(name:'topaz_shape2d__set_position_z');
+            @:topaz_shape2d__get_position_x = getExternalFunction(name:'topaz_shape2d__get_position_x');
+            @:topaz_shape2d__get_position_y = getExternalFunction(name:'topaz_shape2d__get_position_y');
+            @:topaz_shape2d__get_position_z = getExternalFunction(name:'topaz_shape2d__get_position_z');
+            @:topaz_shape2d__set_rotation_x = getExternalFunction(name:'topaz_shape2d__set_rotation_x');
+            @:topaz_shape2d__set_rotation_y = getExternalFunction(name:'topaz_shape2d__set_rotation_y');
+            @:topaz_shape2d__set_rotation_z = getExternalFunction(name:'topaz_shape2d__set_rotation_z');
+            @:topaz_shape2d__get_rotation_x = getExternalFunction(name:'topaz_shape2d__get_rotation_x');
+            @:topaz_shape2d__get_rotation_y = getExternalFunction(name:'topaz_shape2d__get_rotation_y');
+            @:topaz_shape2d__get_rotation_z = getExternalFunction(name:'topaz_shape2d__get_rotation_z');
+            @:topaz_shape2d__set_scale_x = getExternalFunction(name:'topaz_shape2d__set_scale_x');
+            @:topaz_shape2d__set_scale_y = getExternalFunction(name:'topaz_shape2d__set_scale_y');
+            @:topaz_shape2d__set_scale_z = getExternalFunction(name:'topaz_shape2d__set_scale_z');
+            @:topaz_shape2d__get_scale_x = getExternalFunction(name:'topaz_shape2d__get_scale_x');
+            @:topaz_shape2d__get_scale_y = getExternalFunction(name:'topaz_shape2d__get_scale_y');
+            @:topaz_shape2d__get_scale_z = getExternalFunction(name:'topaz_shape2d__get_scale_z');
             @:topaz_shape2d__form_lines = getExternalFunction(name:'topaz_shape2d__form_lines');
             @:topaz_shape2d__form_triangles = getExternalFunction(name:'topaz_shape2d__form_triangles');
             @:topaz_shape2d__set_attribute = getExternalFunction(name:'topaz_shape2d__set_attribute');
@@ -2570,6 +2880,11 @@
                     @_lines;
                     @_tris;
                     
+                    @rotation;
+                    @position;
+                    @scale;
+                    @center;
+                    
                     this.interface = {
                         color : {
                             get : ::() {return Color.fromnative(native:topaz_shape2d__get_color(a:impl));}, 
@@ -2583,23 +2898,100 @@
                         },
 
                         center : {
-                            get : ::() {return Vector.fromnative(native:topaz_shape2d__get_center(a:impl));},
-                            set : ::(value){Vector.statepush(v:value);topaz_shape2d__set_center(a:impl, b:value.native);} 
-                        },
+                            get : ::()  {
+                                if (center == empty)
+                                    center = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_shape2d__get_center_x,
+                                        gety: topaz_shape2d__get_center_y,
+                                        getz: topaz_shape2d__get_center_z,
 
-                        position : {
-                            get : ::() {return Vector.fromnative(native:topaz_shape2d__get_position(a:impl));},
-                            set : ::(value){Vector.statepush(v:value);topaz_shape2d__set_position(a:impl, b:value.native);} 
+                                        setx: topaz_shape2d__set_center_x,
+                                        sety: topaz_shape2d__set_center_y,
+                                        setz: topaz_shape2d__set_center_z
+                                    );
+
+
+                                return center;
+                            },
+                            set : ::(value) {
+                                if (value.x != empty) topaz_shape2d__set_center_x(a:this.native, b:value.x);
+                                if (value.y != empty) topaz_shape2d__set_center_y(a:this.native, b:value.y);
+                                if (value.z != empty) topaz_shape2d__set_center_z(a:this.native, b:value.z);
+                            } 
                         },
 
                         rotation : {
-                            get : ::() {return Vector.fromnative(native:topaz_shape2d__get_rotation(a:impl));},
-                            set : ::(value){Vector.statepush(v:value);topaz_shape2d__set_rotation(a:impl, b:value.native);} 
+                            get : ::()  {
+                                if (rotation == empty)
+                                    rotation = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_shape2d__get_rotation_x,
+                                        gety: topaz_shape2d__get_rotation_y,
+                                        getz: topaz_shape2d__get_rotation_z,
+
+                                        setx: topaz_shape2d__set_rotation_x,
+                                        sety: topaz_shape2d__set_rotation_y,
+                                        setz: topaz_shape2d__set_rotation_z
+                                    );
+
+
+                                return rotation;
+                            },
+                            set : ::(value) {
+                                if (value.x != empty) topaz_shape2d__set_rotation_x(a:this.native, b:value.x);
+                                if (value.y != empty) topaz_shape2d__set_rotation_y(a:this.native, b:value.y);
+                                if (value.z != empty) topaz_shape2d__set_rotation_z(a:this.native, b:value.z);
+                            } 
                         },
 
+        
+                        position : {
+                            get : ::()  {
+                                if (position == empty)
+                                    position = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_shape2d__get_position_x,
+                                        gety: topaz_shape2d__get_position_y,
+                                        getz: topaz_shape2d__get_position_z,
+
+                                        setx: topaz_shape2d__set_position_x,
+                                        sety: topaz_shape2d__set_position_y,
+                                        setz: topaz_shape2d__set_position_z
+                                    );
+
+
+                                return position;
+                            },
+                            set : ::(value) {
+                                if (value.x != empty) topaz_shape2d__set_position_x(a:this.native, b:value.x);
+                                if (value.y != empty) topaz_shape2d__set_position_y(a:this.native, b:value.y);
+                                if (value.z != empty) topaz_shape2d__set_position_z(a:this.native, b:value.z);
+                            } 
+                        },
+                        
                         scale : {
-                            get : ::() {return Vector.fromnative(native:topaz_shape2d__get_scale(a:impl));}, 
-                            set : ::(value){Vector.statepush(v:value);topaz_shape2d__set_scale(a:impl, b:value.native);} 
+                            get : ::()  {
+                                if (scale == empty)
+                                    scale = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_shape2d__get_scale_x,
+                                        gety: topaz_shape2d__get_scale_y,
+                                        getz: topaz_shape2d__get_scale_z,
+
+                                        setx: topaz_shape2d__set_scale_x,
+                                        sety: topaz_shape2d__set_scale_y,
+                                        setz: topaz_shape2d__set_scale_z
+                                    );
+
+
+                                return scale;
+                            },
+                            set : ::(value) {
+                                if (value.x != empty) topaz_shape2d__set_scale_x(a:this.native, b:value.x);
+                                if (value.y != empty) topaz_shape2d__set_scale_y(a:this.native, b:value.y);
+                                if (value.z != empty) topaz_shape2d__set_scale_z(a:this.native, b:value.z);
+                            }                         
                         },
 
                         lines : {
@@ -2658,12 +3050,24 @@
         
         @__Shape3D__ = ::<={
             @:topaz_shape3d__create = getExternalFunction(name:'topaz_shape3d__create');
-            @:topaz_shape3d__get_position = getExternalFunction(name:'topaz_shape3d__get_position');
-            @:topaz_shape3d__set_position = getExternalFunction(name:'topaz_shape3d__set_position');
-            @:topaz_shape3d__set_rotation = getExternalFunction(name:'topaz_shape3d__set_rotation');
-            @:topaz_shape3d__get_rotation = getExternalFunction(name:'topaz_shape3d__get_rotation');
-            @:topaz_shape3d__get_scale = getExternalFunction(name:'topaz_shape3d__get_scale');
-            @:topaz_shape3d__set_scale = getExternalFunction(name:'topaz_shape3d__set_scale');
+            @:topaz_shape3d__set_position_x = getExternalFunction(name:'topaz_shape3d__set_position_x');
+            @:topaz_shape3d__set_position_y = getExternalFunction(name:'topaz_shape3d__set_position_y');
+            @:topaz_shape3d__set_position_z = getExternalFunction(name:'topaz_shape3d__set_position_z');
+            @:topaz_shape3d__get_position_x = getExternalFunction(name:'topaz_shape3d__get_position_x');
+            @:topaz_shape3d__get_position_y = getExternalFunction(name:'topaz_shape3d__get_position_y');
+            @:topaz_shape3d__get_position_z = getExternalFunction(name:'topaz_shape3d__get_position_z');
+            @:topaz_shape3d__set_rotation_x = getExternalFunction(name:'topaz_shape3d__set_rotation_x');
+            @:topaz_shape3d__set_rotation_y = getExternalFunction(name:'topaz_shape3d__set_rotation_y');
+            @:topaz_shape3d__set_rotation_z = getExternalFunction(name:'topaz_shape3d__set_rotation_z');
+            @:topaz_shape3d__get_rotation_x = getExternalFunction(name:'topaz_shape3d__get_rotation_x');
+            @:topaz_shape3d__get_rotation_y = getExternalFunction(name:'topaz_shape3d__get_rotation_y');
+            @:topaz_shape3d__get_rotation_z = getExternalFunction(name:'topaz_shape3d__get_rotation_z');
+            @:topaz_shape3d__set_scale_x = getExternalFunction(name:'topaz_shape3d__set_scale_x');
+            @:topaz_shape3d__set_scale_y = getExternalFunction(name:'topaz_shape3d__set_scale_y');
+            @:topaz_shape3d__set_scale_z = getExternalFunction(name:'topaz_shape3d__set_scale_z');
+            @:topaz_shape3d__get_scale_x = getExternalFunction(name:'topaz_shape3d__get_scale_x');
+            @:topaz_shape3d__get_scale_y = getExternalFunction(name:'topaz_shape3d__get_scale_y');
+            @:topaz_shape3d__get_scale_z = getExternalFunction(name:'topaz_shape3d__get_scale_z');
             @:topaz_shape3d__set_attribute = getExternalFunction(name:'topaz_shape3d__set_attribute');
             @:topaz_shape3d__get_attribute = getExternalFunction(name:'topaz_shape3d__get_attribute');
             @:topaz_shape3d__set_texture = getExternalFunction(name:'topaz_shape3d__set_texture');
@@ -2695,21 +3099,82 @@
                         return this;
                     };
                     
+                    @position;
+                    @rotation;
+                    @scale;
                     
                     this.interface = {
-                        position : {
-                            get : ::() {return Vector.fromnative(native:topaz_shape3d__get_position(a:impl));},
-                            set : ::(value){Vector.statepush(v:value);topaz_shape3d__set_position(a:impl, b:value.native);} 
-                        },
-
                         rotation : {
-                            get : ::() {return Vector.fromnative(native:topaz_shape3d__get_rotation(a:impl));}, 
-                            set : ::(value){Vector.statepush(v:value);topaz_shape3d__set_rotation(a:impl, b:value.native);} 
+                            get : ::()  {
+                                if (rotation == empty)
+                                    rotation = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_shape3d__get_rotation_x,
+                                        gety: topaz_shape3d__get_rotation_y,
+                                        getz: topaz_shape3d__get_rotation_z,
+
+                                        setx: topaz_shape3d__set_rotation_x,
+                                        sety: topaz_shape3d__set_rotation_y,
+                                        setz: topaz_shape3d__set_rotation_z
+                                    );
+
+
+                                return rotation;
+                            },
+                            set : ::(value) {
+                                if (value.x != empty) topaz_shape3d__set_rotation_x(a:this.native, b:value.x);
+                                if (value.y != empty) topaz_shape3d__set_rotation_y(a:this.native, b:value.y);
+                                if (value.z != empty) topaz_shape3d__set_rotation_z(a:this.native, b:value.z);
+                            } 
                         },
 
+        
+                        position : {
+                            get : ::()  {
+                                if (position == empty)
+                                    position = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_shape3d__get_position_x,
+                                        gety: topaz_shape3d__get_position_y,
+                                        getz: topaz_shape3d__get_position_z,
+
+                                        setx: topaz_shape3d__set_position_x,
+                                        sety: topaz_shape3d__set_position_y,
+                                        setz: topaz_shape3d__set_position_z
+                                    );
+
+
+                                return position;
+                            },
+                            set : ::(value) {
+                                if (value.x != empty) topaz_shape3d__set_position_x(a:this.native, b:value.x);
+                                if (value.y != empty) topaz_shape3d__set_position_y(a:this.native, b:value.y);
+                                if (value.z != empty) topaz_shape3d__set_position_z(a:this.native, b:value.z);
+                            } 
+                        },
+                        
                         scale : {
-                            get : ::() {return Vector.fromnative(native:topaz_shape3d__get_scale(a:impl));},
-                            set : ::(value){Vector.statepush(v:value);topaz_shape3d__set_scale(a:impl, b:value.native);} 
+                            get : ::()  {
+                                if (scale == empty)
+                                    scale = ManagedVector.new(
+                                        native_:this.native,
+                                        getx: topaz_shape3d__get_scale_x,
+                                        gety: topaz_shape3d__get_scale_y,
+                                        getz: topaz_shape3d__get_scale_z,
+
+                                        setx: topaz_shape3d__set_scale_x,
+                                        sety: topaz_shape3d__set_scale_y,
+                                        setz: topaz_shape3d__set_scale_z
+                                    );
+
+
+                                return scale;
+                            },
+                            set : ::(value) {
+                                if (value.x != empty) topaz_shape3d__set_scale_x(a:this.native, b:value.x);
+                                if (value.y != empty) topaz_shape3d__set_scale_y(a:this.native, b:value.y);
+                                if (value.z != empty) topaz_shape3d__set_scale_z(a:this.native, b:value.z);
+                            }                         
                         },
 
                         setAttributes : ::(primitive, alphaRule, depthTest, etchRule, textureFilterHint){
@@ -2842,7 +3307,9 @@
                         },
 
                         vectorAt : ::(progress) { 
-                            return Vector.fromnative(native:topaz_automation__vector_at(a:impl, b:progress));
+                            @:out = {};
+                            topaz_automation__vector_at(a:impl, b:progress, c:Vector._updateRemote(target:out));
+                            return out;
                         },
 
                         at : ::(progress) { 
@@ -2850,7 +3317,11 @@
                         },
 
                         vector : {
-                            get : ::() {return Vector.fromnative(native:topaz_automation__current_vector(a:impl));}
+                            get : ::() {
+                                @:out = {};
+                                topaz_automation__current_vector(a:impl, b:Vector._updateRemote(target:out));
+                                return out;
+                            }
                         },
 
                         value : {

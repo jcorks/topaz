@@ -18,17 +18,15 @@ return class(
             this.constructor[PhysicsObject](static: true);
             
             @:updateFloor = ::{        
-                @:length = Topaz.defaultDisplay.width;
-                this.physics.collider = [
-                    -length/2, 0,
-                    length/2, 0,
-                    length/2, 1,
-                    -length/2, 1
-                ];
+                this.physics.setColliderRectangle(
+                    width: Topaz.defaultDisplay.width,
+                    height:2
+                );
+
                 
                 this.position = {
-                    x: Topaz.defaultDisplay.width/2,
-                    y: Topaz.defaultDisplay.height
+                    x: 0,
+                    y: -Topaz.defaultDisplay.height/2
                 };
             };
             Topaz.defaultDisplay.addParameterCallback(func:::(

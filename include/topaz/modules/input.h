@@ -202,6 +202,7 @@ int topaz_input_add_keyboard_listener(
 
 /// Adds a new listener object for the pointer, calling the given 
 /// functions when the relevant event is detected. 
+/// Values delivered by the pointer are in 2D world coordinates.
 ///
 int topaz_input_add_pointer_listener(
     /// The input to add a listener to.
@@ -409,6 +410,7 @@ void topaz_input_poll(
 );
 
 /// Convenience function that returns the current pointer x position.
+/// The position is always in 2D world coordinates.
 ///
 int topaz_input_mouse_x(
     /// The input to query.
@@ -416,6 +418,7 @@ int topaz_input_mouse_x(
 );
 
 /// Convenience function that returns the current pointer y position.
+/// The position is always in 2D world coordinates.
 ///
 int topaz_input_mouse_y(
     /// The input to query.
@@ -423,7 +426,7 @@ int topaz_input_mouse_y(
 );
 
 
-/// Convenience function that returns the change in pointer x position since 
+/// Convenience function that returns the change in pointer x position in world coordinates since 
 /// last update.
 ///
 int topaz_input_mouse_delta_x(
@@ -432,7 +435,7 @@ int topaz_input_mouse_delta_x(
 );
 
 
-/// Convenience function that returns the change in pointer y position since 
+/// Convenience function that returns the change in pointer y position in world coordinates since 
 /// last update.
 ///
 int topaz_input_mouse_delta_y(

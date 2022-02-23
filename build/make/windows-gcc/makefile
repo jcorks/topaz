@@ -22,6 +22,7 @@ SRCS := \
     src/assets_sound.c\
     src/assets_material.c\
     src/assets_mesh.c\
+    src/assets_bundle.c\
     src/backends_audio_manager.c\
     src/backends_console_display.c\
     src/backends_display.c\
@@ -123,7 +124,7 @@ LIBS :=  -lvorbisfile  -lwinmm -lvorbis -logg -lharfbuzz -lfreetype -lharfbuzz -
 
 
 %.o: %.c 
-	$(CC) -O2 -c $(FLAGS) $(DEFS) $(INCS) $< -o $@
+	$(CC) -g -c $(FLAGS) $(DEFS) $(INCS) $< -o $@
 
 all: $(OBJS)
 	@echo linking 

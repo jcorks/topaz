@@ -26,16 +26,21 @@ TSO_SCRIPT_API_FN(object2d_api__add_velocity) {
 TSO_SCRIPT_API_FN(object2d_api__add_velocity_towards) {
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_ARG_2;
-    TSO_ARG_3;
+    TSO_ARG_2; // x
+    TSO_ARG_3; // y
+    TSO_ARG_4;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
-    TSO_NATIVIZE_2(topazVector_t *, TSO_OBJECT_ID__VECTOR);   
 
+    topazVector_t v = {
+        topaz_script_object_as_number(arg2),
+        topaz_script_object_as_number(arg3),
+        0
+    };
     topaz_object2d_add_velocity_towards(
         native,
         topaz_script_object_as_number(arg1),
-        native2,
-        topaz_script_object_as_number(arg3)
+        &v,
+        topaz_script_object_as_number(arg4)
     );
     TSO_NO_RETURN;
 }
@@ -58,16 +63,23 @@ TSO_SCRIPT_API_FN(object2d_api__set_velocity) {
 TSO_SCRIPT_API_FN(object2d_api__set_velocity_towards) {
     TSO_ARG_0;
     TSO_ARG_1;
-    TSO_ARG_2;
-    TSO_ARG_3;
+    TSO_ARG_2; // x
+    TSO_ARG_3; // y
+    TSO_ARG_4;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
-    TSO_NATIVIZE_2(topazVector_t *, TSO_OBJECT_ID__VECTOR);   
+
+
+    topazVector_t v = {
+        topaz_script_object_as_number(arg2),
+        topaz_script_object_as_number(arg3),
+        0
+    };
 
     topaz_object2d_set_velocity_towards(
         native,
         topaz_script_object_as_number(arg1),
-        native2,
-        topaz_script_object_as_number(arg3)
+        &v,
+        topaz_script_object_as_number(arg4)
     );
     TSO_NO_RETURN;
 }
@@ -178,20 +190,22 @@ TSO_SCRIPT_API_FN(object2d_api__get_speed) {
 
 TSO_SCRIPT_API_FN(object2d_api__get_next_position) {
     TSO_ARG_0;
+    TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
-    topazVector_t * v;
-    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
-    *v = topaz_object2d_get_next_position(native);
-    return out;
+    topazVector_t a = topaz_object2d_get_next_position(native);
+
+    topaz_script_return_vector(script, arg1, a.x, a.y, a.z);
+    TSO_NO_RETURN;
 }
 
 TSO_SCRIPT_API_FN(object2d_api__get_last_position) {
     TSO_ARG_0;
+    TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
-    topazVector_t * v;
-    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
-    *v = *topaz_object2d_get_last_position(native);
-    return out;
+    topazVector_t a = *topaz_object2d_get_last_position(native);
+
+    topaz_script_return_vector(script, arg1, a.x, a.y, a.z);
+    TSO_NO_RETURN;
 }
 
 
@@ -280,13 +294,28 @@ TSO_SCRIPT_API_FN(object2d_api__set_collider_radial) {
 }
 
 
+TSO_SCRIPT_API_FN(object2d_api__set_collider_rectangle) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
+
+    topaz_object2d_set_collider_rectangle(
+        native,
+        topaz_script_object_as_number(arg1),
+        topaz_script_object_as_number(arg2)    
+    );
+
+    TSO_NO_RETURN;
+}
+
 TSO_SCRIPT_API_FN(object2d_api__get_collider_len) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
     return topaz_script_object_from_int(script, topaz_array_get_size(topaz_object2d_get_collider(native)));
 }
 
-TSO_SCRIPT_API_FN(object2d_api__get_collider_point) {
+TSO_SCRIPT_API_FN(object2d_api__get_collider_point_x) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
@@ -298,11 +327,24 @@ TSO_SCRIPT_API_FN(object2d_api__get_collider_point) {
         TSO_NO_RETURN;
     }
 
-    topazVector_t * v;
-    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
-    *v = topaz_array_at(topaz_object2d_get_collider(native), topazVector_t, index) ;
-    return out;
+    return topaz_script_object_from_number(script, topaz_array_at(topaz_object2d_get_collider(native), topazVector_t, index).x);
 }
+
+TSO_SCRIPT_API_FN(object2d_api__get_collider_point_y) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
+
+    uint32_t len = topaz_array_get_size(topaz_object2d_get_collider(native));
+    uint32_t index = topaz_script_object_as_int(arg1);
+    if (index >= len) {
+        script_error(script, "Bad index for collider point!");
+        TSO_NO_RETURN;
+    }
+
+    return topaz_script_object_from_number(script, topaz_array_at(topaz_object2d_get_collider(native), topazVector_t, index).y);
+}
+
 
 TSO_SCRIPT_API_FN(object2d_api__get_last_collided) {
     TSO_ARG_0;
@@ -321,21 +363,22 @@ TSO_SCRIPT_API_FN(object2d_api__get_last_collided) {
 
 TSO_SCRIPT_API_FN(object2d_api__get_last_collided_position) {
     TSO_ARG_0;
+    TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__OBJECT2D);   
 
-    topazVector_t * v = calloc(1, sizeof(topazVector_t));
-    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
-    topaz_object2d_get_last_collided(native, v);
-    return out;
+    topazVector_t a;
+    topaz_object2d_get_last_collided(native, &a);
+    topaz_script_return_vector(script, arg1, a.x, a.y, a.z);
+    TSO_NO_RETURN;
 }
 
 
 static void add_refs__object2d_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz_object2d__create", object2d_api__create, 0);
     TS_MAP_NATIVE_FN("topaz_object2d__add_velocity", object2d_api__add_velocity, 3);
-    TS_MAP_NATIVE_FN("topaz_object2d__add_velocity_towards", object2d_api__add_velocity_towards, 4);
+    TS_MAP_NATIVE_FN("topaz_object2d__add_velocity_towards", object2d_api__add_velocity_towards, 5);
     TS_MAP_NATIVE_FN("topaz_object2d__set_velocity", object2d_api__set_velocity, 3);
-    TS_MAP_NATIVE_FN("topaz_object2d__set_velocity_towards", object2d_api__set_velocity_towards, 4);
+    TS_MAP_NATIVE_FN("topaz_object2d__set_velocity_towards", object2d_api__set_velocity_towards, 5);
 
 
     TS_MAP_NATIVE_FN("topaz_object2d__set_friction_x", object2d_api__set_friction_x, 2);
@@ -352,8 +395,8 @@ static void add_refs__object2d_api(topazScript_t * script, topazScriptManager_t 
     TS_MAP_NATIVE_FN("topaz_object2d__get_velocity_y", object2d_api__get_velocity_y, 1);
     TS_MAP_NATIVE_FN("topaz_object2d__set_speed", object2d_api__set_speed, 2);
     TS_MAP_NATIVE_FN("topaz_object2d__get_speed", object2d_api__get_speed, 1);
-    TS_MAP_NATIVE_FN("topaz_object2d__get_next_position", object2d_api__get_next_position, 1);
-    TS_MAP_NATIVE_FN("topaz_object2d__get_last_position", object2d_api__get_last_position, 1);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_next_position", object2d_api__get_next_position, 2);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_last_position", object2d_api__get_last_position, 2);
 
     TS_MAP_NATIVE_FN("topaz_object2d__set_unit_lock", object2d_api__set_unit_lock, 2);
 
@@ -362,10 +405,12 @@ static void add_refs__object2d_api(topazScript_t * script, topazScriptManager_t 
     TS_MAP_NATIVE_FN("topaz_object2d__set_group_interaction", object2d_api__set_group_interaction, 3);
     TS_MAP_NATIVE_FN("topaz_object2d__set_collider", object2d_api__set_collider, 2);
     TS_MAP_NATIVE_FN("topaz_object2d__set_collider_radial", object2d_api__set_collider_radial, 3);
+    TS_MAP_NATIVE_FN("topaz_object2d__set_collider_rectangle", object2d_api__set_collider_rectangle, 3);
     TS_MAP_NATIVE_FN("topaz_object2d__get_collider_len",   object2d_api__get_collider_len, 1);
-    TS_MAP_NATIVE_FN("topaz_object2d__get_collider_point", object2d_api__get_collider_point, 2);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_collider_point_x", object2d_api__get_collider_point_x, 2);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_collider_point_y", object2d_api__get_collider_point_y, 2);
 
     TS_MAP_NATIVE_FN("topaz_object2d__get_last_collided", object2d_api__get_last_collided, 1);
-    TS_MAP_NATIVE_FN("topaz_object2d__get_last_collided_position", object2d_api__get_last_collided_position, 1);
+    TS_MAP_NATIVE_FN("topaz_object2d__get_last_collided_position", object2d_api__get_last_collided_position, 2);
 
 }

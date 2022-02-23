@@ -64,7 +64,7 @@
         this.anim.addKeyframe(value:200, function:Topaz.Automation.FUNCTION.LINEAR, offset:0.5);
         this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.LINEAR, offset:1);
 
-        this.position = {x:100, y:100};
+        this.position = {x:0, y:-100};
     }
 );
 
@@ -76,7 +76,7 @@
         this.anim.addKeyframe(value:200, function:Topaz.Automation.FUNCTION.ACCEL, offset:0.5);
         this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.ACCEL, offset:1);
 
-        this.position = {x:100, y:200};
+        this.position = {x:0, y:0};
 
     }
 );
@@ -90,7 +90,7 @@
         this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.SLOW, offset:1);
 
 
-        this.position = {x:100, y:300};
+        this.position = {x:0, y:100};
     }
 );
 
@@ -98,6 +98,9 @@
 
 ::<= {
     @:root = Topaz.Entity.new();
+    root.position = {
+        x:-200
+    };
     root.children = [
         RectangleLinear.new(),
         RectangleAccel.new(),

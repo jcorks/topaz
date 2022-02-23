@@ -52,10 +52,6 @@
 
 
 @:reposition :: {
-    entity.position = {
-        x:Topaz.defaultDisplay.width/2, 
-        y:Topaz.defaultDisplay.height/2
-    };
 
     entity.scale = {
         x:(Topaz.defaultDisplay.width/asset.width),

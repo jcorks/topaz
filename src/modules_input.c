@@ -37,6 +37,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/backends/display.h>
 #include <topaz/backends/input_manager.h>
 #include <topaz/entity.h>
+#include <topaz/spatial.h>
 #include <topaz/topaz.h>
 #include <math.h>
 #include <stdlib.h>
@@ -62,8 +63,11 @@ struct topazInput_t {
 
     int previousUnicode;
     int lastUnicode;
-    int mouseX;
-    int mouseY;
+
+    float mouseX;
+    float mouseY;
+    float mouseDeltaX;
+    float mouseDeltaY;
 
 
     topazTable_t * stringMapInput; // [string *] -> MappedInputData*
@@ -93,8 +97,87 @@ typedef struct {
 
 static void get_unicode(topazInput_t *, float prevState, const topazInputDevice_Event_t *);
 
-static int mouse_x_device_to_world_2d(const topazInput_t * input, int x);
-static int mouse_y_device_to_world_2d(const topazInput_t * input, int x);
+static float mouse_x_device_to_world_2d(topazDisplay_t *, const topazInput_t * input, float x);
+static float mouse_y_device_to_world_2d(topazDisplay_t *, const topazInput_t * input, float x);
+
+
+
+static void on_press__pointer(
+    /// The input instance.
+    topazInput_t * input, 
+
+    /// The input button. Usually is a value of type topazKey.
+    int inputButton, 
+
+    /// The data bound to the callback.
+    void * data
+) {
+    topazInput_Listener_t * ev = data;
+    ev->on_press(
+        input,
+        inputButton,
+        ev->userData
+    );
+}
+
+
+static void on_active__pointer(
+    topazInput_t * input, 
+    int inputButton, 
+    float value, 
+    void * data
+) {
+    topazInput_Listener_t * ev = data;
+    ev->on_active(
+        input,
+        inputButton,
+        inputButton == topazPointer_X ? 
+            input->mouseX
+        :
+            inputButton == topazPointer_Y ?
+                input->mouseY
+            :
+                value,
+        ev->userData
+    );
+}
+
+static void on_release__pointer(
+    topazInput_t * input, 
+    int inputButton, 
+    void * data
+) {
+    topazInput_Listener_t * ev = data;
+    ev->on_release(
+        input,
+        inputButton,
+        ev->userData
+    );
+}
+
+
+static void on_update__pointer(
+    topazInput_t * input, 
+    int inputButton, 
+    float value, 
+    void * data
+) {
+    topazInput_Listener_t * ev = data;
+    ev->on_update(
+        input,
+        inputButton,
+        inputButton == topazPointer_X ? 
+            input->mouseX
+        :
+            inputButton == topazPointer_Y ?
+                input->mouseY
+            :
+                value,
+        ev->userData
+    );
+}
+
+
 
 /// holds the entire state of a device
 struct DeviceState {
@@ -164,6 +247,18 @@ struct DeviceState {
                 uint32_t totalLen = topaz_array_get_size(d->listeners);
                 for(n = 0; n < totalLen; ++n) {
                     if (topaz_array_at(d->listeners, InputListener, n).id == id) {
+                        InputListener * list = &topaz_array_at(d->listeners, InputListener, n);
+                        
+                        // special case: pointer 
+                        // Pointer listeners are wrappers managed by the input 
+                        // module, and have an extra allocated listener that needs
+                        // to be freed.
+                        if (list->listener.on_active == on_active__pointer ||
+                            list->listener.on_update == on_update__pointer) {
+                            free(list->listener.userData);
+                        }
+                        
+
                         topaz_array_remove(d->listeners, n);
                         break;
                     }
@@ -321,8 +416,8 @@ struct DeviceState {
 
 
 void topaz_input_poll(topazInput_t * t) {
-
-    topaz_input_manager_set_focus(t->manager, topaz_context_get_iteration_display(t->ctx));
+    topazDisplay_t * display = topaz_context_get_iteration_display(t->ctx);
+    topaz_input_manager_set_focus(t->manager, display);
     // pool raw events
     topaz_input_manager_handle_events(t->manager);
 
@@ -339,10 +434,28 @@ void topaz_input_poll(topazInput_t * t) {
     InputState * inputY = device_state_get_input(t->devices[topazInputManager_DefaultDevice_Mouse], topazPointer_Y);
 
 
-    
+    float oldX = t->mouseX;
+    float oldY = t->mouseY;
+    {
+        topazEntity_t * e = topaz_display_get_2d_camera(display);
+        const topazMatrix_t * m = topaz_spatial_get_global_transform(topaz_entity_get_spatial(e));
+        topazVector_t p = {
+            inputX->current - topaz_display_get_parameter(display, topazDisplay_Parameter_Width)/2.0,
+            (topaz_display_get_parameter(display, topazDisplay_Parameter_Height) - inputY->current) - topaz_display_get_parameter(display, topazDisplay_Parameter_Height)/2.0,
+            0
+        };
+        p = topaz_matrix_transform(
+            m,
+            &p
+        );
+        t->mouseX = p.x;
+        t->mouseY = p.y;
+    }
 
-    t->mouseY = mouse_y_device_to_world_2d(t, inputY->current);
-    t->mouseX = mouse_x_device_to_world_2d(t, inputX->current);
+
+    t->mouseDeltaX = t->mouseX - oldX;
+    t->mouseDeltaY = t->mouseY - oldY;
+
 
 }
 
@@ -406,8 +519,30 @@ int topaz_input_add_keyboard_listener(topazInput_t * t, const topazInput_Listene
 }
 
 
+
 int topaz_input_add_pointer_listener(topazInput_t * t, const topazInput_Listener_t * l) {
     DeviceState * input = t->devices[topazInputManager_DefaultDevice_Mouse];
+
+    // need to add wrappping mechanism to deliver converted
+    // mouse coordinates
+    if (l->on_active ||
+        l->on_update)  {
+        topazInput_Listener_t listener = {};
+
+
+        topazInput_Listener_t * evdata = calloc(1, sizeof(topazInput_Listener_t));
+        *evdata = *l;
+
+        listener.userData = evdata;
+        if (evdata->on_active)  listener.on_active  = on_active__pointer;
+        if (evdata->on_press)   listener.on_press   = on_press__pointer;
+        if (evdata->on_update)  listener.on_update  = on_update__pointer;
+        if (evdata->on_release) listener.on_release = on_release__pointer;
+
+        return device_state_add_listener(input, &listener);
+
+    }
+
     return device_state_add_listener(input, l);
 }
 
@@ -608,18 +743,11 @@ int topaz_input_mouse_y(const topazInput_t * t) {
 }
 
 int topaz_input_mouse_delta_x(const topazInput_t * t) {
-    InputState * input = device_state_get_input(t->devices[topazInputManager_DefaultDevice_Mouse], topazPointer_X);
-
-    return mouse_x_device_to_world_2d(t, input->current) -
-           mouse_x_device_to_world_2d(t, input->prev);
+    return t->mouseDeltaX;
 }
 
 int topaz_input_mouse_delta_y(const topazInput_t * t) {
-    InputState * input = device_state_get_input(t->devices[topazInputManager_DefaultDevice_Mouse], topazPointer_Y);
-
-    return mouse_y_device_to_world_2d(t, input->current) -
-           mouse_y_device_to_world_2d(t, input->prev);
-
+    return t->mouseDeltaY;
 }
 
 
@@ -684,16 +812,3 @@ void get_unicode(topazInput_t * t, float prevState, const topazInputDevice_Event
     t->previousUnicode = t->lastUnicode;
 }
 
-
-int mouse_x_device_to_world_2d(const topazInput_t * t, int x) {
-    return  // camera position x +
-            // x * (camera render width / view width )
-            x;
-}
-
-
-int mouse_y_device_to_world_2d(const topazInput_t * t, int y) {
-    return  // camera position y +
-            // y * (camera render height / view height )
-            y;
-}

@@ -211,7 +211,7 @@ static void topaz_freetype_get_spacing(
     if (thischar == '\n') {
         spacing->xOffset = 0;
         spacing->yOffset = 0;
-        spacing->yNextOrigin += ft->face->size->metrics.height/64.f;
+        spacing->yNextOrigin -= ft->face->size->metrics.height/64.f;
         spacing->xNextOrigin = 0;
         spacing->width = 0;
         spacing->height = 0;        
@@ -232,15 +232,15 @@ static void topaz_freetype_get_spacing(
             &kernResult
         );
         spacing->xOffset = kernResult.x;
-        spacing->yOffset = kernResult.y;
+        spacing->yOffset = -kernResult.y;
     } else {
         spacing->xOffset = 0;
         spacing->yOffset = 0;
     }
     spacing->xNextOrigin += glyphSrc->advance.x/64.f;
-    spacing->yNextOrigin += glyphSrc->advance.y/64.f;
+    spacing->yNextOrigin -= glyphSrc->advance.y/64.f;
 
-    spacing->yOffset = -glyphSrc->metrics.horiBearingY/64.f;
+    spacing->yOffset = spacing->height - glyphSrc->metrics.horiBearingY/64.f;
 
 }
 

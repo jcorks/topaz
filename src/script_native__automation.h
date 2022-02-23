@@ -316,18 +316,18 @@ TSO_SCRIPT_API_FN(automation_api__set_from_string) {
 TSO_SCRIPT_API_FN(automation_api__vector_at) {
     TSO_ARG_0;
     TSO_ARG_1;
+    TSO_ARG_2;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
 
-    topazVector_t * v;
-    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
-    *v = topaz_automation_vector_at(
+    topazVector_t a = topaz_automation_vector_at(
         native,
         topaz_script_object_as_number(
             arg1
         )
     );
-    return out;
+    topaz_script_return_vector(script, arg2, a.x, a.y, a.z);
+    TSO_NO_RETURN;
 }
 
 
@@ -354,15 +354,15 @@ TSO_SCRIPT_API_FN(automation_api__at) {
 
 TSO_SCRIPT_API_FN(automation_api__current_vector) {
     TSO_ARG_0;
+    TSO_ARG_1;
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
 
-    topazVector_t * v;
-    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(vector_api__create, v);
-    *v = *topaz_automation_current_vector(
+    topazVector_t a = *topaz_automation_current_vector(
         native
     );
-    return out;
+    topaz_script_return_vector(script, arg1, a.x, a.y, a.z);
+    TSO_NO_RETURN;
 }
 
 
@@ -408,9 +408,9 @@ static void add_refs__automation_api(topazScript_t * script, topazScriptManager_
     TS_MAP_NATIVE_FN("topaz_automation__resume", automation_api__resume, 1);
     TS_MAP_NATIVE_FN("topaz_automation__to_string", automation_api__to_string, 1);
     TS_MAP_NATIVE_FN("topaz_automation__set_from_string", automation_api__set_from_string, 1);
-    TS_MAP_NATIVE_FN("topaz_automation__vector_at", automation_api__vector_at, 2);
+    TS_MAP_NATIVE_FN("topaz_automation__vector_at", automation_api__vector_at, 3);
     TS_MAP_NATIVE_FN("topaz_automation__at", automation_api__at, 2);
-    TS_MAP_NATIVE_FN("topaz_automation__current_vector", automation_api__current_vector, 1);
+    TS_MAP_NATIVE_FN("topaz_automation__current_vector", automation_api__current_vector, 2);
     TS_MAP_NATIVE_FN("topaz_automation__current", automation_api__current, 1);
     
 }

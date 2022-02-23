@@ -21,7 +21,7 @@ return class(
                 
                 // be affected by gravity
                 this.onStep = ::{
-                    o2d.velocityY += constants.GRAVITY;
+                    o2d.velocityY -= constants.GRAVITY;
                     
                     // remove if out of bounds
                     if (this.position.y > Topaz.defaultDisplay.height+constants.BALL_SIZE) 

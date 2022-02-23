@@ -411,6 +411,20 @@ void topaz_object2d_set_collider_radial(
     uint32_t numSub
 );
 
+
+/// Creates a rectangular collider 
+///
+void topaz_object2d_set_collider_rectangle(
+    /// The object2d to modify.
+    topazComponent_t * o2d,
+
+    /// The radius of the new collider.
+    float width,
+
+    /// The number of sides of the collider.
+    float height
+);
+
 /// Returns the points that consitute the collider.
 ///
 const topazArray_t * topaz_object2d_get_collider(

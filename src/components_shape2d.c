@@ -149,7 +149,7 @@ topazComponent_t * topaz_shape2d_create(topaz_t * t) {
     data->MAGIC_ID = MAGIC_ID__SHAPE_2D;
     #endif
     data->color.r = 255;
-    data->color.g = 0;
+    data->color.g = 255;
     data->color.b = 255;
     data->color.a = 255;
 
@@ -315,13 +315,13 @@ static void topaz_shape2d_texture_event(
 
 
         topazRenderer_2D_Vertex_t v[6] = {
-            { -s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     0, 0 },
-            { -s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     0, 1 },
-            {w-s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     1, 1 },
+            { -s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     0, 1 },
+            { -s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     0, 0 },
+            {w-s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     1, 0 },
 
-            { -s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     0, 0 },
-            {w-s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     1, 1 },
-            {w-s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     1, 0 }
+            { -s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     0, 1 },
+            {w-s->center.x, h-s->center.y,  color[0], color[1], color[2], color[3],     1, 0 },
+            {w-s->center.x,  -s->center.y,  color[0], color[1], color[2], color[3],     1, 1 }
         };
 
 
