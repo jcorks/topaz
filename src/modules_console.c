@@ -27,10 +27,10 @@ struct topazConsole_CommandContext_t {
 };
 
 
-const topazColor_t color_normal  = {255, 255, 200, 255};
-const topazColor_t color_warning = {255, 128, 64,  255};
-const topazColor_t color_debug   = {30,  87,  120, 255};
-const topazColor_t color_error   = {255, 64,  64,  255};
+const topazColor_t color_normal  = {1, 1, 200 / 255.0, 1};
+const topazColor_t color_warning = {1, 128, 64/255.0,  1};
+const topazColor_t color_debug   = {30/255.0,  87/255.0,  120/255.0, 1};
+const topazColor_t color_error   = {1, 64/255.0,  64/255.0,  1};
 
 
 
@@ -232,9 +232,9 @@ static void console_print_debug_state(
     line.g *= 0.7;
     line.b *= 0.7;
     topazColor_t lineBold;
-    lineBold.r = 255;
-    lineBold.g = 255;
-    lineBold.b = 255;
+    lineBold.r = 1;
+    lineBold.g = 1;
+    lineBold.b = 1;
 
 
 

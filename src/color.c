@@ -269,7 +269,7 @@ topazColor_t topaz_color_from_string(const topazString_t * name) {
 
    
     // empty color
-    out.a = 0xff;
+    out.a = 1;
     out.r = 0;
     out.g = 0;
     out.b = 0;
@@ -287,10 +287,10 @@ topazColor_t topaz_color_from_string(const topazString_t * name) {
             cl += val*pow(16, i%2==0?1:0);
 
             switch(i) {
-              case 1: out.r = cl; cl = 0; break;
-              case 3: out.g = cl; cl = 0; break;
-              case 5: out.b = cl; cl = 0; break;
-              case 7: out.a = cl; cl = 0; break;
+              case 1: out.r = cl/255.0; cl = 0; break;
+              case 3: out.g = cl/255.0; cl = 0; break;
+              case 5: out.b = cl/255.0; cl = 0; break;
+              case 7: out.a = cl/255.0; cl = 0; break;
               default:;
             }
         }
@@ -305,38 +305,29 @@ topazColor_t topaz_color_from_string(const topazString_t * name) {
 }
 
 
-int topaz_color_to_rgba_int(topazColor_t c) {
-    return *((int*)&c);
-}
+
 
 #define COLOR_CLAMP(__T__) (__T__ < 0.f ? 0.f : (__T__ > 1.f ? 1.f : __T__))
 
-topazColor_t topaz_color_from_amt(float r, float g, float b, float a) {
-    topazColor_t out;
-    out.r = COLOR_CLAMP(r);
-    out.g = COLOR_CLAMP(g);
-    out.b = COLOR_CLAMP(b);
-    out.a = COLOR_CLAMP(a);
-    return out;
-}
+
 
 
 topazColor_t topaz_color_from_int(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
     topazColor_t out;
-    out.r = r;
-    out.g = g;
-    out.b = b;
-    out.a = a;
+    out.r = r / 255.0;
+    out.g = g / 255.0;
+    out.b = b / 255.0;
+    out.a = a / 255.0;
     return out;
 }
 
 topazString_t * topaz_color_to_string(topazColor_t c) {
     char cstr[30];
     sprintf(cstr, "#%02x%02x%02x%02x",
-        c.r,
-        c.g,
-        c.b,
-        c.a 
+        c.r*255,
+        c.g*255,
+        c.b*255,
+        c.a*255 
     );
     return topaz_string_create_from_c_str(cstr);
 }

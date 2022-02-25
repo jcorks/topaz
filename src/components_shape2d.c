@@ -77,17 +77,17 @@ typedef struct {
 
 static void shape2d__on_draw(topazComponent_t * c, Shape2D * s) {
     if (!topaz_render2d_get_vertices(s->render2d)) return;
-    if (!topaz_color_cmp(s->realColor, s->color)) {
+    if (memcmp(&s->realColor, &s->color, sizeof(topazColor_t)) != 0) {
         topazArray_t * arr = topaz_array_clone(topaz_render2d_get_vertices(s->render2d));
         uint32_t i;
         uint32_t size = topaz_array_get_size(arr);
         topazRenderer_2D_Vertex_t * v = topaz_array_get_data(arr);
 
         for(i = 0; i < size; ++i) {
-            v[i].r = topaz_color_r_amt(s->color);
-            v[i].g = topaz_color_g_amt(s->color);
-            v[i].b = topaz_color_b_amt(s->color);
-            v[i].a = topaz_color_a_amt(s->color);
+            v[i].r = s->color.r;
+            v[i].g = s->color.g;
+            v[i].b = s->color.b;
+            v[i].a = s->color.a;
         }
 
         s->realColor = s->color;
@@ -148,10 +148,10 @@ topazComponent_t * topaz_shape2d_create(topaz_t * t) {
     #ifdef TOPAZDC_DEBUG
     data->MAGIC_ID = MAGIC_ID__SHAPE_2D;
     #endif
-    data->color.r = 255;
-    data->color.g = 255;
-    data->color.b = 255;
-    data->color.a = 255;
+    data->color.r = 1;
+    data->color.g = 1;
+    data->color.b = 1;
+    data->color.a = 1;
 
     data->render2d = topaz_render2d_create(topaz_graphics_get_renderer_2d(topaz_context_get_graphics(t)), NULL);
 
@@ -230,10 +230,10 @@ void topaz_shape2d_form_rectangle(topazComponent_t * c, float w, float h) {
     Shape2D * s = shape2d__retrieve(c);
     s->id = NULL;
     float color[4] = {
-        topaz_color_r_amt(s->color),
-        topaz_color_g_amt(s->color),
-        topaz_color_b_amt(s->color),
-        topaz_color_a_amt(s->color)
+        s->color.r,
+        s->color.g,
+        s->color.b,
+        s->color.a
     };
 
     topazRenderer_2D_Vertex_t v[6] = {
@@ -307,10 +307,10 @@ static void topaz_shape2d_texture_event(
         float w = s->notifW;
         float h = s->notifH;
         float color[4] = {
-            topaz_color_r_amt(s->color),
-            topaz_color_g_amt(s->color),
-            topaz_color_b_amt(s->color),
-            topaz_color_a_amt(s->color)
+            s->color.r,
+            s->color.g,
+            s->color.b,
+            s->color.a
         };
 
 
@@ -424,10 +424,10 @@ void topaz_shape2d_form_triangles(topazComponent_t * c, const topazArray_t * pts
     topazRenderer_2D_Vertex_t * vertices = malloc(sizeof(topazRenderer_2D_Vertex_t)*len);
 
     float color[4] = {
-        topaz_color_r_amt(s->color),
-        topaz_color_g_amt(s->color),
-        topaz_color_b_amt(s->color),
-        topaz_color_a_amt(s->color)
+        s->color.r,
+        s->color.g,
+        s->color.b,
+        s->color.a
     };
     
     topazVector_t * pts = &topaz_array_at(ptsSrc, topazVector_t, 0);

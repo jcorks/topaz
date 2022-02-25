@@ -122,7 +122,7 @@ TSO_SCRIPT_API_FN(topaz_api__log) {
         topaz_console_print(c, topaz_script_object_as_string(arg0));
     else {
         topazColor_t col;
-        col.r = col.g = col.a = col.b = 255;
+        col.r = col.g = col.a = col.b = 1;
         topaz_console_add_text_color(c, topaz_script_object_as_string(arg0), &col);        
     }
     TSO_NO_RETURN;

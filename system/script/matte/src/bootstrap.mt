@@ -5,57 +5,27 @@
 
 @Topaz;
 @:Color = ::<={
-    @:topaz_color__create = getExternalFunction(name:'topaz_color__create');
-    @:topaz_color__set_rgba = getExternalFunction(name:'topaz_color__set_rgba');
-    @:topaz_color__get_r = getExternalFunction(name:'topaz_color__get_r');
-    @:topaz_color__get_g = getExternalFunction(name:'topaz_color__get_g');
-    @:topaz_color__get_b = getExternalFunction(name:'topaz_color__get_b');
-    @:topaz_color__get_a = getExternalFunction(name:'topaz_color__get_a');
     @:topaz_color__to_hex_string = getExternalFunction(name:'topaz_color__to_hex_string');
     @:topaz_color__set_from_string = getExternalFunction(name:'topaz_color__set_from_string');
 
-    @:refColor = topaz_color__create(a:0, b:0, c:0, d:0);
+    @updateColor;
 
-    @:statepush = ::(v) {
-        if (v.native == empty) ::<={
-            if (Number.isNaN(value:v.r)) v.r = 0;
-            if (Number.isNaN(value:v.g)) v.g = 0;
-            if (Number.isNaN(value:v.b)) v.b = 0;
-            if (Number.isNaN(value:v.a)) v.a = 0;
-            v.native = topaz_color__create(a:v.r, b:v.g, c:v.b, d:v.a);
-        } else ::<={
-            topaz_color__set_rgba(a:v.native, b:v.r, c:v.g, d:v.b, e:v.a);
-        };
-    };
-
-    @:statepull = ::(v) {
-        v.r = topaz_color__get_r(a:v.native);
-        v.g = topaz_color__get_g(a:v.native);
-        v.b = topaz_color__get_b(a:v.native);
-        v.a = topaz_color__get_a(a:v.native);
+    @:updateColorNative ::(a, b, c, d) {
+        updateColor.r = a;
+        updateColor.g = b;
+        updateColor.b = c;
+        updateColor.a = d;
     };
 
     return {
-        fromnative : ::(native) {
-            @:out = {native:native};
-            statepull(v:out);
-            return out;
-        },
-        statepush : statepush,
-        statepull : statepull,
         asString : ::(color) {
-            statepush(v:color);
-            return topaz_color__to_hex_string(a:color.native);
+            return topaz_color__to_hex_string(a:color.r, b:color.g, c:color.b, d:color.a);
         },
 
         parse : ::(string) {
-            topaz_color__set_from_string(a:refColor, b:string);
-            return {
-                r: topaz_color__get_r(a:refColor),
-                g: topaz_color__get_g(a:refColor),
-                b: topaz_color__get_b(a:refColor),
-                a: topaz_color__get_a(a:refColor)
-            };
+            updateColor = {};
+            topaz_color__set_from_string(a:string, b:updateColorNative);
+            return updateColor;
         }
     };
 };
@@ -302,6 +272,65 @@
                     set_z(a:native, b:value);
                 }               
             }
+        };
+    }
+);
+
+
+
+@:ManagedColor = class(
+    define:::(this) {
+        @set_r;
+        @set_g;
+        @set_b;
+        @set_a;
+        @get_r;
+        @get_g;
+        @get_b;
+        @get_a;
+        @native;
+        this.constructor = ::(native_, getr, getg, getb, geta, setr, setg, setb, seta){
+            set_r = setr;
+            set_g = setg;
+            set_b = setb;
+            set_a = seta;
+            get_r = getr;
+            get_g = getg;
+            get_b = getb;
+            get_a = geta;
+            native = native_;
+            return this;
+        };
+
+        this.interface = {
+            r : {
+                get :: {return get_r(a:native);},
+                set ::(value) {
+                    set_r(a:native, b:value);
+                }               
+            },
+
+            g : {
+                get :: {return get_g(a:native);},
+                set ::(value) {
+                    set_g(a:native, b:value);
+                }               
+            },
+
+            b : {
+                get :: {return get_b(a:native);},
+                set ::(value) {
+                    set_b(a:native, b:value);
+                }               
+            },
+
+            a : {
+                get :: {return get_a(a:native);},
+                set ::(value) {
+                    set_a(a:native, b:value);
+                }               
+            }
+            
         };
     }
 );
@@ -2357,6 +2386,8 @@ Topaz = class(
                     @scale;
                     @rotation;
 
+
+
                     this.interface = {
                         text : {
                             get : ::() {return topaz_text2d__get_text(a:impl);},
@@ -2379,14 +2410,27 @@ Topaz = class(
                             }
                         },
                         
-                        setColor : ::(color) { 
-                            Color.statepush(v:color);
-                            topaz_text2d__set_color(a:impl, b:color.native);
+                        color :{
+                            set : ::(value) {
+                                if (getType(of:value) == String) ::<={
+                                    value = Color.parse(string:value);
+                                };
+
+                                topaz_text2d__set_color(a:this.native, b:value.r, c:value.g, d:value.b, e:value.a);
+                            } 
                         },
-                        
+
+
                         setColorSection : ::(from, to, color) { 
-                            Color.statepush(v:color);
-                            topaz_text2d__set_color_section(a:impl, b:from, c:to, d:color.native);
+                            if (getType(of:color) == String) ::<={
+                                color = Color.parse(string:color);
+                            };
+
+                            
+                            topaz_text2d__set_color_section(
+                                a:impl, b:from, c:to, 
+                                d:color.r, e:color.g, f:color.b, g:color.a
+                            );
                         },
                         
                         extentWidth : {
@@ -2822,8 +2866,14 @@ Topaz = class(
 
         @__Shape2D__ = ::<={
             @:topaz_shape2d__create = getExternalFunction(name:'topaz_shape2d__create');
-            @:topaz_shape2d__get_color = getExternalFunction(name:'topaz_shape2d__get_color');
-            @:topaz_shape2d__set_color = getExternalFunction(name:'topaz_shape2d__set_color');
+            @:topaz_shape2d__get_color_r = getExternalFunction(name:'topaz_shape2d__get_color_r');
+            @:topaz_shape2d__get_color_g = getExternalFunction(name:'topaz_shape2d__get_color_g');
+            @:topaz_shape2d__get_color_b = getExternalFunction(name:'topaz_shape2d__get_color_b');
+            @:topaz_shape2d__get_color_a = getExternalFunction(name:'topaz_shape2d__get_color_a');
+            @:topaz_shape2d__set_color_r = getExternalFunction(name:'topaz_shape2d__set_color_r');
+            @:topaz_shape2d__set_color_g = getExternalFunction(name:'topaz_shape2d__set_color_g');
+            @:topaz_shape2d__set_color_b = getExternalFunction(name:'topaz_shape2d__set_color_b');
+            @:topaz_shape2d__set_color_a = getExternalFunction(name:'topaz_shape2d__set_color_a');
             @:topaz_shape2d__get_anim_speed = getExternalFunction(name:'topaz_shape2d__get_anim_speed');
             @:topaz_shape2d__set_anim_speed = getExternalFunction(name:'topaz_shape2d__set_anim_speed');
             @:topaz_shape2d__get_center_x = getExternalFunction(name:'topaz_shape2d__get_center_x');
@@ -2885,10 +2935,38 @@ Topaz = class(
                     @scale;
                     @center;
                     
+                    @color;
                     this.interface = {
                         color : {
-                            get : ::() {return Color.fromnative(native:topaz_shape2d__get_color(a:impl));}, 
-                            set : ::(value){Color.statepush(v:value);topaz_shape2d__set_color(a:impl, b:value.native);} 
+                            get : ::() {
+                                if (color == empty)
+                                    color = ManagedColor.new(
+                                        native_:this.native,
+                                        getr: topaz_shape2d__get_color_r,
+                                        getg: topaz_shape2d__get_color_g,
+                                        getb: topaz_shape2d__get_color_b,
+                                        geta: topaz_shape2d__get_color_a,
+
+                                        setr: topaz_shape2d__set_color_r,
+                                        setg: topaz_shape2d__set_color_g,
+                                        setb: topaz_shape2d__set_color_b,
+                                        seta: topaz_shape2d__set_color_a
+                                    );
+
+
+                                return color;
+                            }, 
+                            set : ::(value){
+                                if (getType(of:value) == String) ::<={
+                                    value = Color.parse(string:value);
+                                };
+
+                                if (value.r != empty) topaz_shape2d__set_color_r(a:this.native, b:value.r);
+                                if (value.g != empty) topaz_shape2d__set_color_g(a:this.native, b:value.g);
+                                if (value.b != empty) topaz_shape2d__set_color_b(a:this.native, b:value.b);
+                                if (value.a != empty) topaz_shape2d__set_color_a(a:this.native, b:value.a);
+
+                            } 
                         },
 
 

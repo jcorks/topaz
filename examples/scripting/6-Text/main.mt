@@ -20,7 +20,7 @@ Topaz.FontManager.registerFont(asset:font);
 
 
         @bg = Topaz.Shape2D.new();
-        bg.color = Topaz.Color.parse(string:'purple');
+        bg.color = 'purple';
 
         this.components = [bg, visual];
 

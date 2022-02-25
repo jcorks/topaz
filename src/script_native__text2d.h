@@ -104,9 +104,18 @@ TSO_SCRIPT_API_FN(text2d_api__get_char_y) {
 TSO_SCRIPT_API_FN(text2d_api__set_color) {
     TSO_ARG_0;
     TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_ARG_3;
+    TSO_ARG_4;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);
-    TSO_NATIVIZE_1(topazColor_t *, TSO_OBJECT_ID__COLOR);   
-    topaz_text2d_set_color(native, *native1);
+
+    topazColor_t c = {
+        topaz_script_object_as_number(arg1),
+        topaz_script_object_as_number(arg2),
+        topaz_script_object_as_number(arg3),
+        topaz_script_object_as_number(arg4)
+    };
+    topaz_text2d_set_color(native, c);
     TSO_NO_RETURN;
 }
 
@@ -114,14 +123,27 @@ TSO_SCRIPT_API_FN(text2d_api__set_color_section) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
+
     TSO_ARG_3;
+    TSO_ARG_4;
+    TSO_ARG_5;
+    TSO_ARG_6;
+
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);
-    TSO_NATIVIZE_3(topazColor_t *, TSO_OBJECT_ID__COLOR);   
+
+    topazColor_t c = {
+        topaz_script_object_as_number(arg3),
+        topaz_script_object_as_number(arg4),
+        topaz_script_object_as_number(arg5),
+        topaz_script_object_as_number(arg6)
+    };
+
+
     topaz_text2d_set_color_section(
         native, 
         topaz_script_object_as_int(arg1),
         topaz_script_object_as_int(arg2),
-        *native3
+        c
     );
     TSO_NO_RETURN;
 }
@@ -322,8 +344,8 @@ static void add_refs__text2d_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_text2d__get_char_x", text2d_api__get_char_x, 2);
     TS_MAP_NATIVE_FN("topaz_text2d__get_char_y", text2d_api__get_char_y, 2);
 
-    TS_MAP_NATIVE_FN("topaz_text2d__set_color", text2d_api__set_color, 2);
-    TS_MAP_NATIVE_FN("topaz_text2d__set_color_section", text2d_api__set_color_section, 4);
+    TS_MAP_NATIVE_FN("topaz_text2d__set_color", text2d_api__set_color, 5);
+    TS_MAP_NATIVE_FN("topaz_text2d__set_color_section", text2d_api__set_color_section, 7);
 
 
     // replacement of transform with rotation / position / scale

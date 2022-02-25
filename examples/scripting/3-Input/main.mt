@@ -35,7 +35,7 @@
         @:visual = Topaz.Shape2D.new();
 
         // Set it to blue and make it 20x20
-        visual.color = Topaz.Color.parse(string:'blue');
+        visual.color = 'blue';
         visual.formRectangle(width:20, height:20);
 
         // As shorthand for .addComponent(), you 
@@ -134,7 +134,7 @@
         @:visual = Topaz.Shape2D.new();
 
         // Here, we're using RGB hex notation to define our color.
-        visual.color = Topaz.Color.parse(string:'#ff0000');
+        visual.color = '#ff0000';
         visual.formRectangle(width:20, height:20);
         this.components = [visual];
 

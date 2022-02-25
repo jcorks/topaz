@@ -40,8 +40,7 @@
         this.components = [a, v];
 
         this.onStep = ::{
-            @:r = this.position;
-            this.position = {x:100+a.value, y:r.y};
+            this.position.x = a.value;
         };
         this.interface = {
             anim : {
@@ -59,7 +58,7 @@
 @: RectangleLinear = class(
     inherits : [Rectangle],
     define:::(this) {
-        this.visual.color = Topaz.Color.parse(string:'purple');
+        this.visual.color = 'purple';
         this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.NONE,   offset:0);
         this.anim.addKeyframe(value:200, function:Topaz.Automation.FUNCTION.LINEAR, offset:0.5);
         this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.LINEAR, offset:1);
@@ -71,7 +70,7 @@
 @:RectangleAccel = class(
     inherits : [Rectangle],
     define:::(this) {
-        this.visual.color = Topaz.Color.parse(string:'blue');
+        this.visual.color = 'blue';
         this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.NONE,  offset:0);
         this.anim.addKeyframe(value:200, function:Topaz.Automation.FUNCTION.ACCEL, offset:0.5);
         this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.ACCEL, offset:1);
@@ -84,7 +83,7 @@
 @:RectangleSlow = class(
     inherits : [Rectangle],
     define:::(this) {
-        this.visual.color = Topaz.Color.parse(string:'red');
+        this.visual.color = 'red';
         this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.NONE, offset:0);
         this.anim.addKeyframe(value:200, function:Topaz.Automation.FUNCTION.SLOW, offset:0.5);
         this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.SLOW, offset:1);

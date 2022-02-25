@@ -112,7 +112,7 @@
 // The color of any Shape2D can be assigned directly. 
 // The string can be a common color name, or a #RRGGBB/AA 
 // formatted hex string.
-entity.setColor(value:Topaz.Color.parse(string:'purple'));        
+entity.setColor(value:'purple');        
 
 
 

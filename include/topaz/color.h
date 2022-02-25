@@ -37,26 +37,27 @@ DEALINGS IN THE SOFTWARE.
 
 
 ///
-///    A standard object representing an RGBA, 32-bit color
+///    A standard object representing an RGBA, float-based color.
+///    Each component is a saturation amount from 0 to 1.
 ///
 ///
 typedef struct topazColor_t topazColor_t;
 struct topazColor_t {
     /// The red component of the color.
     ///
-    uint8_t r;
+    float r;
 
     /// The green component of the color.
     ///
-    uint8_t g;
+    float g;
 
     /// The blue component of the color.
     ///
-    uint8_t b;
+    float b;
 
     /// The alpha/opacity component of the color.
     ///
-    uint8_t a;
+    float a;
 };
 
 
@@ -75,30 +76,8 @@ topazColor_t topaz_color_from_string(
     const topazString_t * str
 );
 
-/// Returns an int representation of the color
-///
-int topaz_color_to_rgba_int(
-    /// Color object to read.
-    topazColor_t color
-);
 
-/// Returns a color based on floating point decimals  
-/// each float is interpreted on a range form 0 to 1.0.
-/// The value is clamped onthis range.
-///
-topazColor_t topaz_color_from_amt(
-    /// Red amount of color
-    float r, 
 
-    /// Green amount of color
-    float g, 
-
-    /// Blue amount of color
-    float b,
-
-    /// Alpha (transparency) amount of color 
-    float a
-);
 
 /// Returns a color based on integers.
 ///
@@ -116,30 +95,6 @@ topazColor_t topaz_color_from_int(
     uint8_t a
 );
 
-/// Returns a decimal amount of the red component for the current color
-/// __C__ is the color object, of type topazColor_t
-///
-#define topaz_color_r_amt(__C__) (__C__.r / 255.0)
-
-/// Returns a decimal amount of the green component for the current color
-/// __C__ is the color object, of type topazColor_t
-///
-#define topaz_color_g_amt(__C__) (__C__.g / 255.0)
-
-/// Returns a decimal amount of the blue component for the current color
-/// __C__ is the color object, of type topazColor_t
-///
-#define topaz_color_b_amt(__C__) (__C__.b / 255.0)
-
-/// Returns a decimal amount of the alpha component for the current color
-/// __C__ is the color object, of type topazColor_t
-///
-#define topaz_color_a_amt(__C__) (__C__.a / 255.0)
-
-/// Returns whether 2 colors are equal in value.
-/// __C1__ and __C2__ are the color objects, of type topazColor_t
-///
-#define topaz_color_cmp(__C1__,__C2__) (__C1__.r == __C2__.r && __C1__.g == __C2__.g && __C1__.b == __C2__.b && __C1__.a == __C2__.a)
 
 /// Returns a string representation of the color.
 /// This can be used with topaz_color_from_string() to retrieve the 

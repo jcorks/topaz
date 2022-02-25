@@ -120,9 +120,9 @@ static void term_print(topazConsoleDisplay_t * d, void * data, const topazString
     // from standard SGR custom color specification.
     // Windows willl choose the nearest color for us
     winapi_printf(term->cout, topaz_string_create_from_c_str("\x1b[38;2;%d;%d;%dm",
-        reqColor->r,
-        reqColor->g,
-        reqColor->b
+        (int)(reqColor->r*255),
+        (int)(reqColor->g*255),
+        (int)(reqColor->b*255)
     ));
     winapi_printf(term->cout, topaz_string_clone(c));
     winapi_printf(term->cout, topaz_string_create_from_c_str("\x1b[0m"));

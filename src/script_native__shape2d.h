@@ -9,24 +9,80 @@ TSO_SCRIPT_API_FN(shape2d_api__create) {
     return object;
 }
 
-TSO_SCRIPT_API_FN(shape2d_api__get_color) {
+TSO_SCRIPT_API_FN(shape2d_api__get_color_r) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);
-    topazColor_t * c;
-    topazScript_Object_t * out = TSO_OBJECT_INSTANTIATE(color_api__create, c);
-    *c = topaz_shape2d_get_color(native);
-    return out;
+    return topaz_script_object_from_number(script, topaz_shape2d_get_color(native).r);
 }
 
-TSO_SCRIPT_API_FN(shape2d_api__set_color) {
+TSO_SCRIPT_API_FN(shape2d_api__get_color_g) {
+    TSO_ARG_0;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);
+    return topaz_script_object_from_number(script, topaz_shape2d_get_color(native).g);
+}
+
+TSO_SCRIPT_API_FN(shape2d_api__get_color_b) {
+    TSO_ARG_0;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);
+    return topaz_script_object_from_number(script, topaz_shape2d_get_color(native).b);
+}
+
+TSO_SCRIPT_API_FN(shape2d_api__get_color_a) {
+    TSO_ARG_0;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);
+    return topaz_script_object_from_number(script, topaz_shape2d_get_color(native).a);
+}
+
+
+TSO_SCRIPT_API_FN(shape2d_api__set_color_r) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
-    TSO_NATIVIZE_1(topazColor_t *, TSO_OBJECT_ID__COLOR);   
 
-    topaz_shape2d_set_color(native, *native1);
+    topazColor_t c = topaz_shape2d_get_color(native);
+    c.r = topaz_script_object_as_number(arg1);
+    topaz_shape2d_set_color(native, c);
     TSO_NO_RETURN;
 }
+
+TSO_SCRIPT_API_FN(shape2d_api__set_color_g) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
+
+    topazColor_t c = topaz_shape2d_get_color(native);
+    c.g = topaz_script_object_as_number(arg1);
+    topaz_shape2d_set_color(native, c);
+    TSO_NO_RETURN;
+}
+
+TSO_SCRIPT_API_FN(shape2d_api__set_color_b) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
+
+    topazColor_t c = topaz_shape2d_get_color(native);
+    c.b = topaz_script_object_as_number(arg1);
+    topaz_shape2d_set_color(native, c);
+    TSO_NO_RETURN;
+}
+
+TSO_SCRIPT_API_FN(shape2d_api__set_color_a) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
+
+    topazColor_t c = topaz_shape2d_get_color(native);
+    c.a = topaz_script_object_as_number(arg1);
+    topaz_shape2d_set_color(native, c);
+    TSO_NO_RETURN;
+}
+
+
+
+
+
+
 
 TSO_SCRIPT_API_FN(shape2d_api__get_attribute) {
     TSO_ARG_0;
@@ -466,8 +522,17 @@ TSO_SCRIPT_API_FN(shape2d_api__form_lines) {
 
 static void add_refs__shape2d_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz_shape2d__create", shape2d_api__create, 0);
-    TS_MAP_NATIVE_FN("topaz_shape2d__get_color", shape2d_api__get_color, 1);
-    TS_MAP_NATIVE_FN("topaz_shape2d__set_color", shape2d_api__set_color, 2);
+    TS_MAP_NATIVE_FN("topaz_shape2d__get_color_r", shape2d_api__get_color_r, 1);
+    TS_MAP_NATIVE_FN("topaz_shape2d__get_color_g", shape2d_api__get_color_g, 1);
+    TS_MAP_NATIVE_FN("topaz_shape2d__get_color_b", shape2d_api__get_color_b, 1);
+    TS_MAP_NATIVE_FN("topaz_shape2d__get_color_a", shape2d_api__get_color_a, 1);
+
+    TS_MAP_NATIVE_FN("topaz_shape2d__set_color_r", shape2d_api__set_color_r, 2);
+    TS_MAP_NATIVE_FN("topaz_shape2d__set_color_g", shape2d_api__set_color_g, 2);
+    TS_MAP_NATIVE_FN("topaz_shape2d__set_color_b", shape2d_api__set_color_b, 2);
+    TS_MAP_NATIVE_FN("topaz_shape2d__set_color_a", shape2d_api__set_color_a, 2);
+
+
     TS_MAP_NATIVE_FN("topaz_shape2d__get_attribute", shape2d_api__get_attribute, 2);
     TS_MAP_NATIVE_FN("topaz_shape2d__set_attribute", shape2d_api__set_attribute, 3);
 

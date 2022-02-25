@@ -19,7 +19,7 @@
         visual.formImage(image:asset);
         visual.center = {x:asset.width/2, y:asset.height/2};
 
-        visual.color = Topaz.Color.parse(string:'white');
+
         this.add(component:visual);
 
         @:wiggleValue ::(rate) {
@@ -28,7 +28,6 @@
 
 
         this.onStep = ::{
-            
             visual.color = {
                 r: wiggleValue(rate:0.2),
                 g: wiggleValue(rate:0.5),

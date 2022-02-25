@@ -814,10 +814,10 @@ void topaz_text2d_set_color_section(
         topazArray_t * vtx = topaz_array_clone(topaz_render2d_get_vertices(r));
         for(n = 0; n < 6; ++n) {
             topazRenderer_2D_Vertex_t * v = &topaz_array_at(vtx, topazRenderer_2D_Vertex_t, n);
-            v->r = topaz_color_r_amt(clr);
-            v->g = topaz_color_g_amt(clr);
-            v->b = topaz_color_b_amt(clr);
-            v->a = topaz_color_a_amt(clr);
+            v->r = clr.r;
+            v->g = clr.g;
+            v->b = clr.b;
+            v->a = clr.a;
         }
         topaz_render2d_set_vertices(r, vtx);
         topaz_array_destroy(vtx);

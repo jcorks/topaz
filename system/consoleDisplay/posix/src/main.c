@@ -76,9 +76,9 @@ static void * term_init(topazConsoleDisplay_t * d, topaz_t * t) {
 
 void term_print(topazConsoleDisplay_t * d, void * data, const topazString_t * c, const topazColor_t * reqColor) {
     printf("\x1b[38;2;%d;%d;%dm",
-        reqColor->r,
-        reqColor->g,
-        reqColor->b
+        (int)(reqColor->r*255),
+        (int)(reqColor->g*255),
+        (int)(reqColor->b*255)
     );
     printf("%s", topaz_string_get_c_str(c));
 
