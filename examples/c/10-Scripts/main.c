@@ -55,7 +55,7 @@ static void preload_all_scripts(topaz_t * ctx) {
                 TOPAZ_STR_CAST(".mt")
             )
         ) {
-            topaz_resources_create_asset_from_path(
+            topaz_resources_create_data_asset_from_path(
                 topaz_context_get_resources(ctx),
                 topaz_filesystem_path_as_string(
                     topaz_array_at(

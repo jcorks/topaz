@@ -230,15 +230,23 @@ void topaz_context_quit(
     topaz_t * context
 );
 
+/// Marks the start of one frame.
+void topaz_context_frame_start(
+    /// The context to start a frame 
+    topaz_t * context,
+
+    /// The target updates per second.
+    int FPS
+);
+
+
 /// Sleeps until the time required for the target frames-per-second is reached.
 /// The actual resolution is machine-dependent, but it tends to be millisecond resolution.
 /// This will pause the main thread.
 ///
-void topaz_context_wait(
+void topaz_context_frame_end(
     /// The context to wait with.
-    topaz_t * context, 
-    /// The target updates per second.
-    int FPS
+    topaz_t * context
 );
 
 

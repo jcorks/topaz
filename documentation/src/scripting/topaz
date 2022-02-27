@@ -240,11 +240,15 @@ func attachPostManagerUnpausable ->
 ///
 func quit ->
 
-/// Sleeps until the time required for the target frames-per-second is reached.
+/// Marks the start of a frame.
+func framestart ->
+
+/// Sleeps until the time required for the target frames-per-second is reached from when frameStart() 
+/// was last called.
 /// The actual resolution is machine-dependent, but it tends to be millisecond resolution.
 /// This will pause the main thread.
 ///
-func wait ->
+func frameEnd ->
     
     /// The target updates per second.
     @Int FPS
@@ -334,7 +338,11 @@ func enableConsole ->
 @Int versionMinor
 
 
+/// The last-created display.
+@Topaz.Display defaultDisplay 
 
+/// Read-only. Array of all displays.
+@Array displays
 
 /// Singleton for Filesystem-related tools.
 @Topaz.Filesystem </br>

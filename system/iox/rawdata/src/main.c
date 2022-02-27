@@ -62,7 +62,7 @@ static void rawdata_destroy(topazIOX_t * d, void * notUsed) {}
 static void * rawdata_stream_start(topazIOX_t * d, void * notUsed, topazAsset_t * asset) {
     topazArray_t * bytes = topaz_array_create(sizeof(uint8_t));
     if (topaz_asset_get_type(asset) == topazAsset_Type_Data) {
-        topaz_data_set(asset, bytes);
+        topaz_data_set_from_bytes(asset, bytes);
     }
     return bytes;
 }
@@ -121,7 +121,7 @@ static int rawdata_stream_finish(
     void * arraySrc
 ) {
     if (topaz_asset_get_type(asset) == topazAsset_Type_Data) {
-        topaz_data_set(asset, arraySrc);
+        topaz_data_set_from_bytes(asset, arraySrc);
     }
     topaz_array_destroy(arraySrc);
     return 1;

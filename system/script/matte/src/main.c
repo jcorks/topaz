@@ -1042,8 +1042,9 @@ static void topaz_matte_debug_trap(TOPAZMATTE * ctx) {
     debug_populate_state(ctx);
     while(ctx->pendingCommand == topazScript_DebugCommand_Pause) {
         topaz_context_pause(ctx->ctx);
+        topaz_context_frame_start(ctx->ctx, 60);
         topaz_context_iterate(ctx->ctx);
-        topaz_context_wait(ctx->ctx, 60);
+        topaz_context_frame_end(ctx->ctx);
     }
 
 }

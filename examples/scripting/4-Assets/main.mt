@@ -5,7 +5,7 @@
 @:asset = Topaz.Resources.createAsset(
     path: 'base.png'
 );
-@:asset = Topaz.Resources.loadAsset(
+@:asset = Topaz.Resources.convertAsset(
     asset: asset,
     extension: 'png'
 );

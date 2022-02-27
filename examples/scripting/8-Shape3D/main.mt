@@ -2,7 +2,7 @@
 @:class = import(module:'Matte.Core.Class');
 
 
-@mesh = Topaz.Resources.fetchAsset(type:Topaz.Asset.TYPE.MESH, name:'testMesh');
+@mesh = Topaz.Resources.createAsset(type:Topaz.Asset.TYPE.MESH, name:'testMesh');
 mesh.vertices = [
    -1,-1, 0,    0, 1, 0,    0, 0,    1, 0, 1, 1,
     1,-1, 0,    0, 1, 0,    1, 0,    1, 0, 1, 1,
@@ -19,22 +19,22 @@ mesh.setObject(
     ]
 );
 
-@material = Topaz.Resources.fetchAsset(type:Topaz.Asset.TYPE.MATERIAL, name:'testMaterial');
+@material = Topaz.Resources.createAsset(type:Topaz.Asset.TYPE.MATERIAL, name:'testMaterial');
 material.setProgramSource(
     language:'GLSL ES2',
-    vertexShader  :Topaz.Resources.loadAsset(extension:'', path:'vertex_es2.glsl', name:'vertex_es2.glsl').string,             
-    fragmentShader:Topaz.Resources.loadAsset(extension:'', path:'frag_es2.glsl',   name:'frag_es2.glsl').string
+    vertexShader  :Topaz.Resources.createAsset(path:'vertex_es2.glsl', name:'vertex_es2.glsl').string,             
+    fragmentShader:Topaz.Resources.createAsset(path:'frag_es2.glsl',   name:'frag_es2.glsl').string
 );
 
 material.setProgramSource(
     language:'GLSL',
-    vertexShader  :Topaz.Resources.loadAsset(extension:'', path:'vertex.glsl', name:'vertex.glsl').string,             
-    fragmentShader:Topaz.Resources.loadAsset(extension:'', path:'frag.glsl',   name:'frag.glsl').string
+    vertexShader  :Topaz.Resources.createAsset(path:'vertex.glsl', name:'vertex.glsl').string,             
+    fragmentShader:Topaz.Resources.createAsset(path:'frag.glsl',   name:'frag.glsl').string
 );
 
 
 
-@tex = Topaz.Resources.fetchAsset(type:Topaz.Asset.TYPE.IMAGE, name:'testTex');
+@tex = Topaz.Resources.createAsset(type:Topaz.Asset.TYPE.IMAGE, name:'testTex');
 tex.resize(width:2, height:2);
 tex.addFrame();
 tex.setRGBA(
@@ -58,9 +58,8 @@ tex.setRGBA(
         v.material = material;
         v.mesh = mesh;
         v.setTexture(slot:0, texture:tex);
-        v.setAttribute(
-            attribute: Topaz.RENDERER.ATTRIBUTE.TEXTURE_FILTER_HINT, 
-            value:     Topaz.RENDERER.TEXTURE_FILTER_HINT.NONE
+        v.setAttributes(
+            textureFilterHint: Topaz.RENDERER.TEXTURE_FILTER_HINT.NONE
         );
 
         @stepper = 0;

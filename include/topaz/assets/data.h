@@ -57,7 +57,19 @@ topazAsset_t * topaz_data_create_empty(topaz_t *);
 /// Sets the raw data for the asset. The input array may be of any 
 /// kind, as it will be copied into a byte array.
 ///
-void topaz_data_set(topazAsset_t *, const topazArray_t *);
+void topaz_data_set_from_bytes(topazAsset_t *, const topazArray_t *);
+
+/// Uses the raw text data as a data source of bytes. Useful for plaintext 
+/// files.
+///
+void topaz_data_set_from_string(topazAsset_t *, const topazString_t *);
+
+/// Takes a string formatted in base64 sets the data state from bytes of the 
+/// base64 string.
+///
+void topaz_data_set_from_base64(topazAsset_t *, const topazString_t *);
+
+
 
 /// Returns a read-only byte array of the raw data 
 /// within the asset.
@@ -67,6 +79,12 @@ const topazArray_t * topaz_data_get_as_bytes(topazAsset_t *);
 /// Creates a new string from the raw data stored in the asset.
 ///
 topazString_t * topaz_data_get_as_string(topazAsset_t *);
+
+/// Converts the byte state into a base64-encoded string.
+///
+topazString_t * topaz_data_get_as_base64(topazAsset_t *);
+
+
 
 
 #endif

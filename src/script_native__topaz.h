@@ -86,10 +86,16 @@ TSO_SCRIPT_API_FN(topaz_api__quit) {
     TSO_NO_RETURN;
 }
 
-TSO_SCRIPT_API_FN(topaz_api__wait) {
+TSO_SCRIPT_API_FN(topaz_api__frame_start) {
     TSO_ARG_0;
     topazScriptManager_t * mgr = context;
-    topaz_context_wait(mgr->ctx, topaz_script_object_as_number(arg0));
+    topaz_context_frame_start(mgr->ctx, topaz_script_object_as_number(arg0));
+    TSO_NO_RETURN;
+}
+
+TSO_SCRIPT_API_FN(topaz_api__frame_end) {
+    topazScriptManager_t * mgr = context;
+    topaz_context_frame_end(mgr->ctx);
     TSO_NO_RETURN;
 }
 
@@ -163,10 +169,10 @@ TSO_SCRIPT_API_FN(topaz_api__from_base64) {
     topazResources_t * resources = topaz_context_get_resources(mgr->ctx);
     topazAsset_t * asset = topaz_resources_fetch_asset(resources, TOPAZ_STR_CAST("topaz_api__from_base64"));
     if (!asset) {
-        asset = topaz_resources_create_asset(resources, TOPAZ_STR_CAST("topaz_api__from_base64"));
+        asset = topaz_resources_create_asset(resources, TOPAZ_STR_CAST("topaz_api__from_base64"), topazAsset_Type_Data);
     }
 
-    topaz_data_set(
+    topaz_data_set_from_bytes(
         asset,
         TOPAZ_ARRAY_CAST(data, uint8_t, size)
     );
@@ -214,7 +220,8 @@ static void add_refs__topaz_api(topazScript_t * script, topazScriptManager_t * c
     TS_MAP_NATIVE_FN("topaz__attach_post_manager", topaz_api__attach_post_manager, 1);
     TS_MAP_NATIVE_FN("topaz__attach_post_manager_unpausable", topaz_api__attach_post_manager_unpausable, 1);
     TS_MAP_NATIVE_FN("topaz__quit", topaz_api__quit, 0);
-    TS_MAP_NATIVE_FN("topaz__wait", topaz_api__wait, 1);
+    TS_MAP_NATIVE_FN("topaz__frame_start", topaz_api__frame_start, 1);
+    TS_MAP_NATIVE_FN("topaz__frame_end", topaz_api__frame_end, 0);
     TS_MAP_NATIVE_FN("topaz__get_time", topaz_api__get_time, 0);
     TS_MAP_NATIVE_FN("topaz__get_version_micro", topaz_api__get_version_micro, 0);
     TS_MAP_NATIVE_FN("topaz__get_version_minor", topaz_api__get_version_minor, 0);

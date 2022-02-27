@@ -592,11 +592,16 @@ int topaz_bundle_unpack_continue(
         );
         topaz_string_destroy(name);
         
-        topazAsset_t * asset = topaz_resources_create_asset_from_bytes(
+        topazAsset_t * asset = topaz_resources_create_asset(
             res,
-            TOPAZ_ARRAY_CAST(data, uint8_t, len),
-            name
+            name,
+            topazAsset_Type_Data
         );
+        topaz_data_set_from_bytes(
+            asset,
+            TOPAZ_ARRAY_CAST(data, uint8_t, len)
+        );
+
         topaz_string_destroy(name);
 
         if (!asset) {
@@ -619,7 +624,7 @@ int topaz_bundle_unpack_continue(
 
             topaz_array_push(b->subBundles, bundle);
         } else {
-            topaz_resources_load_asset(
+            topaz_resources_convert_asset(
                 res, 
                 ext,
                 asset

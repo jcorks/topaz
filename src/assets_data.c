@@ -106,7 +106,7 @@ topazAsset_t * topaz_data_create_empty(topaz_t * t) {
 
 
 
-void topaz_data_set(topazAsset_t * a, const topazArray_t * dataIn) {
+void topaz_data_set_from_bytes(topazAsset_t * a, const topazArray_t * dataIn) {
     TopazAssetData * d = data__retrieve(a);
     topaz_array_set_size(d->data, 0);
 
@@ -117,6 +117,26 @@ void topaz_data_set(topazAsset_t * a, const topazArray_t * dataIn) {
         topaz_array_get_data(dataIn),
         numBytes 
     );
+}
+
+void topaz_data_set_from_string(topazAsset_t * a, const topazString_t * str) {
+    TopazAssetData * d = data__retrieve(a);
+    topaz_array_set_size(d->data, 0);
+
+    uint64_t len = topaz_string_get_length(str);
+    topaz_array_set_size(d->data, len+1);
+    memcpy(
+        topaz_array_get_data(d->data),
+        topaz_string_get_c_str(str),
+        len+1
+    );
+}
+
+void topaz_data_set_from_base64(topazAsset_t * a, const topazString_t * str) {
+    uint32_t size;
+    uint8_t * copy = topaz_string_base64_to_bytes(str, &size);
+    topaz_data_set_from_bytes(a, TOPAZ_ARRAY_CAST(copy, uint8_t, size));
+    free(copy);
 }
 
 
@@ -136,8 +156,12 @@ topazString_t * topaz_data_get_as_string(topazAsset_t * a) {
     return str;
 }
 
-
-
-
+topazString_t * topaz_data_get_as_base64(topazAsset_t * a) {
+    TopazAssetData * d = data__retrieve(a);
+    return topaz_string_base64_from_bytes(
+        topaz_array_get_data(d->data),
+        topaz_array_get_size(d->data)
+    );
+}
 
 

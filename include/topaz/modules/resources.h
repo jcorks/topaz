@@ -104,17 +104,17 @@ const topazString_t * topaz_resources_get_path(
 
 
 
-/// Creates a new asset. Assets
-/// are, by default, Data assets, which are just 
-/// byte blocks. To convert to something else, use 
-/// topaz_resource_load_asset.
+/// Creates a new asset. 
 /// If the name already exists, NULL is returned.
 ///
 /// If name is NULL, a unique name is auto-generated
 topazAsset_t * topaz_resources_create_asset(
     topazResources_t * res,
     /// The unique name of the asset.
-    const topazString_t * name
+    const topazString_t * name,
+
+    /// The type of the asset to create.
+    topazAsset_Type type
 );
 
 /// Returns the existing asset referred to by the given name.
@@ -128,49 +128,24 @@ topazAsset_t * topaz_resources_fetch_asset(
 
 
 
+
 /// Creates an asset, but looks in the 
 /// filesystem for an item at the given path.
 /// If found, it reads the bytes and stores them 
 /// within a new asset.
 ///
 /// After this process, the asset will be loaded as a 
-/// data asset, meaning it is just a collection of 
+/// Data asset, meaning it is just a collection of 
 /// bytes. The asset can then be re-interpreted
-/// as another kind of asset using topaz_resources_load_asset()
+/// as another kind of asset using topaz_resources_convert_asset()
 ///
 /// If an asset with the name already exists or the 
 /// filesystem cannot load the item specified, NULL is 
 /// returned, and no other change is made.
-topazAsset_t * topaz_resources_create_asset_from_path(
+topazAsset_t * topaz_resources_create_data_asset_from_path(
     topazResources_t * res,
     /// The path to the asset.
     const topazString_t * path,
-    /// The unique name to give to the asset.
-    const topazString_t * name
-);
-
-/// Equivalent to topaz_resources_create_asset_from_path, 
-/// except instead of reading from the filsystem, 
-/// raw byte data is read instead.
-///
-topazAsset_t * topaz_resources_create_asset_from_bytes(
-    /// The resource instance to load with.
-    topazResources_t * res,
-    /// The raw data for the asset. Read as if contiguous bytes.
-    const topazArray_t * data,
-    /// The unique name to give to the asset.
-    const topazString_t * name
-);
-
-/// Equivalent to topaz_resources_create_asset_from_path, except instead of reading
-/// from the filesystem, raw byte data is generated from an encoded
-/// base64 string.
-///
-topazAsset_t * topaz_resources_create_asset_from_base64(
-    /// The resource instance to load with.
-    topazResources_t * res,
-    /// The raw data for the asset. Read as a base64 string.
-    const topazString_t * data,
     /// The unique name to give to the asset.
     const topazString_t * name
 );
@@ -184,12 +159,12 @@ topazAsset_t * topaz_resources_create_asset_from_base64(
 ///
 /// Using
 ///
-topazAsset_t * topaz_resources_load_asset(
-    /// The resource instance to load with.
+topazAsset_t * topaz_resources_convert_asset(
+    /// The resource instance to convert with.
     topazResources_t * res,
-    /// The extension / filetype to attempt load as
+    /// The extension / filetype to attempt to convert as
     const topazString_t * fileType,
-    // the asset to load
+    // the asset to convert
     topazAsset_t *
 );
 

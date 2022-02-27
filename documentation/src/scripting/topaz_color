@@ -1,8 +1,7 @@
 /// Utilities for working with color objects.
 /// Colors are worked with in usercode as basic 
 /// objects containing r, g, b, and/or a attributes,
-/// from 0 to 1. When stored within Topaz, they become 
-/// 32-bit colors.
+/// from 0 to 1. 
 singleton Topaz.Color 
 
 

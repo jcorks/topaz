@@ -97,7 +97,8 @@ const topazString_t * topaz_resources_get_path(const topazResources_t * r) {
 
 topazAsset_t * topaz_resources_create_asset(
     topazResources_t * r,
-    const topazString_t * name
+    const topazString_t * name,
+    topazAsset_Type type
 ) {
     int custname = 0;
     if (!name) {
@@ -117,7 +118,19 @@ topazAsset_t * topaz_resources_create_asset(
         )) return NULL;
     }
 
-    topazAsset_t * asset = topaz_data_create(r->ctx, name);
+    topazAsset_t * asset;
+    switch(type) {
+      case topazAsset_Type_Data:  asset    = topaz_data_create(r->ctx, name);  break;
+      case topazAsset_Type_Image: asset    = topaz_image_create(r->ctx, name); break;
+      case topazAsset_Type_Sound: asset    = topaz_sound_create(r->ctx, name); break;
+      case topazAsset_Type_Material: asset = topaz_material_create(r->ctx, name); break;
+      case topazAsset_Type_Mesh:  asset    = topaz_mesh_create(r->ctx, name); break;
+      default: {
+        if (custname) topaz_string_destroy((topazString_t *)name);
+        return NULL;
+      }
+    }
+
     topaz_table_insert(
         r->name2asset,
         name,
@@ -137,12 +150,12 @@ topazAsset_t * topaz_resources_fetch_asset(
     );
 }
 
-topazAsset_t * topaz_resources_create_asset_from_path(
+topazAsset_t * topaz_resources_create_data_asset_from_path(
     topazResources_t * r,
     const topazString_t * path,
     const topazString_t * name
 ) {
-    topazAsset_t * a = topaz_resources_create_asset(r, name);
+    topazAsset_t * a = topaz_resources_create_asset(r, name, topazAsset_Type_Data);
     if (!a) {
         return NULL;
     }
@@ -168,7 +181,7 @@ topazAsset_t * topaz_resources_create_asset_from_path(
     } 
 
     // populate data asset
-    topaz_data_set(
+    topaz_data_set_from_bytes(
         a,
         topaz_rbuffer_read_bytes(
             data,
@@ -179,48 +192,11 @@ topazAsset_t * topaz_resources_create_asset_from_path(
     topaz_rbuffer_destroy(data);
     return a;
 }
-topazAsset_t * topaz_resources_create_asset_from_bytes(
-    topazResources_t * r,
-    const topazArray_t * data,
-    const topazString_t * name
-) {
-    topazAsset_t * a = topaz_resources_create_asset(r, name);
-    if (!a) {
-        return NULL;
-    }
-
-    topaz_data_set(
-        a,
-        data
-    );
-
-    return a;
-}
-
-
-
-topazAsset_t * topaz_resources_create_asset_from_base64(
-    topazResources_t * r,
-    const topazString_t * data,
-    const topazString_t * name
-) {
-    uint32_t size = 0;
-    uint8_t * buffer = topaz_string_base64_to_bytes(data, &size);
-    if (!buffer) {
-        return NULL;
-    }
-    return topaz_resources_create_asset_from_bytes(
-        r, 
-        TOPAZ_ARRAY_CAST(buffer, uint8_t, size), 
-        name
-    );
-}
 
 
 
 
-
-topazAsset_t * topaz_resources_load_asset(
+topazAsset_t * topaz_resources_convert_asset(
     topazResources_t * r,
     const topazString_t * extension,
     topazAsset_t * srcAsset

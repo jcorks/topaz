@@ -226,12 +226,9 @@ int topaz_context_run(topaz_t * t) {
     }
 
     while(!t->quit) {
+        topaz_context_frame_start(t, t->fps);
         topaz_context_iterate(t);
-        /// throttle 
-        if (t->fps >= 0) {
-            topaz_context_wait(t, t->fps);
-            
-        }
+        topaz_context_frame_end(t);            
     }
 
     return 0;
@@ -435,11 +432,12 @@ void topaz_context_attach_post_manager_unpausable(topaz_t * t, topazEntity_t * i
 void topaz_context_quit(topaz_t * t) {
     t->quit = TRUE;
 }
-#include <time.h>
-void topaz_context_wait(topaz_t * t, int FPS) {
-    double frameDuration = 1000.0 / ((float)FPS);
-    t->frameNext += frameDuration;
 
+void topaz_context_frame_start(topaz_t * t, int FPS) {
+    t->frameNext = topaz_context_get_time(t) + (1000.0 / ((float)FPS));
+}
+
+void topaz_context_frame_end(topaz_t * t) {
     double n = topaz_context_get_time(t);
     // -1 lets it wiggle around the target time rather than require at or past.
     while(n < t->frameNext-0.5) {

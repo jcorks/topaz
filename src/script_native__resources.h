@@ -22,18 +22,28 @@ TSO_SCRIPT_API_FN(resources_api__get_path) {
 
 TSO_SCRIPT_API_FN(resources_api__create_asset) {
     TSO_ARG_0;
+    TSO_ARG_1;
 
     topazResources_t * r = topaz_context_get_resources(((topazScriptManager_t*)context)->ctx);
     topazAsset_t * asset = topaz_resources_create_asset(
         r,
-        topaz_script_object_as_string(arg0)
+        topaz_script_object_as_string(arg0),
+        topaz_script_object_as_int(arg1)
     );
 
     if (!asset) 
         TSO_NO_RETURN;
 
     int type = TSO_OBJECT_TYPE__ASSET;
-    type |= TSO_OBJECT_ID__DATA; 
+    switch(topaz_asset_get_type(asset)) {
+      case topazAsset_Type_Image:     type |= TSO_OBJECT_ID__IMAGE; break;
+      case topazAsset_Type_Data:      type |= TSO_OBJECT_ID__DATA; break;
+      case topazAsset_Type_Sound:     type |= TSO_OBJECT_ID__SOUND; break;
+      case topazAsset_Type_Material:  type |= TSO_OBJECT_ID__MATERIAL; break;
+      case topazAsset_Type_Mesh:      type |= TSO_OBJECT_ID__MESH; break;
+      case topazAsset_Type_Bundle:    type |= TSO_OBJECT_ID__BUNDLE; break;
+      default:;
+    }
     TSO_OBJECT_NEW_VALUE(asset, type, NULL, NULL);
     TSO_OBJECT_KEEP_REF(asset);
     return object;
@@ -72,66 +82,11 @@ TSO_SCRIPT_API_FN(resources_api__fetch_asset) {
 
 
 
-TSO_SCRIPT_API_FN(resources_api__create_asset_from_path) {
+TSO_SCRIPT_API_FN(resources_api__create_data_asset_from_path) {
     TSO_ARG_0;
     TSO_ARG_1;
     topazResources_t * r = topaz_context_get_resources(((topazScriptManager_t*)context)->ctx);
-    topazAsset_t * asset = topaz_resources_create_asset_from_path(
-        r,
-        topaz_script_object_as_string(arg0),
-        topaz_script_object_as_string(arg1)
-    );
-
-    if (!asset) 
-        TSO_NO_RETURN;
-
-    int type = TSO_OBJECT_TYPE__ASSET;
-    type |= TSO_OBJECT_ID__DATA; 
-    TSO_OBJECT_NEW_VALUE(asset, type, NULL, NULL);
-    TSO_OBJECT_KEEP_REF(asset);
-    return object;
-}
-
-TSO_SCRIPT_API_FN(resources_api__create_asset_from_bytes) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    topazResources_t * r = topaz_context_get_resources(((topazScriptManager_t*)context)->ctx);
-
-    topazArray_t * arr = topaz_array_create(sizeof(uint8_t));
-    int size = topaz_script_object_reference_array_get_count(arg0);
-    uint32_t i;
-    uint8_t d;
-    for(i = 0; i < size; ++i) {
-        d = topaz_script_object_as_int(topaz_script_object_reference_array_get_nth(arg0, i));
-        topaz_array_push(arr, d);
-    }
-
-    topazAsset_t * asset = topaz_resources_create_asset_from_bytes(
-        r,
-        arr,
-        topaz_script_object_as_string(arg1)
-    );
-    topaz_array_destroy(arr);
-
-    if (!asset) 
-        TSO_NO_RETURN;
-
-    int type = TSO_OBJECT_TYPE__ASSET;
-    type |= TSO_OBJECT_ID__DATA; 
-    TSO_OBJECT_NEW_VALUE(asset, type, NULL, NULL);
-    TSO_OBJECT_KEEP_REF(asset);
-    return object;
-}
-
-
-
-TSO_SCRIPT_API_FN(resources_api__create_asset_from_base64) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    topazResources_t * r = topaz_context_get_resources(((topazScriptManager_t*)context)->ctx);
-
-
-    topazAsset_t * asset = topaz_resources_create_asset_from_base64(
+    topazAsset_t * asset = topaz_resources_create_data_asset_from_path(
         r,
         topaz_script_object_as_string(arg0),
         topaz_script_object_as_string(arg1)
@@ -152,13 +107,13 @@ TSO_SCRIPT_API_FN(resources_api__create_asset_from_base64) {
 
 
 
-TSO_SCRIPT_API_FN(resources_api__load_asset) {
+TSO_SCRIPT_API_FN(resources_api__convert_asset) {
     TSO_ARG_0;
     TSO_ARG_1;
 
     topazResources_t * r = topaz_context_get_resources(((topazScriptManager_t*)context)->ctx);
     TSO_NATIVIZE_1(topazAsset_t *, TSO_OBJECT_TYPE__ASSET);   
-    topazAsset_t * asset = topaz_resources_load_asset(
+    topazAsset_t * asset = topaz_resources_convert_asset(
         r,
         topaz_script_object_as_string(arg0),
         native1
@@ -244,14 +199,12 @@ static void add_refs__resources_api(topazScript_t * script, topazScriptManager_t
     TS_MAP_NATIVE_FN("topaz_resources__set_path", resources_api__set_path, 1);
     TS_MAP_NATIVE_FN("topaz_resources__get_path", resources_api__get_path, 0);
 
-    TS_MAP_NATIVE_FN("topaz_resources__create_asset", resources_api__create_asset, 1);
+    TS_MAP_NATIVE_FN("topaz_resources__create_asset", resources_api__create_asset, 2);
     TS_MAP_NATIVE_FN("topaz_resources__fetch_asset", resources_api__fetch_asset, 1);
 
-    TS_MAP_NATIVE_FN("topaz_resources__create_asset_from_path",  resources_api__create_asset_from_path, 2);
-    TS_MAP_NATIVE_FN("topaz_resources__create_asset_from_bytes", resources_api__create_asset_from_bytes, 2);
-    TS_MAP_NATIVE_FN("topaz_resources__create_asset_from_base64", resources_api__create_asset_from_base64, 2);
+    TS_MAP_NATIVE_FN("topaz_resources__create_data_asset_from_path",  resources_api__create_data_asset_from_path, 2);
 
-    TS_MAP_NATIVE_FN("topaz_resources__load_asset", resources_api__load_asset, 3);
+    TS_MAP_NATIVE_FN("topaz_resources__convert_asset", resources_api__convert_asset, 3);
     TS_MAP_NATIVE_FN("topaz_resources__write_asset", resources_api__write_asset, 3);
     TS_MAP_NATIVE_FN("topaz_resources__remove_asset", resources_api__remove_asset, 1);
     TS_MAP_NATIVE_FN("topaz_resources__is_extension_supported", resources_api__is_extension_supported, 1);

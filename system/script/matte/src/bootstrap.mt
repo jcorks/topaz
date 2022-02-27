@@ -1450,8 +1450,11 @@ Topaz = class(
         @__Data__ = ::<={
             @:topaz_data__get_byte_count = getExternalFunction(name:'topaz_data__get_byte_count');
             @:topaz_data__get_as_string = getExternalFunction(name:'topaz_data__get_as_string');
+            @:topaz_data__get_as_base64 = getExternalFunction(name:'topaz_data__get_as_base64');
             @:topaz_data__get_nth_byte = getExternalFunction(name:'topaz_data__get_nth_byte');
-            @:topaz_data__set = getExternalFunction(name:'topaz_data__set');
+            @:topaz_data__set_from_bytes = getExternalFunction(name:'topaz_data__set_from_bytes');
+            @:topaz_data__set_from_string = getExternalFunction(name:'topaz_data__set_from_string');
+            @:topaz_data__set_from_base64 = getExternalFunction(name:'topaz_data__set_from_base64');
             return class(
                 name : 'Topaz.Data',        
                 inherits : [__Asset__],
@@ -1464,13 +1467,24 @@ Topaz = class(
                     };
                     this.interface = {
                         byteCount : {
-                            get : ::()   {return topaz_data__get_byte_count(a:impl);} 
+                            get : ::()   {return topaz_data__get_byte_count(a:impl);}
                         },
                         
                         string : {
-                            get : ::()   {return topaz_data__get_as_string(a:impl);} 
+                            get : ::()   {return topaz_data__get_as_string(a:impl);},
+                            set ::(value) {
+                                topaz_data__set_from_string(a:impl, b:value);
+                            }
                         },
-                        
+
+                        base64 : {
+                            get : ::()   {return topaz_data__get_as_base64(a:impl);},
+                            set ::(value) {
+                                topaz_data__set_from_base64(a:impl, b:value);
+                            }
+                        },
+
+
                         bytes : {
                             get : ::() { 
                                 @bytes = [];
@@ -1482,7 +1496,7 @@ Topaz = class(
                             },
 
                             set : ::(value){ 
-                                topaz_data__set(a:impl, b:value);
+                                topaz_data__set_from_bytes(a:impl, b:value);
                             }
                         }
                     }; 
@@ -1678,10 +1692,8 @@ Topaz = class(
         @__Resources__ = ::<={
             @:topaz_resources__fetch_asset = getExternalFunction(name:'topaz_resources__fetch_asset');
             @:topaz_resources__create_asset = getExternalFunction(name:'topaz_resources__create_asset');
-            @:topaz_resources__create_asset_from_path = getExternalFunction(name:'topaz_resources__create_asset_from_path');
-            @:topaz_resources__create_asset_from_bytes = getExternalFunction(name:'topaz_resources__create_asset_from_bytes');
-            @:topaz_resources__create_asset_from_base64 = getExternalFunction(name:'topaz_resources__create_asset_from_base64');
-            @:topaz_resources__load_asset = getExternalFunction(name:'topaz_resources__load_asset');
+            @:topaz_resources__create_data_asset_from_path = getExternalFunction(name:'topaz_resources__create_data_asset_from_path');
+            @:topaz_resources__convert_asset = getExternalFunction(name:'topaz_resources__convert_asset');
             @:topaz_resources__write_asset = getExternalFunction(name:'topaz_resources__write_asset');
             @:topaz_resources__remove_asset = getExternalFunction(name:'topaz_resources__remove_asset');
             @:topaz_resources__is_extension_supported = getExternalFunction(name:'topaz_resources__is_extension_supported');
@@ -1710,22 +1722,20 @@ Topaz = class(
                             return _rawAssetToInstance(impl:topaz_resources__fetch_asset(a:name));
                         },
 
-                        createAsset : ::(name, bytes, path, base64) { 
-                            when (path != empty) ::<= {
-                                return _rawAssetToInstance(impl:topaz_resources__create_asset_from_path(a:path, b:name));                            
-                            };
-                            when (bytes != empty) ::<= {
-                                return _rawAssetToInstance(impl:topaz_resources__create_asset_from_bytes(a:bytes, b:name));                            
-                            };
-                            when (base64 != empty) ::<= {
-                                return _rawAssetToInstance(impl:topaz_resources__create_asset_from_base64(a:base64, b:name));                            
+                        createAsset : ::(name, path, type) {
+                            when(type != empty && path != empty) ::<= {
+                                error(detail:'Cannot create asset with both a type and a data source! (bytes, base64, or a filesystem path)');                                
                             };
 
-                            return _rawAssetToInstance(impl:topaz_resources__create_asset(a:name));
+                            when (path != empty) ::<= {
+                                return _rawAssetToInstance(impl:topaz_resources__create_data_asset_from_path(a:path, b:name));                            
+                            };
+
+                            return _rawAssetToInstance(impl:topaz_resources__create_asset(a:name, b:type));
                         },
 
-                        loadAsset : ::(extension, asset) { 
-                            return _rawAssetToInstance(impl:topaz_resources__load_asset(a:extension, b:asset.native));
+                        convertAsset : ::(extension, asset) { 
+                            return _rawAssetToInstance(impl:topaz_resources__convert_asset(a:extension, b:asset.native));
                         },
 
 
@@ -3611,7 +3621,8 @@ Topaz = class(
         @:topaz__attach_pre_manager_unpausable = getExternalFunction(name:'topaz__attach_pre_manager_unpausable');
         @:topaz__attach_post_manager = getExternalFunction(name:'topaz__attach_post_manager');
         @:topaz__attach_post_manager_unpausable = getExternalFunction(name:'topaz__attach_post_manager_unpausable');
-        @:topaz__wait = getExternalFunction(name:'topaz__wait');
+        @:topaz__frame_start = getExternalFunction(name:'topaz__frame_start');
+        @:topaz__frame_end = getExternalFunction(name:'topaz__frame_end');
         @:topaz__log = getExternalFunction(name:'topaz__log');
         @:topaz__to_base64 = getExternalFunction(name:'topaz__to_base64');
         @:topaz__from_base64 = getExternalFunction(name:'topaz__from_base64');
@@ -3692,7 +3703,8 @@ Topaz = class(
             attachPostManager : ::(manager){topaz__attach_post_manager(a:manager.native);},        
             attachPostManagerUnpausable : ::(manager){topaz__attach_post_manager_unpausable(a:manager.native);},        
             quit : getExternalFunction(name:'topaz__quit'),
-            wait ::(FPS) {topaz__wait(a:FPS);},
+            frameStart ::(FPS) {topaz__frame_start(a:FPS);},
+            frameEnd ::(FPS) {topaz__frame_end();},
             log ::(message, newline) {topaz__log(a:message, b:if(newline == empty) true else newline);},
             toBase64 ::(bytes) {topaz__to_base64(a:bytes);},
             fromBase64 : ::(string) { 
