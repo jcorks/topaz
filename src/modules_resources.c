@@ -19,10 +19,12 @@
 #include <topaz/assets/mesh.h>
 #include <topaz/assets/bundle.h>
 
+
 #ifdef TOPAZDC_DEBUG
 #include <assert.h>
 #endif
 
+#include "modules_resources__bundle"
 
 
 struct topazResources_t {   
@@ -193,6 +195,78 @@ topazAsset_t * topaz_resources_create_data_asset_from_path(
     return a;
 }
 
+//// PRIVATE:
+
+/// Unpacks all the items in the bundle. For 
+/// each item, a new asset will be created within 
+/// resources. Each asset will be prefixed with 
+/// this bundle asset's name followed by "."
+/// and the name of the sub-asset.
+/// For example, a bundle with the name 
+/// "Package" that contains an asset named 
+/// "Item" could be fetched under the name "Package.Item"
+/// Any assets that are, themselves, bundled will also be 
+/// unpacked.
+int topaz_bundle_unpack_all(
+    topazAsset_t * bundle
+);
+
+/// Unpacks and loads the next nItems assets within 
+/// the bundle. If nItems is greater than the number of 
+/// unpacked assets, the remaining assets are unpacked.
+/// Returns 1 if more items are in the bundle and 0 otherwise.
+int topaz_bundle_unpack_continue(
+    topazAsset_t * bundle,
+    int nItems
+);
+
+
+int topaz_resources_unpack_bundle(
+    topazResources_t * res,
+    const topazString_t * bundleName, 
+    int min_minorVersionRequired,
+    int min_majorVersionRequired,
+    void * userdata,
+    void (*onNewItem)(topazResources_t * res, void * userData)
+) {
+    topazAsset_t * src = topaz_resources_fetch_asset(res, bundleName);
+    topazArray_t * srcBytes = topaz_data_get_as_bytes(src);
+    topazAsset_t * bundle = topaz_bundle_create_from_data(
+        res->ctx,
+        topaz_array_get_data(srcBytes),
+        topaz_array_get_size(srcBytes)
+    );
+
+    uint32_t i;
+    uint32_t len = topaz_bundle_get_depends_count(bundle);
+
+    // first, unpack
+    for(i = 0; i < len; ++i) {
+
+    }
+
+    const topazArray_t * srcData = topaz_data_get_as_bytes(srcAsset);
+    topazAsset_t * bundle = topaz_bundle_create_from_data(
+        r->ctx, 
+        topaz_array_get_data(srcData),
+        topaz_array_get_size(srcData)
+    );
+    if (!bundle) return NULL;
+    topaz_table_insert(
+        r->name2asset,
+        topaz_asset_get_name(srcAsset),
+        NULL
+    );
+    
+    topaz_asset_destroy(srcAsset);
+    topaz_table_insert(
+        r->name2asset,
+        topaz_asset_get_name(bundle),
+        bundle
+    );
+    
+    return bundle;
+}
 
 
 
@@ -203,33 +277,6 @@ topazAsset_t * topaz_resources_convert_asset(
 ) {
     if (topaz_asset_get_type(srcAsset) != topazAsset_Type_Data) {
         return NULL;
-    }
-    
-    
-    /// SPECIAL CASE: bundles.
-    /// The have their own name and an internal translation feature.
-    if (topaz_string_test_eq(extension, TOPAZ_STR_CAST("bundle"))) {
-        const topazArray_t * srcData = topaz_data_get_as_bytes(srcAsset);
-        topazAsset_t * bundle = topaz_bundle_create_from_data(
-            r->ctx, 
-            topaz_array_get_data(srcData),
-            topaz_array_get_size(srcData)
-        );
-        if (!bundle) return NULL;
-        topaz_table_insert(
-            r->name2asset,
-            topaz_asset_get_name(srcAsset),
-            NULL
-        );
-        
-        topaz_asset_destroy(srcAsset);
-        topaz_table_insert(
-            r->name2asset,
-            topaz_asset_get_name(bundle),
-            bundle
-        );
-        
-        return bundle;
     }
 
     // invalid extension if not created, return NULL
@@ -244,6 +291,7 @@ topazAsset_t * topaz_resources_convert_asset(
       case topazAsset_Type_Sound: asset    = topaz_sound_create(r->ctx, name); break;
       case topazAsset_Type_Material: asset = topaz_material_create(r->ctx, name); break;
       case topazAsset_Type_Mesh:  asset    = topaz_mesh_create(r->ctx, name); break;
+      case topazAsset_Type_Bundle: asset   = topaz_bunclde_create(r->ctx, name); break;
       default:
         return NULL;
     }

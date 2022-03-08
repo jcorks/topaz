@@ -171,7 +171,6 @@ topazAsset_t * topaz_resources_convert_asset(
 
 
 
-
 /// Writes an asset to the filesystem at the outputpath 
 /// given relative to the resources path.
 ///
@@ -240,6 +239,132 @@ void topaz_resources_add_translator(
     const topazString_t * ioxBackendName    
 );
 
+
+
+
+
+
+
+// Bundles.
+//
+// Bundles are special assets. Bundles have no public API 
+// and can only be passed around as topazAsset_t *. They 
+// can be used to store and pass around collections of 
+// assets together, including other bundles.
+//
+// To pack a bundle:
+// - Create data assets for each asset you want to pack. 
+//   do not convert them! Keep them as data assets.
+//
+// - Call topaz_resources_pack_bundle(), which returns an 
+//   data asset representing a bundle. Save this for later storage.
+//
+//
+// 
+// To unpack a bundle: 
+// - Create a data asset using the bytes from asset created 
+//   by topaz_resources_pack_bundle() at some point.
+//
+// - Call topaz_resources_convert_asset() to convert it to 
+//   a bundle (using the extension "bundle")
+//
+// - Call topaz_resources_unpack_bundle(), which will 
+//   create and convert assets for you, periodicalling calling 
+//   a user callback (onNewItem) to notify usercode of 
+//   each unpacked item. Note that the bundle name is 
+//   NOT the asset name, but the bundle name. These are 
+//   distinctly different, as bundle names are decided by 
+//   the bundle itself.
+//
+// NOTE: bundles can also specify dependencies, meaning that 
+// bundles can require that certain bundles exist within 
+// the topaz resource's instance. Dependencies specifically 
+// require bundle assets themselves to be loaded; this means 
+// not only a data asset representing the bundle, but also 
+// the data converted (using extension "bundle") into a 
+// real bundle.
+//
+// The reason for this is that the dependencies are specified 
+// using bundle names rather than asset names. This means that,
+// to even find which bundle dependencies are loaded, the 
+// dependencies must be actual bundles, not just loose data.
+#define TOPAZ_RESOURCES_BUNDLE_VERSION_ANY -1
+
+
+// Creates a new data asset containing the byte state 
+// of a resource bundle. Bundles contain raw byte states 
+// of other assets in their data forms so that, when unpacking 
+// these data states are available for immediate use under a 
+// "namespace".
+//
+// 
+topazAsset_t * topaz_resources_pack_bundle(
+    topazResources_t * res,
+
+    // Name of the output asset that contains the bundle 
+    // state.
+    const topazString_t * assetName,
+
+    // The name of the bundle. This uniquely identifies the 
+    // bundle across multiple instances and is separate from an 
+    // asset name. This is the name used to identify as a dependency
+    // and also for unpacking.
+    const topazString_t * bundleName,
+
+    // Major version of the bundle.
+    int versionMajor,
+
+    // Minor version of the bundle.
+    int versionMinor,
+
+    // Micro version of the bundle.
+    int versionMicro,
+
+
+    // Text description of the bundle.
+    const topazString_t * description,
+
+    // Text data to identify author(s) of the bundle. 
+    const topazString_t * author,
+
+    // number of dependencies that this package 
+    // requires when loading. If these bundles are not 
+    // loaded when unpacking, the unpacking process
+    // will not be successful.
+    uint32_t dependsCount,
+
+    // The names of the dependencies.
+    const topazString_t ** dependsName,
+
+    // The required minor versions of the dependencies.
+    const int * dependsMinor, // MAJOR.MINOR
+
+    // The required major versions of the dependenices.
+    const int * dependsMajor, // MAJOR.MINOR
+
+    const topazString_t ** assetNames,
+    const topazString_t ** assetExtensions
+    uint32_t assetCount,
+);
+
+
+// Unpacks all resources within a bundle and creates+converts 
+// all assets within them. If the bundle has dependencies, those are 
+// unpacked first. If an item is unable to read / converted either within 
+// the main package or a dependency OR if a dependency is missing OR 
+// if a dependency does not meet criteria, FALSE is returned.
+//
+// Because resources can span many different assets, a user function may 
+// be run on every new asset that is loaded. This can help give 
+// user feedback for large assets / bundles.
+int topaz_resources_unpack_bundle(
+    topazResources_t * res,
+    const topazString_t * bundleName, 
+    int min_minorVersionRequired,
+    int min_majorVersionRequired,
+    void * userdata,
+    void (*onNewItem)(topazResources_t * res, void * userData)
+);
 
 
 #endif

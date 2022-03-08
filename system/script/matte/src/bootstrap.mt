@@ -421,7 +421,8 @@ Topaz = class(
                         MATERIAL : 3,
                         PARTICLE : 4,
                         DATA : 5,
-                        MESH : 6
+                        MESH : 6,
+                        BUNDLE : 7
                     }
                 }, 
                 inherits : [__Native__],
@@ -1526,6 +1527,8 @@ Topaz = class(
                 define : ::(this) { 
                     @impl;
                     this.constructor = ::(native, json){
+
+                        
                         return if (json == empty) ::<={
                             this.constructor[__Asset__](native:native);
                             impl = this.native;
@@ -1727,9 +1730,12 @@ Topaz = class(
                                 error(detail:'Cannot create asset with both a type and a data source! (bytes, base64, or a filesystem path)');                                
                             };
 
+
                             when (path != empty) ::<= {
                                 return _rawAssetToInstance(impl:topaz_resources__create_data_asset_from_path(a:path, b:name));                            
                             };
+                            if (type == empty) type = Topaz.Asset.TYPE.DATA;
+
 
                             return _rawAssetToInstance(impl:topaz_resources__create_asset(a:name, b:type));
                         },
@@ -3709,6 +3715,39 @@ Topaz = class(
             toBase64 ::(bytes) {topaz__to_base64(a:bytes);},
             fromBase64 : ::(string) { 
                 return __Topaz__.Data.new(native:topaz__from_base64(a:string));
+            },
+            createPackage ::(pathIn, pathOut) {
+                @:CREATE_PACKAGE_NAME = "__TOPAZ_PACKAGE_IN";
+
+                @:openPackageAsset ::(path) {
+                    Topaz.Resources.removeAsset(name:CREATE_PACKAGE_NAME);
+                    return Topaz.Resources.createAsset(path:pathInJSON, name:CREATE_PACKAGE_NAME);
+                };
+
+                @:writePackageAsset ::(out, bytes) {
+                    Topaz.Resources.removeAsset(name:CREATE_PACKAGE_NAME);
+                    @:data = Topaz.Resources.createAsset(type:Topaz.Asset.TYPE.BUNDLE, name:CREATE_PACKAGE_NAME); 
+                    data.bytes = bytes;
+                    Topaz.Resources.writeAsset(
+                        asset:data,
+                        path:out,
+                        extension:""
+                    );
+                }
+
+                @:pathInJSON = pathIn+'package.json'; 
+                @:jsonAsset = openPackageAsset(path:pathInJSON);
+                if (json == empty) error(detail:'Could not access ' + pathInJSON);
+
+                // will throw an error itself if cant decode.
+                @:opts = JSON.decode(string:json.string);
+
+                // should generate it
+                @:bundle = __Bundle__.new(opts);
+
+                writePackageAsset(path:pathOut, bytes:bundle.bytes);
+                Topaz.Resources.removeAsset(name:CREATE_PACKAGE_NAME);
+                Topaz.Resources.removeAsset(name:bundle.name);
             },
             debug ::{
                 topaz__debug();
