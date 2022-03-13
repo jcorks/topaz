@@ -68,7 +68,7 @@ void topaz_array_destroy(
 ///
 const topazArray_t * topaz_array_temporary_from_static_array(
     /// The data to populate the temporary array for you.
-    void * array, 
+    const void * array, 
 
     /// Size of the object within the input array.
     uint32_t sizeofType, 

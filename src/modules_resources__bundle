@@ -55,15 +55,15 @@ static void topaz_bundle_set_attributes(
     int versionMicro,
     const topazString_t * description,
     const topazString_t * author,
-    const topazString_t ** dependsName,
-    const int * dependsMinor, // MAJOR.MINOR
+    uint32_t dependsCount,
+    topazString_t * const dependsName[],
     const int * dependsMajor, // MAJOR.MINOR
-    uint32_t dependsCount
+    const int * dependsMinor // MAJOR.MINOR
 );
 
 
-static void topaz_bundle_set_attributes_from_data(
-    topaz_t *, 
+static void topaz_bundle_set_state_from_bytes(
+    topazAsset_t *, 
     const uint8_t * data,
     uint32_t size
 );
@@ -71,13 +71,17 @@ static void topaz_bundle_set_attributes_from_data(
 
 /// Retrieves the raw byte state of the bundle, representing the 
 /// state of all of its assets.
-static const uint8_t * topaz_bundle_get_attributes_as_data(
+static const uint8_t * topaz_bundle_get_state_as_bytes(
     topazAsset_t * bundle,
     uint32_t * size
 );
 
 
 
+
+static const topazString_t * topaz_bundle_get_name(
+    topazAsset_t * bundle
+);
 
 static void topaz_bundle_get_version(
     topazAsset_t * bundle,
@@ -113,7 +117,7 @@ static uint32_t topaz_bundle_get_asset_count(
 static const uint8_t * topaz_bundle_get_asset(
     topazAsset_t * bundle,
     uint32_t * size
-)
+);
 
 
 
@@ -131,10 +135,7 @@ static void topaz_bundle_add_item(
     const topazString_t * extension,
     
     /// Raw bytes of the asset
-    const uint8_t * data,
-
-    /// Bytecount for the asset
-    uint32_t dataSize
+    const topazArray_t * bytes
 );
 
 
@@ -144,8 +145,15 @@ static void topaz_bundle_clear(
 );
 
 
+int topaz_bundle_unpack_continue(
+    topazAsset_t * a,
+    topazAsset_t **
+);
 
-
+// returns whether the bundle has been unpacked yet.
+int topaz_bundle_is_unpacked(
+    topazAsset_t * a
+);
 
 
 
@@ -441,7 +449,7 @@ static uint8_t * bundle__chomp_item(
 ///
 topazAsset_t * topaz_bundle_create(
     topaz_t * t, 
-    const topazString_t * name,
+    const topazString_t * name
 ) {
 
 
@@ -478,10 +486,10 @@ void topaz_bundle_set_attributes(
     int versionMicro,
     const topazString_t * description,
     const topazString_t * author,
-    const topazString_t ** dependsNames,
-    const int * dependsVersions_min, // MAJOR.MINOR
+    uint32_t dependsCount,
+    topazString_t * const dependsNames[],
     const int * dependsVersions_maj, // MAJOR.MINOR
-    uint32_t dependsCount
+    const int * dependsVersions_min // MAJOR.MINOR
     
 ) {
     TopazAssetBundle * img = bundle__retrieve(a);
@@ -498,7 +506,6 @@ void topaz_bundle_set_attributes(
     topaz_string_set(img->description, description);
     topaz_string_set(img->author, author);
     
-    uint32_t i;
     for(i = 0; i < dependsCount; ++i) {
         Dependency ver;
         ver.minor = dependsVersions_min[i];
@@ -510,16 +517,14 @@ void topaz_bundle_set_attributes(
 }
 
 
-topazAsset_t * topaz_bundle_set_attributes_from_data(
-    topaz_t * ctx,
+void topaz_bundle_set_state_from_bytes(
+    topazAsset_t * a,
     const uint8_t * data,
     uint32_t byteCount
 ) {
     
-    
-) {
     TopazAssetBundle * img = bundle__retrieve(a);
-
+	
     uint32_t i;
     uint32_t len = topaz_array_get_size(img->depends);
     for(i = 0; i < len; ++i) {
@@ -528,7 +533,7 @@ topazAsset_t * topaz_bundle_set_attributes_from_data(
     if (!bundle__read_main_header(
         data,
         byteCount,
-        name,
+        img->name,	
         &img->major,
         &img->minor,
         &img->micro,
@@ -536,8 +541,8 @@ topazAsset_t * topaz_bundle_set_attributes_from_data(
         img->author,
         img->depends
     )) {
-        topaz_asset_destroy(img->src);
-        return NULL;
+        topaz_bundle_clear(a);
+        return;
     }
     
     img->size = 0;
@@ -545,7 +550,6 @@ topazAsset_t * topaz_bundle_set_attributes_from_data(
     memcpy(img->data, data, byteCount);
     img->size = byteCount;
 
-    return img->src;
 }
 
 
@@ -584,6 +588,13 @@ uint32_t topaz_bundle_get_depends_count(
 
 }
 
+static const topazString_t * topaz_bundle_get_name(
+    topazAsset_t * a
+) {
+    TopazAssetBundle * b = bundle__retrieve(a);
+    return b->name;
+}
+
 const topazString_t * topaz_bundle_get_depends(
     topazAsset_t * a,
     uint32_t index,
@@ -613,10 +624,8 @@ void topaz_bundle_add_item(
     const topazString_t * extension,
     
     
-    /// Raw data of the asset.
-    const topazAsset_t * dataAsset  
+    const topazArray_t * bytes
 ) {
-    const topazArray_t * bytes = topaz_data_get_as_bytes((topazAsset_t*)dataAsset);
     TopazAssetBundle * b = bundle__retrieve(a);
     uint32_t entrySize = bundle__get_entry_size(name, extension, topaz_array_get_size(bytes));
     uint32_t oldSize = b->size;
@@ -653,7 +662,7 @@ void topaz_bundle_clear(
 
 /// Retrieves the raw byte state of the bundle, representing the 
 /// state of all of its assets.
-const uint8_t * topaz_bundle_get_packed_data(
+const uint8_t * topaz_bundle_get_state_as_bytes(
     topazAsset_t * a,
     uint32_t * size
 ) {
@@ -667,108 +676,100 @@ const uint8_t * topaz_bundle_get_packed_data(
 
 int topaz_bundle_unpack_continue(
     topazAsset_t * a,
-    int nItems
+    topazAsset_t ** unpacked
 ) {
     TopazAssetBundle * b = bundle__retrieve(a);
     topazResources_t * res = topaz_context_get_resources(b->ctx);
     int n;
-    for(n = 0; n < nItems; ++n) {
-        uint32_t subb = topaz_array_get_size(b->subBundles);
-        if (subb) {
-            topazAsset_t * as = topaz_array_at(b->subBundles, topazAsset_t *, topaz_array_get_size(b->subBundles)-1);
-            if (!topaz_bundle_unpack_continue(as, nItems)) {
-                topaz_array_remove(b->subBundles, topaz_array_get_size(b->subBundles)-1);
-            }
-            return 1;
-        }
-        if (!b->size) return 0;
-        // start from end!
-        topazString_t * name = NULL;
-        topazString_t * ext = NULL;
-        uint32_t len = 0;
-        uint8_t * data = bundle__chomp_item(
-            b->data,
-            &b->size,
-            &name,
-            &ext,
-            &len
-        );
-        
-        if (!(len && data)) {
-            if (name) topaz_string_destroy(name);
-            if (ext) topaz_string_destroy(ext);
-            free(data);
-            return 0;
-        }
-        topazString_t * oldName = name;
-        name = topaz_string_create_from_c_str("%s.%s",
-            topaz_string_get_c_str(b->name),
-            topaz_string_get_c_str(oldName)
-        );
-        topaz_string_destroy(name);
-        
-        topazAsset_t * asset = topaz_resources_create_asset(
-            res,
-            name,
-            topazAsset_Type_Data
-        );
-        topaz_data_set_from_bytes(
-            asset,
-            TOPAZ_ARRAY_CAST(data, uint8_t, len)
-        );
+    *unpacked = NULL;
 
-        topaz_string_destroy(name);
-
-        if (!asset) {
-            if (ext) topaz_string_destroy(ext);
-            free(data);        
-            return 0;
+    uint32_t subb = topaz_array_get_size(b->subBundles);
+    if (subb) {
+        topazAsset_t * as = topaz_array_at(b->subBundles, topazAsset_t *, topaz_array_get_size(b->subBundles)-1);
+        if (!topaz_bundle_unpack_continue(as, unpacked)) {
+            topaz_array_remove(b->subBundles, topaz_array_get_size(b->subBundles)-1);
         }
-        free(data);
-        
-        
-        if (topaz_string_test_eq(ext, TOPAZ_STR_CAST("bundle"))) {
-            // convert to bundle
-            const topazArray_t * srcData = topaz_data_get_as_bytes(asset);
-            topazAsset_t * bundle = topaz_bundle_create_from_data(
-                b->ctx, 
-                topaz_array_get_data(srcData),
-                topaz_array_get_size(srcData)
-            );
-            if (!bundle) return 0;
-
-            topaz_array_push(b->subBundles, bundle);
-        } else {
-            topaz_resources_convert_asset(
-                res, 
-                ext,
-                asset
-            );      
-        }  
-        topaz_string_destroy(ext);
+        return 1;
     }
+    if (!b->size) return 0;
+    // start from end!
+    topazString_t * name = NULL;
+    topazString_t * ext = NULL;
+    uint32_t len = 0;
+    uint8_t * data = bundle__chomp_item(
+        b->data,
+        &b->size,
+        &name,
+        &ext,
+        &len
+    );
+    
+    if (!(len && data)) {
+        if (name) topaz_string_destroy(name);
+        if (ext) topaz_string_destroy(ext);
+        free(data);
+        return 0;
+    }
+    topazString_t * oldName = name;
+    name = topaz_string_create_from_c_str("%s.%s",
+        topaz_string_get_c_str(b->name),
+        topaz_string_get_c_str(oldName)
+    );
+    topaz_string_destroy(name);
+    
+    topazAsset_t * asset = topaz_resources_create_asset(
+        res,
+        name,
+        topazAsset_Type_Data
+    );
+    topaz_data_set_from_bytes(
+        asset,
+        TOPAZ_ARRAY_CAST(data, uint8_t, len)
+    );
+
+    topaz_string_destroy(name);
+
+    if (!asset) {
+        if (ext) topaz_string_destroy(ext);
+        free(data);        
+        return 0;
+    }
+    free(data);
+    
+    
+    if (topaz_string_test_eq(ext, TOPAZ_STR_CAST("bundle"))) {
+        topazAsset_t * bundle = topaz_resources_convert_asset(
+            res, 
+            ext,
+            asset
+        );   
+        if (!bundle) return 0;
+
+        topaz_array_push(b->subBundles, bundle);
+    } else {
+        *unpacked = topaz_resources_convert_asset(
+            res, 
+            ext,
+            asset
+        );      
+
+    }  
+    topaz_string_destroy(ext);
+    
     
     return b->size != 0;
     
 }
 
 
-/// Unpacks all the items in the bundle. For 
-/// each item, a new asset will be created within 
-/// resources. Each asset will be prefixed with 
-/// this bundle asset's name followed by "."
-/// and the name of the sub-asset.
-/// For example, a bundle with the name 
-/// "Package" that contains an asset named 
-/// "Item" could be fetched under the name "Package.Item"
-/// Any assets that are, themselves, bundled will also be 
-/// unpacked.
-int topaz_bundle_unpack_all(
+// returns whether the bundle has been unpacked yet.
+int topaz_bundle_is_unpacked(
     topazAsset_t * a
 ) {
-    while(topaz_bundle_unpack_continue(a, 1));
     TopazAssetBundle * b = bundle__retrieve(a);
     return b->size == 0;
 }
+
+
 
 

@@ -75,7 +75,7 @@
             };
 
             if (Topaz.Input.getState(input:Topaz.Input.KEY.RIGHT)) ::<={
-                this.position += 1;         
+                this.position.y += 1;         
             };
 
             // The left/right/middle button can be polled using 

@@ -76,7 +76,7 @@ const topazArray_t * topaz_array_empty() {
 static topazArray_t * tempVals[topaz_array_temp_max_calls] = {0};
 static int tempIter = 0;
 
-const topazArray_t * topaz_array_temporary_from_static_array(void * arr, uint32_t sizeofType, uint32_t len) {
+const topazArray_t * topaz_array_temporary_from_static_array(const void * arr, uint32_t sizeofType, uint32_t len) {
     if (tempIter >= topaz_array_temp_max_calls) tempIter = 0;
     if (tempVals[tempIter]) {
         topaz_array_destroy(tempVals[tempIter]);

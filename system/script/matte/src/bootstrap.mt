@@ -1,6 +1,6 @@
 
-@class = import(module:'Matte.Core.Class');
-
+@:class = import(module:'Matte.Core.Class');
+@:JSON  = import(module:'Matte.Core.JSON');
 
 
 @Topaz;
@@ -1505,153 +1505,7 @@ Topaz = class(
             );
         };
         
-        @__Bundle__ = ::<={
-            @:topaz_bundle__create_empty = getExternalFunction(name:'topaz_bundle__create_empty');
-            @:topaz_bundle__add_item = getExternalFunction(name:'topaz_bundle__add_item');
-            @:topaz_bundle__get_byte_count = getExternalFunction(name:'topaz_bundle__get_byte_count');
-            @:topaz_bundle__get_nth_byte = getExternalFunction(name:'topaz_bundle__get_nth_byte');
 
-            @:topaz_bundle__get_version_major = getExternalFunction(name:'topaz_bundle__get_version_major');
-            @:topaz_bundle__get_version_minor = getExternalFunction(name:'topaz_bundle__get_version_minor');
-            @:topaz_bundle__get_version_micro = getExternalFunction(name:'topaz_bundle__get_version_micro');
-
-            @:topaz_bundle__get_description = getExternalFunction(name:'topaz_bundle__get_description');
-            @:topaz_bundle__get_author = getExternalFunction(name:'topaz_bundle__get_author');
-            @:topaz_bundle__get_depends_count = getExternalFunction(name:'topaz_bundle__get_depends_count');
-            @:topaz_bundle__get_depends_nth_version = getExternalFunction(name:'topaz_bundle__get_depends_nth_version');
-            @:topaz_bundle__get_depends_nth_name = getExternalFunction(name:'topaz_bundle__get_depends_nth_name');
-
-            return class(
-                name : 'Topaz.Data',        
-                inherits : [__Asset__],
-                define : ::(this) { 
-                    @impl;
-                    this.constructor = ::(native, json){
-
-                        
-                        return if (json == empty) ::<={
-                            this.constructor[__Asset__](native:native);
-                            impl = this.native;
-                            return this;
-                        } else ::<={
-                        
-                            /*
-                            {
-                                name: 
-                                version : {
-                                    major:
-                                    minor:
-                                    micro:
-                                },                            
-                                description:
-                                author:
-                                depends : [
-                                    {
-                                        name:
-                                        version:
-                                    }                                  
-                                ],
-                                items : [
-                                    {
-                                        name:
-                                        extension:
-                                        path: 
-                                    }                                
-                                ]                            
-                            }
-                            */
-                            @:jsonFormatted = {
-                                bundledName : json.name,
-                                versionMajor : json.version.major,
-                                versionMinor : json.version.minor,
-                                versionMicro : json.version.micro,
-                                description  : json.description,
-                                author       : json.author
-                                
-
-                            };
-                            
-                            @:dependsNames = [];
-                            @:dependsVersions = [];
-                            for(in:[0, Object.length(of:json.depends)], do:::(i) {
-                                dependsNames[i]   = json.depends[i].name;
-                                dependsVersions[i] = json.depends[i].version;
-                            });
-                              
-                            
-                            
-                            @impl = this.bindNative(
-                                instance : native,
-                                args : [
-                                    jsonFormatted,
-                                    dependsNames,
-                                    dependsVersions                                    
-                                ]
-                            );
-                            
-                            
-                            foreach(in:json.items, do:::(k, item) {
-                                @:itemAsset = __Resources__.createAsset(path:item.path, name:item.name);
-                                topaz_bundle__add_item(
-                                    a:native,
-                                    b:item.name,
-                                    c:item.extension,
-                                    d:itemAsset                                        
-                                );
-                            });
-                            return this;                        
-                        };
-                    };
-                    @:impl = this.native;            
-                    this.interface = {
-                         bytes : {
-                            get :: {
-                                @:bytes = [];
-                                for(in:[0, topaz_bundle__get_byte_count(a:impl)], do:::(i) {
-                                    bytes[i] = topaz_bundle__get_nth_byte(a:impl, b:i);
-                                });
-                                return bytes;
-                            }
-                         },
-                         
-                         description : {
-                            get :: {
-                                return topaz_bundle__get_description(a:impl);
-                            }
-                         },
-                         author : {
-                            get :: {
-                                return topaz_bundle__get_author(a:impl);
-                            }
-                         },
-                         version : {
-                            get :: {
-                                return {
-                                    major : topaz_bundle__get_version_major(a:impl),
-                                    minor : topaz_bundle__get_version_minor(a:impl),
-                                    micro : topaz_bundle__get_version_micro(a:impl)                                    
-                                };
-                            }
-                         },
-                         depends : {
-                            get :: {
-                                @:deps = [];
-                                for(in:[0, topaz_bundle__get_depends_count(a:impl)], do:::(i) {
-                                    deps[i] = {
-                                        name: topaz_bundle__get_depends_nth_name(a:impl, b:i),
-                                        version: topaz_bundle__get_depends_nth_version(a:impl, b:i)
-                                    };
-                                });
-                            }
-                         }
-                    };
-                    
-                }                
-            
-            );
-
-
-        };
         
         @__Sound__ = ::<={
             @:topaz_sound__get_sample_count = getExternalFunction(name:'topaz_sound__get_sample_count');
@@ -1702,6 +1556,9 @@ Topaz = class(
             @:topaz_resources__is_extension_supported = getExternalFunction(name:'topaz_resources__is_extension_supported');
             @:topaz_resources__get_path = getExternalFunction(name:'topaz_resources__get_path');
             @:topaz_resources__set_path = getExternalFunction(name:'topaz_resources__set_path');
+            @:topaz_resources__pack_bundle = getExternalFunction(name:'topaz_resources__pack_bundle');
+            @:topaz_resources__unpack_bundle = getExternalFunction(name:'topaz_resources__unpack_bundle');
+            @:topaz_resources__query_bundle = getExternalFunction(name:'topaz_resources__query_bundle');
             return class(
                 name : 'Topaz.Resources',        
                 define : ::(this){ 
@@ -1768,6 +1625,99 @@ Topaz = class(
                             set : ::(value) { 
                                 topaz_resources__set_path(a:value);             
                             }
+                        },
+                        
+            
+                        /*
+                        {
+                            name: 
+                            version : {
+                                major:
+                                minor:
+                                micro:
+                            },                            
+                            description:
+                            author:
+                            depends : [
+                                {
+                                    name:
+                                    version: {
+                                        major:
+                                        minor:
+                                    }
+                                }                                  
+                            ],
+                            items : [
+                                {
+                                    name:
+                                    extension:
+                                    path: 
+                                }                                
+                            ]                            
+                        }
+                        */
+                        createPackage ::(pathIn, pathOut) {
+                            @:CREATE_PACKAGE_NAME = "__TOPAZ_PACKAGE_IN";
+
+                            @:openPackageAsset ::(path) {
+                                this.removeAsset(name:CREATE_PACKAGE_NAME);
+                                return this.createAsset(path:pathInJSON, name:CREATE_PACKAGE_NAME);
+                            };
+
+                            @:writePackageAsset ::(out, bytes) {
+                                this.removeAsset(name:CREATE_PACKAGE_NAME);
+                                @:data = Topaz.Resources.createAsset(type:Topaz.Asset.TYPE.BUNDLE, name:CREATE_PACKAGE_NAME); 
+                                data.bytes = bytes;
+                                this.writeAsset(
+                                    asset:data,
+                                    path:out,
+                                    extension:""
+                                );
+                            };
+
+                            @:pathInJSON = pathIn+'package.json'; 
+                            @:json = openPackageAsset(path:pathInJSON);
+                            if (json == empty) error(detail:'Could not access ' + pathInJSON);
+
+                            // will throw an error itself if cant decode.
+                            @:opts = JSON.decode(string:json.string);
+
+
+                            @:arg0 = [
+                                CREATE_PACKAGE_NAME,
+                                opts.name,
+                                opts.version.major,
+                                opts.version.minor,
+                                opts.version.micro,
+                                opts.description,
+                                opts.author
+                            ];
+                            
+                            @:arg1 = [];
+                            foreach(in:opts.depends, do:::(k, v) {
+                                arg1[k] = [
+                                    v.name,
+                                    v.version.major,
+                                    v.version.minor
+                                ];
+                            });
+                            
+                            @:arg2 = [];
+                            foreach(in:opts.items, do:::(k, v) {
+                                if (this.createAsset(path:v.path, name:v.name) == empty)
+                                    error(detail:'Could not read bytes for sub-asset for package! Is it missing?');
+                                arg2[k] = [
+                                    v.name,
+                                    v.extension
+                                ];
+                            });
+                            
+                            
+                            @:bundle = topaz_resources__pack_bundle(a:arg0, b:arg1, c:arg2);
+                            
+                            writePackageAsset(path:pathOut, bytes:bundle.bytes);
+                            this.removeAsset(name:CREATE_PACKAGE_NAME);
+                            this.removeAsset(name:bundle.name);                           
                         }
                     };
                 }
@@ -3716,39 +3666,8 @@ Topaz = class(
             fromBase64 : ::(string) { 
                 return __Topaz__.Data.new(native:topaz__from_base64(a:string));
             },
-            createPackage ::(pathIn, pathOut) {
-                @:CREATE_PACKAGE_NAME = "__TOPAZ_PACKAGE_IN";
+            
 
-                @:openPackageAsset ::(path) {
-                    Topaz.Resources.removeAsset(name:CREATE_PACKAGE_NAME);
-                    return Topaz.Resources.createAsset(path:pathInJSON, name:CREATE_PACKAGE_NAME);
-                };
-
-                @:writePackageAsset ::(out, bytes) {
-                    Topaz.Resources.removeAsset(name:CREATE_PACKAGE_NAME);
-                    @:data = Topaz.Resources.createAsset(type:Topaz.Asset.TYPE.BUNDLE, name:CREATE_PACKAGE_NAME); 
-                    data.bytes = bytes;
-                    Topaz.Resources.writeAsset(
-                        asset:data,
-                        path:out,
-                        extension:""
-                    );
-                }
-
-                @:pathInJSON = pathIn+'package.json'; 
-                @:jsonAsset = openPackageAsset(path:pathInJSON);
-                if (json == empty) error(detail:'Could not access ' + pathInJSON);
-
-                // will throw an error itself if cant decode.
-                @:opts = JSON.decode(string:json.string);
-
-                // should generate it
-                @:bundle = __Bundle__.new(opts);
-
-                writePackageAsset(path:pathOut, bytes:bundle.bytes);
-                Topaz.Resources.removeAsset(name:CREATE_PACKAGE_NAME);
-                Topaz.Resources.removeAsset(name:bundle.name);
-            },
             debug ::{
                 topaz__debug();
             },

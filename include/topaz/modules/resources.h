@@ -327,6 +327,8 @@ topazAsset_t * topaz_resources_pack_bundle(
     // Text data to identify author(s) of the bundle. 
     const topazString_t * author,
 
+
+
     // number of dependencies that this package 
     // requires when loading. If these bundles are not 
     // loaded when unpacking, the unpacking process
@@ -334,17 +336,37 @@ topazAsset_t * topaz_resources_pack_bundle(
     uint32_t dependsCount,
 
     // The names of the dependencies.
-    const topazString_t ** dependsName,
+    topazString_t * const dependsName[],
 
     // The required minor versions of the dependencies.
-    const int * dependsMinor, // MAJOR.MINOR
+    const int * dependsMinor,
 
     // The required major versions of the dependenices.
-    const int * dependsMajor, // MAJOR.MINOR
+    const int * dependsMajor, 
 
-    const topazString_t ** assetNames,
-    const topazString_t ** assetExtensions
+
+
+    // Number of sub-assets to pack in the bundle.
+    // These assets will have their data state (bytes) 
+    // copied directly into the bundle.
+    // As such, only assets of the Data type can 
+    // be packed within a bundle.
     uint32_t assetCount,
+
+    // The name of the Data asset that should be 
+    // packed into the bundle. This is the name 
+    // that will be used to refer to the asset as well 
+    // once unpacked. Bundles act as asset namespaces,
+    // making the asset accessible with: [BundleName].[AssetName]
+    // NOTE: if a bundle is a, itself, within a bundle, the 
+    // formal name of the assets will follow suit.
+    topazString_t * const assetNames[],
+    
+    // The extension hint string. When assets packed within 
+    // a bundle are accessed upon unpacking, they are automatically 
+    // converted into an asset. If the extension is NULL or the 
+    // empty string, no conversion will take place.
+    topazString_t * const assetExtensions[]
 );
 
 
@@ -357,14 +379,51 @@ topazAsset_t * topaz_resources_pack_bundle(
 // Because resources can span many different assets, a user function may 
 // be run on every new asset that is loaded. This can help give 
 // user feedback for large assets / bundles.
+//
 int topaz_resources_unpack_bundle(
+    // The resources instance that contains the bundle.
     topazResources_t * res,
+    
+    // The name of the bundle. Note that this is NOT the asset name, 
+    // the bundle name is separate.
     const topazString_t * bundleName, 
-    int min_minorVersionRequired,
+    
+    // Required minimum major of the bundle.
+    // If the currently stored bundle within resources of the 
+    // requested bundle name has a major version below this, 
+    // unpacking will fail. Alternatively, if TOPAZ_RESOURCES_BUNDLE_VERSION_ANY
+    // is specified, the minor version requirement is ignored, and 
+    // ANY bundle with the requested name will be used. 
     int min_majorVersionRequired,
-    void * userdata,
-    void (*onNewItem)(topazResources_t * res, void * userData)
+    
+    // Required minimum minor version of the bundle.
+    // In the case that major versions match between the requested
+    // and resources-stored bundle match, the minor version is checked 
+    // as well. If the stored bundle's minor version 
+    // is below this minor version, unpacking will fail. Alternatively, 
+    // if TOPAZ_RESOURCES_BUNDLE_VERSION_ANY is entered and the major versions 
+    // match, the bundle will always be accepted.
+    int min_minorVersionRequired,
+    
+    // Called upon each new asset thats loaded within the bundle.
+    void (*onNewItem)(topazResources_t * res, topazAsset_t * newItem, void * userdata),
+
+    // 
+    void * userdata
+
 );
+
+// Returns a newly created string that contains a summary of the bundle.
+// This includes info about the version, name, dependenices, assets, and other 
+// core info describing the bundle.
+topazString_t * topaz_resources_query_bundle(
+    // The resources instance.
+    topazResources_t * res,
+    
+    // The name of the bundle.
+    const topazString_t * bundleName
+);
+
 
 
 #endif

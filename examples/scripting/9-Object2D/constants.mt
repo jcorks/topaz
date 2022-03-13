@@ -25,7 +25,7 @@ return {
     
     BALL_SIZE : 50,
     
-    BALL_IMAGE : Topaz.Resources.loadAsset(
+    BALL_IMAGE : Topaz.Resources.convertAsset(
         asset:Topaz.Resources.createAsset(
             path:'ball.png', 
             name:'Bouncy.ball'

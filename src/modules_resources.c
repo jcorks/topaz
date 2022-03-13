@@ -32,6 +32,7 @@ struct topazResources_t {
     topazTable_t * name2asset;
 
     topazTable_t * ioxs; //extension -> iox
+    topazTable_t * bundles; //package repository. maps bundleName -> topazAsset_t (bundle)
     const topazFilesystem_Path_t * path;
 };
 
@@ -42,7 +43,7 @@ topazResources_t * topaz_resources_create(topaz_t * ctx) {
     topazResources_t * out = calloc(1, sizeof(topazResources_t));
     out->ctx = ctx;
     out->name2asset = topaz_table_create_hash_topaz_string();
-
+    out->bundles = topaz_table_create_hash_topaz_string();
     // create all ioxs 
     out->ioxs = topaz_table_create_hash_topaz_string();
     topazArray_t * ioxNames = topaz_system_get_available_backends(TOPAZ_STR_CAST("iox"));
@@ -79,6 +80,7 @@ void topaz_resources_destroy(topazResources_t * r) {
         topaz_asset_destroy(topaz_table_iter_get_value(iter));
     }
     topaz_table_destroy(r->name2asset);
+    topaz_table_destroy(r->bundles);
     free(r);
 
 }
@@ -127,6 +129,7 @@ topazAsset_t * topaz_resources_create_asset(
       case topazAsset_Type_Sound: asset    = topaz_sound_create(r->ctx, name); break;
       case topazAsset_Type_Material: asset = topaz_material_create(r->ctx, name); break;
       case topazAsset_Type_Mesh:  asset    = topaz_mesh_create(r->ctx, name); break;
+      // bundles are NOT allowed to be created freely.
       default: {
         if (custname) topaz_string_destroy((topazString_t *)name);
         return NULL;
@@ -197,75 +200,244 @@ topazAsset_t * topaz_resources_create_data_asset_from_path(
 
 //// PRIVATE:
 
-/// Unpacks all the items in the bundle. For 
-/// each item, a new asset will be created within 
-/// resources. Each asset will be prefixed with 
-/// this bundle asset's name followed by "."
-/// and the name of the sub-asset.
-/// For example, a bundle with the name 
-/// "Package" that contains an asset named 
-/// "Item" could be fetched under the name "Package.Item"
-/// Any assets that are, themselves, bundled will also be 
-/// unpacked.
-int topaz_bundle_unpack_all(
-    topazAsset_t * bundle
-);
 
-/// Unpacks and loads the next nItems assets within 
-/// the bundle. If nItems is greater than the number of 
-/// unpacked assets, the remaining assets are unpacked.
-/// Returns 1 if more items are in the bundle and 0 otherwise.
-int topaz_bundle_unpack_continue(
-    topazAsset_t * bundle,
-    int nItems
-);
 
+topazAsset_t * topaz_resources_pack_bundle(
+    topazResources_t * res,
+    const topazString_t * assetName,
+    const topazString_t * bundleName,
+    int versionMajor,
+    int versionMinor,
+    int versionMicro,
+    const topazString_t * description,
+    const topazString_t * author,
+    uint32_t dependsCount,
+    topazString_t * const dependsName[],
+    const int * dependsMinor,
+    const int * dependsMajor, 
+    uint32_t assetCount,
+    topazString_t * const assetNames[],
+    topazString_t * const assetExtensions[]
+) {
+    if (versionMajor < 0 || versionMinor < 0 || versionMicro < 0)
+        return 0;
+
+    topazAsset_t * bundle = topaz_bundle_create(res->ctx, TOPAZ_STR_CAST(""));
+    topaz_bundle_set_attributes(
+        bundle,
+        bundleName,
+        versionMajor,
+        versionMinor,
+        versionMicro,
+        description,
+        author,
+        dependsCount,
+        dependsName,
+        dependsMajor,
+        dependsMinor
+    );
+    
+    
+    uint32_t i;
+    for(i = 0; i < assetCount; ++i) {
+        topazAsset_t * a = topaz_resources_fetch_asset(res, assetNames[i]);
+        if (!(a && topaz_asset_get_type(a) == topazAsset_Type_Data)) {
+            topaz_asset_destroy(bundle);
+            return 0;
+        }
+        
+        
+        topaz_bundle_add_item(
+            a,
+            topaz_asset_get_name(a),
+            assetExtensions[i],
+            topaz_data_get_as_bytes(a)
+        );
+    }
+    
+    topazAsset_t * bundleAsData = topaz_resources_create_asset(
+        res,
+        assetName,
+        topazAsset_Type_Data        
+    );
+
+    uint32_t bytesSize;
+    const uint8_t * bytes = topaz_bundle_get_state_as_bytes(bundle, &bytesSize);
+
+    topaz_data_set_from_bytes(
+        bundleAsData,
+        TOPAZ_ARRAY_CAST(bytes, uint8_t, bytesSize)
+    );
+        
+    topaz_asset_destroy(bundle);
+    return bundleAsData;
+}
+
+
+static int version_check(int reqMaj, int reqMin, int maj, int min) {
+    if (maj != TOPAZ_RESOURCES_BUNDLE_VERSION_ANY) {
+        if (
+            (maj < reqMaj) ||
+            (min != TOPAZ_RESOURCES_BUNDLE_VERSION_ANY && min < reqMin)
+        ) {
+            // version check failure.
+            return 0;
+
+        }
+    }
+    return 1;
+}
 
 int topaz_resources_unpack_bundle(
     topazResources_t * res,
-    const topazString_t * bundleName, 
-    int min_minorVersionRequired,
+    const topazString_t * bundleName,     
     int min_majorVersionRequired,
-    void * userdata,
-    void (*onNewItem)(topazResources_t * res, void * userData)
+    int min_minorVersionRequired,
+    void (*onNewItem)(topazResources_t * res, topazAsset_t *, void * userData),
+    void * userdata
 ) {
-    topazAsset_t * src = topaz_resources_fetch_asset(res, bundleName);
-    topazArray_t * srcBytes = topaz_data_get_as_bytes(src);
-    topazAsset_t * bundle = topaz_bundle_create_from_data(
-        res->ctx,
-        topaz_array_get_data(srcBytes),
-        topaz_array_get_size(srcBytes)
-    );
-
-    uint32_t i;
-    uint32_t len = topaz_bundle_get_depends_count(bundle);
-
-    // first, unpack
+    topazAsset_t * b = topaz_table_find(res->bundles, bundleName);
+    if (!b) return 0;
+    
+    int maj, min, mic;
+    topaz_bundle_get_version(b, &maj, &min, &mic);
+    
+    if (!version_check(
+        min_majorVersionRequired,
+        min_minorVersionRequired,
+        maj,
+        min
+    )) return 0;
+    
+    
+    
+    // depency checking and loading
+    uint32_t i, len;
+    len = topaz_bundle_get_depends_count(b);
     for(i = 0; i < len; ++i) {
-
+        int reqMaj, reqMin;
+        const topazString_t * name = topaz_bundle_get_depends(
+            b,
+            i,
+            &reqMaj, &reqMin
+        );
+        
+        topazAsset_t * dep = topaz_table_find(res->bundles, bundleName);
+        if (!dep) {
+            // missing dependency
+            return 0;
+        }
+        
+        if (!topaz_bundle_is_unpacked(dep)) {
+            if (!topaz_resources_unpack_bundle(
+                res,
+                name,
+                reqMaj, reqMin,
+                onNewItem,
+                userdata
+            )) {
+                // failed
+                return 0;
+            }
+        } else {
+            topaz_bundle_get_version(dep, &maj, &min, &mic);
+            if (!version_check(
+                reqMaj,
+                reqMin,
+                maj,
+                min            
+            )) return 0;
+        }
+        
     }
+    
 
-    const topazArray_t * srcData = topaz_data_get_as_bytes(srcAsset);
-    topazAsset_t * bundle = topaz_bundle_create_from_data(
-        r->ctx, 
-        topaz_array_get_data(srcData),
-        topaz_array_get_size(srcData)
-    );
-    if (!bundle) return NULL;
-    topaz_table_insert(
-        r->name2asset,
-        topaz_asset_get_name(srcAsset),
-        NULL
+    topazAsset_t * newItem = NULL;
+    while(topaz_bundle_unpack_continue(b, &newItem)) {
+        if (newItem && onNewItem) {
+            onNewItem(
+                res,
+                newItem,
+                userdata
+            );
+        }
+    }
+    
+    
+        
+}
+
+topazString_t * topaz_resources_query_bundle(
+    topazResources_t * res,
+    const topazString_t * bundleName
+) {
+    topazAsset_t * b = topaz_table_find(res->bundles, bundleName);
+    if (!b) return topaz_string_create();
+
+    
+    int maj, min, mic;
+    topaz_bundle_get_version(b, &maj, &min, &mic);
+
+    topazString_t * out = topaz_string_create_from_c_str(
+        "%s v.%d.%d.%d\n\n"
+        "author: \n%s\n\n"
+        "description:\n%s\n\n"
+        "dependencies:\n",
+        
+        topaz_string_get_c_str(topaz_bundle_get_name(b)),
+        maj, min, mic,
+        topaz_string_get_c_str(topaz_bundle_get_author(b)),
+        topaz_string_get_c_str(topaz_bundle_get_description(b))
     );
     
-    topaz_asset_destroy(srcAsset);
-    topaz_table_insert(
-        r->name2asset,
-        topaz_asset_get_name(bundle),
-        bundle
-    );
+    uint32_t i;
+    uint32_t len = topaz_bundle_get_depends_count(b);
+    for(i = 0; i < len; ++i) {
+        int dMaj, dMin;
+        const topazString_t * dep = topaz_bundle_get_depends(
+            b,
+            i,
+            &dMaj,
+            &dMin
+        );
+        
+        
+        topaz_string_concat_printf(
+            out,
+            "  %s ",
+            topaz_string_get_c_str(dep)
+        );
+        
+        if (dMaj == TOPAZ_RESOURCES_BUNDLE_VERSION_ANY) {
+            topaz_string_concat_printf(
+                out,
+                "(any version)\n"
+            );
+
+        } else {
+            topaz_string_concat_printf(
+                out,
+                "v %d.\n",
+                dMaj                
+            );
+
+            if (dMin == TOPAZ_RESOURCES_BUNDLE_VERSION_ANY) {
+                topaz_string_concat_printf(
+                    out,
+                    "*\n"
+                );                        
+            } else {
+                topaz_string_concat_printf(
+                    out,
+                    "%d\n",
+                    dMin                
+                );                                    
+            }
+        }
+    }
     
-    return bundle;
+    return out;
+    
 }
 
 
@@ -278,35 +450,63 @@ topazAsset_t * topaz_resources_convert_asset(
     if (topaz_asset_get_type(srcAsset) != topazAsset_Type_Data) {
         return NULL;
     }
-
-    // invalid extension if not created, return NULL
-    topazIOX_t * dec = topaz_table_find(r->ioxs, extension);
-    if (!dec) return NULL;
-    const topazString_t * name = topaz_asset_get_name(srcAsset);
-    // Create a new asset based on which kind it is.
-    topazAsset_t * asset;
-    switch(topaz_iox_get_asset_type(dec)) {
-      case topazAsset_Type_Data:  asset    = topaz_data_create(r->ctx, name);  break;
-      case topazAsset_Type_Image: asset    = topaz_image_create(r->ctx, name); break;
-      case topazAsset_Type_Sound: asset    = topaz_sound_create(r->ctx, name); break;
-      case topazAsset_Type_Material: asset = topaz_material_create(r->ctx, name); break;
-      case topazAsset_Type_Mesh:  asset    = topaz_mesh_create(r->ctx, name); break;
-      case topazAsset_Type_Bundle: asset   = topaz_bunclde_create(r->ctx, name); break;
-      default:
-        return NULL;
+    
+    // already data, return itself.
+    if (extension == NULL ||
+        topaz_string_test_eq(extension, TOPAZ_STR_CAST(""))) {
+        return srcAsset;   
     }
+    const topazString_t * name = topaz_asset_get_name(srcAsset);
+    topazAsset_t * asset;
+    
+    // SPECIAL CASE: bundles are not handled by normal IOX and are translated
+    // directly by the resources instance.
+    if (topaz_string_test_eq(extension, TOPAZ_STR_CAST("bundle"))) {
+        asset = topaz_bundle_create(r->ctx, name);
+        const topazArray_t * srcData = topaz_data_get_as_bytes(srcAsset);
+        topaz_bundle_set_state_from_bytes(
+            asset,
+            topaz_array_get_data(srcData),
+            topaz_array_get_size(srcData)
+        );
+        topaz_table_insert(
+            r->bundles, 
+            topaz_bundle_get_name(asset),
+            asset 
+        );
 
-    const topazArray_t * srcData = topaz_data_get_as_bytes(srcAsset);
+    // normal case: use an io translator to transform the data externally.
+    } else {
+        
 
-    // load in data into asset
-    if (!topaz_iox_load(
-        dec,
-        asset,
-        topaz_array_get_data(srcData),
-        topaz_array_get_size(srcData)
-    )) {
-        topaz_asset_destroy(asset);
-        return NULL;
+        // invalid extension if not created, return NULL
+        topazIOX_t * dec = topaz_table_find(r->ioxs, extension);
+        if (!dec) return NULL;
+
+        // Create a new asset based on which kind it is.
+
+        switch(topaz_iox_get_asset_type(dec)) {
+          case topazAsset_Type_Data:  asset    = topaz_data_create(r->ctx, name);  break;
+          case topazAsset_Type_Image: asset    = topaz_image_create(r->ctx, name); break;
+          case topazAsset_Type_Sound: asset    = topaz_sound_create(r->ctx, name); break;
+          case topazAsset_Type_Material: asset = topaz_material_create(r->ctx, name); break;
+          case topazAsset_Type_Mesh:  asset    = topaz_mesh_create(r->ctx, name); break;
+          default:
+            return NULL;
+        }
+
+        const topazArray_t * srcData = topaz_data_get_as_bytes(srcAsset);
+
+        // load in data into asset
+        if (!topaz_iox_load(
+            dec,
+            asset,
+            topaz_array_get_data(srcData),
+            topaz_array_get_size(srcData)
+        )) {
+            topaz_asset_destroy(asset);
+            return NULL;
+        }
     }
 
     topaz_table_insert(
@@ -373,6 +573,9 @@ int topaz_resources_write_asset(
 void topaz_resources_remove_asset(topazResources_t * r, topazAsset_t * asset) {
     if (asset) {
         topaz_table_remove(r->name2asset, topaz_asset_get_name(asset));    
+        if (topaz_asset_get_type(asset) == topazAsset_Type_Bundle) {
+            topaz_table_remove(r->bundles, topaz_asset_get_name(asset));
+        }
         topaz_asset_destroy(asset);
     }
 }

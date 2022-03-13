@@ -99,7 +99,6 @@ topazScript_t * topaz_script_manager_create_context(
 #include "script_native__particle_emitter_2d.h"
 #include "script_native__image.h"
 #include "script_native__data.h"
-#include "script_native__bundle.h"
 #include "script_native__sound.h"
 #include "script_native__input.h"
 #include "script_native__audio.h"
@@ -134,7 +133,6 @@ static void add_all_refs(topazScriptManager_t * s, topazScript_t * script, int p
     add_refs__particle_emitter_2d_api(script, s);
     add_refs__image_api(script, s);
     add_refs__data_api(script, s);
-    add_refs__bundle_api(script, s);
     add_refs__sound_api(script, s);
     add_refs__input_api(script, s);
     add_refs__audio_api(script, s);

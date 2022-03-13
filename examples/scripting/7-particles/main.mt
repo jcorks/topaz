@@ -31,7 +31,7 @@ a.addKeyframe(value:2,  function:Topaz.Automation.FUNCTION.SLOW, offset:1);
 @ramp100 = a.string;
 
 
-@:image = Topaz.Resources.loadAsset(
+@:image = Topaz.Resources.convertAsset(
     extension:'png', 
     asset:Topaz.Resources.createAsset(
         path:'base.png', 
@@ -65,7 +65,7 @@ particle.setFunctions(
 
 particle.setOffsetMin(
     speedX:-10,
-    speedY:-10,
+    speedY: 0,
 
     duration :1,
     direction :75,
@@ -75,7 +75,7 @@ particle.setOffsetMin(
 
 particle.setOffsetMax(
     speedX:10,
-    speedY:0,
+    speedY:10,
     duration:100,
     direction:115,
     red:0.1
