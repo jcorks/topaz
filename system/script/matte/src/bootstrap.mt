@@ -1607,8 +1607,8 @@ Topaz = class(
                             return topaz_resources__write_asset(a:asset.native, b:extension, c:path);
                         },
 
-                        removeAsset : ::(name) { 
-                            topaz_resources__remove_asset(a:name);
+                        removeAsset : ::(asset) { 
+                            topaz_resources__remove_asset(a:asset);
                         },
 
                         
@@ -1656,12 +1656,19 @@ Topaz = class(
                             ]                            
                         }
                         */
-                        createPackage ::(pathIn, pathOut) {
+                        createPackage ::(sourcePath, packageOut) {
+                            @:pathIn = sourcePath;
+                            @:pathOut = packageOut;
                             @:CREATE_PACKAGE_NAME = "__TOPAZ_PACKAGE_IN";
 
+
+
+
                             @:openPackageAsset ::(path) {
-                                this.removeAsset(name:CREATE_PACKAGE_NAME);
-                                return this.createAsset(path:pathInJSON, name:CREATE_PACKAGE_NAME);
+                                @oldP = this.fetchAsset(name:CREATE_PACKAGE_NAME);
+                                if (oldP != empty)
+                                    this.removeAsset(asset:oldP);
+                                return this.createAsset(path:path, name:CREATE_PACKAGE_NAME);
                             };
 
                             @:writePackageAsset ::(out, bytes) {
@@ -1702,22 +1709,32 @@ Topaz = class(
                                 ];
                             });
                             
+                            
+                            // change the resource path to the package location.
+                            @:oldPath = this.path;
+                                                   
+                            this.path = pathIn;
+                            
                             @:arg2 = [];
                             foreach(in:opts.items, do:::(k, v) {
-                                if (this.createAsset(path:v.path, name:v.name) == empty)
+                                if (this.createAsset(path:v.path, name:v.name) == empty) ::<={
+                                    this.path = oldPath; 
                                     error(detail:'Could not read bytes for sub-asset for package! Is it missing?');
+                                };
                                 arg2[k] = [
+                                
                                     v.name,
                                     v.extension
                                 ];
                             });
-                            
+                            this.path = oldPath;   
                             
                             @:bundle = topaz_resources__pack_bundle(a:arg0, b:arg1, c:arg2);
                             
                             writePackageAsset(path:pathOut, bytes:bundle.bytes);
-                            this.removeAsset(name:CREATE_PACKAGE_NAME);
-                            this.removeAsset(name:bundle.name);                           
+                            this.removeAsset(asset:bundle);     
+                            
+                   
                         }
                     };
                 }

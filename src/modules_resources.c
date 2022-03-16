@@ -248,7 +248,7 @@ topazAsset_t * topaz_resources_pack_bundle(
         
         
         topaz_bundle_add_item(
-            a,
+            bundle,
             topaz_asset_get_name(a),
             assetExtensions[i],
             topaz_data_get_as_bytes(a)

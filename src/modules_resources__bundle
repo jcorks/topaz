@@ -209,10 +209,10 @@ static void bundle__destroy(topazAsset_t * a, void * userData) {
 }
 
 static void bundle__write_string(uint8_t ** data, const topazString_t * str) {
-    *((uint32_t*)data) = topaz_string_get_length(str); 
-    uint32_t len = topaz_string_get_length(str); data+=sizeof(uint32_t);
+    *((uint32_t*)(*data)) = topaz_string_get_length(str); 
+    uint32_t len = topaz_string_get_length(str); *data+=sizeof(uint32_t);
     uint32_t i;
-    int * iter = (int*)data;
+    int * iter = (int*)*data;
     for(i = 0; i < len; ++i, ++iter) {
         *iter = topaz_string_get_char(str, i);
     }
@@ -226,11 +226,11 @@ static int bundle__read_string(
 ) { 
     if (*data + sizeof(uint32_t) > end) return 0;
     uint32_t len = *(uint32_t*)data;
-    data += sizeof(uint32_t);
+    *data += sizeof(uint32_t);
     uint32_t i;
     for(i = 0; i < len && *data + sizeof(int) <= end; ++i) {
-        topaz_string_append_char(str, *(int*)data);
-        data += sizeof(int);
+        topaz_string_append_char(str, *(int*)(*data));
+        *data += sizeof(int);
     }
     
     return *data <= end;
