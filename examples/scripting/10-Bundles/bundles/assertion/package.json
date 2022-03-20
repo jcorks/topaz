@@ -1,0 +1,17 @@
+{
+    "name": "Assertion", 
+    "version" : {
+        "major": 1,
+        "minor": 0,
+        "micro": 0
+    },                            
+    "description": "Package that gives the ability to test assertions.",
+    "author": "",
+
+    "items" : [
+        {
+            "name": "Test",
+            "path": "test.mt"        
+        }                         
+    ]                            
+}

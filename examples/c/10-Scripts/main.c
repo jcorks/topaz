@@ -31,6 +31,46 @@ static int run_script(topaz_t * ctx, topazScript_t * script, const topazString_t
     return 1;   
 }
 
+
+static void preload_all_bundles(topaz_t * ctx) {
+    
+    // load all .mt files in the first in case theyre going to be included.
+    const topazFilesystem_Path_t * s = topaz_filesystem_get_path(
+        topaz_context_get_filesystem(ctx),
+        topazFilesystem_DefaultNode_Bundles
+    );
+    
+    const topazArray_t * sources = topaz_filesystem_path_get_children(s);
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(sources);
+    for(i = 0; i < len; ++i) {
+
+        topazAsset_t * asset = topaz_resources_create_data_asset_from_path(
+            topaz_context_get_resources(ctx),
+            topaz_filesystem_path_as_string(
+                topaz_array_at(
+                    sources, 
+                    topazFilesystem_Path_t *, 
+                    i
+                )
+            ), 
+            topaz_filesystem_path_get_name(
+                topaz_array_at(
+                    sources, 
+                    topazFilesystem_Path_t *, 
+                    i
+                )
+            )
+        );
+        topaz_resources_convert_asset(
+            topaz_context_get_resources(ctx),
+            TOPAZ_STR_CAST("bundle"),
+            asset
+        );
+        
+    }
+}
+
 static void preload_all_scripts(topaz_t * ctx) {
     
     // load all .mt files in the first in case theyre going to be included.
@@ -104,6 +144,11 @@ int main(int argc, char ** argv) {
     // enable debugging!
     topaz_script_enable_debugging(script);
 
+
+    // first, load all and any bundles into memory. This 
+    // just means loading them as assets + converting them 
+    // so that they are ready to unpack.
+    preload_all_bundles(ctx);
 
     
     // the script can import other scripts.

@@ -22,6 +22,7 @@ struct topazFilesystem_t {
     topazFilesystem_Path_t * defaultResources;
     topazFilesystem_Path_t * defaultTopaz;
     topazFilesystem_Path_t * defaultUserData;    
+    topazFilesystem_Path_t * defaultBundles;
 };
 
 struct topazFilesystem_Path_t {
@@ -70,22 +71,26 @@ topazFilesystem_t * topaz_filesystem_create(topaz_t * ctx, topazSystem_Backend_t
     topazString_t * defaultResourcesStr = topaz_string_create();
     topazString_t * defaultTopazStr     = topaz_string_create();
     topazString_t * defaultUserDataStr  = topaz_string_create();
+    topazString_t * defaultBundlesStr   = topaz_string_create();
 
     out->userData = out->api.filesystem_create(
         out,
         ctx,
         defaultResourcesStr,
         defaultTopazStr,
-        defaultUserDataStr
+        defaultUserDataStr,
+        defaultBundlesStr
     );
     
     out->defaultResources = generate_path(out, defaultResourcesStr);
     out->defaultTopaz     = generate_path(out, defaultTopazStr);
     out->defaultUserData  = generate_path(out, defaultUserDataStr);
+    out->defaultBundles   = generate_path(out, defaultBundlesStr);
     
     topaz_string_destroy(defaultResourcesStr);
     topaz_string_destroy(defaultTopazStr);
     topaz_string_destroy(defaultUserDataStr);
+    topaz_string_destroy(defaultBundlesStr);
 
     return out;
 }
@@ -130,6 +135,7 @@ const topazFilesystem_Path_t * topaz_filesystem_get_path(
       case topazFilesystem_DefaultNode_Resources: return fs->defaultResources;
       case topazFilesystem_DefaultNode_Topaz:     return fs->defaultTopaz;
       case topazFilesystem_DefaultNode_UserData:  return fs->defaultUserData;
+      case topazFilesystem_DefaultNode_Bundles:   return fs->defaultBundles;
     }
     return NULL;
 }

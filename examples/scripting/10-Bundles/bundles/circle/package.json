@@ -1,0 +1,36 @@
+{
+    "name": "CircleShape", 
+    "version" : {
+        "major": 1,
+        "minor": 0,
+        "micro": 0
+    },                            
+    "description": "Package that lets you create randomly-colored circles",
+    "author": "",
+    
+    "depends" : [
+        {
+            "name" : "RNG-Color",
+            "version" : {
+                "major" : "1",
+                "minor" : "0"
+            }
+        },
+        {
+            "name" : "Assertion"
+        }
+    ],
+
+    "items" : [
+        {
+            "name": "Entity",
+            "path": "entity.mt"        
+        },
+        
+        {
+            "name": "Image",
+            "path": "circle.png",
+            "extension" : "png"
+        }               
+    ]                            
+}

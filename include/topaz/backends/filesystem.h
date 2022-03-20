@@ -129,6 +129,11 @@ enum topazFilesystem_DefaultNode {
     /// Filesystem location where user data should be located as suggested by the system. 
     topazFilesystem_DefaultNode_UserData,
 
+
+    /// The filesystem location for where default bundles for the program
+    /// is preferred.
+    topazFilesystem_DefaultNode_Bundles
+
 };
 
 

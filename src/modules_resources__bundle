@@ -173,8 +173,8 @@ static char * MAGIC_ID__BUNDLE = "t0p4zbundl3";
 
 
 typedef struct {
-    int minor;
     int major;
+    int minor;
     topazString_t * name;
 } Dependency;
 typedef struct {
@@ -225,7 +225,7 @@ static int bundle__read_string(
     topazString_t * str 
 ) { 
     if (*data + sizeof(uint32_t) > end) return 0;
-    uint32_t len = *(uint32_t*)data;
+    uint32_t len = *(uint32_t*)(*data);
     *data += sizeof(uint32_t);
     uint32_t i;
     for(i = 0; i < len && *data + sizeof(int) <= end; ++i) {
@@ -276,7 +276,7 @@ static void bundle__write_main_header(TopazAssetBundle * b, uint8_t * data) {
 
 
 static uint32_t bundle__get_main_header_size(TopazAssetBundle * b) {
-    uint32_t total = 12 + sizeof(uint32_t)*(4);
+    uint32_t total = 12 + sizeof(int)*3 + sizeof(uint32_t)*(4);
     total += topaz_string_get_length(b->name)*sizeof(int);
     total += topaz_string_get_length(b->description)*sizeof(int);
     total += topaz_string_get_length(b->author)*sizeof(int);
@@ -286,7 +286,7 @@ static uint32_t bundle__get_main_header_size(TopazAssetBundle * b) {
     for(i = 0; i < len; ++i) {
         total +=
             topaz_string_get_length(topaz_array_at(b->depends, Dependency, i).name)*sizeof(int) +
-            sizeof(int)*2
+            sizeof(int)*2+sizeof(uint32_t)
         ;
     }
     return total;
@@ -404,7 +404,7 @@ static void bundle__write_entry(
 }
 
 
-
+// Chomps the LAST item from the 
 static uint8_t * bundle__chomp_item(
     const uint8_t * data,
     uint32_t * size,
@@ -412,7 +412,8 @@ static uint8_t * bundle__chomp_item(
     topazString_t ** ext,
     uint32_t * outputSize
 ) {
-    uint32_t totalSize = data[*size - sizeof(uint32_t)];
+    // includes the size itself (4 bytes)
+    uint32_t totalSize = *(uint32_t*)(&data[*size - sizeof(uint32_t)]);
     if (totalSize >= *size) return NULL;    
     data = data+(*size-totalSize);
     
@@ -424,13 +425,13 @@ static uint8_t * bundle__chomp_item(
     *name = topaz_string_create();
     int * strname = (int*)data;
     uint32_t i;
-    for(i = 0; i < header[0]; ++i) {
-        topaz_string_set_char(*name, i, strname[i]);
+    for(i = 0; i < header[0]; ++i, ++strname) {
+        topaz_string_append_char(*name, *strname);
     }
     
     *ext = topaz_string_create();
-    for(i = 0; i < header[1]; ++i) {
-        topaz_string_set_char(*ext, i, strname[i]);
+    for(i = 0; i < header[1]; ++i, ++strname) {
+        topaz_string_append_char(*ext, *strname);
     }
     data = (uint8_t*)strname;
     uint8_t * output = malloc(header[2]);
@@ -630,7 +631,8 @@ void topaz_bundle_add_item(
     uint32_t entrySize = bundle__get_entry_size(name, extension, topaz_array_get_size(bytes));
     uint32_t oldSize = b->size;
     if (!b->size) {
-        b->size = bundle__get_main_header_size(b)+entrySize;
+        oldSize = bundle__get_main_header_size(b);
+        b->size = oldSize+entrySize;
         b->data = malloc(b->size);
         bundle__write_main_header(b, b->data);
     } else {
@@ -715,7 +717,7 @@ int topaz_bundle_unpack_continue(
         topaz_string_get_c_str(b->name),
         topaz_string_get_c_str(oldName)
     );
-    topaz_string_destroy(name);
+    topaz_string_destroy(oldName);
     
     topazAsset_t * asset = topaz_resources_create_asset(
         res,

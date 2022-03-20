@@ -338,11 +338,11 @@ topazAsset_t * topaz_resources_pack_bundle(
     // The names of the dependencies.
     topazString_t * const dependsName[],
 
-    // The required minor versions of the dependencies.
-    const int * dependsMinor,
+    // The required manor versions of the dependencies.
+    const int * dependsMajor,
 
-    // The required major versions of the dependenices.
-    const int * dependsMajor, 
+    // The required minor versions of the dependenices.
+    const int * dependsMinor, 
 
 
 

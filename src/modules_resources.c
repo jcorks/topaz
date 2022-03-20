@@ -213,8 +213,8 @@ topazAsset_t * topaz_resources_pack_bundle(
     const topazString_t * author,
     uint32_t dependsCount,
     topazString_t * const dependsName[],
-    const int * dependsMinor,
-    const int * dependsMajor, 
+    const int * dependsMajor,
+    const int * dependsMinor, 
     uint32_t assetCount,
     topazString_t * const assetNames[],
     topazString_t * const assetExtensions[]
@@ -275,14 +275,16 @@ topazAsset_t * topaz_resources_pack_bundle(
 
 
 static int version_check(int reqMaj, int reqMin, int maj, int min) {
+
+
     if (maj != TOPAZ_RESOURCES_BUNDLE_VERSION_ANY) {
+        if (maj < reqMaj) return 0;
+        if (maj > reqMaj) return 1;
+
         if (
-            (maj < reqMaj) ||
             (min != TOPAZ_RESOURCES_BUNDLE_VERSION_ANY && min < reqMin)
         ) {
-            // version check failure.
             return 0;
-
         }
     }
     return 1;
@@ -364,7 +366,7 @@ int topaz_resources_unpack_bundle(
     }
     
     
-        
+    return 1; 
 }
 
 topazString_t * topaz_resources_query_bundle(

@@ -91,7 +91,8 @@ void topaz_system_filesystem_noFilesystem__backend(
         topaz_t *,
         topazString_t * defaultResourcesPath,
         topazString_t * defaultTopazPath,
-        topazString_t * defaultUserDataPath
+        topazString_t * defaultUserDataPath,
+        topazString_t * defaultBundlesPath
     )) api_nothing;
     api->filesystem_destroy = (void (*)(
         topazFilesystem_t *,

@@ -1608,7 +1608,7 @@ Topaz = class(
                         },
 
                         removeAsset : ::(asset) { 
-                            topaz_resources__remove_asset(a:asset);
+                            topaz_resources__remove_asset(a:asset.native);
                         },
 
                         
@@ -1656,7 +1656,7 @@ Topaz = class(
                             ]                            
                         }
                         */
-                        createPackage ::(sourcePath, packageOut) {
+                        createBundle ::(sourcePath, packageOut) {
                             @:pathIn = sourcePath;
                             @:pathOut = packageOut;
                             @:CREATE_PACKAGE_NAME = "__TOPAZ_PACKAGE_IN";
@@ -1664,26 +1664,16 @@ Topaz = class(
 
 
 
-                            @:openPackageAsset ::(path) {
+                            @:clearPackageAsset ::(path) {
                                 @oldP = this.fetchAsset(name:CREATE_PACKAGE_NAME);
                                 if (oldP != empty)
                                     this.removeAsset(asset:oldP);
-                                return this.createAsset(path:path, name:CREATE_PACKAGE_NAME);
                             };
 
-                            @:writePackageAsset ::(out, bytes) {
-                                this.removeAsset(name:CREATE_PACKAGE_NAME);
-                                @:data = Topaz.Resources.createAsset(type:Topaz.Asset.TYPE.BUNDLE, name:CREATE_PACKAGE_NAME); 
-                                data.bytes = bytes;
-                                this.writeAsset(
-                                    asset:data,
-                                    path:out,
-                                    extension:""
-                                );
-                            };
 
                             @:pathInJSON = pathIn+'package.json'; 
-                            @:json = openPackageAsset(path:pathInJSON);
+                            clearPackageAsset();
+                            @:json = this.createAsset(path:pathInJSON, name:CREATE_PACKAGE_NAME);
                             if (json == empty) error(detail:'Could not access ' + pathInJSON);
 
                             // will throw an error itself if cant decode.
@@ -1701,14 +1691,20 @@ Topaz = class(
                             ];
                             
                             @:arg1 = [];
-                            foreach(in:opts.depends, do:::(k, v) {
-                                arg1[k] = [
-                                    v.name,
-                                    v.version.major,
-                                    v.version.minor
-                                ];
-                            });
-                            
+                            if (opts.depends != empty) ::<= {
+                                foreach(in:opts.depends, do:::(k, v) {
+                                    // assume any (need to keep track of VERSION_ANY?)
+                                    arg1[k] = if (v.version == empty) 
+                                        [v.name, -1, -1]                              
+                                    else 
+                                        [
+                                            v.name,
+                                            v.version.major,
+                                            v.version.minor
+                                        ]
+                                    ;
+                                });
+                            };
                             
                             // change the resource path to the package location.
                             @:oldPath = this.path;
@@ -1724,18 +1720,32 @@ Topaz = class(
                                 arg2[k] = [
                                 
                                     v.name,
-                                    v.extension
+                                    (if (v.extension == empty) "" else v.extension)
                                 ];
                             });
                             this.path = oldPath;   
-                            
+                            clearPackageAsset();
                             @:bundle = topaz_resources__pack_bundle(a:arg0, b:arg1, c:arg2);
                             
-                            writePackageAsset(path:pathOut, bytes:bundle.bytes);
-                            this.removeAsset(asset:bundle);     
-                            
+                            this.writeAsset(
+                                asset:{native:bundle},
+                                path:pathOut,
+                                extension:""
+                            );
                    
+                        },
+                        
+                        require::(bundle, major, minor, onLoadItem) {
+                            topaz_resources__unpack_bundle(
+                                a:bundle,
+                                b:major,
+                                c:minor,
+                                d: if(onLoadItem == empty) empty else ::(a) {
+                                    onLoadItem(asset:_rawAssetToInstance(impl:a));
+                                }
+                            );                        
                         }
+                        
                     };
                 }
             ).new();

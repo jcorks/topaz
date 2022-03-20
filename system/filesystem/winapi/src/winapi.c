@@ -60,7 +60,8 @@ void * topaz_filesystem_winapi__create(
         topaz_t * ctx,
         topazString_t * defaultResourcesPath,
         topazString_t * defaultTopazPath,
-        topazString_t * defaultUserDataPath
+        topazString_t * defaultUserDataPath,
+        topazString_t * defaultBundlesPath
 ) {
     char * buffer = malloc(PATH_MAX+1);
     getcwd(buffer, PATH_MAX);
@@ -68,10 +69,12 @@ void * topaz_filesystem_winapi__create(
     topaz_string_clear(defaultResourcesPath);
     topaz_string_clear(defaultTopazPath);
     topaz_string_clear(defaultUserDataPath);
+    topaz_string_clear(defaultBundlesPath);
 
     topaz_string_concat_printf(defaultResourcesPath, "%s", buffer);
     topaz_string_concat_printf(defaultTopazPath,     "%s", buffer);
     topaz_string_concat_printf(defaultUserDataPath,  "%s", buffer);
+    topaz_string_concat_printf(defaultBundlesPath,   "%s\\bundles\\", buffer);
 
     free(buffer);
     return NULL;

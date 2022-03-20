@@ -37,7 +37,8 @@ struct topazFilesystemAPI_t {
         topaz_t *,
         topazString_t * defaultResourcesPath,
         topazString_t * defaultTopazPath,
-        topazString_t * defaultUserDataPath
+        topazString_t * defaultUserDataPath,
+        topazString_t * defaultBundlesPath
     );
     
     
