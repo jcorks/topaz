@@ -1545,8 +1545,177 @@ Topaz = class(
             );
         };
         
+        @:__Console__ = ::<= {
+            @:topaz_console__enable = getExternalFunction(name:'topaz_console__enable');
+            @:topaz_console__print_message = getExternalFunction(name:'topaz_console__print_message');
+            @:topaz_console__add_listener = getExternalFunction(name:'topaz_console__add_listener');
+            @:topaz_console__remove_listener = getExternalFunction(name:'topaz_console__remove_listener');
+            @:topaz_console__run = getExternalFunction(name:'topaz_console__run');
+            @:topaz_console__command_context_create = getExternalFunction(name:'topaz_console__command_context_create');
+            @:topaz_console__command_context_destroy = getExternalFunction(name:'topaz_console__command_context_destroy');
+            @:topaz_console__command_context_add_command = getExternalFunction(name:'topaz_console__command_context_add_command');
+            @:topaz_console__command_context_set_default_handler = getExternalFunction(name:'topaz_console__command_context_set_default_handler');
+            @:topaz_console__command_context_set_prompt = getExternalFunction(name:'topaz_console__command_context_set_prompt');
+            @:topaz_console__push_command_context = getExternalFunction(name:'topaz_console__push_command_context');
+            @:topaz_console__pop_command_context = getExternalFunction(name:'topaz_console__pop_command_context');
+            
+            
+            @:CommandContext = class(
+                name : 'Topaz.Console.CommandContext',
+                define:::(this) {
+                    @native;
+                    this.constructor = ::(commands, prompt, defaultHandler) {
+                        native = topaz_console__command_context_create();
+                        if (commands != empty) ::<= {
+                            foreach(in:commands, do:::(command, cb) {
+                                this.addCommand(name:command, callback:cb);
+                            });
+                        };
+                        
+                        if (prompt != empty) this.prompt = prompt;
+                        if (defaultHandler != empty) this.defaultHandler = defaultHandler;
+                        return this;
+                    };              
+                    
+                    this.interface = {
+                        addCommand ::(name, callback) {
+                            @:args = [];
+                            @ argcount = 0;
+                            
+                            @:addArg::(a) {
+                                args[argcount] = a;  
+                                argcount+=1;
+                            };
+    
+                            @:doAction::(a) {
+                                @:res = callback(
+                                    args : args,
+                                    fullCommand : a
+                                );
+                                when(res == empty) '';
+                                return res;
+                            };                   
+                            
+                            topaz_console__command_context_add_command(
+                                a:native,
+                                b:name,
+                                c:addArg,
+                                d:doAction
+                            );
+                        },
+                        
+                        native : {
+                            get ::{
+                                return native;
+                            }
+                        },
+                        
+                        defaultHandler : {
+                            set ::(value) {
+                                if (value == empty) 
+                                    topaz_console__command_context_set_default_handler()                             
+                                else ::<= {
+                                    @:args = [];
+                                    @ argcount = 0;
+                                    
+                                    @:addArg::(a) {
+                                        args[argcount] = a;  
+                                        argcount+=1;
+                                    };
+            
+                                    @:doAction::(a) {
+                                        @:res = value(
+                                            args : args,
+                                            fullCommand : a
+                                        );
+                                        when(res == empty) '';
+                                        return res;
+                                    };                   
+
+                                    topaz_console__command_context_set_default_handler(
+                                        a:native,
+                                        b:addArg,
+                                        c:doAction
+                                    );
+                                }
+                                ;
+                            }
+                        },
+                        
+                        destroy :: {
+                            topaz_console__command_context_destroy(a:native);
+                            native = empty;
+                        },
+                        
+                        prompt : {
+                            set ::(value) {
+                                topaz_console__command_context_set_prompt(a:native, b:value);
+                            }
+                        }
+                    };
+                }
+            );
+            
+            
+            return class(
+                name : 'Topaz.Console',
+                define:::(this) {
+                    @:messageType = {
+                        NORMAL : 0,
+                        DEBUG : 1,
+                        WARNING : 2,
+                        ERROR : 3
+                    };
+                
+                    this.interface = {
+                        MESSAGE_TYPE : {
+                            get ::{
+                                return messageType;
+                            }
+                        },
+                        CommandContext : {
+                            get ::{
+                                return CommandContext;
+                            }
+                        },
+                        
+                        enable : {
+                            set ::(value) {
+                                topaz_console__enable(a:value);
+                            }
+                        },
+                        
+                        'print' ::(message, type) {
+                            if (type == empty)
+                                type = 0;
+                            topaz_console__print_message(a:message, b:type);
+                        },
+                        
+                        addListener ::(callback) {
+                            return topaz_console__add_listener(a:callback);
+                        },
+                        
+                        removeListener ::(id) {
+                            return topaz_console__remove_listener(a:id);
+                        },
+                        
+                        run ::(command) {
+                            topaz_console__run(a:command);
+                        },
+                        
+                        pushContext ::(commands => CommandContext.type) {
+                            topaz_console__push_command_context(a:commands.native);
+                        },
+                        
+                        popContext :: {
+                            topaz_console__pop_command_context();
+                        }
+                    };
+                }            
+            ).new();
+        };
         
-        @__Resources__ = ::<={
+        @:__Resources__ = ::<={
             @:topaz_resources__fetch_asset = getExternalFunction(name:'topaz_resources__fetch_asset');
             @:topaz_resources__create_asset = getExternalFunction(name:'topaz_resources__create_asset');
             @:topaz_resources__create_data_asset_from_path = getExternalFunction(name:'topaz_resources__create_data_asset_from_path');
@@ -3606,7 +3775,6 @@ Topaz = class(
         @:topaz__attach_post_manager_unpausable = getExternalFunction(name:'topaz__attach_post_manager_unpausable');
         @:topaz__frame_start = getExternalFunction(name:'topaz__frame_start');
         @:topaz__frame_end = getExternalFunction(name:'topaz__frame_end');
-        @:topaz__log = getExternalFunction(name:'topaz__log');
         @:topaz__to_base64 = getExternalFunction(name:'topaz__to_base64');
         @:topaz__from_base64 = getExternalFunction(name:'topaz__from_base64');
         @:topaz__is_paused = getExternalFunction(name:'topaz__is_paused');
@@ -3615,7 +3783,6 @@ Topaz = class(
         @:topaz__get_version_micro = getExternalFunction(name:'topaz__get_version_micro');
         @:topaz__get_version_major = getExternalFunction(name:'topaz__get_version_major');
         @:topaz__debug = getExternalFunction(name:'topaz__debug');
-        @:topaz__enable_console = getExternalFunction(name:'topaz__enable_console');
         @: topaz_view_manager__get_default = getExternalFunction(name:'topaz_view_manager__get_default');
         @: topaz_view_manager__get_display_count = getExternalFunction(name:'topaz_view_manager__get_display_count');
         @: topaz_view_manager__get_display = getExternalFunction(name:'topaz_view_manager__get_display');
@@ -3688,7 +3855,6 @@ Topaz = class(
             quit : getExternalFunction(name:'topaz__quit'),
             frameStart ::(FPS) {topaz__frame_start(a:FPS);},
             frameEnd ::(FPS) {topaz__frame_end();},
-            log ::(message, newline) {topaz__log(a:message, b:if(newline == empty) true else newline);},
             toBase64 ::(bytes) {topaz__to_base64(a:bytes);},
             fromBase64 : ::(string) { 
                 return __Topaz__.Data.new(native:topaz__from_base64(a:string));
@@ -3698,10 +3864,7 @@ Topaz = class(
             debug ::{
                 topaz__debug();
             },
-            enableConsole ::{
-                topaz__enable_console();
-            },
-            
+
             isPaused : {
                 get : ::(){ 
                     return topaz__is_paused();
@@ -3776,6 +3939,7 @@ Topaz = class(
             Entity      : {get : ::(){return __Entity__; }},
             Component   : {get : ::(){return __Component__; }},
             Resources   : {get : ::(){return __Resources__; }},
+            Console     : {get : ::(){return __Console__; }},
             FontManager : {get : ::(){return __FontManager__; }},
             Image       : {get : ::(){return __Image__; }},
             Data        : {get : ::(){return __Data__; }},

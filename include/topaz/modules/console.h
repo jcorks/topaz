@@ -41,13 +41,13 @@ typedef struct topazSystem_Backend_t topazSystem_Backend_t;
 typedef struct topazConsoleDisplay_t topazConsoleDisplay_t;
 
 
-/// The console is an object that controls a 
-/// viewable text log and command interface. Consoles 
-/// are especially useful for debugging purposes while 
+/// The console is an object that listens and dispatches 
+/// messages, usually to something viewable on the system. 
+/// Consoles are especially useful for debugging purposes while 
 /// within a running program.
 ///
 /// Main features include: posting different 
-/// kinds of "messages" (logs) to the console for viewing,
+/// kinds of "messages" (lines of text) to the console for viewing,
 /// inserting custom debugging commands,
 /// attaching to scripting instances for built-in 
 /// debugging (if available), and more.
@@ -145,33 +145,6 @@ void topaz_console_print_message(
     topazConsole_MessageType_t type
 );
 
-/// Prints a color line to the console.
-///
-void topaz_console_print_color(
-    /// The console to print to.
-    topazConsole_t * console, 
-
-    /// The text to print.
-    const topazString_t * message,
-
-    /// The color to print it as.
-    const topazColor_t * color
-);
-
-
-/// Adds a colored text to the console.
-///
-void topaz_console_add_text_color(
-    /// The console to print to.
-    topazConsole_t * console, 
-
-    /// The text to print.
-    const topazString_t * message,
-
-    /// The color to print it as.
-    const topazColor_t * color
-);
-
 
 /// Attaches a script context to the console.
 /// Once attached, debugging features will be available
@@ -181,6 +154,58 @@ void topaz_console_attach_script(
 
     /// The scripting instance to attach.
     topazScript_t * script
+);
+
+
+/// A callback in response to a unicode event.
+///
+typedef void (*topaz_console_listener_callback)(
+    /// The console from where the message originates.
+    ///
+    topazConsole_t *,
+    
+    /// The message text.
+    ///
+    const topazString_t * line,
+    
+    /// The kind of message incoming.
+    ///
+    topazConsole_MessageType_t type,	
+    
+    /// The user data for the callback.
+    ///
+    void * userdata
+);
+
+
+/// Adds a callback to run when a new console message 
+/// is printed to the console. The ID of the callback is 
+/// returned. 
+///
+int topaz_console_add_listener(
+    /// The console to attach to.
+    ///
+    topazConsole_t * console,
+
+    /// The function to call once a new message is encountered.
+    ///    
+    topaz_console_listener_callback,
+    
+    /// The userdata to pass to the listener.
+    ///
+    void * userdata
+);
+
+
+/// Removes the console listener. 
+/// 
+void topaz_console_remove_listener(
+    /// The console to remove the listener from.
+    ///
+    topazConsole_t * console,
+    
+    /// The ID of the callback
+    int id
 );
 
 
@@ -281,7 +306,8 @@ typedef topazString_t * (*topaz_console_command_callback)(
 
 
 /// Adds a custom command. If the user enters a command matching the given
-/// string.
+/// string. Calling this replaces any existing callback associated with 
+/// the command string.
 ///
 void topaz_console_command_context_add_command(
     /// The context to add a command to.
@@ -300,6 +326,9 @@ void topaz_console_command_context_add_command(
 
 /// Adds a default handler. This will be called for a context 
 /// if an unrecognized command is given to the context.
+/// Calling this replaces the existing handler and callback 
+/// data. To disable usage of a default handler, 
+/// pass the handler as NULL.
 ///
 void topaz_console_command_context_set_default_handler(
     /// The context to modify.

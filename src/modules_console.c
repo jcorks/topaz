@@ -19,6 +19,7 @@ typedef struct {
 
 
 
+
 struct topazConsole_CommandContext_t {
     topazTable_t * commands; // string -> TopazConsoleCommand *
     topazString_t * header;
@@ -68,6 +69,12 @@ typedef struct {
     int id; // unique id. This is what the user types
 } DebugBreakpoint;
 
+typedef struct {
+    topaz_console_listener_callback fn;
+    void * userdata;
+    int id;
+} ListenerCallback;
+
 struct topazConsole_t {
     topazConsoleDisplay_t * display;
     topazArray_t * contextStack;
@@ -75,28 +82,44 @@ struct topazConsole_t {
     topazConsole_CommandContext_t * cmd;
     topaz_t * ctx;
     topazScript_t * script;
+    topazArray_t * listeners;
     uint32_t inputID;
-
-
+    int listenerIDPool;
     int debugLevel;
     uint32_t debugCBID;
     topazArray_t * debugBreakpoints;
     topazString_t * debugLastCommand;
 };
 
+static void send_message_event(topazConsole_t * c, const topazString_t * message, topazConsole_MessageType_t type) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(c->listeners);
+    
+    for(i = 0; i < len; ++i) {
+        ListenerCallback * cb = &topaz_array_at(c->listeners, ListenerCallback, i);
+        cb->fn(
+            c,
+            message,
+            type,
+            cb->userdata
+        );
+    }
+}
+
 static void print_prompt(topazConsole_t * c) {
+    const topazString_t * text = topaz_array_get_size(c->contextStack) ?
+        topaz_array_at(c->contextStack, 
+            topazConsole_CommandContext_t *,
+            topaz_array_get_size(c->contextStack)-1
+        )->header
+    :
+        c->cmd->header;
     topaz_console_display_add_text(
         c->display,
-        topaz_array_get_size(c->contextStack) ?
-            topaz_array_at(c->contextStack, 
-                topazConsole_CommandContext_t *,
-                topaz_array_get_size(c->contextStack)-1
-            )->header
-        :
-            c->cmd->header,
+        text,
         &color_normal
     );
-
+    send_message_event(c, text, topazConsole_MessageType_Normal);
 }
 
 static void send_command(
@@ -184,6 +207,12 @@ TOPAZCCOMMAND(command__quit) {
 }
 
 
+static void topaz_console_print_color(topazConsole_t * c, const topazString_t * str, const topazColor_t * color, topazConsole_MessageType_t type) {
+    topaz_console_display_add_text(c->display, str, color);
+    topaz_console_display_new_line(c->display);
+    send_message_event(c, str, type);    
+}
+
 static const topazString_t * stackframe_to_string(
     const topazScript_DebugState_t * stack,
     int level 
@@ -263,7 +292,8 @@ static void console_print_debug_state(
                 topaz_console_print_color(
                     console,
                     TOPAZ_STR_CAST("-----------------------------"),
-                    &line
+                    &line,
+                    topazConsole_MessageType_Normal
                 );
             } else {
                 if (l == lineIndex) {
@@ -277,7 +307,8 @@ static void console_print_debug_state(
                 topaz_console_print_color(
                     console,
                     output,
-                    (l == lineIndex ? &lineBold : &line)
+                    (l == lineIndex ? &lineBold : &line),
+                    topazConsole_MessageType_Normal
                 );
 
             }
@@ -290,7 +321,8 @@ static void console_print_debug_state(
         topaz_console_print_color(
             console,
             TOPAZ_STR_CAST(""),
-            (l == lineIndex ? &lineBold : &line)
+            (l == lineIndex ? &lineBold : &line),
+            topazConsole_MessageType_Normal
         );
 
     }
@@ -311,7 +343,8 @@ static void console_print_debug_state(
         topaz_console_print_color(
             console,
             str,
-            (i == console->debugLevel ? &lineBold : &line)
+            (i == console->debugLevel ? &lineBold : &line),
+            topazConsole_MessageType_Normal
         );
 
         topaz_string_destroy(str);
@@ -823,6 +856,7 @@ topazConsole_t * topaz_console_create(topaz_t * t) {
             api
         );
     }
+    out->listeners = topaz_array_create(sizeof(ListenerCallback));
     out->dbg = topaz_console_command_context_create(out);
     out->cmd = topaz_console_command_context_create(out);
     out->contextStack = topaz_array_create(sizeof(topazConsole_CommandContext_t*));
@@ -896,35 +930,35 @@ void topaz_console_destroy(topazConsole_t * t) {
 
 
 void topaz_console_print(topazConsole_t * c, const topazString_t * str) {
-    topaz_console_print_color(c, str, &color_normal);
+    topaz_console_print_message(c, str, topazConsole_MessageType_Normal);
 }
 
 void topaz_console_print_message(topazConsole_t * c, const topazString_t * str, topazConsole_MessageType_t t) {
     switch(t) {
       case topazConsole_MessageType_Normal:
-        topaz_console_print_color(c, str, &color_normal);
+        topaz_console_print_color(c, str, &color_normal, t);
         break;
       case topazConsole_MessageType_Debug: {
         char text[100];
         time_t now = time(NULL);
-        struct tm * t = localtime(&now);
-        strftime(text, sizeof(text)-1, "%H:%M:%S", t);
+        struct tm * tim = localtime(&now);
+        strftime(text, sizeof(text)-1, "%H:%M:%S", tim);
         topazString_t * base = topaz_string_create();
         topaz_string_concat_printf(base, "[Debug @ %s] ", text);
         topaz_string_concat(base, str);
-        topaz_console_print_color(c, base, &color_debug);
+        topaz_console_print_color(c, base, &color_debug, t);
         topaz_string_destroy(base);
         break;
       }
       case topazConsole_MessageType_Warning: {
         char text[100];
         time_t now = time(NULL);
-        struct tm * t = localtime(&now);
-        strftime(text, sizeof(text)-1, "%H:%M:%S", t);
+        struct tm * tim = localtime(&now);
+        strftime(text, sizeof(text)-1, "%H:%M:%S", tim);
         topazString_t * base = topaz_string_create();
         topaz_string_concat_printf(base, "[Warning @ %s] ", text);
         topaz_string_concat(base, str);
-        topaz_console_print_color(c, base, &color_warning);
+        topaz_console_print_color(c, base, &color_warning, t);
         topaz_string_destroy(base);
         break;
       }
@@ -932,12 +966,12 @@ void topaz_console_print_message(topazConsole_t * c, const topazString_t * str, 
       case topazConsole_MessageType_Error: {
         char text[100];
         time_t now = time(NULL);
-        struct tm * t = localtime(&now);
-        strftime(text, sizeof(text)-1, "%H:%M:%S", t);
+        struct tm * tim = localtime(&now);
+        strftime(text, sizeof(text)-1, "%H:%M:%S", tim);
         topazString_t * base = topaz_string_create();
         topaz_string_concat_printf(base, "[Error @ %s] ", text);
         topaz_string_concat(base, str);
-        topaz_console_print_color(c, base, &color_error);
+        topaz_console_print_color(c, base, &color_error, t);
         topaz_string_destroy(base);
         break;
       }
@@ -947,14 +981,7 @@ void topaz_console_print_message(topazConsole_t * c, const topazString_t * str, 
 }
 
 
-void topaz_console_add_text_color(topazConsole_t * c, const topazString_t * str, const topazColor_t * color) {
-    topaz_console_display_add_text(c->display, str, color);
-}
 
-void topaz_console_print_color(topazConsole_t * c, const topazString_t * str, const topazColor_t * color) {
-    topaz_console_display_add_text(c->display, str, color);
-    topaz_console_display_new_line(c->display);
-}
 
 void topaz_console_attach_script(
     topazConsole_t * c,
@@ -974,6 +1001,42 @@ void topaz_console_attach_script(
         c
     );
 }
+
+int topaz_console_add_listener(
+    topazConsole_t * console,
+    topaz_console_listener_callback fn,
+    void * userdata
+) {
+    
+    ListenerCallback cb;
+    cb.id = console->listenerIDPool++;
+    cb.fn = fn;
+    cb.userdata = userdata;
+    
+    
+    topaz_array_push(console->listeners, cb);
+    return cb.id;
+}
+
+void topaz_console_remove_listener(
+    topazConsole_t * console,
+    int id
+) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(console->listeners);
+    for(i = 0; i < len; ++i) {
+        ListenerCallback cb = topaz_array_at(console->listeners, ListenerCallback, i);
+        if (cb.id == id) {
+            topaz_array_remove(console->listeners, id);
+            return;
+        }
+    }    
+}
+
+
+
+
+
 
 
 

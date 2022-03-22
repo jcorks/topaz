@@ -117,22 +117,7 @@ TSO_SCRIPT_API_FN(topaz_api__get_version_minor) {
 }
 
 
-TSO_SCRIPT_API_FN(topaz_api__log) {
-    int newline = TRUE;
-    TSO_ARG_1;
-    newline = topaz_script_object_as_int(arg1);
-    TSO_ARG_0;
-    topazScriptManager_t * mgr = context;
-    topazConsole_t * c = topaz_context_get_console(mgr->ctx);
-    if (newline) 
-        topaz_console_print(c, topaz_script_object_as_string(arg0));
-    else {
-        topazColor_t col;
-        col.r = col.g = col.a = col.b = 1;
-        topaz_console_add_text_color(c, topaz_script_object_as_string(arg0), &col);        
-    }
-    TSO_NO_RETURN;
-}
+
 
 TSO_SCRIPT_API_FN(topaz_api__to_base64) {
     TSO_ARG_0;
@@ -197,17 +182,6 @@ TSO_SCRIPT_API_FN(topaz_api__debug) {
     TSO_NO_RETURN;
 }
 
-TSO_SCRIPT_API_FN(topaz_api__enable_console) {
-    topazScriptManager_t * mgr = context;
-
-    topazConsole_t * console = topaz_context_get_console(mgr->ctx);
-    topaz_console_attach_script(console, script);
-    topaz_console_enable(console, TRUE);
-
-    TSO_NO_RETURN;
-}
-
-
 static void add_refs__topaz_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz__run", topaz_api__run, 0);
     TS_MAP_NATIVE_FN("topaz__pause", topaz_api__pause, 0);
@@ -226,9 +200,7 @@ static void add_refs__topaz_api(topazScript_t * script, topazScriptManager_t * c
     TS_MAP_NATIVE_FN("topaz__get_version_micro", topaz_api__get_version_micro, 0);
     TS_MAP_NATIVE_FN("topaz__get_version_minor", topaz_api__get_version_minor, 0);
     TS_MAP_NATIVE_FN("topaz__get_version_major", topaz_api__get_version_major, 0);
-    TS_MAP_NATIVE_FN("topaz__log", topaz_api__log, 2);
     TS_MAP_NATIVE_FN("topaz__to_base64", topaz_api__to_base64, 1);
     TS_MAP_NATIVE_FN("topaz__from_base64", topaz_api__from_base64, 1);
     TS_MAP_NATIVE_FN("topaz__debug", topaz_api__debug, 0);
-    TS_MAP_NATIVE_FN("topaz__enable_console", topaz_api__enable_console, 0);
 }

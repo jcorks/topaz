@@ -111,6 +111,7 @@ topazScript_t * topaz_script_manager_create_context(
 #include "script_native__material.h"
 #include "script_native__shape3d.h"
 #include "script_native__rng.h"
+#include "script_native__console.h"
 ////////////////////////
 //////////////////////// script_native__
 ////////////////////////
@@ -145,6 +146,7 @@ static void add_all_refs(topazScriptManager_t * s, topazScript_t * script, int p
     add_refs__mesh_api(script, s);
     add_refs__shape3d_api(script, s);
     add_refs__rng_api(script, s);
+    add_refs__console_api(script, s);
 
 }
  
