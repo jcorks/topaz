@@ -75,7 +75,7 @@
         this.installEvent(
             event   :'onAddFruit', 
             callback:::(source) {
-                Topaz.log(message:'Fruit was added!');
+                Topaz.Console.print(message:'Fruit was added!');
             }
         );
 
@@ -83,7 +83,7 @@
         this.installEvent(
             event   :'onRemoveFruit', 
             callback:::(source) {
-                Topaz.log(message:'Fruit was removed!');
+                Topaz.Console.print(message:'Fruit was removed!');
             }
         );
  
@@ -218,7 +218,7 @@ throcky.firstName = 'Throckmorton';
 // To easily see this, we will just use text in the 
 // debugging console. By default it is enabled, but 
 // it can be activated with Topaz.enableConsole().
-Topaz.enableConsole();
+Topaz.Console.enabled = true;
 
 
 // Up until now, we have registered the onAddFruit and onRemoveFruit 
@@ -235,7 +235,7 @@ alex.basket.installHook(
     callback:::(source) {
         // Often for debugging, its useful to use Topaz.log(), which 
         // will print a string to the system console.
-        Topaz.log(message:alex.firstName + ' removed a fruit from their basket. ' + alex.basket.getFruitLeft() + ' left.');
+        Topaz.Console.print(message:alex.firstName + ' removed a fruit from their basket. ' + alex.basket.getFruitLeft() + ' left.');
     }
 );
 
@@ -247,7 +247,7 @@ alex.basket.installHook(
 alex.basket.installHook(
     event: 'onAddFruit',
     callback:::(source) {
-        Topaz.log(message:alex.firstName + ' gained fruit, thanks to ' + source.firstName +'! ' + alex.basket.getFruitLeft() + ' total.');
+        Topaz.Console.print(message:alex.firstName + ' gained fruit, thanks to ' + source.firstName +'! ' + alex.basket.getFruitLeft() + ' total.');
     }
 );
 

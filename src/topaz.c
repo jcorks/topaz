@@ -366,11 +366,11 @@ void topaz_context_draw(topaz_t * t) {
 }
 
 void topaz_context_iterate(topaz_t * t) {
-
     if (!t->paused) {
         topaz_entity_step(t->managersPre);
     }    
     topaz_entity_step(t->managersPreNP);
+
     
     topazArray_t * views = topaz_view_manager_get_all_active(t->viewManager);
     uint32_t len = topaz_array_get_size(views);
@@ -388,7 +388,8 @@ void topaz_context_iterate(topaz_t * t) {
         topaz_input_poll(t->input);
         topaz_display_update(d);
         topaz_graphics_reset_scene(t->graphics);
-        topaz_context_step(t);
+        topaz_context_step(t); // could have had recursive updates. Re-instate display
+        t->display = d;
         topaz_context_draw(t);
         topaz_graphics_sync(t->graphics);
     }

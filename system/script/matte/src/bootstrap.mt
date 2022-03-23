@@ -1579,7 +1579,7 @@ Topaz = class(
                     
                     this.interface = {
                         addCommand ::(name, callback) {
-                            @:args = [];
+                            @ args = [];
                             @ argcount = 0;
                             
                             @:addArg::(a) {
@@ -1592,6 +1592,8 @@ Topaz = class(
                                     args : args,
                                     fullCommand : a
                                 );
+                                args = [];
+                                argcount = 0;
                                 when(res == empty) '';
                                 return res;
                             };                   
@@ -1615,7 +1617,7 @@ Topaz = class(
                                 if (value == empty) 
                                     topaz_console__command_context_set_default_handler()                             
                                 else ::<= {
-                                    @:args = [];
+                                    @ args = [];
                                     @ argcount = 0;
                                     
                                     @:addArg::(a) {
@@ -1628,6 +1630,8 @@ Topaz = class(
                                             args : args,
                                             fullCommand : a
                                         );
+                                        args = [];
+                                        argcount = 0;
                                         when(res == empty) '';
                                         return res;
                                     };                   
@@ -1679,7 +1683,7 @@ Topaz = class(
                             }
                         },
                         
-                        enable : {
+                        enabled : {
                             set ::(value) {
                                 topaz_console__enable(a:value);
                             }
@@ -1692,7 +1696,11 @@ Topaz = class(
                         },
                         
                         addListener ::(callback) {
-                            return topaz_console__add_listener(a:callback);
+                            return topaz_console__add_listener(
+                                a:::(a, b) {
+                                    callback(text:a, type:b);
+                                }
+                            );
                         },
                         
                         removeListener ::(id) {

@@ -168,8 +168,8 @@ TSO_SCRIPT_API_FN(console_api__command_context_set_default_handler) {
     TSO_ARG_1;
     TSO_ARG_2;
     TSO_NATIVIZE(topazConsole_CommandContext_t *, TSO_OBJECT_ID__CONSOLECOMMANDCONTEXT);   
-    if (!((topaz_script_object_reference_get_feature_mask(arg0) & topazScript_Object_Feature_Callable) &&
-          (topaz_script_object_reference_get_feature_mask(arg1) & topazScript_Object_Feature_Callable))) {
+    if (!((topaz_script_object_reference_get_feature_mask(arg1) & topazScript_Object_Feature_Callable) &&
+          (topaz_script_object_reference_get_feature_mask(arg2) & topazScript_Object_Feature_Callable))) {
         TSO_NO_RETURN;          
     }
     ConsoleCommandBridgeData * data = calloc(1, sizeof(ConsoleCommandBridgeData));

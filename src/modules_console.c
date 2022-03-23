@@ -29,8 +29,8 @@ struct topazConsole_CommandContext_t {
 
 
 const topazColor_t color_normal  = {1, 1, 200 / 255.0, 1};
-const topazColor_t color_warning = {1, 128, 64/255.0,  1};
-const topazColor_t color_debug   = {30/255.0,  87/255.0,  120/255.0, 1};
+const topazColor_t color_warning = {1, 128/255.0, 64/255.0,  1};
+const topazColor_t color_debug   = {0.56,  0.56,  0.8, 1};
 const topazColor_t color_error   = {1, 64/255.0,  64/255.0,  1};
 
 
@@ -383,7 +383,13 @@ static void command_debug_response(
     const topazScript_DebugState_t * state = topaz_script_debug_get_state(console->script);
     if (!topaz_array_get_size(console->contextStack)) {
         topaz_console_run(console, TOPAZ_STR_CAST("dbg"));
+    } else {
+        topazConsole_CommandContext_t * cx = topaz_array_at(console->contextStack, topazConsole_CommandContext_t *, topaz_array_get_size(console->contextStack)-1);
+        if (cx != console->dbg) {
+            topaz_console_push_command_context(console, console->dbg);
+        }    
     }
+    
 
     switch(command) {
       case topazScript_DebugCommand_Pause:
@@ -429,6 +435,7 @@ static void command_debug_response(
       case topazScript_DebugCommand_Resume:
         topaz_console_display_clear(console->display);
         topaz_console_print(console, TOPAZ_STR_CAST("Debugging context resumed."));
+        topaz_console_pop_command_context(console);
         return; // circumvent prompt
         break;
 
@@ -553,8 +560,18 @@ TOPAZCCOMMAND(command__dbg) {
 }
 
 TOPAZCCOMMAND(command__exit_dbg) {
-    topaz_console_pop_command_context(console);
-    return topaz_string_create_from_c_str("[Exiting topaz script debug context]");
+    int paused = topaz_script_debug_is_paused(console->script);
+    if (paused) {
+        topaz_script_debug_send_command(
+            console->script,
+            topazScript_DebugCommand_Resume,
+            TOPAZ_STR_CAST("")
+        );
+        return topaz_string_create_from_c_str("[Continuing]");
+    } else {
+        topaz_console_pop_command_context(console);
+        return topaz_string_create_from_c_str("[Exiting topaz script debug context]");
+    }
 }
 
 
@@ -944,7 +961,7 @@ void topaz_console_print_message(topazConsole_t * c, const topazString_t * str, 
         struct tm * tim = localtime(&now);
         strftime(text, sizeof(text)-1, "%H:%M:%S", tim);
         topazString_t * base = topaz_string_create();
-        topaz_string_concat_printf(base, "[Debug @ %s] ", text);
+        topaz_string_concat_printf(base, "[Debug   @ %s] ", text);
         topaz_string_concat(base, str);
         topaz_console_print_color(c, base, &color_debug, t);
         topaz_string_destroy(base);
@@ -969,7 +986,7 @@ void topaz_console_print_message(topazConsole_t * c, const topazString_t * str, 
         struct tm * tim = localtime(&now);
         strftime(text, sizeof(text)-1, "%H:%M:%S", tim);
         topazString_t * base = topaz_string_create();
-        topaz_string_concat_printf(base, "[Error @ %s] ", text);
+        topaz_string_concat_printf(base, "[Error   @ %s] ", text);
         topaz_string_concat(base, str);
         topaz_console_print_color(c, base, &color_error, t);
         topaz_string_destroy(base);
@@ -1127,10 +1144,12 @@ void topaz_console_command_context_destroy(topazConsole_CommandContext_t * c) {
 
 void topaz_console_push_command_context(topazConsole_t * c, topazConsole_CommandContext_t * cc) {
     topaz_array_push(c->contextStack, cc);
+    print_prompt(c);
 }
 
 void topaz_console_pop_command_context(topazConsole_t * c) {
     topaz_array_set_size(c->contextStack, topaz_array_get_size(c->contextStack)-1);
+    print_prompt(c);
 }
 
 void topaz_console_command_context_set_prompt(
