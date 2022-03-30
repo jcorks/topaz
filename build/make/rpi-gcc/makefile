@@ -70,6 +70,7 @@ SRCS := \
     src/transform.c\
     src/vector.c\
     src/wbuffer.c\
+    src/binary/main.c
 
 
 SRCS += system/audioManager/alsa/src/main.c
@@ -127,10 +128,13 @@ LIBS :=  -lvorbisfile -lvorbis -logg -lfreetype -lglfw -lGLESv2 -lasound -lm -pt
 
 all: $(OBJS)
 	@echo linking 
-	$(CC) -O2 $(FLAGS) $(OBJS) $(INCS) ../../../examples/c/10-Scripts/main.c -o ./scripts $(LIBS) 
+	$(CC) -O2 $(FLAGS) $(OBJS) $(INCS)  -o ./topaz $(LIBS) 
 
 debug: $(OBJS)
-	$(CC) -g $(FLAGS) $(OBJS) $(INCS) ../../../examples/c/10-Scripts/main.c -o ./scripts $(LIBS) 
+	$(CC) -g $(FLAGS) $(OBJS) $(INCS)  -o ./topaz $(LIBS) 
+
+update-bootstrap-rom:
+	cd ../../../system/script/matte/src; $(CC) mt_to_string.c -o m2s; ./m2s
 
 clean: 
-	rm -f $(OBJS) ./scripts
+	rm -f $(OBJS) ./topaz
