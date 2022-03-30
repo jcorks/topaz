@@ -31,6 +31,8 @@ enum Topaz.Asset.TYPE
     eval DATA
     /// The asset is a Topaz.Mesh, which holds raw 3D data.
     eval MESH
+    /// The asset is a Topaz.Bundle, which is a collection of other assets.
+    eval BUNDLE
 
 
 /// The type of the asset. Read-only.

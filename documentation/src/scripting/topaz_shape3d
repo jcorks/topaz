@@ -16,12 +16,13 @@ enum Topaz.Shape3D.TEXTURE
     /// The third slot for texturing.
     eval SLOT_2
 
-/// Sets/Gets the position of the Shape3D with 
-/// the host entity as the parent transform.
-@Object position 
+
 /// Sets/Gets the rotation of the Shape3D with 
 /// the host entity as the parent transform.
 @Object rotation 
+/// Sets/Gets the position of the Shape3D with 
+/// the host entity as the parent transform.
+@Object position 
 /// Sets/Gets the scale of the Shape3D
 /// with the host entity as the parent transform.
 @Object scale 
@@ -30,17 +31,21 @@ enum Topaz.Shape3D.TEXTURE
 
 /// Modifies a render parameter. 
 ///
-func setAttribute ->
-    /// Determines how to interpret the next value.
-    /// If PRIMITIVE, val is expected to be a value within TOPAZ.RENDERER.PRIMITIVE
-    /// If ALPHA_RULE, val is expected to be a value within TOPAZ.RENDERER.ALPHA_RULE
-    /// If DEPTH_TEST, val is expected to be a value within TOPAZ.RENDERER.DEPTH_TEST
-    /// If ETCH_RULE,  val is expected to be a value within TOPAZ.RENDERER.ETCH_RULE 
-    /// if TEXTURE_FILTER_HINT, val is expected to be a value within TOPAZ.RENDERER.TEXTURE_FILTER_HINT
-    @Topaz.RENDERER.ATTRIBUTE attribute
-
-    /// The new value. How its interpreted depends on param.
-    @Int value
+func setAttributes ->
+    /// The primitive to use for the shape. Optional
+    @Topaz.RENDERER.PRIMITIVE primitive
+    
+    /// The alpha rule to use for the shape. Optional
+    @Topaz.RENDERER.ALPHA_RULE alphaRule
+    
+    // The depth test to use for the shape. Optional
+    @Topaz.RENDERER.DEPTH_TEST depthTest
+    
+    // The masking rule to use for the shape. Optional
+    @Topaz.RENDERER.ETCH_RULE etchRule
+    
+    // Texturing hint for the shape. Optional
+    @Topaz.RENDERER.TEXTURE_FILTER_HINT textureFilterHint
 
 
 // Gets a rendering attribute. 

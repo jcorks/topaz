@@ -12,18 +12,6 @@
 ///
 class Topaz.Display
 
-/// Every display has built in framebuffers that can be 
-/// used and exchanged between for advanced rendering effects.
-///
-enum Topaz.Display.FRAMEBUFFER 
-    /// The default framebuffer.
-    eval A
-    /// The second framebuffer. 
-    eval B
-    /// The 3rd framebuffer.
-    eval C
-    /// The 4th framebuffer.
-    eval D
 
 ///  Controls how the Display displays Rendered data.
 ///
@@ -39,6 +27,10 @@ enum Topaz.Display.VIEW_POLICY
     ///
     eval MATCH_SIZE
     
+
+
+
+
 /// On most systems, displays have a variety of features that can be 
 /// controlled. This provides a generic interface into those features,
 /// where a request can be posted to change a parameter via 
@@ -95,18 +87,27 @@ enum Topaz.Display.PARAMETER
     /// by topaz, which means input is polled, their root is run, and data is shown 
     /// on it. Displays are active by default
     eval ACTIVE
+    
+    /// Determines whether the display is decorated. On most systems, this 
+    /// is interpreted as whether the window has a border with action buttons.
+    /// The default is to have windows be decorated.
+    eval DECORATED
 
 
-/// Gets/sets the toplevel Entity for this display 
+/// Every display has built in framebuffers that can be 
+/// used and exchanged between for advanced rendering effects.
 ///
-/// From here, you can 
-/// set the Entity that holds the toplevel of the project. 
-/// By default there is none.
-/// From this entity, all other entities will be updated.
-/// Topaz handles entities in a hierarchical structure,
-/// so the root must be populated for the hierarchy to 
-/// update.
-@Topaz.Entity root
+enum Topaz.Display.FRAMEBUFFER 
+    /// The default framebuffer.
+    eval A
+    /// The second framebuffer. 
+    eval B
+    /// The 3rd framebuffer.
+    eval C
+    /// The 4th framebuffer.
+    eval D
+
+
 
 
 
@@ -124,6 +125,9 @@ func resize ->
 /// Adds an additional callback function to be called 
 func addParameterCallback -> Int
     /// The callback to add.
+    /// Arguments to the callback:
+    /// display: the source display 
+    /// parameter: the parameter that changed.
     @Function func
     
 /// Adds an additional callback function to be called after
@@ -136,6 +140,8 @@ func addParameterCallback -> Int
 ///
 func addCloseCallback -> Int
     /// The callback to add.
+    /// Arguments to the callback:
+    /// display: the source display 
     @Function func
 
 /// Removes the callback by id.
@@ -205,6 +211,17 @@ func captureMainFramebuffer ->
 
 /// Sets / gets the height of the display.
 @Number height
+
+/// Gets/sets the toplevel Entity for this display 
+///
+/// From here, you can 
+/// set the Entity that holds the toplevel of the project. 
+/// By default there is none.
+/// From this entity, all other entities will be updated.
+/// Topaz handles entities in a hierarchical structure,
+/// so the root must be populated for the hierarchy to 
+/// update.
+@Topaz.Entity root
 
 /// Sets / gets the X position of the display.
 @Number x  

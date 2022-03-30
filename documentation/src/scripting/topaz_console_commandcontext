@@ -1,0 +1,46 @@
+///
+///    A command context is the basic means by which 
+///    the console can understand commands. The command context 
+///    holds all the keywords for valid commands at a given time.
+///
+///    By pushing and popping command contexts, it is possible to create 
+///    advanced commands with choices built in.
+///
+///    By default, the default command context is pushed
+///
+singleton Topaz.Console.CommandContext
+
+/// Adds a custom command. If the user enters a command matching the given
+/// string. Calling this replaces any existing callback associated with 
+/// the command string.
+///
+func addCommand ->
+    /// The command string itself.
+    @String name 
+    
+    /// The callback to be called if a user enters this command
+    /// Arguments are:
+    /// args: an array of the argument strings to the command 
+    /// fullCommand: a string containing the raw command given
+    /// The return value will be printed if present.
+    @Function callback
+
+/// Adds a default handler. This will be called for a context 
+/// if an unrecognized command is given to the context.
+/// Calling this replaces the existing handler and callback 
+/// data. To disable usage of a default handler, 
+/// pass the handler as empty.
+///    
+/// Arguments are:
+/// args: an array of the argument strings to the command 
+/// fullCommand: a string containing the raw command given
+/// The return value will be printed if present.
+@Function defaultHandler
+
+
+/// Removes the command context.
+func destroy ->
+
+/// Sets the header prompt text to show within the console.
+///
+@String prompt

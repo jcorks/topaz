@@ -5,6 +5,12 @@
 singleton Topaz.Color 
 
 
+/// Returns a hex version of the color, encoded as such:
+/// "#rrggbbaa"
+staticfn Topaz.Color.asString -> String 
+    /// The basic object with properties r,g,b,a to 
+    /// encode.
+    @Object color
 
 /// Returns a color object from a string.
 /// In the case that the string starts with a '#', the
@@ -20,9 +26,4 @@ staticfn Topaz.Color.parse -> Object
 
 
 
-/// Returns a hex version of the color, encoded as such:
-/// "#rrggbbaa"
-staticfn Topaz.Color.asString -> String 
-    /// The basic object with properties r,g,b,a to 
-    /// encode.
-    @Object color
+

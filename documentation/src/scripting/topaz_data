@@ -10,9 +10,12 @@ class Topaz.Data
 /// Read-only.
 @Int byteCount 
 
-/// Creates a new string from the raw data stored in the asset.
-/// Read-only.
+/// Sets/Gets the state as a string.
 @String string 
+
+/// Sets/gets the state as a base64-encoded string.
+/// base64 is handy for transfering bytes over an http connection.
+@Array base64
 
 /// Sets/Gets the raw bytes for the data asset.
 /// Bytes are represented as arrays of byte values 

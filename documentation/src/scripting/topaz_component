@@ -65,7 +65,7 @@ func installEvent ->
     @String event 
     /// The default handler for the new event.
     /// Arguments when called:
-    /// This component, possible entity source.
+    /// source: the possible source. Could be empty
     @Function callback
 
 /// removes a handler of an event
@@ -84,7 +84,7 @@ func installHook -> Int
     /// The event to add the hook to.
     @String event 
     /// Arguments when called:
-    /// This component, possible entity source.
+    /// source: the possible source. Could be empty
     @Function callback
 
 /// Removes a hook added with installHook()
@@ -104,8 +104,8 @@ func installHandler -> Int
     /// The event name to install to.
     @String event 
     /// Arguments when called:
-    /// This component, possible entity source.
-    @Function handler 
+    /// source: the possible source. Could be empty
+    @Function callback
 
 /// Removes a handler installed with installHandler()
 func uninstallHandler ->

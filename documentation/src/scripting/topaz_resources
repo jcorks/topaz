@@ -21,8 +21,6 @@ singleton Topaz.Resources
 /// can then be used directly to load data. See asset.h
 /// 
 func fetchAsset -> Topaz.Asset 
-    /// The asset type.
-    @Topaz.Asset.TYPE type 
     /// The unique name of the asset.
     @String name 
 
@@ -31,67 +29,36 @@ func fetchAsset -> Topaz.Asset
 /// The name will be registered with the resources instance and 
 /// can be used to refer to the asset.
 func createAsset -> Topaz.Asset
-    /// The asset type.
-    @Topaz.Asset.TYPE type 
-
-
-
-
-/// Convenience function that attempts to load a new asset 
-/// from the filesystem directly. This is recommended for small assets that are 
-/// effectively instanteous. If a more robust solution is needed,
-/// consider using the C interface to extend scripting features.
-///
-/// "name" is used as the name of the asset. For functions that refer to 
-/// asset names to uniquely identify an asset such as fetchAsset().
-///
-/// "path" is used as the filesystem path to read the asset from. This assumes the 
-/// current path is Topaz.Resources.path 
-///
-/// "fileType" is the extension of the file used to determine with IO Translator 
-/// to use to interpret data.
-///
-/// Like with fetchAsset, if an asset of the given name 
-/// already exists, the preloaded asset is returned. If not, 
-/// then a new asset is created whos name will match the path given.
-/// Then, the data is attempted to be loaded from disk. The name given is 
-/// first checked to see if its a partial path relative to 
-/// the resources's resource path (Topaz.Resources.path). Then 
-/// its interpreted as a full path.
-/// If the data could not be inerpreted as the given type, or the source 
-/// data is unavailable, undefined is returned.
-///
-func loadAsset -> Topaz.Asset 
-    /// The extension / filetype to attempt to read with. i.e. 'png'
-    @String extension 
-    /// The path to the asset.
+    /// The unique name of the asset.
+    @String name
+    /// The path to the asset. Optional.
+    /// Specify to load a new Topaz.Data asset from the 
+    /// filesystem.
+    /// Omit this argument if you want to create a new, empty 
+    /// asset. 
     @String path
-    /// The unique name to give to the asset.
-    @String name 
+    /// The asset type. Optional.
+    /// Specify this if you aren't reading an asset from 
+    /// the filesystem.
+    @Topaz.Asset.TYPE type
 
-/// Equivalent to topaz_resources_load_asset, except instead of reading 
-/// from the filsystem, raw byte data is read instead. Each member of 
-/// the array is expected to be a byte value (0-255)
+
+
+
+/// Takes an existing asset and converts it to another type.
+/// The asset is interpreted and a new asset is produced of a type 
+/// corresponding to the extension. Topaz is built with awareness of 
+/// extensions, but these extensions change per build. Check alternative 
+/// documentation for supposed IO translators.
 ///
-func loadAssetData -> Topaz.Asset 
+/// If translation is successful, a new asset of a different type 
+/// will be created.
+func convertAsset -> Topaz.Asset 
     /// The extension / filetype to attempt to read with. i.e. 'png'
     @String extension 
-    /// The raw data for the asset. Read as if contiguous bytes.
-    @Array bytes
-    /// The unique name to give to the asset.
-    @String name 
+    /// The asset to convert. If successful, this asset is removed.
+    @Topaz.Data asset
 
-/// Equivalent to topaz_resources_load_asset, except instead of reading
-/// from the filesystem, raw byte data is generated from an encoded
-/// base64 string.
-///
-func loadAssetBase64 -> Topaz.Asset
-    /// The extension / filetype to attempt to read with. i.e. 'png'
-    @String extension
-    /// The raw data for the asset. Read as a base64 string.
-    @String base64
-    /// The unique name to give to the asset.
-    @String name 
 
 /// Writes an asset to the filesystem at the outputpath 
 /// given relative to the resources path.
@@ -108,7 +75,7 @@ func writeAsset -> Boolean
 /// Removes the asset by name.
 func removeAsset -> 
     /// Name of the asset to remove.
-    @String name 
+    @Topaz.Asset asset
 
 /// Returns whether a particular file extension is supported.
 ///
