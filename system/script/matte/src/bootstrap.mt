@@ -464,14 +464,6 @@ Topaz = class(
                     USER_DATA : 2
                 },
 
-                getPath : ::(node) { 
-                    return __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path(a:node));
-                },
-                
-                getPathFromString : ::(path, string){ 
-                    when (path == empty)   __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path_from_string(a:string));            
-                    return                 __Topaz__.Filesystem.Path.new(native:topaz_filesystem__get_path_from_string(a:path.native, b:string));                        
-                },
                 
                 Path : class(
                     name : 'Topaz.Filesystem.Path',        
@@ -479,7 +471,20 @@ Topaz = class(
                     define   : ::(this){ 
                         @impl;
                         
-                        this.constructor = ::(native) {
+                        this.constructor = ::(fromNode, fromString, relativePath, native) {
+                            when(native != empty) ::<= {
+                                impl = this.bindNative(instance : native);
+                                return this;
+                            };
+
+                            @:native = if (fromNode != empty) 
+                                topaz_filesystem__get_path(a:fromNode) 
+                            else (
+                                if (relativePath == empty) 
+                                    topaz_filesystem__get_path_from_string(a:fromString)
+                                else 
+                                    topaz_filesystem__get_path_from_string(a:relativePath.native, b:fromString)
+                            );
                             impl = this.bindNative(instance : native);
                             return this;
                         };

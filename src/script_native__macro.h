@@ -47,7 +47,7 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 #define TSO_OBJECT_KEEP_REF(__native__) topaz_script_object_reference_ref(object); topaz_table_insert(((topazScriptManager_t*)context)->lookupRefs, __native__, topaz_script_object_from_object(script, object));
 
 // Tells the scripting engine that it can garbage collect arg0 if desired.
-#define TSO_OBJECT_UNKEEP_REF(__obj__, __native__) topaz_script_object_reference_unref(__obj__); topazScript_Object_t * o__ = topaz_table_find(((topazScriptManager_t*)context)->lookupRefs, __native__); if (o__) topaz_script_object_destroy(o__); 
+#define TSO_OBJECT_UNKEEP_REF(__obj__, __native__) topaz_script_object_reference_unref(__obj__); topazScript_Object_t * o__ = topaz_table_find(((topazScriptManager_t*)context)->lookupRefs, __native__); if (o__) topaz_script_object_destroy(o__);  topaz_table_remove(((topazScriptManager_t*)context)->lookupRefs, __native__);
 
 
 
