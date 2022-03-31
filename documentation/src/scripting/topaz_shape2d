@@ -16,10 +16,10 @@ class Topaz.Shape2D
 
 /// Sets/Gets the center of the shape.
 @Object center 
-/// Sets/Gets the position with the host entity being the parent transform.
-@Object position
 /// Sets/Gets the rotation with the host entity being the parent transform.
 @Object rotation 
+/// Sets/Gets the position with the host entity being the parent transform.
+@Object position
 /// Sets/Gets the scale with the host entity being the parent transform.
 @Object scale
 
@@ -44,17 +44,22 @@ class Topaz.Shape2D
 
 /// Modifies a render parameter. 
 ///
-func setAttribute ->
-    /// Determines how to interpret the next value.
-    /// If PRIMITIVE, val is expected to be a value within TOPAZ.RENDERER.PRIMITIVE
-    /// If ALPHA_RULE, val is expected to be a value within TOPAZ.RENDERER.ALPHA_RULE
-    /// If DEPTH_TEST, val is expected to be a value within TOPAZ.RENDERER.DEPTH_TEST
-    /// If ETCH_RULE,  val is expected to be a value within TOPAZ.RENDERER.ETCH_RULE 
-    /// if TEXTURE_FILTER_HINT, val is expected to be a value within TOPAZ.RENDERER.TEXTURE_FILTER_HINT
-    @Topaz.RENDERER.ATTRIBUTE attribute 
+func setAttributes ->
+    /// The primitive to use for the shape. Optional
+    @Topaz.RENDERER.PRIMITIVE primitive
+    
+    /// The alpha rule to use for the shape. Optional
+    @Topaz.RENDERER.ALPHA_RULE alphaRule
+    
+    // The depth test to use for the shape. Optional
+    @Topaz.RENDERER.DEPTH_TEST depthTest
+    
+    // The masking rule to use for the shape. Optional
+    @Topaz.RENDERER.ETCH_RULE etchRule
+    
+    // Texturing hint for the shape. Optional
+    @Topaz.RENDERER.TEXTURE_FILTER_HINT textureFilterHint
 
-    /// The new value. How its interpreted depends on param.
-    @Int value
 
 
 // Gets a rendering attribute. 

@@ -36,6 +36,17 @@ enum Topaz.RENDERER.ATTRIBUTE
     eval TEXTURE_FILTER_HINT
 
 
+/// Defines the polygon type.
+///
+enum Topaz.RENDERER.PRIMITIVE
+    /// Triangle primitive. The most basic and versatile.
+    ///
+    eval TRIANGLE
+    /// Line primitive. 
+    ///
+    eval LINE
+
+
 
 /// Allows for etching, which will ignore rendered results if they arent in the etch.
 /// Etch regions last until next frame by default.
@@ -64,23 +75,13 @@ enum Topaz.RENDERER.ETCH_RULE
     eval OUT
 
 
-/// Defines the polygon type.
-///
-enum Topaz.RENDERER.PRIMITIVE
-    /// Triangle primitive. The most basic and versatile.
-    ///
-    eval TRIANGLE
-    /// Line primitive. 
-    ///
-    eval LINE
-
 
 /// Defines the depth test, meaning the rule that determines which objects are to be 
 /// to be drawn in front or behind. "Less" is the standard for 3D, which allows polygons 
 /// with a lower depth to be drawn in front. "NoTest" is standard for 2D, which 
 /// allows graphics drawn later to be on top.
 ///
-enum Topaz.RENDERER.DEPTHTEST 
+enum Topaz.RENDERER.DEPTH_TEST 
     /// Generated framebuffer elements whose calculated depth are less
     /// will be in front.
     ///
@@ -256,19 +257,6 @@ func frameEnd ->
 
 
 
-/// Prints to the registered topaz console. If one arg is given,
-/// A new line is always printed. Else, the second argument 
-/// is used to determine whether the line should advance 
-/// after printing.
-func log -> 
-
-    /// The string to print.
-    @String message 
-    
-    /// Whether to add a newline. (Optional)
-    @Boolean newline
-
-
 /// Given an array of byte (0-255) values, a base64-formatted
 /// string will be returned.
 func toBase64 -> string
@@ -293,9 +281,27 @@ func fromBase64 -> Topaz.Data
 /// accessible via console.
 func debug ->
 
-/// Enables console interaction with the current script context
-func enableConsole ->
 
+
+///  returns whether the engine is in a paused or broken state.
+///
+@Boolean isPaused
+
+
+/// Gets the number of milliseconds since creating this context.
+///
+@Number time
+
+
+
+/// The micro version number for topaz.
+@Int versionMicro
+
+/// The major version number for topaz.
+@Int versionMajor 
+
+/// The minor version number for topaz.
+@Int versionMinor
 
 
 
@@ -317,32 +323,7 @@ func enableConsole ->
 
 
 
-///  returns whether the engine is in a paused or broken state.
-///
-@Boolean isPaused
 
-/// Gets the number of milliseconds since creating this context.
-///
-@Number time
-
-
-
-
-/// The micro version number for topaz.
-@Int versionMicro
-
-/// The major version number for topaz.
-@Int versionMajor 
-
-/// The minor version number for topaz.
-@Int versionMinor
-
-
-/// The last-created display.
-@Topaz.Display defaultDisplay 
-
-/// Read-only. Array of all displays.
-@Array displays
 
 /// Singleton for Filesystem-related tools.
 @Topaz.Filesystem </br>
@@ -352,6 +333,9 @@ func enableConsole ->
 
 /// Singleton for Audio-related symbols.
 @Topaz.Audio </br>
+
+/// Singleton for managing the console.
+@Topaz.Console </br>
 
 /// Singleton for Resource-related symbols.
 @Topaz.Resources </br>

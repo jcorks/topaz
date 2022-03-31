@@ -19,5 +19,5 @@ class Topaz.ParticleEmitter2D
 ///
 func emit -> 
     /// The number to emit.
-    @Int count 
+    @Int amount 
 

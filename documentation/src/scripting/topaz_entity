@@ -57,12 +57,25 @@ func step ->
 ///
 func draw ->
 
-/// Attaches a child entity to this entity.
+/// Attaches a child entity or component to this entity.
+///
+/// Once attached, the component's
+/// Step and Draw functions will be called before this entity's Step and Draw.
 ///
 func attach ->
 
-    /// The child entity.
+    /// The child entity. Optional
     @Topaz.Entity entity
+
+    /// The component to add to the entity. Optional
+    @Topaz.Component component
+    
+    // If the component is present, the attached component
+    // will be updated after this entity's step/draw calls.
+    @Boolean addAfter
+    
+
+    
 
 /// Detaches the entity from its parent.
 ///
@@ -105,12 +118,15 @@ func setPriorityFirst ->
 func setPriorityLast ->
 
 /// Sets / Gets the rotation of the entity.
+/// Components are editable as well.
 @Object rotation
 
 /// Sets / Gets the position of the entity.
+/// Components are editable as well.
 @Object position
 
 /// Sets / Gets the scale of the entity.
+/// Components are editable as well.
 @Object scale
 
 /// Gets the global position of the entity.
@@ -148,22 +164,7 @@ func setPriorityLast ->
 
 
 
-/// Attaches a component to this entity.
-///
-/// Once attached, the component's
-/// Step and Draw functions will be called before this entity's Step and Draw.
-/// 
-func add -> 
 
-    /// The component to add to the entity.
-    @Topaz.Component component
-
-/// Same addComponent, but the component is updated 
-/// after this entity's step and draw functions.
-func addAfter -> 
-
-    /// The component to add to the entity.
-    @Topaz.Component component
 
 /// If read, returns an Array of all attached components.
 /// If written to, removes all current components and 

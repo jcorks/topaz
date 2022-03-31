@@ -1,0 +1,83 @@
+/// The console is an object that listens and dispatches 
+/// messages, usually to something viewable on the system. 
+/// Consoles are especially useful for debugging purposes while 
+/// within a running program.
+///
+/// Main features include: posting different 
+/// kinds of "messages" (lines of text) to the console for viewing,
+/// inserting custom debugging commands,
+/// attaching to scripting instances for built-in 
+/// debugging (if available), and more.
+///
+/// The console is not enabled by default. Enabling it will 
+/// show the console using the preferred system backend for ConsoleDisplays.
+singleton Topaz.Console
+
+/// Defines different types of messages.
+///
+enum Topaz.Console.MESSAGE_TYPE
+    /// Message type for normal messages.
+    /// These do not include any additional information
+    ///
+    eval NORMAL
+    /// Message type for debugging messages.
+    /// Includes "Debug" as well as the time when posted.
+    ///
+    eval DEBUG
+    /// Message type for warning messages.
+    /// Includes "Warning" as well as the time when posted.
+    ///
+    eval WARNING
+    /// Message type for error messages.
+    /// Includes "Error" as well as the time when posted.
+    ///
+    eval ERROR
+    
+@Boolean enabled
+
+/// Prints a line to the console
+/// This is equivalent to topaz_console_print_type() with the 
+/// message type as topazConsole_MessageType_Normal
+///
+func print ->
+    /// The text to print.
+    @String message 
+    /// The type of the message.
+    @Topaz.Console.MESSAGE_TYPE type 
+    
+    
+/// Adds a callback to run when a new console message 
+/// is printed to the console. The ID of the callback is 
+/// returned. 
+///
+func addListener -> Integer
+    /// The function to call once a new message is encountered.
+    /// Arguments are:
+    /// text: the text in the console from the message.
+    /// type: the Topaz.Console.MESSAGE_TYPE of the message.
+    @Function callback
+
+/// Runs a command.
+/// Command syntax:
+///
+///     commandName[SEPARATOR]arg0[SEPARATOR]arg1[SEPARATOR]...
+///
+/// Where [SEPARATOR] can be any of the following symbols:
+/// ()[]{},.;:
+///
+func run -> 
+    /// The command to run.
+    @String command 
+    
+    
+/// Pushes a command context to the top of the stack. 
+/// All commands will be read from this context.
+///
+func pushContext ->
+    /// The context to become current.
+    @Topaz.Console.CommandContext commands
+    
+/// Pops the top context.
+/// If the stack is empty, the default context is used. 
+///
+func popContext ->

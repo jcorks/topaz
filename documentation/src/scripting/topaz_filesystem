@@ -8,7 +8,7 @@ enum Topaz.Filesystem.DEFAULT_NODE
     /// This location is recommended for reading assets.
     eval RESOURCES
 
-    /// The directory where the topaz directory is located.
+    /// The directory where the topaz binary is located.
     eval TOPAZ
 
     /// The directory where user data may be kept.

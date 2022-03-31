@@ -4,16 +4,11 @@
 singleton Topaz.FontManager
 
 /// Adds a new font to be registered with the font manager 
-/// by name. The name for the font is the unique name of the 
-/// asset loaded within the topaz instance's resource instance. 
-/// In most circumstances, this name is one used 
-/// to refer to the font from topaz's point of view.
+/// by asset. The asset needs to be of the Data type.
 ///
 func registerFont ->
-    /// The name of the asset that contains the raw font data, specific 
-    /// to the backend. The asset type needs to be 
-    /// a raw data asset.
-    @String name 
+    /// The asset to register as a font.
+    @String asset
 
 
 /// Convenience function to get tell the font renderer 
@@ -21,8 +16,8 @@ func registerFont ->
 /// for the requested font, size, and characters.
 /// This can speed up processing time when first displaying characters.
 func preloadGlyphs ->
-    /// The name of the font to preload.
-    @String name
+    /// The asset font to preload.
+    @String asset
     /// The size of the font to preload.
     @Int sizeRequest 
     /// A string of characters to preload.
@@ -30,5 +25,5 @@ func preloadGlyphs ->
 
 /// Removes the font from the manager by name.
 func unregisterFont -> 
-    /// The name of the font to remove.
-    @String name
+    /// The asset instance to unregister.
+    @String asset

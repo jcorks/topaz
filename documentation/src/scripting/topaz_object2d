@@ -127,7 +127,7 @@ func setVelocityTowards ->
 /// if friction is specified to be .05, every frame 5% of the Entity's speed will be lost.
 /// This is applied in the vertical direction.
 ///
-@Number fractionY
+@Number frictionY
 
 
 /// Sets/Gets the current direction that the entity is traveling in degrees.
@@ -176,6 +176,14 @@ func resetMotion ->
 ///
 @Array collider
 
+/// Creates a rectangular collider centered about the local 0,0 
+/// origin. The width and height are specified.
+func setColliderRectangle -> 
+    /// The width of the collider
+    @Number width 
+    /// The height of the collider    
+    @Number height
+
 /// Creates a radial collider about 0, 0 with the given radius and 
 /// number of sides.
 /// Modifies the collider attribute.
@@ -187,3 +195,7 @@ func setColliderRadial ->
 
 /// Returns the last entity that collided with this one.
 @Topaz.Entity lastCollided
+
+/// Returns the last position which a collision occured.
+@Object lastCollidedPosition
+

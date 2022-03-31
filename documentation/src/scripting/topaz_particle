@@ -4,84 +4,225 @@
 class Topaz.Particle 
 
 
-/// Enumerator for different particle properties.
-/// See Topaz.Particle
-enum Topaz.Particle.PROPERTY 
-    /// The duration of the particle.
-    eval DURATION
-
-    /// The X-scale of the particle.
-    eval SCALE_X
-
-    /// The Y-scale of the particle.
-    eval SCALE_Y
-
-    /// The total multiplier for the scale.
-    eval SCALE_MULTIPLIER
-
-    /// The rotation of the particle in degrees.
-    eval ROTATION
-
-    /// The direction that the particle is headed. Under 0 degree rotation
-    /// which is the default, +/- speedX translates to right and left movement.
-    /// +/- speedY translates to down and upward movement respectively.
-    eval DIRECTION
-
-    /// Speed in the X direction.
-    eval SPEED_X
-
-    /// Speed in the y direction.
-    eval SPEED_Y
-
-    /// Red color of the particle.
-    eval RED
-    /// green color of the particle.
-    eval GREEN
-    /// Blue color of the particle.
-    eval BLUE
-    /// Alpha (transparency) of the particle.
-    eval ALPHA
 
 
-/// Modifies a render parameter.
+/// Modifies a render parameters.
 ///
-func setAttribute ->
-    /// Determines how to interpret the next value.
-    /// If PRIMITIVE, val is expected to be a value within TOPAZ.RENDERER.PRIMITIVE
-    /// If ALPHA_RULE, val is expected to be a value within TOPAZ.RENDERER.ALPHA_RULE
-    /// If DEPTH_TEST, val is expected to be a value within TOPAZ.RENDERER.DEPTH_TEST
-    /// If ETCH_RULE,  val is expected to be a value within TOPAZ.RENDERER.ETCH_RULE 
-    /// if TEXTURE_FILTER_HINT, val is expected to be a value within TOPAZ.RENDERER.TEXTURE_FILTER_HINT
-    @Topaz.RENDERER.ATTRIBUTE attribute 
-
-    /// The new value. How its interpreted depends on param.
-    @Int val 
+func setAttributes ->
+    /// The primitive to use for the particle. Optional
+    @Topaz.RENDERER.PRIMITIVE primitive
+    
+    /// The alpha rule to use for the effect. Optional
+    @Topaz.RENDERER.ALPHA_RULE alphaRule
+    
+    // The depth test to use for the particle. Optional
+    @Topaz.RENDERER.DEPTH_TEST depthTest
+    
+    // The masking rule to use for the particle. Optional
+    @Topaz.RENDERER.ETCH_RULE etchRule
+    
+    // Texturing hint for the particle. Optional
+    @Topaz.RENDERER.TEXTURE_FILTER_HINT textureFilterHint
 
 /// The minimum value for the attribute to start.
 ///
 func setNoiseMin ->
-    /// The property to modify.
-    @Topaz.Particle.PROPERTY property
-    /// The value to set.
-    @Number value
+    /// The duration attribute, dictating how long the particle lasts.  Optional
+    @Number duration 
+    
+    /// The scaling in the X direction for the particle.  Optional
+    @Number scaleX 
+    
+    /// The scaling in the Y direction for the particle.  Optional
+    @Number scaleY 
+    
+    /// The scaling multiplier to both X and Y for the particle.  Optional
+    @Number scaleMultiplier
+    
+    /// Rotation of the particle in degrees. Optional
+    @Number rotation 
+    
+    /// The direction rotation for movement of the particle in degrees. Optional
+    @Number direction 
+    
+    /// The speed in the X direction, rotated by the direction. Optional.
+    @Number speedX
 
+    /// The speed in the Y direction, rotated by the direction. Optional.
+    @Number speedY
+    
+    /// The red component of color on the range [0, 1]. Optional.
+    @Number red 
+
+    /// The green component of color on the range [0, 1]. Optional.
+    @Number green 
+
+    /// The blue component of color on the range [0, 1]. Optional.
+    @Number blue 
+    
+    /// The alpha component of color on the range [0, 1]. Optional.
+    @Number alpha
+    
+    
 /// The maximum value for the attribute to start.
 ///
 func setNoiseMax ->
-    /// The property to modify.
-    @Topaz.Particle.PROPERTY property
-    /// The value to set.
-    @Number value
+    /// The duration attribute, dictating how long the particle lasts.  Optional
+    @Number duration 
+    
+    /// The scaling in the X direction for the particle.  Optional
+    @Number scaleX 
+    
+    /// The scaling in the Y direction for the particle.  Optional
+    @Number scaleY 
+    
+    /// The scaling multiplier to both X and Y for the particle.  Optional
+    @Number scaleMultiplier
+    
+    /// Rotation of the particle in degrees. Optional
+    @Number rotation 
+    
+    /// The direction rotation for movement of the particle in degrees. Optional
+    @Number direction 
+    
+    /// The speed in the X direction, rotated by the direction. Optional.
+    @Number speedX
+
+    /// The speed in the Y direction, rotated by the direction. Optional.
+    @Number speedY
+    
+    /// The red component of color on the range [0, 1]. Optional.
+    @Number red 
+
+    /// The green component of color on the range [0, 1]. Optional.
+    @Number green 
+
+    /// The blue component of color on the range [0, 1]. Optional.
+    @Number blue 
+    
+    /// The alpha component of color on the range [0, 1]. Optional.
+    @Number alpha
+
+
+/// The minimum value for the attribute to start.
+///
+func setOffsetMin ->
+    /// The duration attribute, dictating how long the particle lasts.  Optional
+    @Number duration 
+    
+    /// The scaling in the X direction for the particle.  Optional
+    @Number scaleX 
+    
+    /// The scaling in the Y direction for the particle.  Optional
+    @Number scaleY 
+    
+    /// The scaling multiplier to both X and Y for the particle.  Optional
+    @Number scaleMultiplier
+    
+    /// Rotation of the particle in degrees. Optional
+    @Number rotation 
+    
+    /// The direction rotation for movement of the particle in degrees. Optional
+    @Number direction 
+    
+    /// The speed in the X direction, rotated by the direction. Optional.
+    @Number speedX
+
+    /// The speed in the Y direction, rotated by the direction. Optional.
+    @Number speedY
+    
+    /// The red component of color on the range [0, 1]. Optional.
+    @Number red 
+
+    /// The green component of color on the range [0, 1]. Optional.
+    @Number green 
+
+    /// The blue component of color on the range [0, 1]. Optional.
+    @Number blue 
+    
+    /// The alpha component of color on the range [0, 1]. Optional.
+    @Number alpha
+    
+    
+/// The maximum value for the attribute to start.
+///
+func setOffsetMax ->
+    /// The duration attribute, dictating how long the particle lasts.  Optional
+    @Number duration 
+    
+    /// The scaling in the X direction for the particle.  Optional
+    @Number scaleX 
+    
+    /// The scaling in the Y direction for the particle.  Optional
+    @Number scaleY 
+    
+    /// The scaling multiplier to both X and Y for the particle.  Optional
+    @Number scaleMultiplier
+    
+    /// Rotation of the particle in degrees. Optional
+    @Number rotation 
+    
+    /// The direction rotation for movement of the particle in degrees. Optional
+    @Number direction 
+    
+    /// The speed in the X direction, rotated by the direction. Optional.
+    @Number speedX
+
+    /// The speed in the Y direction, rotated by the direction. Optional.
+    @Number speedY
+    
+    /// The red component of color on the range [0, 1]. Optional.
+    @Number red 
+
+    /// The green component of color on the range [0, 1]. Optional.
+    @Number green 
+
+    /// The blue component of color on the range [0, 1]. Optional.
+    @Number blue 
+    
+    /// The alpha component of color on the range [0, 1]. Optional.
+    @Number alpha
 
 /// Sets how the particle property modifies its value over 
 /// its duration. animString is expected to be output from
 /// topaz_automation_to_string() which will describe 
 /// how the value changes from the start of its life to the end.
-func setFunction -> 
-    /// The property to modify.
-    @Topaz.Particle.PROPERTY property
-    /// The automation state string.
-    @String value
+func setFunctions -> 
+    /// The duration attribute, dictating how long the particle lasts.  Optional
+    @String duration 
+    
+    /// The scaling in the X direction for the particle.  Optional
+    @String scaleX 
+    
+    /// The scaling in the Y direction for the particle.  Optional
+    @String scaleY 
+    
+    /// The scaling multiplier to both X and Y for the particle.  Optional
+    @String scaleMultiplier
+    
+    /// Rotation of the particle in degrees. Optional
+    @String rotation 
+    
+    /// The direction rotation for movement of the particle in degrees. Optional
+    @String direction 
+    
+    /// The speed in the X direction, rotated by the direction. Optional.
+    @String speedX
+
+    /// The speed in the Y direction, rotated by the direction. Optional.
+    @String speedY
+    
+    /// The red component of color on the range [0, 1]. Optional.
+    @String red 
+
+    /// The green component of color on the range [0, 1]. Optional.
+    @String green 
+
+    /// The blue component of color on the range [0, 1]. Optional.
+    @String blue 
+    
+    /// The alpha component of color on the range [0, 1]. Optional.
+    @String alpha
 
 /// When read, returns string representation of the particle's
 /// state, allowing for saving / loading the state of the particle.

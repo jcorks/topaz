@@ -40,7 +40,7 @@ func [constructor] ->
     /// The initial delay before the task starts being measured.
     /// If running "justOnce", this is the delay to use.
     @Int intervalDelay
-    ///         Callback is called when the interval expires.
+    /// Callback is called when the interval expires.
     @Function callback
 
 
@@ -59,7 +59,8 @@ func pause ->
 /// paused, no action is taken.
 func resume ->
 
-
+/// Restarts the scheduler. If stopped, this still will restart 
+/// the scheduler.
 func reset ->
 
 /// Gets the interval amount before the task interval

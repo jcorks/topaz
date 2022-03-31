@@ -1,0 +1,40 @@
+// Here, all the includes requires for the symbol 
+// calls are listed. Example:
+//
+//     #include "../system/renderer_noRenderer/src/backend.h"
+//
+#include "../../system/audioManager/@Backend_AudioManager@/src/backend.h"
+#include "../../system/display/@Backend_Display@/src/backend.h"
+#include "../../system/filesystem/@Backend_Filesystem@/src/backend.h"
+#include "../../system/inputManager/@Backend_InputManager@/src/backend.h"
+#include "../../system/renderer/@Backend_Renderer@/src/backend.h"
+#include "../../system/time/@Backend_Time@/src/backend.h"
+#include "../../system/script/matte/src/backend.h"
+#include "../../system/consoleDisplay/@Backend_ConsoleDisplay@/src/backend.h"
+#include "../../system/fontRenderer/@Backend_FontRenderer@/src/backend.h"
+#include "../../system/iox/rawdata/src/backend.h"
+#include "../../system/iox/tpng/src/backend.h"
+
+
+void topaz_system_configure_base() {
+
+// Here all topaz_system_config_add_handle() calls are listed to 
+// link the valid backend API implementations that are 
+// compatible with the program. Example:
+//
+//     topaz_system_config_add_handler(TOPAZ_STR_CAST("renderer"), TOPAZ_STR_CAST("srgs"), topaz_system_renderer_srgs__backend, (void (*)(void *)) topaz_system_renderer_srgs__api);
+//
+topaz_system_config_add_handler(TOPAZ_STR_CAST("audioManager"), TOPAZ_STR_CAST("@Backend_AudioManager@"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_audioManager_@Backend_AudioManager@__backend);
+topaz_system_config_add_handler(TOPAZ_STR_CAST("display"), TOPAZ_STR_CAST("@Backend_Display@"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_display_@Backend_Display@__backend);
+topaz_system_config_add_handler(TOPAZ_STR_CAST("filesystem"), TOPAZ_STR_CAST("@Backend_Filesystem@"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_filesystem_@Backend_Filesystem@__backend);
+topaz_system_config_add_handler(TOPAZ_STR_CAST("inputManager"), TOPAZ_STR_CAST("@Backend_InputManager@"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_inputManager_@Backend_InputManager@__backend);
+topaz_system_config_add_handler(TOPAZ_STR_CAST("renderer"), TOPAZ_STR_CAST("@Backend_Renderer@"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_renderer_@Backend_Renderer@__backend);
+topaz_system_config_add_handler(TOPAZ_STR_CAST("time"), TOPAZ_STR_CAST("@Backend_Time@"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_time_@Backend_Time@__backend);
+topaz_system_config_add_handler(TOPAZ_STR_CAST("script"), TOPAZ_STR_CAST("matte"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_script_matte__backend);
+topaz_system_config_add_handler(TOPAZ_STR_CAST("consoleDisplay"), TOPAZ_STR_CAST("@Backend_ConsoleDisplay@"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_consoleDisplay_@Backend_ConsoleDisplay@__backend);
+topaz_system_config_add_handler(TOPAZ_STR_CAST("fontRenderer"), TOPAZ_STR_CAST("@Backend_FontRenderer@"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_fontRenderer_@Backend_FontRenderer@__backend);
+topaz_system_config_add_handler(TOPAZ_STR_CAST("iox"), TOPAZ_STR_CAST("rawdata"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_iox_rawdata__backend);
+topaz_system_config_add_handler(TOPAZ_STR_CAST("iox"), TOPAZ_STR_CAST("tpng"), (void (*)(topazSystem_t *, topazSystem_Backend_t *, void * api))topaz_system_iox_tpng__backend);
+
+}
+
