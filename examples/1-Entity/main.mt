@@ -62,7 +62,7 @@
         // We still have to associate it with our entity.
         // This can be done by using the addComponent() function.
         //
-        this.add(component:visual);
+        this.attach(component:visual);
 
         // Along with components, every entity can have a custom set of 
         // update functions. The most common one is onStep() which is 

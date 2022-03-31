@@ -20,7 +20,7 @@
         visual.center = {x:asset.width/2, y:asset.height/2};
 
 
-        this.add(component:visual);
+        this.attach(component:visual);
 
         @:wiggleValue ::(rate) {
             return 0.7+0.3*Number.sin(of:Topaz.time*0.001*rate);

@@ -10,10 +10,8 @@ mesh.vertices = [
    -1, 1, 0,    0, 1, 0,    0, 1,    1, 0, 1, 1
 ];
 
-mesh.addObject();
-mesh.setObject(
-    i:0, 
-    value:[
+mesh.addObject(
+    indices:[
         0, 1, 2,
         2, 3, 0
     ]

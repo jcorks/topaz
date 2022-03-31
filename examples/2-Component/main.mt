@@ -150,7 +150,7 @@
 
         // And since it is a component, we want to make sure to attach it 
         // so that the component gets updated.
-        this.add(component:myBasket);
+        this.attach(component:myBasket);
 
 
         this.interface = {

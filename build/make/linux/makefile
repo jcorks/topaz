@@ -134,7 +134,7 @@ debug: $(OBJS)
 	$(CC) -g -fsanitize=address -fsanitize=undefined  $(FLAGS) $(OBJS) $(INCS)  -o ./topaz $(LIBS) 
 
 update-bootstrap-rom:
-	cd ../../../system/script/matte/src; $(CC) mt_to_string.c -o m2s; ./m2s
+	cd ../../../system/script/matte/src; $(CC) m2s/mt_to_string.c -o m2s_bin; ./m2s_bin
 
 clean: 
 	rm -f $(OBJS) ./scripts

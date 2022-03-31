@@ -229,8 +229,8 @@
 // the "children" property, populating the tree.
 //
 // Alternatively, the following could be rewritten as:
-//    manager.attach(new topaz.entity(Input_Poll));
-//    manager.attach(new topaz.entity(Input_List));
+//    manager.attach(Input_Poll.new());
+//    manager.attach(Input_List.new());
 manager.children = [
     Input_Poll.new(),
     Input_List.new()

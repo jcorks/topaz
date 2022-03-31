@@ -44,7 +44,7 @@ return class(
         
         
         
-        this.add(component:shape2D);
+        this.attach(component:shape2D);
         
 
         

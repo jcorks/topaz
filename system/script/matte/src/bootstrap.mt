@@ -906,8 +906,8 @@ Topaz = class(
         
                         addObject : ::(indices){ 
                             topaz_mesh__add_object(a:impl);
-                            if (object != empty) ::<={
-                                topaz_mesh__set_object(a:this.objectCount-1, b:object);
+                            if (indices != empty) ::<={
+                                topaz_mesh__set_object(a:impl, b:this.objectCount-1, c:indices);
                             };
                         },
         
@@ -2105,9 +2105,10 @@ Topaz = class(
                                
                             when (component != empty)
                                 if (addAfter != empty && addAfter == true) 
-                                    topaz_entity__add_component_after(a:this.native, b:component.native);
+                                    topaz_entity__add_component_after(a:this.native, b:component.native)
                                 else 
-                                    topaz_entity__add_component(a:this.native, b:component.native);
+                                    topaz_entity__add_component(a:this.native, b:component.native)
+                            ;
                         },
         
                         detach : ::() { 
