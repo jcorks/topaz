@@ -421,6 +421,7 @@ topazScript_Object_t * topaz_script_object_from_string(topazScript_t * s, const 
 
 
 topazScript_Object_t * topaz_script_object_from_object(topazScript_t * s, topazScript_Object_t * o) {
+    if (o == NULL) return NULL;
     switch(o->type) {
       case topazScript_Object_Type_Integer: 
         return topaz_script_object_from_int(s, o->dataInt);

@@ -36,11 +36,12 @@ static void * script_create_native_object(topazScript_t * script, topaz_script_n
 
 
 // Fetches a pre-existing object ref keyed by its native pointer.
-#define TSO_OBJECT_FETCH_KEPT_NATIVE(__native__) topaz_table_find(((topazScriptManager_t*)context)->lookupRefs, __native__);
+#define TSO_OBJECT_FETCH_KEPT_NATIVE(__native__) topaz_script_object_from_object(script, topaz_table_find(((topazScriptManager_t*)context)->lookupRefs, __native__));
 
 
 // Creates an object from a different context and returns its object and native ref.
 #define TSO_OBJECT_INSTANTIATE(__nativecreate__, __native__) script_create_native_object(script, __nativecreate__, (void**)&__native__, context);
+
 
 // Tells the scripting engine to prevent garbage collection on this newly created object.
 // The object kept is the one created by TSO_OBJECT_NEW_VALUE

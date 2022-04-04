@@ -29,8 +29,8 @@ DEALINGS IN THE SOFTWARE.
 */
 
 #include <topaz/compat.h>
-#include <topaz/containers/table.h>
 #include <topaz/containers/string.h>
+#include <topaz/containers/table.h>
 
 #include <string.h>
 #include <stdlib.h>
@@ -42,7 +42,8 @@ DEALINGS IN THE SOFTWARE.
 #endif
 
 
-
+#define TRUE 1
+#define FALSE 0
 
 #define table_bucket_reserve_size 256
 #define table_bucket_start_size 32      
@@ -176,7 +177,9 @@ static int key_cmp_fn_topaz_str(const void * a, const void * b, uint32_t len) {
 
 // pointer / value to a table directly
 static uint32_t hash_fn_value(const void * data, uint32_t nu) {
-    return (uint32_t)(int64_t)data;
+    // most OS' allocators are aligned to the cpu byte size.
+
+    return (uint32_t)(((int64_t)data)/32);
 }
 
 static int key_cmp_fn_value(const void * a, const void * b, uint32_t nu) {
@@ -295,6 +298,7 @@ static void topaz_table_remove_entry(topazTable_t * t, topazTableEntry_t * entry
 
     t->keyRemove(entry->key);
     free(entry);
+    t->size--;
 }
 
 
@@ -492,7 +496,6 @@ void topaz_table_remove(topazTable_t * t, const void * key) {
                     t->buckets[bucketID] = src->next;                    
                 }
                 topaz_table_remove_entry(t, src);
-                t->size--;
 
                 return;
             }
@@ -503,7 +506,7 @@ void topaz_table_remove(topazTable_t * t, const void * key) {
 }
 
 int topaz_table_is_empty(const topazTable_t * t) {
-    return t->size != 0;
+    return t->size == 0;
 }
 
 void topaz_table_clear(topazTable_t * t) {
