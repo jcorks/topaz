@@ -124,7 +124,7 @@ LIBS :=  -lvorbisfile -lvorbis -logg -lfreetype -lglfw -lGL -lasound -lm -pthrea
 
 
 %.o: %.c 
-	$(CC) -g -c $(FLAGS) $(DEFS) $(INCS) $< -o $@
+	$(CC) -DMATTE_DEBUG -g -fsanitize=address -fsanitize=undefined -c $(FLAGS) $(DEFS) $(INCS) $< -o $@
 
 all: $(OBJS)
 	@echo linking 
