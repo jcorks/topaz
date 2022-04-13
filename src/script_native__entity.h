@@ -28,9 +28,19 @@ static void topaz_script_entity__on_detach(topazEntity_t * e, TopazScriptEntity 
 
 static void topaz_script_entity__on_remove(topazEntity_t * e, TopazScriptEntity * scr) {
     topazScript_Object_t * fn = scr->onRemove;
-    if (!fn) return;
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    if (fn) {
+        topaz_script_object_destroy(topaz_script_object_reference_call(fn, topaz_array_empty()));
+    }
     topaz_script_object_reference_unref(scr->self);
+    if (scr->onStep) topaz_script_object_destroy(scr->onStep);
+    if (scr->onDraw) topaz_script_object_destroy(scr->onDraw);
+    if (scr->onPreStep) topaz_script_object_destroy(scr->onPreStep);
+    if (scr->onPreDraw) topaz_script_object_destroy(scr->onPreDraw);
+    if (scr->onAttach) topaz_script_object_destroy(scr->onAttach);
+    if (scr->onDetach) topaz_script_object_destroy(scr->onDetach);
+    if (scr->onRemove) topaz_script_object_destroy(scr->onRemove);
+
+
     void * context = scr->manager;
     TSO_OBJECT_UNKEEP_REF(scr->self, e);
     free(scr);

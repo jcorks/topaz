@@ -392,6 +392,11 @@ Topaz = class(
                         return impl;
                     },
                     
+                    clearNative ::() {
+                        impl.__ctx = empty;
+                        impl = empty;
+                    },
+                    
                     
                     
                     
@@ -2040,7 +2045,12 @@ Topaz = class(
                     @rotation;
                     @scale;
                     @globalPosition;
-                    
+                    @:cleanRefs :: {
+                        foreach(in:this.components, do:::(k, v) {
+                            v.clearNative();
+                        });
+                        this.clearNative();
+                    };
                     this.interface = {
                         isValid : {
                             get : ::(){ 
@@ -2332,14 +2342,18 @@ Topaz = class(
                         }},
         
                         onRemove : {set : ::(value){ 
-                                topaz_entity__set_on_remove(a:this.native, b:value);
+                                topaz_entity__set_on_remove(a:this.native, b: ::{
+                                    value();
+                                    cleanRefs();
+                                });
                         }}
         
                         
         
         
                     
-                    };        
+                    };     
+                    this.onRemove = ::{};   
                 }    
             );
         };
@@ -2399,6 +2413,7 @@ Topaz = class(
                     this.interface = {
                         destroy : ::(){ 
                             topaz_component__destroy(a:this.native);
+                            this.clearNative();
                         },
                         
                         step : ::(){ 
@@ -2429,13 +2444,13 @@ Topaz = class(
                                 return nativeToE(native:topaz_component__get_host(a:this.native));
                             },
 
-                            set : ::(v) {
+                            set : ::(value) {
                                 @:p = topaz_component__get_host(a:this.native);
                                 if (p != empty) ::<={
                                     topaz_entity__remove_component(a:p, b:this.native);
                                 };
-                                if (v != empty) ::<={
-                                    topaz_entity__add_component(a:v.native, b:this.native);
+                                if (value != empty) ::<={
+                                    topaz_entity__add_component(a:value.native, b:this.native);
                                 };
                             }
                         },
@@ -3084,6 +3099,7 @@ Topaz = class(
             @:topaz_shape2d__form_rectangle = getExternalFunction(name:'topaz_shape2d__form_rectangle');
             @:topaz_shape2d__form_image = getExternalFunction(name:'topaz_shape2d__form_image');
             @:topaz_shape2d__form_image_frame = getExternalFunction(name:'topaz_shape2d__form_image_frame');
+            @:topaz_shape2d__form_image_scaled = getExternalFunction(name:'topaz_shape2d__form_image_scaled');
             @:topaz_shape2d__form_radial = getExternalFunction(name:'topaz_shape2d__form_radial');
 
             return class(
@@ -3284,7 +3300,7 @@ Topaz = class(
                         },
 
                         formImageScaled : ::(image, width, height) { 
-                            topaz_shape2d__form_image(a:impl, b:image.native, c:width, d:height);
+                            topaz_shape2d__form_image_scaled(a:impl, b:image.native, c:width, d:height);
                         },
 
                         formRadial : ::(radius, numSides) { 

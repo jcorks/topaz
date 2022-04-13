@@ -131,6 +131,7 @@ static int topaz_audio_manager_alsa__connect(
     topaz_audio_manager_stream_callback audioStreamHandler, 
     void * userData
 ) {
+    return 1;
     TopazALSA * alsa = a;
     if (!alsa->thread) {
         alsa->fn = audioStreamHandler;

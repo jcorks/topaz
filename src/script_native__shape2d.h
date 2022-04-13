@@ -1,11 +1,13 @@
 #include <topaz/components/shape2d.h>
 #include <topaz/transform.h>
 
+
 TSO_SCRIPT_API_FN(shape2d_api__create) {
     topazComponent_t * component = topaz_shape2d_create(((topazScriptManager_t*)context)->ctx);
     // creates new object and sets native pointer
     TSO_OBJECT_NEW_VALUE(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__SHAPE2D, NULL, NULL);
     TSO_OBJECT_KEEP_REF(component);
+    component_script_object_bind_destroy(component, script, context);
     return object;
 }
 
@@ -484,8 +486,12 @@ TSO_SCRIPT_API_FN(shape2d_api__form_triangles) {
         uint32_t i;
         topazVector_t * v = calloc(len/2, sizeof(topazVector_t));
         for(i = 0; i < len; i+=2) {
-            v[i/2].x = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i));
-            v[i/2].y = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i+1));
+            topazScript_Object_t * x = topaz_script_object_reference_array_get_nth(arg1, i);
+            topazScript_Object_t * y = topaz_script_object_reference_array_get_nth(arg1, i+1);
+            v[i/2].x = topaz_script_object_as_number(x);
+            v[i/2].y = topaz_script_object_as_number(y);
+            topaz_script_object_destroy(x);
+            topaz_script_object_destroy(y);
         }
         topaz_shape2d_form_triangles(
             native,
@@ -506,8 +512,12 @@ TSO_SCRIPT_API_FN(shape2d_api__form_lines) {
         uint32_t i;
         topazVector_t * v = calloc(len/2, sizeof(topazVector_t));
         for(i = 0; i < len; i+=2) {
-            v[i/2].x = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i));
-            v[i/2].y = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i+1));
+            topazScript_Object_t * x = topaz_script_object_reference_array_get_nth(arg1, i);
+            topazScript_Object_t * y = topaz_script_object_reference_array_get_nth(arg1, i+1);
+            v[i/2].x = topaz_script_object_as_number(x);
+            v[i/2].y = topaz_script_object_as_number(y);
+            topaz_script_object_destroy(x);
+            topaz_script_object_destroy(y);
         }
         topaz_shape2d_form_lines(
             native,

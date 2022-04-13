@@ -330,6 +330,9 @@ static void topaz_matte_object_finalizer(void * objectUserdata, void * functionU
             assert(!"Matte-Native object should never have a NULL tag.");
         }
     #endif
+    
+    if (tag->selfID.value.id == 2051)
+        printf("bruh");
 
     // if this is even happening, the global stash entry was already removed.
 
@@ -893,7 +896,6 @@ static void topaz_matte_object_reference_unref(topazScript_Object_t * o, void * 
     TOPAZMATTEObjectTag * tag = data;
     // when 0, will unkeep
     tag->refCount--;
-
     if (tag->refCount == 0) {
         matte_value_object_pop_lock(tag->ctx->heap, topaz_matte_object_value_from_tag(tag));
     }

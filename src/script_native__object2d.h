@@ -6,6 +6,7 @@ TSO_SCRIPT_API_FN(object2d_api__create) {
     // creates new object and sets native pointer
     TSO_OBJECT_NEW_VALUE(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__OBJECT2D, NULL, NULL);
     TSO_OBJECT_KEEP_REF(component);
+    component_script_object_bind_destroy(component, script, context);
     return object;
 }
 
@@ -265,8 +266,12 @@ TSO_SCRIPT_API_FN(object2d_api__set_collider) {
         uint32_t i;
         topazVector_t * v = calloc(len, sizeof(topazVector_t));
         for(i = 0; i < len; i+=2) {
-            v[i/2].x = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i));
-            v[i/2].y = topaz_script_object_as_number(topaz_script_object_reference_array_get_nth(arg1, i+1));
+            topazScript_Object_t * x = topaz_script_object_reference_array_get_nth(arg1, i);
+            topazScript_Object_t * y = topaz_script_object_reference_array_get_nth(arg1, i+1);
+            v[i/2].x = topaz_script_object_as_number(x);
+            v[i/2].y = topaz_script_object_as_number(y);
+            topaz_script_object_destroy(x);
+            topaz_script_object_destroy(y);
         }
         topaz_object2d_set_collider(
             native,

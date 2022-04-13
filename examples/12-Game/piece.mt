@@ -8,16 +8,17 @@
     LINE : 0,
     T:1,
     L:2,
-    L_REVERSE:3
+    L_REVERSE:3,
+    BLOCK:4
 };
 
 @:getColor = ::<={
     @:COLORS = [
-        Topaz.Color.parse(string:'red'),
+        Topaz.Color.parse(string:'pink'),
         Topaz.Color.parse(string:'yellow'),
-        Topaz.Color.parse(string:'green'),
-        Topaz.Color.parse(string:'blue'),
-        Topaz.Color.parse(string:'purple')
+        Topaz.Color.parse(string:'chartreuse'),
+        Topaz.Color.parse(string:'cyan'),
+        Topaz.Color.parse(string:'violet')
     ];
     
     return ::(type){
@@ -61,13 +62,21 @@
             [0, 1],
             [0, 2],
             [1, 2]
+        ],
+       (TYPES.BLOCK):
+        // BLOCK
+        [
+            [0, 0],
+            [0, 1],
+            [1, 0],
+            [1, 1]
         ]
     };
 };
 
 
 // takes a shape layout and converts it into a visual
-@:layoutToShape::(block) {
+@:layoutToShape::(block, position) {
     @:x = block[0];
     @:y = block[1];
     
@@ -80,50 +89,113 @@
         x: x*Parameters.BLOCK_SIZE,
         y: y*Parameters.BLOCK_SIZE
     };
+    position.x = shape.position.x;
+    position.y = shape.position.y;
 
     return shape;
 };
 
+
+@:LIMIT_X0 = Number.floor(of:Parameters.BLOCK_SIZE * Parameters.FIELD_WIDTH * (-0.5));
+@:LIMIT_X1 = LIMIT_X0 + Parameters.FIELD_WIDTH*Parameters.BLOCK_SIZE;
+@:LIMIT_Y0 = Number.floor(of:Parameters.BLOCK_SIZE * Parameters.FIELD_HEIGHT * (-0.5));
+@:LIMIT_Y1 = LIMIT_Y0 + Parameters.FIELD_WIDTH*Parameters.BLOCK_SIZE;
+
+
 return class(
     inherits: [Topaz.Entity],
     statics: {
-        FALL_RATE : -3
+        FALL_RATE : 3
     },
     define:::(this) {
-        @:type = Number.floor(of:Number.random()*4);
+        @:type = Number.floor(of:Number.random()*5);
         @:layout = getLayout(type:type);
-        @:color = getColor(type:type);        
+        @:color = getColor(type:type);  
+        @anchors = [];  
+        
+        @:checkBlocked ::(offsetX, offsetY){
+            return listen(to:::{
+                foreach(in:anchors, do:::(k, pos) {
+                    @:x = Parameters.posToIndex(pos:pos.x + offsetX);
+                    @:y = Parameters.posToIndex(pos:pos.y + offsetY);
+
+                    foreach(in:Parameters.Manager.blocks, do:::(k, block) {
+                        when(block.indexX != x) empty;
+                        if (block.indexY == y - 1) ::<={
+                            send(message:true);
+                        };
+                        
+                    });
+                    if (y == 0) ::<={
+                        send(message:true);
+                    };
+
+                });
+                return false;
+            });        	
+        };
+        
+        @:resetShadow ::{
+            @y = this.position.y;
+            @offset = 0;
+
+            loop(func:::{
+                when(checkBlocked(offsetX:this.position.x, offsetY:y)) false;
+                y -= Parameters.BLOCK_SIZE;
+                offset += 1;
+                return true;
+            });
+            
+            Parameters.Manager.setShadow(
+                position: {
+                    x: this.position.x,
+                    y: y
+                },
+                
+                layout: layout
+            );
+        };
+        
+        @:containLeft :: {
+            @x = this.position.x;
+            foreach(in:anchors, do:::(index, pos) {
+                if (x+pos.x < LIMIT_X0) ::<={
+                    this.position.x += Parameters.BLOCK_SIZE;
+                    x = this.position.x;                        
+                };
+            });
+        };
+        
+        @:containRight :: {
+            @x = this.position.x;
+            foreach(in:anchors, do:::(index, pos) {
+                if (x+pos.x >= LIMIT_X1) ::<={
+                    this.position.x -= Parameters.BLOCK_SIZE;
+                    x = this.position.x;                        
+                };
+            });        
+        };
+        
 
         @:resetPiece :: {
             foreach(in:this.components, do:::(k, v) {
                 v.destroy();
             });
+            anchors = [];   
 
-            @:o2d = Topaz.Object2D.new();
-            o2d.group = Parameters.PIECE_GROUP;
-
-            @:collider = [];
             @colliderIter = 0;
             foreach(in:layout, do:::(index, block) {
-                @:visual = layoutToShape(block:block);
+                @:pos = {};
+                @:visual = layoutToShape(block:block, position:pos);
                 visual.color = color;
                 this.attach(component: visual);
-
-                collider[colliderIter] = Parameters.BLOCK_SIZE*(block[0] + 0.4);colliderIter+=1;
-                collider[colliderIter] = Parameters.BLOCK_SIZE*block[1];colliderIter+=1;
-
-                collider[colliderIter] = Parameters.BLOCK_SIZE*(block[0] + 0.6);colliderIter+=1;
-                collider[colliderIter] = Parameters.BLOCK_SIZE*block[1];colliderIter+=1;
+                Object.push(object:anchors, value:pos);
+                
             });
-            o2d.collider = collider;
-            o2d.velocityY = this.class.FALL_RATE;
-            o2d.installHook(event:'on-collide', callback:::(source){
-                blockize();
-            });
-            this.attach(component:o2d);
         };
 
         @:blockize :: { // replace with snapped blocks
+            fall = 0; // dont trigger same-step
             @:x = Parameters.snapToBlock(pos:this.position.x);
             @:y = Parameters.snapToBlock(pos:this.position.y);
             Parameters.CurrentPiece = empty;
@@ -137,10 +209,26 @@ return class(
                 );
             });
         };
-
+        @fall = 0;
         this.onStep = ::{
-            if (this.position.y < 0)
-                blockize();
+            fall += this.class.FALL_RATE;
+            if (fall > 100) ::<={
+                fall = 0;
+
+                if (!checkBlocked(
+                        offsetX:this.position.x,
+                        offsetY:this.position.y
+                )) ::<= {
+                    this.position.y -= Parameters.BLOCK_SIZE;
+                    resetShadow();
+                } else 
+                    blockize();
+            };
+ 
+            
+
+            
+
         };
 
 
@@ -161,9 +249,42 @@ return class(
                     block[1] = Number.sin(of:angle) * length;
                 });
                 resetPiece();
+                containLeft();
+                containRight();
+                resetShadow();
+            },
+            fastFall :: {
+                fall += 40;
+            },
+            hardDrop :: {
+                loop(func:::{
+                    when(checkBlocked(offsetX:this.position.x, offsetY:this.position.y)) ::<={
+                        blockize();
+                        return false;
+                    };
+                    this.position.y -= Parameters.BLOCK_SIZE;
+                    return true;
+                });
+                
+            },
+            moveLeft :: {
+                this.position.x -= Parameters.BLOCK_SIZE;
+                containLeft();
+                resetShadow();
+            },
+            
+            moveRight :: {
+                this.position.x += Parameters.BLOCK_SIZE;
+                containRight();          
+                resetShadow();
+            },
+            
+            resetShadow :: {
+                resetShadow();
             }
         };
         resetPiece();
+        resetShadow();
     }
 
     

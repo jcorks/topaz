@@ -3,8 +3,8 @@
 
 @:Parameters = {
     BLOCK_SIZE   : 24,
-    FIELD_WIDTH  : 7,
-    FIELD_HEIGHT : 17,
+    FIELD_WIDTH  : 10,
+    FIELD_HEIGHT : 20,
 
 
     PIECE_GROUP : Topaz.Object2D.GROUP.A,
@@ -21,23 +21,20 @@ Parameters.snapToBlock = ::(pos) {
     return Number.round(value:(pos / Parameters.BLOCK_SIZE)) * Parameters.BLOCK_SIZE;
 };
 
+Parameters.posToIndex = ::(pos) {
+    return Number.round(value:(pos / Parameters.BLOCK_SIZE));
+};
 
-Topaz.Object2D.setGroupInteraction(
-    thisGroup: Parameters.PIECE_GROUP,
-    thisGroup: Parameters.PIECE_GROUP,
-    interact:false
+Parameters.BLOCK_IMAGE = Topaz.Resources.convertAsset(
+    asset: Topaz.Resources.createAsset(path:'piece.png'),
+    extension: 'png'
 );
 
-Topaz.Object2D.setGroupInteraction(
-    thisGroup: Parameters.PIECE_GROUP,
-    otherGroup: Parameters.BLOCK_GROUP,
-    interact:true
-);
 
-Topaz.Object2D.setGroupInteraction(
-    thisGroup: Parameters.BLOCK_GROUP,
-    otherGroup: Parameters.BLOCK_GROUP,
-    interact: false
-);
+
+
+
+
+
 
 return Parameters;

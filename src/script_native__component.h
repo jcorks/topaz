@@ -33,8 +33,10 @@ static void topaz_script_component__on_detach(topazComponent_t * e, TopazCompone
 
 static void topaz_script_component__on_destroy(topazComponent_t * e, TopazComponentTSO * scr) {
     topazScript_Object_t * fn = scr->onDestroy;
-    if (!fn) return;
-    topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
+    if (fn) {
+        topaz_script_object_destroy(topaz_script_object_reference_call(fn, TOPAZ_ARRAY_CAST(&scr->self, topazScript_Object_t *, 1)));
+
+    }
     topaz_script_object_reference_unref(scr->self);
     void * context = scr->manager;
     TSO_OBJECT_UNKEEP_REF(scr->self, e);
@@ -61,6 +63,32 @@ typedef struct {
     topazScript_Object_t * fn;
     topazScript_t * script;
 } TSOCHandlerData;
+
+
+typedef struct {
+    topazScript_t * script;
+    topazScriptManager_t * context;
+} ScriptDataset;
+static int component_api__on_remove(topazComponent_t * c, void * data, topazEntity_t * e, void * nu) {
+    ScriptDataset * set = data;
+    topazScript_t * script = set->script;
+    void * native = c;
+    topazScriptManager_t * context = set->context;
+    topazScript_Object_t * obj = TSO_OBJECT_FETCH_KEPT_NATIVE(native);
+    TSO_OBJECT_UNKEEP_REF(obj, native);   
+    topaz_script_object_destroy(obj);
+    free(set);
+    return 0;
+}
+
+static void component_script_object_bind_destroy(topazComponent_t * component, topazScript_t * script, topazScriptManager_t * context) {
+    ScriptDataset * set = calloc(1, sizeof(ScriptDataset));
+    set->script = script;
+    set->context = context;
+    topaz_component_install_hook(component, TOPAZ_STR_CAST("on-destroy"), component_api__on_remove, set);
+}
+
+
 
 TSO_SCRIPT_API_FN(component_api__create) {
     TSO_ARG_0;
