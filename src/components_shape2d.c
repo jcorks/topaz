@@ -92,6 +92,7 @@ static void shape2d__on_draw(topazComponent_t * c, Shape2D * s) {
 
         s->realColor = s->color;
         topaz_render2d_set_vertices(s->render2d, arr);
+        topaz_array_destroy(arr);
     }
 
     // now that its finalized, send the shape2d as-is to the graphics 
@@ -210,20 +211,24 @@ void topaz_shape2d_set_center(topazComponent_t * c, const topazVector_t * center
     Shape2D * s = shape2d__retrieve(c);
     uint32_t i;
 
-    topazArray_t * copyV = topaz_array_clone(topaz_render2d_get_vertices(s->render2d));
-    topazRenderer_2D_Vertex_t * copyVp = topaz_array_get_data(copyV);
-    uint32_t len = topaz_array_get_size(copyV);
-    for(i = 0; i < len; ++i) {
-        copyVp[i].x = copyVp[i].x + s->center.x - center->x;
-        copyVp[i].y = copyVp[i].y + s->center.y - center->y;        
-    }
+    const topazArray_t * verts = topaz_render2d_get_vertices(s->render2d);
+    if (verts) {
+        topazArray_t * copyV = topaz_array_clone(topaz_render2d_get_vertices(s->render2d));
+        topazRenderer_2D_Vertex_t * copyVp = topaz_array_get_data(copyV);
+        uint32_t len = topaz_array_get_size(copyV);
+        for(i = 0; i < len; ++i) {
+            copyVp[i].x = copyVp[i].x + s->center.x - center->x;
+            copyVp[i].y = copyVp[i].y + s->center.y - center->y;        
+        }
 
-    topaz_render2d_set_vertices(
-        s->render2d, 
-        copyV
-    );
+        topaz_render2d_set_vertices(
+            s->render2d, 
+            copyV
+        );
 
-    topaz_array_destroy(copyV);
+        topaz_array_destroy(copyV);
+    };
+    s->center = *center;
 }
     
 void topaz_shape2d_form_rectangle(topazComponent_t * c, float w, float h) {

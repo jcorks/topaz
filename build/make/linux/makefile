@@ -118,16 +118,16 @@ INCS := -I../../../include/ -I. -I/usr/include/freetype2/
 
 
 
-FLAGS = 
+FLAGS = -O2
 LIBS :=  -lvorbisfile -lvorbis -logg -lfreetype -lglfw -lGL -lasound -lm -pthread -ldl
 
 
 %.o: %.c 
-	$(CC) -g -c $(FLAGS) $(DEFS) $(INCS) $< -o $@
+	$(CC) -c $(FLAGS) $(DEFS) $(INCS) $< -o $@
 
 all: $(OBJS)
 	@echo linking 
-	$(CC) -O2 $(FLAGS) $(OBJS) $(INCS)  -o ./topaz $(LIBS) 
+	$(CC) $(FLAGS) $(OBJS) $(INCS)  -o ./topaz $(LIBS) 
 
 debug: $(OBJS)
 	$(CC) -g -DMATTE_DEBUG__HEAP -DMATTE_DEBUG  $(FLAGS) $(OBJS) $(INCS)  -o ./topaz $(LIBS) 
