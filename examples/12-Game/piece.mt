@@ -96,9 +96,9 @@
 };
 
 
-@:LIMIT_X0 = Number.floor(of:Parameters.BLOCK_SIZE * Parameters.FIELD_WIDTH * (-0.5));
+@:LIMIT_X0 = (Parameters.BLOCK_SIZE * Parameters.FIELD_WIDTH * (-0.5))->floor;
 @:LIMIT_X1 = LIMIT_X0 + Parameters.FIELD_WIDTH*Parameters.BLOCK_SIZE;
-@:LIMIT_Y0 = Number.floor(of:Parameters.BLOCK_SIZE * Parameters.FIELD_HEIGHT * (-0.5));
+@:LIMIT_Y0 = (Parameters.BLOCK_SIZE * Parameters.FIELD_HEIGHT * (-0.5))->floor;
 @:LIMIT_Y1 = LIMIT_Y0 + Parameters.FIELD_WIDTH*Parameters.BLOCK_SIZE;
 
 
@@ -108,18 +108,18 @@ return class(
         FALL_RATE : 3
     },
     define:::(this) {
-        @:type = Number.floor(of:Number.random()*5);
+        @:type = (Number.random()*5)->floor;
         @:layout = getLayout(type:type);
         @:color = getColor(type:type);  
         @anchors = [];  
         
         @:checkBlocked ::(offsetX, offsetY){
-            return listen(to:::{
-                foreach(in:anchors, do:::(k, pos) {
+            return [::]{
+                anchors->foreach(do:::(k, pos) {
                     @:x = Parameters.posToIndex(pos:pos.x + offsetX);
                     @:y = Parameters.posToIndex(pos:pos.y + offsetY);
 
-                    foreach(in:Parameters.Manager.blocks, do:::(k, block) {
+                    Parameters.Manager.blocks->foreach(do:::(k, block) {
                         when(block.indexX != x) empty;
                         if (block.indexY == y - 1) ::<={
                             send(message:true);
@@ -132,19 +132,20 @@ return class(
 
                 });
                 return false;
-            });        	
+            };        	
         };
         
         @:resetShadow ::{
             @y = this.position.y;
             @offset = 0;
 
-            loop(func:::{
-                when(checkBlocked(offsetX:this.position.x, offsetY:y)) false;
-                y -= Parameters.BLOCK_SIZE;
-                offset += 1;
-                return true;
-            });
+            [::] {
+                forever(do:::{
+                    when(checkBlocked(offsetX:this.position.x, offsetY:y)) send();
+                    y -= Parameters.BLOCK_SIZE;
+                    offset += 1;
+                });
+            };
             
             Parameters.Manager.setShadow(
                 position: {
@@ -158,7 +159,7 @@ return class(
         
         @:containLeft :: {
             @x = this.position.x;
-            foreach(in:anchors, do:::(index, pos) {
+            anchors->foreach(do:::(index, pos) {
                 if (x+pos.x < LIMIT_X0) ::<={
                     this.position.x += Parameters.BLOCK_SIZE;
                     x = this.position.x;                        
@@ -168,7 +169,7 @@ return class(
         
         @:containRight :: {
             @x = this.position.x;
-            foreach(in:anchors, do:::(index, pos) {
+            anchors->foreach(do:::(index, pos) {
                 if (x+pos.x >= LIMIT_X1) ::<={
                     this.position.x -= Parameters.BLOCK_SIZE;
                     x = this.position.x;                        
@@ -178,18 +179,18 @@ return class(
         
 
         @:resetPiece :: {
-            foreach(in:this.components, do:::(k, v) {
+            this.components->foreach(do:::(k, v) {
                 v.destroy();
             });
             anchors = [];   
 
             @colliderIter = 0;
-            foreach(in:layout, do:::(index, block) {
+            layout->foreach(do:::(index, block) {
                 @:pos = {};
                 @:visual = layoutToShape(block:block, position:pos);
                 visual.color = color;
                 this.attach(component: visual);
-                Object.push(object:anchors, value:pos);
+                anchors->push(value:pos);
                 
             });
         };
@@ -201,7 +202,7 @@ return class(
             Parameters.CurrentPiece = empty;
             this.remove();
 
-            foreach(in:layout, do:::(index, block) {
+            layout->foreach(do:::(index, block) {
                 Parameters.Manager.addBlock(
                     color: color,
                     x: x+Parameters.BLOCK_SIZE*block[0],
@@ -235,7 +236,7 @@ return class(
 
         this.interface = {
             rotate:: {
-                foreach(in:layout, do:::(index, block) {
+                layout->foreach(do:::(index, block) {
                     @angle = Topaz.Vector.pointAt2D(
                         from : {x:0, y:0},
                         to   : {x:block[0], y:block[1]}
@@ -244,9 +245,9 @@ return class(
                         x: block[0],
                         y: block[1]
                     });
-                    angle = Number.toRadians(value:angle+90);
-                    block[0] = Number.cos(of:angle) * length;
-                    block[1] = Number.sin(of:angle) * length;
+                    angle = (angle+90)->asRadians;
+                    block[0] = (angle)->cos * length;
+                    block[1] = (angle)->sin * length;
                 });
                 resetPiece();
                 containLeft();
@@ -257,14 +258,15 @@ return class(
                 fall += 40;
             },
             hardDrop :: {
-                loop(func:::{
-                    when(checkBlocked(offsetX:this.position.x, offsetY:this.position.y)) ::<={
-                        blockize();
-                        return false;
-                    };
-                    this.position.y -= Parameters.BLOCK_SIZE;
-                    return true;
-                });
+                [::] {
+                    forever(do:::{
+                        when(checkBlocked(offsetX:this.position.x, offsetY:this.position.y)) ::<={
+                            blockize();
+                            send();
+                        };
+                        this.position.y -= Parameters.BLOCK_SIZE;
+                    });
+                };
                 
             },
             moveLeft :: {

@@ -181,10 +181,10 @@
             // is always the prefab function component/entity and can be used as an alternative 
             // to the prefab function argument.
             giveFruit ::(to, amount) {
-                listen(to:::{
-                    for(in:[0, amount], do:::(i) {
+                [::] {
+                    [0, amount]->for(do:::(i) {
                         // Oh no! out of fruit, so abort
-                        when(myBasket.isEmpty()) send(message:empty);
+                        when(myBasket.isEmpty()) send();
 
                         // Remove from this person's basket....
                         myBasket.removeFruit();
@@ -193,7 +193,8 @@
                         // who gave the fruit                        
                         to.basket.addFruit(from:myBasket);
                     });
-                });
+                
+                };
             }
         
         };

@@ -18,11 +18,11 @@
 // function that snaps a position to 
 // the nearest block position
 Parameters.snapToBlock = ::(pos) {
-    return Number.round(value:(pos / Parameters.BLOCK_SIZE)) * Parameters.BLOCK_SIZE;
+    return ((pos / Parameters.BLOCK_SIZE))->round * Parameters.BLOCK_SIZE;
 };
 
 Parameters.posToIndex = ::(pos) {
-    return Number.round(value:(pos / Parameters.BLOCK_SIZE));
+    return ((pos / Parameters.BLOCK_SIZE))->round;
 };
 
 Parameters.BLOCK_IMAGE = Topaz.Resources.convertAsset(

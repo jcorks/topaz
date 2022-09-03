@@ -38,7 +38,7 @@ return class(
             Topaz.Shape2D.new()
         ];
         shadow.components = shadow_shapes;
-        for(in:[0, 4], do:::(i) {
+        [0, 4]->for(do:::(i) {
             shadow_shapes[i].formRectangle(
                 width :Parameters.BLOCK_SIZE,
                 height:Parameters.BLOCK_SIZE
@@ -72,18 +72,18 @@ return class(
         // erases the row index
         @:eraseRow :: (row){
             @:toRemove = [];
-            foreach(in:blocks, do:::(k, block) {
+            blocks->foreach(do:::(k, block) {
                 @:index = block.indexY;
                 when(index != row) empty;
                 
-                Object.push(object:toRemove, value:block);
+                toRemove->push(value:block);
             });
 
-            foreach(in:toRemove, do:::(k, block) {
+            toRemove->foreach(do:::(k, block) {
                 block.remove();
             });
             
-            foreach(in:blocks, do:::(k, block) {
+            blocks->foreach(do:::(k, block) {
                 if (block.indexY > row)
                     block.moveDown();
             });            
@@ -93,7 +93,7 @@ return class(
             // checks if there are any full lines
             checkCompleteLines ::{
                 @:table = {};
-                foreach(in:blocks, do:::(k, block) {
+                blocks->foreach(do:::(k, block) {
                     @:index = block.indexY;
                     @:r = table[index];
                     if (r == empty)
@@ -106,19 +106,22 @@ return class(
                 });
                 
                 // for each full line, erase
-                loop(func:::{
-                    return listen(to:::{
-                        foreach(in:table, do:::(row, count) {
-                            Topaz.Console.print(message: ''+row + ':' + count);
-                            if (count >= Parameters.FIELD_WIDTH) ::<= {
-                                eraseRow(row:row);
-                                Object.removeKey(from:table, key:row);
-                                send(message:true);
-                            };
-                        });
-                        return false;
+                [::] {
+                    forever(do:::{
+                        when(![::]{
+                            table->foreach(do:::(row, count) {
+                                Topaz.Console.print(message: ''+row + ':' + count);
+                                if (count >= Parameters.FIELD_WIDTH) ::<= {
+                                    eraseRow(row:row);
+                                    table->remove(key:row);
+                                    send(message:true);
+                                };
+                            });
+                            return false;
+                        })
+                            send();
                     });
-                });
+                };
             },
 
             addBlock::(color, x, y) {
@@ -129,10 +132,10 @@ return class(
                 );
                 
                 block.onRemove = ::{
-                    @:index = Object.findIndex(object:blocks, value:block);
-                    Object.removeKey(from:blocks, key:index);
+                    @:index = blocks->findIndex(value:block);
+                    blocks->remove(key:index);
                 };
-                Object.push(object:blocks, value:block);
+                blocks->push(value:block);
 
                 this.attach(entity:block);
 
@@ -148,7 +151,7 @@ return class(
                 position,
                 layout
             ) {
-                for(in:[0, 4], do:::(i) {
+                [0, 4]->for(do:::(i) {
                     @:x = layout[i][0];
                     @:y = layout[i][1];
                     shadow_shapes[i].position = {

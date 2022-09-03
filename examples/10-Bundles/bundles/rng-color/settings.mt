@@ -31,7 +31,9 @@ return class(
                     // the standard assert function
                     assert(condition:value >= 0 && value <= 1);
                     rngMin = value;
-                }
+                },
+                
+                get ::<- rngMin
             },
 
             // We can set a max value for rng values.            
@@ -39,7 +41,9 @@ return class(
                 set ::(value => Number) {
                     assert(condition:value >= 0 && value <= 1);
                     rngMax = value;
-                }
+                },
+                
+                get ::<- rngMax
             },
 
             // Accesses the next rng value.            

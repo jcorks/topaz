@@ -408,8 +408,7 @@ static topazScript_Object_t * topaz_matte_value_to_tso(TOPAZMATTE * ctx, matteVa
         o = topaz_script_object_from_string(ctx->script, TOPAZ_STR_CAST(matte_string_get_c_str(matte_value_string_get_string_unsafe(matte_vm_get_heap(matte_get_vm(ctx->matte)), val))));
         break;
 
-      case MATTE_VALUE_TYPE_OBJECT:
-      case MATTE_VALUE_TYPE_FUNCTION: {
+      case MATTE_VALUE_TYPE_OBJECT: {
         o = topaz_script_object_wrapper(ctx->script, topaz_matte_object_wrap(ctx, val));        
         break;
       }
@@ -719,7 +718,7 @@ static void topaz_matte_run__first_time(
     topazScript_t * script
 ) {
     #include "debug_bytes"
-
+ 
     topaz_script_run(
         script,
         TOPAZ_STR_CAST("Topaz.DebugPrinter"),
@@ -760,7 +759,7 @@ static void topaz_matte_run(
         topaz_matte_run__error,
         ctx
     ); 
-
+ 
 
     if (!bytecode || !bytelen) {
         topazString_t * str = topaz_string_create_from_c_str("Could not compile source \"%s\"", topaz_string_get_c_str(sourceName));
@@ -784,7 +783,8 @@ static void topaz_matte_run(
         matte_vm_run_fileid(
             ctx->vm,
             id,
-            matte_heap_new_value(ctx->heap)
+            matte_heap_new_value(ctx->heap),
+            NULL
         )
     );
 }
@@ -863,7 +863,7 @@ static void topaz_matte_object_reference_destroy(topazScript_Object_t * o, void 
 static int topaz_matte_object_reference_get_feature_mask(topazScript_Object_t * o, void * tagSrc) {
     TOPAZMATTEObjectTag * t = tagSrc;
     int out = 0;
-    if (t->selfID.binID == MATTE_VALUE_TYPE_FUNCTION) {
+    if (matte_value_is_function(t->selfID)) {
         out |= topazScript_Object_Feature_Callable;
     } else if (t->selfID.binID == MATTE_VALUE_TYPE_OBJECT) {
         out |= topazScript_Object_Feature_Map;
@@ -1111,7 +1111,9 @@ static void topaz_matte_debug_callback(
             if (pendingError) {
                 matteHeap_t * heap = ctx->heap;
                 const matteString_t * rep = matte_value_string_get_string_unsafe(heap, value);   
-                topaz_string_concat_printf(err, "Script runtime error: %s", matte_string_get_c_str(rep));
+                topaz_string_concat_printf(err, "Script runtime error:(%s) %s", file > 0 ? matte_string_get_c_str(matte_vm_get_script_name_by_id(vm, file)) : "Unknown", matte_string_get_c_str(rep));
+                
+
                 // activate console so that debugger will have something to work with.
                 PERROR(ctx->ctx, ctx->script, topaz_string_create_from_c_str("Pausing context due to error."));      
             }

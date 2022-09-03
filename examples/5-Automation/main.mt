@@ -12,7 +12,7 @@
 
         @:a = Topaz.Automation.new();
         a.installHook(event:'on-anim-end', callback:::(source) {
-            Topaz.log(message:'Animation reset!');
+            Topaz.Console.print(message:'Animation reset!');
         });
         a.durationSeconds = 4;
         a.looped = true;

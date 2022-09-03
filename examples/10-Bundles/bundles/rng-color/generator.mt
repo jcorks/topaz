@@ -4,7 +4,7 @@
 
 // We want different results each time we run, so 
 // we will seed the RNG from the current time.
-settings.seed = String(from:Topaz.time);
+settings.rngSeed = String(from:Topaz.time);
 
 
 // Gets a weighted rng value from the min / max.

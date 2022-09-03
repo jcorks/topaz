@@ -25,7 +25,7 @@ Topaz.Resources.require(
     bundle:'CircleShape', 
 
     onLoadItem:::(asset) {
-        Topaz.log(message: 'Unpacked item: ' + asset.name);
+        Topaz.Console.print(message: 'Unpacked item: ' + asset.name);
     }
 );
 

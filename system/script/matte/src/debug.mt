@@ -2,7 +2,7 @@ return ::(o) {
     @already = {};
     @pspace ::(level) {
         @str = '';
-        for(in:[0, level], do:::{
+        [0, level]->for(do:::{
             str = str + '  ';
         });
         return str;
@@ -10,7 +10,7 @@ return ::(o) {
     @helper ::(obj, level) {
         @poself = context;
 
-        return match(getType(of:obj)) {
+        return match(obj->type) {
             (String) : '(type => String): \'' + obj + '\'',
             (Number) : '(type => Number): '+obj,
             (Boolean): '(type => Boolean): '+obj,
@@ -22,7 +22,7 @@ return ::(o) {
                 @output = '(type => Object): {';
 
                 @multi = false;
-                foreach(in:obj, do:::(key, val) {                        
+                obj->foreach(do:::(key, val) {                        
                     output = output + (if (multi) ',\n' else '\n'); 
                     output = output + pspace(level:level+1)+(String(from:key))+' : '+poself(obj:val, level:level+1);
                     multi = true;
@@ -31,7 +31,7 @@ return ::(o) {
                 return output;                
             }(),
             (Type): '(type => Type): ' + obj,
-            default: '(type => ' + getType(of:obj) + '): {...}'
+            default: '(type => ' + obj->type + '): {...}'
 
         };
     };

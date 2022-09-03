@@ -98,7 +98,7 @@ return class(
                     selfPhys.resetMotion();
                     selfPhys.velocityY *= -0.5;
                     selfPhys.velocityX *= 0.95;
-                    if (Number.abs(of:selfPhys.velocityY) < 2) selfPhys.velocityY = 0;
+                    if ((selfPhys.velocityY)->abs < 2) selfPhys.velocityY = 0;
                 };
                             
             }

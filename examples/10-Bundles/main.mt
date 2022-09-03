@@ -33,5 +33,5 @@ Topaz.Resources.createBundle(
 
 
 
-Topaz.log(message: 'Created bundles');
+Topaz.Console.print(message: 'Created bundles');
 Topaz.quit();

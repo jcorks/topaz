@@ -363,7 +363,7 @@ Topaz = class(
                             if (args == empty) ::<={
                                 impl = nativeCreate();
                             } else ::<={
-                                match(Object.length(of:args)) {
+                                match(args->keycount) {
                                   (1): ::<={
                                     impl = nativeCreate(a:args[0]);
                                   },
@@ -517,7 +517,7 @@ Topaz = class(
                                 get ::{ 
                                     @out = [];
                                     @len = topaz_filesystem_path__get_child_count(a:impl);
-                                    for(in:[0, len], do:::(i) { 
+                                    [0, len]->for(do:::(i) { 
                                         @p = __Topaz__.Filesystem.Path.new(native:topaz_filesystem_path__get_nth_child(a:impl, b:i));
                                         if (p != empty) ::<= {
                                             out[i] = p;
@@ -862,7 +862,7 @@ Topaz = class(
                                 @out = {};
                                 @len = this.vertexCount-1;
                                 @iter = 0;
-                                for(in:[0, len], do:::(i){
+                                [0, len]->for(do:::(i){
                                     out[iter] = topaz_mesh__get_vertex(a:impl, b:0, c:i, d:0); iter+=1;
                                     out[iter] = topaz_mesh__get_vertex(a:impl, b:0, c:i, d:1); iter+=1;
                                     out[iter] = topaz_mesh__get_vertex(a:impl, b:0, c:i, d:2); iter+=1;
@@ -1247,7 +1247,7 @@ Topaz = class(
                         queryPads : ::() { 
                             @len = topaz_input__query_pad_count();
                             @out = [];
-                            for(in:[0, len], do:::(i) {
+                            [0, len]->for(do:::(i) {
                                 out[i] = topaz_input__query_pad_id(a:i);
                             });
                             return out;
@@ -1500,7 +1500,7 @@ Topaz = class(
                             get : ::() { 
                                 @bytes = [];
                                 @len = topaz_data__get_byte_count(a:impl);
-                                for(in:[0, len], do:::(i) {
+                                [0, len]->for(do:::(i) {
                                     bytes[i] = topaz_data__get_nth_byte(a:impl, b:i);
                                 });
                                 return bytes;
@@ -1538,7 +1538,7 @@ Topaz = class(
                                 @out = [];
                                 @iter = 0;
                                 @len = this.sampleCount;
-                                for(in:[0, len], do:::(i) {
+                                [0, len]->for(do:::(i) {
                                     out[iter] = topaz_sound__get_nth_sample_left(a:impl,  b:i); iter+=1;
                                     out[iter] = topaz_sound__get_nth_sample_right(b:impl, b:i); iter+=1;
                                 });
@@ -1577,7 +1577,7 @@ Topaz = class(
                     this.constructor = ::(commands, prompt, defaultHandler) {
                         native = topaz_console__command_context_create();
                         if (commands != empty) ::<= {
-                            foreach(in:commands, do:::(command, cb) {
+                            commands->foreach(do:::(command, cb) {
                                 this.addCommand(name:command, callback:cb);
                             });
                         };
@@ -1879,7 +1879,7 @@ Topaz = class(
                             
                             @:arg1 = [];
                             if (opts.depends != empty) ::<= {
-                                foreach(in:opts.depends, do:::(k, v) {
+                                opts.depends->foreach(do:::(k, v) {
                                     // assume any (need to keep track of VERSION_ANY?)
                                     arg1[k] = if (v.version == empty) 
                                         [v.name, -1, -1]                              
@@ -1899,7 +1899,7 @@ Topaz = class(
                             this.path = pathIn;
                             
                             @:arg2 = [];
-                            foreach(in:opts.items, do:::(k, v) {
+                            opts.items->foreach(do:::(k, v) {
                                 if (this.createAsset(path:v.path, name:v.name) == empty) ::<={
                                     this.path = oldPath; 
                                     error(detail:'Could not read bytes for sub-asset for package! Is it missing?');
@@ -2046,7 +2046,7 @@ Topaz = class(
                     @scale;
                     @globalPosition;
                     @:cleanRefs :: {
-                        foreach(in:this.components, do:::(k, v) {
+                        this.components->foreach(do:::(k, v) {
                             v.clearNative();
                         });
                         this.clearNative();
@@ -2080,20 +2080,21 @@ Topaz = class(
                             get : ::(){ 
                                 @children = [];
                                 @len = topaz_entity__get_child_count(a:this.native);
-                                for(in:[0, len], do:::(i) { 
+                                [0, len]->for(do:::(i) { 
                                     children[i] = topaz_entity__get_nth_child(a:this.native, b:i).__ctx;
                                 });
                                 return children;
                             },
                             
                             set : ::(value){ 
-                                loop(func:::{
-                                    when(topaz_entity__get_child_count(a:this.native) == 0) false;
-                                    topaz_entity__detach(a:topaz_entity__get_nth_child(a:this.native, b:0));
-                                    return true;
-                                });
+                                [::] {
+                                    forever(do:::{
+                                        when(topaz_entity__get_child_count(a:this.native) == 0) send();
+                                        topaz_entity__detach(a:topaz_entity__get_nth_child(a:this.native, b:0));
+                                    });
+                                };
                                     
-                                for(in:[0, Object.length(of:value)], do:::(i) {
+                                [0, value->keycount]->for(do:::(i) {
                                     topaz_entity__attach(a:this.native, b:value[i].native);
                                 });
                             }
@@ -2284,7 +2285,7 @@ Topaz = class(
                             get : ::(){ 
                                 @len = topaz_entity__get_component_count(a:this.native);
                                 @out = [];
-                                for(in:[0, len], do:::(i) {
+                                [0, len]->for(do:::(i) {
                                     @f = topaz_entity__get_nth_component(a:this.native, b:i);
                                     when(f == empty) out[i] = empty;
                                     out[i] = if (f.__ctx != empty) f.__ctx else __Topaz__.Component.new(native:f);
@@ -2292,13 +2293,14 @@ Topaz = class(
                                 return out;
                             },
                             set : ::(value){ 
-                                loop(func:::{
-                                    when(topaz_entity__get_component_count(a:this.native) == 0) false;
-                                    topaz_entity__remove_component(a:this.native, b:topaz_entity__get_nth_component(a:this.native, b:0));
-                                    return true;
-                                });
+                                [::] {
+                                    forever(do:::{
+                                        when(topaz_entity__get_component_count(a:this.native) == 0) send();
+                                        topaz_entity__remove_component(a:this.native, b:topaz_entity__get_nth_component(a:this.native, b:0));
+                                    });
+                                };
         
-                                for(in:[0, Object.length(of:value)], do:::(i) {
+                                [0, value->keycount]->for(do:::(i) {
                                     topaz_entity__add_component(a:this.native, b:value[i].native);
                                 });
                             }
@@ -2312,7 +2314,7 @@ Topaz = class(
                             return __Topaz__.Component.new(native:f);
                         },
                     
-                        remove : ::(component){ 
+                        removeComponent : ::(component){ 
                             return topaz_entity__remove_component(a:this.native, b:component.native);
                         },
                         
@@ -2604,7 +2606,7 @@ Topaz = class(
                         
                         color :{
                             set : ::(value) {
-                                if (getType(of:value) == String) ::<={
+                                if (value->type == String) ::<={
                                     value = Color.parse(string:value);
                                 };
 
@@ -2614,7 +2616,7 @@ Topaz = class(
 
 
                         setColorSection : ::(from, to, color) { 
-                            if (getType(of:color) == String) ::<={
+                            if (color->type == String) ::<={
                                 color = Color.parse(string:color);
                             };
 
@@ -3033,7 +3035,7 @@ Topaz = class(
                             _collider = [];
                             @iter = 0;
                             @len = topaz_object2d__get_collider_len(a:impl);
-                            for(in:[0, len], do:::(i) {
+                            [0, len]->for(do:::(i) {
                                 _collider[iter] = topaz_object2d__get_collider_point_x(a:impl, b:i); iter += 1;
                                 _collider[iter] = topaz_object2d__get_collider_point_y(a:impl, b:i); iter += 1;
                             });
@@ -3150,7 +3152,7 @@ Topaz = class(
                                 return color;
                             }, 
                             set : ::(value){
-                                if (getType(of:value) == String) ::<={
+                                if (value->type == String) ::<={
                                     value = Color.parse(string:value);
                                 };
 
@@ -3921,7 +3923,7 @@ Topaz = class(
             displays : {
                 get ::{
                     @:out = [];
-                    for(in:[0, topaz_view_manager__get_display_count()], do:::(i){
+                    [0, topaz_view_manager__get_display_count()]->for(do:::(i){
                         @f = topaz_view_manager__get_display(a:i);
                         when (f == empty) empty;
                         when (f.__ctx != empty) f.__ctx;

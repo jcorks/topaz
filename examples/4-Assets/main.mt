@@ -23,7 +23,7 @@
         this.attach(component:visual);
 
         @:wiggleValue ::(rate) {
-            return 0.7+0.3*Number.sin(of:Topaz.time*0.001*rate);
+            return 0.7+0.3*(Topaz.time*0.001*rate)->sin;
         };
 
 
