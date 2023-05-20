@@ -101,8 +101,8 @@ SRCS +=  system/script/matte/src/main.c\
          system/script/matte/src/matte/src/matte_bytecode_stub.c\
          system/script/matte/src/matte/src/matte_compiler.c\
          system/script/matte/src/matte/src/matte_compiler__syntax_graph.c\
-         system/script/matte/src/matte/src/matte_heap.c\
-         system/script/matte/src/matte/src/matte_heap_string.c\
+         system/script/matte/src/matte/src/matte_store.c\
+         system/script/matte/src/matte/src/matte_store_string.c\
          system/script/matte/src/matte/src/matte_string.c\
          system/script/matte/src/matte/src/matte_table.c\
          system/script/matte/src/matte/src/matte_vm.c\
@@ -121,7 +121,7 @@ INCS := -I../../../include/ -I. -I/mingw64/include/freetype2/
 
 
 FLAGS = -static 
-LIBS :=  -lvorbisfile  -lwinmm -lvorbis -logg -lharfbuzz -lfreetype -lharfbuzz -lfreetype -lglfw3 -lOpenGL32 -lshlwapi  -lusp10 -lgraphite2 -lstdc++ -lpng -lGDI32 -lz  -lbz2 -lrpcrt4 -lole32 -lbrotlidec-static -lbrotlicommon-static -mwindows
+LIBS :=  -lvorbisfile  -lwinmm -lvorbis -logg -lharfbuzz -lfreetype -lharfbuzz -lfreetype -lglfw3 -lOpenGL32 -lshlwapi  -lusp10 -lgraphite2 -lstdc++ -lpng -lGDI32 -lz  -lbz2 -lrpcrt4 -lole32 -lbrotlidec -lbrotlicommon -mwindows
 
 
 %.o: %.c 

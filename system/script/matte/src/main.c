@@ -47,12 +47,13 @@ DEALINGS IN THE SOFTWARE.
     #include <assert.h>
 #endif
 #include "./matte/src/matte.h"
-#include "./matte/src/matte_heap.h"
+#include "./matte/src/matte_store.h"
 #include "./matte/src/matte_vm.h"
 #include "./matte/src/matte_bytecode_stub.h"
 #include "./matte/src/matte_string.h"
 #include "./matte/src/matte_array.h"
 #include "./matte/src/matte_compiler.h"
+#include "./matte/src/matte_compiler__syntax_graph.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -106,8 +107,9 @@ typedef struct {
 typedef struct {
     matte_t * matte;
     matteVM_t * vm;
-    matteHeap_t * heap;
+    matteStore_t * store;
     topazScript_t * script;
+    matteSyntaxGraph_t * syngraph;
     // used for object reference creation
     int lastObjectReference;
     topaz_t * ctx;
@@ -305,7 +307,7 @@ static TOPAZMATTEObjectTag * topaz_matte_object_get_tag_from_value(TOPAZMATTE * 
 
     // uhh?? unsafe if someone puts a ___tz prop by hand in a js context.
     // think of a different way before release, thanks
-    return matte_value_object_get_userdata(ctx->heap, val);
+    return matte_value_object_get_userdata(ctx->store, val);
 }
 
 
@@ -315,7 +317,7 @@ static TOPAZMATTEObjectTag * topaz_matte_object_set_tag(TOPAZMATTE * ctx, matteV
 
     TOPAZMATTEObjectTag * out = calloc(1, sizeof(TOPAZMATTEObjectTag));
     out->selfID = val;
-    matte_value_object_set_userdata(ctx->heap, val, out);
+    matte_value_object_set_userdata(ctx->store, val, out);
 
 
 
@@ -370,7 +372,7 @@ static void * topaz_matte_object_wrap(void * ctxSrc, matteValue_t val) {
 
         // Sets the standard finalizer function.
         matte_value_object_set_native_finalizer(
-            ctx->heap,
+            ctx->store,
             val,
             topaz_matte_object_finalizer,
             tag
@@ -384,7 +386,7 @@ static void * topaz_matte_object_wrap(void * ctxSrc, matteValue_t val) {
         // the ref count might be 0 despite the tag existing before. THats why this check 
         // is for tag->ref == 0 rather than just creation
 
-        matte_value_object_push_lock(ctx->heap, val);
+        matte_value_object_push_lock(ctx->store, val);
     }
 
 
@@ -405,7 +407,7 @@ static topazScript_Object_t * topaz_matte_value_to_tso(TOPAZMATTE * ctx, matteVa
         break;
 
       case MATTE_VALUE_TYPE_STRING:
-        o = topaz_script_object_from_string(ctx->script, TOPAZ_STR_CAST(matte_string_get_c_str(matte_value_string_get_string_unsafe(matte_vm_get_heap(matte_get_vm(ctx->matte)), val))));
+        o = topaz_script_object_from_string(ctx->script, TOPAZ_STR_CAST(matte_string_get_c_str(matte_value_string_get_string_unsafe(matte_vm_get_store(matte_get_vm(ctx->matte)), val))));
         break;
 
       case MATTE_VALUE_TYPE_OBJECT: {
@@ -425,26 +427,26 @@ static topazScript_Object_t * topaz_matte_value_to_tso(TOPAZMATTE * ctx, matteVa
 // pushes the given object as a duktape object
 // on the top of the stack.
 static matteValue_t topaz_matte_tso_to_value(TOPAZMATTE * ctx, topazScript_Object_t * o) {
-    matteValue_t out = matte_heap_new_value(ctx->heap);
+    matteValue_t out = matte_store_new_value(ctx->store);
     switch(topaz_script_object_get_type(o)) {
 
       case topazScript_Object_Type_Integer:
-        matte_value_into_number(ctx->heap, &out, topaz_script_object_as_int(o));
+        matte_value_into_number(ctx->store, &out, topaz_script_object_as_int(o));
         break;
 
       case topazScript_Object_Type_Number:
-        matte_value_into_number(ctx->heap, &out, topaz_script_object_as_number(o));
+        matte_value_into_number(ctx->store, &out, topaz_script_object_as_number(o));
         break;
 
       case topazScript_Object_Type_String: {
         matteString_t * str = matte_string_create_from_c_str(topaz_string_get_c_str(topaz_script_object_as_string(o)));
-        matte_value_into_string(ctx->heap, &out, str);
+        matte_value_into_string(ctx->store, &out, str);
         matte_string_destroy(str);
         break;
       }
       case topazScript_Object_Type_Reference: {
         TOPAZMATTEObjectTag * tag = topaz_script_object_get_api_data(o);
-        matte_value_into_copy(ctx->heap, &out, tag->selfID);
+        matte_value_into_copy(ctx->store, &out, tag->selfID);
         break;
       }
       default:;
@@ -474,7 +476,7 @@ static matteValue_t topaz_matte_native_function_internal(matteVM_t * vm, matteVa
         fnData
     );
 
-    matteValue_t out = matte_heap_new_value(ctx->heap);
+    matteValue_t out = matte_store_new_value(ctx->store);
     // finally, push the tso result as a duk object 
     if (res) {
         out = topaz_matte_tso_to_value(ctx, res);
@@ -492,9 +494,9 @@ static matteValue_t topaz_matte_native_function_internal(matteVM_t * vm, matteVa
 
 static void topaz_matte_fatal(matteVM_t * vm, uint32_t file, int lineNumber, matteValue_t value, void * udata) {
     TOPAZMATTE * ctx = udata;
-    matteHeap_t * heap = matte_vm_get_heap(vm);
+    matteStore_t * store = matte_vm_get_store(vm);
     {
-        const matteString_t * rep = matte_value_string_get_string_unsafe(heap, matte_value_object_access_string(heap, value, MATTE_VM_STR_CAST(vm, "summary")));
+        const matteString_t * rep = matte_value_string_get_string_unsafe(store, matte_value_object_access_string(store, value, MATTE_VM_STR_CAST(vm, "summary")));
 
         PERROR(ctx->ctx, ctx->script, topaz_string_create_from_c_str("Topaz Scripting error: (%s, line %d):\n%s\n%s", 
             matte_string_get_c_str(matte_vm_get_script_name_by_id(vm, file)),
@@ -516,11 +518,9 @@ static void topaz_matte_fatal(matteVM_t * vm, uint32_t file, int lineNumber, mat
 
 
 
-static uint8_t * topaz_matte_import(
-    matteVM_t * vm,
-    const matteString_t * importPath,
-    uint32_t * fileid,
-    uint32_t * dataLength,
+static uint32_t topaz_matte_import(
+    matte_t * m,
+    const char * importName,
     void * usrdata
 ) {
     TOPAZMATTE * ctx = usrdata;
@@ -529,23 +529,49 @@ static uint8_t * topaz_matte_import(
     topazResources_t * res = topaz_context_get_resources(t);
     topazAsset_t * asset = topaz_resources_fetch_asset(
         res,
-        TOPAZ_STR_CAST(matte_string_get_c_str(importPath))
+        TOPAZ_STR_CAST(importName)
     );
     if (!asset) {
-        PERROR(ctx->ctx, ctx->script, topaz_string_create_from_c_str("Could not find source asset %s", matte_string_get_c_str(importPath)));        
-        *dataLength = 0;
-        return NULL;
+        PERROR(ctx->ctx, ctx->script, topaz_string_create_from_c_str("Could not find source asset %s", importName));        
+        return 0;
     }
-    const topazArray_t * data = topaz_data_get_as_bytes(asset);
-    uint8_t * dataBytes = malloc(topaz_array_get_size(data));
-    memcpy(dataBytes, topaz_array_get_data(data), topaz_array_get_size(data));
-    *dataLength = topaz_array_get_size(data);
-    *fileid = matte_vm_get_new_file_id(vm, importPath);
-    topazString_t * srcstr = topaz_data_get_as_string(asset);
-    topaz_script_register_source(ctx->script, TOPAZ_STR_CAST(matte_string_get_c_str(importPath)), srcstr);
-    topaz_string_destroy(srcstr);
-    return dataBytes;
 
+    topazString_t * srcstr = topaz_data_get_as_string(asset);
+
+    uint32_t fileid = matte_vm_get_new_file_id(
+        matte_get_vm(m),
+        MATTE_VM_STR_CAST(matte_get_vm(m), importName)
+    );
+
+
+    // process and load source into 
+    uint32_t bytecodeLen;
+    uint8_t * bytecode = matte_compile_source(
+        m,
+        &bytecodeLen,
+        topaz_string_get_c_str(srcstr)
+    );
+    
+    
+    matteArray_t * stubs = matte_bytecode_stubs_from_bytecode(
+        matte_vm_get_store(matte_get_vm(m)),
+        fileid,
+        bytecode,
+        bytecodeLen
+    );
+    if (stubs) {
+        matte_vm_add_stubs(matte_get_vm(m), stubs);
+        matte_array_destroy(stubs);
+    } else {
+        fileid = 0; // failed.
+        //matte_print(m, "Failed to assemble bytecode %s.", name); 
+    }           
+    matte_deallocate(bytecode);
+
+    topaz_script_register_source(ctx->script, TOPAZ_STR_CAST(importName), srcstr);
+    topaz_string_destroy(srcstr);
+
+    return fileid;
 }
 
 
@@ -564,16 +590,17 @@ static void * topaz_matte_create(topazScript_t * scr, topaz_t * ctx) {
     out->pendingCommand = -1;
 
     out->matte = matte_create();
+    out->syngraph = matte_syntax_graph_create();
     out->vm = matte_get_vm(out->matte);
-    out->heap = matte_vm_get_heap(out->vm);
+    out->store = matte_vm_get_store(out->vm);
     out->nativeFuncs = topaz_array_create(sizeof(void*));
     matte_vm_set_unhandled_callback(
         matte_get_vm(out->matte),
         topaz_matte_fatal,
         out
     );
-    matte_vm_set_import(
-        out->vm,
+    matte_set_importer(
+        out->matte,
         topaz_matte_import,
         out
     );
@@ -582,12 +609,12 @@ static void * topaz_matte_create(topazScript_t * scr, topaz_t * ctx) {
     TOPAZMATTEBackend * backend = topaz_system_backend_get_user_data(topaz_script_get_backend(scr));
     topaz_array_push(backend->instances, out);
 
-    matteValue_t t = matte_heap_new_value(out->heap);
-    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST(out->vm, "a")); out->argNamesRaw[0] = t;
-    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST(out->vm, "b")); out->argNamesRaw[1] = t;
-    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST(out->vm, "c")); out->argNamesRaw[2] = t;
-    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST(out->vm, "d")); out->argNamesRaw[3] = t;
-    matte_value_into_string(out->heap, &t, MATTE_VM_STR_CAST(out->vm, "e")); out->argNamesRaw[4] = t;
+    matteValue_t t = matte_store_new_value(out->store);
+    matte_value_into_string(out->store, &t, MATTE_VM_STR_CAST(out->vm, "a")); out->argNamesRaw[0] = t;
+    matte_value_into_string(out->store, &t, MATTE_VM_STR_CAST(out->vm, "b")); out->argNamesRaw[1] = t;
+    matte_value_into_string(out->store, &t, MATTE_VM_STR_CAST(out->vm, "c")); out->argNamesRaw[2] = t;
+    matte_value_into_string(out->store, &t, MATTE_VM_STR_CAST(out->vm, "d")); out->argNamesRaw[3] = t;
+    matte_value_into_string(out->store, &t, MATTE_VM_STR_CAST(out->vm, "e")); out->argNamesRaw[4] = t;
 
 
     return out;
@@ -658,7 +685,7 @@ static void topaz_matte_expression__error(matteVM_t * vm, matteVMDebugEvent_t ev
     if (event == MATTE_VM_DEBUG_EVENT__ERROR_RAISED) {
         TOPAZMATTE * ctx = userdata;    
         topazString_t * str = topaz_string_create();
-        topaz_string_concat_printf(str, "Error in expression: %s\n", matte_string_get_c_str(matte_value_string_get_string_unsafe(ctx->heap, matte_value_as_string(ctx->heap, value))));
+        topaz_string_concat_printf(str, "Error in expression: %s\n", matte_string_get_c_str(matte_value_string_get_string_unsafe(ctx->store, matte_value_as_string(ctx->store, value))));
         topaz_string_concat(str, topaz_matte_stack_where(ctx));
         if (topaz_string_get_length(str)) {
             PERROR(ctx->ctx, ctx->script, str);
@@ -753,6 +780,7 @@ static void topaz_matte_run(
 
     uint32_t bytelen = 0;
     uint8_t * bytecode = matte_compiler_run(
+        ctx->syngraph,
         (const uint8_t*)topaz_string_get_c_str(sourceDataD),
         topaz_string_get_length(sourceDataD),
         &bytelen,
@@ -771,20 +799,19 @@ static void topaz_matte_run(
     uint32_t id = matte_vm_get_new_file_id(ctx->vm, name);
 
     matteArray_t * stubs = matte_bytecode_stubs_from_bytecode(
-        ctx->heap,
+        ctx->store,
         id,
         bytecode, bytelen
     );
 
 
     matte_vm_add_stubs(ctx->vm, stubs);
-    matte_heap_recycle(
-        ctx->heap,
+    matte_store_recycle(
+        ctx->store,
         matte_vm_run_fileid(
             ctx->vm,
             id,
-            matte_heap_new_value(ctx->heap),
-            NULL
+            matte_store_new_value(ctx->store)
         )
     );
 }
@@ -799,8 +826,8 @@ topazScript_Object_t * topaz_matte_create_empty_object(
 
 ) {
     TOPAZMATTE * ctx = data;
-    matteValue_t outp = matte_heap_new_value(ctx->heap);
-    matte_value_into_new_object_ref(ctx->heap, &outp);
+    matteValue_t outp = matte_store_new_value(ctx->store);
+    matte_value_into_new_object_ref(ctx->store, &outp);
 
     // create raw tso
     topazScript_Object_t * out = topaz_matte_value_to_tso(ctx, outp);
@@ -897,7 +924,7 @@ static void topaz_matte_object_reference_unref(topazScript_Object_t * o, void * 
     // when 0, will unkeep
     tag->refCount--;
     if (tag->refCount == 0) {
-        matte_value_object_pop_lock(tag->ctx->heap, topaz_matte_object_value_from_tag(tag));
+        matte_value_object_pop_lock(tag->ctx->store, topaz_matte_object_value_from_tag(tag));
     }
 
 }
@@ -951,7 +978,7 @@ static topazScript_Object_t * topaz_matte_object_reference_array_get_nth(
     topazScript_Object_t * o = topaz_matte_value_to_tso(
         tag->ctx,
         matte_value_object_access_index(
-            tag->ctx->heap,
+            tag->ctx->store,
             tag->selfID,
             index
         )
@@ -962,7 +989,7 @@ static topazScript_Object_t * topaz_matte_object_reference_array_get_nth(
 
 static int topaz_matte_object_reference_array_get_count(topazScript_Object_t * o, void * tagSrc) {
     TOPAZMATTEObjectTag * tag = tagSrc;
-    int len = matte_value_object_get_key_count(tag->ctx->heap, tag->selfID);
+    int len = matte_value_object_get_key_count(tag->ctx->store, tag->selfID);
 
     return len;
 }
@@ -974,7 +1001,7 @@ static topazScript_Object_t * topaz_matte_object_reference_map_get_property(
 ) {
     TOPAZMATTEObjectTag * tag = tagSrc;
     matteString_t * key = matte_string_create_from_c_str("%s", topaz_string_get_c_str(prop));
-    topazScript_Object_t * out = topaz_matte_value_to_tso(tag->ctx, matte_value_object_access_string(tag->ctx->heap, tag->selfID, key));
+    topazScript_Object_t * out = topaz_matte_value_to_tso(tag->ctx, matte_value_object_access_string(tag->ctx->store, tag->selfID, key));
     matte_string_destroy(key);
     return out;
 }
@@ -985,12 +1012,12 @@ void topaz_matte_object_reference_to_string(
     void * tagSrc) {
     
     TOPAZMATTEObjectTag * tag = tagSrc;
-    matteValue_t strc = matte_value_as_string(tag->ctx->heap, tag->selfID);
+    matteValue_t strc = matte_value_as_string(tag->ctx->store, tag->selfID);
     topaz_string_concat_printf(
         str,
         matte_string_get_c_str(
             matte_value_string_get_string_unsafe(
-                tag->ctx->heap,
+                tag->ctx->store,
                 strc
             )
         )
@@ -1109,8 +1136,8 @@ static void topaz_matte_debug_callback(
             topazString_t * err = topaz_string_create_from_c_str("%dL", ctx->pauseUp ? 1 : 0);
             
             if (pendingError) {
-                matteHeap_t * heap = ctx->heap;
-                const matteString_t * rep = matte_value_string_get_string_unsafe(heap, value);   
+                matteStore_t * store = ctx->store;
+                const matteString_t * rep = matte_value_string_get_string_unsafe(store, value);   
                 topaz_string_concat_printf(err, "Script runtime error:(%s) %s", file > 0 ? matte_string_get_c_str(matte_vm_get_script_name_by_id(vm, file)) : "Unknown", matte_string_get_c_str(rep));
                 
 
@@ -1289,7 +1316,7 @@ void topaz_matte_debug_send_command(
         topaz_script_notify_command(
             ctx->script,
             topazScript_DebugCommand_ScopedEval,
-            topaz_string_create_from_c_str("%s", matte_string_get_c_str(matte_value_string_get_string_unsafe(ctx->heap, matte_value_as_string(ctx->heap, result))))
+            topaz_string_create_from_c_str("%s", matte_string_get_c_str(matte_value_string_get_string_unsafe(ctx->store, matte_value_as_string(ctx->store, result))))
         );
 
         matte_string_destroy(exprM);
