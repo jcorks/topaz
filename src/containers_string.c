@@ -46,8 +46,60 @@ DEALINGS IN THE SOFTWARE.
 #define prealloc_size 32
 
 
+
+
+static uint32_t utf8_next_char(uint8_t ** source) {
+    uint8_t * iter = *source;
+    uint32_t val = (*source)[0];
+    if (val < 128 && *iter) {
+        val = (iter[0]) & 0x7F;
+        (*source)++;
+        return val;
+    } else if (val < 224 && *iter && iter[1]) {
+        val = ((iter[0] & 0x1F)<<6) + (iter[1] & 0x3F);
+        (*source)+=2;
+        return val;
+    } else if (val < 240 && *iter && iter[1] && iter[2]) {
+        val = ((iter[0] & 0x0F)<<12) + ((iter[1] & 0x3F)<<6) + (iter[2] & 0x3F);
+        (*source)+=3;
+        return val;
+    } else if (*iter && iter[1] && iter[2] && iter[3]) {
+        val = ((iter[0] & 0x7)<<18) + ((iter[1] & 0x3F)<<12) + ((iter[2] & 0x3F)<<6) + (iter[3] & 0x3F);
+        (*source)+=4;
+        return val;
+    }
+    return 0;
+}
+
+
+static int utf8_put_char(uint32_t val, uint8_t * iter) {
+    if (val < 0x80) {
+        *(iter++) = val & 0x7F;
+        return 1;
+    } else if (val < 0x800) {
+        *(iter++) = ((val & 0x7C0) >> 6) | 0xC0;
+        *(iter++) = (val & 0x3F) | 0x80; 
+        return 2;
+    } else if (val < 0x10000) {
+        *(iter++) = ((val & 0xF000) >> 12) | 0xE0; 
+        *(iter++) = ((val & 0xFC0) >> 6) | 0x80; 
+        *(iter++) = (val & 0x3F) | 0x80; 
+        return 3;
+    } else {
+        *(iter++) = ((val & 0x1C0000) >> 18) | 0xF0; 
+        *(iter++) = ((val & 0x3F000) >> 12) | 0x80; 
+        *(iter++) = ((val & 0xFC0) >> 6) | 0x80; 
+        *(iter++) = (val & 0x3F) | 0x80; 
+        return 4;
+    }
+}
+
+
+
+
 struct topazString_t {
-    char * cstr;
+    char * utf8; // only populated when requested
+    uint32_t * codepoints; // real active use 
     uint32_t len;
     uint32_t alloc;
 
@@ -58,14 +110,40 @@ struct topazString_t {
     topazString_t * lastSubstr;
 };
 
-static void topaz_string_concat_cstr(topazString_t * s, const char * cstr, uint32_t len) {
+
+static void topaz_string_resize_fit(topazString_t * s, uint32_t len) {
     while (s->len + len + 1 >= s->alloc) {
         s->alloc*=1.4;
-        s->cstr = realloc(s->cstr, s->alloc);
+        s->codepoints = realloc(s->codepoints, s->alloc * sizeof(uint32_t));
     }
+}
 
-    memcpy(s->cstr+s->len, cstr, len+1);
-    s->len+=len;
+static void topaz_string_concat_cstr(topazString_t * s, const char * cstr, uint32_t len) {
+    if (!len) return;
+    topaz_string_resize_fit(s, len);
+    uint32_t point;
+    uint32_t iter = 0;
+    while((point = utf8_next_char((uint8_t**)&cstr))) {        
+        iter++;
+        s->codepoints[s->len++] = point;
+        if (iter >= len) break;
+    }
+    if (s->utf8) free(s->utf8);
+    s->utf8 = NULL;
+}
+
+
+static void topaz_string_concat_codepoints(topazString_t * s, const uint32_t * points, uint32_t len) {
+    if (!len) return;
+    topaz_string_resize_fit(s, len);
+    uint32_t point;
+    uint32_t i;
+    for(i = 0; i < len; ++i) {
+        s->codepoints[s->len++] = points[i];
+    }
+    
+    if (s->utf8) free(s->utf8);
+    s->utf8 = NULL;
 }
 
 static void topaz_string_set_cstr(topazString_t * s, const char * cstr, uint32_t len) {
@@ -79,8 +157,8 @@ static void topaz_string_set_cstr(topazString_t * s, const char * cstr, uint32_t
 topazString_t * topaz_string_create() {
     topazString_t * out = calloc(1, sizeof(topazString_t));
     out->alloc = prealloc_size;
-    out->cstr = malloc(prealloc_size);
-    out->cstr[0] = 0;
+    out->utf8 = NULL;
+    out->codepoints = malloc(prealloc_size * sizeof(uint32_t));
     return out;
 }
 
@@ -110,7 +188,8 @@ topazString_t * topaz_string_clone(const topazString_t * src) {
 }
 
 void topaz_string_destroy(topazString_t * s) {
-    free(s->cstr);
+    free(s->utf8);
+    free(s->codepoints);
     if (s->delimiters) topaz_string_destroy(s->delimiters);
     if (s->chain) topaz_string_destroy(s->chain);
     if (s->lastSubstr) topaz_string_destroy(s->lastSubstr);
@@ -119,24 +198,20 @@ void topaz_string_destroy(topazString_t * s) {
 
 void topaz_string_clear(topazString_t * s) {
     s->len = 0;
-    s->cstr[0] = 0;
+    if (s->utf8) free(s->utf8);
+    s->utf8 = NULL;
 }
 
 void topaz_string_set(topazString_t * s, const topazString_t * src) {
-    if (s->alloc >= src->alloc) {
-        memcpy(s->cstr, src->cstr, src->len+1);
-        s->len = src->len;
-    } else {
-        free(s->cstr);
-        s->len = src->len;
-        s->alloc = src->alloc;
-        s->cstr = malloc(s->alloc);
-        memcpy(s->cstr, src->cstr, src->len+1);
-    }
+    topaz_string_resize_fit(s, src->len);
+    memcpy(s->codepoints, src->codepoints, (src->len*sizeof(uint32_t)));
+    s->len = src->len;
+
+
     if (s->delimiters) topaz_string_destroy(s->delimiters);
     if (s->chain) topaz_string_destroy(s->chain);
-
-
+    if (s->utf8) free(s->utf8);
+    s->utf8 = NULL;
 }
 
 
@@ -160,7 +235,7 @@ void topaz_string_concat_printf(topazString_t * s, const char * format, ...) {
 }
 
 void topaz_string_concat(topazString_t * s, const topazString_t * src) {
-    topaz_string_concat_cstr(s, src->cstr, src->len);
+    topaz_string_concat_cstr(s, topaz_string_get_c_str(src), src->len);
 }
 
 
@@ -185,11 +260,10 @@ const topazString_t * topaz_string_get_substr(
         ((topazString_t *)s)->lastSubstr = topaz_string_create();
     }
 
-    s->cstr[to+1] = 0;
-    topaz_string_set_cstr(
-        s->lastSubstr, 
-        s->cstr+from, 
-        (to - from)+1
+    topaz_string_concat_codepoints(
+        s->lastSubstr,
+        s->codepoints+from,
+        (to-from)+1
     );
 
     return s->lastSubstr;    
@@ -198,21 +272,31 @@ const topazString_t * topaz_string_get_substr(
 
 
 const char * topaz_string_get_c_str(const topazString_t * t) {
-    return t->cstr;
+    if (t->utf8) return t->utf8;
+    ((topazString_t*)t)->utf8 = malloc((t->len+1)*sizeof(uint32_t));
+    char * iter = t->utf8;
+    uint32_t i;
+    for(i = 0; i < t->len; ++i) {
+        int offset = utf8_put_char(t->codepoints[i], iter);
+        iter += offset;
+    }
+    return t->utf8;
 }
 
 uint32_t topaz_string_get_length(const topazString_t * t) {
     return t->len;
 }
 
-int topaz_string_get_char(const topazString_t * t, uint32_t p) {
+uint32_t topaz_string_get_char(const topazString_t * t, uint32_t p) {
     if (p >= t->len) return 0;
-    return t->cstr[p];
+    return t->codepoints[p];
 }
 
-void topaz_string_set_char(topazString_t * t, uint32_t p, int value) {
+void topaz_string_set_char(topazString_t * t, uint32_t p, uint32_t value) {
     if (p >= t->len) return;
-    t->cstr[p] = value;
+    t->codepoints[p] = value;
+    if (t->utf8) free(t->utf8);
+    t->utf8 = NULL;
 }
 
 void topaz_string_append_char(topazString_t * t, int value) {
@@ -225,23 +309,30 @@ void topaz_string_append_char(topazString_t * t, int value) {
 
 uint32_t topaz_string_get_byte_length(const topazString_t * t) {
     // for now same as string length. will change when unicode is supported.
-    return t->len;
+    return strlen(topaz_string_get_c_str(t));
 }
 
 void * topaz_string_get_byte_data(const topazString_t * t) {
-    return t->cstr;
+    return (void*)topaz_string_get_c_str(t);
 }
 
 int topaz_string_test_contains(const topazString_t * a, const topazString_t * b) {
-    return strstr(a->cstr, b->cstr) != NULL;
+    const char * a_str = topaz_string_get_c_str(a);
+    const char * b_str = topaz_string_get_c_str(b);
+    return strstr(a_str, b_str) != NULL;
 }
 
+// TODO: just compare codepoints, thanks!
 int topaz_string_test_eq(const topazString_t * a, const topazString_t * b) {
-    return strcmp(a->cstr, b->cstr) == 0;
+    const char * a_str = topaz_string_get_c_str(a);
+    const char * b_str = topaz_string_get_c_str(b);
+    return strcmp(a_str, b_str) == 0;
 }
 
 int topaz_string_topaz_compare(const topazString_t * a, const topazString_t * b) {
-    return strcmp(a->cstr, b->cstr);
+    const char * a_str = topaz_string_get_c_str(a);
+    const char * b_str = topaz_string_get_c_str(b);
+    return strcmp(a_str, b_str);
 }
 
 topazString_t * topaz_string_base64_from_bytes(
@@ -390,19 +481,19 @@ int topaz_string_chain_is_end(const topazString_t * t) {
 
 const topazString_t * topaz_string_chain_proceed(topazString_t * t) {
 
-    char * del = t->delimiters->cstr;
-    char * iter;    
+    uint32_t * del = t->delimiters->codepoints;
+    uint32_t * iter;    
 
     #define chunk_size 32
-    char chunk[chunk_size];
+    uint32_t chunk[chunk_size];
     uint32_t chunkLen = 0;
 
 
-    char c;
+    uint32_t c;
 
     // skip over leading delimiters
     for(; t->iter < t->len; t->iter++) {
-        c = t->cstr[t->iter];
+        c = t->codepoints[t->iter];
 
         // delimiter marks the end.
         for(iter = del; *iter; ++iter) {
@@ -423,20 +514,18 @@ const topazString_t * topaz_string_chain_proceed(topazString_t * t) {
     }
 
     for(; t->iter < t->len; t->iter++) {
-        c = t->cstr[t->iter];
+        c = t->codepoints[t->iter];
 
         // delimiter marks the end.
         for(iter = del; *iter; ++iter) {
             if (*iter == c && chunkLen) {
-                chunk[chunkLen] = 0;
-                topaz_string_concat_cstr(t->chain, chunk, chunkLen);                
+                topaz_string_concat_codepoints(t->chain, chunk, chunkLen);                
                 return t->chain;
             }
         }         
 
         if (chunkLen == chunk_size-1) {
-            chunk[chunkLen] = 0;
-            topaz_string_concat_cstr(t->chain, chunk, chunkLen);                
+            topaz_string_concat_codepoints(t->chain, chunk, chunkLen);                
             chunkLen = 0;
         }
         chunk[chunkLen++] = c;
@@ -444,8 +533,7 @@ const topazString_t * topaz_string_chain_proceed(topazString_t * t) {
 
     // reached the end of the string 
     t->iter = t->len;
-    chunk[chunkLen] = 0;
-    topaz_string_concat_cstr(t->chain, chunk, chunkLen);         
+    topaz_string_concat_codepoints(t->chain, chunk, chunkLen);         
     return t->chain;       
 }
 

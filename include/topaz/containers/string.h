@@ -178,7 +178,8 @@ const topazString_t * topaz_string_get_substr(
 
 
 /// Gets a read-only pointer to a c-string representation of the 
-/// string.
+/// string under utf8 encoding. The string is valid until a 
+/// string operation on str.
 ///
 const char * topaz_string_get_c_str(
     /// The string to query.
@@ -195,7 +196,7 @@ uint32_t topaz_string_get_length(
 /// Gets the character within the string that the given 
 /// 0-indexed position. If the position is invalid, 0 is returned.
 ///
-int topaz_string_get_char(
+uint32_t topaz_string_get_char(
     /// The string to query.
     const topazString_t *, 
 
@@ -214,7 +215,7 @@ void topaz_string_set_char(
     uint32_t position, 
 
     /// The new value within the string.
-    int value
+    uint32_t value
 );
 
 /// Adds a character to the end of the string
