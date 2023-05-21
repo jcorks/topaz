@@ -280,6 +280,7 @@ const char * topaz_string_get_c_str(const topazString_t * t) {
         int offset = utf8_put_char(t->codepoints[i], iter);
         iter += offset;
     }
+    *iter = 0;
     return t->utf8;
 }
 
@@ -492,16 +493,17 @@ const topazString_t * topaz_string_chain_proceed(topazString_t * t) {
     uint32_t c;
 
     // skip over leading delimiters
+    uint32_t i;
     for(; t->iter < t->len; t->iter++) {
         c = t->codepoints[t->iter];
 
         // delimiter marks the end.
-        for(iter = del; *iter; ++iter) {
-            if (*iter == c) {
+        for(i = 0; i < t->delimiters->len; ++i) {
+            if (del[i] == c) {
                 break;                
             }
         }
-        if (!*iter) break;
+        if (i == t->delimiters->len) break;
     }
 
     // reset for next link
@@ -517,8 +519,8 @@ const topazString_t * topaz_string_chain_proceed(topazString_t * t) {
         c = t->codepoints[t->iter];
 
         // delimiter marks the end.
-        for(iter = del; *iter; ++iter) {
-            if (*iter == c && chunkLen) {
+        for(i = 0; i < t->delimiters->len; ++i) {
+            if (del[i] == c && chunkLen) {
                 topaz_string_concat_codepoints(t->chain, chunk, chunkLen);                
                 return t->chain;
             }
