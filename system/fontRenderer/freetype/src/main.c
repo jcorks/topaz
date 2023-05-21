@@ -219,8 +219,8 @@ static void topaz_freetype_get_spacing(
     }
     
 
-    spacing->width = glyphSrc->bitmap.width;
-    spacing->height = glyphSrc->bitmap.rows;
+    spacing->width = glyphSrc->metrics.width/64.f;
+    spacing->height = glyphSrc->metrics.height/64.f;
 
     if (FT_HAS_KERNING((ft->face))) {
         FT_Vector kernResult;
@@ -232,15 +232,18 @@ static void topaz_freetype_get_spacing(
             &kernResult
         );
         spacing->xOffset = kernResult.x;
-        spacing->yOffset = -kernResult.y;
+        spacing->yOffset = kernResult.y;
     } else {
         spacing->xOffset = 0;
         spacing->yOffset = 0;
     }
     spacing->xNextOrigin += glyphSrc->advance.x/64.f;
-    spacing->yNextOrigin -= glyphSrc->advance.y/64.f;
+    spacing->yNextOrigin += glyphSrc->advance.y/64.f;
 
-    spacing->yOffset = spacing->height - glyphSrc->metrics.horiBearingY/64.f;
+    
+
+    spacing->yOffset += glyphSrc->bitmap_top;
+    spacing->xOffset += glyphSrc->bitmap_left;
 
 }
 

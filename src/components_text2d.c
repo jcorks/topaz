@@ -308,7 +308,7 @@ static void text2d_update__full(Text2D * t, const topazString_t * str, const top
 
         // top left
         p->x = originX+spacing.xOffset;
-        p->y = originY+spacing.yOffset;
+        p->y = originY-spacing.height+spacing.yOffset;
         if (p->x < oobLeft)  oobLeft = p->x;
         if (p->y < oobTop)   oobTop  = p->y;
         p++;
@@ -317,7 +317,7 @@ static void text2d_update__full(Text2D * t, const topazString_t * str, const top
 
         // bottom right
         p->x = originX+spacing.width+spacing.xOffset;
-        p->y = originY+spacing.height+spacing.yOffset;
+        p->y = originY+spacing.yOffset;
         if (p->x < oobLeft)  oobLeft = p->x;
         if (p->y < oobTop)   oobTop  = p->y;
         p++;
@@ -326,7 +326,7 @@ static void text2d_update__full(Text2D * t, const topazString_t * str, const top
 
         // top right
         p->x = originX+spacing.width+spacing.xOffset;
-        p->y = originY+spacing.yOffset;
+        p->y = originY-spacing.height+spacing.yOffset;
         if (p->x < oobLeft)  oobLeft = p->x;
         if (p->y < oobTop)   oobTop  = p->y;
         p++;
@@ -339,7 +339,7 @@ static void text2d_update__full(Text2D * t, const topazString_t * str, const top
 
         // top left
         p->x = originX+spacing.xOffset;
-        p->y = originY+spacing.yOffset;
+        p->y = originY-spacing.height+spacing.yOffset;
         if (p->x < oobLeft)  oobLeft = p->x;
         if (p->y < oobTop)   oobTop  = p->y;
         p++;
@@ -348,7 +348,7 @@ static void text2d_update__full(Text2D * t, const topazString_t * str, const top
 
         // bottom left
         p->x = originX+spacing.xOffset;
-        p->y = originY+spacing.height+spacing.yOffset;
+        p->y = originY+spacing.yOffset;
         if (p->x < oobLeft)  oobLeft = p->x;
         if (p->y < oobTop)   oobTop  = p->y;
         p++;
@@ -357,7 +357,7 @@ static void text2d_update__full(Text2D * t, const topazString_t * str, const top
 
         // bottom right
         p->x = originX+spacing.width+spacing.xOffset;
-        p->y = originY+spacing.height+spacing.yOffset;
+        p->y = originY+spacing.yOffset;
         if (p->x < oobLeft)  oobLeft = p->x;
         if (p->y < oobTop)   oobTop  = p->y;
         p++;
