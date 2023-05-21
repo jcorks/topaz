@@ -100,8 +100,8 @@ SRCS +=  system/script/matte/src/main.c\
          system/script/matte/src/matte/src/matte_bytecode_stub.c\
          system/script/matte/src/matte/src/matte_compiler.c\
          system/script/matte/src/matte/src/matte_compiler__syntax_graph.c\
-         system/script/matte/src/matte/src/matte_heap.c\
-         system/script/matte/src/matte/src/matte_heap_string.c\
+         system/script/matte/src/matte/src/matte_store.c\
+         system/script/matte/src/matte/src/matte_store_string.c\
          system/script/matte/src/matte/src/matte_string.c\
          system/script/matte/src/matte/src/matte_table.c\
          system/script/matte/src/matte/src/matte_vm.c\
@@ -118,7 +118,7 @@ INCS := -I../../../include/ -I. -I/usr/include/freetype2/
 
 
 
-FLAGS = -O2
+FLAGS = -g -fsanitize=undefined -fsanitize=address
 LIBS :=  -lvorbisfile -lvorbis -logg -lfreetype -lglfw -lGL -lasound -lm -pthread -ldl
 
 
