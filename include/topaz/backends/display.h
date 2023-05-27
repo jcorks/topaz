@@ -287,6 +287,32 @@ void topaz_display_use_framebuffer(
     topazDisplay_Framebuffer
 );
 
+
+/// Sets a custom post-processing rendering that affects how the 
+/// framebuffer is rendered to the display. The default in any case 
+/// is just to take the framebuffer texture and map it to 
+/// the display.
+///
+/// The parameters available to the provided shaders 
+/// are dependent on the backend, but the position vertices,
+/// texture coordinates, and texture sampler / ID referring 
+/// to the framebuffer will be available.
+/// 
+/// Upon error, an error message is allocated and returned 
+/// containing information on what went wrong. NULL is returned 
+/// on no error.
+topazString_t * topaz_display_set_post_process_shader(
+    /// The display to modify.
+    topazDisplay_t * display,
+
+    /// The text for the vertex shader.
+    const topazString_t * vertexShader,
+
+    /// The text for the fragment shader.
+    const topazString_t * fragmentShader
+
+);
+
 /// Returns the framebuffer currently in use.
 topazRenderer_Framebuffer_t * topaz_display_get_main_framebuffer(
     /// The disply in question.

@@ -302,6 +302,26 @@ TSO_SCRIPT_API_FN(display_api__use_framebuffer) {
     TSO_NO_RETURN;
 }
 
+TSO_SCRIPT_API_FN(display_api__set_post_process_shader) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
+    
+    topazString_t * err = topaz_display_set_post_process_shader(
+        native,
+        topaz_script_object_as_string(arg1),
+        topaz_script_object_as_string(arg2)
+    );
+    if (err) {
+        topazScript_Object_t * obj = topaz_script_object_from_string(script, err);
+        topaz_string_destroy(err);
+        return obj;
+    }
+
+    TSO_NO_RETURN;
+}
+
 TSO_SCRIPT_API_FN(display_api__get_main_framebuffer) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
@@ -398,6 +418,9 @@ TSO_SCRIPT_API_FN(framebuffer_api__set_filtered_hint) {
 
 
 
+
+
+
 static void add_refs__view_manager_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz_view_manager__get_default", view_manager_api__get_default, 0);
     TS_MAP_NATIVE_FN("topaz_view_manager__get_clipboard_as_string", view_manager_api__get_clipboard_as_string, 0);
@@ -424,6 +447,7 @@ static void add_refs__view_manager_api(topazScript_t * script, topazScriptManage
     TS_MAP_NATIVE_FN("topaz_display__get_main_framebuffer", display_api__get_main_framebuffer, 1);
     TS_MAP_NATIVE_FN("topaz_display__clear_main_framebuffer", display_api__clear_main_framebuffer, 2);
     TS_MAP_NATIVE_FN("topaz_display__capture_main_framebuffer", display_api__capture_main_framebuffer, 2);
+    TS_MAP_NATIVE_FN("topaz_display__set_post_process_shader", display_api__set_post_process_shader, 3);
 
     TS_MAP_NATIVE_FN("topaz_framebuffer__get_width", framebuffer_api__get_width, 1);
     TS_MAP_NATIVE_FN("topaz_framebuffer__get_height", framebuffer_api__get_height, 1);

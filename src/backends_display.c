@@ -382,6 +382,10 @@ void topaz_display_update(topazDisplay_t * t) {
 }
 
 
+topazString_t * topaz_display_set_post_process_shader(topazDisplay_t * t, const topazString_t * vtx, const topazString_t * frag) {
+    return t->api.display_set_post_process_shader(t, t->apiData, vtx, frag);
+}
+
 
 
 const topazArray_t * topaz_display_supported_framebuffers(topazDisplay_t * t) {

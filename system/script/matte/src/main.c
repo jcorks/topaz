@@ -423,6 +423,30 @@ static topazScript_Object_t * topaz_matte_value_to_tso(TOPAZMATTE * ctx, matteVa
     return o;
 }
 
+static void topaz_matte_run__error(const matteString_t * s, uint32_t line, uint32_t ch, void * userdata) {
+    TOPAZMATTE * ctx = userdata;
+    topazString_t * str = topaz_string_create();
+    topaz_string_concat_printf(str, "ERROR @ line %d, %d:\n%s\n", line, ch, matte_string_get_c_str(s));
+    topaz_string_concat(str, topaz_matte_stack_where(ctx));
+        matteString_t * errm = matte_string_create_from_c_str("%s", topaz_string_get_c_str(str));
+        matte_vm_raise_error_string(ctx->vm, errm);
+        matte_string_destroy(errm);
+        PERROR(ctx->ctx, ctx->script, str);
+    
+}
+
+static void topaz_matte_expression__error(matteVM_t * vm, matteVMDebugEvent_t event, uint32_t file, int lineNumber, matteValue_t value, void * userdata) {
+    if (event == MATTE_VM_DEBUG_EVENT__ERROR_RAISED) {
+        TOPAZMATTE * ctx = userdata;    
+        topazString_t * str = topaz_string_create();
+        topaz_string_concat_printf(str, "Error in expression: %s\n", matte_string_get_c_str(matte_value_string_get_string_unsafe(ctx->store, matte_value_as_string(ctx->store, value))));
+        topaz_string_concat(str, topaz_matte_stack_where(ctx));
+        if (topaz_string_get_length(str)) {
+            PERROR(ctx->ctx, ctx->script, str);
+        }
+    }   
+}
+
 
 // pushes the given object as a duktape object
 // on the top of the stack.
@@ -545,12 +569,15 @@ static uint32_t topaz_matte_import(
 
 
     // process and load source into 
-    uint32_t bytecodeLen;
-    uint8_t * bytecode = matte_compile_source(
-        m,
+    uint32_t bytecodeLen = 0;
+    uint8_t * bytecode = matte_compiler_run(
+        ctx->syngraph,
+        (const uint8_t*)topaz_string_get_c_str(srcstr),
+        topaz_string_get_length(srcstr),
         &bytecodeLen,
-        topaz_string_get_c_str(srcstr)
-    );
+        topaz_matte_run__error,
+        ctx
+    ); 
     
     
     matteArray_t * stubs = matte_bytecode_stubs_from_bytecode(
@@ -669,29 +696,7 @@ static int topaz_matte_map_native_function(
     );
     return 1;
 }
-static void topaz_matte_run__error(const matteString_t * s, uint32_t line, uint32_t ch, void * userdata) {
-    TOPAZMATTE * ctx = userdata;
-    topazString_t * str = topaz_string_create();
-    topaz_string_concat_printf(str, "ERROR @ line %d, %d:\n%s\n", line, ch, matte_string_get_c_str(s));
-    topaz_string_concat(str, topaz_matte_stack_where(ctx));
-        matteString_t * errm = matte_string_create_from_c_str("%s", topaz_string_get_c_str(str));
-        matte_vm_raise_error_string(ctx->vm, errm);
-        matte_string_destroy(errm);
-        PERROR(ctx->ctx, ctx->script, str);
-    
-}
 
-static void topaz_matte_expression__error(matteVM_t * vm, matteVMDebugEvent_t event, uint32_t file, int lineNumber, matteValue_t value, void * userdata) {
-    if (event == MATTE_VM_DEBUG_EVENT__ERROR_RAISED) {
-        TOPAZMATTE * ctx = userdata;    
-        topazString_t * str = topaz_string_create();
-        topaz_string_concat_printf(str, "Error in expression: %s\n", matte_string_get_c_str(matte_value_string_get_string_unsafe(ctx->store, matte_value_as_string(ctx->store, value))));
-        topaz_string_concat(str, topaz_matte_stack_where(ctx));
-        if (topaz_string_get_length(str)) {
-            PERROR(ctx->ctx, ctx->script, str);
-        }
-    }   
-}
 static topazScript_Object_t * topaz_matte_expression(
     topazScript_t * script, 
     void * data,

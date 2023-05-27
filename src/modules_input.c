@@ -276,7 +276,16 @@ struct DeviceState {
         while(topaz_input_device_get_event_count(d->device)) {
             topaz_input_device_pop_event(d->device, &ev);
             int index = (int)ev.id;
-            if (index == 0) continue;
+            if (index == 0) {
+                // could be a symbolic unicode event
+                if (ev.utf8 && topaz_input_device_get_type(d->device) == topaz_InputDevice_Class_Keyboard) {
+                    InputState * input = device_state_get_input(d, index);
+                    input->prev = input->current;
+                    input->current = ev.state;
+                    get_unicode(d->parent, input->current, &ev);
+                }
+                continue;
+            }
 
 
             InputState * input = device_state_get_input(d, index);

@@ -91,6 +91,7 @@ struct topazDisplayAPI_t {
     void * (*display_get_last_system_event)                 (topazDisplay_t *, void *);
     topazArray_t * (*display_get_current_clipboard)         (topazDisplay_t *, void *);
     void (*display_set_current_clipboard)                   (topazDisplay_t *, void *, const topazArray_t *);
+    topazString_t * (*display_set_post_process_shader)                 (topazDisplay_t *, void *, const topazString_t *, const topazString_t *);
 
 
 

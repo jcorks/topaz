@@ -588,6 +588,7 @@ Topaz = class(
             @:topaz_display__get_parameter = getExternalFunction(name:'topaz_display__get_parameter');
             @:topaz_display__get_framebuffer = getExternalFunction(name:'topaz_display__get_framebuffer');
             @:topaz_display__use_framebuffer = getExternalFunction(name:'topaz_display__use_framebuffer');
+            @:topaz_display__set_post_process_shader = getExternalFunction(name:'topaz_display__set_post_process_shader');
             @:topaz_display__clear_main_framebuffer = getExternalFunction(name:'topaz_display__clear_main_framebuffer');
             @:topaz_display__capture_main_framebuffer = getExternalFunction(name:'topaz_display__capture_main_framebuffer');
             @:topaz_display__get_camera_2d = getExternalFunction(name:'topaz_display__get_camera_2d');
@@ -665,7 +666,10 @@ Topaz = class(
                         setParameter : ::(parameter, value){ 
                             topaz_display__set_parameter(a:impl, b:parameter, c:value);
                         },
-        
+
+                        setPostProcessShader :::(vertexShader, fragmentShader) {
+                            return topaz_display__set_post_process_shader(a:impl, b:vertexShader, c:fragmentShader);
+                        },
         
                         getFramebuffer : ::(id){ 
                             return __Topaz__.Framebuffer.new(native:topaz_display__get_framebuffer(a:impl, b:id));

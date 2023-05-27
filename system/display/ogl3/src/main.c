@@ -36,6 +36,8 @@ DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 #include <stdio.h>
 #include <topaz/backends/renderer.h>
+#include <topaz/modules/console.h>
+#include <topaz/topaz.h>
 #include <topaz/system.h>
 #include "glad.h"
 #include <GLFW/glfw3.h>
@@ -65,6 +67,7 @@ typedef struct {
     GLint program;
     GLuint vbo;
     GLint vertexLocation;
+    GLint textureSizeLocation;
     GLuint vao;
     topazDisplay_t * source;
 } TopazGLFWWindow;
@@ -140,27 +143,25 @@ static void glfw_fb_close(
     topaz_display_signal_close(d->source);
 }
 
-static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
+topazString_t * topaz_glfw_set_post_process_shader(
+    /// The display to modify.
+    topazDisplay_t * dispSrc,
 
-    TopazGLFWWindow * w = calloc(1, sizeof(TopazGLFWWindow));
-    glfwWindowHint(GLFW_VISIBLE, 1);
+    void * api,
 
-    GLFWwindow * wOld = glfwGetCurrentContext();
-    w->window = glfwCreateWindow(640, 480, "topaz", NULL, glfwGetCurrentContext());
-    glfwSetFramebufferSizeCallback(w->window, glfw_fb_size_change);
-    glfwSetWindowFocusCallback(w->window, glfw_fb_focus_change);
+    /// The text for the vertex shader.
+    const topazString_t * vertexSrc,
 
-    glfwSetWindowCloseCallback(w->window, glfw_fb_close);
-    glfwSetWindowUserPointer(w->window, w);
+    /// The text for the fragment shader.
+    const topazString_t * fragmentSrc
 
-    glfwMakeContextCurrent(w->window);
-    w->source  = api;
+) {
+    TopazGLFWWindow * w = api;
 
-
-    w->w = 64;
-    w->h = 64;
-    w->x = w->y = 0;
-
+    if (w->program != -1) {
+        glUseProgram(0);
+        glDeleteProgram(w->program);
+    }
 
     w->program = glCreateProgram();
     GLint result;
@@ -168,8 +169,10 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
     GLint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
     const char * source[2];
-    source[0] = "#version 140\nin vec2 pos;\nout vec2 uvs;\nuniform sampler2D tex;\nvoid main(){\nuvs = vec2((pos.x + 1.0) / 2.0, (pos.y + 1.0) / 2.0);\ngl_Position = vec4(pos.x, pos.y, 0, 1);}";
-    source[1] = "#version 140\nin vec2 uvs;\nuniform sampler2D tex;\nvoid main() {\ngl_FragColor=texture2D(tex, uvs);\n}";
+    topazString_t * vertexInput   = topaz_string_create_from_c_str("#define VERTEX\n%s", topaz_string_get_c_str(vertexSrc));
+    topazString_t * fragmentInput = topaz_string_create_from_c_str("#define FRAGMENT\n%s", topaz_string_get_c_str(fragmentSrc));
+    source[0] = topaz_string_get_c_str(vertexInput);
+    source[1] = topaz_string_get_c_str(fragmentInput);
 
     // vertex shader
     glShaderSource(
@@ -189,9 +192,13 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
             NULL,
             log
         );
-        printf("GL3 (Screen renderer): Vertex shader failed to compile. Log:\n%s\n", log);
+        topazString_t * output = topaz_string_create_from_c_str("GL3 (Screen renderer): Vertex shader failed to compile. Log:\n%s\n", log);
         free(log);
-        exit(10);
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);        
+        glDeleteProgram(w->program);
+        w->program = -1;
+        return output;
     } 
     glAttachShader(w->program, vertexShader);
 
@@ -213,9 +220,13 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
             NULL,
             log
         );
-        printf("GL3 (Screen renderer): Fragment shader failed to compile. Log:\n%s\n", log);
+        topazString_t * output = topaz_string_create_from_c_str("GL3 (Screen renderer): Fragment shader failed to compile. Log:\n%s\n", log);
         free(log);
-        exit(11);
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);        
+        glDeleteProgram(w->program);
+        w->program = -1;
+        return output;
     }
     glAttachShader(w->program, fragmentShader);
 
@@ -231,9 +242,13 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
             NULL,
             log
         );
-        printf("GL3 (Screen renderer): Program failed to link. Log:\n%s\n", log);
+        topazString_t * output = topaz_string_create_from_c_str("GL3 (Screen renderer): Program failed to link. Log:\n%s\n", log);
         free(log);
-        exit(112);
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);        
+        glDeleteProgram(w->program);
+        w->program = -1;
+        return output;
     }
 
 
@@ -243,14 +258,62 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
 
     
     // add reference to texture
-    GLint i = glGetUniformLocation(w->program, "sampler");
-    w->vertexLocation = glGetAttribLocation(w->program, "pos");
+    GLint i = glGetUniformLocation(w->program, "Texture");
+    w->textureSizeLocation = glGetUniformLocation(w->program, "TextureSize");
+    w->vertexLocation = glGetAttribLocation(w->program, "VertexCoord");
     glUseProgram(w->program);
+    glUniform1i(i, 0);
+
+    glUseProgram(0);
+    return NULL;
+}
+
+
+static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
+
+    TopazGLFWWindow * w = calloc(1, sizeof(TopazGLFWWindow));
+    glfwWindowHint(GLFW_VISIBLE, 1);
+
+    GLFWwindow * wOld = glfwGetCurrentContext();
+    w->window = glfwCreateWindow(640, 480, "topaz", NULL, glfwGetCurrentContext());
+    w->program = -1;
+    glfwSetFramebufferSizeCallback(w->window, glfw_fb_size_change);
+    glfwSetWindowFocusCallback(w->window, glfw_fb_focus_change);
+
+    glfwSetWindowCloseCallback(w->window, glfw_fb_close);
+    glfwSetWindowUserPointer(w->window, w);
+
+    glfwMakeContextCurrent(w->window);
+    w->source  = api;
+
+
+    w->w = 64;
+    w->h = 64;
+    w->x = w->y = 0;
+
+    topazString_t * vert = topaz_string_create_from_c_str("%s", "in vec2 VertexCoord;\nout vec2 uvs;\nuniform sampler2D Texture;\nvoid main(){\nuvs = vec2((VertexCoord.x + 1.0) / 2.0, (VertexCoord.y + 1.0) / 2.0);\ngl_Position = vec4(VertexCoord, 0, 1);}");
+    topazString_t * frag = topaz_string_create_from_c_str("%s", "in vec2 uvs;\nuniform sampler2D Texture;\nvoid main() {\ngl_FragColor=texture2D(Texture, uvs);\n}");
+
+
+    topazString_t * error = topaz_glfw_set_post_process_shader(
+        api, 
+        w,
+        vert,
+        frag
+    );
     glGenVertexArrays(1, &w->vao);
     glBindVertexArray(w->vao);
     glEnableVertexAttribArray(w->vertexLocation);
-    glUniform1i(i, 0);
-    glUseProgram(0);
+
+    if (error) {
+        topaz_console_print(
+            topaz_context_get_console(t),
+            error
+        );
+    }
+
+    topaz_string_destroy(vert);
+    topaz_string_destroy(frag);
     
     // add the static vertices
     glGenBuffers(1, &w->vbo);
@@ -387,7 +450,8 @@ static int topaz_glfw_is_parameter_modifiable(topazDisplay_t * dispSrc, void * a
 }
 
 
-static void render_to_screen(TopazGLFWWindow * w, GLuint tex) {
+static void render_to_screen(TopazGLFWWindow * w, GLuint tex, int width, int height) { 
+    if (w->program == -1) return;
     GLFWwindow * wOld = glfwGetCurrentContext();
     glfwMakeContextCurrent(w->window);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -396,6 +460,10 @@ static void render_to_screen(TopazGLFWWindow * w, GLuint tex) {
     glBindTexture(GL_TEXTURE_2D, tex);
     glBindVertexArray(w->vao);
     glUseProgram(w->program);
+
+    if (w->textureSizeLocation >= 0) {
+        glUniform2f(w->textureSizeLocation, (float)width, (float)height);
+    }
 
     glBindBuffer(GL_ARRAY_BUFFER, w->vbo);    
     glVertexAttribPointer(w->vertexLocation, 2, GL_FLOAT, GL_FALSE, sizeof(float)*2, 0);
@@ -433,7 +501,12 @@ static void topaz_glfw_update(topazDisplay_t * dispSrc, void * api, topazRendere
     glfwPollEvents();
 
 
-    render_to_screen(d, ((GLuint*)topaz_renderer_framebuffer_get_handle(fb))[1]);
+    render_to_screen(
+        d, 
+        ((GLuint*)topaz_renderer_framebuffer_get_handle(fb))[1],
+        topaz_renderer_framebuffer_get_width(fb),
+        topaz_renderer_framebuffer_get_height(fb)
+    );
     glFinish();
     //glfwSwapBuffers(d->window);
 };
@@ -523,6 +596,7 @@ void topaz_system_display_ogl3__backend(
     api->display_get_system_handle =  topaz_glfw_get_system_handle;
     api->display_get_system_event_type = topaz_glfw_get_system_event_type;
     api->display_get_last_system_event = topaz_glfw_get_last_system_event;
+    api->display_set_post_process_shader = topaz_glfw_set_post_process_shader;
     api->display_get_current_clipboard = (topazArray_t * (*)(topazDisplay_t *, void *)) api_nothing;
     api->display_set_current_clipboard = (void (*)(topazDisplay_t *, void *, const topazArray_t *)) api_nothing;
 
