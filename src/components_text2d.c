@@ -715,7 +715,8 @@ static void text2d_update(Text2D * t, const topazString_t * str, const topazAsse
 
     // current string is the base, new content being added.
     } else if (lenNew > len && i == len) {
-        text2d_update__add(t, str, font, pixelSize);
+        //text2d_update__add(t, str, font, pixelSize); //< bugged
+        text2d_update__full(t, str, font, pixelSize);
 
     // default full update.
     } else {

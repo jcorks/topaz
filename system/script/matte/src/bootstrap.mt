@@ -3875,7 +3875,7 @@ Topaz = class(
             attachPostManagerUnpausable : ::(manager){topaz__attach_post_manager_unpausable(a:manager.native);},        
             quit : getExternalFunction(name:'topaz__quit'),
             frameStart ::(FPS) {topaz__frame_start(a:FPS);},
-            frameEnd ::(FPS) {topaz__frame_end();},
+            frameEnd ::() {topaz__frame_end();},
             toBase64 ::(bytes) {topaz__to_base64(a:bytes);},
             fromBase64 : ::(string) { 
                 return __Topaz__.Data.new(native:topaz__from_base64(a:string));

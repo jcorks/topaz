@@ -141,8 +141,6 @@ int main(int argc, char ** argv) {
         topazScriptManager_Permission_All
     );
 
-    // enable debugging!
-    topaz_script_enable_debugging(script);
 
 
     // first, load all and any bundles into memory. This 

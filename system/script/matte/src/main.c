@@ -293,9 +293,9 @@ static topazString_t * topaz_matte_stack_where(TOPAZMATTE * ctx) {
         const matteString_t * fileName = matte_vm_get_script_name_by_id(ctx->vm, fileid);
 
         if (i == ctx->debugLevel) {
-            topaz_string_concat_printf(str, " -> @%d:%s <%s>, line %d\n", i, matte_string_get_c_str(frame.prettyName), fileName ? matte_string_get_c_str(fileName) : "???", inst[frame.pc].lineNumber);
+            topaz_string_concat_printf(str, " -> @%d: <%s>, line %d\n", i, fileName ? matte_string_get_c_str(fileName) : "???", (int)inst[frame.pc].lineNumber);
         } else {
-            topaz_string_concat_printf(str, "    @%d:%s <%s>, line %d\n", i, matte_string_get_c_str(frame.prettyName), fileName ? matte_string_get_c_str(fileName) : "???", inst[frame.pc].lineNumber);
+            topaz_string_concat_printf(str, "    @%d: <%s>, line %d\n", i, fileName ? matte_string_get_c_str(fileName) : "???", (int)inst[frame.pc].lineNumber);
         }
     }
     return str;
@@ -333,9 +333,6 @@ static void topaz_matte_object_finalizer(void * objectUserdata, void * functionU
         }
     #endif
     
-    if (tag->selfID.value.id == 2051)
-        printf("bruh");
-
     // if this is even happening, the global stash entry was already removed.
 
     // call c finalizer, which is why this is here mostly
@@ -423,16 +420,24 @@ static topazScript_Object_t * topaz_matte_value_to_tso(TOPAZMATTE * ctx, matteVa
     return o;
 }
 
+static matteString_t * topaz_matte_run__error__file = NULL;
+static int topaz_matte_run__error__last_success = 0;
 static void topaz_matte_run__error(const matteString_t * s, uint32_t line, uint32_t ch, void * userdata) {
     TOPAZMATTE * ctx = userdata;
     topazString_t * str = topaz_string_create();
-    topaz_string_concat_printf(str, "ERROR @ line %d, %d:\n%s\n", line, ch, matte_string_get_c_str(s));
-    topaz_string_concat(str, topaz_matte_stack_where(ctx));
-        matteString_t * errm = matte_string_create_from_c_str("%s", topaz_string_get_c_str(str));
-        matte_vm_raise_error_string(ctx->vm, errm);
-        matte_string_destroy(errm);
-        PERROR(ctx->ctx, ctx->script, str);
-    
+    topaz_string_concat_printf(
+        str, 
+        "ERROR in %s, line %d, %d:\n%s\n", 
+        
+        topaz_matte_run__error__file ? matte_string_get_c_str(topaz_matte_run__error__file) : "<unknown file>" ,
+        line, ch, 
+        matte_string_get_c_str(s)
+    );
+
+    matteString_t * errm = matte_string_create_from_c_str("%s", topaz_string_get_c_str(str));
+    matte_vm_raise_error_string(ctx->vm, errm);
+    matte_string_destroy(errm);    
+    topaz_matte_run__error__last_success = 0;
 }
 
 static void topaz_matte_expression__error(matteVM_t * vm, matteVMDebugEvent_t event, uint32_t file, int lineNumber, matteValue_t value, void * userdata) {
@@ -519,19 +524,33 @@ static matteValue_t topaz_matte_native_function_internal(matteVM_t * vm, matteVa
 static void topaz_matte_fatal(matteVM_t * vm, uint32_t file, int lineNumber, matteValue_t value, void * udata) {
     TOPAZMATTE * ctx = udata;
     matteStore_t * store = matte_vm_get_store(vm);
+    int hadSummary = 0;
     {
-        const matteString_t * rep = matte_value_string_get_string_unsafe(store, matte_value_object_access_string(store, value, MATTE_VM_STR_CAST(vm, "summary")));
 
-        PERROR(ctx->ctx, ctx->script, topaz_string_create_from_c_str("Topaz Scripting error: (%s, line %d):\n%s\n%s", 
-            matte_string_get_c_str(matte_vm_get_script_name_by_id(vm, file)),
+        const matteString_t * rep = NULL;
+        
+        if (value.binID == MATTE_VALUE_TYPE_OBJECT) {
+            rep = matte_value_string_get_string_unsafe(store,  matte_value_object_access_string(store, value, MATTE_VM_STR_CAST(vm, "summary")));
+            hadSummary = 1;
+        } else if (value.binID == MATTE_VALUE_TYPE_STRING) {
+            rep = matte_value_string_get_string_unsafe(store, value);
+        }
+        const matteString_t * filename =  (matte_vm_get_script_name_by_id(vm, file));
+
+
+        PERROR(ctx->ctx, ctx->script, topaz_string_create_from_c_str("Topaz Scripting error: (%s, line %d):\n%s\n", 
+            filename ? matte_string_get_c_str(filename) : "<unknown file>",
             lineNumber,
-            matte_string_get_c_str(rep)));
+            rep ? matte_string_get_c_str(rep) : "Unknown error. No summary available."));
     }
-    topazString_t * str = topaz_matte_stack_where(ctx);
-    if (topaz_string_get_length(str)) {
-        PERROR(ctx->ctx, ctx->script, str);
-    } else {
-        topaz_string_destroy(str);
+    // try to include a callstack if summary isnt included
+    if (!hadSummary) {
+        topazString_t * str = topaz_matte_stack_where(ctx);
+        if (topaz_string_get_length(str)) {
+            PERROR(ctx->ctx, ctx->script, str);
+        } else {
+            topaz_string_destroy(str);
+        }
     }
     
 }
@@ -570,16 +589,24 @@ static uint32_t topaz_matte_import(
 
     // process and load source into 
     uint32_t bytecodeLen = 0;
+    const char * cstr = topaz_string_get_c_str(srcstr);
+    topaz_matte_run__error__file = matte_string_create_from_c_str("%s", importName);
+    topaz_matte_run__error__last_success = 1;
     uint8_t * bytecode = matte_compiler_run(
         ctx->syngraph,
-        (const uint8_t*)topaz_string_get_c_str(srcstr),
-        topaz_string_get_length(srcstr),
+        (const uint8_t*)cstr,
+        strlen(cstr),
         &bytecodeLen,
         topaz_matte_run__error,
         ctx
     ); 
-    
-    
+    matte_string_destroy(topaz_matte_run__error__file);
+    topaz_matte_run__error__file = NULL;
+    if (!topaz_matte_run__error__last_success) {
+        matte_deallocate(bytecode);
+        return 0;
+    }
+
     matteArray_t * stubs = matte_bytecode_stubs_from_bytecode(
         matte_vm_get_store(matte_get_vm(m)),
         fileid,
@@ -784,6 +811,9 @@ static void topaz_matte_run(
     
 
     uint32_t bytelen = 0;
+
+    topaz_matte_run__error__file = matte_string_create_from_c_str("%s", topaz_string_get_c_str(sourceName));
+    topaz_matte_run__error__last_success = 1;
     uint8_t * bytecode = matte_compiler_run(
         ctx->syngraph,
         (const uint8_t*)topaz_string_get_c_str(sourceDataD),
@@ -792,11 +822,11 @@ static void topaz_matte_run(
         topaz_matte_run__error,
         ctx
     ); 
+    matte_string_destroy(topaz_matte_run__error__file);
+    topaz_matte_run__error__file = NULL;
  
 
-    if (!bytecode || !bytelen) {
-        topazString_t * str = topaz_string_create_from_c_str("Could not compile source \"%s\"", topaz_string_get_c_str(sourceName));
-        PERROR(ctx->ctx, ctx->script, str);
+    if (!bytecode || !bytelen || !topaz_matte_run__error__last_success) {
         return;
     }
     
@@ -1093,6 +1123,7 @@ static void topaz_matte_debug_callback(
     int pendingError = 0;
     TopazMatteBreakpoint * pendingBreakpoint = NULL;
     TOPAZMATTE * ctx = data;
+    /*
     if (event == MATTE_VM_DEBUG_EVENT__ERROR_RAISED) {
         // forward a formal pause command and continue
         topaz_script_debug_send_command(
@@ -1102,6 +1133,7 @@ static void topaz_matte_debug_callback(
         );
         pendingError = 1;
     }
+    */
     
     if (topaz_array_get_size(ctx->debugBreakpoints)) {
         uint32_t i;

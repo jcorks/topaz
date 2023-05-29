@@ -183,7 +183,7 @@ static int get_key(int kglfw) {
         SMAP(GLFW_KEY_KP_ENTER , topazKey_enter);
         SMAP(GLFW_KEY_KP_EQUAL , topazKey_equal);
         SMAP(GLFW_KEY_LEFT_SHIFT , topazKey_lshift);
-        SMAP(GLFW_KEY_LEFT_CONTROL , topazKey_rshift);
+        SMAP(GLFW_KEY_LEFT_CONTROL , topazKey_lctrl);
         SMAP(GLFW_KEY_LEFT_ALT , topazKey_lalt);
         SMAP(GLFW_KEY_LEFT_SUPER , topazKey_lsuper);
         SMAP(GLFW_KEY_RIGHT_SHIFT , topazKey_rshift);
