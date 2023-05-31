@@ -349,14 +349,18 @@ TSO_SCRIPT_API_FN(input_api__add_unicode_listener) {
     ldata->obj = topaz_script_object_from_object(script, arg0);
     ldata->script = script;
     topaz_script_object_reference_set_native_data(ldata->obj, ldata, TSO_OBJECT_ID__UNICODELISTENER);
-    topazInput_UnicodeListener_t listener;
+    topazInput_UnicodeListener_t listener = {};
 
     listener.on_new_unicode = script_input_on_new_unicode;
     listener.on_repeat_unicode = script_input_on_repeat_unicode;
     listener.userData = ldata;
-    topaz_input_add_unicode_listener(
-        input,
-        &listener
+    return topaz_script_object_from_int(
+        script,
+
+        topaz_input_add_unicode_listener(
+            input,
+            &listener
+        )
     );
     TSO_NO_RETURN;
 }
@@ -366,19 +370,15 @@ TSO_SCRIPT_API_FN(input_api__remove_unicode_listener) {
     TSO_ARG_0;
     topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
 
-    int tag = 1;
-    ScriptInputListener * ldata = topaz_script_object_reference_get_native_data(arg0, &tag);
-    if (!ldata || tag != TSO_OBJECT_ID__INPUTLISTENER) {
-        script_error(script, "Input object isnt an input listener.");
-        TSO_NO_RETURN;
-    }
-
-    topazInput_UnicodeListener_t listener;
-    listener.userData = ldata;
-    listener.on_new_unicode = script_input_on_new_unicode;
-    listener.on_repeat_unicode = script_input_on_repeat_unicode;
-    topaz_input_remove_unicode_listener(input, &listener);
-
+    const topazInput_UnicodeListener_t * l = topaz_input_get_unicode_listener(
+        input, 
+        topaz_script_object_as_int(arg0)
+    );
+    if (!l) TSO_NO_RETURN;
+    
+    ScriptInputListener * ldata = l->userData;
+    topaz_input_remove_unicode_listener(input, topaz_script_object_as_int(arg0));
+    topaz_script_object_reference_unref(ldata->obj);
     topaz_script_object_destroy(ldata->obj);
     free(ldata);
     TSO_NO_RETURN;

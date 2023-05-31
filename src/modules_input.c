@@ -79,6 +79,9 @@ struct topazInput_t {
     topazArray_t * queriedPads;
     topazArray_t * unicodeListeners;
 
+    uint32_t listenerIDPool;
+    topazArray_t * listenerIDPool_recycled;
+
 
     uint64_t time;
     uint64_t startTime;
@@ -94,6 +97,11 @@ typedef struct {
     topazInput_Listener_t listener;
     int id;
 } InputListener;
+
+typedef struct {
+    topazInput_UnicodeListener_t listener;
+    int id;
+} UnicodeListener;
 
 static void get_unicode(topazInput_t *, float prevState, const topazInputDevice_Event_t *);
 
@@ -191,6 +199,21 @@ struct DeviceState {
 };
 
 
+    static int listener_id_new(topazInput_t * input) {
+        int id = 0;
+        if (topaz_array_get_size(input->listenerIDPool_recycled)) {
+            id = topaz_array_at(input->listenerIDPool_recycled, int, topaz_array_get_size(input->listenerIDPool_recycled)-1);
+            topaz_array_set_size(input->listenerIDPool_recycled, topaz_array_get_size(input->listenerIDPool_recycled)-1);
+        } else {
+            id = input->listenerIDPool++;
+        }
+        return id;
+    }
+
+    static void listener_id_recycle(topazInput_t * input, uint32_t id) {
+        topaz_array_push(input->listenerIDPool_recycled, id);
+    }
+
     static DeviceState * device_state_create(topazInput_t * input) {
         DeviceState * out = malloc(sizeof(DeviceState));
         out->iter = topaz_table_iter_create();
@@ -236,7 +259,7 @@ struct DeviceState {
         return NULL;
     }
 
-    static void device_state_update(DeviceState * d) {
+    static void device_state_update(topazInput_t * t, DeviceState * d) {
         // process removal request
         if (topaz_array_get_size(d->deletedListeners)) {
             uint32_t i;
@@ -247,6 +270,7 @@ struct DeviceState {
                 uint32_t totalLen = topaz_array_get_size(d->listeners);
                 for(n = 0; n < totalLen; ++n) {
                     if (topaz_array_at(d->listeners, InputListener, n).id == id) {
+                        listener_id_recycle(t, id);
                         InputListener * list = &topaz_array_at(d->listeners, InputListener, n);
                         
                         // special case: pointer 
@@ -403,13 +427,12 @@ struct DeviceState {
         }
     }
 
-    static int listenerIDPool = 1;
 
-    static int device_state_add_listener(DeviceState * d, const topazInput_Listener_t * src) {
-        if (listenerIDPool < 0) listenerIDPool = 1;
-        InputListener l;
+    static int device_state_add_listener(topazInput_t * input, DeviceState * d, const topazInput_Listener_t * src) {
+        int id = listener_id_new(input);
+        InputListener l = {};
         l.listener = *src;
-        l.id = listenerIDPool++;
+        l.id = id;
         topaz_array_push(d->listeners, l);
         return l.id;
     }
@@ -436,7 +459,7 @@ void topaz_input_poll(topazInput_t * t) {
     for(i = 0; i < topazInputManager_DefaultDevice_Count; ++i) {
         t->devices[i]->device = topaz_input_manager_query_device(t->manager, i);
         if (t->devices[i]->device)
-            device_state_update(t->devices[i]);
+            device_state_update(t, t->devices[i]);
     }
 
     InputState * inputX = device_state_get_input(t->devices[topazInputManager_DefaultDevice_Mouse], topazPointer_X);
@@ -487,8 +510,9 @@ topazInput_t * topaz_input_create(topaz_t * context) {
     out->queriedPads = topaz_array_create(sizeof(int));
     out->devices = calloc(topazInputManager_DefaultDevice_Count, sizeof(DeviceState*));
 
-    out->unicodeListeners         = topaz_array_create(sizeof(topazInput_UnicodeListener_t));
-
+    out->unicodeListeners         = topaz_array_create(sizeof(UnicodeListener));
+    out->listenerIDPool_recycled = topaz_array_create(sizeof(int));
+    out->listenerIDPool = 1;
 
     uint32_t i;
 
@@ -524,7 +548,7 @@ void topaz_input_destroy(topazInput_t * t) {
 
 int topaz_input_add_keyboard_listener(topazInput_t * t, const topazInput_Listener_t * l) {
     DeviceState * input = t->devices[topazInputManager_DefaultDevice_Keyboard];
-    return device_state_add_listener(input, l);
+    return device_state_add_listener(t, input, l);
 }
 
 
@@ -548,17 +572,17 @@ int topaz_input_add_pointer_listener(topazInput_t * t, const topazInput_Listener
         if (evdata->on_update)  listener.on_update  = on_update__pointer;
         if (evdata->on_release) listener.on_release = on_release__pointer;
 
-        return device_state_add_listener(input, &listener);
+        return device_state_add_listener(t, input, &listener);
 
     }
 
-    return device_state_add_listener(input, l);
+    return device_state_add_listener(t, input, l);
 }
 
 int topaz_input_add_pad_listener(topazInput_t * t, const topazInput_Listener_t * l, int pad) {
     if (pad >= 4) return -1;
     DeviceState * input = t->devices[topazInputManager_DefaultDevice_Pad1+pad];
-    return device_state_add_listener(input, l);
+    return device_state_add_listener(t, input, l);
 }
 
 int topaz_input_add_mapped_listener(topazInput_t * t, const topazInput_Listener_t * src, const topazString_t * str) {
@@ -567,10 +591,9 @@ int topaz_input_add_mapped_listener(topazInput_t * t, const topazInput_Listener_
         arr = topaz_array_create(sizeof(InputListener));        
         topaz_table_insert(t->stringListeners, str, arr);
     }
-    if (listenerIDPool < 0) listenerIDPool = 1;
     InputListener l;
     l.listener = *src;
-    l.id = listenerIDPool++;
+    l.id = listener_id_new(t);
     topaz_array_push(arr, l);
     return l.id;
 }
@@ -685,15 +708,33 @@ const topazArray_t  * topaz_input_query_pads(const topazInput_t * t) {
 
 
 
-void topaz_input_add_unicode_listener(topazInput_t * t, const topazInput_UnicodeListener_t * l) {
-    topaz_array_push(t->unicodeListeners, *l);
+int topaz_input_add_unicode_listener(topazInput_t * t, const topazInput_UnicodeListener_t * l) {
+    UnicodeListener ul = {};
+    ul.listener = *l;
+    ul.id = listener_id_new(t);
+    topaz_array_push(t->unicodeListeners, ul);
+    return ul.id;
 }
 
-void topaz_input_remove_unicode_listener(topazInput_t * t, const topazInput_UnicodeListener_t * l) {
+
+const topazInput_UnicodeListener_t * topaz_input_get_unicode_listener(topazInput_t * t, int id) {
     uint32_t i;
     uint32_t len = topaz_array_get_size(t->unicodeListeners);
     for(i = 0; i < len; ++i) {
-        if (memcmp(&topaz_array_at(t->unicodeListeners, topazInput_UnicodeListener_t, i), l, sizeof(topazInput_UnicodeListener_t)) == 0) {
+        UnicodeListener * ul = &topaz_array_at(t->unicodeListeners, UnicodeListener, i);
+        if (ul->id == id) {
+            return &ul->listener;
+        }
+    }
+}
+
+void topaz_input_remove_unicode_listener(topazInput_t * t, int id) {
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(t->unicodeListeners);
+    for(i = 0; i < len; ++i) {
+        UnicodeListener * ul = &topaz_array_at(t->unicodeListeners, UnicodeListener, i);
+        if (ul->id == id) {
+            listener_id_recycle(t, id);
             topaz_array_remove(t->unicodeListeners, i);
             return;
         }

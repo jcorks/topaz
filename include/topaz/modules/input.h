@@ -339,9 +339,10 @@ const topazArray_t * topaz_input_query_pads(
 
 /// Adds a new unicode listener, which will call the given functions 
 /// when relevant unicode events are detected. If the engine is paused, 
-/// unicode events arent processed.
+/// unicode events arent processed. The ID for the unicode listener 
+/// is returned.
 ///
-void topaz_input_add_unicode_listener(
+int topaz_input_add_unicode_listener(
     /// The input to add a listener to.
     topazInput_t * input, 
 
@@ -349,14 +350,26 @@ void topaz_input_add_unicode_listener(
     const topazInput_UnicodeListener_t * listener
 );
 
-/// Removes a unicode listener.
+/// Retrieves the specified listener by ID. NULL
+/// is returned in the case of no such listener.
+///
+const topazInput_UnicodeListener_t * topaz_input_get_unicode_listener(
+    /// The input to query.
+    topazInput_t * input, 
+
+    /// The ID of the listener to retrieve.
+    int id
+
+);
+
+/// Removes a unicode listener by ID.
 ///
 void topaz_input_remove_unicode_listener(
     /// The input to remove the listener from.
     topazInput_t * input, 
 
     /// The listener to remove.
-    const topazInput_UnicodeListener_t * listener
+    int listener
 );
 
 

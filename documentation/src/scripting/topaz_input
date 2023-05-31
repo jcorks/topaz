@@ -561,7 +561,7 @@ func queryPads -> Array
 ///
 ///
 ///
-func addUnicodeListener -> Object 
+func addUnicodeListener -> Int 
     /// onNewUnicode: arguments = (unicode)
     ///     New incoming unicode character is detected.
     @Function onNewUnicode
@@ -575,6 +575,6 @@ func addUnicodeListener -> Object
 ///
 func removeUnicodeListener -> 
     /// Listener to remove. Expected to be return value from addUnicodeListener()
-    @Object id
+    @Int id
 
 
