@@ -118,7 +118,7 @@ INCS := -I../../../include/ -I. -I/usr/include/freetype2/
 
 
 
-FLAGS = -g -fsanitize=undefined -fsanitize=address
+FLAGS = 
 LIBS :=  -lvorbisfile -lvorbis -logg -lfreetype -lglfw -lGL -lasound -lm -pthread -ldl
 
 
@@ -130,7 +130,7 @@ all: $(OBJS)
 	$(CC) $(FLAGS) $(OBJS) $(INCS)  -o ./topaz $(LIBS) 
 
 debug: $(OBJS)
-	$(CC) -g -DMATTE_DEBUG__HEAP -DMATTE_DEBUG  $(FLAGS) $(OBJS) $(INCS)  -o ./topaz $(LIBS) 
+	$(CC) -g -fsanitize=address -fsanitize=undefined  $(FLAGS) $(OBJS) $(INCS)  -o ./topaz $(LIBS) 
 
 update-bootstrap-rom:
 	cd ../../../system/script/matte/src; $(CC) m2s/mt_to_string.c -o m2s_bin; ./m2s_bin

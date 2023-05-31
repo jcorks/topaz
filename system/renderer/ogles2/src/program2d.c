@@ -109,7 +109,7 @@ topazES2_Program2D_t * topaz_es2_p2d_create() {
 
 
 
-
+  
     out->locationUniformMatrixGlobalProj = glGetUniformLocation(out->program, "proj");TOPAZ_GLES_CALL_CHECK;
     out->locationUniformMatrixGlobalTF   = glGetUniformLocation(out->program, "mv");TOPAZ_GLES_CALL_CHECK;
     out->locationUniformMatrixLocal      = glGetUniformLocation(out->program, "localMat");TOPAZ_GLES_CALL_CHECK;

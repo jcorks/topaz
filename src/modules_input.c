@@ -829,13 +829,13 @@ void get_unicode(topazInput_t * t, float prevState, const topazInputDevice_Event
 
     uint32_t i;
     uint32_t len;
-    topazInput_UnicodeListener_t * iter;
+    UnicodeListener * iter;
     if (event->state) {
         len = topaz_array_get_size(t->unicodeListeners);
         iter = topaz_array_get_data(t->unicodeListeners);
         for(i = 0; i < len; ++i) {
-            if (iter->on_new_unicode) 
-                iter->on_new_unicode(t, t->lastUnicode, iter->userData);
+            if (iter->listener.on_new_unicode) 
+                iter->listener.on_new_unicode(t, t->lastUnicode, iter->listener.userData);
             iter++;
         }            
     } else if (event->state) {
@@ -850,8 +850,8 @@ void get_unicode(topazInput_t * t, float prevState, const topazInputDevice_Event
                 len = topaz_array_get_size(t->unicodeListeners);
                 iter = topaz_array_get_data(t->unicodeListeners);
                 for(i = 0; i < len; ++i) {
-                    if (iter->on_repeat_unicode) 
-                        iter->on_repeat_unicode(t, t->lastUnicode, iter->userData);
+                    if (iter->listener.on_repeat_unicode) 
+                        iter->listener.on_repeat_unicode(t, t->lastUnicode, iter->listener.userData);
                     iter++;
                 }            
 
