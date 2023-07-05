@@ -105,6 +105,7 @@ SRCS +=  system/script/matte/src/main.c\
          system/script/matte/src/matte/src/matte_string.c\
          system/script/matte/src/matte/src/matte_table.c\
          system/script/matte/src/matte/src/matte_vm.c\
+         system/script/matte/src/matte/src/matte_OS_UNIX.c\
          system/script/matte/src/matte/src/rom/native.c
 
 SRCS += system/time/posix/src/time_posix_topaz.c
