@@ -169,8 +169,8 @@ topazString_t * topaz_glfw_set_post_process_shader(
     GLint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
     const char * source[2];
-    topazString_t * vertexInput   = topaz_string_create_from_c_str("#define VERTEX\n%s", topaz_string_get_c_str(vertexSrc));
-    topazString_t * fragmentInput = topaz_string_create_from_c_str("#define FRAGMENT\n%s", topaz_string_get_c_str(fragmentSrc));
+    topazString_t * vertexInput   = topaz_string_create_from_c_str("#version 140\n#define VERTEX\n%s", topaz_string_get_c_str(vertexSrc));
+    topazString_t * fragmentInput = topaz_string_create_from_c_str("#version 140\n#define FRAGMENT\n%s", topaz_string_get_c_str(fragmentSrc));
     source[0] = topaz_string_get_c_str(vertexInput);
     source[1] = topaz_string_get_c_str(fragmentInput);
 
@@ -291,7 +291,7 @@ static void * topaz_glfw_create(topazDisplay_t * api, topaz_t * t) {
     w->h = 64;
     w->x = w->y = 0;
 
-    topazString_t * vert = topaz_string_create_from_c_str("%s", "in vec2 VertexCoord;\nout vec2 uvs;\nuniform sampler2D Texture;\nvoid main(){\nuvs = vec2((VertexCoord.x + 1.0) / 2.0, (VertexCoord.y + 1.0) / 2.0);\ngl_Position = vec4(VertexCoord, 0, 1);}");
+    topazString_t * vert = topaz_string_create_from_c_str("%s", "in vec2 VertexCoord;\nout vec2 uvs;\nuniform sampler2D Texture;\nvoid main(){\nuvs = vec2((VertexCoord.x + 1.0) / 2.0, (VertexCoord.y + 1.0) / 2.0);\ngl_Position = vec4(VertexCoord, 0, 1);\n}");
     topazString_t * frag = topaz_string_create_from_c_str("%s", "in vec2 uvs;\nuniform sampler2D Texture;\nvoid main() {\ngl_FragColor=texture2D(Texture, uvs);\n}");
 
 

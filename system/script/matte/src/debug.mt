@@ -8,7 +8,7 @@ return ::(o) {
         return str;
     };
     @helper ::(obj, level) {
-        @poself = context;
+        @poself = helper;
 
         return match(obj->type) {
             (String) : '(type => String): \'' + obj + '\'',

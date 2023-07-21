@@ -50,13 +50,25 @@ static topazTable_t * glfww2im = NULL;
 
 
 typedef struct {
+    int connected;
+    GLFWgamepadstate state;
+} GLFWPad;
+
+
+typedef struct {
     GLFWwindow * ctx;
     topazDisplay_t * focus;
     topazInputDevice_t * keyboard;
     topazInputDevice_t * mouse;
+    topazInputDevice_t * pad[4];
+
 
     topazArray_t * queuedKeyboardEvents;
     topazArray_t * queuedPointerEvents;
+
+
+    GLFWPad padState[4];
+
 } GLFWIM;
 
 
@@ -242,6 +254,113 @@ static void topaz_glfw_im_cursor_callback(
 
 }
 
+// joystick callbacks are a PAIN because they are completely GLOBAL and 
+// are not instanced. So we need to keep track of this on our own.
+
+static GLFWPad topaz_glfw_im_get_pad_state(int padID) {
+    int glfwPad;
+    switch(padID) {
+      case 0: glfwPad = GLFW_JOYSTICK_1; break;
+      case 1: glfwPad = GLFW_JOYSTICK_2; break;
+      case 2: glfwPad = GLFW_JOYSTICK_3; break;
+      case 3: glfwPad = GLFW_JOYSTICK_4; break;
+    }
+
+    GLFWPad out = {};
+    out.connected = glfwJoystickIsGamepad(glfwPad);
+    if (!out.connected) return out;
+    glfwGetGamepadState(glfwPad, &out.state);
+    return out;
+}
+
+static int topaz_glfw_im_get_pad_event_delta(
+    GLFWIM  * im,
+    int padID,
+    const GLFWPad * oldState,
+    const GLFWPad * newState
+) {
+    int hasChanges = 0;
+    if (oldState->connected !=
+        newState->connected) {
+        hasChanges = TRUE;
+        if (newState->connected) {
+            im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_Gamepad);
+        }
+
+
+        if (newState->connected == 0) {
+            topaz_input_device_destroy(im->pad[padID]);
+            im->pad[padID] = NULL;
+            return hasChanges;
+        }
+    }
+
+
+    int i;
+    for(i = 0; i <= GLFW_GAMEPAD_BUTTON_LAST; ++i) {
+        if (oldState->state.buttons[i] != 
+            newState->state.buttons[i]) {
+            topazInputDevice_Event_t evt = {};
+            switch(i) {
+              case GLFW_GAMEPAD_BUTTON_A: evt.id = topazPad_a; break;
+              case GLFW_GAMEPAD_BUTTON_B: evt.id = topazPad_b; break;
+              case GLFW_GAMEPAD_BUTTON_X: evt.id = topazPad_x; break;
+              case GLFW_GAMEPAD_BUTTON_Y: evt.id = topazPad_y; break;
+              case GLFW_GAMEPAD_BUTTON_LEFT_BUMPER: evt.id = topazPad_l; break;
+              case GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER: evt.id = topazPad_r; break;
+              case GLFW_GAMEPAD_BUTTON_BACK: evt.id = topazPad_select; break;
+              case GLFW_GAMEPAD_BUTTON_GUIDE: evt.id = topazPad_b13; break;
+              case GLFW_GAMEPAD_BUTTON_LEFT_THUMB: evt.id = topazPad_l3; break;
+              case GLFW_GAMEPAD_BUTTON_RIGHT_THUMB: evt.id = topazPad_r3; break;
+              case GLFW_GAMEPAD_BUTTON_DPAD_UP: evt.id = topazPad_d_up; break;
+              case GLFW_GAMEPAD_BUTTON_DPAD_RIGHT: evt.id = topazPad_d_right; break;
+              case GLFW_GAMEPAD_BUTTON_DPAD_DOWN: evt.id = topazPad_d_down; break;
+              case GLFW_GAMEPAD_BUTTON_DPAD_LEFT: evt.id = topazPad_d_left; break;
+              default: continue;
+            }
+
+            evt.state = newState->state.buttons[i] != 0;
+            // might have missed the connected signal
+            if (!im->pad[padID]) {
+                im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_Gamepad);
+            }
+
+            topaz_input_device_push_event(im->pad[padID], &evt);
+            hasChanges = TRUE;
+        }
+    }
+
+    for(i = 0; i <= GLFW_GAMEPAD_AXIS_LAST; ++i) {
+        if (oldState->state.axes[i] != 
+            newState->state.axes[i]) {
+            topazInputDevice_Event_t evt = {};
+            switch(i) {
+              case GLFW_GAMEPAD_AXIS_LEFT_X: evt.id = topazPad_axisX; break;
+              case GLFW_GAMEPAD_AXIS_LEFT_Y: evt.id = topazPad_axisY; break;
+              case GLFW_GAMEPAD_AXIS_RIGHT_X: evt.id = topazPad_axisX2; break;
+              case GLFW_GAMEPAD_AXIS_RIGHT_Y: evt.id = topazPad_axisY2; break;
+              case GLFW_GAMEPAD_AXIS_LEFT_TRIGGER: evt.id = topazPad_axisX3; break;
+              case GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER: evt.id = topazPad_axisY3; break;
+              default: continue;
+            }
+
+            evt.state = newState->state.axes[i] != 0;
+            // might have missed the connected signal
+            if (!im->pad[padID]) {
+                im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_Gamepad);
+            }
+
+            topaz_input_device_push_event(im->pad[padID], &evt);
+            hasChanges = TRUE;
+        }
+    }
+    return hasChanges;
+}
+
+
+
+
+
 
 static void topaz_glfw_im_cursor_button_callback(
     GLFWwindow * window,
@@ -292,6 +411,7 @@ static void * topaz_glfw_im_create(topazInputManager_t * api, topaz_t * ctx) {
     out->queuedKeyboardEvents = topaz_array_create(sizeof(topazInputDevice_Event_t));
     out->queuedPointerEvents  = topaz_array_create(sizeof(topazInputDevice_Event_t));
 
+
     return out;
 }
 
@@ -340,7 +460,13 @@ static int topaz_glfw_im_handle_events(topazInputManager_t * imSrc, void * userD
     } 
     topaz_array_set_size(im->queuedPointerEvents, 0);
 
-
+    for(i = 0; i < 4; ++i) {
+        GLFWPad pad = topaz_glfw_im_get_pad_state(i);
+        if (topaz_glfw_im_get_pad_event_delta(im, i, &im->padState[i], &pad)) {
+            hasEvents = TRUE;
+            im->padState[i] = pad;
+        }
+    }
 
     return hasEvents;
 }
@@ -374,6 +500,11 @@ static topazInputDevice_t * topaz_glfw_im_query_device(topazInputManager_t * imS
     switch(ID) {
       case 0: return im->keyboard;
       case 1: return im->mouse;
+      case 2: return im->mouse;
+      case 3: return im->pad[0];
+      case 4: return im->pad[1];
+      case 5: return im->pad[2];
+      case 6: return im->pad[3];
       default: return NULL;
     }
 }
@@ -383,7 +514,7 @@ static int topaz_glfw_im_query_auxiliary_devices(topazInputManager_t * imSrc, vo
 }
 
 static int topaz_glfw_im_max_devices(topazInputManager_t * imSrc, void * userData) {
-    return 2;
+    return (int)topazInputManager_DefaultDevice_Count;
 }
 
 void topaz_system_inputManager_glfw__backend(

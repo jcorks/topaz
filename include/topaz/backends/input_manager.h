@@ -300,13 +300,13 @@ enum topazKey {
     /// The b13 pad input.
     topazPad_b13= 313,
     /// The b14 pad input.
-    topazPad_b14= 314,
+    topazPad_d_up= 314,
     /// The b15 pad input.
-    topazPad_b15= 315,
+    topazPad_d_right= 315,
     /// The b16 pad input.
-    topazPad_b16= 316,
+    topazPad_d_down= 316,
     /// The b17 pad input.
-    topazPad_b17= 317,
+    topazPad_d_left= 317,
     /// The b18 pad input.
     topazPad_b18= 318,
     /// The b19 pad input.

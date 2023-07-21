@@ -1095,10 +1095,10 @@ Topaz = class(
                             START: 311,    ///< Button 11
                             SELECT: 312,///< Button 12
                             B13: 313,///< Button 13
-                            B14: 314,///< Button 14
-                            B15: 315,///< Button 15
-                            B16: 316,///< Button 16
-                            B17: 317,///< Button 17
+                            D_UP: 314,///< Button DPAD UP
+                            D_RIGHT: 315,///< Button DPAD RIGHT
+                            D_DOWN: 316,///< Button DPAD DOWN
+                            D_LEFT: 317,///< Button DPAD LEFT
                             B18: 318,///< Button 18
                             B19: 319,///< Button 19
                             B20: 320,///< Button 20

@@ -98,7 +98,6 @@
     }
 );
 
-
 // This prefab demonstrates the usage of event listening.
 // While polling is a pretty convenient way to respond to 
 // input, it has a few issues:
@@ -180,6 +179,10 @@
             }
         );
 
+
+
+
+
         // Similar to adding a keyboard listener, pointer 
         // listeners will respond only to mouse events.
         Topaz.Input.addPointerListener(
@@ -211,6 +214,42 @@
                 };
             }
         );
+
+
+
+        // Finally this adds an event listener for the first connected gamepad.
+        // Gamepad listeners respond to axes and button events.
+        // This listener is mapped to the onActive event, which 
+        // is every frame that an input is non-zero. This is 
+        // convenient for when buttons are held.
+        Topaz.Input.addPadListener(
+            pad:0, // pad 0 is always the first one connected.
+
+            // Here is the onActive property.
+            // The funcion mapped takes 2 arguments: the map itself 
+            // we passed in, and the input id that is active.
+            onActive :::(input, value) {
+                Topaz.Console.print(message:'input ' + input + ', val ' + value);
+                match(input) {
+                  (Topaz.Input.PAD.D_UP):::<={
+                    this.position.y += 1;          
+                  },
+
+                  (Topaz.Input.PAD.D_DOWN):::<={
+                    this.position.y -= 1;           
+                  },
+
+                  (Topaz.Input.PAD.D_LEFT):::<={
+                    this.position.x -= 1;          
+                  },
+                    
+
+                  (Topaz.Input.PAD.D_RIGHT):::<={
+                    this.position.x += 1;       
+                  }
+                };
+            }
+        );        
 
         // if no public special properties are needed, interface does not need to be called
     }
