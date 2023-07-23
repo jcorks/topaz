@@ -344,7 +344,7 @@ static int topaz_glfw_im_get_pad_event_delta(
               default: continue;
             }
 
-            evt.state = newState->state.axes[i] != 0;
+            evt.state = newState->state.axes[i];
             // might have missed the connected signal
             if (!im->pad[padID]) {
                 im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_Gamepad);
