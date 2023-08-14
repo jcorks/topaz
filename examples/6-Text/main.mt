@@ -15,14 +15,18 @@ Topaz.FontManager.registerFont(asset:font);
     inherits : [Topaz.Entity],
     define:::(this) {
         @visual = Topaz.Text2D.new();    
-        visual.font = font;
-        visual.size =  40;
-
-
         @bg = Topaz.Shape2D.new();
-        bg.color = 'purple';
 
-        this.components = [bg, visual];
+        this.constructor = ::{
+            this.activate();
+            visual.font = font;
+            visual.size =  40;
+
+
+            bg.color = 'purple';
+            this.components = [bg, visual];
+
+        }
 
         this.interface = {
             update::(text) {
@@ -32,7 +36,8 @@ Topaz.FontManager.registerFont(asset:font);
                     height:visual.extentHeight
                 );
             }
-        };
+        }
+
     }
 );
 

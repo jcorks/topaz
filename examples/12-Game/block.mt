@@ -11,12 +11,10 @@
         @index_x;    
         @index_y;    
 
-        this.components = [shape];
-        this.constructor = ::(color, x, y) {
-            this.position.x = x;
-            this.position.y = y;
-            index_x = Parameters.posToIndex(pos:x);
-            index_y = Parameters.posToIndex(pos:y);
+        this.constructor = ::() {
+            this.activate();
+            this.components = [shape];
+
             shape.formImageScaled(
                 width :Parameters.BLOCK_SIZE,
                 height:Parameters.BLOCK_SIZE,
@@ -24,11 +22,18 @@
             );
 
 
-            shape.color = color;
             return this;
         };
         
         this.interface = {
+            setup::(x, y, color) {
+                this.position.x = x;
+                this.position.y = y;
+                index_x = Parameters.posToIndex(pos:x);
+                index_y = Parameters.posToIndex(pos:y);            
+                shape.color = color;
+            },
+        
             indexX : {
                 get :: {
                     return index_x;

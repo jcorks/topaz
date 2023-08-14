@@ -13,9 +13,8 @@ return class(
     ],
     
     define:::(this) {
-        this.constructor = ::(length){
-            
-            this.constructor[PhysicsObject](static: true);
+        this.constructor = :: {
+            this.setRole(static:true);            
             
             @:updateFloor = ::{        
                 this.physics.setColliderRectangle(

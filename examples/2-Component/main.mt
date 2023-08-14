@@ -24,22 +24,13 @@
 // - On a basic level, a simple variable may work, but for 
 //   further development and consistent behavior,
 //   it makes sense to have a separate class wrap the 
-//   conceptual behavior regarding health. Consider things 
+//   conceptual behavior regarding fruit. Consider things 
 //   like max capacity, what happens when fruit equals 0, and 
 //   other things. While you could still manage these within 
 //   the entity, having it be a standard separate class 
 //   increases readability and maintainability, especially with 
 //   functions to interact with it.
 //
-// - Someone familiar with object oriented programming may ask:
-//   why not just use a normal class? That would most certainly be 
-//   a valid approach! However, components have 2 significant 
-//   uses 1) Components are essentially event systems;
-//   they can be extended to support custom events which other objects 
-//   can subscribe to. 2) like Entities, they can be updated every 
-//   frame with onStep() and onDraw() functions. 
-//   It's up to you when to choose to write a new entity, component,
-//   or a simple plain object.
 //
 //
 //
@@ -55,41 +46,46 @@
         // "amount" a private variable. Here, only this FruitBasket instance 
         // can touch "amount".
         @amount = 0;
-        
-        this.constructor = ::(startingFruit => Number) {
-            amount = startingFruit;
-            return this;
-        };
-
-        // Here is where things get interesting:
-        // Any component can extend its functionality by adding 
-        // its own "events". An event is usually a response to 
-        // some action: when an event is emitted, any instance 
-        // subscribed to the event will receive a notification 
-        // that the event was emitted.
-        //
-        //
-        // Here we want to track 2 events: adding fruit and 
-        // removing fruit. The names of the functions defined here are the 
-        // names of the events to add.
-        this.installEvent(
-            event   :'onAddFruit', 
-            callback:::(source) {
-                Topaz.Console.print(message:'Fruit was added!');
-            }
-        );
 
 
-        this.installEvent(
-            event   :'onRemoveFruit', 
-            callback:::(source) {
-                Topaz.Console.print(message:'Fruit was removed!');
-            }
-        );
- 
+        this.constructor = ::{
+            // Like entities, components that inherit from Component 
+            // also need to be activated.
+            this.activate();
+
+            // Here is where things get interesting:
+            // Any component can extend its functionality by adding 
+            // its own "events". An event is usually a response to 
+            // some action: when an event is emitted, any instance 
+            // subscribed to the event will receive a notification 
+            // that the event was emitted.
+            //
+            //
+            // Here we want to track 2 events: adding fruit and 
+            // removing fruit. The names of the functions defined here are the 
+            // names of the events to add.
+            this.installEvent(
+                event   :'onAddFruit', 
+                callback:::(source) {
+                    Topaz.Console.print(message:'Fruit was added!');
+                }
+            );
+
+
+            this.installEvent(
+                event   :'onRemoveFruit', 
+                callback:::(source) {
+                    Topaz.Console.print(message:'Fruit was removed!');
+                }
+            );
+        }
 
 
         this.interface = {
+            // Sets the current number of fruit.
+            reset ::(startingFruit => Number) {
+                amount = startingFruit;            
+            },
 
             // Adds a fruit to the basket from someone.
             // For member functions, "this" will always refer to the component.
@@ -145,13 +141,17 @@
     define : ::(this) {
         // Like always, using the class name followed by parantheses is how 
         // one instantiates a class.
-        @myBasket = FruitBasket.new(startingFruit:5);
+        @myBasket = FruitBasket.new();
         @myName = 'No name!';
 
-        // And since it is a component, we want to make sure to attach it 
-        // so that the component gets updated.
-        this.attach(component:myBasket);
-
+        this.constructor = ::{
+            this.activate();
+            
+            myBasket.reset(startingFruit:5);            
+            // And since it is a component, we want to make sure to attach it 
+            // so that the component gets updated.
+            this.attach(component:myBasket);
+        }
 
         this.interface = {
             // The basket owned by the person.
@@ -181,8 +181,8 @@
             // is always the prefab function component/entity and can be used as an alternative 
             // to the prefab function argument.
             giveFruit ::(to, amount) {
-                [::] {
-                    [0, amount]->for(do:::(i) {
+                {:::} {
+                    for(0, amount) ::(i) {
                         // Oh no! out of fruit, so abort
                         when(myBasket.isEmpty()) send();
 
@@ -192,7 +192,7 @@
                         // ... and give to another person. The argument is 
                         // who gave the fruit                        
                         to.basket.addFruit(from:myBasket);
-                    });
+                    }
                 
                 };
             }

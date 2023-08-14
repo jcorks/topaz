@@ -33,65 +33,70 @@
         // Since we are making the shape once and not modifying it,
         // theres no need to keep the component around.
         @:visual = Topaz.Shape2D.new();
+        
+        
+        this.constructor = ::{
+            this.activate();
 
-        // Set it to blue and make it 20x20
-        visual.color = 'blue';
-        visual.formRectangle(width:20, height:20);
+            // Set it to blue and make it 20x20
+            visual.color = 'blue';
+            visual.formRectangle(width:20, height:20);
 
-        // As shorthand for .addComponent(), you 
-        // can set an entity's components by setting 
-        // the "components" property equal to an array
-        // of the component references. It tends to be 
-        // visually more compact while still very readable.
-        this.components = [visual];
+            // As shorthand for .addComponent(), you 
+            // can set an entity's components by setting 
+            // the "components" property equal to an array
+            // of the component references. It tends to be 
+            // visually more compact while still very readable.
+            this.components = [visual];
 
-        this.onStep = ::{
+            this.onStep = ::{
 
-            // For the polling method, the accuracy is dependent 
-            // on how often input is re-polled. For both convenience
-            // and accuracy, it is common to just re-poll for input 
-            // every frame.
-            //
-            // Topaz.Input.getState() returns a number representing the 
-            // state of the input. Usually 0 means inactive, and 
-            // above 0 means its active. For buttons, this is 
-            // just 0.0 vs 1.0. 
-            //
-            // Here we check the individual key values for the arrows.
-            // If the key state is non-zero, we modify the 
-            // position vector by adding "1" to it in the direction 
-            // that corresponds to the arrow.
+                // For the polling method, the accuracy is dependent 
+                // on how often input is re-polled. For both convenience
+                // and accuracy, it is common to just re-poll for input 
+                // every frame.
+                //
+                // Topaz.Input.getState() returns a number representing the 
+                // state of the input. Usually 0 means inactive, and 
+                // above 0 means its active. For buttons, this is 
+                // just 0.0 vs 1.0. 
+                //
+                // Here we check the individual key values for the arrows.
+                // If the key state is non-zero, we modify the 
+                // position vector by adding "1" to it in the direction 
+                // that corresponds to the arrow.
 
-            if (Topaz.Input.getState(input:Topaz.Input.KEY.UP)) ::<={
-                this.position.y += 1;            
-            };
+                if (Topaz.Input.getState(input:Topaz.Input.KEY.UP)) ::<={
+                    this.position.y += 1;            
+                }
 
-            if (Topaz.Input.getState(input:Topaz.Input.KEY.DOWN)) ::<={
-                this.position.y -= 1;           
-            };
+                if (Topaz.Input.getState(input:Topaz.Input.KEY.DOWN)) ::<={
+                    this.position.y -= 1;           
+                }
 
-            if (Topaz.Input.getState(input:Topaz.Input.KEY.LEFT)) ::<={
-                this.position.x -= 1;            
-            };
+                if (Topaz.Input.getState(input:Topaz.Input.KEY.LEFT)) ::<={
+                    this.position.x -= 1;            
+                }
 
-            if (Topaz.Input.getState(input:Topaz.Input.KEY.RIGHT)) ::<={
-                this.position.y += 1;         
-            };
+                if (Topaz.Input.getState(input:Topaz.Input.KEY.RIGHT)) ::<={
+                    this.position.x += 1;         
+                }
 
-            // The left/right/middle button can be polled using 
-            // the Topaz.Key.topazPointer_* inputs.
-            // All inputs for the mouse+keyboard can use the getState() function.
-            if (Topaz.Input.getState(input:Topaz.Input.POINTER._1)) ::<={
+                // The left/right/middle button can be polled using 
+                // the Topaz.Key.topazPointer_* inputs.
+                // All inputs for the mouse+keyboard can use the getState() function.
+                if (Topaz.Input.getState(input:Topaz.Input.POINTER._1)) ::<={
 
-                // To poll position position, getState can be used. However,
-                // due to the commonality of this operation, the position 
-                // can be polled by just accessing Topaz.Input.mouseX / Y.
-                this.position = {
-                    x:Topaz.Input.mouse.x,
-                    y:Topaz.Input.mouse.y
-                };
-            };
-        };
+                    // To poll position position, getState can be used. However,
+                    // due to the commonality of this operation, the position 
+                    // can be polled by just accessing Topaz.Input.mouseX / Y.
+                    this.position = {
+                        x:Topaz.Input.mouse.x,
+                        y:Topaz.Input.mouse.y
+                    }
+                }
+            }
+        }
 
         // We won't be using any persistent, public props, so there will 
         // be no interface call.
@@ -131,125 +136,130 @@
 
         // Same story as the first prefab!
         @:visual = Topaz.Shape2D.new();
-
-        // Here, we're using RGB hex notation to define our color.
-        visual.color = '#ff0000';
-        visual.formRectangle(width:20, height:20);
-        this.components = [visual];
-
-
-
-
-
-        // This adds an event listener for the keyboard.
-        // All add listener functions expect an object;
-        // the object is searched for specific keys:
-        // 'onActive', 'onPress', 'onRelease', and 'onUpdate'.
-        // If any are populated, a function is meant 
-        // to be mapped as the value; this function will be 
-        // called in response to input events when they occur.
-        //
-        // This listener is mapped to the onActive event, which 
-        // is every frame that an input is non-zero. This is 
-        // convenient for when buttons are held.
-        Topaz.Input.addKeyboardListener(
-
-            // Here is the onActive property.
-            // The funcion mapped takes 2 arguments: the map itself 
-            // we passed in, and the input id that is active.
-            onActive :::(input, value) {
-                match(input) {
-                  (Topaz.Input.KEY.W):::<={
-                    this.position.y += 1;          
-                  },
-
-                  (Topaz.Input.KEY.S):::<={
-                    this.position.y -= 1;           
-                  },
-
-                  (Topaz.Input.KEY.A):::<={
-                    this.position.x -= 1;          
-                  },
-                    
-
-                  (Topaz.Input.KEY.D):::<={
-                    this.position.x += 1;       
-                  }
-                };
-            }
-        );
+        
+        
+        this.constructor = ::{
+            this.activate();
+            // Here, we're using RGB hex notation to define our color.
+            visual.color = '#ff0000';
+            visual.formRectangle(width:20, height:20);
+            this.components = [visual];
 
 
 
+            // This adds an event listener for the keyboard.
+            // All add listener functions expect an object;
+            // the object is searched for specific keys:
+            // 'onActive', 'onPress', 'onRelease', and 'onUpdate'.
+            // If any are populated, a function is meant 
+            // to be mapped as the value; this function will be 
+            // called in response to input events when they occur.
+            //
+            // This listener is mapped to the onActive event, which 
+            // is every frame that an input is non-zero. This is 
+            // convenient for when buttons are held.
+            Topaz.Input.addKeyboardListener(
 
-
-        // Similar to adding a keyboard listener, pointer 
-        // listeners will respond only to mouse events.
-        Topaz.Input.addPointerListener(
-
-            // The onUpdate event respondes to any time the 
-            // device sends a new event to topaz.
-            onUpdate :::(input, value) {
-
-                // The clicking state will by set here to detect when to apply the 
-                // x / y position change
-                if (input == Topaz.Input.POINTER._0) ::<={
-                    clicking = value > 0;
-                };
-
-                // If the clicking state is active, then we check to 
-                // see if the event we're receiving is an X / Y update 
-                // event for the pointer. If it is, replace the component 
-                // in question with the raw value.
-                if (clicking) ::<={
+                // Here is the onActive property.
+                // The funcion mapped takes 2 arguments: the map itself 
+                // we passed in, and the input id that is active.
+                onActive :::(input, value) {
                     match(input) {
-                      (Topaz.Input.POINTER.X):::<={
-                        this.position.x = value;
+                      (Topaz.Input.KEY.W):::<={
+                        this.position.y += 1;          
                       },
 
-                      (Topaz.Input.POINTER.Y):::<={
-                        this.position.y = value;
+                      (Topaz.Input.KEY.S):::<={
+                        this.position.y -= 1;           
+                      },
+
+                      (Topaz.Input.KEY.A):::<={
+                        this.position.x -= 1;          
+                      },
+                        
+
+                      (Topaz.Input.KEY.D):::<={
+                        this.position.x += 1;       
                       }
-                    };
-                };
-            }
-        );
+                    }
+                }
+            );
 
 
 
-        // Finally this adds an event listener for the first connected gamepad.
-        // Gamepad listeners respond to axes and button events.
-        // This listener is mapped to the onActive event, which 
-        // is every frame that an input is non-zero. This is 
-        // convenient for when buttons are held.
-        Topaz.Input.addPadListener(
-            pad:0, // pad 0 is always the first one connected.
 
-            // Here is the onActive property.
-            // The funcion mapped takes 2 arguments: the map itself 
-            // we passed in, and the input id that is active.
-            onActive :::(input, value) {
-                Topaz.Console.print(message:'input ' + input + ', val ' + value);
-                match(input) {
-                  (Topaz.Input.PAD.D_UP):::<={
-                    this.position.y += 1;          
-                  },
 
-                  (Topaz.Input.PAD.D_DOWN):::<={
-                    this.position.y -= 1;           
-                  },
+            // Similar to adding a keyboard listener, pointer 
+            // listeners will respond only to mouse events.
+            Topaz.Input.addPointerListener(
 
-                  (Topaz.Input.PAD.D_LEFT):::<={
-                    this.position.x -= 1;          
-                  },
-                    
+                // The onUpdate event respondes to any time the 
+                // device sends a new event to topaz.
+                onUpdate :::(input, value) {
 
-                  (Topaz.Input.PAD.D_RIGHT):::<={
-                    this.position.x += 1;       
-                  }
-                };
-            }
-        );        
+                    // The clicking state will by set here to detect when to apply the 
+                    // x / y position change
+                    if (input == Topaz.Input.POINTER._0) ::<={
+                        clicking = value > 0;
+                    }
+
+                    // If the clicking state is active, then we check to 
+                    // see if the event we're receiving is an X / Y update 
+                    // event for the pointer. If it is, replace the component 
+                    // in question with the raw value.
+                    if (clicking) ::<={
+                        match(input) {
+                          (Topaz.Input.POINTER.X):::<={
+                            this.position.x = value;
+                          },
+
+                          (Topaz.Input.POINTER.Y):::<={
+                            this.position.y = value;
+                          }
+                        }
+                    }
+                }
+            );
+
+
+
+            // Finally this adds an event listener for the first connected gamepad.
+            // Gamepad listeners respond to axes and button events.
+            // This listener is mapped to the onActive event, which 
+            // is every frame that an input is non-zero. This is 
+            // convenient for when buttons are held.
+            Topaz.Input.addPadListener(
+                pad:0, // pad 0 is always the first one connected.
+
+                // Here is the onActive property.
+                // The funcion mapped takes 2 arguments: the map itself 
+                // we passed in, and the input id that is active.
+                onActive :::(input, value) {
+                    Topaz.Console.print(message:'input ' + input + ', val ' + value);
+                    match(input) {
+                      (Topaz.Input.PAD.D_UP):::<={
+                        this.position.y += 1;          
+                      },
+
+                      (Topaz.Input.PAD.D_DOWN):::<={
+                        this.position.y -= 1;           
+                      },
+
+                      (Topaz.Input.PAD.D_LEFT):::<={
+                        this.position.x -= 1;          
+                      },
+                        
+
+                      (Topaz.Input.PAD.D_RIGHT):::<={
+                        this.position.x += 1;       
+                      }
+                    }
+                }
+            );        
+
+        }
+
+
 
         // if no public special properties are needed, interface does not need to be called
     }

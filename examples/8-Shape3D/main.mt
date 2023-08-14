@@ -53,38 +53,42 @@ tex.setRGBA(
     inherits : [Topaz.Entity],
     define:::(this) {
         @:v = Topaz.Shape3D.new();
-        v.material = material;
-        v.mesh = mesh;
-        v.setTexture(slot:0, texture:tex);
-        v.setAttributes(
-            textureFilterHint: Topaz.RENDERER.TEXTURE_FILTER_HINT.NONE
-        );
-
         @stepper = 0;
-        
 
-        this.components = [v];
+        this.constructor = ::{
+            this.activate();
+            v.material = material;
+            v.mesh = mesh;
+            v.setTexture(slot:0, texture:tex);
+            v.setAttributes(
+                textureFilterHint: Topaz.RENDERER.TEXTURE_FILTER_HINT.NONE
+            );
+
+            
+
+            this.components = [v];
 
 
-        this.onStep = ::{
-            stepper += 0.1;
-            // special shorthand
-            this.rotation = {
-                x:stepper, 
-                y:stepper*3, 
-                z:stepper*8
-            };
-        };
+            this.onStep = ::{
+                stepper += 0.1;
+                // special shorthand
+                this.rotation = {
+                    x:stepper, 
+                    y:stepper*3, 
+                    z:stepper*8
+                }
+            }
+        }
     }
 );
 
 
 @a = Example3D.new();
-a.position = {x:0, y:0, z:-4};
+a.position = {x:0, y:0, z:-4}
 
 @b = Example3D.new();
-b.position = {x:2, y:0, z:1};
-b.scale = {x:0.7, y:0.3, z:0.3};
+b.position = {x:2, y:0, z:1}
+b.scale = {x:0.7, y:0.3, z:0.3}
 
 
 

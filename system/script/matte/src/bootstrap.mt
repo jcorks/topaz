@@ -15,7 +15,7 @@
         updateColor.g = b;
         updateColor.b = c;
         updateColor.a = d;
-    };
+    }
 
     return {
         asString : ::(color) {
@@ -23,12 +23,12 @@
         },
 
         parse : ::(string) {
-            updateColor = {};
+            updateColor = {}
             topaz_color__set_from_string(a:string, b:updateColorNative);
             return updateColor;
         }
-    };
-};
+    }
+}
 
 
 @:Vector = ::<={
@@ -48,7 +48,7 @@
         updateTarget.x = a;
         updateTarget.y = b;
         updateTarget.z = c;
-    };
+    }
 
     // Vector.Expression << {x:0, y:1} - {}
     @VectorExpression = class(
@@ -85,68 +85,70 @@
                     }
                 }
 
-            };
+            }
 
 
 
-            this.attributes = {
-                (Number) : ::(value) {
-                    @:out = VectorExpression.new();
-                    out.x = value;
-                    out.y = value;
-                    out.z = value;
-                    return out;                    
-                },
+            this.constructor = ::{
+                this->setAttributes(attributes:{
+                    (Number) : ::(value) {
+                        @:out = VectorExpression.new();
+                        out.x = value;
+                        out.y = value;
+                        out.z = value;
+                        return out;                    
+                    },
 
-                (Object) : ::(value) {
-                    @:out = VectorExpression.new();
-                    out.x = value.x;
-                    out.y = value.y;
-                    out.z = value.z;
-                    return out;                
-                },
+                    (Object) : ::(value) {
+                        @:out = VectorExpression.new();
+                        out.x = value.x;
+                        out.y = value.y;
+                        out.z = value.z;
+                        return out;                
+                    },
 
-                '<<' : ::(value) {
-                    @:out = VectorExpression.new();
-                    out.x = value.x;
-                    out.y = value.y;
-                    out.z = value.z;
-                    return out;
-                },
+                    '<<' : ::(value) {
+                        @:out = VectorExpression.new();
+                        out.x = value.x;
+                        out.y = value.y;
+                        out.z = value.z;
+                        return out;
+                    },
 
-                '+' : ::(value) {
-                    @:out = VectorExpression.new();
-                    if (value.x != empty) out.x = this.x + value.x;
-                    if (value.y != empty) out.y = this.y + value.y;
-                    if (value.z != empty) out.z = this.z + value.z;
-                    return out;
-                },
+                    '+' : ::(value) {
+                        @:out = VectorExpression.new();
+                        if (value.x != empty) out.x = this.x + value.x;
+                        if (value.y != empty) out.y = this.y + value.y;
+                        if (value.z != empty) out.z = this.z + value.z;
+                        return out;
+                    },
 
-                '-' : ::(other) {
-                    @:out = VectorExpression.new();
-                    out.x = this.x - other.x;
-                    out.y = this.y - other.y;
-                    out.z = this.z - other.z;
-                    return out;
-                },
+                    '-' : ::(other) {
+                        @:out = VectorExpression.new();
+                        out.x = this.x - other.x;
+                        out.y = this.y - other.y;
+                        out.z = this.z - other.z;
+                        return out;
+                    },
 
-                '*' : ::(other) {
-                    @:out = VectorExpression.new();
-                    out.x = this.x * other.x;
-                    out.y = this.y * other.y;
-                    out.z = this.z * other.z;
-                    return out;
-                },
+                    '*' : ::(other) {
+                        @:out = VectorExpression.new();
+                        out.x = this.x * other.x;
+                        out.y = this.y * other.y;
+                        out.z = this.z * other.z;
+                        return out;
+                    },
 
-                '/' : ::(other) {
-                    @:out = VectorExpression.new();
-                    out.x = this.x / other.x;
-                    out.y = this.y / other.y;
-                    out.z = this.z / other.z;
-                    return out;
-                }
+                    '/' : ::(other) {
+                        @:out = VectorExpression.new();
+                        out.x = this.x / other.x;
+                        out.y = this.y / other.y;
+                        out.z = this.z / other.z;
+                        return out;
+                    }
 
-            };
+                });            
+            }
         }
     );
 
@@ -175,7 +177,7 @@
         },
         
         cross ::(a, b){ 
-            updateTarget = {};
+            updateTarget = {}
             topaz_vector__cross(
                 a:a.x, b:a.y, c:a.z,
                 d:b.x, e:b.y, f:b.z,
@@ -185,7 +187,7 @@
         },
         
         reflect2D ::(direction, surface) {
-            updateTarget = {};
+            updateTarget = {}
             topaz_vector__reflect_2d(
                 a:direction.x, b:direction.y, c:direction.z,
                 d:surface.x,   e:surface.y,   f:surface.z,
@@ -194,7 +196,7 @@
             return updateTarget;
         },
         lookAtRotation ::(from, to, up) {
-            updateTarget = {};
+            updateTarget = {}
             topaz_vector__look_at_rotation(
                 a:from.x, b:from.y, c:from.z,
                 d:to.x,   e:to.y,   f:to.z,
@@ -228,8 +230,8 @@
         
 
         expression :  VectorExpression.new()
-    };
-};
+    }
+}
 
 @:ManagedVector = class(
     define:::(this) {
@@ -240,18 +242,17 @@
         @get_y;
         @get_z;
         @native;
-        this.constructor = ::(native_, getx, gety, getz, setx, sety, setz){
-            set_x = setx;
-            set_y = sety;
-            set_z = setz;
-            get_x = getx;
-            get_y = gety;
-            get_z = getz;
-            native = native_;
-            return this;
-        };
 
         this.interface = {
+            setup ::(native_, getx, gety, getz, setx, sety, setz) {
+                native = native_;
+                set_x = setx;
+                set_y = sety;
+                set_z = setz;
+                get_x = getx;
+                get_y = gety;
+                get_z = getz;            
+            },
             x : {
                 get :: {return get_x(a:native);},
                 set ::(value) {
@@ -272,7 +273,7 @@
                     set_z(a:native, b:value);
                 }               
             }
-        };
+        }
     }
 );
 
@@ -289,20 +290,20 @@
         @get_b;
         @get_a;
         @native;
-        this.constructor = ::(native_, getr, getg, getb, geta, setr, setg, setb, seta){
-            set_r = setr;
-            set_g = setg;
-            set_b = setb;
-            set_a = seta;
-            get_r = getr;
-            get_g = getg;
-            get_b = getb;
-            get_a = geta;
-            native = native_;
-            return this;
-        };
+
 
         this.interface = {
+            setup ::(native_, getr, getg, getb, geta, setr, setg, setb, seta){
+                set_r = setr;
+                set_g = setg;
+                set_b = setb;
+                set_a = seta;
+                get_r = getr;
+                get_g = getg;
+                get_b = getb;
+                get_a = geta;
+                native = native_;
+            },
             r : {
                 get :: {return get_r(a:native);},
                 set ::(value) {
@@ -331,7 +332,7 @@
                 }               
             }
             
-        };
+        }
     }
 );
 
@@ -380,12 +381,12 @@ Topaz = class(
                                   },
                                   default:
                                     error(detail:'Too many arguments to dispatch native create call')
-                                };
-                            };
-                        };
+                                }
+                            }
+                        }
                         when (impl == empty) ::<={
                             error(detail:'Topaz.Native instance cannot have a empty native reference.');
-                        };
+                        }
                         impl.__ctx = this;
                         impl.__id = instanceID;
                         instanceID+=1;
@@ -406,7 +407,7 @@ Topaz = class(
                             return impl;
                         }
                     }          
-                };
+                }
             
             }
         );
@@ -418,30 +419,36 @@ Topaz = class(
 
             return class(
                 name : 'Topaz.Asset',    
+                new ::(native) {
+                    @:this = __Asset__.defaultNew();
+                    this.bindNativeEx(native);
+                    return this;
+                },
                 statics : {
-                    TYPE : {
-                        NONE : 0,
-                        IMAGE : 1,
-                        SOUND : 2,
-                        MATERIAL : 3,
-                        PARTICLE : 4,
-                        DATA : 5,
-                        MESH : 6,
-                        BUNDLE : 7
+                    TYPE :::<= {
+                        @:data = {
+                            NONE : 0,
+                            IMAGE : 1,
+                            SOUND : 2,
+                            MATERIAL : 3,
+                            PARTICLE : 4,
+                            DATA : 5,
+                            MESH : 6,
+                            BUNDLE : 7
+                        }
+                        return {get::<-data}
                     }
                 }, 
                 inherits : [__Native__],
                 define : ::(this) { 
                     @impl;
-                    
-                    this.constructor = ::(native) {
-                        impl = this.bindNative(
-                            instance : native
-                        );
-                        return this;
-                    };
 
                     this.interface = {
+                        bindNativeEx ::(native) {
+                            impl = this.bindNative(
+                                instance : native
+                            );                            
+                        },
                         type : {
                             get : ::()   {return topaz_asset__get_type(a:impl);}
                         },
@@ -449,10 +456,10 @@ Topaz = class(
                         name : {
                             get : ::()   {return topaz_asset__get_name(a:impl);}
                         }
-                    };
+                    }
                 }
             );
-        };
+        }
 
         @__Filesystem__ = ::<={
             @:topaz_filesystem__get_path = getExternalFunction(name:'topaz_filesystem__get_path');
@@ -473,28 +480,31 @@ Topaz = class(
                 Path : class(
                     name : 'Topaz.Filesystem.Path',        
                     inherits : [__Native__],
+                    new ::(fromNode, fromString, relativePath, native) {
+                        @:this = __Filesystem__.Path.defaultNew();
+                        this.bindNativeEx(fromNode, fromString, relativePath, native);
+                        return this;
+                    },
                     define   : ::(this){ 
                         @impl;
-                        
-                        this.constructor = ::(fromNode, fromString, relativePath, native) {
-                            when(native != empty) ::<= {
-                                impl = this.bindNative(instance : native);
-                                return this;
-                            };
-
-                            @:native = if (fromNode != empty) 
-                                topaz_filesystem__get_path(a:fromNode) 
-                            else (
-                                if (relativePath == empty) 
-                                    topaz_filesystem__get_path_from_string(a:fromString)
-                                else 
-                                    topaz_filesystem__get_path_from_string(a:relativePath.native, b:fromString)
-                            );
-                            impl = this.bindNative(instance : native);
-                            return this;
-                        };
 
                         this.interface = {
+                            bindNativeEx ::(fromNode, fromString, relativePath, native) {
+                                when(native != empty) ::<= {
+                                    impl = this.bindNative(instance : native);
+                                    return this;
+                                }
+
+                                @:native = if (fromNode != empty) 
+                                    topaz_filesystem__get_path(a:fromNode) 
+                                else (
+                                    if (relativePath == empty) 
+                                        topaz_filesystem__get_path_from_string(a:fromString)
+                                    else 
+                                        topaz_filesystem__get_path_from_string(a:relativePath.native, b:fromString)
+                                );
+                                impl = this.bindNative(instance : native);                            
+                            },
                             string : {
                                 get ::{ 
                                     return topaz_filesystem_path__as_string(a:impl);
@@ -517,20 +527,20 @@ Topaz = class(
                                 get ::{ 
                                     @out = [];
                                     @len = topaz_filesystem_path__get_child_count(a:impl);
-                                    [0, len]->for(do:::(i) { 
+                                    for(0, len)::(i) { 
                                         @p = __Topaz__.Filesystem.Path.new(native:topaz_filesystem_path__get_nth_child(a:impl, b:i));
                                         if (p != empty) ::<= {
                                             out[i] = p;
-                                        };
-                                    });
+                                        }
+                                    }
                                     return out;
                                 }
                             }
-                        };
+                        }
                     }
                 )
-            };
-        };
+            }
+        }
 
         @__RNG__ = ::<={
             @:topaz_rng__create = getExternalFunction(name:'topaz_rng__create');
@@ -541,21 +551,24 @@ Topaz = class(
             return class(
                 name : 'Topaz.RNG',        
                 inherits : [__Native__],
+                new::(native, seed) {
+                    @:this = __RNG__.defaultNew();
+                    this.bindNativeEx(native, seed);
+                    return this;
+                },
                 define : ::(this){ 
         
                     @impl;
-                    
-                    this.constructor = ::(native, seed) {
-                        impl = this.bindNative(
-                            instance : native,
-                            nativeCreate : topaz_rng__create,
-                            args : [seed]
-                        );
-                        return this;
-                    };
         
                     
                     this.interface = {
+                        bindNativeEx::(native, seed) {
+                            impl = this.bindNative(
+                                instance : native,
+                                nativeCreate : topaz_rng__create,
+                                args : [seed]
+                            );                        
+                        },
                         seed : {
                             set ::(value) { 
                                 topaz_rng__set_seed(a:impl, b:value);
@@ -573,10 +586,10 @@ Topaz = class(
                                 return topaz_rng__next_value(a:impl);
                             }
                         }
-                    };
+                    }
                 }
             );
-        };
+        }
 
         @__Display__ = ::<={
             @:topaz_view_manager__create_display = getExternalFunction(name:'topaz_view_manager__create_display');
@@ -599,13 +612,14 @@ Topaz = class(
             return class(
                 name : 'Topaz.Display',        
                 inherits : [__Native__],
-                statics : {
-                    VIEW_POLICY : {
+                statics :::<= {
+                    
+                    @:VIEW_POLICY = {
                         NONE      : 0,
                         MATCH_SIZE : 1
-                    },
+                    };
 
-                    PARAMETER : {
+                    @:PARAMETER = {
                         X : 0,
                         Y : 1,
                         WIDTH : 2,
@@ -618,26 +632,36 @@ Topaz = class(
                         INPUT_FOCUS : 9,
                         ACTIVE : 10,
                         DECORATED:11
-                    },
+                    };
                     
-                    FRAMEBUFFER : {
+                    @:FRAMEBUFFER = {
                         A : 0,
                         B : 1,
                         C : 2,
                         D : 3
+                    };
+                    
+                    return {
+                        'VIEW_POLICY' : {get::<-VIEW_POLICY},
+                        'PARAMETER'   : {get::<-PARAMETER},
+                        'FRAMEBUFFER' : {get::<-FRAMEBUFFER}
                     }
+                },
+                new ::(native) {
+                    @:this = __Display__.defaultNew();
+                    this.bindNativeEx(native);
+                    return this;
                 },
                 define : ::(this) { 
                     @impl;
-                    this.constructor = ::(native){
-                        impl = this.bindNative(
-                            instance : native,
-                            nativeCreate : topaz_view_manager__create_display
-                        );
-                        return this;
-                    };
                     
                     this.interface = {
+                        bindNativeEx::(native) {
+                            impl = this.bindNative(
+                                instance : native,
+                                nativeCreate : topaz_view_manager__create_display
+                            );                        
+                        },
                         destroy : ::(){ 
                             topaz_display__destroy(a:impl);
                         },
@@ -776,10 +800,10 @@ Topaz = class(
                                 return __Topaz__.Framebuffer.new(native:topaz_display__get_main_framebuffer(a:impl));
                             }
                         }
-                    };
+                    }
                 }
             );
-        };
+        }
 
         @__Framebuffer__ = ::<={
             @:topaz_framebuffer__get_width = getExternalFunction(name:'topaz_framebuffer__get_width');
@@ -790,15 +814,18 @@ Topaz = class(
             return class(
                 name : 'Topaz.Framebuffer',        
                 inherits : [__Native__],
+                new::(native) {
+                    @:this = __Framebuffer__.defaultNew();
+                    this.bindNativeEx(native);
+                    return this;
+                },
                 define : ::(this) { 
                     @impl;
-                    
-                    this.constructor = ::(native) {
-                        impl = this.bindNative(instance:native);                        
-                        return this;
-                    };
         
                     this.interface = {
+                        bindNativeEx::(native) {
+                            impl = this.bindNative(instance:native);                                                
+                        },
                         width : {
                             get : ::(){ 
                                 return topaz_framebuffer__get_width(a:impl);
@@ -824,10 +851,10 @@ Topaz = class(
                         resize : ::(width, height){ 
                             topaz_framebuffer__resize(a:impl, b:width, c:height);
                         }
-                    };
+                    }
                 }
             );
-        };
+        }
 
         @__Mesh__ = ::<={
             @:topaz_mesh__get_vertex_count = getExternalFunction(name:'topaz_mesh__get_vertex_count');
@@ -843,14 +870,19 @@ Topaz = class(
             return class(
                 name : 'Topaz.Mesh',        
                 inherits : [__Asset__],
+                new::(native) {
+                    @:this = __Mesh__.defaultNew();
+                    this.bindNativeSp(native);
+                    return this;
+                },
                 define : ::(this){ 
                     @impl;
-                    this.constructor = ::(native){
-                        this.constructor[__Asset__](native:native);
-                        impl = this.native;
-                        return this;
-                    };    
                     this.interface = {
+                        bindNativeSp ::(native){
+                            this.bindNativeEx(native);
+                            impl = this.native;
+                        
+                        },
                         vertexCount : {
                             get : ::()       {return topaz_mesh__get_vertex_count(a:impl);},
                             set : ::(value)  {return topaz_mesh__set_vertex_count(a:impl, b:value);} 
@@ -863,10 +895,10 @@ Topaz = class(
                             },
                             
                             get : ::(){ 
-                                @out = {};
+                                @out = {}
                                 @len = this.vertexCount-1;
                                 @iter = 0;
-                                [0, len]->for(do:::(i){
+                                for(0, len)::(i){
                                     out[iter] = topaz_mesh__get_vertex(a:impl, b:0, c:i, d:0); iter+=1;
                                     out[iter] = topaz_mesh__get_vertex(a:impl, b:0, c:i, d:1); iter+=1;
                                     out[iter] = topaz_mesh__get_vertex(a:impl, b:0, c:i, d:2); iter+=1;
@@ -882,7 +914,7 @@ Topaz = class(
                                     out[iter] = topaz_mesh__get_vertex(a:impl, b:3, c:i, d:1); iter+=1;
                                     out[iter] = topaz_mesh__get_vertex(a:impl, b:3, c:i, d:2); iter+=1;
                                     out[iter] = topaz_mesh__get_vertex(a:impl, b:3, c:i, d:3); iter+=1;
-                                });
+                                }
                                 
                                 return out;
                             }
@@ -893,7 +925,7 @@ Topaz = class(
                         },
         
                         getVertex : ::(i){ 
-                            @out = {};
+                            @out = {}
                             @iter = 0;
                             out[iter] = topaz_mesh__get_vertex(a:impl, b:0, c:i, d:0); iter+=1;
                             out[iter] = topaz_mesh__get_vertex(a:impl, b:0, c:i, d:1); iter+=1;
@@ -917,7 +949,7 @@ Topaz = class(
                             topaz_mesh__add_object(a:impl);
                             if (indices != empty) ::<={
                                 topaz_mesh__set_object(a:impl, b:this.objectCount-1, c:indices);
-                            };
+                            }
                         },
         
                         objectCount : {
@@ -933,10 +965,10 @@ Topaz = class(
                         setObject : ::(i, value){ 
                             topaz_mesh__set_object(a:impl, b:i, c:value);
                         }
-                    };
+                    }
                 }
             );
-        };
+        }
 
         @__Input__ = ::<={
             @:topaz_input__mouse_x = getExternalFunction(name:'topaz_input__mouse_x');
@@ -1145,7 +1177,7 @@ Topaz = class(
                         
                             OPTIONS: 511
                         }
-                    };
+                    }
 
                     
                 
@@ -1180,13 +1212,13 @@ Topaz = class(
 
                         mouse : {   
                             get : ::(){ 
-                                return {x:topaz_input__mouse_x(), y:topaz_input__mouse_y()};
+                                return {x:topaz_input__mouse_x(), y:topaz_input__mouse_y()}
                             }
                         },
         
                         mouseDelta : {
                             get : ::(){ 
-                                return {x:topaz_input__mouse_delta_x(), y:topaz_input__mouse_delta_y()};
+                                return {x:topaz_input__mouse_delta_x(), y:topaz_input__mouse_delta_y()}
                             } 
                         },
         
@@ -1251,15 +1283,15 @@ Topaz = class(
                         queryPads : ::() { 
                             @len = topaz_input__query_pad_count();
                             @out = [];
-                            [0, len]->for(do:::(i) {
+                            for(0, len)::(i) {
                                 out[i] = topaz_input__query_pad_id(a:i);
-                            });
+                            }
                             return out;
                         },
                 
                         addUnicodeListener : ::(onNewUnicode, onRepeatUnicode) { 
-                            if (onNewUnicode == empty)    onNewUnicode = ::(unicode){};
-                            if (onRepeatUnicode == empty) onRepeatUnicode = ::(unicode){};
+                            if (onNewUnicode == empty)    onNewUnicode = ::(unicode){}
+                            if (onRepeatUnicode == empty) onRepeatUnicode = ::(unicode){}
                             return topaz_input__add_unicode_listener(a:{
                                 onNewUnicode::(a){onNewUnicode(unicode:a);},
                                 onRepeatUnicode::(a){onRepeatUnicode(unicode:a);}
@@ -1270,10 +1302,10 @@ Topaz = class(
                             topaz_input__remove_unicode_listener(a:id);
                         }
                 
-                    };
+                    }
                 }
             ).new();
-        };
+        }
 
         @__Audio__ = ::<={
             @:topaz_audio__playback_set_volume = getExternalFunction(name:'topaz_audio__playback_set_volume');
@@ -1297,17 +1329,21 @@ Topaz = class(
                     @ps = class(
                         name : 'Topaz.Audio.PlaybackSound',        
                         inherits : [__Native__],
+                        new ::(native) {
+                            @:this = ps.defaultNew();
+                            this.bindNativeEx(native);
+                            return this;
+                        },
                         define : ::(this) { 
                             @impl;
-                            this.constructor = ::(native) {
-                                @impl = this.bindNative(
-                                    instance : native
-                                );
-                                return this;
-                            };
         
         
                             this.interface = {
+                                bindNativeEx::(native) {
+                                    impl = this.bindNative(
+                                        instance : native
+                                    );
+                                },
                                 volume : {
                                     set : ::(value)  {topaz_audio__playback_set_volume(a:impl, b:value);} 
                                 },
@@ -1326,7 +1362,7 @@ Topaz = class(
                                             topaz_audio__playback_pause(a:impl);
                                         } else ::<= {
                                             topaz_audio__playback_resume(a:impl);
-                                        };
+                                        }
                                     }
                                 },
         
@@ -1339,7 +1375,7 @@ Topaz = class(
                                 stop : ::(){ 
                                     topaz_audio__playback_stop(a:impl);
                                 }
-                            };
+                            }
                         }
                     );
                     this.interface = {
@@ -1355,7 +1391,7 @@ Topaz = class(
                                 return ps.new(native:topaz_audio__play_sound(a:asset.native, b:0));
                             } else ::<= {
                                 return ps.new(native:topaz_audio__play_sound(a:asset.native, b:channel));
-                            };
+                            }
                         },
                         
                         channelHalt : ::(channel) { 
@@ -1369,10 +1405,10 @@ Topaz = class(
                         channelSetPanning : ::(channel, panning) { 
                             topaz_audio__channel_set_panning(a:channel, b:panning);
                         }
-                    };
+                    }
                 }
             ).new();
-        };
+        }
 
         @__Material__ = ::<={
             @:topaz_material__set_program_data = getExternalFunction(name:'topaz_material__set_program_data');
@@ -1382,14 +1418,18 @@ Topaz = class(
             return class(
                 name : 'Topaz.Material',        
                 inherits : [__Asset__],
+                new ::(native) {
+                    @:this = __Material__.defaultNew();
+                    this.bindNativeSp(native);
+                    return this;
+                },
                 define : ::(this){ 
                     @impl;
-                    this.constructor = ::(native) {
-                        this.constructor[__Asset__](native:native);
-                        impl = this.native;
-                        return this;
-                    };
                     this.interface = {
+                        bindNativeSp ::(native) {
+                            this.bindNativeEx(native);
+                            impl = this.native;
+                        },
                         setProgramData : ::(i, value){ 
                             topaz_material__set_program_data(a:impl, b:i, c:value);
                         },
@@ -1407,10 +1447,10 @@ Topaz = class(
                         }
         
         
-                    };
+                    }
                 }
             );
-        };
+        }
         
         @__Image__ = ::<={
             @:topaz_image__get_width = getExternalFunction(name:'topaz_image__get_width');
@@ -1423,14 +1463,18 @@ Topaz = class(
             return class(
                 name : 'Topaz.Image',        
                 inherits : [__Asset__],
+                new ::(native) {
+                    @:this = __Image__.defaultNew();
+                    this.bindNativeSp(native);
+                    return this;
+                },
                 define : ::(this){ 
                     @impl;
-                    this.constructor = ::(native) {
-                        this.constructor[__Asset__](native:native);
-                        impl = this.native;
-                        return this;
-                    };
                     this.interface = {
+                        bindNativeSp ::(native) {
+                            this.bindNativeEx(native);
+                            impl = this.native;
+                        },
                         width : {
                             get : ::()   {return topaz_image__get_width(a:impl);} 
                         },
@@ -1458,10 +1502,10 @@ Topaz = class(
                         setRGBA : ::(index, rgbaData) { 
                             topaz_image__frame_set_rgba(a:impl, b:index, c:rgbaData);
                         }
-                    };
+                    }
                 }
             );
-        };
+        }
         @__Data__ = ::<={
             @:topaz_data__get_byte_count = getExternalFunction(name:'topaz_data__get_byte_count');
             @:topaz_data__get_as_string = getExternalFunction(name:'topaz_data__get_as_string');
@@ -1473,14 +1517,18 @@ Topaz = class(
             return class(
                 name : 'Topaz.Data',        
                 inherits : [__Asset__],
+                new::(native) {
+                    @:this = __Data__.defaultNew();
+                    this.bindNativeSp(native);
+                    return this;
+                },
                 define : ::(this) { 
                     @impl;
-                    this.constructor = ::(native){
-                        this.constructor[__Asset__](native:native);
-                        impl = this.native;
-                        return this;
-                    };
                     this.interface = {
+                        bindNativeSp::(native) {
+                            this.bindNativeEx(native);
+                            impl = this.native;
+                        },
                         byteCount : {
                             get : ::()   {return topaz_data__get_byte_count(a:impl);}
                         },
@@ -1504,9 +1552,9 @@ Topaz = class(
                             get : ::() { 
                                 @bytes = [];
                                 @len = topaz_data__get_byte_count(a:impl);
-                                [0, len]->for(do:::(i) {
+                                for(0, len)::(i) {
                                     bytes[i] = topaz_data__get_nth_byte(a:impl, b:i);
-                                });
+                                }
                                 return bytes;
                             },
 
@@ -1514,10 +1562,10 @@ Topaz = class(
                                 topaz_data__set_from_bytes(a:impl, b:value);
                             }
                         }
-                    }; 
+                    } 
                 }
             );
-        };
+        }
         
 
         
@@ -1542,10 +1590,10 @@ Topaz = class(
                                 @out = [];
                                 @iter = 0;
                                 @len = this.sampleCount;
-                                [0, len]->for(do:::(i) {
+                                for(0, len)::(i) {
                                     out[iter] = topaz_sound__get_nth_sample_left(a:impl,  b:i); iter+=1;
                                     out[iter] = topaz_sound__get_nth_sample_right(b:impl, b:i); iter+=1;
-                                });
+                                }
                                 return out;
                             },
                             
@@ -1554,10 +1602,10 @@ Topaz = class(
                                 topaz_sound__set_samples(a:impl, b:v);
                             }
                         }
-                    };
+                    }
                 }
             );
-        };
+        }
         
         @:__Console__ = ::<= {
             @:topaz_console__enable = getExternalFunction(name:'topaz_console__enable');
@@ -1576,22 +1624,26 @@ Topaz = class(
             
             @:CommandContext = class(
                 name : 'Topaz.Console.CommandContext',
+                new ::(commands, prompt, defaultHandler) { 
+                    @:this = CommandContext.defaultNew();
+                    this.bindNative(commands, prompt, defaultHandler);
+                    return this;
+                },
                 define:::(this) {
                     @native;
-                    this.constructor = ::(commands, prompt, defaultHandler) {
-                        native = topaz_console__command_context_create();
-                        if (commands != empty) ::<= {
-                            commands->foreach(do:::(command, cb) {
-                                this.addCommand(name:command, callback:cb);
-                            });
-                        };
-                        
-                        if (prompt != empty) this.prompt = prompt;
-                        if (defaultHandler != empty) this.defaultHandler = defaultHandler;
-                        return this;
-                    };              
                     
                     this.interface = {
+                        bindNative::(commands, prompt, defaultHandler) {
+                            native = topaz_console__command_context_create();
+                            if (commands != empty) ::<= {
+                                foreach(commands)::(command, cb) {
+                                    this.addCommand(name:command, callback:cb);
+                                }
+                            }
+                            
+                            if (prompt != empty) this.prompt = prompt;
+                            if (defaultHandler != empty) this.defaultHandler = defaultHandler;                        
+                        },
                         addCommand ::(name, callback) {
                             @ args = [];
                             @ argcount = 0;
@@ -1599,7 +1651,7 @@ Topaz = class(
                             @:addArg::(a) {
                                 args[argcount] = a;  
                                 argcount+=1;
-                            };
+                            }
     
                             @:doAction::(a) {
                                 @:res = callback(
@@ -1610,7 +1662,7 @@ Topaz = class(
                                 argcount = 0;
                                 when(res == empty) '';
                                 return res;
-                            };                   
+                            }                   
                             
                             topaz_console__command_context_add_command(
                                 a:native,
@@ -1637,7 +1689,7 @@ Topaz = class(
                                     @:addArg::(a) {
                                         args[argcount] = a;  
                                         argcount+=1;
-                                    };
+                                    }
             
                                     @:doAction::(a) {
                                         @:res = value(
@@ -1648,7 +1700,7 @@ Topaz = class(
                                         argcount = 0;
                                         when(res == empty) '';
                                         return res;
-                                    };                   
+                                    }                   
 
                                     topaz_console__command_context_set_default_handler(
                                         a:native,
@@ -1670,7 +1722,7 @@ Topaz = class(
                                 topaz_console__command_context_set_prompt(a:native, b:value);
                             }
                         }
-                    };
+                    }
                 }
             );
             
@@ -1683,7 +1735,7 @@ Topaz = class(
                         DEBUG : 1,
                         WARNING : 2,
                         ERROR : 3
-                    };
+                    }
                 
                     this.interface = {
                         MESSAGE_TYPE : {
@@ -1732,10 +1784,10 @@ Topaz = class(
                         popContext :: {
                             topaz_console__pop_command_context();
                         }
-                    };
+                    }
                 }            
             ).new();
-        };
+        }
         
         @:__Resources__ = ::<={
             @:topaz_resources__fetch_asset = getExternalFunction(name:'topaz_resources__fetch_asset');
@@ -1753,19 +1805,19 @@ Topaz = class(
             return class(
                 name : 'Topaz.Resources',        
                 define : ::(this){ 
-                    @swtch = {};
-                    swtch[__Asset__.TYPE.IMAGE] = ::(i){return __Topaz__.Image.new(native:i);}; 
-                    swtch[__Asset__.TYPE.DATA] = ::(i){return __Topaz__.Data.new(native:i);};
-                    swtch[__Asset__.TYPE.SOUND] = ::(i){return __Topaz__.Sound.new(native:i);}; 
-                    swtch[__Asset__.TYPE.MATERIAL] = ::(i){return __Topaz__.Material.new(native:i);}; 
-                    swtch[__Asset__.TYPE.MESH] = ::(i){return __Topaz__.Mesh.new(native:i);};
+                    @swtch = {}
+                    swtch[__Asset__.TYPE.IMAGE] = ::(i){return __Topaz__.Image.new(native:i);} 
+                    swtch[__Asset__.TYPE.DATA] = ::(i){return __Topaz__.Data.new(native:i);}
+                    swtch[__Asset__.TYPE.SOUND] = ::(i){return __Topaz__.Sound.new(native:i);} 
+                    swtch[__Asset__.TYPE.MATERIAL] = ::(i){return __Topaz__.Material.new(native:i);} 
+                    swtch[__Asset__.TYPE.MESH] = ::(i){return __Topaz__.Mesh.new(native:i);}
 
                     @_rawAssetToInstance = ::(impl) { 
                         when(impl == empty) empty;
                         @fn = swtch[topaz_asset__get_type(a:impl)];
                         when(fn == empty) __Topaz__.Asset.new(native:impl);
                         return fn(i:impl);
-                    };
+                    }
                 
                 
                     this.interface = {
@@ -1776,12 +1828,12 @@ Topaz = class(
                         createAsset : ::(name, path, type) {
                             when(type != empty && path != empty) ::<= {
                                 error(detail:'Cannot create asset with both a type and a data source! (bytes, base64, or a filesystem path)');                                
-                            };
+                            }
 
 
                             when (path != empty) ::<= {
                                 return _rawAssetToInstance(impl:topaz_resources__create_data_asset_from_path(a:path, b:name));                            
-                            };
+                            }
                             if (type == empty) type = Topaz.Asset.TYPE.DATA;
 
 
@@ -1859,7 +1911,7 @@ Topaz = class(
                                 @oldP = this.fetchAsset(name:CREATE_PACKAGE_NAME);
                                 if (oldP != empty)
                                     this.removeAsset(asset:oldP);
-                            };
+                            }
 
 
                             @:pathInJSON = pathIn+'package.json'; 
@@ -1883,7 +1935,7 @@ Topaz = class(
                             
                             @:arg1 = [];
                             if (opts.depends != empty) ::<= {
-                                opts.depends->foreach(do:::(k, v) {
+                                foreach(opts.depends)::(k, v) {
                                     // assume any (need to keep track of VERSION_ANY?)
                                     arg1[k] = if (v.version == empty) 
                                         [v.name, -1, -1]                              
@@ -1894,8 +1946,8 @@ Topaz = class(
                                             v.version.minor
                                         ]
                                     ;
-                                });
-                            };
+                                }
+                            }
                             
                             // change the resource path to the package location.
                             @:oldPath = this.path;
@@ -1903,17 +1955,17 @@ Topaz = class(
                             this.path = pathIn;
                             
                             @:arg2 = [];
-                            opts.items->foreach(do:::(k, v) {
+                            foreach(opts.items)::(k, v) {
                                 if (this.createAsset(path:v.path, name:v.name) == empty) ::<={
                                     this.path = oldPath; 
                                     error(detail:'Could not read bytes for sub-asset for package! Is it missing?');
-                                };
+                                }
                                 arg2[k] = [
                                 
                                     v.name,
                                     (if (v.extension == empty) "" else v.extension)
                                 ];
-                            });
+                            }
                             this.path = oldPath;   
                             clearPackageAsset();
                             @:bundle = topaz_resources__pack_bundle(a:arg0, b:arg1, c:arg2);
@@ -1937,10 +1989,10 @@ Topaz = class(
                             );                        
                         }
                         
-                    };
+                    }
                 }
             ).new();
-        };
+        }
         @__FontManager__ = ::<={
             @:topaz_font_manager__register_font = getExternalFunction(name:'topaz_font_manager__register_font');
             @:topaz_font_manager__preload_glyphs = getExternalFunction(name:'topaz_font_manager__preload_glyphs');
@@ -1960,10 +2012,10 @@ Topaz = class(
                         unregisterFont : ::(asset){ 
                             topaz_font_manager__unregister_font(a:asset.native);
                         }        
-                    };
+                    }
                 }
             ).new();
-        };
+        }
 
 
                 
@@ -2032,48 +2084,58 @@ Topaz = class(
             return class(
                 name : 'Topaz.Entity',        
                 inherits : [__Native__],
+                new ::(native) {
+                    @:this = __Entity__.defaultNew();
+                    this.bindNativeEx(native);
+                    return this;
+                },
                 define : ::(this)    { 
-                    this.bindNative(
-                        nativeCreate : topaz_entity__create
-                    );
-                    this.constructor = ::(native){
-                        if (native != empty) ::<={
-                            this.bindNative(
-                                instance : native
-                            );                        
-                        };
-                        return this;
-                    };
-
+                    @impl;
                     @position;
                     @rotation;
                     @scale;
                     @globalPosition;
                     @:cleanRefs :: {
-                        this.components->foreach(do:::(k, v) {
+                        foreach(this.components)::(k, v) {
                             v.clearNative();
-                        });
+                        }
                         this.clearNative();
+                    }
+                    
+                    @:bindNativeEx = ::(native) {
+                        if (native == empty) ::<= {
+                            this.bindNative(
+                                nativeCreate : topaz_entity__create
+                            );                            
+                        } else ::<= {
+                            this.bindNative(
+                                instance: native
+                            );                                                        
+                        }
+                        impl = this.native;             
                     };
+                    
                     this.interface = {
+                        bindNativeEx:bindNativeEx,
+                        activate : bindNativeEx,
                         isValid : {
                             get : ::(){ 
-                                return topaz_entity__is_valid(a:this.native) == 1;
+                                return topaz_entity__is_valid(a:impl) == 1;
                             }
                         },
                         
                         remove : ::(){ 
-                            topaz_entity__remove(a:this.native);
+                            topaz_entity__remove(a:impl);
                         },
                         
                         childCount : {
                             get : ::(){ 
-                                return topaz_entity__get_child_count(a:this.native);
+                                return topaz_entity__get_child_count(a:impl);
                             }
                         },
                         
                         nthChild : ::(n){ 
-                            @f = topaz_entity__get_nth_child(a:this.native, b:n);
+                            @f = topaz_entity__get_nth_child(a:impl, b:n);
                             when (f == empty) empty;
                             when (f.__ctx != empty) f.__ctx;
                             return this.class.new(native:f);                
@@ -2083,68 +2145,68 @@ Topaz = class(
                         children : {
                             get : ::(){ 
                                 @children = [];
-                                @len = topaz_entity__get_child_count(a:this.native);
-                                [0, len]->for(do:::(i) { 
-                                    children[i] = topaz_entity__get_nth_child(a:this.native, b:i).__ctx;
-                                });
+                                @len = topaz_entity__get_child_count(a:impl);
+                                for(0, len)::(i) { 
+                                    children[i] = topaz_entity__get_nth_child(a:impl, b:i).__ctx;
+                                }
                                 return children;
                             },
                             
                             set : ::(value){ 
-                                [::] {
-                                    forever(do:::{
-                                        when(topaz_entity__get_child_count(a:this.native) == 0) send();
-                                        topaz_entity__detach(a:topaz_entity__get_nth_child(a:this.native, b:0));
-                                    });
-                                };
+                                {:::} {
+                                    forever ::{
+                                        when(topaz_entity__get_child_count(a:impl) == 0) send();
+                                        topaz_entity__detach(a:topaz_entity__get_nth_child(a:impl, b:0));
+                                    }
+                                }
                                     
-                                [0, value->keycount]->for(do:::(i) {
-                                    topaz_entity__attach(a:this.native, b:value[i].native);
-                                });
+                                for(0, value->keycount)::(i) {
+                                    topaz_entity__attach(a:impl, b:value[i].native);
+                                }
                             }
                         },
                         
                         
                         //TODO: the rest, also onStep, onDraw, etc <3
                         step : ::() { 
-                            topaz_entity__step(a:this.native);
+                            topaz_entity__step(a:impl);
                         },
                         
                         draw : ::() { 
-                            topaz_entity__draw(a:this.native);
+                            topaz_entity__draw(a:impl);
                         },
         
                         attach ::(entity, component, addAfter){ 
                             when (entity != empty)
-                               topaz_entity__attach(a:this.native, b:entity.native);
+                               topaz_entity__attach(a:impl, b:entity.native);
                                
                             when (component != empty)
                                 if (addAfter != empty && addAfter == true) 
-                                    topaz_entity__add_component_after(a:this.native, b:component.native)
+                                    topaz_entity__add_component_after(a:impl, b:component.native)
                                 else 
-                                    topaz_entity__add_component(a:this.native, b:component.native)
+                                    topaz_entity__add_component(a:impl, b:component.native)
                             ;
                         },
         
                         detach : ::() { 
-                            topaz_entity__detach(a:this.native);
+                            topaz_entity__detach(a:impl);
                         },
                         
                         parent : {
                             get : ::() { 
-                                @f = topaz_entity__get_parent(a:this.native);
+                                @f = topaz_entity__get_parent(a:impl);
                                 when (f == empty) empty;
                                 when (f.__ctx != empty) f.__ctx;
                                 return this.class.new(native:f);
                             },
                             
                             set : ::(value){ 
-                                topaz_entity__attach(a:value.native, b:this.native);
+                                topaz_entity__attach(a:value.native, b:impl);
                             }
                         },
                         
                         query : ::(name) { 
-                            @f = topaz_entity__query(a:this.native, b:name);
+                            @f = topaz_entity__query(a:impl, b:name);
                             when (f == empty) empty;
                             when (f.__ctx != empty) f.__ctx;
                             return this.class.new(native:f);
@@ -2152,31 +2214,32 @@ Topaz = class(
                         
                         
                         search : ::(name){ 
-                            @f = topaz_entity__search(a:this.native, b:name);
+                            @f = topaz_entity__search(a:impl, b:name);
                             when (f == empty) empty;
                             when (f.__ctx != empty) f.__ctx;
                             return this.class.new(native:f);
                         },
                         
                         priority : {
-                            get : ::() {return topaz_entity__get_priority(a:this.native);}, 
-                            set : ::(value){topaz_entity__set_priority(a:this.native, b:value);}
+                            get : ::() {return topaz_entity__get_priority(a:impl);}, 
+                            set : ::(value){topaz_entity__set_priority(a:impl, b:value);}
                         },
                         
             
                         setPriorityLast : ::(){ 
-                            topaz_entity__set_priority_last(a:this.native);
+                            topaz_entity__set_priority_last(a:impl);
                         },
             
                         setPriorityFirst : ::(){ 
-                            topaz_entity__set_priority_first(a:this.native);
+                            topaz_entity__set_priority_first(a:impl);
                         },
         
                         rotation : {
                             get : ::()  {
-                                if (rotation == empty)
-                                    rotation = ManagedVector.new(
-                                        native_:this.native,
+                                if (rotation == empty) ::<= {
+                                    rotation = ManagedVector.new();
+                                    rotation.setup(
+                                        native_:impl,
                                         getx: topaz_entity__get_rotation_x,
                                         gety: topaz_entity__get_rotation_y,
                                         getz: topaz_entity__get_rotation_z,
@@ -2185,23 +2248,24 @@ Topaz = class(
                                         sety: topaz_entity__set_rotation_y,
                                         setz: topaz_entity__set_rotation_z
                                     );
-
+                                }
 
                                 return rotation;
                             },
                             set : ::(value) {
-                                if (value.x != empty) topaz_entity__set_rotation_x(a:this.native, b:value.x);
-                                if (value.y != empty) topaz_entity__set_rotation_y(a:this.native, b:value.y);
-                                if (value.z != empty) topaz_entity__set_rotation_z(a:this.native, b:value.z);
+                                if (value.x != empty) topaz_entity__set_rotation_x(a:impl, b:value.x);
+                                if (value.y != empty) topaz_entity__set_rotation_y(a:impl, b:value.y);
+                                if (value.z != empty) topaz_entity__set_rotation_z(a:impl, b:value.z);
                             } 
                         },
 
         
                         position : {
                             get : ::()  {
-                                if (position == empty)
-                                    position = ManagedVector.new(
-                                        native_:this.native,
+                                if (position == empty) ::<= {
+                                    position = ManagedVector.new();
+                                    position.setup(
+                                        native_:impl,
                                         getx: topaz_entity__get_position_x,
                                         gety: topaz_entity__get_position_y,
                                         getz: topaz_entity__get_position_z,
@@ -2210,22 +2274,24 @@ Topaz = class(
                                         sety: topaz_entity__set_position_y,
                                         setz: topaz_entity__set_position_z
                                     );
+                                }
 
 
                                 return position;
                             },
                             set : ::(value) {
-                                if (value.x != empty) topaz_entity__set_position_x(a:this.native, b:value.x);
-                                if (value.y != empty) topaz_entity__set_position_y(a:this.native, b:value.y);
-                                if (value.z != empty) topaz_entity__set_position_z(a:this.native, b:value.z);
+                                if (value.x != empty) topaz_entity__set_position_x(a:impl, b:value.x);
+                                if (value.y != empty) topaz_entity__set_position_y(a:impl, b:value.y);
+                                if (value.z != empty) topaz_entity__set_position_z(a:impl, b:value.z);
                             } 
                         },
                         
                         scale : {
                             get : ::()  {
-                                if (scale == empty)
-                                    scale = ManagedVector.new(
-                                        native_:this.native,
+                                if (scale == empty) ::<= {
+                                    scale = ManagedVector.new();
+                                    scale.setup(
+                                        native_:impl,
                                         getx: topaz_entity__get_scale_x,
                                         gety: topaz_entity__get_scale_y,
                                         getz: topaz_entity__get_scale_z,
@@ -2234,121 +2300,122 @@ Topaz = class(
                                         sety: topaz_entity__set_scale_y,
                                         setz: topaz_entity__set_scale_z
                                     );
-
+                                }
 
                                 return scale;
                             },
                             set : ::(value) {
-                                if (value.x != empty) topaz_entity__set_scale_x(a:this.native, b:value.x);
-                                if (value.y != empty) topaz_entity__set_scale_y(a:this.native, b:value.y);
-                                if (value.z != empty) topaz_entity__set_scale_z(a:this.native, b:value.z);
+                                if (value.x != empty) topaz_entity__set_scale_x(a:impl, b:value.x);
+                                if (value.y != empty) topaz_entity__set_scale_y(a:impl, b:value.y);
+                                if (value.z != empty) topaz_entity__set_scale_z(a:impl, b:value.z);
                             }                         
                         },
                         
                         globalPosition : {
                             get :: {
-                                if (globalPosition == empty)
-                                    globalPosition = ManagedVector.new(
-                                        native_:this.native,
+                                if (globalPosition == empty) ::<= {
+                                    globalPosition = ManagedVector.new();
+                                    globalPosition.setup(
+                                        native_:impl,
                                         getx: topaz_entity__get_global_position_x,
                                         gety: topaz_entity__get_global_position_y,
                                         getz: topaz_entity__get_global_position_z
                                     );
-
+                                }
 
                                 return globalPosition;
                             }
                         },
 
                         isStepping : {
-                            get : ::() {return topaz_entity__is_stepping(a:this.native);}
+                            get : ::() {return topaz_entity__is_stepping(a:impl);}
                         },
                         
                         isDrawing : {
-                            get : ::() {return topaz_entity__is_drawing(a:this.native); } 
+                            get : ::() {return topaz_entity__is_drawing(a:impl); } 
                         },
                         
                         stepping : {
-                            get : ::()  {return topaz_entity__get_stepping(a:this.native);},
-                            set : ::(value) {return topaz_entity__set_stepping(a:this.native, b:value);} 
+                            get : ::()  {return topaz_entity__get_stepping(a:impl);},
+                            set : ::(value) {return topaz_entity__set_stepping(a:impl, b:value);} 
                         },
                         
                         drawing : {
-                            get : ::()  {return topaz_entity__get_drawing(a:this.native);}, 
-                            set : ::(value) {return topaz_entity__set_drawing(a:this.native, b:value);} 
+                            get : ::()  {return topaz_entity__get_drawing(a:impl);}, 
+                            set : ::(value) {return topaz_entity__set_drawing(a:impl, b:value);} 
                         },
                         
                         name : {
-                            get : ::()  {return topaz_entity__get_name(a:this.native);},
-                            set : ::(value) {return topaz_entity__set_name(a:this.native, b:value);} 
+                            get : ::()  {return topaz_entity__get_name(a:impl);},
+                            set : ::(value) {return topaz_entity__set_name(a:impl, b:value);} 
                         },
         
                     
                             
                         components : {
                             get : ::(){ 
-                                @len = topaz_entity__get_component_count(a:this.native);
+                                @len = topaz_entity__get_component_count(a:impl);
                                 @out = [];
-                                [0, len]->for(do:::(i) {
-                                    @f = topaz_entity__get_nth_component(a:this.native, b:i);
+                                for(0, len)::(i) {
+                                    @f = topaz_entity__get_nth_component(a:impl, b:i);
                                     when(f == empty) out[i] = empty;
                                     out[i] = if (f.__ctx != empty) f.__ctx else __Topaz__.Component.new(native:f);
-                                });
+                                }
                                 return out;
                             },
                             set : ::(value){ 
-                                [::] {
-                                    forever(do:::{
-                                        when(topaz_entity__get_component_count(a:this.native) == 0) send();
-                                        topaz_entity__remove_component(a:this.native, b:topaz_entity__get_nth_component(a:this.native, b:0));
-                                    });
-                                };
+                                {:::} {
+                                    forever ::{
+                                        when(topaz_entity__get_component_count(a:impl) == 0) send();
+                                        topaz_entity__remove_component(a:impl, b:topaz_entity__get_nth_component(a:impl, b:0));
+                                    }
+                                }
         
-                                [0, value->keycount]->for(do:::(i) {
-                                    topaz_entity__add_component(a:this.native, b:value[i].native);
-                                });
+                                for(0, value->keycount)::(i) {
+                                    topaz_entity__add_component(a:impl, b:value[i].native);
+                                }
                             }
                         },
         
         
                         queryComponent : ::(tag) { 
-                            @f = topaz_entity__query_component(a:this.native, b:tag);
+                            @f = topaz_entity__query_component(a:impl, b:tag);
                             when (f == empty) empty;
                             when (f.__ctx != empty) f.__ctx;
                             return __Topaz__.Component.new(native:f);
                         },
                     
                         removeComponent : ::(component){ 
-                            return topaz_entity__remove_component(a:this.native, b:component.native);
+                            return topaz_entity__remove_component(a:impl, b:component.native);
                         },
                         
                         onStep : {set : ::(value){ 
-                                topaz_entity__set_on_step(a:this.native, b:value);
+                                topaz_entity__set_on_step(a:impl, b:value);
         
                         }},
         
                         onDraw : {set : ::(value){ 
-                                topaz_entity__set_on_draw(a:this.native, b:value);
+                                topaz_entity__set_on_draw(a:impl, b:value);
                         }},
         
                         onPreStep : {set : ::(value){ 
-                                topaz_entity__set_on_pre_step(a:this.native, b:value);
+                                topaz_entity__set_on_pre_step(a:impl, b:value);
                         }},
         
                         onPreDraw : {set : ::(value){ 
-                                topaz_entity__set_on_pre_draw(a:this.native, b:value);
+                                topaz_entity__set_on_pre_draw(a:impl, b:value);
                         }},
                         
                         onAttach : {set : ::(value){ 
-                                topaz_entity__set_on_attach(a:this.native, b:value);
+                                topaz_entity__set_on_attach(a:impl, b:value);
                         }},
         
                         onDetach : {set : ::(value){ 
-                                topaz_entity__set_on_detach(a:this.native, b:value);
+                                topaz_entity__set_on_detach(a:impl, b:value);
                         }},
         
                         onRemove : {set : ::(value){ 
-                                topaz_entity__set_on_remove(a:this.native, b: ::{
+                                topaz_entity__set_on_remove(a:impl, b: ::{
                                     value();
                                     cleanRefs();
                                 });
@@ -2358,11 +2425,10 @@ Topaz = class(
         
         
                     
-                    };     
-                    this.onRemove = ::{};   
+                    }     
                 }    
             );
-        };
+        }
 
         @__Component__ = ::<= {
             @:topaz_component__destroy = getExternalFunction(name:'topaz_component__destroy');
@@ -2394,137 +2460,142 @@ Topaz = class(
                 when (native == empty) empty;
                 when (native.__ctx != empty) native.__ctx;
                 return __Entity__.new(native:native);
-            };
+            }
             return class(
                 name : 'Topaz.Component',        
                 inherits : [__Native__],
+                new ::(native, tag) {
+                    @:this = __Component__.defaultNew();
+                    this.bindNativeEx(native, tag);
+                    return this;
+                },
                 define : ::(this){ 
-                    this.bindNative(
-                        nativeCreate : topaz_component__create
-                    );
-
-                    // some classes will inherit and overwrite the native instance, so a 
-                    // @impl doesnt make sense.
-                    this.constructor = ::(native, tag) {
-                        if (native != empty) ::<= {
+                    @impl;
+                    
+                    @:bindNativeEx = ::(native, tag) {
+                        if (native == empty) ::<= {
                             this.bindNative(
-                                instance : native,
-                                args: [tag]
-                            );
-                        };
-                        return this;
+                                nativeCreate : topaz_component__create
+                            );                            
+                        } else ::<= {
+                            this.bindNative(
+                                instance: native
+                            );                                                    
+                        }
+                        impl = this.native;                 
                     };
                     
-        
                     this.interface = {
+                        bindNativeEx : bindNativeEx,
+                        activate : bindNativeEx,
                         destroy : ::(){ 
-                            topaz_component__destroy(a:this.native);
+                            topaz_component__destroy(a:impl);
                             this.clearNative();
                         },
                         
                         step : ::(){ 
-                            topaz_component__step(a:this.native);
+                            topaz_component__step(a:impl);
                         },
                         
                         draw : ::(){ 
-                            topaz_component__draw(a:this.native);
+                            topaz_component__draw(a:impl);
                         },
                         
                         stepping : {
-                            get : ::()  {return topaz_component__get_stepping(a:this.native);},
-                            set : ::(value) {topaz_component__set_stepping(a:this.native, b:value);} 
+                            get : ::()  {return topaz_component__get_stepping(a:impl);},
+                            set : ::(value) {topaz_component__set_stepping(a:impl, b:value);} 
                         },
                         
                         drawing : {
-                            get : ::()  {return topaz_component__get_drawing(a:this.native);},
-                            set : ::(value) {topaz_component__set_drawing(a:this.native, b:value);} 
+                            get : ::()  {return topaz_component__get_drawing(a:impl);},
+                            set : ::(value) {topaz_component__set_drawing(a:impl, b:value);} 
                         },
                         
                         tag : {
-                            get : ::()  {return topaz_component__get_tag(a:this.native);}, 
-                            set : ::(value) {topaz_component__set_tag(a:this.native, b:value);} 
+                            get : ::()  {return topaz_component__get_tag(a:impl);}, 
+                            set : ::(value) {topaz_component__set_tag(a:impl, b:value);} 
                         },
                         
                         host : {
                             get : ::(){ 
-                                return nativeToE(native:topaz_component__get_host(a:this.native));
+                                return nativeToE(native:topaz_component__get_host(a:impl));
                             },
 
                             set : ::(value) {
-                                @:p = topaz_component__get_host(a:this.native);
+                                @:p = topaz_component__get_host(a:impl);
                                 if (p != empty) ::<={
-                                    topaz_entity__remove_component(a:p, b:this.native);
-                                };
+                                    topaz_entity__remove_component(a:p, b:impl);
+                                }
                                 if (value != empty) ::<={
-                                    topaz_entity__add_component(a:value.native, b:this.native);
-                                };
+                                    topaz_entity__add_component(a:value.native, b:impl);
+                                }
                             }
                         },
                         
                         emit : ::(event, source){ 
                             if (source == empty) ::<={
-                                return topaz_component__emit_event_anonymous(a:this.native, b:event);
+                                return topaz_component__emit_event_anonymous(a:impl, b:event);
                             } else ::<={
-                                return topaz_component__emit_event(a:this.native, b:event, c:source.native);
-                            };
+                                return topaz_component__emit_event(a:impl, b:event, c:source.native);
+                            }
                         },
                         
                         canHandleEvent : ::(name){ 
-                            return topaz_component__can_handle_event(a:this.native, b:name);
+                            return topaz_component__can_handle_event(a:impl, b:name);
                         },
                         
                         installEvent : ::(event, callback){ 
-                            @cb = if (callback != empty) ::(a){callback(source:nativeToE(native:a));} else ::(a){};                                 
-                            topaz_component__install_event(a:this.native, b:event, c:cb);
+                            @cb = if (callback != empty) ::(a){callback(source:nativeToE(native:a));} else ::(a){}   
+                            topaz_component__install_event(a:impl, b:event, c:cb);
                         },
                         
                         uninstallEvent : ::(event){ 
-                            topaz_component__uninstall_event(a:this.native, b:event);
+                            topaz_component__uninstall_event(a:impl, b:event);
                         },
                         
                         installHook : ::(event, callback){ 
-                            @cb = if (callback != empty) ::(a){callback(source:nativeToE(native:a));} else ::(a){};                                 
-                            return topaz_component__install_hook(a:this.native, b:event, c:cb);
+                            @cb = if (callback != empty) ::(a){callback(source:nativeToE(native:a));} else ::(a){}                                 
+                            return topaz_component__install_hook(a:impl, b:event, c:cb);
                         },
                         
                         uninstallHook : ::(event, id){ 
-                            topaz_component__uninstall_hook(a:this.native, b:event, c:id);
+                            topaz_component__uninstall_hook(a:impl, b:event, c:id);
                         },
                         
                         installHandler : ::(event, callback){ 
-                            @cb = if (callback != empty) ::(a){callback(source:nativeToE(native:a));} else ::(a){};                                 
-                            return topaz_component__install_handler(a:this.native, b:event, c:cb);
+                            @cb = if (callback != empty) ::(a){callback(source:nativeToE(native:a));} else ::(a){}                                 
+                            return topaz_component__install_handler(a:impl, b:event, c:cb);
                         },
                         
                         uninstallHandler : ::(event, id){ 
-                            topaz_component__uninstall_handler(a:this.native, b:event, c:id);
+                            topaz_component__uninstall_handler(a:impl, b:event, c:id);
                         },
                         
                         onStep : {set : ::(value){ 
-                            topaz_component__set_on_step(a:this.native, b:value);
+                            topaz_component__set_on_step(a:impl, b:value);
         
                         }},
         
                         onDraw : {set : ::(value){ 
-                                topaz_component__set_on_draw(a:this.native, b:value);
+                                topaz_component__set_on_draw(a:impl, b:value);
                         }},
                             
                         onAttach : {set : ::(value){ 
-                                topaz_component__set_on_attach(a:this.native, b:value);
+                                topaz_component__set_on_attach(a:impl, b:value);
                         }},
         
                         onDetach : {set : ::(value){ 
-                                topaz_component__set_on_detach(a:this.native, b:value);
+                                topaz_component__set_on_detach(a:impl, b:value);
                         }},
         
                         onDestroy : {set : ::(value){ 
-                                topaz_component__set_on_destroy(a:this.native, b:value);
+                                topaz_component__set_on_destroy(a:impl, b:value);
                         }}
 
-                    };
+                    }
                 }
             );
-        };
+        }
 
         
         
@@ -2563,21 +2634,15 @@ Topaz = class(
             return class(
                 name : 'Topaz.Text2D',        
                 inherits :[__Component__],
+                new:: {
+                    @:this = __Text2D__.defaultNew();
+                    this.bindNativeSp();
+                    return this;
+                },
                 define : ::(this){ 
                     @impl;
-                    this.constructor = ::(native) {
-                        // whoops, the component constructor already made a generic component native.
-                        // destroy it and make a real one
-                        this.native.__ctx.destroy();
-
-                        impl = this.bindNative(
-                            instance : native,
-                            nativeCreate : topaz_text2d__create
-                        );
-                        return this;
-                    };
                     
-                    @fontState = {};
+                    @fontState = {}
                     @sizeState;
                     
                     @position;
@@ -2587,6 +2652,13 @@ Topaz = class(
 
 
                     this.interface = {
+                        bindNativeSp :: {
+                            impl = this.bindNative(
+                                nativeCreate : topaz_text2d__create
+                            );
+                            this.bindNativeEx(native:impl);
+                        },
+                    
                         text : {
                             get : ::() {return topaz_text2d__get_text(a:impl);},
                             set : ::(value){ topaz_text2d__set_text(a:impl, b:value);} 
@@ -2612,7 +2684,7 @@ Topaz = class(
                             set : ::(value) {
                                 if (value->type == String) ::<={
                                     value = Color.parse(string:value);
-                                };
+                                }
 
                                 topaz_text2d__set_color(a:this.native, b:value.r, c:value.g, d:value.b, e:value.a);
                             } 
@@ -2622,7 +2694,7 @@ Topaz = class(
                         setColorSection : ::(from, to, color) { 
                             if (color->type == String) ::<={
                                 color = Color.parse(string:color);
-                            };
+                            }
 
                             
                             topaz_text2d__set_color_section(
@@ -2674,8 +2746,9 @@ Topaz = class(
         
                         position : {
                             get : ::()  {
-                                if (position == empty)
-                                    position = ManagedVector.new(
+                                if (position == empty) ::<= {
+                                    position = ManagedVector.new()
+                                    position.setup(
                                         native_:this.native,
                                         getx: topaz_text2d__get_position_x,
                                         gety: topaz_text2d__get_position_y,
@@ -2685,6 +2758,7 @@ Topaz = class(
                                         sety: topaz_text2d__set_position_y,
                                         setz: topaz_text2d__set_position_z
                                     );
+                                }
 
 
                                 return position;
@@ -2698,8 +2772,9 @@ Topaz = class(
                         
                         scale : {
                             get : ::()  {
-                                if (scale == empty)
-                                    scale = ManagedVector.new(
+                                if (scale == empty) ::<= {
+                                    scale = ManagedVector.new()
+                                    scale.setup(
                                         native_:this.native,
                                         getx: topaz_text2d__get_scale_x,
                                         gety: topaz_text2d__get_scale_y,
@@ -2709,7 +2784,7 @@ Topaz = class(
                                         sety: topaz_text2d__set_scale_y,
                                         setz: topaz_text2d__set_scale_z
                                     );
-
+                                }
 
                                 return scale;
                             },
@@ -2738,11 +2813,11 @@ Topaz = class(
                         getAttribute : ::(attribute){ 
                             return topaz_text2d__get_attribute(a:impl, b:attribute);
                         }
-                    };
+                    }
 
                 }
             );
-        };
+        }
 
         @__Scheduler__ = ::<={
             @:topaz_scheduler__create = getExternalFunction(name:'topaz_scheduler__create');
@@ -2756,28 +2831,33 @@ Topaz = class(
                 name : 'Topaz.Scheduler',        
                 inherits :[__Component__],
                 statics : {
-                    MODE : {
-                        TIME : 0,
-                        FRAME : 1
+                    MODE :::<= {
+                        @:data = {
+                            TIME : 0,
+                            FRAME : 1
+                        };
+                        
+                        return {get::<-data}
                     }
+                },
+                new ::(mode, justOnce, interval, intervalDelay, callback, native) {
+                    @:this = __Scheduler__.defaultNew();
+                    this.bindNativeSp(mode, justOnce, interval, intervalDelay, callback, native);
+                    return this;
                 },
                 define : ::(this){ 
                     @impl;
-                    this.constructor = ::(mode, justOnce, interval, intervalDelay, callback, native) {
-                        // whoops, the component constructor already made a generic component native.
-                        // destroy it and make a real one
-                        this.native.__ctx.destroy();
-
-                        impl = this.bindNative(
-                            instance : native,
-                            nativeCreate : topaz_scheduler__create,
-                            args : [mode, if (justOnce == empty) false else justOnce , interval, intervalDelay, callback]
-                        );
-                        return this;
-                    };
                     
                     
                     this.interface = {
+                        bindNativeSp::(mode, justOnce, interval, intervalDelay, callback, native){
+                            impl = this.bindNative(
+                                instance : native,
+                                nativeCreate : topaz_scheduler__create,
+                                args : [mode, if (justOnce == empty) false else justOnce , interval, intervalDelay, callback]
+                            );
+                            this.bindNativeEx(native:impl);
+                        },
                     
                         pause : ::(){ 
                             topaz_scheduler__pause(a:impl);
@@ -2795,10 +2875,10 @@ Topaz = class(
                         getTaskIntervalRemaining : ::(name){ 
                             return topaz_scheduler__get_task_interval_remaining(a:impl);
                         }
-                    };
+                    }
                 } 
             );
-        };
+        }
         @__StateControl__ = ::<={
             @:topaz_state_control__create = getExternalFunction(name:'topaz_state_control__create');
             @:topaz_state_control__add = getExternalFunction(name:'topaz_state_control__add');
@@ -2810,21 +2890,21 @@ Topaz = class(
             return class(
                 name : 'Topaz.StateControl',        
                 inherits :[__Component__],
+                new :: {
+                    @:this = __StateControl__.defaultNew();
+                    this.bindNativeSp();
+                    return this;
+                },
                 define : ::(this){ 
                     @impl;
-                    this.constructor = ::(native) {
-                        // whoops, the component constructor already made a generic component native.
-                        // destroy it and make a real one
-                        this.native.__ctx.destroy();
-
-                        impl = this.bindNative(
-                            instance : native,
-                            nativeCreate : topaz_state_control__create
-                        );
-                        return this;
-                    };
                     
                     this.interface = {
+                        bindNativeSp::{
+                            impl = this.bindNative(
+                                nativeCreate : topaz_state_control__create
+                            );
+                            this.bindNativeEx(native:impl);
+                        },
                         add : ::(name, onStep, onDraw, onInit){ 
                             topaz_state_control__add(a:impl, b:name, c:onStep, d:onDraw, e:onInit);
                         },
@@ -2854,10 +2934,10 @@ Topaz = class(
                         }                    
                         
                                
-                    };
+                    }
                 }
             );
-        };
+        }
         @__Object2D__ = ::<={
             @:topaz_object2d__create = getExternalFunction(name:'topaz_object2d__create');
             @:topaz_object2d__add_velocity = getExternalFunction(name:'topaz_object2d__add_velocity');
@@ -2894,57 +2974,59 @@ Topaz = class(
                 name : 'Topaz.Object2D',        
                 inherits :[__Component__],
                 statics: {
-                    GROUP : {
-                        A : 0,
-                        B : 1,
-                        C : 2,
-                        D : 3,
-                        E : 4,
-                        F : 5,
-                        G : 6,
-                        H : 7,
-                        I : 8,
-                        J : 9,
-                        K : 10,
-                        L : 11,
-                        M : 12,
-                        N : 13,
-                        O : 14,
-                        P : 15,
-                        Q : 16,
-                        R : 17,
-                        S : 18,
-                        T : 19,
-                        U : 20,
-                        V : 21,
-                        W : 22,
-                        X : 23,
-                        Y : 24,
-                        Z : 25
+                    GROUP :::<= {
+                        @:groups = {
+                            A : 0,
+                            B : 1,
+                            C : 2,
+                            D : 3,
+                            E : 4,
+                            F : 5,
+                            G : 6,
+                            H : 7,
+                            I : 8,
+                            J : 9,
+                            K : 10,
+                            L : 11,
+                            M : 12,
+                            N : 13,
+                            O : 14,
+                            P : 15,
+                            Q : 16,
+                            R : 17,
+                            S : 18,
+                            T : 19,
+                            U : 20,
+                            V : 21,
+                            W : 22,
+                            X : 23,
+                            Y : 24,
+                            Z : 25
+                        };
+                        
+                        return {get::<- groups}
                     },
 
                     setGroupInteraction ::(thisGroup, otherGroup, interact){ 
                         topaz_object2d__set_group_interaction(a:thisGroup, b:otherGroup, c:interact);
                     }
                 }, 
+                new ::{
+                    @:this = __Object2D__.defaultNew();
+                    this.bindNativeSp();
+                    return this;
+                },
                 define : ::(this){ 
                     @impl;
-                    this.constructor = ::(native) {
-                        // whoops, the component constructor already made a generic component native.
-                        // destroy it and make a real one
-                        this.native.__ctx.destroy();
-
-                        impl = this.bindNative(
-                            instance : native,
-                            nativeCreate : topaz_object2d__create
-                        );
-                        return this;
-                    };
-                    
-                    
                     @_collider;
                     
                     this.interface = {
+                        bindNativeSp::{
+                            impl = this.bindNative(
+                                nativeCreate : topaz_object2d__create
+                            );
+                            this.bindNativeEx(native:impl);                            
+                        },
                         addVelocity : ::(amount, direction) { 
                             topaz_object2d__add_velocity(a:impl, b:amount, c:direction);
                         },
@@ -3005,14 +3087,14 @@ Topaz = class(
 
                         nextPosition : {
                             get : ::()  {
-                                @:out = {};
+                                @:out = {}
                                 topaz_object2d__get_next_position(a:impl, b:Vector._updateRemote(target:out));
                                 return out;
                             } 
                         },
                         lastPosition : {
                             get : ::()  {
-                                @:out = {};
+                                @:out = {}
                                 topaz_object2d__get_last_position(a:impl, b:Vector._updateRemote(target:out));
                                 return out;
                             } 
@@ -3039,10 +3121,10 @@ Topaz = class(
                             _collider = [];
                             @iter = 0;
                             @len = topaz_object2d__get_collider_len(a:impl);
-                            [0, len]->for(do:::(i) {
+                            for(0, len)::(i) {
                                 _collider[iter] = topaz_object2d__get_collider_point_x(a:impl, b:i); iter += 1;
                                 _collider[iter] = topaz_object2d__get_collider_point_y(a:impl, b:i); iter += 1;
-                            });
+                            }
                         },
 
                         lastCollided : {
@@ -3050,16 +3132,16 @@ Topaz = class(
                         },
                         lastCollidedPosition : {
                             get : ::()  {
-                                @:out = {};
+                                @:out = {}
                                 topaz_object2d__get_last_collided_position(a:impl, b:Vector._updateRemote(target:out));
                                 return out;
                             } 
                         }
 
-                    };                
+                    }                
                 }
             );
-        };
+        }
         @:topaz_object2d__set_group_interaction = getExternalFunction(name:'topaz_object2d__set_group_interaction');
 
         @__Shape2D__ = ::<={
@@ -3111,20 +3193,13 @@ Topaz = class(
             return class(
                 name : 'Topaz.Shape2D',        
                 inherits :[__Component__],
+                new ::{
+                    @:this = __Shape2D__.defaultNew();
+                    this.bindNativeSp();
+                    return this;
+                },
                 define : ::(this){ 
                     @impl;
-                    this.constructor = ::(native) {
-                        this.constructor[__Component__](native:native);
-                        // whoops, the component constructor already made a generic component native.
-                        // destroy it and make a real one
-                        this.native.__ctx.destroy();
-
-                        impl = this.bindNative(
-                            instance : native,
-                            nativeCreate : topaz_shape2d__create
-                        );
-                        return this;
-                    };
                     
                     @_lines;
                     @_tris;
@@ -3136,10 +3211,17 @@ Topaz = class(
                     
                     @color;
                     this.interface = {
+                        bindNativeSp ::{
+                            impl = this.bindNative(
+                                nativeCreate : topaz_shape2d__create
+                            );          
+                            this.bindNativeEx(native:impl);              
+                        },
                         color : {
                             get : ::() {
-                                if (color == empty)
-                                    color = ManagedColor.new(
+                                if (color == empty) ::<= {
+                                    color = ManagedColor.new()
+                                    color.setup(
                                         native_:this.native,
                                         getr: topaz_shape2d__get_color_r,
                                         getg: topaz_shape2d__get_color_g,
@@ -3151,14 +3233,14 @@ Topaz = class(
                                         setb: topaz_shape2d__set_color_b,
                                         seta: topaz_shape2d__set_color_a
                                     );
-
+                                }
 
                                 return color;
                             }, 
                             set : ::(value){
                                 if (value->type == String) ::<={
                                     value = Color.parse(string:value);
-                                };
+                                }
 
                                 if (value.r != empty) topaz_shape2d__set_color_r(a:this.native, b:value.r);
                                 if (value.g != empty) topaz_shape2d__set_color_g(a:this.native, b:value.g);
@@ -3176,8 +3258,9 @@ Topaz = class(
 
                         center : {
                             get : ::()  {
-                                if (center == empty)
-                                    center = ManagedVector.new(
+                                if (center == empty) ::<= {
+                                    center = ManagedVector.new();
+                                    center.setup(
                                         native_:this.native,
                                         getx: topaz_shape2d__get_center_x,
                                         gety: topaz_shape2d__get_center_y,
@@ -3187,7 +3270,7 @@ Topaz = class(
                                         sety: topaz_shape2d__set_center_y,
                                         setz: topaz_shape2d__set_center_z
                                     );
-
+                                }
 
                                 return center;
                             },
@@ -3200,8 +3283,9 @@ Topaz = class(
 
                         rotation : {
                             get : ::()  {
-                                if (rotation == empty)
-                                    rotation = ManagedVector.new(
+                                if (rotation == empty) ::<= {
+                                    rotation = ManagedVector.new();
+                                    rotation.setup(
                                         native_:this.native,
                                         getx: topaz_shape2d__get_rotation_x,
                                         gety: topaz_shape2d__get_rotation_y,
@@ -3211,7 +3295,7 @@ Topaz = class(
                                         sety: topaz_shape2d__set_rotation_y,
                                         setz: topaz_shape2d__set_rotation_z
                                     );
-
+                                }
 
                                 return rotation;
                             },
@@ -3225,8 +3309,9 @@ Topaz = class(
         
                         position : {
                             get : ::()  {
-                                if (position == empty)
-                                    position = ManagedVector.new(
+                                if (position == empty) ::<= {
+                                    position = ManagedVector.new()
+                                    position.setup(
                                         native_:this.native,
                                         getx: topaz_shape2d__get_position_x,
                                         gety: topaz_shape2d__get_position_y,
@@ -3236,7 +3321,7 @@ Topaz = class(
                                         sety: topaz_shape2d__set_position_y,
                                         setz: topaz_shape2d__set_position_z
                                     );
-
+                                }
 
                                 return position;
                             },
@@ -3249,8 +3334,9 @@ Topaz = class(
                         
                         scale : {
                             get : ::()  {
-                                if (scale == empty)
-                                    scale = ManagedVector.new(
+                                if (scale == empty) ::<= {
+                                    scale = ManagedVector.new();
+                                    scale.setup(
                                         native_:this.native,
                                         getx: topaz_shape2d__get_scale_x,
                                         gety: topaz_shape2d__get_scale_y,
@@ -3260,6 +3346,7 @@ Topaz = class(
                                         sety: topaz_shape2d__set_scale_y,
                                         setz: topaz_shape2d__set_scale_z
                                     );
+                                }
 
 
                                 return scale;
@@ -3320,10 +3407,10 @@ Topaz = class(
 
 
 
-                    };
+                    }
                 }
             );
-        };
+        }
         
         @__Shape3D__ = ::<={
             @:topaz_shape3d__create = getExternalFunction(name:'topaz_shape3d__create');
@@ -3356,35 +3443,38 @@ Topaz = class(
                 name : 'Topaz.Shape3D',        
                 inherits :[__Component__],
                 statics: {
-                    TEXTURE : {
-                        SLOT_0 : 0,
-                        SLOT_1 : 1,
-                        SLOT_2 : 2
+                    TEXTURE :::<= {
+                        @:slots = {
+                            SLOT_0 : 0,
+                            SLOT_1 : 1,
+                            SLOT_2 : 2
+                        }
+                        return {get ::<- slots}
                     }
                 },
+                new ::{
+                    @:this = __Shape3D__.defaultNew();
+                    this.bindNativeSp();
+                    return this;
+                },
                 define : ::(this){ 
-                    @impl;
-                    this.constructor = ::(native) {
-                        // whoops, the component constructor already made a generic component native.
-                        // destroy it and make a real one
-                        this.native.__ctx.destroy();
-
-                        impl = this.bindNative(
-                            instance : native,
-                            nativeCreate : topaz_shape3d__create
-                        );
-                        return this;
-                    };
-                    
+                    @impl;                    
                     @position;
                     @rotation;
                     @scale;
                     
                     this.interface = {
+                        bindNativeSp ::{
+                            impl = this.bindNative(
+                                nativeCreate : topaz_shape3d__create
+                            );
+                            this.bindNativeEx(native:impl);                        
+                        },
                         rotation : {
                             get : ::()  {
-                                if (rotation == empty)
-                                    rotation = ManagedVector.new(
+                                if (rotation == empty) ::<= {
+                                    rotation = ManagedVector.new()
+                                    rotation.setup(
                                         native_:this.native,
                                         getx: topaz_shape3d__get_rotation_x,
                                         gety: topaz_shape3d__get_rotation_y,
@@ -3394,6 +3484,7 @@ Topaz = class(
                                         sety: topaz_shape3d__set_rotation_y,
                                         setz: topaz_shape3d__set_rotation_z
                                     );
+                                }
 
 
                                 return rotation;
@@ -3408,8 +3499,9 @@ Topaz = class(
         
                         position : {
                             get : ::()  {
-                                if (position == empty)
-                                    position = ManagedVector.new(
+                                if (position == empty) ::<= {
+                                    position = ManagedVector.new();
+                                    position.setup(
                                         native_:this.native,
                                         getx: topaz_shape3d__get_position_x,
                                         gety: topaz_shape3d__get_position_y,
@@ -3419,7 +3511,7 @@ Topaz = class(
                                         sety: topaz_shape3d__set_position_y,
                                         setz: topaz_shape3d__set_position_z
                                     );
-
+                                }
 
                                 return position;
                             },
@@ -3432,8 +3524,9 @@ Topaz = class(
                         
                         scale : {
                             get : ::()  {
-                                if (scale == empty)
-                                    scale = ManagedVector.new(
+                                if (scale == empty) ::<= {
+                                    scale = ManagedVector.new()
+                                    scale.setup(
                                         native_:this.native,
                                         getx: topaz_shape3d__get_scale_x,
                                         gety: topaz_shape3d__get_scale_y,
@@ -3443,7 +3536,7 @@ Topaz = class(
                                         sety: topaz_shape3d__set_scale_y,
                                         setz: topaz_shape3d__set_scale_z
                                     );
-
+                                }
 
                                 return scale;
                             },
@@ -3487,10 +3580,10 @@ Topaz = class(
                                 topaz_shape3d__set_material(a:impl, b:value.native);
                             }
                         }
-                    };  
+                    }  
                 }
             );
-        };
+        }
         @__Automation__ = ::<={
             @:topaz_automation__create = getExternalFunction(name:'topaz_automation__create');
             @:topaz_automation__add_keyframe = getExternalFunction(name:'topaz_automation__add_keyframe');
@@ -3521,32 +3614,34 @@ Topaz = class(
                 name : 'Topaz.Automation',        
                 inherits :[__Component__],
                 statics : {
-                    FUNCTION : {
-                        NONE : 0,
-                        LINEAR : 1,
-                        ACCEL : 2,
-                        SLOW : 3,
-                        SOFT_ACCEL : 4,
-                        SOFT_SLOW : 5,
-                        RANDOM : 6    
-                    }      
+                    FUNCTION :::<= {
+                        @functions = {
+                            NONE : 0,
+                            LINEAR : 1,
+                            ACCEL : 2,
+                            SLOW : 3,
+                            SOFT_ACCEL : 4,
+                            SOFT_SLOW : 5,
+                            RANDOM : 6    
+                        }
+                        
+                        return {get::<-functions}      
+                    }
+                },
+                new::{
+                    @:this = __Automation__.defaultNew();
+                    this.bindNativeSp();
+                    return this;
                 },
                 define : ::(this){ 
-                    @impl;
-                    this.constructor = ::(native) {
-                        // whoops, the component constructor already made a generic component native.
-                        // destroy it and make a real one
-                        this.native.__ctx.destroy();
-
-                        impl = this.bindNative(
-                            instance : native,
-                            nativeCreate : topaz_automation__create
-                        );
-                        return this;
-                    };
-                    
-                    
+                    @impl;                    
                     this.interface = {
+                        bindNativeSp ::{
+                            impl = this.bindNative(
+                                nativeCreate : topaz_automation__create
+                            );
+                            this.bindNativeEx(native:impl);                        
+                        },
                         addKeyframe : ::(value, function, offset){ 
                             topaz_automation__add_keyframe(a:impl, b:value, c:function, d:offset);
                         },
@@ -3584,7 +3679,7 @@ Topaz = class(
                         },
 
                         vectorAt : ::(progress) { 
-                            @:out = {};
+                            @:out = {}
                             topaz_automation__vector_at(a:impl, b:progress, c:Vector._updateRemote(target:out));
                             return out;
                         },
@@ -3595,7 +3690,7 @@ Topaz = class(
 
                         vector : {
                             get : ::() {
-                                @:out = {};
+                                @:out = {}
                                 topaz_automation__current_vector(a:impl, b:Vector._updateRemote(target:out));
                                 return out;
                             }
@@ -3635,10 +3730,10 @@ Topaz = class(
                             get : ::() {return topaz_automation__get_speed(a:impl);},
                             set : ::(value) {return topaz_automation__set_speed(a:impl, b:value);}
                         }
-                    };
+                    }
                 }
             );
-        };
+        }
         @__Particle__ = ::<={
             @:topaz_particle__set_attribute = getExternalFunction(name:'topaz_particle__set_attribute');
             @:topaz_particle__set_noise_min = getExternalFunction(name:'topaz_particle__set_noise_min');
@@ -3653,17 +3748,20 @@ Topaz = class(
             return class(
                 name : 'Topaz.Particle',      
                 inherits : [__Native__],
+                new ::{
+                    @:this = __Particle__.defaultNew();
+                    this.bindNativeEx();
+                    return this;
+                },
                 define : ::(this){ 
 
-                    @impl;
-                    this.constructor = :: { 
-                        impl = this.bindNative(
-                            nativeCreate : topaz_particle__create
-                        );
-                        return this;
-                    };
-                    
+                    @impl;                    
                     this.interface = {
+                        bindNativeEx ::{
+                            impl = this.bindNative(
+                                nativeCreate : topaz_particle__create
+                            );                       
+                        },
                         setAttributes : ::(primitive, alphaRule, depthTest, etchRule, textureFilterHint){
                             if (primitive != empty) topaz_particle__set_attribute(a:impl, b:0, c:primitive);
                             if (alphaRule != empty) topaz_particle__set_attribute(a:impl, b:1, c:alphaRule);
@@ -3752,10 +3850,10 @@ Topaz = class(
 
                         string : {get : ::() {return topaz_particle__to_string(a:impl);}, set : ::(value){topaz_particle__set_from_string(a:impl, b:value);}}, 
                         image :  {set : ::(value) {return topaz_particle__set_image(a:impl, b:value.native);}}
-                    };
+                    }
                 }        
             );
-        };
+        }
         @__ParticleEmitter2D__  = ::<={ 
             @:topaz_particle_emitter_2d__create = getExternalFunction(name:'topaz_particle_emitter_2d__create');
             @:topaz_particle_emitter_2d__set_particle = getExternalFunction(name:'topaz_particle_emitter_2d__set_particle');
@@ -3764,31 +3862,30 @@ Topaz = class(
             return class(
                 name : 'Topaz.ParticleEmitter2D',        
                 inherits :[__Entity__],
+                new ::{
+                    @:this = __ParticleEmitter2D__.defaultNew();
+                    this.bindNativeSp();
+                    return this;
+                },
                 define : ::(this) { 
                     @impl;
-                    this.constructor = ::(native) {
-                        // whoops, the component constructor already made a generic component native.
-                        // destroy it and make a real one
-                        //this.native.__ctx.destroy();
-
-                        impl = this.bindNative(
-                            instance : native,
-                            nativeCreate : topaz_particle_emitter_2d__create
-                        );
-                        return this;
-                    };
                     this.interface = {
-
+                        bindNativeSp ::{
+                            impl = this.bindNative(
+                                nativeCreate : topaz_particle_emitter_2d__create
+                            );
+                            this.bindNativeEx(native:impl);                            
+                        },
                         particle : {set : ::(value){topaz_particle_emitter_2d__set_particle(a:impl, b:value.native);}}, 
                         independent : {set : ::(value){topaz_particle_emitter_2d__set_independent(a:impl, b:value);}}, 
 
                         emit : ::(amount){ 
                             topaz_particle_emitter_2d__emit(a:impl, b:amount);
                         }
-                    };
+                    }
                 }
             );
-        };
+        }
 
         @:topaz__attach_pre_manager = getExternalFunction(name:'topaz__attach_pre_manager');
         @:topaz__attach_pre_manager_unpausable = getExternalFunction(name:'topaz__attach_pre_manager_unpausable');
@@ -3860,7 +3957,7 @@ Topaz = class(
                 ALL  : 7
             }
 
-        };
+        }
  
 
         this.interface = {
@@ -3927,13 +4024,13 @@ Topaz = class(
             displays : {
                 get ::{
                     @:out = [];
-                    [0, topaz_view_manager__get_display_count()]->for(do:::(i){
+                    for(0, topaz_view_manager__get_display_count())::(i){
                         @f = topaz_view_manager__get_display(a:i);
                         when (f == empty) empty;
                         when (f.__ctx != empty) f.__ctx;
                         return __Display__.new(native:f);    
                         out[i] = f;
-                    });
+                    }
                     return out;
                 }
             },
@@ -3979,7 +4076,7 @@ Topaz = class(
             RENDERER : {get ::{return RENDERER;}}
 
 
-       };
+       }
     }
 ).new();
 return Topaz;

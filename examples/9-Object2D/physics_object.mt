@@ -10,36 +10,37 @@ return class(
     
     define:::(this) {
         @:o2d = Topaz.Object2D.new();
-        this.components = [o2d];
         
-        this.constructor = ::(static) {
-            if (static) ::<={
-                o2d.group = constants.FLOOR_GROUP;
-                
-            } else ::<= {
-                o2d.group = constants.BALL_GROUP;
-                
-                // be affected by gravity
-                this.onStep = ::{
-                    o2d.velocityY -= constants.GRAVITY;
-                    
-                    // remove if out of bounds
-                    if (this.position.y > Topaz.defaultDisplay.height+constants.BALL_SIZE) 
-                        this.remove();
-                };  
-                
-            };
+        this.constructor = ::{
+            this.activate();
+            this.components = [o2d];
+        }
             
-            return this;
-        };
-        
         this.interface = {
+            setRole ::(static) {
+                if (static) ::<={
+                    o2d.group = constants.FLOOR_GROUP;
+                    
+                } else ::<= {
+                    o2d.group = constants.BALL_GROUP;
+                    
+                    // be affected by gravity
+                    this.onStep = ::{
+                        o2d.velocityY -= constants.GRAVITY;
+                        
+                        // remove if out of bounds
+                        if (this.position.y > Topaz.defaultDisplay.height+constants.BALL_SIZE) 
+                            this.remove();
+                    }  
+                    
+                }            
+            },
             physics : {
                 get :: {
                     return o2d;
                 }
             }
-        };   
+        }   
     }
 );
 

@@ -5,43 +5,48 @@
     name : 'Rectangle',
     inherits : [Topaz.Entity],
     define:::(this){
+    
         @:v = Topaz.Shape2D.new();
-        v.formRectangle(width:30, height:30);
-        v.center = {x:15, y:15};
-
-
         @:a = Topaz.Automation.new();
-        a.installHook(event:'on-anim-end', callback:::(source) {
-            Topaz.Console.print(message:'Animation reset!');
-        });
-        a.durationSeconds = 4;
-        a.looped = true;
+        
+        
+        this.constructor = ::{
+            this.activate();
+            v.formRectangle(width:30, height:30);
+            v.center = {x:15, y:15}
+            a.installHook(event:'on-anim-end', callback:::(source) {
+                Topaz.Console.print(message:'Animation reset!');
+            });
+            a.durationSeconds = 4;
+            a.looped = true;
 
 
-        Topaz.Input.addKeyboardListener(
-            onPress :::(input) {
-                match(input) {
-                  (Topaz.Input.KEY.SPACE):::<={
-                    a.speed += 0.25;
-                  },
+            Topaz.Input.addKeyboardListener(
+                onPress :::(input) {
+                    match(input) {
+                      (Topaz.Input.KEY.SPACE):::<={
+                        a.speed += 0.25;
+                      },
 
-                  (Topaz.Input.KEY.BACKSPACE):::<={
-                    if (a.speed > 0) ::<={
-                        a.speed -= 0.25;
-                    } else ::<={
-                        a.speed = 0;
-                    };
-                  }
-                };
-            }
-        );
+                      (Topaz.Input.KEY.BACKSPACE):::<={
+                        if (a.speed > 0) ::<={
+                            a.speed -= 0.25;
+                        } else ::<={
+                            a.speed = 0;
+                        }
+                      }
+                    }
+                }
+            );
 
 
-        this.components = [a, v];
+            this.components = [a, v];
 
-        this.onStep = ::{
-            this.position.x = a.value;
-        };
+            this.onStep = ::{
+                this.position.x = a.value;
+            }        
+        }
+
         this.interface = {
             anim : {
                 get ::{return a;}
@@ -50,7 +55,7 @@
             visual : {
                 get ::{return v;}
             }
-        };
+        }
     }
 );
 
@@ -63,7 +68,7 @@
         this.anim.addKeyframe(value:200, function:Topaz.Automation.FUNCTION.LINEAR, offset:0.5);
         this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.LINEAR, offset:1);
 
-        this.position = {x:0, y:-100};
+        this.position = {x:0, y:-100}
     }
 );
 
@@ -75,7 +80,7 @@
         this.anim.addKeyframe(value:200, function:Topaz.Automation.FUNCTION.ACCEL, offset:0.5);
         this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.ACCEL, offset:1);
 
-        this.position = {x:0, y:0};
+        this.position = {x:0, y:0}
 
     }
 );
@@ -89,7 +94,7 @@
         this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.SLOW, offset:1);
 
 
-        this.position = {x:0, y:100};
+        this.position = {x:0, y:100}
     }
 );
 
@@ -99,7 +104,7 @@
     @:root = Topaz.Entity.new();
     root.position = {
         x:-200
-    };
+    }
     root.children = [
         RectangleLinear.new(),
         RectangleAccel.new(),
@@ -107,4 +112,4 @@
     ];
 
     Topaz.defaultDisplay.root = root;
-};
+}
