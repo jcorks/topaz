@@ -2117,7 +2117,6 @@ Topaz = class(
                     
                     this.interface = {
                         bindNativeEx:bindNativeEx,
-                        activate : bindNativeEx,
                         isValid : {
                             get : ::(){ 
                                 return topaz_entity__is_valid(a:impl) == 1;
@@ -2429,6 +2428,15 @@ Topaz = class(
                 }    
             );
         }
+        
+        @__PublicEntity__ = class(
+            inherits : [__Entity__],
+            define:::(this) {
+                this.constructor = ::{
+                    this.bindNativeEx();
+                }
+            }
+        );  
 
         @__Component__ = ::<= {
             @:topaz_component__destroy = getExternalFunction(name:'topaz_component__destroy');
@@ -2487,7 +2495,6 @@ Topaz = class(
                     
                     this.interface = {
                         bindNativeEx : bindNativeEx,
-                        activate : bindNativeEx,
                         destroy : ::(){ 
                             topaz_component__destroy(a:impl);
                             this.clearNative();
@@ -2597,7 +2604,14 @@ Topaz = class(
             );
         }
 
-        
+        @__PublicComponent__ = class(
+            inherits : [__Component__],
+            define:::(this) {
+                this.constructor = ::{
+                    this.bindNativeEx();
+                }
+            }
+        );          
         
         @__Text2D__ = ::<={
             @:topaz_text2d__create = getExternalFunction(name:'topaz_text2d__create');
@@ -4054,8 +4068,8 @@ Topaz = class(
             Input       : {get : ::(){return __Input__; }},
             Audio       : {get : ::(){return __Audio__; }},
             Material    : {get : ::(){return __Material__; }},
-            Entity      : {get : ::(){return __Entity__; }},
-            Component   : {get : ::(){return __Component__; }},
+            Entity      : {get : ::(){return __PublicEntity__; }},
+            Component   : {get : ::(){return __PublicComponent__; }},
             Resources   : {get : ::(){return __Resources__; }},
             Console     : {get : ::(){return __Console__; }},
             FontManager : {get : ::(){return __FontManager__; }},

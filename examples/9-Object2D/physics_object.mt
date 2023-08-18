@@ -12,7 +12,6 @@ return class(
         @:o2d = Topaz.Object2D.new();
         
         this.constructor = ::{
-            this.activate();
             this.components = [o2d];
         }
             

@@ -12,7 +12,6 @@
         @index_y;    
 
         this.constructor = ::() {
-            this.activate();
             this.components = [shape];
 
             shape.formImageScaled(

@@ -52,10 +52,6 @@
         // now use all of the behaviors of the object.
         this.constructor = ::{
         
-            // NOTE: EVERY inherited object from Entity or Component
-            // MUST call the activate function before Entity behaviors can 
-            // be used.
-            this.activate();
             
             // Our entity will have a visual associated with it, so 
             // Shape2D is the basic component for drawing 2D shapes.

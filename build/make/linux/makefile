@@ -119,7 +119,7 @@ INCS := -I../../../include/ -I. -I/usr/include/freetype2/
 
 
 
-FLAGS = 
+FLAGS = -g
 LIBS :=  -lvorbisfile -lvorbis -logg -lfreetype -lglfw -lGL -lasound -lm -pthread -ldl
 
 

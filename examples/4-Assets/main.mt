@@ -21,7 +21,6 @@
         }
 
         this.constructor = ::{
-            this.activate();
             visual.formImage(image:asset);
             visual.center = {x:asset.width/2, y:asset.height/2}
 

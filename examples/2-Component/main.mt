@@ -49,9 +49,6 @@
 
 
         this.constructor = ::{
-            // Like entities, components that inherit from Component 
-            // also need to be activated.
-            this.activate();
 
             // Here is where things get interesting:
             // Any component can extend its functionality by adding 
@@ -145,7 +142,6 @@
         @myName = 'No name!';
 
         this.constructor = ::{
-            this.activate();
             
             myBasket.reset(startingFruit:5);            
             // And since it is a component, we want to make sure to attach it 

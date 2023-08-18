@@ -18,7 +18,6 @@ Topaz.FontManager.registerFont(asset:font);
         @bg = Topaz.Shape2D.new();
 
         this.constructor = ::{
-            this.activate();
             visual.font = font;
             visual.size =  40;
 

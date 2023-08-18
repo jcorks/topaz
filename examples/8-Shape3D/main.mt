@@ -56,7 +56,6 @@ tex.setRGBA(
         @stepper = 0;
 
         this.constructor = ::{
-            this.activate();
             v.material = material;
             v.mesh = mesh;
             v.setTexture(slot:0, texture:tex);

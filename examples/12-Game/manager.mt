@@ -58,7 +58,6 @@ return class(
         }
 
         this.constructor = ::{
-            this.activate();
             shadow.components = shadow_shapes;
 
             this.position.y = -Topaz.defaultDisplay.height / 2;

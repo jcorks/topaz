@@ -213,7 +213,6 @@
         @fall = 0;
         
         this.constructor = ::{
-            this.activate();
             this.onStep = ::{
                 fall += Piece.FALL_RATE;
                 if (fall > 100) ::<={

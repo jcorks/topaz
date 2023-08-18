@@ -11,7 +11,6 @@
         
         
         this.constructor = ::{
-            this.activate();
             v.formRectangle(width:30, height:30);
             v.center = {x:15, y:15}
             a.installHook(event:'on-anim-end', callback:::(source) {
