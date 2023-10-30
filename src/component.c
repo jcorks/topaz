@@ -77,18 +77,9 @@ struct topazComponent_t {
 
 
 
-topazComponent_t * topaz_component_create(const topazString_t * tagName, topaz_t * t) {
-    topazComponent_Attributes_t api;
-    api.on_attach = NULL;
-    api.on_detach = NULL;
-    api.on_step = NULL;
-    api.on_draw = NULL;
-    api.on_destroy = NULL;
-    api.userData = NULL;
-    return topaz_component_create_with_attributes(tagName, t, &api);
-}
 
-topazComponent_t * topaz_component_create_with_attributes(const topazString_t * tagName, topaz_t * ctx, const topazComponent_Attributes_t * api) {
+
+topazComponent_t * topaz_component_create(const topazString_t * tagName, topaz_t * ctx, const topazComponent_Attributes_t * api) {
     if (!dead) {
         dead = topaz_array_create(sizeof(topazComponent_t *));
     }
@@ -118,10 +109,6 @@ const topazComponent_Attributes_t * topaz_component_get_attributes(const topazCo
 }
 
 
-void topaz_component_set_attributes(topazComponent_t * c, const topazComponent_Attributes_t * a) {
-    if (!c->valid) return;
-    c->api = *a;
-}
 
 
 topazComponent_t * topaz_component_null() {

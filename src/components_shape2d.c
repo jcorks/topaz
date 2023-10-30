@@ -165,7 +165,7 @@ topazComponent_t * topaz_shape2d_create(topaz_t * t) {
     attribs.on_detach  = (topaz_component_attribute_callback) shape2d__on_detach;
 
     attribs.userData = data;
-    topazComponent_t * out = topaz_component_create_with_attributes(TOPAZ_STR_CAST("Shape2D"), t, &attribs);
+    topazComponent_t * out = topaz_component_create(TOPAZ_STR_CAST("Shape2D"), t, &attribs);
     return out;
 }
 

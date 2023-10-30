@@ -74,12 +74,6 @@ static void topaz_script_entity__on_draw(topazEntity_t * e, TopazScriptEntity * 
 
 
 TSO_SCRIPT_API_FN(entity_api__create) {
-    topazEntity_t * entity = topaz_entity_create(((topazScriptManager_t*)context)->ctx);
-    // creates new object and sets native pointer
-    TSO_OBJECT_NEW_VALUE(entity, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
-    TSO_OBJECT_KEEP_REF(entity);
-
-
     topazEntity_Attributes_t attribs;
     attribs.on_attach   = (topaz_entity_attribute_callback)topaz_script_entity__on_attach;
     attribs.on_detach   = (topaz_entity_attribute_callback)topaz_script_entity__on_detach;
@@ -89,17 +83,26 @@ TSO_SCRIPT_API_FN(entity_api__create) {
     attribs.on_pre_draw = (topaz_entity_attribute_callback)topaz_script_entity__on_pre_draw;
     attribs.on_draw     = (topaz_entity_attribute_callback)topaz_script_entity__on_draw;
     attribs.userData = calloc(1, sizeof(TopazScriptEntity));
+
+    topazEntity_t * entity = topaz_entity_create(((topazScriptManager_t*)context)->ctx, &attribs);
+
+    // creates new object and sets native pointer
+    TSO_OBJECT_NEW_VALUE(entity, TSO_OBJECT_TYPE__ENTITY, NULL, NULL);
+    TSO_OBJECT_KEEP_REF(entity);
+
+
     TopazScriptEntity * tsoData = attribs.userData;
     tsoData->manager  = context;
     tsoData->self = topaz_script_object_from_object(script, object);
 
-    if (topaz_script_object_reference_get_feature_mask(object) & topazScript_Object_Feature_Map) {
-        topaz_entity_set_attributes(entity, &attribs);
-    } else {
+
+
+    if (!topaz_script_object_reference_get_feature_mask(object) & topazScript_Object_Feature_Map) {
         #ifdef TOPAZDC_DEBUG
             printf("WARNING: script implementation does not support topazScript_Object_Feature_Map for its empty object. This limits the use of many scripting features.\n");
         #endif
     }
+
 
 
     return object;

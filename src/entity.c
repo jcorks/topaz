@@ -65,11 +65,14 @@ struct topazEntity_t {
     topazSpatial_t * spatial;
     topaz_t * context;
 
+    uint64_t typeID;
+
     int protectd;
     int priority;
     int step;
     int draw;
     int valid;
+    
 };
 
 int priority_comp(const topazEntity_t ** a, const topazEntity_t ** b) {
@@ -92,7 +95,7 @@ topazEntity_t * topaz_entity_null() {
     return e;
 }
 
-topazEntity_t * topaz_entity_create_with_attributes(topaz_t * ctx, const topazEntity_Attributes_t * a) {
+topazEntity_t * topaz_entity_create(topaz_t * ctx, const topazEntity_Attributes_t * a) {
     topazEntity_t * out;
     if (!dead) {
         dead    = topaz_array_create(sizeof(topazEntity_t *));
@@ -127,23 +130,22 @@ topazEntity_t * topaz_entity_create_with_attributes(topaz_t * ctx, const topazEn
 
 
 
-topazEntity_t * topaz_entity_create(topaz_t * ctx) {
-    topazEntity_Attributes_t attrib;
-    attrib.on_attach = NULL;
-    attrib.on_detach = NULL;
-    attrib.on_remove = NULL;
-    attrib.on_pre_step = NULL;
-    attrib.on_step = NULL;
-    attrib.on_pre_draw = NULL;
-    attrib.on_draw = NULL;
-    attrib.userData = NULL;
-    return topaz_entity_create_with_attributes(ctx, &attrib);
+
+void topaz_entity_set_type_id(
+    topazEntity_t * entity,
+    uint64_t typeID
+) {
+    if (entity->typeID == 0)
+        entity->typeID = typeID;
+}
+
+uint64_t topaz_entity_get_type_id(
+    const topazEntity_t * entity
+) {
+    return entity->typeID;
 }
 
 
-void topaz_entity_set_attributes(topazEntity_t * e, const topazEntity_Attributes_t * a) {
-    e->api = *a;
-}
 
 const topazEntity_Attributes_t * topaz_entity_get_attributes(const topazEntity_t * e) {
     // for null entities, its already empty. No need for Id check

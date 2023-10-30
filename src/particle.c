@@ -424,6 +424,7 @@ static void emitter__on_draw(topazEntity_t * e, void * data) {
     }
 }
 
+#define TOPAZ_EMITTER_TYPEID "TopazParticleEmitter2D"
 
 topazEntity_t * topaz_particle_emitter_2d_create(
     /// the topaz context.
@@ -449,7 +450,8 @@ topazEntity_t * topaz_particle_emitter_2d_create(
 
 
     attribs.userData = data;
-    topazEntity_t * out = topaz_entity_create_with_attributes(context, &attribs);
+    topazEntity_t * out = topaz_entity_create(context, &attribs);
+    topaz_entity_set_name(out, TOPAZ_STR_CAST(TOPAZ_EMITTER_TYPEID));
     return out;
 }
 

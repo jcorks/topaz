@@ -188,7 +188,7 @@ topazComponent_t * topaz_state_control_create(topaz_t * t) {
     attribs.on_destroy = (topaz_component_attribute_callback) state_control__on_destroy;
 
     attribs.userData = data;
-    return topaz_component_create_with_attributes(TOPAZ_STR_CAST("StateControl"), t, &attribs);
+    return topaz_component_create(TOPAZ_STR_CAST("StateControl"), t, &attribs);
 }
 
 

@@ -160,7 +160,7 @@ topazComponent_t * topaz_text2d_create(topaz_t * t) {
     attribs.on_detach  = (topaz_component_attribute_callback) text2d__on_detach;
 
     attribs.userData = data;
-    topazComponent_t * out = topaz_component_create_with_attributes(TOPAZ_STR_CAST("Text2D"), t, &attribs);
+    topazComponent_t * out = topaz_component_create(TOPAZ_STR_CAST("Text2D"), t, &attribs);
     return out;
 }
 

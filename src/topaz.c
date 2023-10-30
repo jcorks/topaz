@@ -132,10 +132,12 @@ topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
     topaz_table_insert(out->params, TOPAZ_STR_CAST("version-major"), topaz_string_create_from_c_str("%d", TOPAZ__VERSION__MAJOR));
     
 
-    out->managersPre = topaz_entity_create(out);
-    out->managersPreNP = topaz_entity_create(out);
-    out->managersPost = topaz_entity_create(out);
-    out->managersPostNP = topaz_entity_create(out);
+    topazEntity_Attributes_t noAttribs = {};
+
+    out->managersPre = topaz_entity_create(out, &noAttribs);
+    out->managersPreNP = topaz_entity_create(out, &noAttribs);
+    out->managersPost = topaz_entity_create(out, &noAttribs);
+    out->managersPostNP = topaz_entity_create(out, &noAttribs);
     out->modules  = topaz_array_create(sizeof(topazEntity_t*));
     
 

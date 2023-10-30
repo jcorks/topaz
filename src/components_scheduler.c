@@ -184,7 +184,7 @@ topazComponent_t * topaz_scheduler_create(
 
     attribs.userData = data;
 
-    return topaz_component_create_with_attributes(TOPAZ_STR_CAST("Scheduler"), t, &attribs);
+    return topaz_component_create(TOPAZ_STR_CAST("Scheduler"), t, &attribs);
 }
 
 

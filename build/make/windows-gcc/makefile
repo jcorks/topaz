@@ -49,6 +49,7 @@ SRCS := \
     src/containers_table.c\
     src/entity.c\
     src/input_device.c\
+    src/layout.c\
     src/math.c\
     src/matrix.c\
     src/modules_input.c\

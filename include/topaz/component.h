@@ -102,19 +102,11 @@ topazComponent_t * topaz_component_create(
     /// Helps uniquely identify the component
     const topazString_t * tagName, 
     /// The topaz context.
-    topaz_t * context
-);
-
-/// Creates a new component with the specified attributes
-///
-topazComponent_t * topaz_component_create_with_attributes(
-    /// Helps uniquely identify the component
-    const topazString_t * tagName, 
-    /// The topaz context.
     topaz_t * context,
     /// The attributes to define the component with.     
     const topazComponent_Attributes_t * attribs
 );
+
 
 
 /// Returns the attributes of the component.
@@ -124,15 +116,6 @@ const topazComponent_Attributes_t * topaz_component_get_attributes(
     const topazComponent_t * component    
 );
 
-/// Sets the attributes of the component. This is applied immediately.
-///
-void topaz_component_set_attributes(
-    /// The component to modify.
-    topazComponent_t * component, 
-
-    /// The new incoming attributes.    
-    const topazComponent_Attributes_t * newAttribs
-);
 
 
 

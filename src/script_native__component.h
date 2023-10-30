@@ -91,13 +91,6 @@ static void component_script_object_bind_destroy(topazComponent_t * component, t
 
 
 TSO_SCRIPT_API_FN(component_api__create) {
-    TSO_ARG_0;
-    topazComponent_t * component = topaz_component_create(topaz_script_object_as_string(arg0), ((topazScriptManager_t*)context)->ctx);
-    // creates new object and sets native pointer
-    TSO_OBJECT_NEW_VALUE(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__COMPONENTCUSTOM, NULL, NULL);
-    TSO_OBJECT_KEEP_REF(component);
-
-
     topazComponent_Attributes_t attribs;
     attribs.on_attach   = (topaz_component_attribute_callback)topaz_script_component__on_attach;
     attribs.on_detach   = (topaz_component_attribute_callback)topaz_script_component__on_detach;
@@ -105,13 +98,19 @@ TSO_SCRIPT_API_FN(component_api__create) {
     attribs.on_step     = (topaz_component_attribute_callback)topaz_script_component__on_step;
     attribs.on_draw     = (topaz_component_attribute_callback)topaz_script_component__on_draw;
     attribs.userData = calloc(1, sizeof(TopazComponentTSO));
+
+    TSO_ARG_0;
+    topazComponent_t * component = topaz_component_create(topaz_script_object_as_string(arg0), ((topazScriptManager_t*)context)->ctx, &attribs);
+    // creates new object and sets native pointer
+    TSO_OBJECT_NEW_VALUE(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__COMPONENTCUSTOM, NULL, NULL);
+    TSO_OBJECT_KEEP_REF(component);
+
+
     TopazComponentTSO * tsoData = attribs.userData;
     tsoData->manager = context;
     tsoData->self = topaz_script_object_from_object(script, object);
 
-    if (topaz_script_object_reference_get_feature_mask(object) & topazScript_Object_Feature_Map) {
-        topaz_component_set_attributes(component, &attribs);
-    } else {
+    if (!topaz_script_object_reference_get_feature_mask(object) & topazScript_Object_Feature_Map) {
         #ifdef TOPAZDC_DEBUG
             printf("WARNING: script implementation does not support topazScript_Object_Feature_Map for its empty object. This limits the use of many scripting features.\n");
         #endif

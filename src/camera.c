@@ -124,7 +124,7 @@ topazEntity_t * topaz_camera_create(topaz_t * t) {
     attr.userData = c;
     attr.on_step = camera__on_step;
 
-    return topaz_entity_create_with_attributes(t, &attr);
+    return topaz_entity_create(t, &attr);
 }
 
 

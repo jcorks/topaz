@@ -300,7 +300,7 @@ topazComponent_t * topaz_automation_create(
     attribs.on_destroy  = (topaz_component_attribute_callback) automation__on_destroy;
 
     attribs.userData = data;
-    topazComponent_t * out = topaz_component_create_with_attributes(TOPAZ_STR_CAST("Automation"), context, &attribs);
+    topazComponent_t * out = topaz_component_create(TOPAZ_STR_CAST("Automation"), context, &attribs);
     topaz_component_install_event(out, TOPAZ_STR_CAST("on-anim-end"), NULL, NULL);
     return out;
 

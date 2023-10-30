@@ -118,13 +118,6 @@ struct topazEntity_Attributes_t {
 ///
 topazEntity_t * topaz_entity_create(
     /// The topaz context.
-    topaz_t * context
-);
-
-/// Creates a new entity with attributes
-///
-topazEntity_t * topaz_entity_create_with_attributes(
-    /// The topaz context.
     topaz_t * context, 
 
     /// The attributes to assign to this entity.
@@ -132,15 +125,28 @@ topazEntity_t * topaz_entity_create_with_attributes(
 );
 
 
-/// Sets the attributes for the entity. Attributes determine how the 
-/// entity changes over time. 
-void topaz_entity_set_attributes(
+/// Sets a type ID for this entity.
+/// This can help discern between different types 
+/// of type IDs in a user-defined way.
+///
+void topaz_entity_set_type_id(
     /// The entity to modify.
-    topazEntity_t * entity, 
-
-    /// The new attributes.
-    const topazEntity_Attributes_t * attribs
+    topazEntity_t * entity,
+    
+    /// The typeID of the entity. This 
+    /// can only be set once.
+    uint64_t typeID
 );
+
+/// Gets the type ID for this entity.
+/// This can help discern between different types 
+/// of type IDs in a user-defined way.
+///
+/// If never set, is 0.
+uint64_t topaz_entity_get_type_id(
+    const topazEntity_t * entity
+);
+
 
 /// Gets the attributes of an entity.
 ///

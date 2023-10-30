@@ -83,6 +83,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/component.h>
 #include <topaz/entity.h>
 #include <topaz/input_device.h>
+#include <topaz/layout.h>
 #include <topaz/math.h>
 #include <topaz/matrix.h>
 #include <topaz/particle.h>

@@ -271,7 +271,7 @@ topazComponent_t * topaz_object2d_create(topaz_t * t) {
     attribs.on_attach   = (topaz_component_attribute_callback) object2d__on_attach;
     attribs.on_step     = (topaz_component_attribute_callback) object2d__on_step;
     attribs.userData = data;
-    topazComponent_t * out = topaz_component_create_with_attributes(TOPAZ_STR_CAST("Object2D"), t, &attribs);
+    topazComponent_t * out = topaz_component_create(TOPAZ_STR_CAST("Object2D"), t, &attribs);
 
     topaz_component_install_event(out, TOPAZ_STR_CAST("on-collide"), NULL, NULL);
     static int idp = 1;
@@ -1488,7 +1488,7 @@ topazEntity_t * t2dm_fetch(topaz_t * t) {
     attribs.on_step = (topaz_entity_attribute_callback)t2dm_on_step;
     attribs.userData = m;
 
-    mE = topaz_entity_create_with_attributes(t, &attribs);
+    mE = topaz_entity_create(t, &attribs);
     topaz_table_insert(allManagers, t, mE);
     topaz_context_attach_post_manager(t, mE);
 
