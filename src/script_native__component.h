@@ -91,6 +91,23 @@ static void component_script_object_bind_destroy(topazComponent_t * component, t
 
 
 TSO_SCRIPT_API_FN(component_api__create) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_ARG_3;
+    TSO_ARG_4;
+    TSO_ARG_5;
+
+
+    if (topaz_script_object_get_type(arg0) != topazScript_Object_Type_Undefined) {
+        if (!(topaz_script_object_reference_get_feature_mask(arg0) & topazScript_Object_Feature_Callable)) { 
+            script_error(script, "onStep requires a function to be set.");
+        e->onAttach = topaz_script_object_from_object(script, arg0);
+        attribs.on_attach   = (topaz_entity_attribute_callback)topaz_script_entity__on_attach;        
+    }
+
+
+
     topazComponent_Attributes_t attribs;
     attribs.on_attach   = (topaz_component_attribute_callback)topaz_script_component__on_attach;
     attribs.on_detach   = (topaz_component_attribute_callback)topaz_script_component__on_detach;
@@ -99,7 +116,6 @@ TSO_SCRIPT_API_FN(component_api__create) {
     attribs.on_draw     = (topaz_component_attribute_callback)topaz_script_component__on_draw;
     attribs.userData = calloc(1, sizeof(TopazComponentTSO));
 
-    TSO_ARG_0;
     topazComponent_t * component = topaz_component_create(topaz_script_object_as_string(arg0), ((topazScriptManager_t*)context)->ctx, &attribs);
     // creates new object and sets native pointer
     TSO_OBJECT_NEW_VALUE(component, TSO_OBJECT_TYPE__COMPONENT | TSO_OBJECT_ID__COMPONENTCUSTOM, NULL, NULL);
@@ -630,7 +646,7 @@ TSO_SCRIPT_API_FN(entity_api__remove_component) {
 
 
 static void add_refs__component_api(topazScript_t * script, topazScriptManager_t * context) {
-    TS_MAP_NATIVE_FN("topaz_component__create", component_api__create, 1);
+    TS_MAP_NATIVE_FN("topaz_component__create", component_api__create, 6);
     TS_MAP_NATIVE_FN("topaz_component__destroy", component_api__destroy, 1);
 
 
@@ -660,11 +676,6 @@ static void add_refs__component_api(topazScript_t * script, topazScriptManager_t
     TS_MAP_NATIVE_FN("topaz_component__install_handler", component_api__install_handler, 3);
     TS_MAP_NATIVE_FN("topaz_component__uninstall_handler", component_api__uninstall_handler, 3);
 
-    TS_MAP_NATIVE_FN("topaz_component__set_on_attach", component_api__set_on_attach, 2);
-    TS_MAP_NATIVE_FN("topaz_component__set_on_detach", component_api__set_on_detach, 2);
-    TS_MAP_NATIVE_FN("topaz_component__set_on_destroy", component_api__set_on_destroy, 2);
-    TS_MAP_NATIVE_FN("topaz_component__set_on_step", component_api__set_on_step, 2);
-    TS_MAP_NATIVE_FN("topaz_component__set_on_draw", component_api__set_on_draw, 2);
 
 
 
