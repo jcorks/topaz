@@ -79,55 +79,69 @@ TSO_SCRIPT_API_FN(entity_api__create) {
     topazEntity_Attributes_t attribs = {};
     attribs.on_detach = (topaz_entity_attribute_callback)topaz_script_entity__on_detach;    
     attribs.userData = calloc(1, sizeof(TopazScriptEntity));
-    TopazScriptEntity * tsoData = attribs.userData;
+    TopazScriptEntity * e = attribs.userData;
 
 
     if (topaz_script_object_get_type(arg0) != topazScript_Object_Type_Undefined) {
-        if (!(topaz_script_object_reference_get_feature_mask(arg0) & topazScript_Object_Feature_Callable)) { 
+        if (!(topaz_script_object_reference_get_feature_mask(arg0) & topazScript_Object_Feature_Callable)) {
             script_error(script, "onAttach requires a function to be set.");
-        e->onAttach = topaz_script_object_from_object(script, arg0);
-        attribs.on_attach   = (topaz_entity_attribute_callback)topaz_script_entity__on_attach;        
+        } else {
+            e->onAttach = topaz_script_object_from_object(script, arg0);
+            attribs.on_attach   = (topaz_entity_attribute_callback)topaz_script_entity__on_attach;        
+        }
     }
 
     if (topaz_script_object_get_type(arg1) != topazScript_Object_Type_Undefined) {
         if (!(topaz_script_object_reference_get_feature_mask(arg1) & topazScript_Object_Feature_Callable)) { 
             script_error(script, "onDetach requires a function to be set.");
-        e->onDetach = topaz_script_object_from_object(script, arg1);
-        attribs.on_detach   = (topaz_entity_attribute_callback)topaz_script_entity__on_detach;        
+        } else {
+            e->onDetach = topaz_script_object_from_object(script, arg1);
+            attribs.on_detach   = (topaz_entity_attribute_callback)topaz_script_entity__on_detach;        
+        }
     }
 
     if (topaz_script_object_get_type(arg2) != topazScript_Object_Type_Undefined) {
         if (!(topaz_script_object_reference_get_feature_mask(arg2) & topazScript_Object_Feature_Callable)) { 
             script_error(script, "onRemove requires a function to be set.");
-        e->onRemove = topaz_script_object_from_object(script, arg2);
+        } else {
+            e->onRemove = topaz_script_object_from_object(script, arg2);
+        }
     }
 
     if (topaz_script_object_get_type(arg3) != topazScript_Object_Type_Undefined) {
         if (!(topaz_script_object_reference_get_feature_mask(arg3) & topazScript_Object_Feature_Callable)) { 
             script_error(script, "onPreStep requires a function to be set.");
-        e->onPreStep = topaz_script_object_from_object(script, arg3);
-        attribs.on_pre_step   = (topaz_entity_attribute_callback)topaz_script_entity__on_pre_step;        
+        } else {
+            e->onPreStep = topaz_script_object_from_object(script, arg3);
+            attribs.on_pre_step   = (topaz_entity_attribute_callback)topaz_script_entity__on_pre_step;        
+        }
     }
 
     if (topaz_script_object_get_type(arg4) != topazScript_Object_Type_Undefined) {
         if (!(topaz_script_object_reference_get_feature_mask(arg4) & topazScript_Object_Feature_Callable)) { 
             script_error(script, "onStep requires a function to be set.");
-        e->onStep = topaz_script_object_from_object(script, arg4);
-        attribs.on_step   = (topaz_entity_attribute_callback)topaz_script_entity__on_step;        
+        } else {
+            e->onStep = topaz_script_object_from_object(script, arg4);
+            attribs.on_step   = (topaz_entity_attribute_callback)topaz_script_entity__on_step;        
+        }
     }
 
     if (topaz_script_object_get_type(arg5) != topazScript_Object_Type_Undefined) {
         if (!(topaz_script_object_reference_get_feature_mask(arg5) & topazScript_Object_Feature_Callable)) { 
             script_error(script, "onPreDraw requires a function to be set.");
-        e->onPreDraw = topaz_script_object_from_object(script, arg5);
-        attribs.on_pre_draw   = (topaz_entity_attribute_callback)topaz_script_entity__on_pre_draw;        
+        } else {
+            e->onPreDraw = topaz_script_object_from_object(script, arg5);
+            attribs.on_pre_draw   = (topaz_entity_attribute_callback)topaz_script_entity__on_pre_draw;        
+        }
     }
 
     if (topaz_script_object_get_type(arg6) != topazScript_Object_Type_Undefined) {
         if (!(topaz_script_object_reference_get_feature_mask(arg6) & topazScript_Object_Feature_Callable)) { 
             script_error(script, "onDraw requires a function to be set.");
-        e->onDraw = topaz_script_object_from_object(script, arg6);
-        attribs.on_draw   = (topaz_entity_attribute_callback)topaz_script_entity__on_draw;        
+        } else {
+            e->onDraw = topaz_script_object_from_object(script, arg6);
+            attribs.on_draw   = (topaz_entity_attribute_callback)topaz_script_entity__on_draw;        
+        }
     }
 
     topazEntity_t * entity = topaz_entity_create(((topazScriptManager_t*)context)->ctx, &attribs);
@@ -137,8 +151,8 @@ TSO_SCRIPT_API_FN(entity_api__create) {
     TSO_OBJECT_KEEP_REF(entity);
 
 
-    tsoData->manager  = context;
-    tsoData->self = topaz_script_object_from_object(script, object);
+    e->manager  = context;
+    e->self = topaz_script_object_from_object(script, object);
 
 
 
@@ -164,7 +178,7 @@ TSO_SCRIPT_API_FN(entity_api__get_type_id) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
 
-    return topaz_script_object_from_int(topaz_entity_get_type_id(native));
+    return topaz_script_object_from_int(script, topaz_entity_get_type_id(native));
 }
 
 TSO_SCRIPT_API_FN(entity_api__is_valid) {
