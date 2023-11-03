@@ -36,17 +36,25 @@ TSO_SCRIPT_API_FN(automation_api__add_keyframe) {
 
 TSO_SCRIPT_API_FN(automation_api__add_vector_keyframe) {
     TSO_ARG_0;
-    TSO_ARG_1; // value
-    TSO_ARG_2; // lerpfn
-    TSO_ARG_3; // offset
+    TSO_ARG_1; // valuex
+    TSO_ARG_2; // valuey
+    TSO_ARG_3; // valuez
+    TSO_ARG_4; // lerpfn
+    TSO_ARG_5; // offset
 
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
-    TSO_NATIVIZE_1(topazVector_t *, TSO_OBJECT_ID__VECTOR);   
+
+    topazVector_t a = {
+        topaz_script_object_as_number (arg1)
+        topaz_script_object_as_number (arg2)
+        topaz_script_object_as_number (arg3)
+    
+    }
     topaz_automation_add_vector_keyframe(
         native,
-        native1,
-        topaz_script_object_as_int    (arg2),
-        topaz_script_object_as_number (arg3)
+        &a,
+        topaz_script_object_as_int    (arg4),
+        topaz_script_object_as_number (arg5)
     );
 
     TSO_NO_RETURN;
@@ -389,7 +397,7 @@ TSO_SCRIPT_API_FN(automation_api__current) {
 static void add_refs__automation_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz_automation__create", automation_api__create, 0);
     TS_MAP_NATIVE_FN("topaz_automation__add_keyframe", automation_api__add_keyframe, 4);
-    TS_MAP_NATIVE_FN("topaz_automation__add_vector_keyframe", automation_api__add_vector_keyframe, 4);
+    TS_MAP_NATIVE_FN("topaz_automation__add_vector_keyframe", automation_api__add_vector_keyframe, 6);
     TS_MAP_NATIVE_FN("topaz_automation__clear", automation_api__clear, 1);
     TS_MAP_NATIVE_FN("topaz_automation__add_automation", automation_api__add_automation, 2);
     TS_MAP_NATIVE_FN("topaz_automation__blend", automation_api__blend, 2);

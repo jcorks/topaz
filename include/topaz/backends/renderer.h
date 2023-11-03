@@ -819,6 +819,8 @@ enum topazRenderer_Framebuffer_Handle {
 /// Creates a new framebuffer for the renderer. Framebuffers hold 
 /// results of drawing operations from the renderer.
 ///
+/// (No script mapping)
+///
 topazRenderer_Framebuffer_t * topaz_renderer_framebuffer_create(
     /// The renderer to create the framebuffer for.
     topazRenderer_t * renderer
@@ -826,6 +828,8 @@ topazRenderer_Framebuffer_t * topaz_renderer_framebuffer_create(
 
 
 /// Destroys a framebuffer.
+///
+/// (No script mapping)
 ///
 void topaz_renderer_framebuffer_destroy(
     /// The framebuffer to destroy.
@@ -864,6 +868,8 @@ int topaz_renderer_framebuffer_get_height(
 
 /// Returns what type the handle refers to
 ///
+/// (No script mapping)
+///
 topazRenderer_Framebuffer_Handle topaz_renderer_framebuffer_get_handle_type(
     /// The framebuffer to query.
     topazRenderer_Framebuffer_t * fb
@@ -874,6 +880,8 @@ topazRenderer_Framebuffer_Handle topaz_renderer_framebuffer_get_handle_type(
 /// in the context of the implemented child. For example, on an OpenGL-variant
 /// backend, the handle is likely an OpenGL texture object id.
 /// This allows things like topazDisplay_t to utilize the rendered data.
+///
+/// (No script mapping)
 ///
 void * topaz_renderer_framebuffer_get_handle(
     /// The framebuffer to query.
@@ -888,6 +896,9 @@ void * topaz_renderer_framebuffer_get_handle(
 /// the buffer should be of size Width*Height*4. Note that on
 /// hardware-accelerated implementations, calling this could be very costly.
 /// Alpha color information is always 1.f
+///
+/// (No script mapping)
+///
 int topaz_renderer_framebuffer_get_raw_data(
     /// The framebuffer to query.
     topazRenderer_Framebuffer_t * fb, 

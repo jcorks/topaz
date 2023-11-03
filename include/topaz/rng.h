@@ -51,6 +51,8 @@ topazRNG_t * topaz_rng_create();
 
 /// Destroys a random number generator
 ///
+/// (No script mapping)
+///
 void topaz_rng_destroy(
     /// The RNG to destroy.
     topazRNG_t * rng

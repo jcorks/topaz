@@ -71,6 +71,8 @@ typedef struct topazFilesystem_t topazFilesystem_t;
 /// Creates a new filesystem object. The starting path is 
 /// the same upon first creating the filsys instance.
 ///
+/// (No script mapping)
+///
 topazFilesystem_t * topaz_filesystem_create(
     /// The topaz context.
     topaz_t * context, 
@@ -86,6 +88,8 @@ topazFilesystem_t * topaz_filesystem_create(
 
 /// Destroys and cleans up a filesystem API
 ///
+/// (No script mapping)
+///
 void topaz_filesystem_destroy(
     /// The filesystem to destroy.
     topazFilesystem_t * filesystem
@@ -97,6 +101,8 @@ void topaz_filesystem_destroy(
 
 /// Retrieves the backend for this filesystem object.
 ///
+/// (No script mapping)
+///
 topazSystem_Backend_t * topaz_filesystem_get_backend(
     /// The filesystem to query.
     topazFilesystem_t * filesystem
@@ -104,6 +110,8 @@ topazSystem_Backend_t * topaz_filesystem_get_backend(
 
 
 /// Returns the API for this htem.
+///
+/// (No script mapping)
 ///
 topazFilesystemAPI_t topaz_filesystem_get_api(
     /// The filesystem to query.
@@ -143,7 +151,7 @@ const topazFilesystem_Path_t * topaz_filesystem_get_path(
     topazFilesystem_t * fs,
     
     // The path to retrieve.
-    topazFilesystem_DefaultNode def
+    topazFilesystem_DefaultNode node
 );
 
 
@@ -162,7 +170,8 @@ const topazFilesystem_Path_t * topaz_filesystem_get_path_from_string(
     const topazFilesystem_Path_t * from,
     
     /// The string representation of the path.
-    const topazString_t * partialOrFull
+    /// Can be partial or full.
+    const topazString_t * path
 );
 
 
@@ -200,6 +209,9 @@ const topazArray_t * topaz_filesystem_path_get_children(
 /// This buffer must be freed by the caller (topaz_rbuffer_destroy).
 /// If the filesystem path is invalid or the file cannot be read,
 /// NULL is returned.
+///
+/// No script mapping. Use the topazResources_t module instead.
+///
 topazRbuffer_t * topaz_filesystem_path_read(
     /// The filesystem path.
     const topazFilesystem_Path_t * path
@@ -208,6 +220,9 @@ topazRbuffer_t * topaz_filesystem_path_read(
 
 /// Writes the given buffer to a file on the filesystem.
 /// Name should refer to the name of the file to write.
+///
+/// No script mapping. Use the topazResources_t module instead.
+///
 int topaz_filesystem_path_write(
     /// The filesystem path.
     const topazFilesystem_Path_t * path,
@@ -223,6 +238,9 @@ int topaz_filesystem_path_write(
 /// This function will free all filesystem paths in use. 
 /// This is usually not necessary, but might be needed 
 /// for more complex uses of the filesystem instance.
+///
+/// (No script mapping)
+///
 void topaz_filesystem_expunge(
     /// The filesystem to modify.
     topazFilesystem_t * fs

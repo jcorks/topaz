@@ -41,48 +41,63 @@ typedef struct topazData_t topazData_t;
 
 
 
-/// Creates a new data asset object
-/// Use asset_destroy to release.
-///
-topazAsset_t * topaz_data_create(
-    topaz_t *, 
-    const topazString_t *
-);
-
-/// Creates a new data asset object, but without 
-/// any loading behavior. 
-///
-topazAsset_t * topaz_data_create_empty(topaz_t *);
 
 /// Sets the raw data for the asset. The input array may be of any 
 /// kind, as it will be copied into a byte array.
 ///
-void topaz_data_set_from_bytes(topazAsset_t *, const topazArray_t *);
+void topaz_data_set_from_bytes(
+    /// Data asset to modify
+    topazAsset_t * data, 
+    
+    /// The incoming bytes.
+    const topazArray_t * bytes
+);
 
 /// Uses the raw text data as a data source of bytes. Useful for plaintext 
 /// files.
 ///
-void topaz_data_set_from_string(topazAsset_t *, const topazString_t *);
+void topaz_data_set_from_string(
+    /// The data asset to modify.
+    topazAsset_t * data, 
+    
+    /// The incoming string state.
+    const topazString_t * string
+);
 
 /// Takes a string formatted in base64 sets the data state from bytes of the 
 /// base64 string.
 ///
-void topaz_data_set_from_base64(topazAsset_t *, const topazString_t *);
+void topaz_data_set_from_base64(
+    /// The data asset to modify.
+    topazAsset_t * data, 
+    
+    /// The base64 state.
+    const topazString_t * base64
+);
 
 
 
 /// Returns a read-only byte array of the raw data 
 /// within the asset.
 ///
-const topazArray_t * topaz_data_get_as_bytes(topazAsset_t *);
+const topazArray_t * topaz_data_get_as_bytes(
+    /// The data asset to query.
+    topazAsset_t * data
+);
 
 /// Creates a new string from the raw data stored in the asset.
 ///
-topazString_t * topaz_data_get_as_string(topazAsset_t *);
+topazString_t * topaz_data_get_as_string(
+    /// The data asset to query.
+    topazAsset_t * data
+);
 
 /// Converts the byte state into a base64-encoded string.
 ///
-topazString_t * topaz_data_get_as_base64(topazAsset_t *);
+topazString_t * topaz_data_get_as_base64(
+    /// The data asset to query.
+    topazAsset_t * data
+);
 
 
 

@@ -91,8 +91,8 @@ static void state_control__on_step(topazComponent_t * c, StateControl * s) {
     // we need to step any init functions of the state loop.
     if (s->queuedInit) {
         s->queuedInit = FALSE;
-        if (s->loop.on_init) {
-            s->loop.on_init(c, s->loop.data);
+        if (s->loop.on_enter) {
+            s->loop.on_enter(c, s->loop.data);
         }
         if (s->midTerminate) return;
     }
@@ -219,6 +219,10 @@ void topaz_state_control_remove(topazComponent_t * c, const topazString_t * stat
     
     if (state_control__remove(s, stateName)) {
         if (topaz_string_test_eq(s->current, stateName)) {
+                
+            if (s->loop.on_leave)
+                s->loop.on_leave(c, s->loop.data);
+                        
             s->midTerminate = TRUE;
             s->hasCurrent = FALSE;
         }
@@ -232,8 +236,14 @@ void topaz_state_control_execute(topazComponent_t * c, const topazString_t * sta
         assert(s->MAGIC_ID == MAGIC_ID__STATE_CONTROL);
     #endif
 
+    if (s->loop.on_leave)
+        s->loop.on_leave(c, s->loop.data);
+
+
     StateControlState * state = state_control__find(s, stateName);
     if (!state) return;
+
+    
 
     topaz_string_set(s->current, stateName);
     s->loop = state->loop;
@@ -249,6 +259,10 @@ void topaz_state_control_halt(topazComponent_t * c) {
         assert(s && "StateControl instance is missing or instance invalid.");
         assert(s->MAGIC_ID == MAGIC_ID__STATE_CONTROL);
     #endif
+
+    if (s->loop.on_leave)
+        s->loop.on_leave(c, s->loop.data);
+
 
     topaz_string_clear(s->current);
     s->hasCurrent = FALSE;

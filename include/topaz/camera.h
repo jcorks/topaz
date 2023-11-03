@@ -98,20 +98,6 @@ void topaz_camera_set_type(
 
 
 
-/// When called, the camera will orient itself so that it "looks"
-/// at the given point in 3D space
-///
-void topaz_camera_look_at(
-    /// The camera to modify
-    topazEntity_t * camera, 
-
-    /// The 3D position of the focal target that the camera should look at
-    const topazVector_t * target,
-
-    /// What vector direction constitutes the "Up" position of the camera.
-    /// This helps determine rotations of the camera.
-    const topazVector_t * up
-);
 
 
 /// Given a point on the screen, returns the unprojected point in 

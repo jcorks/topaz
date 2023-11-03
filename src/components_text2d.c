@@ -164,34 +164,46 @@ topazComponent_t * topaz_text2d_create(topaz_t * t) {
     return out;
 }
 
-void topaz_text2d_set_attributes(
-    /// The shape2d to modify
+void topaz_text2d_set_attribute(
     topazComponent_t * c, 
-
-    /// The new process attributes.
-    const topazRenderer_Attributes_t * attributes
+    topazRenderer_Attribute attribute,
+    int value
 ) {
     Text2D * t = text2d__retrieve(c);
-    t->attribs = *attributes;
+
+    topaz_renderer_attributes_set_attribute(
+        &t->attribs,
+        attribute,
+        value
+    );
 
     uint32_t i;
     uint32_t len = topaz_array_get_size(t->glyphs);
     topazRender2D_t * glyph;
     for(i = 0; i < len; ++i) {
         glyph = topaz_array_at(t->glyphs, topazRender2D_t *, i);
-        topaz_render2d_set_attributes(
-            glyph,
-            attributes
+
+        topazRenderer_Attributes_t att = *topaz_render2d_get_attributes(glyph);
+        topaz_renderer_attributes_set_attribute(
+            &att,
+            attribute,
+            value
         );
+        topaz_render2d_set_attributes(glyph, &att);
+
     }
 }
 
 
-const topazRenderer_Attributes_t * topaz_text2d_get_attributes(
-    topazComponent_t * c
+int topaz_text2d_get_attribute(
+    topazComponent_t * c,
+    topazRenderer_Attribute attribute
 ) {
     Text2D * t = text2d__retrieve(c);
-    return &t->attribs;
+    return topaz_renderer_attributes_get_attribute(
+        &t->attributes,
+        attribute);
+
 }
 
 static void text2d_update__full(Text2D * t, const topazString_t * str, const topazAsset_t * font, int pixelSize) {

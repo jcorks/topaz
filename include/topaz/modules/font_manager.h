@@ -50,12 +50,16 @@ typedef struct topazFontManager_t topazFontManager_t;
 
 /// Creates a new font manager. 
 ///
+/// (No script mapping)
+///
 topazFontManager_t * topaz_font_manager_create(
     /// The context.
     topaz_t * context
 );
 
 /// Destroys and frees a topaz font manager instance.
+///
+/// (No script mapping)
 ///
 void topaz_font_manager_destroy(
     /// The font manager to destroy.
@@ -85,6 +89,9 @@ int topaz_font_manager_register_font(
 /// Returns the font renderer for the specific font requested.
 /// The font name should be the original font data asset's name.
 /// If no such renderer exists, NULL is returned.
+///
+/// (No script mapping)
+///
 topazFontRenderer_t * topaz_font_manager_get_renderer(
     /// The font manager to query.
     topazFontManager_t * fontManager,
@@ -96,6 +103,9 @@ topazFontRenderer_t * topaz_font_manager_get_renderer(
 
 /// Returns the first available font renderer 
 /// that the manager is aware of.
+///
+/// (No script mapping)
+///
 topazFontRenderer_t * topaz_font_manager_get_renderer_any(
     /// The font manager to query.
     topazFontManager_t * fontManager

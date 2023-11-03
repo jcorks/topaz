@@ -292,6 +292,7 @@ TSO_SCRIPT_API_FN(resources_api__pack_bundle) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
+    TSO_ARG_3;
  
     topazScript_Object_t * argsConv0[7];
 
@@ -307,16 +308,16 @@ TSO_SCRIPT_API_FN(resources_api__pack_bundle) {
 
     uint32_t i;
     
-    for(i = 0; i < 7; ++i) {
-        argsConv0[i] = topaz_script_object_reference_array_get_nth(arg0, i);
+    for(i = 0; i < 6; ++i) {
+        argsConv0[i] = topaz_script_object_reference_array_get_nth(arg1, i);
     }
     
-    dependsCount = topaz_script_object_reference_array_get_count(arg1);
+    dependsCount = topaz_script_object_reference_array_get_count(arg2);
     dependsName = malloc(sizeof(topazString_t*)*dependsCount);
     dependsMajor = malloc(sizeof(int)*dependsCount);
     dependsMinor = malloc(sizeof(int)*dependsCount);
     for(i = 0; i < dependsCount; ++i) {
-        topazScript_Object_t * o = topaz_script_object_reference_array_get_nth(arg1, i);
+        topazScript_Object_t * o = topaz_script_object_reference_array_get_nth(arg2, i);
         topazScript_Object_t * name_obj = topaz_script_object_reference_array_get_nth(o, 0);
         topazScript_Object_t * maj_obj = topaz_script_object_reference_array_get_nth(o, 1);
         topazScript_Object_t * min_obj = topaz_script_object_reference_array_get_nth(o, 2);
@@ -331,11 +332,11 @@ TSO_SCRIPT_API_FN(resources_api__pack_bundle) {
         topaz_script_object_destroy(o);
     }
     
-    assetCount = topaz_script_object_reference_array_get_count(arg2);
+    assetCount = topaz_script_object_reference_array_get_count(arg3);
     assetNames = malloc(sizeof(topazString_t*)*assetCount);
     assetExtensions = malloc(sizeof(topazString_t*)*assetCount);
     for(i = 0; i < assetCount; ++i) {
-        topazScript_Object_t * o = topaz_script_object_reference_array_get_nth(arg2, i);
+        topazScript_Object_t * o = topaz_script_object_reference_array_get_nth(arg3, i);
         topazScript_Object_t * name_obj = topaz_script_object_reference_array_get_nth(o, 0);
         topazScript_Object_t * ext_obj = topaz_script_object_reference_array_get_nth(o, 1);
         
@@ -356,7 +357,7 @@ TSO_SCRIPT_API_FN(resources_api__pack_bundle) {
 
     topazAsset_t * asset = topaz_resources_pack_bundle(
         r,
-        topaz_script_object_as_string(argsConv0[0]),
+        topaz_script_object_as_string(arg0),
         topaz_script_object_as_string(argsConv0[1]),
         topaz_script_object_as_int(argsConv0[2]),
         topaz_script_object_as_int(argsConv0[3]),
@@ -375,7 +376,7 @@ TSO_SCRIPT_API_FN(resources_api__pack_bundle) {
         assetExtensions
     );
     
-    for(i = 0; i < 7; ++i) {
+    for(i = 0; i < 6; ++i) {
         topaz_script_object_destroy(argsConv0[i]);
     }
     

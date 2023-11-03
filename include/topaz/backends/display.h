@@ -226,6 +226,8 @@ typedef void (*topaz_display_parameter_callback)(
 /// Creates a new display object. Usually you can use topaz_view_manager_create_display() 
 /// instead of calling this function directly.
 ///
+/// (No script mapping)
+///
 topazDisplay_t * topaz_display_create(
     /// The topaz context.
     topaz_t * context, 
@@ -240,6 +242,8 @@ topazDisplay_t * topaz_display_create(
 
 
 /// Destroys and cleans up a display API
+///
+/// No script mapping. Use ViewManager.destroyDisplay()
 ///
 void topaz_display_destroy(
     /// The display to destroy
@@ -275,7 +279,7 @@ topazRenderer_Framebuffer_t * topaz_display_get_framebuffer(
     /// The disply in question.
     topazDisplay_t * display,
     /// The framebuffer to get.
-    topazDisplay_Framebuffer f
+    topazDisplay_Framebuffer which
 );
 
 /// Sets the framebuffer as the main framebuffer. This framebuffer 
@@ -284,7 +288,7 @@ void topaz_display_use_framebuffer(
     /// The display to modify.
     topazDisplay_t * display,
     /// The framebuffer to use.
-    topazDisplay_Framebuffer
+    topazDisplay_Framebuffer which
 );
 
 
@@ -326,7 +330,7 @@ void topaz_display_clear_main_framebuffer(
     topazDisplay_t * display,
     
     /// which information channel to clear.
-    topazRenderer_DataLayer
+    topazRenderer_DataLayer layer
 );
 
 
@@ -358,6 +362,8 @@ void topaz_display_capture_main_framebuffer(
 
 /// Retrieves the backend for this display object.
 ///
+/// (No scripting mapping)
+///
 topazSystem_Backend_t * topaz_display_get_backend(
     /// The display to query.
     topazDisplay_t * display
@@ -365,6 +371,8 @@ topazSystem_Backend_t * topaz_display_get_backend(
 
 
 /// Returns the API for this display.
+///
+/// (No scripting mapping)
 ///
 topazDisplayAPI_t topaz_display_get_api(
     /// The display to query.
@@ -380,7 +388,7 @@ void topaz_display_set_parameter(
     /// The display to modify.
     topazDisplay_t * display,
     /// The parameter to modify.
-    topazDisplay_Parameter,
+    topazDisplay_Parameter param,
     /// The new value of the parameter.
     float value
 );
@@ -394,7 +402,7 @@ int topaz_display_is_parameter_modifiable(
     /// The display to query.
     topazDisplay_t * display,
     /// The parameter to query.
-    topazDisplay_Parameter    
+    topazDisplay_Parameter param  
 );
 
 /// Returns the current value of the parameter.
@@ -402,7 +410,7 @@ float topaz_display_get_parameter(
     /// The display to query.
     const topazDisplay_t * display,
     /// The parameter to query.
-    topazDisplay_Parameter
+    topazDisplay_Parameter param
 );
 
 
@@ -416,7 +424,7 @@ void topaz_display_auto_clear_framebuffer(
     /// The display to modify.
     topazDisplay_t * display, 
     /// Whether to auto-update.
-    int autoUpdate
+    int enable
 );
 
 
@@ -523,6 +531,8 @@ void topaz_display_update(
 /// Should the framebuffer not match one of the given types, the framebuffer 
 /// attachment will fail
 ///
+/// (No script mapping)
+///
 const topazArray_t * topaz_display_supported_framebuffers(
     /// The display to query.
     topazDisplay_t * display
@@ -532,6 +542,8 @@ const topazArray_t * topaz_display_supported_framebuffers(
 /// GetSystemHandle. Meant for internal use, but can be handy when
 /// doing weird things.
 ///
+/// (No script mapping)
+///
 topazDisplay_Handle topaz_display_get_system_handle_type(
     /// The display to query.
     topazDisplay_t * display
@@ -540,6 +552,8 @@ topazDisplay_Handle topaz_display_get_system_handle_type(
 /// Returns an implementation-specific handle that represents this
 /// Display or this Display's properties. Meant for internal use, but can 
 /// be handy when doing weird things.
+///
+/// (No script mapping)
 ///
 void * topaz_display_get_system_handle(
     /// The display to query.
@@ -551,6 +565,8 @@ void * topaz_display_get_system_handle(
 /// GetLastSystemEvent(). Like getting the system handle, it's mostly meant for internal 
 /// use, but can come in handy when doing weird things.
 ///
+/// (No script mapping)
+///
 topazDisplay_Event topaz_display_get_system_event_type(
     /// The display to query.
     topazDisplay_t * display
@@ -560,6 +576,8 @@ topazDisplay_Event topaz_display_get_system_event_type(
 /// Returns an implementation-specific value that represents the 
 /// last processed event generated form the display. It is guaranteed to be updated
 /// after Update() has been called and is valid until the next Update() call.
+///
+/// (No script mapping)
 ///
 void * topaz_display_get_last_system_event(
     /// The display to query.
@@ -571,6 +589,8 @@ void * topaz_display_get_last_system_event(
 /// Returns the current contents of the clipboard, if applicable.
 /// This buffer is owned by the caller.
 ///
+/// (No script mapping)
+///
 topazArray_t * topaz_display_get_current_clipboard(
     /// The display to query.
     topazDisplay_t * display
@@ -578,6 +598,8 @@ topazArray_t * topaz_display_get_current_clipboard(
 
 
 /// Sets the current contents of the clipboard, if applicable.
+///
+/// (No script mapping)
 ///
 void topaz_display_set_current_clipboard(
     /// The display to modify.

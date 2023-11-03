@@ -75,10 +75,6 @@ enum topazAsset_Type {
     ///
     topazAsset_Type_Material,
 
-    /// The asset is a particle specification.
-    ///
-    topazAsset_Type_Particle,
-
     /// The asset is raw bytes / text.
     /// When assets are first loaded from an external source, 
     /// they will be of this type. They can then by changed into 
@@ -89,9 +85,6 @@ enum topazAsset_Type {
     /// The asset is a 3D mesh
     ///
     topazAsset_Type_Mesh,
-    
-    /// The asset is a bundle of other assets.
-    topazAsset_Type_Bundle,
     
     
     topazAsset_Type_Count,    
@@ -138,6 +131,8 @@ struct topazAsset_Attributes_t {
 
 /// Creates a new asset.
 ///
+/// (No script mapping)
+///
 topazAsset_t * topaz_asset_create(
     /// Topaz context.
     topaz_t * context, 
@@ -154,6 +149,8 @@ topazAsset_t * topaz_asset_create(
 
 /// Destroys an asset.
 ///
+/// (No script mapping)
+///
 void topaz_asset_destroy(
     /// The asset to destroy.
     topazAsset_t * asset
@@ -161,6 +158,8 @@ void topaz_asset_destroy(
 
 /// Returns the attributes that the asset was 
 /// created with.
+///
+/// (No script mapping)
 ///
 const topazAsset_Attributes_t * topaz_asset_get_attributes(
     /// The asset to retrieve attributes from.    

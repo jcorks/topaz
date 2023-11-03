@@ -3,7 +3,7 @@
 
 int main() {
     char * files_in[] = {
-        "bootstrap.mt",
+        "topaz.mt",
         "debug.mt"
     };
 

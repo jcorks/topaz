@@ -474,14 +474,26 @@ void topaz_shape2d_form_lines(topazComponent_t * c, const topazArray_t * ptsSrc)
     topaz_render2d_set_attributes(s->render2d, &att);
 }
 
-void topaz_shape2d_set_attributes(topazComponent_t * c, const topazRenderer_Attributes_t * att) {
+void topaz_shape2d_set_attribute(topazComponent_t * c, topazRenderer_Attribute attribute, int value) {
     Shape2D * s = shape2d__retrieve(c);
-    topaz_render2d_set_attributes(s->render2d, att);
+    
+    topazRenderer_Attributes_t att = *topaz_render2d_get_attributes(s->render2d);
+    topaz_renderer_attributes_set_attribute(
+        &att,
+        attribute,
+        value
+    );
+    topaz_render2d_set_attributes(s->render2d, &att);
 }
 
-const topazRenderer_Attributes_t * topaz_shape2d_get_attributes(topazComponent_t * c) {
+int topaz_shape2d_get_attribute(topazComponent_t * c, topazRenderer_Attribute attribute) {
     Shape2D * s = shape2d__retrieve(c);
-    return topaz_render2d_get_attributes(s->render2d);
+    return topaz_renderer_attributes_get_attribute(
+        topaz_render2d_get_attributes(
+            s->render2d
+        ),
+        attribute
+    );
 }
 
 

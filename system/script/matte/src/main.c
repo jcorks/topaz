@@ -365,7 +365,7 @@ static void * topaz_matte_object_wrap(void * ctxSrc, matteValue_t val) {
         tag = topaz_matte_object_set_tag(ctx, val);   
         tag->ctx = ctx;
 
- 
+  
 
         // Sets the standard finalizer function.
         matte_value_object_set_native_finalizer(
@@ -432,7 +432,7 @@ static void topaz_matte_run__error(const matteString_t * s, uint32_t line, uint3
         topaz_matte_run__error__file ? matte_string_get_c_str(topaz_matte_run__error__file) : "<unknown file>" ,
         line, ch, 
         matte_string_get_c_str(s)
-    );
+    ); 
 
     matteString_t * errm = matte_string_create_from_c_str("%s", topaz_string_get_c_str(str));
     matte_vm_raise_error_string(ctx->vm, errm);

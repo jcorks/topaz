@@ -280,6 +280,28 @@ void topaz_matrix_rotate_by_angles(topazMatrix_t * m, float x, float y, float z)
     *m = o;
 }
 
+void topaz_matrix_rotate_by_axis(topazMatrix_t * m, float x, float y, float z, float theta) {
+    theta = topaz_math_to_radians(theta);
+    topazMatrix_t rotateMatrix;
+    topaz_matrix_set_identity(&rotateMatrix);
+    float cosT = cos(theta);
+    float sinT = sin(theta);
+    rotateMatrix.data[0] = cosT + x*x * (1 - cosT);
+    rotateMatrix.data[1] = x*y * ( 1 - cosT) - z * sinT;
+    rotateMatrix.data[2] = x * z * ( 1 - cosT) + y * sinT;
+    
+    rotateMatrix.data[4] = y * x * (1 - cosT) + z * sinT;
+    rotateMatrix.data[5] = cosT + y*y * (1 - cosT);
+    rotateMatrix.data[6] = y * z * (1 - cosT) - x * sinT;
+    
+    rotateMatrix.data[8] = z * x * (1 - cosT) - y * sinT;
+    rotateMatrix.data[9] = z * y * (1 - cosT) + x * sinT;
+    rotateMatrix.data[10] = cosT + z*z * (1 - cosT);
+    
+    *m = topaz_matrix_multiply(m, &rotateMatrix);
+}
+
+
 
 void topaz_matrix_translate(topazMatrix_t * m, float x, float y, float z) {
     float * data = m->data;

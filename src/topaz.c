@@ -83,6 +83,7 @@ struct topaz_t {
     double frameEnd;
     double frameStart;
     double frameNext;
+    double frameLast;
     
     int quit;
     int paused;
@@ -437,7 +438,8 @@ void topaz_context_quit(topaz_t * t) {
 }
 
 void topaz_context_frame_start(topaz_t * t, int FPS) {
-    t->frameNext = topaz_context_get_time(t) + (1000.0 / ((float)FPS));
+    t->frameStart = topaz_context_get_time(t);
+    t->frameNext = t->frameStart + (1000.0 / ((float)FPS));
 }
 
 void topaz_context_frame_end(topaz_t * t) {
@@ -448,6 +450,7 @@ void topaz_context_frame_end(topaz_t * t) {
         topaz_time_sleep_ms(t->timeRef, ms);
         n = topaz_context_get_time(t);
     }
+    t->frameLast = topaz_context_get_time(t) - t->frameStart;
 
 }
 
@@ -491,6 +494,12 @@ topazArray_t * topaz_get_parameter_names(const topaz_t * t) {
 
 uint64_t topaz_context_get_time(topaz_t * t) {
     return topaz_time_ms_since_startup(t->timeRef);
+}
+
+double topaz_context_get_delta_time(
+    topaz_t * t
+) {
+    return t->frameLast;
 }
 
 topazFilesystem_t * topaz_context_get_filesystem(topaz_t * t) {

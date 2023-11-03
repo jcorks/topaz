@@ -107,7 +107,7 @@ float topaz_text2d_get_char_x(
     topazComponent_t * text2d,
 
     /// The index of the character to query.
-    int charIndex
+    int index
 );
 
 /// Gets the x position of the character at the given index.
@@ -118,11 +118,18 @@ float topaz_text2d_get_char_y(
     topazComponent_t * text2d,
 
     /// The index of the character to query.
-    int charIndex
+    int index
 );
 
 
 /// Gest the node transform for the text
+///
+/// This function has no script mapping; however,
+/// the position, scale, and rotation for this 
+/// node are settable and gettable via 
+/// setPosition, setScale, setRotation, 
+/// getPosition, getScale, and getRotation as part 
+/// of the text2d instance.
 ///
 topazTransform_t * topaz_text2d_get_node(
     /// The text2d to query.
@@ -158,19 +165,25 @@ void topaz_text2d_set_color(
 
 /// Sets the rendering attributes.
 ///
-void topaz_text2d_set_attributes(
+void topaz_text2d_set_attribute(
     /// The text to modify
     topazComponent_t * text2d, 
 
-    /// The new process attributes.
-    const topazRenderer_Attributes_t * attribute
+    /// The attribute to modify
+    topazRenderer_Attribute attribute,
+
+    /// The new attribute value
+    int value
 );
 
 /// Gets the rendering attributes.
 ///
-const topazRenderer_Attributes_t * topaz_text2d_get_attributes (
+int topaz_text2d_get_attribute(
     /// The text to query.
-    topazComponent_t * text2d
+    topazComponent_t * text2d,
+    
+    /// The attribute to query
+    topazRenderer_Attribute attribute    
 );
 
 

@@ -96,6 +96,9 @@ topazParticle_t * topaz_particle_create(
 
 
 /// Destroys the particle.
+///
+/// (No script mapping) 
+///
 void topaz_particle_destroy(
     /// The particle to destroy.
     topazParticle_t * part
@@ -109,7 +112,7 @@ void topaz_particle_set_from_string(
     topazParticle_t * part, 
 
     /// The string to read from.
-    const topazString_t * str
+    const topazString_t * string
 );
 
 /// Returns a read-only string representation of the particle's
@@ -121,17 +124,24 @@ const topazString_t * topaz_particle_to_string(
 
 /// Modifies a the rendering attributes.
 ///
-void topaz_particle_set_attributes(
+void topaz_particle_set_attribute(
     /// The particle to modify
     topazParticle_t * part,
-    /// New attributes.
-    const topazRenderer_Attributes_t * attribs
+
+    /// The attribute to modify
+    topazRenderer_Attribute attribute,
+
+    /// The new attribute value
+    int value
 );
 
 /// Gets the current attributes for particle rendering.
-const topazRenderer_Attributes_t * topaz_particle_get_attributes(
+int topaz_particle_get_attribute(
     /// The particle to query
-    topazParticle_t * part
+    topazParticle_t * part,
+    
+    /// The attribute to query
+    topazRenderer_Attribute attribute    
 );
 
 
@@ -233,18 +243,9 @@ void topaz_particle_emitter_2d_set_particle(
 );
 
 
-/// Emits a particle with position tracking it global/root entity space.
-/// That is, when the emitter moves, the particle will not move with it.
-/// Only the emitters position at the time of emission will be used
-/// for the particle.
-///
-void topaz_particle_emitter_2d_set_independent(
-    topazEntity_t * emitter,
-    int i
-);
 
-/// Same as topaz_particle_emitter_2d_emit, except will be emitted count 
-/// number of times
+
+/// Emits a number of particles at the location of the emitter.
 ///
 void topaz_particle_emitter_2d_emit(
     /// The emitter to emit from.
@@ -253,8 +254,6 @@ void topaz_particle_emitter_2d_emit(
     /// The number of particles to emit.
     int count
 );
-
-
 
 
 

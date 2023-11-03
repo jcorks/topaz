@@ -92,12 +92,16 @@ enum topazConsole_MessageType_t {
 /// See topaz_context_get_console()
 /// Note that all the topazConsole_t instances use the same console display.
 ///
+/// (No script mapping)
+///
 topazConsole_t * topaz_console_create(
     /// The topaz context instance.
     topaz_t * context
 );
 
 /// Destroys and frees a topaz console instance.
+///
+/// (No script mapping)
 ///
 void topaz_console_destroy(
     /// The console to display.
@@ -148,6 +152,9 @@ void topaz_console_print_message(
 
 /// Attaches a script context to the console.
 /// Once attached, debugging features will be available
+///
+/// (No script mapping)
+///
 void topaz_console_attach_script(
     /// The console to attach to.
     topazConsole_t * console,

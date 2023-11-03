@@ -71,6 +71,13 @@ void topaz_shape2d_set_color(
 
 /// Gets the trasform for the object
 ///
+/// This function has no script mapping; however,
+/// the position, scale, and rotation for this 
+/// node are settable and gettable via 
+/// setPosition, setScale, setRotation, 
+/// getPosition, getScale, and getRotation as part 
+/// of the shape2d instance.
+///
 topazTransform_t * topaz_shape2d_get_node(
     /// The shape2d to query.
     topazComponent_t * shape2d
@@ -188,10 +195,10 @@ void topaz_shape2d_form_image_frame_scaled(
     uint32_t frame, 
 
     /// The custom width of the shape2d.
-    float forcedWidth, 
+    float width, 
 
     /// The custom height of the shape2d.
-    float forcedHeight
+    float height
 );
 
 
@@ -219,6 +226,8 @@ void topaz_shape2d_form_radial(
 /// If a non-multiple-of-three number of points is given,
 /// the remainder points are ignored.
 ///
+/// In the script mapping of this, the array given is of plain numbers rather than vectors.
+///
 void topaz_shape2d_form_triangles(
     /// The shape2d to modify.
     topazComponent_t * shape2d, 
@@ -231,6 +240,8 @@ void topaz_shape2d_form_triangles(
 /// If an odd number of points are given, the last point is ignored.
 /// The array should be the a collection of topazVector_t objects.
 ///
+/// In the script mapping of this, the array given is of plain numbers rather than vectors.
+///
 void topaz_shape2d_form_lines(
     /// The shape2d to modify.
     topazComponent_t * shape2d, 
@@ -242,19 +253,25 @@ void topaz_shape2d_form_lines(
 
 /// Sets the rendering attributes.
 ///
-void topaz_shape2d_set_attributes(
+void topaz_shape2d_set_attribute(
     /// The shape2d to modify
     topazComponent_t * shape2d, 
 
-    /// The new process attributes.
-    const topazRenderer_Attributes_t * attributes
+    /// The attribute to modify
+    topazRenderer_Attribute attribute,
+
+    /// The new attribute value
+    int value
 );
 
 /// Gets the rendering attributes.
 ///
-const topazRenderer_Attributes_t * topaz_shape2d_get_attributes (
+int topaz_shape2d_get_attribute (
     /// The shape2d to query.
-    topazComponent_t * shape2d
+    topazComponent_t * shape2d,
+    
+    /// The attribute to query
+    topazRenderer_Attribute attribute
 );
 
 

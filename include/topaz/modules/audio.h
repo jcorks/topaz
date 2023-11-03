@@ -51,12 +51,17 @@ typedef struct topazAudio_t topazAudio_t;
 
 /// Creates a new auto instance. Normally not necessary; the topaz 
 /// context has an audio instance of its own.
+///
+/// (No script mapping)
+///
 topazAudio_t * topaz_audio_create(
     /// The context to use.
     topaz_t * context
 );
 
 /// Destroys and frees a topaz audio instance.
+///
+/// (No script mapping)
 ///
 void topaz_audio_destroy(
     /// The audio instance to destroy.
@@ -65,6 +70,8 @@ void topaz_audio_destroy(
 
 
 /// Updates the audio engine. This is normally done for you 
+///
+/// (No script mapping)
 ///
 void topaz_audio_update(
     /// The audio instance to update.
@@ -135,6 +142,9 @@ void topaz_audio_channel_set_panning(
 
 
 /// Gets the audio manager instance for this audio module.
+///
+/// (No script mapping)
+///
 topazAudioManager_t * topaz_audio_get_manager(
     /// The audio module to query.
     topazAudio_t * audio
@@ -153,7 +163,7 @@ void topaz_audio_playback_set_volume(
     /// The active sound to modify.
     uint32_t id,
     /// The new volume to use. The value is clamped to the range 0.f and 1.f.
-    float v
+    float amt
 );
 
 /// Sets the panning.
@@ -164,7 +174,7 @@ void topaz_audio_playback_set_panning(
     /// The active sound to modify.
     uint32_t id,
     /// The new panning. The value is clamped to the range 0.f and 1.f.
-    float v
+    float amt
 );
 
 /// Sets whether the sound should be replayed once it finishes.
@@ -176,7 +186,7 @@ void topaz_audio_playback_set_repeat(
     /// The active sound to modify.
     uint32_t id,
     /// If true, the sound will repeat. If false, the sound will not repeat.
-    int b
+    int repeat
 );
 
 /// Sets the progress in the sound to play from.
@@ -190,7 +200,7 @@ void topaz_audio_playback_seek(
     /// The active sound to modify.
     uint32_t id,
     /// The place in the sound to continue playback from.
-    float f
+    float to
 );
 
 ///  Halts the sound.

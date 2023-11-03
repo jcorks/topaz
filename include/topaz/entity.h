@@ -38,6 +38,7 @@ DEALINGS IN THE SOFTWARE.
 typedef struct topazComponent_t topazComponent_t;
 typedef struct topazSpatial_t topazSpatial_t;
 typedef struct topaz_t topaz_t;
+typedef struct topazMatrix_t topazMatrix_t;
 
 
 ///    Basic interactive object.
@@ -150,6 +151,8 @@ uint64_t topaz_entity_get_type_id(
 
 /// Gets the attributes of an entity.
 ///
+/// (No script mapping)
+///
 const topazEntity_Attributes_t * topaz_entity_get_attributes(
     /// The entity to query.
     const topazEntity_t * entity
@@ -165,6 +168,8 @@ int topaz_entity_is_valid(
 );
 
 /// Physically destroys entities that were marked for deletion prior.
+///
+/// (No script mapping)
 ///
 void topaz_entity_sweep();
 
@@ -316,6 +321,8 @@ const topazVector_t * topaz_entity_get_scale(
 
 /// Convenience function for getting a writeable reference to 
 /// the rotation.
+/// Scripting equivalent is setRotation.
+///
 topazVector_t * topaz_entity_rotation(
     /// The entity to modify.
     topazEntity_t * entity
@@ -324,6 +331,8 @@ topazVector_t * topaz_entity_rotation(
 
 /// Convenience function for getting a writeable reference to 
 /// the position.
+/// Scripting equivalent is setPosition.
+///
 topazVector_t * topaz_entity_position(
     /// The entity to modify.
     topazEntity_t * entity
@@ -332,12 +341,29 @@ topazVector_t * topaz_entity_position(
 
 /// Convenience function for getting a writeable reference to 
 /// the scale.
+/// Scripting equivalent is setScale.
+///
 topazVector_t * topaz_entity_scale(
     /// The entity to modify.
     topazEntity_t * entity
 );
 
 
+/// When called, the entity will orient itself so that it "looks"
+/// at the given point in 3D space. This modifies the local 
+/// rotation of the entity.
+///
+void topaz_entity_look_at(
+    /// The camera to modify
+    topazEntity_t * entity, 
+
+    /// The 3D position of the focal target that the camera should look at
+    const topazVector_t * target,
+
+    /// What vector direction constitutes the "Up" position of the camera.
+    /// This helps determine rotations of the camera.
+    const topazVector_t * up
+);
 
 
 
@@ -353,6 +379,8 @@ topazVector_t topaz_entity_get_global_position(
 
 
 /// Gets a reference to the spatial reference.
+///
+/// (No script mapping)
 ///
 topazSpatial_t * topaz_entity_get_spatial(
     /// The entity to query.
@@ -395,7 +423,7 @@ void topaz_entity_set_stepping(
     topazEntity_t *, 
 
     /// Whether to enable stepping.
-    int trueOrFalse
+    int enable
 );
 
 /// Whether the engine should call Draw() automatically for this entity.
@@ -407,7 +435,7 @@ void topaz_entity_set_drawing(
     topazEntity_t * entity, 
 
     /// Whether to enable drawing.
-    int trueOrFalse
+    int enable
 );
 
 
@@ -427,6 +455,22 @@ int topaz_entity_get_drawing(
 );
 
 
+/// Returns the local transform matrix of 
+/// the entity.
+const topazMatrix_t * topaz_entity_get_local_matrix(
+    /// The entity to query. May internally trigger updates.
+    ///
+    topazEntity_t * entity
+);
+
+
+/// Returns the global transform matrix of 
+/// the entity.
+const topazMatrix_t * topaz_entity_get_global_matrix(
+    /// The entity to query. May internally trigger updates.
+    ///
+    topazEntity_t * entity
+);
 
 
 
@@ -511,6 +555,9 @@ const topazString_t * topaz_entity_get_name(
 /// nor should any entity functions return 0x0 NULL. Instead, 
 /// topaz_entity_null() is used. topaz_entity_null() is the same for the 
 /// duration of the program.
+///
+/// (No script mapping)
+///
 topazEntity_t * topaz_entity_null();
 
 /// A define which provides an expression equivalent to topaz_entity_null()

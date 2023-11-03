@@ -97,6 +97,8 @@ void topaz_matrix_reverse_majority(
 
 /// Returns the internal representation of the TransformMatrix.
 ///
+/// (No script mapping) 
+///
 #define topaz_matrix_ptr(__M__) ((float*)__M__.data)
 
 
@@ -125,6 +127,25 @@ void topaz_matrix_rotate_by_angles(
 
     /// The phi (z) rotation angle.
     float z
+);
+
+/// Rotates the matrix about an axies
+///
+void topaz_matrix_rotate_by_axis(
+    /// The transform matrix to modify.
+    topazMatrix_t * m,  
+
+    /// The axis X
+    float x, 
+
+    /// The axis Z
+    float y, 
+
+    /// The axis Z
+    float z,
+    
+    /// The amount to rotate
+    float degrees
 );
 
 /// Expresses a translation by x, y, and z

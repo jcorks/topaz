@@ -216,10 +216,6 @@ const topazString_t * topaz_component_get_tag(const topazComponent_t * c) {
     return c->tag;
 }
 
-void topaz_component_set_tag(topazComponent_t * c, const topazString_t * s) {
-    if (!c->valid) return;
-    topaz_string_set(c->tag, s);
-}
 
 topazEntity_t * topaz_component_get_host(const topazComponent_t * c) {
     return c->host;

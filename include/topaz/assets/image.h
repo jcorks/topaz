@@ -44,51 +44,48 @@ typedef struct topazImage_t topazImage_t;
 
 
 
-/// An individual frame of information that holds pixel data.
-/// Images contain 1 or more frames.
-typedef struct topazImage_Frame_t topazImage_Frame_t;
 
 
-
-/// Creates a new image object
-/// Use asset_destroy to release.
-///
-topazAsset_t * topaz_image_create(
-    topaz_t *, 
-    const topazString_t *
-);
-
-/// Creates a new image object, but without 
-/// any loading behavior. This allows for creating custom 
-/// images 
-topazAsset_t * topaz_image_create_empty(topaz_t *);
 
 /// Creates a new frame after the existing frames.
 /// The new frame is returned for convenience.
 ///
-topazImage_Frame_t * topaz_image_add_frame(topazAsset_t *);
+uint32_t topaz_image_add_frame(
+    /// The image to modify
+    topazAsset_t * image
+);
 
-/// Returns the index'th frame within the image.
-/// If the index is out of bounds, index%topaz_iamge_get_frame_count() is used.
-///
-topazImage_Frame_t * topaz_image_get_frame(topazAsset_t *, uint32_t index);
 
 /// Removes the index'th frame from the image. If none exists
 /// no action is taken.
 ///
-void topaz_image_remove_frame(topazAsset_t *, uint32_t);
+void topaz_image_remove_frame(
+    /// The image to modify
+    topazAsset_t * image, 
+    /// The frame to remove
+    uint32_t frame
+);
 
 /// Returns the number of frames within the image.
 ///
-uint32_t topaz_image_get_frame_count(const topazAsset_t *);
+uint32_t topaz_image_get_frame_count(
+    /// The image to query.
+    const topazAsset_t * image
+);
 
 /// Returns the width of the image
 ///
-int topaz_image_get_width(const topazAsset_t *);
+int topaz_image_get_width(
+    /// The image to query.
+    const topazAsset_t * image
+);
 
 /// Returns the height of the image
 ///
-int topaz_image_get_height(const topazAsset_t *);
+int topaz_image_get_height(
+    /// The image to query.
+    const topazAsset_t * image
+);
 
 /// Resets the width/height of the image.
 /// Afterwhich, the contents of all frames are undefined
@@ -101,6 +98,35 @@ void topaz_image_resize(
     /// The new height of the image.
     int height
 );
+
+
+
+
+
+/// Sets the RGBA pixel data within the image according 
+/// to the width and height of the frame. This assumes that 
+/// the given buffer is at least width*height*4 bytes large.
+///
+void topaz_image_set_frame_rgba_data(
+    /// The image to modify.
+    topazImage_t * image,
+    /// The frame to modify
+    uint32_t frame,
+    /// Texture data to read from and copy.
+    const uint8_t * rgbaData
+);
+
+
+/// Returns a new array with rgba data of the image frame.
+///
+topazArray_t * topaz_image_get_frame_rgba_data(
+    /// The image to query
+    const topazImage_t * image,
+
+    /// The frame to query.    
+    uint32_t frame
+);
+
 
 
 /// Different events for textures.
@@ -144,6 +170,9 @@ typedef void (*topaz_image_texture_event_callback)(
 ///
 /// A unique ID to the notification is returned. This can 
 /// be used to remove the callback.
+///
+/// (No script mapping)
+///
 uint32_t topaz_image_add_texture_event_notify(
     /// The image to return.
     topazAsset_t * image,
@@ -158,6 +187,8 @@ uint32_t topaz_image_add_texture_event_notify(
 
 /// Removes a texture event notify callback.
 ///
+/// (No script mapping)
+///
 void topaz_image_remove_texture_event_notify(
     /// The image to remove a notify from.
     topazAsset_t * image,
@@ -169,48 +200,39 @@ void topaz_image_remove_texture_event_notify(
 
 
 
-
-
-
 /// Creates an image frame from a pre-existing texture.
 /// Every frame has its own texture, so a new texture 
 /// is created as a clone of the given one.
 ///
-void topaz_image_frame_set_from_texture(
-    /// Frame to modify.
-    topazImage_Frame_t * frame,
+/// (No script mapping)
+///
+void topaz_image_set_frame_from_texture(
+    /// Image to modify
+    topazImage_t * image,
+
+    /// Frame to modify.    
+    uint32_t frame, 
+    
     /// Texture to clone from. 
     topazRenderer_Texture_t * texture
 );
 
 
-/// Sets the RGBA pixel data within the image according 
-/// to the width and height of the frame. This assumes that 
-/// the given buffer is at least width*height*4 bytes large.
-///
-void topaz_image_frame_set_data(
-    /// Frame to modify.
-    topazImage_Frame_t * frame,
-    /// Texture data to read from and copy.
-    const uint8_t * rgbdaData
-);
-
 
 
 /// Gets the texture handle for the frame.
 ///
-topazRenderer_Texture_t * topaz_image_frame_get_texture(
-    /// The frame to query.
-    const topazImage_Frame_t * frame
-);
-
-
-/// Returns a new array with rgba data of the image frame.
+/// (No script mapping)
 ///
-topazArray_t * topaz_image_frame_get_rgba_data(
+topazRenderer_Texture_t * topaz_image_get_frame_texture(
+    /// The image to query
+    const topazImage_t * frame,
+    
     /// The frame to query.
-    const topazImage_Frame_t * frame
+    uint32_t frame
 );
+
+
 
 
 #endif

@@ -58,10 +58,8 @@ TSO_SCRIPT_API_FN(particle_api__get_attribute) {
 
     return topaz_script_object_from_number(
         script,
-        topaz_renderer_attributes_get_attribute(
-            topaz_particle_get_attributes(
-                native
-            ),
+        topaz_particle_get_attribute(
+            native,
             topaz_script_object_as_number(arg1)            
         )
     );
@@ -73,13 +71,11 @@ TSO_SCRIPT_API_FN(particle_api__set_attribute) {
     TSO_ARG_2;
     TSO_NATIVIZE(topazParticle_t *, TSO_OBJECT_ID__PARTICLE);
 
-    topazRenderer_Attributes_t att = *topaz_particle_get_attributes(native);
-    topaz_renderer_attributes_set_attribute(
-        &att,
+    topaz_particle_set_attribute(
+        native,
         topaz_script_object_as_number(arg1),
-        topaz_script_object_as_number(arg2)
+        topaz_script_object_as_number(arg2)    
     );
-    topaz_particle_set_attributes(native, &att);
     TSO_NO_RETURN;
 }
 TSO_SCRIPT_API_FN(particle_api__set_noise_min) {

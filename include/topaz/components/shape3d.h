@@ -69,6 +69,13 @@ topazComponent_t * topaz_shape3d_create(
 
 /// Gets the trasform for the object
 ///
+/// This function has no script mapping; however,
+/// the position, scale, and rotation for this 
+/// node are settable and gettable via 
+/// setPosition, setScale, setRotation, 
+/// getPosition, getScale, and getRotation as part 
+/// of the shape3d instance.
+///
 topazTransform_t * topaz_shape3d_get_node(
     /// The shape3d to query.
     topazComponent_t * shape3d
@@ -119,19 +126,25 @@ void topaz_shape3d_set_material(
 /// Sets the parameter value. The value accepted is one of the appropriate 
 /// enum values within renderer.h
 ///
-void topaz_shape3d_set_attributes(
+void topaz_shape3d_set_attribute(
     /// The shape3d to modify
     topazComponent_t * shape3d, 
 
-    /// The new process attributes
-    const topazRenderer_Attributes_t * att
+    /// The attribute to modify
+    topazRenderer_Attribute attribute,
+
+    /// The new attribute value
+    int value
 );
 
 /// Gets the parameter value.
 ///
-const topazRenderer_Attributes_t * topaz_shape3d_get_attributes(
+int topaz_shape3d_get_attribute(
     /// The shape3d to query.
-    topazComponent_t * shape3d
+    topazComponent_t * shape3d,
+    
+    /// The attribute to query
+    topazRenderer_Attribute attribute
 
 );
 

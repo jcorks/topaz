@@ -48,8 +48,7 @@ TSO_SCRIPT_API_FN(mesh_api__define_vertices) {
 TSO_SCRIPT_API_FN(mesh_api__get_vertex) {
     TSO_ARG_0;
     TSO_ARG_1; // vertex
-    TSO_ARG_2; // attribute 
-    TSO_ARG_3; // component n
+    TSO_ARG_2; // returner
     TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__MESH);  
 
 
@@ -57,21 +56,39 @@ TSO_SCRIPT_API_FN(mesh_api__get_vertex) {
     int index = topaz_script_object_as_int(arg1);
     if (index < 0 || index >= len) TSO_NO_RETURN;
     
-    int type = topaz_script_object_as_int(arg2);
     
-    const float * data = topaz_mesh_get_vertex(
+    topazRenderer_3D_Vertex_t vtx = topaz_mesh_get_vertex(
         native,
-        type,
         index
     );
     
-    int which = topaz_script_object_as_int(arg3);
-    if (which < 0 || which >= 4)TSO_NO_RETURN;
-   
-    return topaz_script_object_from_number(
-        script,
-        data[which]
+    topazScript_Object_t * objects[12];
+    objects[0] = topaz_script_object_from_number(script, vtx.x);
+    objects[1] = topaz_script_object_from_number(script, vtx.y);
+    objects[2] = topaz_script_object_from_number(script, vtx.z);
+
+    objects[3] = topaz_script_object_from_number(script, vtx.normalX);
+    objects[4] = topaz_script_object_from_number(script, vtx.normalY);
+    objects[5] = topaz_script_object_from_number(script, vtx.normalZ);
+
+    objects[6] = topaz_script_object_from_number(script, vtx.texX);
+    objects[7] = topaz_script_object_from_number(script, vtx.texY);
+
+    objects[8]  = topaz_script_object_from_number(script, vtx.userDefinedData[0]);
+    objects[9]  = topaz_script_object_from_number(script, vtx.userDefinedData[1]);
+    objects[10] = topaz_script_object_from_number(script, vtx.userDefinedData[2]);
+    objects[11] = topaz_script_object_from_number(script, vtx.userDefinedData[3]);
+
+    topaz_script_object_destroy(
+        topaz_script_object_reference_call(
+            arg2,
+            TOPAZ_ARRAY_CAST(objects, topazScript_Object_t *, 12)
+        )
     );
+    int i;
+    for(i = 0; i < 12; ++i)
+        topaz_script_object_destroy(objects[i]);
+   
 }
 TSO_SCRIPT_API_FN(mesh_api__set_vertex) {
     TSO_ARG_0;
@@ -100,30 +117,9 @@ TSO_SCRIPT_API_FN(mesh_api__set_vertex) {
 
         topaz_mesh_set_vertex(
             native,
-            0,
             index,
-            data
+            (topazRenderer_3D_Vertex_t*)data
         );
-        topaz_mesh_set_vertex(
-            native,
-            1,
-            index,
-            data+3
-        );
-        topaz_mesh_set_vertex(
-            native,
-            2,
-            index,
-            data+6
-        );
-        topaz_mesh_set_vertex(
-            native,
-            3,
-            index,
-            data+8
-        );
-        
-
     }    
     TSO_NO_RETURN;
 
@@ -197,7 +193,7 @@ static void add_refs__mesh_api(topazScript_t * script, topazScriptManager_t * co
     TS_MAP_NATIVE_FN("topaz_mesh__get_vertex_count", mesh_api__get_vertex_count, 1);
     TS_MAP_NATIVE_FN("topaz_mesh__set_vertex_count", mesh_api__set_vertex_count, 2);
     TS_MAP_NATIVE_FN("topaz_mesh__define_vertices", mesh_api__define_vertices, 2);
-    TS_MAP_NATIVE_FN("topaz_mesh__get_vertex", mesh_api__get_vertex, 2);
+    TS_MAP_NATIVE_FN("topaz_mesh__get_vertex", mesh_api__get_vertex, 3);
     TS_MAP_NATIVE_FN("topaz_mesh__set_vertex", mesh_api__set_vertex, 3);
 
     TS_MAP_NATIVE_FN("topaz_mesh__add_object", mesh_api__add_object, 1);

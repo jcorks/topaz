@@ -447,166 +447,120 @@ TSO_SCRIPT_API_FN(entity_api__get_priority) {
 
 
 
-TSO_SCRIPT_API_FN(entity_api__get_rotation_x) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-    return topaz_script_object_from_number(script, topaz_entity_get_rotation(native)->x);
-}
-
-TSO_SCRIPT_API_FN(entity_api__get_rotation_y) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-    return topaz_script_object_from_number(script, topaz_entity_get_rotation(native)->y);
-}
-
-TSO_SCRIPT_API_FN(entity_api__get_rotation_z) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-    return topaz_script_object_from_number(script, topaz_entity_get_rotation(native)->z);
-}
-
-
-TSO_SCRIPT_API_FN(entity_api__get_position_x) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-    return topaz_script_object_from_number(script, topaz_entity_get_position(native)->x);
-}
-
-TSO_SCRIPT_API_FN(entity_api__get_position_y) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-    return topaz_script_object_from_number(script, topaz_entity_get_position(native)->y);
-}
-
-TSO_SCRIPT_API_FN(entity_api__get_position_z) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-    return topaz_script_object_from_number(script, topaz_entity_get_position(native)->z);
-}
-
-
-TSO_SCRIPT_API_FN(entity_api__get_scale_x) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-    return topaz_script_object_from_number(script, topaz_entity_get_scale(native)->x);
-}
-
-TSO_SCRIPT_API_FN(entity_api__get_scale_y) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-    return topaz_script_object_from_number(script, topaz_entity_get_scale(native)->y);
-}
-
-TSO_SCRIPT_API_FN(entity_api__get_scale_z) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-    return topaz_script_object_from_number(script, topaz_entity_get_scale(native)->z);
-}
-
-
-
-
-TSO_SCRIPT_API_FN(entity_api__set_rotation_x) {
+TSO_SCRIPT_API_FN(entity_api__get_rotation) {
     TSO_ARG_0;
     TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
+    topazVector_t a = *topaz_entity_get_rotation(native);
+    topaz_script_return_vector(script, arg1, a.x, a.y, a.z);
+    TSO_NO_RETURN;
+}
+
+
+TSO_SCRIPT_API_FN(entity_api__get_position) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
+    topazVector_t a = *topaz_entity_get_position(native);
+    topaz_script_return_vector(script, arg1, a.x, a.y, a.z);
+    TSO_NO_RETURN;
+
+}
+
+
+
+TSO_SCRIPT_API_FN(entity_api__get_scale) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
+    topazVector_t a = *topaz_entity_get_scale(native);
+    topaz_script_return_vector(script, arg1, a.x, a.y, a.z);
+    TSO_NO_RETURN;
+}
+
+
+
+TSO_SCRIPT_API_FN(entity_api__set_rotation) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_ARG_3;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
 
     topaz_entity_rotation(native)->x = topaz_script_object_as_number(arg1);
-    TSO_NO_RETURN;
-}
-
-TSO_SCRIPT_API_FN(entity_api__set_rotation_y) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-
-    topaz_entity_rotation(native)->y = topaz_script_object_as_number(arg1);
-    TSO_NO_RETURN;
-}
-TSO_SCRIPT_API_FN(entity_api__set_rotation_z) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-
-    topaz_entity_rotation(native)->z = topaz_script_object_as_number(arg1);
+    topaz_entity_rotation(native)->y = topaz_script_object_as_number(arg2);
+    topaz_entity_rotation(native)->z = topaz_script_object_as_number(arg3);
     TSO_NO_RETURN;
 }
 
 
-TSO_SCRIPT_API_FN(entity_api__set_position_x) {
+
+TSO_SCRIPT_API_FN(entity_api__set_position) {
     TSO_ARG_0;
     TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_ARG_3;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
 
     topaz_entity_position(native)->x = topaz_script_object_as_number(arg1);
-    TSO_NO_RETURN;
-}
-
-TSO_SCRIPT_API_FN(entity_api__set_position_y) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-
-    topaz_entity_position(native)->y = topaz_script_object_as_number(arg1);
-    TSO_NO_RETURN;
-}
-TSO_SCRIPT_API_FN(entity_api__set_position_z) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-
-    topaz_entity_position(native)->z = topaz_script_object_as_number(arg1);
+    topaz_entity_position(native)->y = topaz_script_object_as_number(arg2);
+    topaz_entity_position(native)->z = topaz_script_object_as_number(arg3);
     TSO_NO_RETURN;
 }
 
 
-TSO_SCRIPT_API_FN(entity_api__set_scale_x) {
+TSO_SCRIPT_API_FN(entity_api__set_scale) {
     TSO_ARG_0;
     TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_ARG_3;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
 
     topaz_entity_scale(native)->x = topaz_script_object_as_number(arg1);
+    topaz_entity_scale(native)->y = topaz_script_object_as_number(arg2);
+    topaz_entity_scale(native)->z = topaz_script_object_as_number(arg3);
     TSO_NO_RETURN;
 }
 
-TSO_SCRIPT_API_FN(entity_api__set_scale_y) {
+TSO_SCRIPT_API_FN(entity_api__look_at) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_ARG_3;
+    TSO_ARG_4;
+    TSO_ARG_5;
+    TSO_ARG_6;
+
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
+
+    topazVector_t target = {
+        topaz_script_object_as_number(arg1),
+        topaz_script_object_as_number(arg2),
+        topaz_script_object_as_number(arg3)
+    };
+
+    topazVector_t up = {
+        topaz_script_object_as_number(arg4),
+        topaz_script_object_as_number(arg5),
+        topaz_script_object_as_number(arg6)
+    };
+
+    topaz_entity_look_at(native, &target, &up);
+
+    TSO_NO_RETURN;
+}
+
+
+
+TSO_SCRIPT_API_FN(entity_api__get_global_position) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-
-    topaz_entity_scale(native)->y = topaz_script_object_as_number(arg1);
-    TSO_NO_RETURN;
-}
-TSO_SCRIPT_API_FN(entity_api__set_scale_z) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-
-    topaz_entity_scale(native)->z = topaz_script_object_as_number(arg1);
+    topazVector_t a = topaz_entity_get_global_position(native);
+    topaz_script_return_vector(script, arg1, a.x, a.y, a.z);
     TSO_NO_RETURN;
 }
 
-
-
-
-
-TSO_SCRIPT_API_FN(entity_api__get_global_position_x) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-    return topaz_script_object_from_number(script, topaz_entity_get_global_position(native).x);
-}
-
-TSO_SCRIPT_API_FN(entity_api__get_global_position_y) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-    return topaz_script_object_from_number(script, topaz_entity_get_global_position(native).y);
-}
-
-TSO_SCRIPT_API_FN(entity_api__get_global_position_z) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
-    return topaz_script_object_from_number(script, topaz_entity_get_global_position(native).z);
-}
 
 
 
@@ -652,6 +606,23 @@ TSO_SCRIPT_API_FN(entity_api__get_drawing) {
     return topaz_script_object_from_int(script, topaz_entity_get_drawing(native));
 }
 
+TSO_SCRIPT_API_FN(entity_api__get_local_matrix) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
+    topazMatrix_t a = *topaz_entity_get_local_matrix(native);
+    topaz_script_return_matrix(script, arg1, &a);
+    TSO_NO_RETURN;
+}
+
+TSO_SCRIPT_API_FN(entity_api__get_global_matrix) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_TYPE__ENTITY);   
+    topazMatrix_t a = *topaz_entity_get_global_matrix(native);
+    topaz_script_return_matrix(script, arg1, &a);
+    TSO_NO_RETURN;
+}
 
 
 TSO_SCRIPT_API_FN(entity_api__set_name) {
@@ -695,35 +666,27 @@ static void add_refs__entity_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_entity__get_priority", entity_api__get_priority, 1);
 
     // copy of vector as a value; no references
-    TS_MAP_NATIVE_FN("topaz_entity__get_rotation_x", entity_api__get_rotation_x, 1);
-    TS_MAP_NATIVE_FN("topaz_entity__get_rotation_y", entity_api__get_rotation_y, 1);
-    TS_MAP_NATIVE_FN("topaz_entity__get_rotation_z", entity_api__get_rotation_z, 1);
-    TS_MAP_NATIVE_FN("topaz_entity__get_position_x", entity_api__get_position_x, 1);
-    TS_MAP_NATIVE_FN("topaz_entity__get_position_y", entity_api__get_position_y, 1);
-    TS_MAP_NATIVE_FN("topaz_entity__get_position_z", entity_api__get_position_z, 1);
-    TS_MAP_NATIVE_FN("topaz_entity__get_scale_x", entity_api__get_scale_x, 1);
-    TS_MAP_NATIVE_FN("topaz_entity__get_scale_y", entity_api__get_scale_y, 1);
-    TS_MAP_NATIVE_FN("topaz_entity__get_scale_z", entity_api__get_scale_z, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__get_rotation", entity_api__get_rotation, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__get_position", entity_api__get_position, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__get_scale", entity_api__get_scale, 2);
 
-    TS_MAP_NATIVE_FN("topaz_entity__set_rotation_x", entity_api__set_rotation_x, 2);
-    TS_MAP_NATIVE_FN("topaz_entity__set_rotation_y", entity_api__set_rotation_y, 2);
-    TS_MAP_NATIVE_FN("topaz_entity__set_rotation_z", entity_api__set_rotation_z, 2);
-    TS_MAP_NATIVE_FN("topaz_entity__set_position_x", entity_api__set_position_x, 2);
-    TS_MAP_NATIVE_FN("topaz_entity__set_position_y", entity_api__set_position_y, 2);
-    TS_MAP_NATIVE_FN("topaz_entity__set_position_z", entity_api__set_position_z, 2);
-    TS_MAP_NATIVE_FN("topaz_entity__set_scale_x", entity_api__set_scale_x, 2);
-    TS_MAP_NATIVE_FN("topaz_entity__set_scale_y", entity_api__set_scale_y, 2);
-    TS_MAP_NATIVE_FN("topaz_entity__set_scale_z", entity_api__set_scale_z, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__set_rotation", entity_api__set_rotation, 4);
+    TS_MAP_NATIVE_FN("topaz_entity__set_position", entity_api__set_position, 4);
+    TS_MAP_NATIVE_FN("topaz_entity__set_scale", entity_api__set_scale, 4);
+    
+    TS_MAP_NATIVE_FN("topaz_entity__look_at", entity_api__look_at, 7);
 
-    TS_MAP_NATIVE_FN("topaz_entity__get_global_position_x", entity_api__get_global_position_x, 1);
-    TS_MAP_NATIVE_FN("topaz_entity__get_global_position_y", entity_api__get_global_position_y, 1);
-    TS_MAP_NATIVE_FN("topaz_entity__get_global_position_z", entity_api__get_global_position_z, 1);
+    TS_MAP_NATIVE_FN("topaz_entity__get_global_position", entity_api__get_global_position, 2);
     TS_MAP_NATIVE_FN("topaz_entity__is_stepping", entity_api__is_stepping, 1);
     TS_MAP_NATIVE_FN("topaz_entity__is_drawing", entity_api__is_drawing, 1);
     TS_MAP_NATIVE_FN("topaz_entity__set_stepping", entity_api__set_stepping, 2);
     TS_MAP_NATIVE_FN("topaz_entity__set_drawing", entity_api__set_drawing, 2);
     TS_MAP_NATIVE_FN("topaz_entity__get_stepping", entity_api__get_stepping, 1);
     TS_MAP_NATIVE_FN("topaz_entity__get_drawing", entity_api__get_drawing, 1);
+    
+    
+    TS_MAP_NATIVE_FN("topaz_entity__get_local_matrix", entity_api__get_local_matrix, 2);
+    TS_MAP_NATIVE_FN("topaz_entity__get_global_matrix", entity_api__get_global_matrix, 2);
 
 
     TS_MAP_NATIVE_FN("topaz_entity__set_name", entity_api__set_name, 2);

@@ -55,12 +55,16 @@ typedef struct topazViewManager_t topazViewManager_t;
 /// topaz_t has a default input instance that it generates for you. 
 /// See topaz_get_view_manager();
 ///
+/// (No script mapping)
+///
 topazViewManager_t * topaz_view_manager_create(
     /// The topaz context.
     topaz_t * context
 );
 
 /// Destroys and frees a topaz view manager instance.
+///
+/// (No script mapping)
 ///
 void topaz_view_manager_destroy(
     /// The view manager to destroy.
@@ -134,6 +138,8 @@ const topazArray_t * topaz_view_manager_get_all(
 /// Gets an array of all displays registered under the 
 /// this view manager that are active. The array should 
 /// be destroyed when done.
+///
+/// (No script mapping)
 ///
 topazArray_t * topaz_view_manager_get_all_active(
     /// The view manager to query

@@ -42,6 +42,21 @@ DEALINGS IN THE SOFTWARE.
 #ifdef TOPAZDC_DEBUG
 #include <stdio.h>
 #endif
+
+
+/// Tags the asset as currently in use. Accumulates like a counter.
+void topaz_sound_tag_in_use(
+    /// The topaz sound asset.
+    topazAsset_t * sound
+);
+
+/// Untags the asset's usage status.
+void topaz_sound_untag_in_use(
+    /// The topaz sound asset.
+    topazAsset_t * sound
+);
+
+
 /*
 
     Soundbank

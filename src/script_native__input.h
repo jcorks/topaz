@@ -438,9 +438,41 @@ TSO_SCRIPT_API_FN(input_api__mouse_wheel) {
 }
 
 
+TSO_SCRIPT_API_FN(input_api__map) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    
+    topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
+    topaz_input_map(
+        input,
+        topaz_script_object_as_string(arg0),
+        topaz_script_object_as_int(arg1)
+    );
+}
 
+TSO_SCRIPT_API_FN(input_api__map_pad) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    
+    topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
+    topaz_input_map_pad(
+        input,
+        topaz_script_object_as_string(arg0),
+        topaz_script_object_as_int(arg1),
+        topaz_script_object_as_int(arg2)
+    );
+}
 
-
+TSO_SCRIPT_API_FN(input_api__unmap) {
+    TSO_ARG_0;
+    
+    topazInput_t * input = topaz_context_get_input(((topazScriptManager_t*)context)->ctx);
+    topaz_input_unmap(
+        input,
+        topaz_script_object_as_string(arg0)
+    );
+}
 
 
 static void add_refs__input_api(topazScript_t * script, topazScriptManager_t * context) {
@@ -457,6 +489,10 @@ static void add_refs__input_api(topazScript_t * script, topazScriptManager_t * c
     TS_MAP_NATIVE_FN("topaz_input__set_deadzone", input_api__set_deadzone, 3);
     TS_MAP_NATIVE_FN("topaz_input__query_pad_count", input_api__query_pad_count, 0);
     TS_MAP_NATIVE_FN("topaz_input__query_pad_id", input_api__query_pad_id, 1);
+    
+    TS_MAP_NATIVE_FN("topaz_input__map", input_api__map, 2);
+    TS_MAP_NATIVE_FN("topaz_input__map_pad", input_api__map_pad, 3);
+    TS_MAP_NATIVE_FN("topaz_input__unmap", input_api__unmap, 1);
 
     TS_MAP_NATIVE_FN("topaz_input__add_unicode_listener", input_api__add_unicode_listener, 1);
     TS_MAP_NATIVE_FN("topaz_input__remove_unicode_listener", input_api__remove_unicode_listener, 1);

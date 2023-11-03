@@ -111,6 +111,8 @@ topazComponent_t * topaz_component_create(
 
 /// Returns the attributes of the component.
 ///
+/// (No script mapping)
+///
 const topazComponent_Attributes_t * topaz_component_get_attributes(
     /// The component to query.
     const topazComponent_t * component    
@@ -131,15 +133,7 @@ void topaz_component_destroy(
 );
 
 
-/// Attaches the component to an entity. This triggers the attach event.
-///
-void topaz_component_attach(
-    /// The component to attach to an entity.
-    topazComponent_t * component,
 
-    /// The entity to attach to.
-    topazEntity_t * entity
-);
 
 /// Detaches the component from an entity. This triggers the detach event.
 ///
@@ -191,17 +185,17 @@ void topaz_component_set_stepping(
     topazComponent_t * component, 
 
     /// Whether to enable.
-    int trueOrFalse
+    int enable
 );
 
 /// Sets whether this component will draw.
 ///
 void topaz_component_set_drawing(
     /// The component to modify.
-    topazComponent_t *, 
+    topazComponent_t * component, 
 
     /// Whether to enable.
-    int trueOrFalse
+    int enable
 );
 
 /// Returns the tag for the component.
@@ -211,15 +205,6 @@ const topazString_t * topaz_component_get_tag(
     const topazComponent_t * component
 );
 
-/// Sets the tag for the component.
-///
-void topaz_component_set_tag(
-    /// The component to modify.
-    topazComponent_t * component, 
-    
-    /// The tag to set.
-    const topazString_t * newTag
-);
 
 
 /// Returns the set host of the component. If no host is set,
@@ -232,6 +217,8 @@ topazEntity_t * topaz_component_get_host(
 
 /// Returns the context that this component belongs in.
 ///
+/// (No script mapping)
+///
 topaz_t * topaz_component_get_context(
     /// The component to query.
     const topazComponent_t * component
@@ -239,6 +226,8 @@ topaz_t * topaz_component_get_context(
 
 /// Returns the emtpy component. This value is consistent across all 
 /// invocations.
+///
+/// (No script mapping)
 ///
 topazComponent_t * topaz_component_null();
 
@@ -339,8 +328,8 @@ void topaz_component_uninstall_hook(
     /// The name of the event 
     const topazString_t * eventName, 
 
-    /// The index of the hook to remove.
-    uint32_t index
+    /// The id of the hook to remove.
+    uint32_t id
 );
 
 /// Adds a handler to an event. 
@@ -372,13 +361,15 @@ void topaz_component_uninstall_handler(
     /// The event name to uninstall the handler from.
     const topazString_t * eventName, 
 
-    /// The index of the handler.
-    uint32_t index
+    /// The id of the handler.
+    uint32_t id
 );
 
 
 /// Returns a list of event names that this component is able to process
 /// The array needs to be freed by the caller.
+///
+/// (No script mapping) 
 ///
 topazArray_t * topaz_component_get_known_events(
     /// The component to query.

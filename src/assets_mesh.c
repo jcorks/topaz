@@ -23,7 +23,6 @@ struct topazMesh_t {
     topaz_t * ctx;
     topazArray_t * objs;
     topazRenderer_Buffer_t * v;
-    float reg[4];
 };
 
 
@@ -138,43 +137,39 @@ void topaz_mesh_define_vertices(topazAsset_t * a, const topazArray_t * s) {
 /// Gets data from a specific vertex. If the 
 /// vertex doesnt exist, nothing is returned.
 ///
-const float * topaz_mesh_get_vertex(
+topazRenderer_3D_Vertex_t topaz_mesh_get_vertex(
     topazAsset_t * a, 
-    topazMesh_VertexAttribute attrib, 
     uint32_t index
 ) {
     topazMesh_t * m = mesh__retrieve(a);
-    m->reg[0] = m->reg[1] = m->reg[2] = m->reg[3] = 0.f;
 
-    if (!m->v) return m->reg;
+    topazRenderer_3D_Vertex_t vtx = {};
+    if (!m->v) return vtx;
 
     uint32_t count = TOPAZ_FLOATS_TO_V(topaz_renderer_buffer_get_size(m->v));
+
     if (index >= count) {
-        return m->reg;
+        return vtx;
     }
 
     uint32_t baseFloat = TOPAZ_V_TO_FLOATS(index);
-    uint32_t offset;
-    uint32_t length;
-    topaz_mesh__get_attrib_params(attrib, &offset, &length);
 
     topaz_renderer_buffer_read(
         m->v,
-        m->reg,
+        &vtx,
         offset+baseFloat,
-        length
+        TOPAZ_V_TO_FLOATS(1)
     );
 
-    return m->reg;
+    return vtx;
 }
 
 
 
 void topaz_mesh_set_vertex(
     topazAsset_t * a,
-    topazMesh_VertexAttribute attrib, 
     uint32_t index,
-    const float * data
+    topazRenderer_3D_Vertex_t vertex
 ) {
     topazMesh_t * m = mesh__retrieve(a);
     if (!m->v) return;
@@ -185,15 +180,12 @@ void topaz_mesh_set_vertex(
 
 
     uint32_t baseFloat = TOPAZ_V_TO_FLOATS(index);
-    uint32_t offset;
-    uint32_t length;
-    topaz_mesh__get_attrib_params(attrib, &offset, &length);
 
     topaz_renderer_buffer_update(
         m->v,
-        data,
+        &vertex,
         offset+baseFloat,
-        length
+        TOPAZ_V_TO_FLOATS(1)
     );
 }
 

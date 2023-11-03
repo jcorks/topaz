@@ -12,6 +12,15 @@ TSO_SCRIPT_API_FN(console_api__enable) {
     TSO_NO_RETURN;
 }
 
+
+TSO_SCRIPT_API_FN(console_api__print) {
+    TSO_ARG_0;
+    topazScriptManager_t * mgr = context;
+    topazConsole_t * c = topaz_context_get_console(mgr->ctx);
+    topaz_console_print(c, topaz_script_object_as_string(arg0));
+    TSO_NO_RETURN;    
+}
+
 TSO_SCRIPT_API_FN(console_api__print_message) {
     TSO_ARG_0;
     TSO_ARG_1;
@@ -234,6 +243,7 @@ TSO_SCRIPT_API_FN(console_api__pop_command_context) {
 static void add_refs__console_api(topazScript_t * script, topazScriptManager_t * context) {
     // member functions
     TS_MAP_NATIVE_FN("topaz_console__enable", console_api__enable, 2);
+    TS_MAP_NATIVE_FN("topaz_console__print", console_api__print, 1);
     TS_MAP_NATIVE_FN("topaz_console__print_message", console_api__print_message, 2);
     TS_MAP_NATIVE_FN("topaz_console__add_listener", console_api__add_listener, 1);
     TS_MAP_NATIVE_FN("topaz_console__remove_listener", console_api__remove_listener, 1);

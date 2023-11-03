@@ -54,10 +54,12 @@ struct topazVector_t {
 ///
 void topaz_vector_reset(
     /// The vector to reset.
-    topazVector_t * vector
+    topazVector_t * v
 );
 
 /// Shorthand initializer for x, y, and z.
+///
+/// (No script mapping)
 ///
 topazVector_t topaz_vector_from_xyz(
     /// The x component.
@@ -91,13 +93,20 @@ topazVector_t topaz_vector_from_string(
 
 /// Returns the positional X of the vector
 ///
+/// (No script mapping)
+///
+
 #define topaz_vec_x(__V__) (((float*)(__V__))[0])
 
 /// Returns the positional Y of the vector
 ///
+/// (No script mapping)
+///
 #define topaz_vec_y(__V__) (((float*)(__V__))[1])
 
 /// Returns the positional Z of the vector
+///
+/// (No script mapping)
 ///
 #define topaz_vec_z(__V__) (((float*)(__V__))[2])
 
@@ -107,50 +116,50 @@ topazVector_t topaz_vector_from_string(
 ///
 float topaz_vector_get_length(
     /// The vector to query.
-    const topazVector_t * vector
+    const topazVector_t * v
 );
 
 /// Returns the distance of this vector to the other vector.
 ///
 float topaz_vector_get_distance(
     /// The first positional vector.
-    const topazVector_t * pos0, 
+    const topazVector_t * p0, 
 
     /// The second positional vector.
-    const topazVector_t * pos1
+    const topazVector_t * p1
 );
 
 /// Sets the vector to a magnitude of 1. The source vector is returned it.
 ///
 topazVector_t * topaz_vector_normalize(
     /// The vector to modify.
-    topazVector_t * a
+    topazVector_t * v
 );
 
 /// Returns the cross product: A x B
 ///
 topazVector_t topaz_vector_cross(
     /// Vector A
-    const topazVector_t * A, 
+    const topazVector_t * a, 
 
     /// Vector B
-    const topazVector_t * B
+    const topazVector_t * b
 );
 
 /// Returns the dot product.: A . B
 float topaz_vector_dot(
     /// Vector A
-    const topazVector_t * A,
+    const topazVector_t * a,
 
     /// Vector B
-    const topazVector_t * B
+    const topazVector_t * b
 );
 
 /// Sets the X Y Z to integer values.
 ///
 topazVector_t * topaz_vector_floor(
     /// The vector whose components will be floored.
-    topazVector_t * a
+    topazVector_t * v
 );
 
 

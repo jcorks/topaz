@@ -63,7 +63,11 @@ struct topazStateControl_Loop_t {
 
     /// Function called when entering this state
     ///
-    topaz_component_attribute_callback on_init;
+    topaz_component_attribute_callback on_enter;
+    
+    /// Function called when leaving this state 
+    ///
+    topaz_component_attribute_callback on_leave;
 
 
     /// Data passed as the last argument for loop functions.
@@ -91,10 +95,10 @@ void topaz_state_control_add(
     topazComponent_t * control, 
 
     /// The name of the new state.
-    const topazString_t * stateName, 
+    const topazString_t * name, 
 
     /// The data for the state loop.
-    topazStateControl_Loop_t
+    topazStateControl_Loop_t state
 );
 
 
@@ -106,7 +110,7 @@ void topaz_state_control_remove(
     topazComponent_t * control, 
     
     /// The name of the state to remove.
-    const topazString_t * stateName
+    const topazString_t * name
 );
 
 /// Begins the state machine execution loop from the given state.
@@ -119,7 +123,7 @@ void topaz_state_control_execute(
     topazComponent_t * control, 
 
     /// The state to change to.
-    const topazString_t * stateName
+    const topazString_t * name
 );
 
 /// Stops all current execution.

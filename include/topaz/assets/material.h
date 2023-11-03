@@ -67,22 +67,6 @@ struct topazMaterial_ProgramData_t {
 };
 
 
-// Creates a new material. These can then be used with mesh instances to render 
-// 3D object.s
-//
-topazAsset_t * topaz_material_create(
-    topaz_t *, 
-    const topazString_t *
-);
-
-// Creates a new data asset object, but without 
-// any loading behavior. 
-//
-topazAsset_t * topaz_material_empty(
-    topaz_t *
-);
-
-
 
 
 
@@ -132,6 +116,9 @@ void topaz_material_set_program_source(
 
 /// Returns a table of shader languages with mapped vertex
 /// source string.
+/// 
+/// (No script mapping)
+///
 const topazTable_t * topaz_material_get_vertex_source_table(
     /// The material to query.
     topazAsset_t * mat
@@ -139,12 +126,18 @@ const topazTable_t * topaz_material_get_vertex_source_table(
 
 /// Returns a table of shader languages with mapped vertex
 /// source string.
+///
+/// (No script mapping)
+///
 const topazTable_t * topaz_material_get_fragment_source_table(
     /// The material to query.
     topazAsset_t * mat
 );
 
 /// Removes all shader program sources from the material.
+///
+/// (No script mapping)
+///
 void topaz_material_clear_sources(
     /// The material to modify.
     topazAsset_t * mat

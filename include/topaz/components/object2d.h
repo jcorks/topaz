@@ -162,7 +162,7 @@ void topaz_object2d_add_velocity(
     float factor, 
 
     /// The direction to add it in, in degrees.
-    float directionDegrees
+    float direction
 );
 
 /// Same as topaz_object2d_add_velocity, but the direction is toward a 
@@ -228,7 +228,7 @@ void topaz_object2d_set_friction_x(
     topazComponent_t * o2d, 
 
     /// The mount of friction to set.
-    float amt
+    float amount
 );
 
 /// Same as topaz_object2d_set_friction_x(), except applied in the vertical direction.
@@ -238,7 +238,7 @@ void topaz_object2d_set_friction_y(
     topazComponent_t * o2d, 
 
     /// The mount of friction to set.
-    float amt
+    float amount
 );
 
 
@@ -303,7 +303,7 @@ void topaz_object2d_set_velocity_x(
     topazComponent_t * o2d, 
 
     /// The new velocity.
-    float amt
+    float velocity
 );
 
 /// Sets the vertical velocity for the component.
@@ -313,7 +313,7 @@ void topaz_object2d_set_velocity_y(
     topazComponent_t * o2d,
 
     /// The new velocity amount. 
-    float amt
+    float velocity
 );
 
 /// Returns the speed of the object.
@@ -408,7 +408,7 @@ void topaz_object2d_set_collider_radial(
     float radius,
 
     /// The number of sides of the collider.
-    uint32_t numSub
+    uint32_t numSides
 );
 
 
@@ -440,7 +440,7 @@ topazEntity_t * topaz_object2d_get_last_collided(
     topazComponent_t * o2d,
     
     /// The position estimation where the collision happened.
-    topazVector_t * 
+    topazVector_t * where
 );
 
 
@@ -448,7 +448,7 @@ topazEntity_t * topaz_object2d_get_last_collided(
 /// to whole units only. The default is false.
 void topaz_object2d_set_unit_lock(
     topazComponent_t * o2d,
-    int doIt
+    int enable
 );
 
 

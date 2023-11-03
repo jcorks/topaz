@@ -92,11 +92,6 @@ static void camera__on_step(topazEntity_t *, void *);
 
 
 static topazMatrix_t matrix_projection_perspective(float fovy, float ratio, float zNear, float zFar);
-static topazMatrix_t matrix_view_look_at(
-    const topazVector_t * camPos,
-    const topazVector_t * target,
-    const topazVector_t * upVec
-);
 static topazMatrix_t matrix_projection_orthographic(
     float left,    float right,
     float bottom,  float top,
@@ -147,37 +142,7 @@ void topaz_camera_set_auto_refresh(topazEntity_t * e, int ar) {
 }
 
 
-void topaz_camera_look_at(
-    topazEntity_t * e, 
-    const topazVector_t * target,
-    const topazVector_t * up
-) {
-    TopazCamera * c = camera__retrieve(e);
-    if (c->type == topazCamera_Type_Perspective3D) {
-        topaz_vector_reset(topaz_entity_rotation(e));
-        topazSpatial_t * t = topaz_entity_get_spatial(e);
-        const topazMatrix_t * gl = topaz_spatial_get_global_transform(t);
-        topazVector_t p = topaz_matrix_transform(gl, topaz_entity_get_position(e));
-        topazMatrix_t m = matrix_view_look_at(
-            &p,
-            target,
-            up
-        );
 
-        topazVector_t x = topaz_vector_from_xyz(1, 0, 0);
-        topazVector_t y = topaz_vector_from_xyz(0, 1, 0);
-        topazVector_t z = topaz_vector_from_xyz(0, 0, 1);
-
-        topazVector_t * rot = topaz_entity_rotation(e);
-        rot->x = topaz_matrix_transform(&m, &x).z;
-        rot->y = topaz_matrix_transform(&m, &z).y;
-        rot->z = topaz_matrix_transform(&m, &y).x;
-    } else {
-        *topaz_entity_position(e) = *target;
-    }
-
-
-}
 
 topazVector_t topaz_camera_screen_to_world(topazEntity_t * e, const topazVector_t * p) {
     TopazCamera * c = camera__retrieve(e);
@@ -282,46 +247,7 @@ static topazMatrix_t matrix_projection_perspective(
 
 
 
-topazMatrix_t matrix_view_look_at(
-    const topazVector_t * camPos,
-    const topazVector_t * target,
-    const topazVector_t * upVec
-) {
-    topazMatrix_t out;
 
-    float * laScratch = &out.data[0];
-    topazVector_t F;
-    F.x = target->x - camPos->x;
-    F.y = target->y - camPos->y;
-    F.z = target->z - camPos->z;
-    topaz_vector_normalize(&F);
-
-
-    topazVector_t s = topaz_vector_cross(&F, upVec);
-    topaz_vector_normalize(&s);
-
-    topazVector_t u = topaz_vector_cross(&s, &F);
-
-    laScratch[0] = s.x;
-    laScratch[1] = s.y;
-    laScratch[2] = s.z;
-    laScratch[3] = 0;
-    laScratch[4] = u.x;
-    laScratch[5] = u.y;
-    laScratch[6] = u.z;
-    laScratch[7] = 0;
-    laScratch[8] = -F.x;
-    laScratch[9] = -F.y;
-    laScratch[10] = -F.z;
-    laScratch[11] = 0;
-    laScratch[12] = 0;
-    laScratch[13] = 0;
-    laScratch[14] = 0;
-    laScratch[15] = 1;
-
-    topaz_matrix_translate(&out, -camPos->x, -camPos->y, -camPos->z);
-    return out;
-}
 
 static topazMatrix_t matrix_projection_orthographic(
     float left,    float right,

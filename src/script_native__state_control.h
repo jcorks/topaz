@@ -16,7 +16,8 @@ TSO_SCRIPT_API_FN(state_control_api__create) {
 typedef struct {
     topazScript_Object_t * onStep;
     topazScript_Object_t * onDraw;
-    topazScript_Object_t * onInit;    
+    topazScript_Object_t * onEnter;    
+    topazScript_Object_t * onLeave;    
 
     topazScript_Object_t * src;
 } ScriptStateLoopData;
@@ -41,11 +42,21 @@ static void script_state_control__on_draw(topazComponent_t * component, void * d
     );
 }
 
-static void script_state_control__on_init(topazComponent_t * component, void * data) {
+static void script_state_control__on_enter(topazComponent_t * component, void * data) {
     ScriptStateLoopData * s = data;
     topaz_script_object_destroy(
         topaz_script_object_reference_call(
-            s->onInit, 
+            s->onEnter, 
+            topaz_array_empty()
+        )    
+    );
+}
+
+static void script_state_control__on_leave(topazComponent_t * component, void * data) {
+    ScriptStateLoopData * s = data;
+    topaz_script_object_destroy(
+        topaz_script_object_reference_call(
+            s->onLeave, 
             topaz_array_empty()
         )    
     );
@@ -59,6 +70,7 @@ TSO_SCRIPT_API_FN(state_control_api__add) {
     TSO_ARG_2; // onStep
     TSO_ARG_3; // onDraw
     TSO_ARG_4; // onInit
+    TSO_ARG_5; // onLeave
 
 
 
@@ -79,10 +91,14 @@ TSO_SCRIPT_API_FN(state_control_api__add) {
     } 
 
     if ((topaz_script_object_reference_get_feature_mask(arg4) & topazScript_Object_Feature_Callable)) { 
-        s->onInit = topaz_script_object_from_object(script, arg4);
-        loop.on_init = script_state_control__on_init;
+        s->onEnter = topaz_script_object_from_object(script, arg4);
+        loop.on_enter = script_state_control__on_enter;
     } 
 
+    if ((topaz_script_object_reference_get_feature_mask(arg5) & topazScript_Object_Feature_Callable)) { 
+        s->onLeave = topaz_script_object_from_object(script, arg5);
+        loop.on_leave = script_state_control__on_leave;
+    } 
 
 
 
@@ -171,7 +187,7 @@ TSO_SCRIPT_API_FN(state_control_api__get_current) {
 
 static void add_refs__state_control_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz_state_control__create", state_control_api__create, 0);
-    TS_MAP_NATIVE_FN("topaz_state_control__add", state_control_api__add, 5);
+    TS_MAP_NATIVE_FN("topaz_state_control__add", state_control_api__add, 6);
     TS_MAP_NATIVE_FN("topaz_state_control__remove", state_control_api__remove, 2);
     TS_MAP_NATIVE_FN("topaz_state_control__execute", state_control_api__execute, 2);
     TS_MAP_NATIVE_FN("topaz_state_control__halt", state_control_api__halt, 1);

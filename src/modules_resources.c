@@ -17,7 +17,6 @@
 #include <topaz/assets/sound.h>
 #include <topaz/assets/material.h>
 #include <topaz/assets/mesh.h>
-#include <topaz/assets/bundle.h>
 
 
 #ifdef TOPAZDC_DEBUG
@@ -25,6 +24,54 @@
 #endif
 
 #include "modules_resources__bundle"
+
+
+topazAsset_t * topaz_sound_create_empty(
+    topaz_t * context
+);
+
+
+/// Creates a sound asset with the given name.
+topazAsset_t * topaz_sound_create(
+    /// The topaz context.
+    topaz_t * context,
+
+    /// Name of the asset.    
+    const topazString_t * name
+);
+
+topazAsset_t * topaz_data_create(
+    topaz_t *, 
+    const topazString_t *
+);
+
+topazAsset_t * topaz_data_create_empty(topaz_t *);
+
+
+topazAsset_t * topaz_image_create(
+    topaz_t *, 
+    const topazString_t *
+);
+
+topazAsset_t * topaz_image_create_empty(topaz_t *);
+
+
+
+topazAsset_t * topaz_material_create(
+    topaz_t *, 
+    const topazString_t *
+);
+
+topazAsset_t * topaz_material_empty(
+    topaz_t *
+);
+
+
+topazAsset_t * topaz_mesh_create(
+    topaz_t *, 
+    const topazString_t *
+);
+
 
 
 struct topazResources_t {   

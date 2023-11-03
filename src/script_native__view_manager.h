@@ -49,14 +49,6 @@ TSO_SCRIPT_API_FN(view_manager_api__set_clipboard_from_string) {
 
 
 
-TSO_SCRIPT_API_FN(display_api__destroy) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
-    TSO_OBJECT_UNKEEP_REF(arg0, native);
-    topaz_script_object_reference_set_native_data(arg0, NULL, 0);    
-    topaz_display_destroy(native);
-    TSO_NO_RETURN;
-}
 
 TSO_SCRIPT_API_FN(view_manager_api__create_display) {
     topazViewManager_t * vm = topaz_context_get_view_manager(((topazScriptManager_t*)context)->ctx);
@@ -66,6 +58,19 @@ TSO_SCRIPT_API_FN(view_manager_api__create_display) {
     TSO_OBJECT_KEEP_REF(ptr);
     return object;
 }
+
+
+TSO_SCRIPT_API_FN(view_manager_api__destroy_display) {
+    TSO_ARG_0;
+    TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
+    topazViewManager_t * vm = topaz_context_get_view_manager(((topazScriptManager_t*)context)->ctx);
+    TSO_OBJECT_UNKEEP_REF(arg0, native);
+    topaz_script_object_reference_set_native_data(arg0, NULL, 0);    
+    topaz_view_manager_destroy_display(vm, native);
+    TSO_NO_RETURN;
+}
+
+
 TSO_SCRIPT_API_FN(view_manager_api__get_display_count) {
     topazViewManager_t * vm = topaz_context_get_view_manager(((topazScriptManager_t*)context)->ctx);
     return topaz_script_object_from_int(
@@ -141,6 +146,31 @@ TSO_SCRIPT_API_FN(display_api__set_root) {
     topaz_display_set_root(native, native1);    
     TSO_NO_RETURN;
 }
+
+TSO_SCRIPT_API_FN(display_api__auto_clear_framebuffer) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
+    topaz_display_auto_clear_framebuffer(native, topaz_script_object_as_int(arg1));    
+    TSO_NO_RETURN;
+}
+
+TSO_SCRIPT_API_FN(display_api__update) {
+    TSO_ARG_0;
+    TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
+    topaz_display_update(native);    
+    TSO_NO_RETURN;
+
+}
+
+TSO_SCRIPT_API_FN(display_api__set_name) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
+    topaz_display_set_name(native, topaz_script_object_as_string(arg1));    
+    TSO_NO_RETURN;
+}
+
 
 TSO_SCRIPT_API_FN(display_api__set_parameter) {
     TSO_ARG_0;
@@ -428,15 +458,16 @@ static void add_refs__view_manager_api(topazScript_t * script, topazScriptManage
     TS_MAP_NATIVE_FN("topaz_view_manager__create_display", view_manager_api__create_display, 0);
     TS_MAP_NATIVE_FN("topaz_view_manager__get_display_count", view_manager_api__get_display_count, 0);
     TS_MAP_NATIVE_FN("topaz_view_manager__get_display", view_manager_api__get_display, 1);
+    TS_MAP_NATIVE_FN("topaz_view_manager__destroy_display", view_manager_api__destroy_display, 1);
 
 
-    TS_MAP_NATIVE_FN("topaz_display__destroy", display_api__destroy, 1);
     TS_MAP_NATIVE_FN("topaz_display__get_parameter", display_api__get_parameter, 2);
     TS_MAP_NATIVE_FN("topaz_display__set_parameter", display_api__set_parameter, 3);
     TS_MAP_NATIVE_FN("topaz_display__is_parameter_modifiable", display_api__is_parameter_modifiable, 2);
     TS_MAP_NATIVE_FN("topaz_display__get_root", display_api__get_root, 1);
     TS_MAP_NATIVE_FN("topaz_display__set_root", display_api__set_root, 2);
-
+    TS_MAP_NATIVE_FN("topaz_display__auto_clear_framebuffer", display_api__auto_clear_framebuffer, 2);
+    TS_MAP_NATIVE_FN("topaz_display__set_name", display_api__set_name, 2);
     TS_MAP_NATIVE_FN("topaz_display__add_parameter_callback", display_api__add_parameter_callback, 2);
     TS_MAP_NATIVE_FN("topaz_display__add_close_callback", display_api__add_close_callback, 2);
     TS_MAP_NATIVE_FN("topaz_display__remove_callback", display_api__remove_callback, 2);
@@ -448,6 +479,7 @@ static void add_refs__view_manager_api(topazScript_t * script, topazScriptManage
     TS_MAP_NATIVE_FN("topaz_display__clear_main_framebuffer", display_api__clear_main_framebuffer, 2);
     TS_MAP_NATIVE_FN("topaz_display__capture_main_framebuffer", display_api__capture_main_framebuffer, 2);
     TS_MAP_NATIVE_FN("topaz_display__set_post_process_shader", display_api__set_post_process_shader, 3);
+    TS_MAP_NATIVE_FN("topaz_display__update", display_api__update, 1);
 
     TS_MAP_NATIVE_FN("topaz_framebuffer__get_width", framebuffer_api__get_width, 1);
     TS_MAP_NATIVE_FN("topaz_framebuffer__get_height", framebuffer_api__get_height, 1);

@@ -269,7 +269,7 @@ enum topazKey {
     /// The pointer y axis.
     topazPointer_Y= 260, 
     /// The pointer wheel axis.
-    topazPointer_Wheel= 261, 
+    topazPointer_wheel= 261, 
 
     /// The a pad input.
     topazPad_a= 300,     
@@ -396,7 +396,7 @@ enum topazKey {
     topazPad_options= 511,
 
     /// Number of built-in inputs.
-    topazInput_Count= 512
+    topazInput_count= 512
 };
 
 

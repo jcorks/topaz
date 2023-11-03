@@ -59,37 +59,7 @@ typedef struct topazMesh_t topazMesh_t;
 
 
 
-/// The type of vertex attribute.
-///
-typedef enum topazMesh_VertexAttribute topazMesh_VertexAttribute;
-enum topazMesh_VertexAttribute {
-    ///  Position of the vertex. 3 components: xyz.
-    ///
-    topazMesh_VertexAttribute_Position, 
 
-
-    /// The normal vector of the vertex. 3 components: xyz.
-    ///
-    topazMesh_VertexAttribute_Normal,   
-
-    /// The texture cooridates of the vertex. 2 components: xy.
-    ///
-    topazMesh_VertexAttribute_UV,       
-
-    /// User-defined data. 4 components: xyz.
-    ///
-    topazMesh_VertexAttribute_UserData  
-
-};
-
-
-
-/// Creates a new, empty mesh.
-///
-topazAsset_t * topaz_mesh_create(
-    topaz_t *, 
-    const topazString_t *
-);
 
 
 
@@ -118,35 +88,32 @@ void topaz_mesh_define_vertices(
 
 /// Gets data from a specific vertex. If the 
 /// vertex doesnt exist, a placeholder value is returned.
-/// This value is valid until the next call of the function 
-/// with the same mesh.
+/// In the script mapping, an array of number is returned
+/// with each number corresponding to the data 
+/// of the vertex in order.
 ///
-const float * topaz_mesh_get_vertex(
+topazRenderer_3D_Vertex_t topaz_mesh_get_vertex(
     /// The mesh to query.
     topazAsset_t * mesh, 
-
-    /// Which vertex attribute to retrieve.
-    topazMesh_VertexAttribute attribute, 
 
     /// The vertex index.
     uint32_t index
 );
 
 /// Gets data from a specific vertex. If the 
-/// vertex doesnt exist, nothing happens
-///
+/// vertex doesnt exist, nothing happens.
+/// In the script mapping, an array of number is expected
+/// with each number corresponding to the data 
+/// of the vertex in order.
 void topaz_mesh_set_vertex(
     /// The mesh to modify.
     topazAsset_t * mesh,
-
-    /// The attribute to modify
-    topazMesh_VertexAttribute attribute, 
 
     /// The vertex index to modify.
     uint32_t index,
 
     /// The raw data to copy.
-    const float * data
+    topazRenderer_3D_Vertex_t data
 );
 
 /// Returns the number of vertex within this mesh.
@@ -172,6 +139,8 @@ uint32_t topaz_mesh_add_object(
 );
 
 /// Gets the array of face indices for the corresponding index.
+///
+/// (No script mapping)
 ///
 topazArray_t * topaz_mesh_get_object(
     /// The mesh to retrieve an object from.

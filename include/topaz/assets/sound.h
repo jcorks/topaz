@@ -51,29 +51,17 @@ struct topazSound_Sample_t {
     uint16_t rightSample;
 };
 
-/// Creates a new sound asset object
-/// Use asset_destroy to release.
-///
-topazAsset_t * topaz_sound_create_empty(
-    /// The topaz context.
-    topaz_t * context
-);
 
 
-
-/// Creates a sound asset with the given name.
-topazAsset_t * topaz_sound_create(
-    /// The topaz context.
-    topaz_t * context,
-
-    /// Name of the asset.    
-    const topazString_t * name
-);
 
 
 /// Sets the raw samples for the asset. 
 /// This replaces all current samples.
 /// If the sound is "in use", then this function does nothing.
+///
+/// In the script mapping, the array should be a plain 
+/// array of raw number values. sampleCount is omitted 
+/// in this case.
 void topaz_sound_set_samples(
     /// The topaz sound asset.
     topazAsset_t * sound, 
@@ -86,6 +74,8 @@ void topaz_sound_set_samples(
 /// Returns a read-only array of raw sample data 
 /// within the asset. The array is of topazSound_Sample_t
 ///
+/// In the script context, an array is returned of 
+/// plain number values in order of left to right, rippled
 const topazArray_t * topaz_sound_get_samples(
     /// The topaz sound asset.
     topazAsset_t * sound
@@ -98,17 +88,6 @@ uint32_t topaz_sound_get_sample_count(
     topazAsset_t * sound
 );
 
-/// Tags the asset as currently in use. Accumulates like a counter.
-void topaz_sound_tag_in_use(
-    /// The topaz sound asset.
-    topazAsset_t * sound
-);
-
-/// Untags the asset's usage status.
-void topaz_sound_untag_in_use(
-    /// The topaz sound asset.
-    topazAsset_t * sound
-);
 
 /// Returns wheter the sound is in use.
 int topaz_sound_is_in_use(

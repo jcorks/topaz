@@ -57,10 +57,10 @@ typedef struct topazInput_t topazInput_t;
 ///
 typedef void (*topaz_input_button_event_callback)(
     /// The input instance.
-    topazInput_t * input, 
+    topazInput_t * i, 
 
     /// The input button. Usually is a value of type topazKey.
-    int inputButton, 
+    int input, 
 
     /// The data bound to the callback.
     void * data
@@ -70,10 +70,10 @@ typedef void (*topaz_input_button_event_callback)(
 ///
 typedef void (*topaz_input_button_value_callback)(
     /// The input instance.
-    topazInput_t * input, 
+    topazInput_t * i, 
 
     /// The input button. Usually is a value of type topazKey.
-    int inputButton, 
+    int input, 
 
     /// The value state of the input.
     float value, 
@@ -89,7 +89,7 @@ typedef void (*topaz_input_unicode_callback)(
     topazInput_t * input, 
 
     /// The character requested by the event.
-    int unicodeValue, 
+    int unicode, 
 
     /// The data bound to the callback.
     void * data
@@ -175,12 +175,16 @@ struct topazInput_UnicodeListener_t {
 /// topaz_t has a default input instance that it generates for you. 
 /// See topaz_get_input();
 ///
+/// (No script mapping)
+///
 topazInput_t * topaz_input_create(
     /// The context to use.
     topaz_t * context
 );
 
 /// Destroys and frees a topaz input instance.
+///
+/// (No script mapping)
 ///
 void topaz_input_destroy(
     /// The input instance to destroy.
@@ -245,6 +249,9 @@ int topaz_input_add_mapped_listener(
 /// If none, NULL is returned.
 /// The reference is owned by input and is guaranteed 
 /// to be valid until the next topaz input call.
+///
+/// (No script mapping) 
+///
 const topazInput_Listener_t * topaz_input_get_listener(
     /// The input to query.
     topazInput_t * input,
@@ -277,7 +284,7 @@ float topaz_input_get_state(
     const topazInput_t * query,
 
     /// The input value to query. Usually of type topazKey. 
-    int inputKey
+    int input
 );
 
 /// Returns the current state of the device input for a given pad.
@@ -317,7 +324,7 @@ void topaz_input_set_deadzone(
     int padID, 
 
     /// The input key to set a deadzone. Mostly useful for pad axes inputs
-    int inputButton, 
+    int input, 
 
     /// The deadzone amount. If an input value's absolute value is 
     /// below this amount, then the input will be ignored.
@@ -353,6 +360,8 @@ int topaz_input_add_unicode_listener(
 /// Retrieves the specified listener by ID. NULL
 /// is returned in the case of no such listener.
 ///
+/// (No script mapping) 
+///
 const topazInput_UnicodeListener_t * topaz_input_get_unicode_listener(
     /// The input to query.
     topazInput_t * input, 
@@ -369,7 +378,7 @@ void topaz_input_remove_unicode_listener(
     topazInput_t * input, 
 
     /// The listener to remove.
-    int listener
+    int id
 );
 
 
@@ -379,13 +388,13 @@ void topaz_input_remove_unicode_listener(
 ///
 void topaz_input_map(
     /// The input to set the mapping within.
-    topazInput_t * input, 
+    topazInput_t * i, 
 
     /// The named string to associate an input with.
     const topazString_t * name, 
 
     /// The value to associate. Usually of type topazKey
-    int inputValue
+    int input
 );
 
 /// Maps a string to a pad input. This then can be used for various map*
@@ -393,7 +402,7 @@ void topaz_input_map(
 ///
 void topaz_input_map_pad(
     /// The input to set the mapping within.
-    topazInput_t * input, 
+    topazInput_t * i, 
 
     /// The named string to associate a pad input with.
     const topazString_t * name, 
@@ -402,7 +411,7 @@ void topaz_input_map_pad(
     int pad, 
 
     /// The input value within the pad to associate the mapping with. Usually of type topazKey.
-    int inputValue
+    int input
 );
 
 /// Dissociates a string with an input if in use.
@@ -417,6 +426,9 @@ void topaz_input_unmap(
 
 
 /// Polls for input.
+///
+/// (No script mapping) 
+///
 void topaz_input_poll(
     /// The input to poll.
     topazInput_t * t

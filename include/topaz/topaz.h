@@ -63,10 +63,14 @@ typedef struct topaz_t topaz_t;
 
 /// Creates a new topaz context. Default system backends are used.
 ///
+/// (No script mapping)
+///
 topaz_t * topaz_context_create();
 
 
 /// Creates a new topaz context with the given topazSystem_t configuration.
+///
+/// (No script mapping)
 ///
 topaz_t * topaz_context_create_from_system(
     /// The pre-configured system instance to use.
@@ -78,13 +82,19 @@ topaz_t * topaz_context_create_from_system(
 /// Creates an empty topaz context with no environment-specific 
 /// behavior. Not particularly useful.
 ///
+/// (No script mapping)
+///
 topaz_t * topaz_context_create_empty();
 
 /// Gets the system that belongs to the context.
 ///
+/// (No script mapping)
+///
 topazSystem_t * topaz_context_get_system();
 
 /// Destroys and frees the topaz context.
+///
+/// (No script mapping)
 ///
 void topaz_context_destroy();
 
@@ -257,6 +267,14 @@ uint64_t topaz_context_get_time(
     topaz_t * context
 );
 
+/// Gets the amount of time that passed for the previous frame.
+///
+double topaz_context_get_delta_time(
+    /// The context to query.
+    topaz_t * context
+);
+
+
 
 /// Retrieves the specified parameter.
 ///
@@ -265,6 +283,9 @@ uint64_t topaz_context_get_time(
 ///     "version-micro"     - micro version
 ///     "version-minor"     - minor version 
 ///     "version-major"     - major version 
+///
+/// No script mapping; however, there are getters 
+/// for the version: getVersionMicro/Major/Minor
 const topazString_t * topaz_context_get_parameter(
     /// The context to query.
     const topaz_t * context, 
@@ -275,6 +296,9 @@ const topazString_t * topaz_context_get_parameter(
 
 /// Sets a parameter. Some parameters are read-only. In such a case, 
 /// 0 is returned.
+///
+/// (No script mapping)
+///
 int topaz_context_set_parameter(
     /// The context to modify.
     const topaz_t * context,
@@ -289,6 +313,8 @@ int topaz_context_set_parameter(
 /// Retrieves an array of all parameter names known.
 /// The array should be freed when done.
 ///
+/// (No script mapping)
+///
 topazArray_t * topaz_context_get_parameter_names(
     /// The context to query.
     const topaz_t * context
@@ -299,11 +325,17 @@ topazArray_t * topaz_context_get_parameter_names(
 /// Gets the current iteration display.
 /// This is the display thats currently getting 
 /// modified. If none, returns NULL.
+///
+/// (No script mapping)
+///
 topazDisplay_t * topaz_context_get_iteration_display(
     topaz_t * context
 );
 
 /// Creates a new, standard filesys instance.
+///
+///
+/// (No script mapping)
 ///
 topazFilesystem_t * topaz_context_get_filesystem(
     /// The relevant context.
@@ -311,6 +343,9 @@ topazFilesystem_t * topaz_context_get_filesystem(
 );
 
 /// Gets the font manager for the topaz instance.
+///
+///
+/// (No script mapping)
 ///
 topazFontManager_t * topaz_context_get_font_manager(
     /// The relevant context.
@@ -324,12 +359,18 @@ topazFontManager_t * topaz_context_get_font_manager(
 
 /// Retrieves the standard input instance.
 ///
+///
+/// (No script mapping)
+///
 topazInput_t * topaz_context_get_input(
     /// The relevant context.
     topaz_t * context
 );
 
 /// Retrieves the standard view manager instance.
+///
+///
+/// (No script mapping)
 ///
 topazViewManager_t * topaz_context_get_view_manager(
     /// The relevant context.
@@ -338,12 +379,18 @@ topazViewManager_t * topaz_context_get_view_manager(
 
 /// Retrieves the standard script manager
 ///
+///
+/// (No script mapping)
+///
 topazScriptManager_t * topaz_context_get_script_manager(
     /// The relevant context.
     topaz_t * context
 );
 
 /// Retrieves the standard resources instance.
+///
+///
+/// (No script mapping)
 ///
 topazResources_t * topaz_context_get_resources(
     /// The relevant context.
@@ -352,6 +399,9 @@ topazResources_t * topaz_context_get_resources(
 
 /// Gets the console for the topaz instance
 ///
+///
+/// (No script mapping)
+///
 topazConsole_t * topaz_context_get_console(
     /// The relevant context.
     topaz_t * context
@@ -359,12 +409,18 @@ topazConsole_t * topaz_context_get_console(
 
 
 /// Gets the graphics instance for the topaz context.
+///
+/// (No script mapping)
+///
 topazGraphics_t * topaz_context_get_graphics(
     /// The relevant context.
     topaz_t * context
 );
 
 /// Gets the audio instance.
+///
+/// (No script mapping)
+///
 topazAudio_t * topaz_context_get_audio(
     /// The relevant context.
     topaz_t * context

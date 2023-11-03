@@ -57,17 +57,6 @@ TSO_SCRIPT_API_FN(particle_emitter_2d_api__emit) {
     TSO_NO_RETURN; 
 }
 
-TSO_SCRIPT_API_FN(particle_emitter_2d_api__set_independent) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazEntity_t *, TSO_OBJECT_ID__PARTICLE_EMITTER_2D);
-
-    topaz_particle_emitter_2d_set_independent(
-        native, 
-        topaz_script_object_as_int(arg1)
-    );
-    TSO_NO_RETURN; 
-}
 
 
 static void add_refs__particle_emitter_2d_api(topazScript_t * script, topazScriptManager_t * context) {
@@ -75,7 +64,6 @@ static void add_refs__particle_emitter_2d_api(topazScript_t * script, topazScrip
 
     // member functions
     TS_MAP_NATIVE_FN("topaz_particle_emitter_2d__set_particle", particle_emitter_2d_api__set_particle, 2);
-    TS_MAP_NATIVE_FN("topaz_particle_emitter_2d__set_independent", particle_emitter_2d_api__set_independent, 2);
     TS_MAP_NATIVE_FN("topaz_particle_emitter_2d__emit", particle_emitter_2d_api__emit, 2);
 
 

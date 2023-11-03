@@ -351,21 +351,30 @@ void topaz_shape3d_set_material(
 }
 
 
-void topaz_shape3d_set_attributes(
+void topaz_shape3d_set_attribute(
     topazComponent_t * shape3d, 
-
-    const topazRenderer_Attributes_t * att
+    topazRenderer_Attribute attribute,
+    int value
 ) {
     Shape3D * s = shape3d__retrieve(shape3d);
-    s->attribs = *att;
+    
+    topaz_renderer_attributes_set_attribute(
+        &s->attribs,
+        attribute,
+        value
+    );
 }
 
-const topazRenderer_Attributes_t * topaz_shape3d_get_attributes(
-    topazComponent_t * shape3d
+int topaz_shape3d_get_attribute(
+    topazComponent_t * shape3d,
+    topazRenderer_Attribute attribute
 
 ) {
     Shape3D * s = shape3d__retrieve(shape3d);
-    return &s->attribs;
+    return topaz_renderer_attributes_get_attribute(
+        &s->attribs,
+        attribute
+    )
 }
 
 

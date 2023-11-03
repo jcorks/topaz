@@ -81,6 +81,8 @@ topazColor_t topaz_color_from_string(
 
 /// Returns a color based on integers.
 ///
+/// (No script mapping)
+///
 topazColor_t topaz_color_from_int(
     /// Red component. 0-255
     uint8_t r, 

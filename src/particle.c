@@ -169,21 +169,35 @@ const topazString_t * topaz_particle_to_string(
 
 
 
-void topaz_particle_set_attributes(
+void topaz_particle_set_attribute(
     /// The particle to modify
     topazParticle_t * part,
-    /// New attributes.
-    const topazRenderer_Attributes_t * attribs
+    
+    /// The attribute to modify
+    topazRenderer_Attribute attribute,
+
+    /// The new attribute value
+    int value
 ) {
-    part->attribs = *attribs;
+    topaz_renderer_attributes_set_attribute(
+        &part->attribs,
+        attribute,
+        value
+    );
 }
 
 
-const topazRenderer_Attributes_t * topaz_particle_get_attributes(
+int topaz_particle_get_attribute(
     /// The particle to modify
-    topazParticle_t * part
+    topazParticle_t * part,
+    
+    topazRenderer_Attribute attribute
+    
 ) {
-    return &part->attribs;
+    return topaz_renderer_attributes_get_attribute(
+        &part->attribs,
+        attribute 
+    );
 }
 
 
@@ -557,9 +571,3 @@ void topaz_particle_emitter_2d_emit(
     }
 }
 
-void topaz_particle_emitter_2d_set_independent(
-    topazEntity_t * emitter,
-    int i
-) {
-
-}

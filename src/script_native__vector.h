@@ -22,12 +22,12 @@ static void topaz_script_return_vector(
         topaz_script_object_from_number(script, z)
     };
 
-
-    topaz_script_object_reference_call(
-        fn,
-        TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 3)
+    topaz_script_object_destroy(
+        topaz_script_object_reference_call(
+            fn,
+            TOPAZ_ARRAY_CAST(args, topazScript_Object_t *, 3)
+        )
     );
-
     topaz_script_object_destroy(args[0]);
     topaz_script_object_destroy(args[1]);
     topaz_script_object_destroy(args[2]);
@@ -35,7 +35,21 @@ static void topaz_script_return_vector(
 }
 
 
+TSO_SCRIPT_API_FN(vector_api__from_string) {
+    TSO_ARG_0;
+    TSO_ARG_1;
 
+    topazVector_t a = topaz_vector_from_string(topaz_script_object_as_string(arg0));
+    topaz_script_return_vector(script, arg1, a.x, a.y, a.z);
+    TSO_NO_RETURN;
+}
+
+TSO_SCRIPT_API_FN(vector_api__reset) {
+    TSO_ARG_0;
+
+    topaz_script_return_vector(script, arg0, 0, 0, 0);
+    TSO_NO_RETURN;
+}
 
 TSO_SCRIPT_API_FN(vector_api__get_length) {
     TSO_ARG_0;
@@ -301,6 +315,9 @@ TSO_SCRIPT_API_FN(vector_api__floor) {
 static void add_refs__vector_api(topazScript_t * script, topazScriptManager_t * context) {
 
     // member functions
+    TS_MAP_NATIVE_FN("topaz_vector__from_string", vector_api__from_string, 2);
+    TS_MAP_NATIVE_FN("topaz_vector__reset", vector_api__reset, 1);
+    TS_MAP_NATIVE_FN("topaz_vector__get_length", vector_api__get_length, 3);
     TS_MAP_NATIVE_FN("topaz_vector__get_length", vector_api__get_length, 3);
     TS_MAP_NATIVE_FN("topaz_vector__get_distance", vector_api__get_distance, 6);
     TS_MAP_NATIVE_FN("topaz_vector__normalize", vector_api__normalize, 4);
