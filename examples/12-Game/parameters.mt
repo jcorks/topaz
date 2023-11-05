@@ -2,17 +2,18 @@
 
 
 @:Parameters = {
+    FALL_RATE : 3,
+
     BLOCK_SIZE   : 24,
     FIELD_WIDTH  : 10,
     FIELD_HEIGHT : 20,
 
 
-    PIECE_GROUP : Topaz.Object2D.GROUP.A,
-    BLOCK_GROUP : Topaz.Object2D.GROUP.B,
+    PIECE_GROUP : Topaz.Object2D.Group.A,
+    BLOCK_GROUP : Topaz.Object2D.Group.B,
 
     CurrentPiece : empty,
     Manager : empty
-
 };
 
 // function that snaps a position to 
@@ -26,8 +27,8 @@ Parameters.posToIndex = ::(pos) {
 };
 
 Parameters.BLOCK_IMAGE = Topaz.Resources.convertAsset(
-    asset: Topaz.Resources.createAsset(path:'piece.png'),
-    extension: 'png'
+    asset: Topaz.Resources.createDataAssetFromPath(name:'PieceImage', path:'piece.png'),
+    fileType: 'png'
 );
 
 

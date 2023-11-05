@@ -183,7 +183,7 @@ TSO_SCRIPT_API_FN(text2d_api__set_rotation) {
     TSO_ARG_3;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);   
 
-    topazVector_t * a = topaz_transform_rotation(topaz_text2d_get_node(native))
+    topazVector_t * a = topaz_transform_rotation(topaz_text2d_get_node(native));
     a->x = topaz_script_object_as_number(arg1);
     a->y = topaz_script_object_as_number(arg2);
     a->z = topaz_script_object_as_number(arg3);
@@ -199,7 +199,7 @@ TSO_SCRIPT_API_FN(text2d_api__set_position) {
     TSO_ARG_3;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);   
 
-    topazVector_t * a = topaz_transform_position(topaz_text2d_get_node(native))
+    topazVector_t * a = topaz_transform_position(topaz_text2d_get_node(native));
     a->x = topaz_script_object_as_number(arg1);
     a->y = topaz_script_object_as_number(arg2);
     a->z = topaz_script_object_as_number(arg3);
@@ -215,7 +215,7 @@ TSO_SCRIPT_API_FN(text2d_api__set_scale) {
     TSO_ARG_3;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__TEXT2D);   
 
-    topazVector_t * a = topaz_transform_scale(topaz_text2d_get_node(native))
+    topazVector_t * a = topaz_transform_scale(topaz_text2d_get_node(native));
     a->x = topaz_script_object_as_number(arg1);
     a->y = topaz_script_object_as_number(arg2);
     a->z = topaz_script_object_as_number(arg3);

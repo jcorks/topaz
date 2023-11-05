@@ -22,7 +22,6 @@ SRCS := \
     src/assets_sound.c\
     src/assets_material.c\
     src/assets_mesh.c\
-    src/assets_bundle.c\
     src/backends_audio_manager.c\
     src/backends_console_display.c\
     src/backends_display.c\
@@ -120,7 +119,7 @@ INCS := -I../../../include/ -I. -I/usr/include/freetype2/
 
 
 
-FLAGS = -g
+FLAGS = -g -fsanitize=address -fsanitize=undefined
 LIBS :=  -lvorbisfile -lvorbis -logg -lfreetype -lglfw -lGL -lasound -lm -pthread -ldl
 
 

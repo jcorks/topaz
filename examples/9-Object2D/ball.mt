@@ -1,113 +1,113 @@
 @:class         = import(module:'Matte.Core.Class');
 @:Topaz         = import(module:'Topaz');
-@:PhysicsObject = import(module:'physics_object.mt');
+@:createPhysicsObject = import(module:'physics_object.mt');
 @:constants     = import(module:'constants.mt');
 
 
 
 
-return class(
-    name: 'Ball',
-    inherits: [
-        PhysicsObject
-    ],
-    
-    define:::(this) {
+return ::{
+    @:this = createPhysicsObject(static:false);
 
-        @:shape2D = Topaz.Shape2D.new();
+    @:shape2D = Topaz.Shape2D.create();
 
-        this.constructor = ::{
-            this.setRole(static:false);
-            this.physics.setColliderRadial(radius:constants.BALL_SIZE/2, numIterations:10);
+    this.physics.setColliderRadial(radius:constants.BALL_SIZE/2, numSides:10);
 
                     
-            shape2D.scale = {
-                x:constants.BALL_SIZE / constants.BALL_IMAGE.width,
-                y:constants.BALL_SIZE / constants.BALL_IMAGE.height
-            }
-            
-
-            shape2D.formImage(image:constants.BALL_IMAGE);
-            shape2D.center = {
-                x: constants.BALL_IMAGE.width/2,
-                y: constants.BALL_IMAGE.height/2
-            }
-            
-            shape2D.color = {
-                r: 0.25 + 0.75 * Number.random(),
-                g: 0.25 + 0.75 * Number.random(),
-                b: 0.25 + 0.75 * Number.random(),
-                a: 1
-            }
-            
-
-            
-            
-            
-            this.attach(component:shape2D);
-            
-
-            
-            this.physics.velocityX = Number.random()*4-2;
-            this.physics.installHook(
-                event: 'on-collide',
-                callback :::(source) {
-                    @selfPhys = this.physics;
-                    @otherPhys = source.physics;
-                    
-                    // collide with another ball
-                    if (otherPhys.group == constants.BALL_GROUP) ::<={
-                        //when (selfPhys.speed < otherPhys.speed) empty;
-
-                                            
-                        // create a force to this and the other object
-                        // tangential to the center of mass and the 
-                        // collision location.
-                        @:thisForce = {
-                            x:selfPhys.lastCollidedPosition.x - this.position.x,
-                            y:selfPhys.lastCollidedPosition.y - this.position.y
-                        }
-
-                        Topaz.Vector.normalize(value:thisForce);
-
-                        thisForce.x *= selfPhys.speed;
-                        thisForce.y *= selfPhys.speed;
-
-
-                        // at this point, "thisForce" is the force applied to the 
-                        // direction-specific collision
-                        // The force here is split between the colliding bodies
-                        @:toOther = {
-                            x:thisForce.x*0.5,
-                            y:thisForce.y*0.5
-                        }
-
-
-                        // skip non-bounce entities.                
-                        this.position = selfPhys.lastPosition;
-                        selfPhys.resetMotion();
-
-                        otherPhys.velocityX += toOther.x;
-                        otherPhys.velocityY += toOther.y;
-                        
-                    } else ::<={
-                        this.position = {
-                            x: this.position.x,
-                            y: selfPhys.lastPosition.y
-                        }
-                        selfPhys.resetMotion();
-                        selfPhys.velocityY *= -0.5;
-                        selfPhys.velocityX *= 0.95;
-                        if ((selfPhys.velocityY)->abs < 2) selfPhys.velocityY = 0;
-                    }
-                                
-                }
-            );
-
-
-            return this;
+    shape2D.setScale(
+        value : {
+            x:constants.BALL_SIZE / constants.BALL_IMAGE.getWidth(),
+            y:constants.BALL_SIZE / constants.BALL_IMAGE.getHeight()
         }
-    }
-);
+    )
+    
+
+    shape2D.formImage(asset:constants.BALL_IMAGE);
+    shape2D.setCenter(
+        value :{
+            x: constants.BALL_IMAGE.getWidth()/2,
+            y: constants.BALL_IMAGE.getHeight()/2
+        }
+    );
+    
+    shape2D.setColor(
+        color : {
+            r: 0.25 + 0.75 * Number.random(),
+            g: 0.25 + 0.75 * Number.random(),
+            b: 0.25 + 0.75 * Number.random(),
+            a: 1
+        }
+    )
+    
+
+            
+            
+            
+    this.addComponent(component:shape2D);
+            
+
+            
+    this.physics.setVelocityX(velocity:Number.random()*4-2);
+    this.physics.installHook(
+        event: 'on-collide',
+        hook :::(component, source) {
+            @selfPhys = this.physics;
+            @otherPhys = source.physics;
+            
+            // collide with another ball
+            if (otherPhys.getGroup() == constants.BALL_GROUP) ::<={
+                //when (selfPhys.speed < otherPhys.speed) empty;
+
+                                    
+                // create a force to this and the other object
+                // tangential to the center of mass and the 
+                // collision location.
+                @:lastCollidedPosition = {};
+                selfPhys.getLastCollided(where : lastCollidedPosition);
+                
+                @:thisForce = {
+                    x:lastCollidedPosition.x - this.getPosition().x,
+                    y:lastCollidedPosition.y - this.getPosition().y
+                }
+
+                Topaz.Vector.normalize(v:thisForce);
+
+                thisForce.x *= selfPhys.getSpeed();
+                thisForce.y *= selfPhys.getSpeed();
+
+
+                // at this point, "thisForce" is the force applied to the 
+                // direction-specific collision
+                // The force here is split between the colliding bodies
+                @:toOther = {
+                    x:thisForce.x*0.5,
+                    y:thisForce.y*0.5
+                }
+
+
+                // skip non-bounce entities.                
+                this.setPosition(value:selfPhys.getLastPosition());
+                selfPhys.resetMotion();
+
+                otherPhys.setVelocityX(velocity: otherPhys.getVelocityX() + toOther.x);
+                otherPhys.setVelocityY(velocity: otherPhys.getVelocityY() + toOther.y);
+                
+            } else ::<={
+                this.setPosition(value : {
+                    x: this.getPosition().x,
+                    y: selfPhys.getLastPosition().y
+                });
+                selfPhys.resetMotion();
+                selfPhys.setVelocityY(velocity: selfPhys.getVelocityY() * -0.5);
+                selfPhys.setVelocityX(velocity: selfPhys.getVelocityX() * 0.95);
+                if ((selfPhys.getVelocityY())->abs < 2) selfPhys.setVelocityY(velocity:0);
+            }
+                        
+        }
+    );
+
+
+    return this;
+}
 
 

@@ -387,7 +387,7 @@
 
 @:initializer__particle = ::<= {
     @:topaz_particle__set_attribute = getExternalFunction(name:'topaz_particle__set_attribute');
-    @:topaz_particle__get_attribute = getExternalFunction(name:'topaz_particle__set_attribute');
+    @:topaz_particle__get_attribute = getExternalFunction(name:'topaz_particle__get_attribute');
     @:topaz_particle__set_noise_min = getExternalFunction(name:'topaz_particle__set_noise_min');
     @:topaz_particle__set_noise_max = getExternalFunction(name:'topaz_particle__set_noise_max');
     @:topaz_particle__set_offset_min = getExternalFunction(name:'topaz_particle__set_offset_min');
@@ -407,7 +407,7 @@
     
     @:setAttribute ::($, attribute, value) {
         topaz_particle__set_attribute(a:$, b:attribute, c:value);
-    },
+    }
     
     @:getAttribute::($, attribute) {
         return topaz_particle__get_attribute(a:$, b:attribute);
@@ -417,23 +417,23 @@
         topaz_particle__set_image(a:$, b:image);
     }
     
-    @:setNoiseMin($, prop, value) {
+    @:setNoiseMin::($, prop, value) {
         topaz_particle__set_noise_min(a:$, b:prop, c:value);
     }
     
-    @:setNoiseMax($, prop, value) {
+    @:setNoiseMax::($, prop, value) {
         topaz_particle__set_noise_max(a:$, b:prop, c:value);
     }
 
-    @:setOffsetMax($, prop, value) {
+    @:setOffsetMax::($, prop, value) {
         topaz_particle__set_offset_max(a:$, b:prop, c:value);
     }
 
-    @:setOffsetMin($, prop, value) {
+    @:setOffsetMin::($, prop, value) {
         topaz_particle__set_offset_min(a:$, b:prop, c:value);
     }
     
-    @:setFunction($, prop, animString) {
+    @:setFunction::($, prop, animString) {
         topaz_particle__set_function(a:$, b:prop, c:animString);
     }    
 
@@ -486,7 +486,6 @@
     @:topaz_object2d__get_last_collided_position = getExternalFunction(name:'topaz_object2d__get_last_collided_position');
     @:topaz_object2d__get_collider_point_x = getExternalFunction(name:'topaz_object2d__get_collider_point_x');
     @:topaz_object2d__get_collider_point_y = getExternalFunction(name:'topaz_object2d__get_collider_point_y');
-    @:topaz_object2d__set_unit_lock = getExternalFunction(name:'topaz_object2d__set_unit_lock');
     
     
     @:addVelocity ::($, factor, direction) {
@@ -595,20 +594,20 @@
     }
     
     @:getCollider ::($) {
-        _collider = [];
+        @_collider = [];
         @iter = 0;
-        @len = topaz_object2d__get_collider_len(a:impl);
+        @len = topaz_object2d__get_collider_len(a:$);
         for(0, len)::(i) {
-            _collider[iter] = topaz_object2d__get_collider_point_x(a:impl, b:i); iter += 1;
-            _collider[iter] = topaz_object2d__get_collider_point_y(a:impl, b:i); iter += 1;
+            _collider[iter] = topaz_object2d__get_collider_point_x(a:$, b:i); iter += 1;
+            _collider[iter] = topaz_object2d__get_collider_point_y(a:$, b:i); iter += 1;
         }    
         return _collider;
     }
     
     @:getLastCollided ::($, where) {
         @:output = topaz_object2d__get_last_collided(a:$);
-        if (!output.__mapped)
-            initializer__entity(entity:output);
+        if (output.__mapped == empty)
+            initializer__entity(e:output);
 
         @:setter = ::(a, b, c) {
             where.x = a;
@@ -664,10 +663,11 @@
     @:topaz_mesh__get_vertex = getExternalFunction(name:'topaz_mesh__get_vertex');
     @:topaz_mesh__set_vertex = getExternalFunction(name:'topaz_mesh__set_vertex');
     @:topaz_mesh__add_object = getExternalFunction(name:'topaz_mesh__add_object');
-    @:topaz_mesh__set_object = getExternalFunction(name:'topaz_mesh__set_object');
     @:topaz_mesh__remove_object = getExternalFunction(name:'topaz_mesh__remove_object');
     @:topaz_mesh__define_vertices = getExternalFunction(name:'topaz_mesh__define_vertices');
     @:topaz_mesh__get_object_count = getExternalFunction(name:'topaz_mesh__get_object_count');
+    @:topaz_mesh__get_object_indices = getExternalFunction(name:'topaz_mesh__get_object_indices');
+    @:topaz_mesh__set_object_indices = getExternalFunction(name:'topaz_mesh__set_object_indices');
 
 
     @:v = {};
@@ -716,6 +716,20 @@
         return topaz_mesh__add_object(a:$);
     }
     
+    @:setObjectIndices ::($, index, indices) {
+        topaz_mesh__set_object_indices(a:$, b:index, c:indices);
+    }
+
+    @:getObjectIndices ::($, index) {
+        @:output = [];
+        @:outputSizer = ::(a){};
+        @:outputGetter = ::(a) {
+            output->push(value:a);
+        }
+        topaz_mesh__get_object_indices(a:$, b:index, c:outputSizer, d:outputGetter);
+        return output;
+    }
+    
     @:removeObject ::($, index) {
         topaz_mesh__remove_object(a:$, b:index);
     }
@@ -726,6 +740,18 @@
 
     return ::(m) {
         m.__mapped = MAPPED;    
+        m.setVertexCount = setVertexCount;
+        m.defineVertices = defineVertices;
+        m.getVertex = getVertex;
+        m.setVertex = setVertex;
+        m.getVertexCount = m.getVertexCount;
+        
+        m.addObject = addObject;
+        m.getObjectIndices = getObjectIndices;
+        m.setObjectIndices = setObjectIndices;
+        m.removeObject = removeObject;
+        m.getObjectCount = getObjectCount;
+        
     }
 }
 
@@ -737,7 +763,7 @@
     @:topaz_material__clear_sources = getExternalFunction(name:'topaz_material__clear_sources');
     @:topaz_material__set_program_source = getExternalFunction(name:'topaz_material__set_program_source');
 
-    getProgramData ::($) {
+    @:getProgramData ::($) {
         @:output = [];
         for(0, 28) ::(i) {
             output[i] = topaz_material__get_program_data(a:$, b:i);
@@ -745,18 +771,18 @@
         return output;
     }
     
-    setProgramData ::($, data) {
+    @:setProgramData ::($, data) {
         for(0, 28) ::(i) {
             topaz_material__set_program_data(a:$, b:i, c:data[i]);
         }
     }
     
     
-    setProgramSource ::($, language, vertexSource, fragmentSource) {
-        topaz_material__set_program_source(a:$, b:language, c:vertexSource, d:fragmentSource);
+    @:setProgramSource ::($, language, vertexShader, fragmentShader) {
+        topaz_material__set_program_source(a:$, b:language, c:vertexShader, d:fragmentShader);
     }
 
-    clearSources ::($) {
+    @:clearSources ::($) {
         topaz_material__clear_sources(a:$);
     }
 
@@ -854,7 +880,7 @@
     
     @:getParent ::($) {
         @:out = topaz_filesystem_path__get_parent(a:$);
-        if (!out.__mapped)
+        if (out.__mapped == empty)
             initializer__filesystem_path(f:out);
         return out;
     }
@@ -863,7 +889,7 @@
         @:output = [];
         for(0, topaz_filesystem_path__get_child_count(a:$)) ::(i) {
             output[i] = topaz_filesystem_path__get_nth_child(a:$, b:i);
-            if (!output[i].__mapped)
+            if (output[i].__mapped == empty)
                 initializer__filesystem_path(f:output[i]);
         }
         return output;
@@ -951,13 +977,13 @@
         c.__mapped = MAPPED;
         c.destroy = destroy;
         c.addCommand = addCommand;
-        c.setDefaultHanlder = setDefaultHandler;
+        c.setDefaultHandler = setDefaultHandler;
         c.setPrompt = setPrompt;
     }
 }
 
 
-initializer__data = ::<= {
+@:initializer__data = ::<= {
     @:topaz_data__get_byte_count = getExternalFunction(name:'topaz_data__get_byte_count');
     @:topaz_data__get_as_string = getExternalFunction(name:'topaz_data__get_as_string');
     @:topaz_data__get_as_base64 = getExternalFunction(name:'topaz_data__get_as_base64');
@@ -1039,12 +1065,12 @@ initializer__data = ::<= {
     @:topaz_automation__get_speed = getExternalFunction(name:'topaz_automation__get_speed');
 
     
-    @:addKeyframe ::($, value, lerp, automationOffset) {
-        topaz_automation__add_keyframe(a:$, b:value, c:lerp, d:automationOffset);
+    @:addKeyframe ::($, value, function, offset) {
+        topaz_automation__add_keyframe(a:$, b:value, c:function, d:offset);
     }
     
-    @:addVectorKeyframe ::($, value, lerp, automationOffset) {
-        topaz_automation__add_vector_keyframe(a:$, b:value.x, c:value.y, d:value.z, e:lerp, f:automationOffset);
+    @:addVectorKeyframe ::($, value, function, offset) {
+        topaz_automation__add_vector_keyframe(a:$, b:value.x, c:value.y, d:value.z, e:function, f:offset);
     }
     
     @:clear ::($) {
@@ -1071,7 +1097,7 @@ initializer__data = ::<= {
         return topaz_automation__get_length(a:$);
     }
     
-    @:skipTo ::($) {
+    @:skipTo ::($, value) {
         topaz_automation__skip_to(a:$, b:value);
     }
     
@@ -1235,23 +1261,23 @@ initializer__data = ::<= {
 
     @:get2DCamera ::($) {
         @:out = topaz_display__get_camera_2d(a:$);
-        if (!out.__mapped)
-            initializer__entity(entity:out);
+        if (out.__mapped == empty)
+            initializer__entity(e:out);
         //initializer__camera(c:out);
         return out;
     }
     
     @:get3DCamera ::($) {
         @:out = topaz_display__get_camera_3d(a:$);
-        if (!out.__mapped)
-            initializer__entity(entity:out);
+        if (out.__mapped == empty)
+            initializer__entity(e:out);
         //initializer__camera(c:out);
         return out;        
     }
 
     @:getFramebuffer ::($, which) {
         @:out = topaz_display__get_framebuffer(a:$, b:which);
-        if (!out.__mapped)
+        if (out.__mapped == empty)
             initializer__framebuffer(f:out);
         return out;    
     }
@@ -1268,7 +1294,7 @@ initializer__data = ::<= {
 
     @:getMainFramebuffer ::($) {
         @:out = topaz_display__get_main_framebuffer(a:$);
-        if (!out.__mapped)
+        if (out.__mapped == empty)
             initializer__framebuffer(f:out);
         return out;
     }
@@ -1315,8 +1341,8 @@ initializer__data = ::<= {
 
     @:getRoot ::($) {
         @:out = topaz_display__get_root(a:$);
-        if (!out.__mapped)
-            initializer__entity(entity:out);
+        if (out.__mapped == empty)
+            initializer__entity(e:out);
         return out;
     }
     
@@ -1367,10 +1393,10 @@ initializer__data = ::<= {
     }
 
     
-    return ::(asset) {
-        asset.__mapped = MAPPED;
-        asset.getType = getType;          
-        asset.getName = getName;          
+    return ::(a) {
+        a.__mapped = MAPPED;
+        a.getType = getType;          
+        a.getName = getName;          
     }
 }
 
@@ -1446,8 +1472,8 @@ initializer__data = ::<= {
         @output = [];
         for(0, n) ::(i) {
             output[i] = topaz_entity__get_nth_child(a:$, b:i);
-            if (!output[i].__mapped)
-                initializer__entity(entity:output[i])
+            if (output[i].__mapped == empty)
+                initializer__entity(e:output[i])
         }
         return output;
     }
@@ -1470,21 +1496,21 @@ initializer__data = ::<= {
     
     @:getParent = ::($) {
         @:entity = topaz_entity__get_parent(a:$);
-        if (!entity.__mapped)
+        if (entity.__mapped == empty)
             initializer__entity(entity);
         return entity;
     }
     
     @:query = ::($, name) {
         @:entity = topaz_entity__query(a:$, b:name);
-        if (!entity.__mapped)
+        if (entity.__mapped == empty)
             initializer__entity(entity);
         return entity;
     }
     
     @:search = ::($, name) {
         @:entity = topaz_entity__search(a:$, b:name);
-        if (!entity.__mapped)
+        if (entity.__mapped == empty)
             initializer__entity(entity);
         return entity;
     }
@@ -1623,7 +1649,7 @@ initializer__data = ::<= {
         @output = [];
         for(0, n) ::(i) {
             output[i] = topaz_entity__get_nth_component(a:$, b:i);
-            if (!output[i].__mapped)
+            if (output[i].__mapped == empty)
                 initializer__component(c:output[i]);
             
         }
@@ -1632,7 +1658,7 @@ initializer__data = ::<= {
     
     @:queryComponent = ::($, tag) {
         @:c = topaz_entity__query_component(a:$, b:tag);
-        if (!c.__mapped)
+        if (c.__mapped == empty)
             initializer__component(c);
         return c;
 
@@ -1651,47 +1677,47 @@ initializer__data = ::<= {
     }
 
     
-    return ::(entity) {
-        entity.__mapped = MAPPED;
+    return ::(e) {
+        e.__mapped = MAPPED;
 
-        entity.setTypeID = setTypeID;
-        entity.getTypeID = getTypeID;
-        entity.isValid = isValid;
-        entity.remove = remove;
-        entity.getChildren = getChildren;
-        entity.step = step;
-        entity.draw = draw;
-        entity.attach = attach;
-        entity.detach = detach;
-        entity.getParent = getParent;
-        entity.query = query;
-        entity.search = search;
-        entity.setPriority = setPriority;
-        entity.setPriorityLast = setPriorityLast;
-        entity.setPriorityFirst = setPriorityFirst;
-        entity.getRotation = getRotation;
-        entity.getPosition = getPosition;
-        entity.getScale = getScale;
-        entity.setRotation = setRotation;
-        entity.setPosition = setPosition;
-        entity.setScale = setScale;
-        entity.lookAt = lookAt;
-        entity.getGlobalPosition = getGlobalPosition;
-        entity.isStepping = isStepping;
-        entity.isDrawing = isDrawing;
-        entity.setStepping = setStepping;
-        entity.setDrawing = setDrawing;
-        entity.getStepping = getStepping;
-        entity.getDrawing = getDrawing;
-        entity.getLocalMatrix = getLocalMatrix;
-        entity.getGlobalMatrix = getGlobalMatrix;
-        entity.addComponent = addComponent;
-        entity.addComponentAfter = addComponentAfter;
-        entity.getComponents = getComponents;
-        entity.queryComponent = queryComponent;
-        entity.removeComponent = removeComponent;
-        entity.setName = setName;
-        entity.getName = getName;
+        e.setTypeID = setTypeID;
+        e.getTypeID = getTypeID;
+        e.isValid = isValid;
+        e.remove = remove;
+        e.getChildren = getChildren;
+        e.step = step;
+        e.draw = draw;
+        e.attach = attach;
+        e.detach = detach;
+        e.getParent = getParent;
+        e.query = query;
+        e.search = search;
+        e.setPriority = setPriority;
+        e.setPriorityLast = setPriorityLast;
+        e.setPriorityFirst = setPriorityFirst;
+        e.getRotation = getRotation;
+        e.getPosition = getPosition;
+        e.getScale = getScale;
+        e.setRotation = setRotation;
+        e.setPosition = setPosition;
+        e.setScale = setScale;
+        e.lookAt = lookAt;
+        e.getGlobalPosition = getGlobalPosition;
+        e.isStepping = isStepping;
+        e.isDrawing = isDrawing;
+        e.setStepping = setStepping;
+        e.setDrawing = setDrawing;
+        e.getStepping = getStepping;
+        e.getDrawing = getDrawing;
+        e.getLocalMatrix = getLocalMatrix;
+        e.getGlobalMatrix = getGlobalMatrix;
+        e.addComponent = addComponent;
+        e.addComponentAfter = addComponentAfter;
+        e.getComponents = getComponents;
+        e.queryComponent = queryComponent;
+        e.removeComponent = removeComponent;
+        e.setName = setName;
+        e.getName = getName;
     }
 }
 
@@ -1758,71 +1784,71 @@ initializer__data = ::<= {
     
     @:getHost = ::($) {
         @:e = topaz_component__get_host(a:$);
-        if (!e.__mapped)
-            initializer__entity(entity:e);
+        if (e.__mapped == empty)
+            initializer__entity(e:e);
         return e;
 
     }
     
-    @:emitEvent = ::($, eventName, source) {
-        return topaz_component__emit_event(a:$, b:eventName, c:source);
+    @:emitEvent = ::($, event, source) {
+        return topaz_component__emit_event(a:$, b:event, c:source);
     }
     
-    @:emitEventAnonymous = ::($, eventName) {
-        return topaz_component__emit_event_anonymous(a:$, b:eventName);
+    @:emitEventAnonymous = ::($, event) {
+        return topaz_component__emit_event_anonymous(a:$, b:event);
     }
     
-    @:canHandleEvent = ::($, eventName) {
-        return topaz_component__can_handle_event(a:$, b:eventName);
+    @:canHandleEvent = ::($, event) {
+        return topaz_component__can_handle_event(a:$, b:event);
     }
     
-    @:installHook = ::($, eventName, hook) {
-        return topaz_component__install_hook(a:$, b:eventName, c:::(a, b) <- hook(component:a, source:b));
+    @:installHook = ::($, event, hook) {
+        return topaz_component__install_hook(a:$, b:event, c:::(a, b) <- hook(component:a, source:b));
     }
     
-    @:uninstallHook = ::($, eventName, id) {
-        topaz_component__uninstall_hook(a:$, b:eventName, c:id);
+    @:uninstallHook = ::($, event, id) {
+        topaz_component__uninstall_hook(a:$, b:event, c:id);
     }
 
-    @:installHandler = ::($, eventName, handler) {
-        return topaz_component__install_handler(a:$, b:eventName, c:::(a, b) <- handler(component:a, source:b));
+    @:installHandler = ::($, event, handler) {
+        return topaz_component__install_handler(a:$, b:event, c:::(a, b) <- handler(component:a, source:b));
     }
     
-    @:uninstallHandler = ::($, eventName, id) {
-        topaz_component__uninstall_handler(a:$, b:eventName, c:id);
+    @:uninstallHandler = ::($, event, id) {
+        topaz_component__uninstall_handler(a:$, b:event, c:id);
     }
     
-    @:installEvent = ::($, eventName, defaultHandler) {
-        topaz_component__install_event(a:$, b:eventName, c:::(a) <- defaultHandler(component:a, source:b));
+    @:installEvent = ::($, event, defaultHandler) {
+        topaz_component__install_event(a:$, b:event, c:::(a, b) <- defaultHandler(component:a, source:b));
     }
     
-    @:uninstallEvent = ::($, eventName) {
-        topaz_component__uninstall_event(a:$, b:eventName);
+    @:uninstallEvent = ::($, event) {
+        topaz_component__uninstall_event(a:$, b:event);
     }
 
-    return ::(component) {
-        component.__mapped = MAPPED;
+    return ::(c) {
+        c.__mapped = MAPPED;
 
     
-        component.destroy = destroy;
-        component.detach = detach;
-        component.step = step;
-        component.draw = draw;
-        component.getStepping = getStepping;
-        component.getDrawing = getDrawing;
-        component.setStepping = setStepping;
-        component.setDrawing = setDrawing;
-        component.getTag = getTag;
-        component.getHost = getHost;
-        component.emitEvent = emitEvent;
-        component.emitEventAnonymous = emitEventAnonymous;
-        component.canHandleEvent = canHandleEvent;
-        component.installHook = installHook;
-        component.uninstallHook = uninstallHook;
-        component.installHandler = installHandler;
-        component.uninstallHandler = uninstallHandler;
-        component.installEvent = installEvent;
-        component.uninstallEvent = uninstallEvent;
+        c.destroy = destroy;
+        c.detach = detach;
+        c.step = step;
+        c.draw = draw;
+        c.getStepping = getStepping;
+        c.getDrawing = getDrawing;
+        c.setStepping = setStepping;
+        c.setDrawing = setDrawing;
+        c.getTag = getTag;
+        c.getHost = getHost;
+        c.emitEvent = emitEvent;
+        c.emitEventAnonymous = emitEventAnonymous;
+        c.canHandleEvent = canHandleEvent;
+        c.installHook = installHook;
+        c.uninstallHook = uninstallHook;
+        c.installHandler = installHandler;
+        c.uninstallHandler = uninstallHandler;
+        c.installEvent = installEvent;
+        c.uninstallEvent = uninstallEvent;
     }
 }
 
@@ -2049,7 +2075,8 @@ initializer__data = ::<= {
             Sound : 2,
             Material : 3,
             Data : 4,
-            Mesh : 5
+            Mesh : 5,
+            Bundle : 6
         }
     },
     
@@ -2072,7 +2099,7 @@ initializer__data = ::<= {
                     topaz_entity__create()
                 ;
                 
-                initializer__entity(entity:entOut);
+                initializer__entity(e:entOut);
                 return entOut;
             }
         }
@@ -2093,7 +2120,7 @@ initializer__data = ::<= {
                     e:attributes.onDetach,
                     f:attributes.onDestroy
                 );
-                initializer__component(component:c);
+                initializer__component(c:c);
                 return c;
             }        
         }
@@ -2115,8 +2142,8 @@ initializer__data = ::<= {
             
             return :: {
                 @:c = topaz_automation__create();
-                initializer__component(component:c);
-                initializer__automation(c);
+                initializer__component(c:c);
+                initializer__automation(a:c);
                 return c;                
             }
         }
@@ -2128,7 +2155,7 @@ initializer__data = ::<= {
             
             return :: {
                 @:c = topaz_shape2d__create();
-                initializer__component(component:c);
+                initializer__component(c:c);
                 initializer__shape2d(c);
                 return c;
             }
@@ -2217,7 +2244,7 @@ initializer__data = ::<= {
             
             getDefault :: {
                 @:d = topaz_view_manager__get_default();   
-                if (!d.__mapped)
+                if (d.__mapped == empty)
                     initializer__display(d);
                 return d;
             },
@@ -2234,7 +2261,7 @@ initializer__data = ::<= {
                 @:output = [];
                 for(0, topaz_view_manager__get_display_count()) ::(i) {
                     output[i] = topaz_view_manager__get_display(a:i);
-                    if (!output[i].__mapped)
+                    if (output[i].__mapped == empty)
                         initializer__display(d:output[i]);
                 }
                 return output;
@@ -2334,7 +2361,7 @@ initializer__data = ::<= {
                 v.z = temp.z;
             },
             getLength ::(v) {
-                topaz_vector__get_length(a:v.x, b:v.y, c:v.z);
+                return topaz_vector__get_length(a:v.x, b:v.y, c:v.z);
             },
             
             getDistance ::(p0, p1) {
@@ -2345,7 +2372,7 @@ initializer__data = ::<= {
             },
             
             normalize ::(v) {
-                topaz_vector__normalize(a:v.x, b:v.y, c:v.z, b:tempSetter);
+                topaz_vector__normalize(a:v.x, b:v.y, c:v.z, d:tempSetter);
                 v.x = temp.x;
                 v.y = temp.y;
                 v.z = temp.z;
@@ -2369,7 +2396,7 @@ initializer__data = ::<= {
                 return {...temp};                
             },
             floor ::(v) {
-                topaz_vector__floor(a:v.x, b:v.y, c:v.z, tempSetter);
+                topaz_vector__floor(a:v.x, b:v.y, c:v.z, d:tempSetter);
                 v.x = temp.x;
                 v.y = temp.y;
                 v.z = temp.z;
@@ -2416,16 +2443,22 @@ initializer__data = ::<= {
         @:topaz_console__command_context_create = getExternalFunction(name:'topaz_console__command_context_create');
         
         return {
+            MessageType : {
+                Normal : 0,
+                Debug: 1,
+                Warning: 2,
+                Error : 3
+            },
             enable ::(enable) {
                 topaz_console__enable(a:enable);
             },
             
-            print ::(message) {
+            'print' ::(message) {
                 topaz_console__print(a:message);
             },
             
             printMessage ::(message, type) {
-                topaz_console__print(a:message, b:type);
+                topaz_console__print_message(a:message, b:type);
             },
             
             addListener ::(callback) {
@@ -2473,14 +2506,14 @@ initializer__data = ::<= {
             
             getPath ::(node) {
                 @:out = topaz_filesystem__get_path(a:node);
-                if (!out.__mapped)
+                if (out.__mapped == empty)
                     initializer__filesystem_path(f:out);
                 return out;
             },
             
             getPathFromString ::(from, path) {
                 @:out = topaz_filesystem__get_path_from_string(a:from, b:path);
-                if (!out.__mapped)
+                if (out.__mapped == empty)
                     initializer__filesystem_path(f:out);
                 return out;
             }
@@ -2541,7 +2574,7 @@ initializer__data = ::<= {
                 onPress    : if(onPress)   ::(a)    <- onPress(input:a) else empty,
                 onActive   : if(onActive)  ::(a, b) <- onActive(input:a, value:b) else empty,
                 onRelease  : if(onRelease) ::(a)    <- onRelease(input:a) else empty,
-                onUpdate   : if(onUpdate)  ::(a, b) <- onUpdate(input:a) else empty
+                onUpdate   : if(onUpdate)  ::(a, b) <- onUpdate(input:a, value:b) else empty
             }
         }
 
@@ -2559,7 +2592,7 @@ initializer__data = ::<= {
             },
 
             addPadListener ::(listener, padIndex) {
-                return topaz_input__add_keyboard_listener(
+                return topaz_input__add_pad_listener(
                     a:getListener(listener),
                     b:padIndex
                 );
@@ -2585,7 +2618,7 @@ initializer__data = ::<= {
             },
             
             setDeadzone ::(padID, input, deadZone) {
-                return topaz_input__set_dead_zone(a:padID, b:input. c:deadZone);
+                return topaz_input__set_deadzone(a:padID, b:input, c:deadZone);
             },
             
             queryPads ::{
@@ -2618,7 +2651,7 @@ initializer__data = ::<= {
             
             mapPad::(name, pad, input) {
                 topaz_input__map_pad(a:name, b:pad, c:input);
-            }
+            },
             unmap ::(name) {
                 topaz_input__unmap(a:name);
             },
@@ -2866,7 +2899,7 @@ initializer__data = ::<= {
             create :: {
                 @:out = topaz_object2d__create();
                 initializer__object2d(o:out);
-                initializer__component(o:out);
+                initializer__component(c:out);
                 return out;
             },
             
@@ -2909,7 +2942,7 @@ initializer__data = ::<= {
             create :: {
                 @:out = topaz_particle_emitter_2d__create();
                 initializer__particle_emitter_2d(p:out);
-                initializer__entity(entity:out);
+                initializer__entity(e:out);
                 return out;
             }
         }        
@@ -2942,15 +2975,14 @@ initializer__data = ::<= {
                 @:out = topaz_resources__create_asset(a:name, b:type);
                 when(out == empty) out;
                 initializer__asset(a:out);
-                @:type = Topaz.Asset.Type;
+                @:typeO = Topaz.Asset.Type;
                 match(type) {
-                    (type.Image): initializer__image(i:out),
-                    (type.Sound) : initializer__sound(s:out),
-                    (type.Material) : initializer__material(m:out),
-                    (type.Data) : initializer__data(d:out),
-                    (type.Mesh) : initializer__mesh(m:out)
+                    (typeO.Image): initializer__image(i:out),
+                    (typeO.Sound) : initializer__sound(s:out),
+                    (typeO.Material) : initializer__material(m:out),
+                    (typeO.Data) : initializer__data(d:out),
+                    (typeO.Mesh) : initializer__mesh(m:out)
                 }
-                
                 return out;
             },
             
@@ -2959,13 +2991,13 @@ initializer__data = ::<= {
                 when(out == empty) out;
                 when(out.__mapped) out;
                 initializer__asset(a:out);
-                @:type = Topaz.Asset.Type;
-                match(type) {
-                    (type.Image): initializer__image(i:out),
-                    (type.Sound) : initializer__sound(s:out),
-                    (type.Material) : initializer__material(m:out),
-                    (type.Data) : initializer__data(d:out),
-                    (type.Mesh) : initializer__mesh(m:out)
+                @:typeO = Topaz.Asset.Type;
+                match(out.getType()) {
+                    (typeO.Image): initializer__image(i:out),
+                    (typeO.Sound) : initializer__sound(s:out),
+                    (typeO.Material) : initializer__material(m:out),
+                    (typeO.Data) : initializer__data(d:out),
+                    (typeO.Mesh) : initializer__mesh(m:out)
                 }
                 
                 return out;                
@@ -2983,13 +3015,13 @@ initializer__data = ::<= {
                 @:out = topaz_resources__convert_asset(a:fileType, b:asset);
                 when(out == empty) out;
                 initializer__asset(a:out);
-                @:type = Topaz.Asset.Type;
-                match(type) {
-                    (type.Image): initializer__image(i:out),
-                    (type.Sound) : initializer__sound(s:out),
-                    (type.Material) : initializer__material(m:out),
-                    (type.Data) : initializer__data(d:out),
-                    (type.Mesh) : initializer__mesh(m:out)
+                @:typeO = Topaz.Asset.Type;
+                match(out.getType()) {
+                    (typeO.Image): initializer__image(i:out),
+                    (typeO.Sound) : initializer__sound(s:out),
+                    (typeO.Material) : initializer__material(m:out),
+                    (typeO.Data) : initializer__data(d:out),
+                    (typeO.Mesh) : initializer__mesh(m:out)
                 }
                 
                 return out;                 
@@ -3021,7 +3053,7 @@ initializer__data = ::<= {
                     c:min_minorVersionRequired,
                     d:onNewItem 
                 );
-            }
+            },
             
             queryBundle ::(bundleName) {
                 return topaz_resources__query_bundle(a:bundleName);
@@ -3055,7 +3087,7 @@ initializer__data = ::<= {
                 intervalDelay,
                 callback
             ) {
-                @:out = topaz_scheduler__create(a:mode, b:justOnce, c:interface, d:intervalDelay, e:callback);
+                @:out = topaz_scheduler__create(a:mode, b:justOnce, c:interval, d:intervalDelay, e:callback);
                 initializer__scheduler(s:out);
                 initializer__component(c:out);
                 return out;
@@ -3156,5 +3188,9 @@ initializer__data = ::<= {
     }
 
 };
+
+
+
+
 
 return Topaz;

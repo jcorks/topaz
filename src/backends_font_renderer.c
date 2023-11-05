@@ -109,6 +109,9 @@ topazFontRendererAPI_t topaz_font_renderer_get_api(topazFontRenderer_t * r) {
 }
 
 
+topazAsset_t * topaz_image_create_empty(topaz_t *);
+
+
 
 const topazAsset_t * topaz_font_renderer_image_ref(
     topazFontRenderer_t * r,
@@ -136,8 +139,8 @@ const topazAsset_t * topaz_font_renderer_image_ref(
         g->image = topaz_image_create_empty(r->ctx);
         if (data) {
             topaz_image_resize(g->image, w, h);
-            topazImage_Frame_t * frame = topaz_image_add_frame(g->image);
-            topaz_image_frame_set_data(frame, data);
+            uint32_t index = topaz_image_add_frame(g->image);
+            topaz_image_set_frame_rgba_data(g->image, index, data);
             free(data);
         }
         g->refCount++;

@@ -1,114 +1,104 @@
 @:Topaz  = import(module:'Topaz');
-@:class  = import(module:'Matte.Core.Class');
 
-@: Rectangle = class(
-    name : 'Rectangle',
-    inherits : [Topaz.Entity],
-    define:::(this){
-    
-        @:v = Topaz.Shape2D.new();
-        @:a = Topaz.Automation.new();
-        
-        
-        this.constructor = ::{
-            v.formRectangle(width:30, height:30);
-            v.center = {x:15, y:15}
-            a.installHook(event:'on-anim-end', callback:::(source) {
-                Topaz.Console.print(message:'Animation reset!');
-            });
-            a.durationSeconds = 4;
-            a.looped = true;
+@:createAnimatedRectangle = ::{
 
-
-            Topaz.Input.addKeyboardListener(
-                onPress :::(input) {
-                    match(input) {
-                      (Topaz.Input.KEY.SPACE):::<={
-                        a.speed += 0.25;
-                      },
-
-                      (Topaz.Input.KEY.BACKSPACE):::<={
-                        if (a.speed > 0) ::<={
-                            a.speed -= 0.25;
-                        } else ::<={
-                            a.speed = 0;
-                        }
-                      }
-                    }
-                }
-            );
-
-
-            this.components = [a, v];
-
-            this.onStep = ::{
-                this.position.x = a.value;
-            }        
-        }
-
-        this.interface = {
-            anim : {
-                get ::{return a;}
-            },
-
-            visual : {
-                get ::{return v;}
+    @:this = Topaz.Entity.create(
+        attributes : {
+            onStep :: {
+                @:p = this.getPosition();
+                p.x = a.current();
+                this.setPosition(value:p);
             }
         }
-    }
-);
+    );
+
+    @:v = Topaz.Shape2D.create();
+    @:a = Topaz.Automation.create();
+        
+        
+    v.formRectangle(width:30, height:30);
+    v.setCenter(value: {x:15, y:15});
+    a.installHook(event:'on-anim-end', hook:::(component, source) {
+        Topaz.Console.print(message:'Animation reset!');
+    });
+    a.setDurationSeconds(seconds:4);
+    a.setLooped(loop:true);
 
 
-@: RectangleLinear = class(
-    inherits : [Rectangle],
-    define:::(this) {
-        this.visual.color = 'purple';
-        this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.NONE,   offset:0);
-        this.anim.addKeyframe(value:200, function:Topaz.Automation.FUNCTION.LINEAR, offset:0.5);
-        this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.LINEAR, offset:1);
+    Topaz.Input.addKeyboardListener(
+        listener : {
+            onPress :::(input) {
+                match(input) {
+                  (Topaz.Key.space):::<={
+                    a.setSpeed(speed:a.getSpeed() + 0.25);
+                  },
 
-        this.position = {x:0, y:-100}
-    }
-);
+                  (Topaz.Key.backspace):::<={
+                    @:speed = a.getSpeed();
+                    if (speed > 0) ::<={
+                        a.setSpeed(speed:speed - 0.25);
+                    } else ::<={
+                        a.setSpeed(speed:0);
+                    }
+                  }
+                }
+            }
+        }
+    );
 
-@:RectangleAccel = class(
-    inherits : [Rectangle],
-    define:::(this) {
-        this.visual.color = 'blue';
-        this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.NONE,  offset:0);
-        this.anim.addKeyframe(value:200, function:Topaz.Automation.FUNCTION.ACCEL, offset:0.5);
-        this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.ACCEL, offset:1);
+    this.addComponent(component:a);
+    this.addComponent(component:v);
 
-        this.position = {x:0, y:0}
-
-    }
-);
-
-@:RectangleSlow = class(
-    inherits : [Rectangle],
-    define:::(this) {
-        this.visual.color = 'red';
-        this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.NONE, offset:0);
-        this.anim.addKeyframe(value:200, function:Topaz.Automation.FUNCTION.SLOW, offset:0.5);
-        this.anim.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.SLOW, offset:1);
-
-
-        this.position = {x:0, y:100}
-    }
-);
-
-
-
-::<= {
-    @:root = Topaz.Entity.new();
-    root.position = {
-        x:-200
-    }
-    root.children = [
-        RectangleLinear.new(),
-        RectangleAccel.new(),
-        RectangleSlow.new()
-    ];
-
-    Topaz.defaultDisplay.root = root;
+    this.anim = a;
+    this.visual = v;
+    
+    return this;
 }
+
+
+@: createRectangleLinear = ::{
+    @:this = createAnimatedRectangle();
+    this.visual.setColor(color:Topaz.Color.fromString(str:'purple'));
+    this.anim.addKeyframe(value:0,   function:Topaz.Automation.Function.None,   offset:0);
+    this.anim.addKeyframe(value:200, function:Topaz.Automation.Function.Linear, offset:0.5);
+    this.anim.addKeyframe(value:0,   function:Topaz.Automation.Function.Linear, offset:1);
+
+    this.setPosition(value: {x:0, y:-100});
+    return this;
+}
+
+@:createRectangleAccel :: {
+    @:this = createAnimatedRectangle();
+    this.visual.setColor(color:Topaz.Color.fromString(str:'blue'));
+    this.anim.addKeyframe(value:0,   function:Topaz.Automation.Function.None,  offset:0);
+    this.anim.addKeyframe(value:200, function:Topaz.Automation.Function.Accel, offset:0.5);
+    this.anim.addKeyframe(value:0,   function:Topaz.Automation.Function.Accel, offset:1);
+
+    this.setPosition(value: {x:0, y:0});
+    return this;
+}
+
+@:createRectangleSlow = ::{
+    @:this = createAnimatedRectangle();
+    this.visual.setColor(color:Topaz.Color.fromString(str:'red'));
+    this.anim.addKeyframe(value:0,   function:Topaz.Automation.Function.None, offset:0);
+    this.anim.addKeyframe(value:200, function:Topaz.Automation.Function.Slow, offset:0.5);
+    this.anim.addKeyframe(value:0,   function:Topaz.Automation.Function.Slow, offset:1);
+
+
+    this.setPosition(value: {x:0, y:100});
+    return this;
+}
+
+
+
+@:root = Topaz.Entity.create();
+root.setPosition(value: {
+    x:-200
+});
+root.attach(child:createRectangleLinear());
+root.attach(child:createRectangleAccel());
+root.attach(child:createRectangleSlow());
+
+Topaz.ViewManager.getDefault().setRoot(newRoot:root);
+

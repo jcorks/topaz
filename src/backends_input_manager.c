@@ -239,7 +239,7 @@ static char * builtIn[] = {
     
 
 const topazString_t * topaz_input_manager_id_to_string(int id) {
-    if (id < topazInput_Count) {
+    if (id < topazInput_count) {
         return TOPAZ_STR_CAST(builtIn[id]);
     }
     static topazTable_t * table = NULL;

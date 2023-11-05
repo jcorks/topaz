@@ -109,7 +109,7 @@ void topaz_image_resize(
 ///
 void topaz_image_set_frame_rgba_data(
     /// The image to modify.
-    topazImage_t * image,
+    topazAsset_t * image,
     /// The frame to modify
     uint32_t frame,
     /// Texture data to read from and copy.
@@ -121,7 +121,7 @@ void topaz_image_set_frame_rgba_data(
 ///
 topazArray_t * topaz_image_get_frame_rgba_data(
     /// The image to query
-    const topazImage_t * image,
+    const topazAsset_t * image,
 
     /// The frame to query.    
     uint32_t frame
@@ -208,7 +208,7 @@ void topaz_image_remove_texture_event_notify(
 ///
 void topaz_image_set_frame_from_texture(
     /// Image to modify
-    topazImage_t * image,
+    topazAsset_t * image,
 
     /// Frame to modify.    
     uint32_t frame, 
@@ -226,7 +226,7 @@ void topaz_image_set_frame_from_texture(
 ///
 topazRenderer_Texture_t * topaz_image_get_frame_texture(
     /// The image to query
-    const topazImage_t * frame,
+    const topazAsset_t * image,
     
     /// The frame to query.
     uint32_t frame

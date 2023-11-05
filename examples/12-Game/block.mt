@@ -3,54 +3,55 @@
 @:Parameters = import(module:'parameters.mt');
 
 
-@:Block = class(
-    inherits: [Topaz.Entity],
-    name: 'block',
-    define:::(this) {
-        @:shape = Topaz.Shape2D.new();
-        @index_x;    
-        @index_y;    
+return ::(onCleanup) {
+    @:this = Topaz.Entity.create(
+        attributes : {
+            onRemove : onCleanup
+        }
+    );
 
-        this.constructor = ::() {
-            this.components = [shape];
+    @:shape = Topaz.Shape2D.create();
+    @index_x;    
+    @index_y;    
 
-            shape.formImageScaled(
-                width :Parameters.BLOCK_SIZE,
-                height:Parameters.BLOCK_SIZE,
-                image: Parameters.BLOCK_IMAGE
-            );
+    this.addComponent(component:shape);
 
+    shape.formImageScaled(
+        width :Parameters.BLOCK_SIZE,
+        height:Parameters.BLOCK_SIZE,
+        asset: Parameters.BLOCK_IMAGE
+    );
 
-            return this;
-        };
         
-        this.interface = {
-            setup::(x, y, color) {
-                this.position.x = x;
-                this.position.y = y;
-                index_x = Parameters.posToIndex(pos:x);
-                index_y = Parameters.posToIndex(pos:y);            
-                shape.color = color;
-            },
-        
-            indexX : {
-                get :: {
-                    return index_x;
-                }
-            },
-            indexY : {            
-                get:: {
-                    return index_y;
-                }
-            },
-            moveDown :: {
-                this.position.y -= Parameters.BLOCK_SIZE;
-                index_y-=1;
+    this. = {
+        setup::(x, y, color) {
+            this.setPosition(value:{x:x, y:y});
+            index_x = Parameters.posToIndex(pos:x);
+            index_y = Parameters.posToIndex(pos:y);            
+            shape.setColor(color);
+        },
+    
+        indexX : {
+            get :: {
+                return index_x;
             }
-        };
+        },
+        indexY : {            
+            get:: {
+                return index_y;
+            }
+        },
+        moveDown :: {
+            @:p = this.getPosition();
+            p.y -= Parameters.BLOCK_SIZE;
+            this.setPosition(value:p);
+            index_y-=1;
+        }
     }
+    
+    // makes the object into functions / setters|getters only.
+    this->setIsInterface(enabled:true);
+    return this;
+}
 
-);
 
-
-return Block;

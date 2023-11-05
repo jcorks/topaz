@@ -90,11 +90,11 @@ void topaz_automation_add_keyframe(
 
     /// The traveling function that describes how 
     /// the next keyframe's value should be reached. 
-    topazAutomation_Function lerp, 
+    topazAutomation_Function function, 
 
     /// The offset from the end of the last keyframe.
     /// This can be querried with topaz_automation_get_length().
-    float automationOffset
+    float offset
 );
 
 
@@ -112,11 +112,11 @@ void topaz_automation_add_vector_keyframe(
 
     /// The traveling function that describes how 
     /// the next keyframe's value should be reached. 
-    topazAutomation_Function lerp, 
+    topazAutomation_Function function, 
 
     /// The offset from the end of the last keyframe.
     /// This can be querried with topaz_automation_get_length().
-    float automationOffset
+    float offset
 );
 
 

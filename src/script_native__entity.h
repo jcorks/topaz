@@ -77,7 +77,7 @@ TSO_SCRIPT_API_FN(entity_api__create) {
     TSO_ARG_6;
 
     topazEntity_Attributes_t attribs = {};
-    attribs.on_detach = (topaz_entity_attribute_callback)topaz_script_entity__on_detach;    
+    attribs.on_remove = (topaz_entity_attribute_callback)topaz_script_entity__on_remove;    
     attribs.userData = calloc(1, sizeof(TopazScriptEntity));
     TopazScriptEntity * e = attribs.userData;
 

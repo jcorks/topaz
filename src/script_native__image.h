@@ -63,7 +63,7 @@ TSO_SCRIPT_API_FN(image_api__get_frame_count) {
 }
 
 
-TSO_SCRIPT_API_FN(image_api__set_frame_rgba) {
+TSO_SCRIPT_API_FN(image_api__set_frame_rgba_data) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -96,8 +96,8 @@ TSO_SCRIPT_API_FN(image_api__set_frame_rgba) {
         buffer[i+3] = topaz_script_object_as_int(topaz_script_object_reference_array_get_nth(arg2, i+3));
     }
     topaz_image_set_frame_rgba_data(
-        frame,
-        frameIndex
+        native,
+        frameIndex,
         buffer
     );
 
@@ -165,8 +165,8 @@ TSO_SCRIPT_API_FN(image_api__get_frame_rgba_data) {
             topaz_script_object_reference_call(
                 arg3,
                 TOPAZ_ARRAY_CAST(color, topazScript_Object_t *, 4)
-            );
-        }
+            )
+        );
     }
     
     topaz_array_destroy(rgba);

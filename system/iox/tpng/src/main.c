@@ -136,7 +136,7 @@ static int tpng_stream_finish(
         if (rgba && w && h) {
             topaz_image_resize(asset, w, h);
             topaz_image_add_frame(asset);
-            topaz_image_frame_set_data(topaz_image_get_frame(asset, 0), rgba);       
+            topaz_image_set_frame_rgba_data(asset, 0, rgba);       
         }
 
         free(rgba);

@@ -1,96 +1,101 @@
 @:Topaz = import(module:'Topaz');
 @:class = import(module:'Matte.Core.Class');
 
-@:emitter = Topaz.ParticleEmitter2D.new();    
+@:emitter = Topaz.ParticleEmitter2D.create();    
 
-@a = Topaz.Automation.new();
-a.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.SLOW, offset:0);
-a.addKeyframe(value:0.5, function:Topaz.Automation.FUNCTION.SLOW, offset:0.5);
-a.addKeyframe(value:1,   function:Topaz.Automation.FUNCTION.SLOW, offset:1);
-@ramp01 = a.string;
+@a = Topaz.Automation.create();
+a.addKeyframe(value:0,   function:Topaz.Automation.Function.Slow, offset:0);
+a.addKeyframe(value:0.5, function:Topaz.Automation.Function.Slow, offset:0.5);
+a.addKeyframe(value:1,   function:Topaz.Automation.Function.Slow, offset:1);
+@ramp01 = a.toString();
 a.clear();
-a.addKeyframe(value:1, function:Topaz.Automation.FUNCTION.NONE, offset:0);
-a.addKeyframe(value:1, function:Topaz.Automation.FUNCTION.NONE, offset:1);
-@stable1 = a.string;
+a.addKeyframe(value:1, function:Topaz.Automation.Function.None, offset:0);
+a.addKeyframe(value:1, function:Topaz.Automation.Function.None, offset:1);
+@stable1 = a.toString();
 a.clear();
-a.addKeyframe(value:1, function:Topaz.Automation.FUNCTION.NONE, offset:0);
-a.addKeyframe(value:0, function:Topaz.Automation.FUNCTION.NONE, offset:1);
-@stable0 = a.string;
+a.addKeyframe(value:1, function:Topaz.Automation.Function.None, offset:0);
+a.addKeyframe(value:0, function:Topaz.Automation.Function.None, offset:1);
+@stable0 = a.toString();
 a.clear();
-a.addKeyframe(value:0, function:Topaz.Automation.FUNCTION.LINEAR,   offset:0);
-a.addKeyframe(value:360, function:Topaz.Automation.FUNCTION.LINEAR, offset:1);
-@ramp360 = a.string;
+a.addKeyframe(value:0, function:Topaz.Automation.Function.LINEAR,   offset:0);
+a.addKeyframe(value:360, function:Topaz.Automation.Function.LINEAR, offset:1);
+@ramp360 = a.toString();
 a.clear();
-a.addKeyframe(value:1,   function:Topaz.Automation.FUNCTION.SLOW, offset:0);
-a.addKeyframe(value:0,   function:Topaz.Automation.FUNCTION.SLOW, offset:1);
-@ramp10 = a.string;
+a.addKeyframe(value:1,   function:Topaz.Automation.Function.Slow, offset:0);
+a.addKeyframe(value:0,   function:Topaz.Automation.Function.Slow, offset:1);
+@ramp10 = a.toString();
 a.clear();
-a.addKeyframe(value:10, function:Topaz.Automation.FUNCTION.SLOW, offset:0);
-a.addKeyframe(value:5,  function:Topaz.Automation.FUNCTION.SLOW, offset:0.5);
-a.addKeyframe(value:2,  function:Topaz.Automation.FUNCTION.SLOW, offset:1);
-@ramp100 = a.string;
+a.addKeyframe(value:10, function:Topaz.Automation.Function.Slow, offset:0);
+a.addKeyframe(value:5,  function:Topaz.Automation.Function.Slow, offset:0.5);
+a.addKeyframe(value:2,  function:Topaz.Automation.Function.Slow, offset:1);
+@ramp100 = a.toString();
 
 
 @:image = Topaz.Resources.convertAsset(
-    extension:'png', 
-    asset:Topaz.Resources.createAsset(
+    fileType:'png', 
+    asset:Topaz.Resources.createDataAssetFromPath(
         path:'base.png', 
         name:'example'
     )
 );
 
 
-@particle = Topaz.Particle.new();
-particle.image = image;
+@particle = Topaz.Particle.create();
+particle.setImage(image);
 
-particle.setAttributes(
-    alphaRule: Topaz.RENDERER.ALPHA_RULE.TRANSLUCENT,
-    etchRule : Topaz.RENDERER.ETCH_RULE.NOETCHING,
-    depthTest: Topaz.RENDERER.DEPTH_TEST.NONE,
-    textureFilterHint:Topaz.RENDERER.TEXTURE_FILTER_HINT.LINEAR
+particle.setAttribute(
+    attribute:Topaz.Renderer.Attribute.AlphaRule,
+    value:    Topaz.Renderer.AlphaRule.Translucent
+);
+Topaz.debug();
+
+particle.setAttribute(
+    attribute:Topaz.Renderer.Attribute.TextureFilterHint,
+    value:    Topaz.Renderer.TextureFilterHint.Linear
 );
 
-particle.setFunctions(
-    scaleX:ramp10,
-    scaleY:ramp10,
-    speedX:stable1,
-    speedY:stable1,
-    scaleMultiplier:ramp100,
-    red:ramp10,
-    green:stable1,
-    blue:stable1,
-    alpha:ramp10
-);
+particle.setFunction(prop:Topaz.Particle.Property.ScaleX, animString:ramp10);
+particle.setFunction(prop:Topaz.Particle.Property.ScaleY, animString:ramp10);
+particle.setFunction(prop:Topaz.Particle.Property.SpeedX, animString:stable1);
+particle.setFunction(prop:Topaz.Particle.Property.SpeedY, animString:stable1);
+particle.setFunction(prop:Topaz.Particle.Property.ScaleMultiplier, animString:ramp100);
+particle.setFunction(prop:Topaz.Particle.Property.Red,   animString: ramp10);
+particle.setFunction(prop:Topaz.Particle.Property.Green, animString: stable1);
+particle.setFunction(prop:Topaz.Particle.Property.Blue,  animString: stable1);
+particle.setFunction(prop:Topaz.Particle.Property.Alpha, animString: ramp10);
 
 
-particle.setOffsetMin(
-    speedX:-10,
-    speedY: 0,
+particle.setOffsetMin(prop:Topaz.Particle.Property.SpeedX, value:-10);
+particle.setOffsetMin(prop:Topaz.Particle.Property.SpeedY, value:0);
+particle.setOffsetMin(prop:Topaz.Particle.Property.Duration, value:1);
+particle.setOffsetMin(prop:Topaz.Particle.Property.Direction, value:75);
+particle.setOffsetMin(prop:Topaz.Particle.Property.Red, value:-0.1);
 
-    duration :1,
-    direction :75,
-    red :-0.1
-);
-
-
-particle.setOffsetMax(
-    speedX:10,
-    speedY:10,
-    duration:100,
-    direction:115,
-    red:0.1
-);
+particle.setOffsetMax(prop:Topaz.Particle.Property.SpeedX, value:10);
+particle.setOffsetMax(prop:Topaz.Particle.Property.SpeedY, value:10);
+particle.setOffsetMax(prop:Topaz.Particle.Property.Duration, value:100);
+particle.setOffsetMax(prop:Topaz.Particle.Property.Direction, value:115);
+particle.setOffsetMax(prop:Topaz.Particle.Property.Red, value:0.1);
 
 
 
 // FIXME
-emitter.particle = particle;
+emitter.setParticle(particle);
 
 
-Topaz.Input.addPointerListener(onActive:::(input, value) {
-    if (input == Topaz.Input.POINTER._0) ::<={
-        emitter.position = Topaz.Input.mouse;
-        emitter.emit(amount:1);
-    };
-});
-Topaz.defaultDisplay.root = emitter;
+Topaz.Input.addPointerListener(
+    listener : {
+        onActive:::(input, value) {
+            if (input == Topaz.Pointer._0) ::<={
+                emitter.setPosition(
+                    value : {
+                        x : Topaz.Input.mouseX(),
+                        y : Topaz.Input.mouseY()
+                    }
+                );
+                emitter.emit(count:1);
+            }
+        }
+    }
+);
+Topaz.ViewManager.getDefault().setRoot(newRoot:emitter);

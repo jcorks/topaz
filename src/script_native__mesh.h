@@ -118,7 +118,7 @@ TSO_SCRIPT_API_FN(mesh_api__set_vertex) {
         topaz_mesh_set_vertex(
             native,
             index,
-            (topazRenderer_3D_Vertex_t*)data
+            *(topazRenderer_3D_Vertex_t*)data
         );
     }    
     TSO_NO_RETURN;
@@ -162,7 +162,7 @@ TSO_SCRIPT_API_FN(mesh_api__remove_object) {
     TSO_NO_RETURN;
 }
 
-TSO_SCRIPT_API_FN(mesh_api__set_object) {
+TSO_SCRIPT_API_FN(mesh_api__set_object_indices) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_ARG_2;
@@ -172,19 +172,62 @@ TSO_SCRIPT_API_FN(mesh_api__set_object) {
     if (topaz_script_object_reference_get_feature_mask(arg2) & topazScript_Object_Feature_Array) {
         uint32_t len = topaz_script_object_reference_array_get_count(arg2);
         uint32_t i;
-        topazArray_t * a = topaz_mesh_get_object(native, topaz_script_object_as_int(arg1));
-        if (!a) TSO_NO_RETURN;
-        topaz_array_set_size(a, 0);
+        topazArray_t * a = topaz_array_create(sizeof(uint32_t));
         for(i = 0; i < len; ++i) {
             uint32_t v = topaz_script_object_as_int(topaz_script_object_reference_array_get_nth(arg2, i));
             topaz_array_push(a, v);
         }
+        
+        topaz_mesh_set_object_indices(native, topaz_script_object_as_int(arg1), a);
+        topaz_array_destroy(a);
     }
 
     TSO_NO_RETURN;
 }
 
 
+TSO_SCRIPT_API_FN(mesh_api__get_object_indices) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_ARG_2;
+    TSO_ARG_3;
+    TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_ID__MESH);   
+
+
+    uint32_t len = topaz_script_object_reference_array_get_count(arg2);
+    uint32_t i;
+    topazArray_t * a = topaz_mesh_get_object_indices(native, topaz_script_object_as_int(arg1));
+    if (!a) TSO_NO_RETURN;
+
+
+    topazScript_Object_t * count = topaz_script_object_from_int(
+        script,
+        topaz_array_get_size(a)
+    );
+    topaz_script_object_destroy(
+        topaz_script_object_reference_call(
+            arg2,
+            TOPAZ_ARRAY_CAST(&count, topazScript_Object_t *, 1)
+        )
+    );
+    topaz_script_object_destroy(count);
+    
+
+
+    topaz_array_set_size(a, 0);
+    for(i = 0; i < len; ++i) {
+        topazScript_Object_t * ind = topaz_script_object_from_int(script, topaz_array_at(a, uint32_t, i));
+        topaz_script_object_destroy(
+            topaz_script_object_reference_call(
+                arg3,
+                TOPAZ_ARRAY_CAST(&ind, topazScript_Object_t *, 1)
+            )
+        );
+        topaz_script_object_destroy(ind);
+    }
+
+    TSO_NO_RETURN;
+}
 
     
 
@@ -197,9 +240,11 @@ static void add_refs__mesh_api(topazScript_t * script, topazScriptManager_t * co
     TS_MAP_NATIVE_FN("topaz_mesh__set_vertex", mesh_api__set_vertex, 3);
 
     TS_MAP_NATIVE_FN("topaz_mesh__add_object", mesh_api__add_object, 1);
+    TS_MAP_NATIVE_FN("topaz_mesh__get_object_indices", mesh_api__get_object_indices, 4);
+    TS_MAP_NATIVE_FN("topaz_mesh__set_object_indices", mesh_api__set_object_indices, 3);
+    
     TS_MAP_NATIVE_FN("topaz_mesh__get_object_count", mesh_api__get_object_count, 1);
     TS_MAP_NATIVE_FN("topaz_mesh__remove_object", mesh_api__remove_object, 2);
-    TS_MAP_NATIVE_FN("topaz_mesh__set_object", mesh_api__set_object, 3);
 
 
 }

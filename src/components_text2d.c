@@ -201,7 +201,7 @@ int topaz_text2d_get_attribute(
 ) {
     Text2D * t = text2d__retrieve(c);
     return topaz_renderer_attributes_get_attribute(
-        &t->attributes,
+        &t->attribs,
         attribute);
 
 }
@@ -407,7 +407,7 @@ static void text2d_update__full(Text2D * t, const topazString_t * str, const top
             t->currentSize
         );
 
-        topazRenderer_Texture_t * texture = topaz_image_frame_get_texture(topaz_image_get_frame((topazAsset_t *)image, 0));
+        topazRenderer_Texture_t * texture = topaz_image_get_frame_texture((topazAsset_t *)image, 0);
         topaz_render2d_set_texture(r, texture);
 
 
@@ -636,7 +636,7 @@ static void text2d_update__add(Text2D * t, const topazString_t * str, const topa
             t->currentSize
         );
 
-        topazRenderer_Texture_t * texture = topaz_image_frame_get_texture(topaz_image_get_frame((topazAsset_t *)image, 0));
+        topazRenderer_Texture_t * texture = topaz_image_get_frame_texture((topazAsset_t *)image, 0);
         topaz_render2d_set_texture(r, texture);
 
 

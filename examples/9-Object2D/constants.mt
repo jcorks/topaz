@@ -1,36 +1,31 @@
 @:Topaz = import(module:'Topaz');
-@:class = import(module:'Matte.Core.Class');
 
 
 
 Topaz.Object2D.setGroupInteraction(
-    thisGroup: Topaz.Object2D.GROUP.A,
-    otherGroup:Topaz.Object2D.GROUP.B,
-    interact:true
+    a: Topaz.Object2D.Group.A,
+    b: Topaz.Object2D.Group.B,
+    shouldInteract:true
 );
 
 
 Topaz.Object2D.setGroupInteraction(
-    thisGroup: Topaz.Object2D.GROUP.A,
-    otherGroup:Topaz.Object2D.GROUP.A,
-    interact:true
+    a: Topaz.Object2D.Group.A,
+    b:Topaz.Object2D.Group.A,
+    shouldInteract:true
 );
 
 return {
-    BALL_GROUP : Topaz.Object2D.GROUP.A,
-    
-    FLOOR_GROUP :  Topaz.Object2D.GROUP.B,
-    
+    BALL_GROUP : Topaz.Object2D.Group.A,    
+    FLOOR_GROUP :  Topaz.Object2D.Group.B,
     GRAVITY : 0.4,
-    
     BALL_SIZE : 50,
-    
     BALL_IMAGE : Topaz.Resources.convertAsset(
-        asset:Topaz.Resources.createAsset(
+        asset:Topaz.Resources.createDataAssetFromPath(
             path:'ball.png', 
             name:'Bouncy.ball'
         ), 
-        extension:'png'
+        fileType:'png'
     )
 };
 

@@ -45,11 +45,11 @@ TSO_SCRIPT_API_FN(automation_api__add_vector_keyframe) {
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__AUTOMATION);
 
     topazVector_t a = {
-        topaz_script_object_as_number (arg1)
-        topaz_script_object_as_number (arg2)
+        topaz_script_object_as_number (arg1),
+        topaz_script_object_as_number (arg2),
         topaz_script_object_as_number (arg3)
     
-    }
+    };
     topaz_automation_add_vector_keyframe(
         native,
         &a,

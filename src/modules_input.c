@@ -802,7 +802,7 @@ int topaz_input_mouse_delta_y(const topazInput_t * t) {
 
 
 float topaz_input_mouse_wheel(const topazInput_t * t) {
-    InputState * input = device_state_get_input(t->devices[topazInputManager_DefaultDevice_Mouse], topazPointer_Wheel);
+    InputState * input = device_state_get_input(t->devices[topazInputManager_DefaultDevice_Mouse], topazPointer_wheel);
     return input->current;
 }
 

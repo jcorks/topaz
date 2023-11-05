@@ -307,7 +307,7 @@ static void topaz_shape2d_texture_event(
       case topazImage_TextureEvent_Changed: {
         topaz_render2d_set_texture(
             s->render2d, 
-            topaz_image_frame_get_texture(topaz_image_get_frame(s->notifImg, frame))
+            topaz_image_get_frame_texture(s->notifImg, frame)
         );
         float w = s->notifW;
         float h = s->notifH;

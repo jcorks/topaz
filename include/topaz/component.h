@@ -270,7 +270,7 @@ int topaz_component_emit_event(
     topazComponent_t * component, 
 
     /// Name of the event. This should match the name that was installed.
-    const topazString_t * eventName, 
+    const topazString_t * event, 
 
     /// Entity that indicates the source of the event. For example, in a collision, this may be the object collided with.
     topazEntity_t * source, 
@@ -286,7 +286,7 @@ int topaz_component_emit_event_anonymous(
     topazComponent_t * component, 
 
     /// The name of the event to emit.
-    const topazString_t * eventName
+    const topazString_t * event
 );
 
 /// Returns whether there exists at least one handler for the given event
@@ -296,7 +296,7 @@ int topaz_component_can_handle_event(
     topazComponent_t * component, 
 
     /// The event name to query.
-    const topazString_t * eventName
+    const topazString_t * event
 );
 
 
@@ -310,7 +310,7 @@ uint32_t topaz_component_install_hook(
     topazComponent_t * component, 
 
     /// The event to add the hook to.
-    const topazString_t * eventName, 
+    const topazString_t * event, 
 
     /// The handler that will be called when the event is triggered.
     topaz_event_handler hook, 
@@ -326,7 +326,7 @@ void topaz_component_uninstall_hook(
     topazComponent_t * component, 
 
     /// The name of the event 
-    const topazString_t * eventName, 
+    const topazString_t * event, 
 
     /// The id of the hook to remove.
     uint32_t id
@@ -343,7 +343,7 @@ uint32_t topaz_component_install_handler(
     topazComponent_t * component, 
 
     /// The event name to install to.
-    const topazString_t * eventName, 
+    const topazString_t * event, 
 
     /// The handler called when handling the event.
     topaz_event_handler handler, 
@@ -359,7 +359,7 @@ void topaz_component_uninstall_handler(
     topazComponent_t * component, 
 
     /// The event name to uninstall the handler from.
-    const topazString_t * eventName, 
+    const topazString_t * event, 
 
     /// The id of the handler.
     uint32_t id
@@ -388,7 +388,7 @@ void topaz_component_install_event(
     topazComponent_t * component, 
 
     /// The name of the event.
-    const topazString_t * eventName, 
+    const topazString_t * event, 
 
     /// The default handler for the new event.
     topaz_event_handler defaultHandler, 
@@ -404,7 +404,7 @@ void topaz_component_uninstall_event(
     topazComponent_t * component, 
 
     /// The event to remove from the handler.
-    const topazString_t * eventName
+    const topazString_t * event
 );
 
 

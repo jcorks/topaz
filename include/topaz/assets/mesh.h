@@ -140,15 +140,28 @@ uint32_t topaz_mesh_add_object(
 
 /// Gets the array of face indices for the corresponding index.
 ///
-/// (No script mapping)
-///
-topazArray_t * topaz_mesh_get_object(
+const topazArray_t * topaz_mesh_get_object_indices(
     /// The mesh to retrieve an object from.
     topazAsset_t * mesh, 
 
     /// The object index.
     uint32_t index
 );
+
+
+/// Sets a new source array for the face indices of the corresponding 
+/// object. Indices is copied into a new array.
+void topaz_mesh_set_object_indices(
+    /// The mesh to retrieve an object from.
+    topazAsset_t * mesh, 
+
+    /// The object index.
+    uint32_t index,
+    
+    // the new object indices
+    const topazArray_t * indices
+);
+
 
 /// Removes the object specified. No action is taken if the index 
 /// doesn't exist.

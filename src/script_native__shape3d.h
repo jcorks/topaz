@@ -94,7 +94,7 @@ TSO_SCRIPT_API_FN(shape3d_api__get_rotation) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
-    topazVector_t a = topaz_transform_get_rotation(topaz_shape3d_get_node(native))
+    topazVector_t a = *topaz_transform_get_rotation(topaz_shape3d_get_node(native));
     topaz_script_return_vector(script, arg1, a.x, a.y, a.z);
     TSO_NO_RETURN;
 }
@@ -106,7 +106,7 @@ TSO_SCRIPT_API_FN(shape3d_api__get_position) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
-    topazVector_t a = topaz_transform_get_position(topaz_shape3d_get_node(native))
+    topazVector_t a = *topaz_transform_get_position(topaz_shape3d_get_node(native));
     topaz_script_return_vector(script, arg1, a.x, a.y, a.z);
     TSO_NO_RETURN;
 }
@@ -119,7 +119,7 @@ TSO_SCRIPT_API_FN(shape3d_api__get_scale) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE2D);   
-    topazVector_t a = topaz_transform_get_scale(topaz_shape3d_get_node(native))
+    topazVector_t a = *topaz_transform_get_scale(topaz_shape3d_get_node(native));
     topaz_script_return_vector(script, arg1, a.x, a.y, a.z);
     TSO_NO_RETURN;
 }

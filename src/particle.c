@@ -492,10 +492,7 @@ void topaz_particle_emitter_2d_set_particle(
     emitter->attribs = p->attribs; 
 
 
-    topazImage_Frame_t * f = topaz_image_get_frame(image, 0);
-    if (f) {
-        emitter->tex = topaz_image_frame_get_texture(f);
-    }
+    emitter->tex = topaz_image_get_frame_texture(image, 0);
 
 
     // copy params

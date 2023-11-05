@@ -3,7 +3,7 @@
 
 
 
-@:font = Topaz.Resources.createAsset(
+@:font = Topaz.Resources.createDataAssetFromPath(
     path:"PublicSans-Regular.ttf",
     name:"MyFont"
 );
@@ -11,44 +11,39 @@ Topaz.FontManager.registerFont(asset:font);
 
 
 
-@:StringVisual = class(
-    inherits : [Topaz.Entity],
-    define:::(this) {
-        @visual = Topaz.Text2D.new();    
-        @bg = Topaz.Shape2D.new();
+@:createStringVisual ::{
+    @:this = Topaz.Entity.create();
+    
+    @visual = Topaz.Text2D.create();    
+    @bg = Topaz.Shape2D.create();
 
-        this.constructor = ::{
-            visual.font = font;
-            visual.size =  40;
+    visual.setFont(font, pixelSize:40);
+
+    bg.setColor(color:Topaz.Color.fromString(str:'purple'));
+    this.addComponent(component:bg);
+    this.addComponent(component:visual);
 
 
-            bg.color = 'purple';
-            this.components = [bg, visual];
-
-        }
-
-        this.interface = {
-            update::(text) {
-                visual.text = text;
-                bg.formRectangle(
-                    width:visual.extentWidth,
-                    height:visual.extentHeight
-                );
-            }
-        }
-
+    this.update = ::(text) {
+        visual.setText(text);
+        bg.formRectangle(
+            width:visual.getExtentWidth(),
+            height:visual.getExtentHeight()
+        );
     }
-);
+    
+    return this;
+}
 
 
 
 
 
-@ent = StringVisual.new();
+@ent = createStringVisual();
 ent.update(text:'Hello world!\nThis is text.');
 
 
 
-Topaz.defaultDisplay.root = ent;
+Topaz.ViewManager.getDefault().setRoot(newRoot:ent);
 
 

@@ -229,7 +229,7 @@ static void topaz_shape3d_texture_event0(
         break;
 
       case topazImage_TextureEvent_Changed:
-        s->d3.sampleTexture0 = topaz_image_frame_get_texture(topaz_image_get_frame(s->slot0_old, frame));
+        s->d3.sampleTexture0 = topaz_image_get_frame_texture(s->slot0_old, frame);
         break;
     }
 }   
@@ -249,7 +249,7 @@ static void topaz_shape3d_texture_event1(
         break;
 
       case topazImage_TextureEvent_Changed:
-        s->d3.sampleTexture1 = topaz_image_frame_get_texture(topaz_image_get_frame(s->slot1_old, frame));
+        s->d3.sampleTexture1 = topaz_image_get_frame_texture(s->slot1_old, frame);
         break;
     }
 }   
@@ -270,7 +270,7 @@ static void topaz_shape3d_texture_event2(
         break;
 
       case topazImage_TextureEvent_Changed:
-        s->d3.sampleTexture2 = topaz_image_frame_get_texture(topaz_image_get_frame(s->slot2_old, frame));
+        s->d3.sampleTexture2 = topaz_image_get_frame_texture(s->slot2_old, frame);
         break;
     }
 }   
@@ -285,14 +285,14 @@ void topaz_shape3d_set_texture(
     if (!topaz_image_get_frame_count(src)) return;
     Shape3D * s = shape3d__retrieve(shape3d);
 
-    topazImage_Frame_t * image = topaz_image_get_frame(src, 0);
+    //topazImage_Frame_t * image = topaz_image_get_frame(src, 0);
 
     switch(slot) {
       case topazShape3D_TextureSlot_0:
         if (s->slot0_old) {
             topaz_image_remove_texture_event_notify(s->slot0_old, s->slot0_id);
         }
-        s->d3.sampleTexture0 = topaz_image_frame_get_texture(image);
+        s->d3.sampleTexture0 = topaz_image_get_frame_texture(src, 0);
         s->slot0_id = topaz_image_add_texture_event_notify(src, topaz_shape3d_texture_event0, s);
         s->frame0_old = 0;
         s->slot0_old = src;
@@ -302,7 +302,7 @@ void topaz_shape3d_set_texture(
         if (s->slot1_old) {
             topaz_image_remove_texture_event_notify(s->slot1_old, s->slot1_id);
         }
-        s->d3.sampleTexture1 = topaz_image_frame_get_texture(image);
+        s->d3.sampleTexture1 = topaz_image_get_frame_texture(src, 0);
         s->slot1_id = topaz_image_add_texture_event_notify(src, topaz_shape3d_texture_event1, s);
         s->frame1_old = 0;
         s->slot1_old = src;
@@ -312,7 +312,7 @@ void topaz_shape3d_set_texture(
         if (s->slot2_old) {
             topaz_image_remove_texture_event_notify(s->slot2_old, s->slot2_id);
         }
-        s->d3.sampleTexture2 = topaz_image_frame_get_texture(image);
+        s->d3.sampleTexture2 = topaz_image_get_frame_texture(src, 0);
         s->slot2_id = topaz_image_add_texture_event_notify(src, topaz_shape3d_texture_event2, s);
         s->frame2_old = 0;
         s->slot2_old = src;
@@ -374,7 +374,7 @@ int topaz_shape3d_get_attribute(
     return topaz_renderer_attributes_get_attribute(
         &s->attribs,
         attribute
-    )
+    );
 }
 
 

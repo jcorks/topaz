@@ -16,9 +16,9 @@ Topaz.Console.print(message:'Hello, world!');
 // Different message types are available as well.
 // The default message type is "normal", but for 
 // more important, urgent info, 
-Topaz.Console.print(message:'Debugging! for debugging purposes.', type:Topaz.Console.MESSAGE_TYPE.DEBUG);
-Topaz.Console.print(message:'Warnings, for when the developers should keep an eye out for something.', type:Topaz.Console.MESSAGE_TYPE.WARNING);
-Topaz.Console.print(message:'Errors, for when something severe / fatal has occurred.', type:Topaz.Console.MESSAGE_TYPE.ERROR);
+Topaz.Console.printMessage(message:'Debugging! for debugging purposes.', type:Topaz.Console.MessageType.Debug);
+Topaz.Console.printMessage(message:'Warnings, for when the developers should keep an eye out for something.', type:Topaz.Console.MessageType.Warning);
+Topaz.Console.printMessage(message:'Errors, for when something severe / fatal has occurred.', type:Topaz.Console.MessageType.Error);
 
 // But thats not all! Throughout a complex program, there 
 // can be many, many console messages. So, you can also add 
@@ -30,8 +30,8 @@ Topaz.Console.print(message:'Errors, for when something severe / fatal has occur
     // Adding a new listener returns an id that can be used to remove 
     // the listener later.
     @:listenerID = Topaz.Console.addListener(
-        callback:::(text, type) {
-            condensedLog = String.combine(strings:[condensedLog, 'New log: ', text, '\n']);
+        callback:::(line, type) {
+            condensedLog = String.combine(strings:[condensedLog, 'New log: ', line, '\n']);
         }
     );
     
@@ -55,59 +55,68 @@ Topaz.Console.print(message:'Errors, for when something severe / fatal has occur
 // Debugging interaction is done through CommandContexts,
 // which define commands that the console can recognize 
 // and act upon.
-@:myContext = Topaz.Console.CommandContext.new(
-    // Commands are strings in the format:
-    // 
-    //  commandName arg0 arg1 arg2 etc.
-    //
-    // Each argument can be separated by ()[]{},.;: for convenience 
-    // and readability.
-    //
-    // Once a command is run, a string can be returned as a result of the 
-    // behavior.
-    //
-    commands: {
-        "sayHi" : ::(args, fullCommand) {
-            return 'Hi!';
-        },
-        
-        // an invoke with arguments separated as stated above. 
-        // i.e.
-        //
-        // randomNumber(0, 100);
-        "randomNumber" : ::(args, fullCommand) {
-            when(Object.keycount(of:args) != 2) 
-                'Syntax: randomNumber(min, max)';
-                
-                
-            @:min = Number.parse(string:args[0]);
-            @:max = Number.parse(string:args[1]);
-            return min + Number.random() * (max-min);
-        },
-        
-        // Invokes the debugger! Did you know you could do this!?
-        // The debugger is its own console command context.
-        "debug" : ::(args, fullCommand) {
-            Topaz.debug();
-        }
-        
+@:myContext = Topaz.Console.CommandContext.create();
 
-    },
+// Commands are strings in the format:
+// 
+//  commandName arg0 arg1 arg2 etc.
+//
+// Each argument can be separated by ()[]{},.;: for convenience 
+// and readability.
+//
+// Once a command is run, a string can be returned as a result of the 
+// behavior.
+//
+myContext.addCommand(
+    command: 'sayHi',
+    callback::(args, fullCommand) {
+        return 'Hi!';
+    }
+);
+        
+// an invoke with arguments separated as stated above. 
+// i.e.
+//  
+// randomNumber(0, 100);
+myContext.addCommand(
+    command:"randomNumber",
+    callback::(args, fullCommand) {
+        when(args->size != 2) 
+            'Syntax: randomNumber(min, max)';
+            
+            
+        @:min = Number.parse(string:args[0]);
+        @:max = Number.parse(string:args[1]);
+        return min + Number.random() * (max-min);
+    }
+);
+        
+// Invokes the debugger! Did you know you could do this!?
+// The debugger is its own console command context.
+myContext.addCommand(
+    command:"debug",
+    callback ::(args, fullCommand) {
+        Topaz.debug();
+    }
+);
     
-    // Each context can also have a prompt to display when 
-    // a command is waiting to be entered.
-    prompt: 'test> ',
+// Each context can also have a prompt to display when 
+// a command is waiting to be entered.
+myContext.setPrompt(header: 'test> ');
     
     
-    // In the case that a user provides a command that 
-    // isn't recognized, this function can be run, providing 
-    // for additional complex behavior. The most useful though 
-    // is just to tell the user that we didnt get what 
-    // the heck they were doing
-    defaultHandler :::(args, fullCommand) {
+// In the case that a user provides a command that 
+// isn't recognized, this function can be run, providing 
+// for additional complex behavior. The most useful though 
+// is just to tell the user that we didnt get what 
+// the heck they were doing
+myContext.setDefaultHandler(
+    handler :::(args, fullCommand) {
         return 'Sorry! I didnt understand you.';
     }
 );
+
+
 
 // Then to use the context, 
 // the context is pushed to the console.
@@ -115,7 +124,7 @@ Topaz.Console.print(message:'Errors, for when something severe / fatal has occur
 // these commands until a new context is pushed 
 // or the context is popped.
 //
-Topaz.Console.pushContext(commands:myContext);
+Topaz.Console.pushCommandContext(context:myContext);
 
 
 

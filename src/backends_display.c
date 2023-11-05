@@ -361,7 +361,7 @@ void topaz_display_capture_main_framebuffer(
 
     uint8_t * data = malloc(w*h*4);
     topaz_renderer_framebuffer_get_raw_data(fb, data);
-    topaz_image_frame_set_data(topaz_image_get_frame(image, 0), data);
+    topaz_image_set_frame_rgba_data(image, 0, data);
     free(data);
 }
 

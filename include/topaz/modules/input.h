@@ -318,7 +318,7 @@ float topaz_input_get_mapped_state(
 ///
 void topaz_input_set_deadzone(
     /// The input to modify.
-    topazInput_t * input, 
+    topazInput_t * i, 
 
     /// The pad index to modify.
     int padID, 

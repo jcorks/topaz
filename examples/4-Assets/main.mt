@@ -2,71 +2,79 @@
 @:Topaz = import(module:'Topaz');
 
 
-@:asset = Topaz.Resources.createAsset(
+@:asset = Topaz.Resources.createDataAssetFromPath(
+    name: 'Example_Image',
     path: 'base.png'
 );
 @:asset = Topaz.Resources.convertAsset(
     asset: asset,
-    extension: 'png'
+    fileType: 'png'
 );
 
 
-@:Effect = class(
-    inherits : [Topaz.Entity],
-    define:::(this) {
-        @:visual = Topaz.Shape2D.new();
+@:createEffect ::{
 
-        @:wiggleValue ::(rate) {
-            return 0.7+0.3*(Topaz.time*0.001*rate)->sin;
-        }
+    @:visual = Topaz.Shape2D.create();
 
-        this.constructor = ::{
-            visual.formImage(image:asset);
-            visual.center = {x:asset.width/2, y:asset.height/2}
-
-
-            this.attach(component:visual);
-
-
-
-            this.onStep = ::{
-                visual.color = {
-                    r: wiggleValue(rate:0.2),
-                    g: wiggleValue(rate:0.5),
-                    b: wiggleValue(rate:0.3),
-                    a:1             
-                }
-                
-                visual.scale = {
-                    x: wiggleValue(rate:0.8),
-                    y: wiggleValue(rate:1),      
-                    z: wiggleValue(rate:1.3)       
-                }
-            }
-        }
+    @:wiggleValue ::(rate) {
+        return 0.7+0.3*(Topaz.getTime()*0.001*rate)->sin;
     }
-);
 
 
-@entity = Effect.new();
+    @:this = Topaz.Entity.create(
+        attributes : {
+            onStep :: {
+                visual.setColor(
+                    color : {
+                        r: wiggleValue(rate:0.2),
+                        g: wiggleValue(rate:0.5),
+                        b: wiggleValue(rate:0.3),
+                        a:1             
+                    }
+                );
+                visual.setScale(
+                    value: {
+                        x: wiggleValue(rate:0.8),
+                        y: wiggleValue(rate:1),      
+                        z: wiggleValue(rate:1.3)       
+                    }    
+                );
+            }  
+        }
+    );
+
+    visual.formImage(asset);
+    visual.setCenter(value:{x:asset.getWidth()/2, y:asset.getHeight()/2});
+
+    this.addComponent(component:visual);
+    
+    return this;
+};
 
 
+@entity = createEffect();
 
+
+@:display = Topaz.ViewManager.getDefault();
 
 @:reposition :: {
+    @:width  = display.getParameter(param:Topaz.Display.Parameter.Width);
+    @:height = display.getParameter(param:Topaz.Display.Parameter.Height);
 
-    entity.scale = {
-        x:(Topaz.defaultDisplay.width/asset.width),
-        y:(Topaz.defaultDisplay.height/asset.height)
-    }
+    entity.setScale(value:{
+        x:(width/asset.getWidth()),
+        y:(height/asset.getHeight())
+    })
 }
-Topaz.defaultDisplay.addParameterCallback(
-    func:::(display, parameter) {
-        when(parameter != Topaz.Display.PARAMETER.WIDTH &&
-             parameter != Topaz.Display.PARAMETER.HEIGHT) empty;
+
+display.addParameterCallback(
+    callback:::(display, parameter) {
+        when(parameter != Topaz.Display.Parameter.Width &&
+             parameter != Topaz.Display.Parameter.Height) empty;
         reposition();
     }
 );
+
 reposition();
 
-Topaz.defaultDisplay.root = entity;
+display.setRoot(newRoot:entity);

@@ -318,7 +318,6 @@ static void add_refs__vector_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_vector__from_string", vector_api__from_string, 2);
     TS_MAP_NATIVE_FN("topaz_vector__reset", vector_api__reset, 1);
     TS_MAP_NATIVE_FN("topaz_vector__get_length", vector_api__get_length, 3);
-    TS_MAP_NATIVE_FN("topaz_vector__get_length", vector_api__get_length, 3);
     TS_MAP_NATIVE_FN("topaz_vector__get_distance", vector_api__get_distance, 6);
     TS_MAP_NATIVE_FN("topaz_vector__normalize", vector_api__normalize, 4);
     TS_MAP_NATIVE_FN("topaz_vector__cross", vector_api__cross, 7);

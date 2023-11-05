@@ -8,7 +8,6 @@
 // 
 // 
 @:Topaz = import(module:'Topaz');
-@:class = import(module:'Matte.Core.Class');
 
 
 // Here, we're going to make a component and an entity 
@@ -34,139 +33,117 @@
 //
 //
 //
-@:FruitBasket = class(
-    name : 'FruitBasket',        
-    inherits : [Topaz.Component],
-    define:::(this) {
-        // Current amount of fruit in the basket.
-        // We start the basket with a decent amount of fruit.
-        //
-        // Since we want certain, specific behavior to happen when 
-        // the mount of fruit changes, it makes sense to make 
-        // "amount" a private variable. Here, only this FruitBasket instance 
-        // can touch "amount".
-        @amount = 0;
+@:createFruitBasket = ::{
+    @:this = Topaz.Component.create(attributes:{});
 
-
-        this.constructor = ::{
-
-            // Here is where things get interesting:
-            // Any component can extend its functionality by adding 
-            // its own "events". An event is usually a response to 
-            // some action: when an event is emitted, any instance 
-            // subscribed to the event will receive a notification 
-            // that the event was emitted.
-            //
-            //
-            // Here we want to track 2 events: adding fruit and 
-            // removing fruit. The names of the functions defined here are the 
-            // names of the events to add.
-            this.installEvent(
-                event   :'onAddFruit', 
-                callback:::(source) {
-                    Topaz.Console.print(message:'Fruit was added!');
-                }
-            );
-
-
-            this.installEvent(
-                event   :'onRemoveFruit', 
-                callback:::(source) {
-                    Topaz.Console.print(message:'Fruit was removed!');
-                }
-            );
-        }
-
-
-        this.interface = {
-            // Sets the current number of fruit.
-            reset ::(startingFruit => Number) {
-                amount = startingFruit;            
-            },
-
-            // Adds a fruit to the basket from someone.
-            // For member functions, "this" will always refer to the component.
-            addFruit::(from) {
-
-                amount+=1;
-
-                // emitEvent() also supports a second argument: a source entity.
-                // If theres an entity involved in the event, this argument 
-                // can optionally be passed to be referred to in the notification.
-                // All components have a "host" property that refers to 
-                // the owning entity that holds the component if any.
-                this.emit(event:'onAddFruit', source:from.host);
-            },
-
-            // Function to get the current amount of fruit left.
-            getFruitLeft :: {
-                return amount;
-            },
-
-
-
-            // Function called when taking a fruit from the basket.
-            // It will only "work" if theres fruit in the basket, 
-            // which is checked.
-            removeFruit :: {
-                if (amount > 0) ::<= {
-                    amount-=1;
-
-                    // emitEvent() notifies the component that the event is occurring.
-                    this.emit(event:'onRemoveFruit');
-                };
-            },
+    // Current amount of fruit in the basket.
+    // We start the basket with a decent amount of fruit.
+    //
+    // Since we want certain, specific behavior to happen when 
+    // the mount of fruit changes, it makes sense to make 
+    // "amount" a private variable. Here, only this FruitBasket instance 
+    // can touch "amount".
+    @amount = 0;
     
-            // Simple way an outside instance can ask whether the 
-            // basket contains fruit.
-            isEmpty :: {
-                return amount == 0;
-            }
 
-          
+    // Here is where things get interesting:
+    // Any component can extend its functionality by adding 
+    // its own "events". An event is usually a response to 
+    // some action: when an event is emitted, any instance 
+    // subscribed to the event will receive a notification 
+    // that the event was emitted.
+    //
+    //
+    // Here we want to track 2 events: adding fruit and 
+    // removing fruit. The names of the functions defined here are the 
+    // names of the events to add.
+    this.installEvent(
+        event   :'onAddFruit', 
+        defaultHandler:::(component, source) {
+            Topaz.Console.print(message:'Fruit was added!');
+        }
+    );
+
+
+    this.installEvent(
+        event   :'onRemoveFruit', 
+        defaultHandler:::(component, source) {
+            Topaz.Console.print(message:'Fruit was removed!');
+        }
+    );
+    
+    // Sets the current number of fruit.
+    this.reset =  ::(startingFruit => Number) {
+        amount = startingFruit;            
+    };
+
+    // Adds a fruit to the basket from someone.
+    // For member functions, "this" will always refer to the component.
+    this.addFruit = ::(from) {
+
+        amount+=1;
+
+        // emitEvent() also supports a second argument: a source entity.
+        // If theres an entity involved in the event, this argument 
+        // can optionally be passed to be referred to in the notification.
+        // All components have a "host" property that refers to 
+        // the owning entity that holds the component if any.
+        this.emitEvent(event:'onAddFruit', source:from.getHost());
+    };
+
+    // Function to get the current amount of fruit left.
+    this.getFruitLeft = :: {
+        return amount;
+    };
+
+
+
+    // Function called when taking a fruit from the basket.
+    // It will only "work" if theres fruit in the basket, 
+    // which is checked.
+    this.removeFruit = :: {
+        if (amount > 0) ::<= {
+            amount-=1;
+
+            // emitEvent() notifies the component that the event is occurring.
+            this.emitEventAnonymous(event:'onRemoveFruit');
         };
+    };
+    
+    // Simple way an outside instance can ask whether the 
+    // basket contains fruit.
+    this.isEmpty = :: {
+        return amount == 0;
     }
-);
+
+    return this;
+};
 
 
 // Now that we have defined a FruitBasket, we can define a Person 
 // to hold the basket. Every person has a name and a basket of 
 // their own.
-@:Person = class(
-    name : 'Person',        
-    inherits : [Topaz.Entity],
-    define : ::(this) {
-        // Like always, using the class name followed by parantheses is how 
-        // one instantiates a class.
-        @myBasket = FruitBasket.new();
-        @myName = 'No name!';
+@:createPerson = ::(name)  {
+    @:this = Topaz.Entity.create(attributes:{});
+    // Like always, using the class name followed by parantheses is how 
+    // one instantiates a class.
+    @myBasket = createFruitBasket();
+    @myName = name;
 
-        this.constructor = ::{
             
-            myBasket.reset(startingFruit:5);            
-            // And since it is a component, we want to make sure to attach it 
-            // so that the component gets updated.
-            this.attach(component:myBasket);
-        }
+    myBasket.reset(startingFruit:5);            
+    // And since it is a component, we want to make sure to attach it 
+    // so that the component gets updated.
+    this.addComponent(component:myBasket);
 
-        this.interface = {
-            // The basket owned by the person.
-            basket : {
-                get :: {
-                    return myBasket;
-                }
-            },
 
-            // The person's own name.
-            firstName : {
-                get :: {
-                    return myName;
-                },
+    // The basket owned by the person.
+    this.getBasket = ::{
+        return myBasket;
+    }
 
-                set ::(value) {
-                    myName = value;
-                }
-            },
+    // The person's own name.
+    this.getName = ::<- myName;
 
             // convenience function to remove fruit from 
             // a persons own basket to give to another.
@@ -176,26 +153,25 @@
             // As a note, when a props function is called, the "this" binding 
             // is always the prefab function component/entity and can be used as an alternative 
             // to the prefab function argument.
-            giveFruit ::(to, amount) {
-                {:::} {
-                    for(0, amount) ::(i) {
-                        // Oh no! out of fruit, so abort
-                        when(myBasket.isEmpty()) send();
+    this.giveFruit = ::(to, amount) {
+        {:::} {
+            for(0, amount) ::(i) {
+                // Oh no! out of fruit, so abort
+                when(myBasket.isEmpty()) send();
 
-                        // Remove from this person's basket....
-                        myBasket.removeFruit();
+                // Remove from this person's basket....
+                myBasket.removeFruit();
 
-                        // ... and give to another person. The argument is 
-                        // who gave the fruit                        
-                        to.basket.addFruit(from:myBasket);
-                    }
-                
-                };
+                // ... and give to another person. The argument is 
+                // who gave the fruit                        
+                to.getBasket().addFruit(from:myBasket);
             }
         
-        };
+        }
     }
-);
+    
+    return this;
+};
 
 
 
@@ -203,13 +179,9 @@
 
 
 // Lets create our people involved
-@throcky = Person.new();
-@alex    = Person.new();
+@throcky = createPerson(name:'Throckmorton');
+@alex    = createPerson(name:'Alex');
 
-
-// And assign names to them!
-throcky.firstName = 'Throckmorton';
-   alex.firstName = 'Alex';
 
 // Next, we will set up behavior to use what we've set up 
 // To easily see this, we will just use text in the 
@@ -224,15 +196,15 @@ Topaz.Console.enabled = true;
 // to do this: it adds a custom closure or function to run when 
 // the specified event is detected.
 // The first argument is always the component that is emitting the event.
-alex.basket.installHook(
+alex.getBasket().installHook(
     // The name of the event to respond to.
     event: 'onRemoveFruit',
 
     // The closure to run.
-    callback:::(source) {
+    hook:::(component, source) {
         // Often for debugging, its useful to use Topaz.log(), which 
         // will print a string to the system console.
-        Topaz.Console.print(message:alex.firstName + ' removed a fruit from their basket. ' + alex.basket.getFruitLeft() + ' left.');
+        Topaz.Console.print(message:alex.getName() + ' removed a fruit from their basket. ' + alex.getBasket().getFruitLeft() + ' left.');
     }
 );
 
@@ -241,10 +213,10 @@ alex.basket.installHook(
 // In the case that we pass an entity to the emitEvent,
 // a second argument will be populated with the entity in question.
 // This can help identify the nature of the event when applicable.
-alex.basket.installHook(
+alex.getBasket().installHook(
     event: 'onAddFruit',
-    callback:::(source) {
-        Topaz.Console.print(message:alex.firstName + ' gained fruit, thanks to ' + source.firstName +'! ' + alex.basket.getFruitLeft() + ' total.');
+    hook:::(component, source) {
+        Topaz.Console.print(message:alex.getName() + ' gained fruit, thanks to ' + source.getName() +'! ' + alex.getBasket().getFruitLeft() + ' total.');
     }
 );
 

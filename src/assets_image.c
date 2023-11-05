@@ -227,13 +227,13 @@ static TopazImage * image__retrieve(const topazAsset_t * a) {
     #endif
     return ret;
 }
-
+ 
 //static int image__asset_callback_empty(topazAsset_t * asset, const void * dataIn, uint64_t size) {
 //    return TRUE;
 //}
 
 
-static topazImage_Frame_t * topaz_image_get_frame(topazAsset_t * a, uint32_t index) {
+static topazImage_Frame_t * topaz_image_get_frame(const topazAsset_t * a, uint32_t index) {
     TopazImage * img = image__retrieve(a);
     uint32_t imageCount = topaz_array_get_size(img->frames);
     if (index > imageCount)
@@ -353,7 +353,7 @@ static int topaz_image_frame_get_index(topazImage_Frame_t * f) {
 
 void topaz_image_set_frame_from_texture(
     /// Image to modify
-    topazImage_t * image,
+    topazAsset_t * image,
 
     /// Frame to modify.    
     uint32_t frame, 
@@ -386,7 +386,7 @@ void topaz_image_set_frame_from_texture(
 
 
 void topaz_image_set_frame_rgba_data(
-    topazImage_t * image,
+    topazAsset_t * image,
     uint32_t frame,
     const uint8_t * rgbaData
 
@@ -399,7 +399,7 @@ void topaz_image_set_frame_rgba_data(
 
 
 topazRenderer_Texture_t * topaz_image_get_frame_texture(
-    const topazImage_t * frame,
+    const topazAsset_t * image,
     uint32_t frame
 ) {
     topazImage_Frame_t * f = topaz_image_get_frame(image, frame);
@@ -408,7 +408,7 @@ topazRenderer_Texture_t * topaz_image_get_frame_texture(
 
 
 topazArray_t * topaz_image_get_frame_rgba_data(
-    const topazImage_t * image,
+    const topazAsset_t * image,
     uint32_t frame
 ) {
     topazImage_Frame_t * f = topaz_image_get_frame(image, frame);

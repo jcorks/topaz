@@ -86,6 +86,9 @@ enum topazAsset_Type {
     ///
     topazAsset_Type_Mesh,
     
+    /// The asset is a bundle of other assets.
+    ///
+    topazAsset_Type_Bundle,
     
     topazAsset_Type_Count,    
 };

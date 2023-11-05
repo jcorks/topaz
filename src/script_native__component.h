@@ -94,7 +94,7 @@ TSO_SCRIPT_API_FN(component_api__create) {
     TSO_ARG_4;
     TSO_ARG_5;
 
-    topazComponent_Attributes_t attribs;
+    topazComponent_Attributes_t attribs = {};
     attribs.on_detach   = (topaz_component_attribute_callback)topaz_script_entity__on_detach;        
     attribs.userData = calloc(1, sizeof(TopazComponentTSO));
 
@@ -322,7 +322,7 @@ static int component_api_callback(topazComponent_t * c, void * data, topazEntity
         count = 2;
     }
 
-    topazScript_Object_t result = topaz_script_object_reference_call(
+    topazScript_Object_t * result = topaz_script_object_reference_call(
         handler->fn, 
         TOPAZ_ARRAY_CAST(&a, topazScript_Object_t *, count)
     );

@@ -421,7 +421,7 @@ static void add_refs__resources_api(topazScript_t * script, topazScriptManager_t
 
     TS_MAP_NATIVE_FN("topaz_resources__create_data_asset_from_path",  resources_api__create_data_asset_from_path, 2);
 
-    TS_MAP_NATIVE_FN("topaz_resources__convert_asset", resources_api__convert_asset, 3);
+    TS_MAP_NATIVE_FN("topaz_resources__convert_asset", resources_api__convert_asset, 2);
     TS_MAP_NATIVE_FN("topaz_resources__write_asset", resources_api__write_asset, 3);
     TS_MAP_NATIVE_FN("topaz_resources__remove_asset", resources_api__remove_asset, 1);
     TS_MAP_NATIVE_FN("topaz_resources__is_extension_supported", resources_api__is_extension_supported, 1);

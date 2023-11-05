@@ -30,33 +30,7 @@ struct topazMesh_t {
 #define TOPAZ_V_TO_FLOATS(__N__) ((sizeof(topazRenderer_3D_Vertex_t) / sizeof(float))*(__N__))
 #define TOPAZ_FLOATS_TO_V(__N__) ((__N__) / sizeof(topazRenderer_3D_Vertex_t))
 
-static void topaz_mesh__get_attrib_params(topazMesh_VertexAttribute attrib, uint32_t * offset, uint32_t * length) {
-    *offset = 0;
-    *length = 0;
-    switch(attrib) {
-      case topazMesh_VertexAttribute_Position:
-        *offset = 0;
-        *length = 3;
-        break;
 
-      case topazMesh_VertexAttribute_Normal:
-        *offset = 3;
-        *length = 3;
-        break;
-
-      case topazMesh_VertexAttribute_UV:
-        *offset = 6;
-        *length = 2;
-        break;
-
-      case topazMesh_VertexAttribute_UserData:
-        *offset = 8;
-        *length = 4;
-        break;
-
-
-    }
-}
 
 
 static void mesh__destroy(topazAsset_t * a, void * userData) {
@@ -156,8 +130,8 @@ topazRenderer_3D_Vertex_t topaz_mesh_get_vertex(
 
     topaz_renderer_buffer_read(
         m->v,
-        &vtx,
-        offset+baseFloat,
+        (float*)&vtx,
+        baseFloat,
         TOPAZ_V_TO_FLOATS(1)
     );
 
@@ -183,8 +157,8 @@ void topaz_mesh_set_vertex(
 
     topaz_renderer_buffer_update(
         m->v,
-        &vertex,
-        offset+baseFloat,
+        (float*)&vertex,
+        baseFloat,
         TOPAZ_V_TO_FLOATS(1)
     );
 }
@@ -203,10 +177,18 @@ uint32_t topaz_mesh_add_object(topazAsset_t * a) {
     return topaz_array_get_size(m->objs)-1;
 }
 
-topazArray_t * topaz_mesh_get_object(topazAsset_t * a, uint32_t index) {
+const topazArray_t * topaz_mesh_get_object_indices(topazAsset_t * a, uint32_t index) {
     topazMesh_t * m = mesh__retrieve(a);
     if (index >= topaz_array_get_size(m->objs)) return NULL;
     return topaz_array_at(m->objs, topazArray_t *, index);
+}
+
+void topaz_mesh_set_object_indices(topazAsset_t * a, uint32_t index, const topazArray_t * arr) {
+    topazMesh_t * m = mesh__retrieve(a);
+    if (index >= topaz_array_get_size(m->objs)) return;
+    topazArray_t * arrOld = topaz_array_at(m->objs, topazArray_t *, index);
+    topaz_array_destroy(arrOld);
+    topaz_array_at(m->objs, topazArray_t *, index) = topaz_array_clone(arr);
 }
 
 
