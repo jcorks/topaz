@@ -435,8 +435,9 @@ static void topaz_matte_run__error(const matteString_t * s, uint32_t line, uint3
     );
 
     matteString_t * errm = matte_string_create_from_c_str("%s", topaz_string_get_c_str(str));
-    matte_vm_raise_error_string(ctx->vm, errm);
-    matte_string_destroy(errm);    
+    //matte_vm_raise_error_string(ctx->vm, errm);
+    //matte_string_destroy(errm);    
+    PERROR(ctx->ctx, ctx->script, errm);
     topaz_matte_run__error__last_success = 0;
 }
 
@@ -648,6 +649,7 @@ static void * topaz_matte_create(topazScript_t * scr, topaz_t * ctx) {
     out->vm = matte_get_vm(out->matte);
     out->store = matte_vm_get_store(out->vm);
     out->nativeFuncs = topaz_array_create(sizeof(void*));
+    out->ext = topaz_string_create_from_c_str("mt"); 
     matte_vm_set_unhandled_callback(
         matte_get_vm(out->matte),
         topaz_matte_fatal,
@@ -1370,7 +1372,10 @@ const topazScript_DebugState_t * topaz_matte_debug_get_state(topazScript_t * scr
     return &ctx->debugState;
 }
 
-
+const topazString_t * topaz_matte_file_extension(topazScript_t * src, void * data) {
+    TOPAZMATTE * ctx = data;
+    return ctx->ext;
+}
 
 
 void topaz_system_script_matte__backend(
@@ -1442,6 +1447,7 @@ void topaz_system_script_matte__backend(
     api->script_create_empty_object = topaz_matte_create_empty_object;
     api->script_throw_error = topaz_matte_throw_error;
     api->script_bootstrap = topaz_matte_bootstrap;
+    api->script_file_extension = topaz_matte_file_extension;
 
 
     api->script_debug_start = topaz_matte_debug_start;

@@ -270,6 +270,15 @@ const topazString_t * topaz_script_get_line(
     return topaz_array_at(source, topazString_t *, lineNumber);
 }
 
+const topazString_t * topaz_script_get_file_extension(
+    topazScript_t * s
+) {
+    return s->api.script_file_extension(
+        s, s->implementationData
+    );
+}
+
+
 topazScript_Object_t * topaz_script_expression(
     topazScript_t * s, 
     const topazString_t * expr) {

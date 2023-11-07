@@ -1,5 +1,11 @@
 @:MAPPED = {get::<-true};
 
+::<= {
+    // not used.
+    @:topaz_script__run = getExternalFunction(name:'topaz_script__run');
+
+}
+
 @:initializer__text2d = ::<= {
     @:topaz_text2d__get_text = getExternalFunction(name:'topaz_text2d__get_text');
     @:topaz_text2d__set_text = getExternalFunction(name:'topaz_text2d__set_text');

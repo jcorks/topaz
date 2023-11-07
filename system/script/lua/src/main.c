@@ -37,7 +37,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/containers/array.h>
 #include <topaz/modules/console.h>
 #include <topaz/topaz.h>
-
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef TOPAZDC_DEBUG
@@ -145,8 +145,6 @@ struct TOPAZLUA {
     // string args for commands in order.
     topazArray_t * lastCommandArgs;
 
-    // the level of stack for the current debug context
-    int debugLevel;
 
     // state of the defbug
     topazScript_DebugState_t debugState;
@@ -171,6 +169,11 @@ struct TOPAZLUA {
     // placeholder tag for functions, which all use the same tag.
     // Bare minimum to work.
     TOPAZLUAObjectTag functiontag;
+    
+    // ".lua"
+    topazString_t * ext;
+    
+    topazString_t * lastErrorTrace;
 };
 
 
@@ -235,6 +238,16 @@ static void topaz_lua_populate_stack(TOPAZLUA * ctx) {
 }
 
 
+static void topaz_lua_save_stacktrace(TOPAZLUA * ctx) {
+    if (ctx->lastErrorTrace) {
+        topaz_string_destroy(ctx->lastErrorTrace);
+    }
+
+    luaL_traceback(ctx->lua, ctx->lua, "", 1);
+    ctx->lastErrorTrace = topaz_string_create_from_c_str("%s", lua_tostring(ctx->lua, -1));
+    lua_pop(ctx->lua, 1);    
+}
+
 
 static int topaz_lua_object_finalizer(lua_State * l) {
     TOPAZLUAObjectTag * tag = NULL;
@@ -266,10 +279,14 @@ static topazString_t * topaz_lua_get_traceback(TOPAZLUA * t) {
         int stackSize = lua_gettop(t->lua);
     #endif
 
-    luaL_traceback(t->lua, t->lua, "", 1);
-    topazString_t * out = topaz_string_create_from_c_str("%s", lua_tostring(t->lua, -1));
-    lua_pop(t->lua, 1);
-
+    topazString_t * out = t->lastErrorTrace;
+    if (out) 
+        t->lastErrorTrace = NULL;
+    else {
+        luaL_traceback(t->lua, t->lua, "", 1);
+        out = topaz_string_create_from_c_str("%s", lua_tostring(t->lua, -1));
+        lua_pop(t->lua, 1);    
+    }
     #ifdef TOPAZDC_DEBUG 
         assert(lua_gettop(t->lua) == stackSize);
     #endif
@@ -277,6 +294,25 @@ static topazString_t * topaz_lua_get_traceback(TOPAZLUA * t) {
 }
 
 
+
+// handler for the error on pcall, which is 
+// called right when the error occurs.
+static int topaz_lua_pcall__on_error(lua_State * l) {
+    TOPAZLUA * ctx = lua_touserdata(l, lua_upvalueindex(1));
+    topaz_lua_save_stacktrace(ctx);
+    return 1; // returns the error object.
+}
+
+// wrapper for pcall that always retrieves the backtrace on error.
+static int topaz_lua_pcall__prep(TOPAZLUA * ctx) {
+    lua_pushlightuserdata(ctx->lua, ctx);
+    lua_pushcclosure(ctx->lua, topaz_lua_pcall__on_error, 1);
+}
+
+static int topaz_lua_pcall(TOPAZLUA * ctx) {
+    int result = lua_pcall(ctx->lua, 0, 1, -2);
+    return result; // do we need to pop the closure?
+}
 
 
 // assumes object to receive prop is already at the top of the stack
@@ -754,6 +790,7 @@ static void * topaz_lua_create(topazScript_t * scr, topaz_t * ctx) {
     out->spfString = topaz_string_create();
     out->lua = luaL_newstate();
     out->functiontag.ctx = out;
+    out->ext = topaz_string_create_from_c_str("lua");
     luaL_openlibs(out->lua);
     out->script = scr;
 
@@ -831,11 +868,13 @@ static topazScript_Object_t * topaz_lua_expression(
 ) {
     TOPAZLUA * ctx = data;
     topazScript_Object_t * out;
+    topaz_lua_pcall__prep(ctx);
     if (luaL_loadstring(ctx->lua, topaz_string_get_c_str(expr)) != LUA_OK) {
         topaz_lua_report_top_error(ctx);
         out = topaz_script_object_undefined(ctx->script);    
+        lua_pop(ctx->lua, 1);
     } else {
-        if (lua_pcall(ctx->lua, 0, 1, 0) != LUA_OK) {
+        if (topaz_lua_pcall(ctx) != LUA_OK) {
             topaz_lua_report_top_error(ctx);
             fflush(stdout);        
         } else {
@@ -849,7 +888,6 @@ static topazScript_Object_t * topaz_lua_expression(
     lua_pop(ctx->lua, 1);
     return out;
 }
-
 
 static void topaz_lua_throw_error(
     topazScript_t * script, 
@@ -868,6 +906,11 @@ static void topaz_lua_throw_error(
         :
             "Internal native error."
     );
+    
+    // This shouldnt happen, but if it does, things will be confusing
+        
+    topaz_lua_save_stacktrace(ctx);
+    
     lua_pushstring(ctx->lua, topaz_string_get_c_str(str));
     lua_error(ctx->lua);
     topaz_string_destroy(str);
@@ -895,6 +938,7 @@ static const char * topaz_lua_run__reader(
     return topaz_string_get_c_str(src->src);
 }
 
+
 void topaz_lua_run(
     topazScript_t * script, 
     void * data, 
@@ -909,6 +953,7 @@ void topaz_lua_run(
     LUAREADERSTATE reader;
     reader.src = sourceData;
     reader.sent = 0;
+    topaz_lua_pcall__prep(ctx);
     if (lua_load(
         ctx->lua,
         topaz_lua_run__reader,
@@ -917,8 +962,9 @@ void topaz_lua_run(
         NULL
     )!= LUA_OK) {
         topaz_lua_report_top_error(ctx);
+        lua_pop(ctx->lua, 1);
     } else {            
-        if (lua_pcall(ctx->lua, 0, 1, 0) != LUA_OK) {
+        if (topaz_lua_pcall(ctx) != LUA_OK) {
             topaz_lua_report_top_error(ctx);
         }
     }
@@ -1114,10 +1160,14 @@ static void topaz_lua_object_reference_unref(topazScript_Object_t * o, void * da
 
 static topazScript_Object_t * topaz_lua_object_reference_call(topazScript_Object_t * o, const topazArray_t * args, void * data) {
     TOPAZLUAObjectTag * tag = data;
-
+    TOPAZLUA * ctx = tag->ctx;
     #ifdef TOPAZDC_DEBUG
         int stackSize = lua_gettop(tag->ctx->lua);
     #endif
+
+    lua_pushlightuserdata(ctx->lua, ctx);
+    lua_pushcclosure(ctx->lua, topaz_lua_pcall__on_error, 1);
+
 
     // assumes callable
     topaz_lua_object_push_to_top_from_tag(tag);
@@ -1134,7 +1184,14 @@ static topazScript_Object_t * topaz_lua_object_reference_call(topazScript_Object
         );
     }
 
-    lua_call(tag->ctx->lua, len, 1);
+
+    int result = lua_pcall(ctx->lua, len, 1, -(len+2));
+    if (result != LUA_OK) {
+        topaz_lua_report_top_error(ctx);    
+    }
+
+    
+    
     topazScript_Object_t * out = topaz_lua_stack_object_to_tso(
         tag->ctx,
         -1
@@ -1548,11 +1605,13 @@ static void topaz_lua_debug_cooperate(TOPAZLUA * ctx, int block) {
             topazString_t * str    = ARRPOP(ctx->lastCommandArgs, topazString_t *);
 
             topazString_t * result = NULL;
+            topaz_lua_pcall__prep(ctx);
             if (luaL_loadstring(ctx->lua, topaz_string_get_c_str(str)) != LUA_OK) {
                 topaz_lua_report_top_error(ctx);
                 result = topaz_string_create_from_c_str("<error>");
+                lua_pop(ctx->lua, 1);
             } else {
-                if (lua_pcall(ctx->lua, 0, 1, 0) != LUA_OK) {
+                if (topaz_lua_pcall(ctx) != LUA_OK) {
                     topaz_lua_report_top_error(ctx);
                     result = topaz_string_create_from_c_str("<error>");
                 } else {
@@ -1670,6 +1729,192 @@ static void topaz_lua_cooperate_update(topazSystem_Backend_t * backend, void * d
     }    
 }
 
+static void topaz_lua_light_compile_expression__char_ok(
+    int * srcIter,
+    topazString_t * src,
+    
+    topazString_t * working
+) {
+    int ch = topaz_string_get_char(src, *srcIter);
+    topaz_string_append_char(working, ch);
+    (*srcIter) ++;
+}
+
+static void topaz_lua_light_compile_expression__consume_string__single(
+    int * srcIter,
+    topazString_t * src,
+    
+    topazString_t * working
+) {
+    topaz_lua_light_compile_expression__char_ok(srcIter, src, working);
+    int i;
+    for(i = *srcIter; i < topaz_string_get_length(src); ++i) {
+        int ch = topaz_string_get_char(src, i);
+        topaz_lua_light_compile_expression__char_ok(srcIter, src, working);
+        if (ch == '\\') {
+            if (i + 1 >= topaz_string_get_length(src)) continue;
+            if (topaz_string_get_char(src, i+1) == '\'') {
+                topaz_lua_light_compile_expression__char_ok(srcIter, src, working);                
+                i++;
+            }            
+        }
+        
+        if (ch == '\'') {
+            break;
+        }        
+    }
+}
+
+
+static void topaz_lua_light_compile_expression__consume_string__double(
+    int * srcIter,
+    topazString_t * src,
+    
+    topazString_t * working
+) {
+    topaz_lua_light_compile_expression__char_ok(srcIter, src, working);
+    int i;
+    for(i = *srcIter; i < topaz_string_get_length(src); ++i) {
+        int ch = topaz_string_get_char(src, i);
+        topaz_lua_light_compile_expression__char_ok(srcIter, src, working);
+        if (ch == '\\') {
+            if (i + 1 >= topaz_string_get_length(src)) continue;
+            if (topaz_string_get_char(src, i+1) == '"') {
+                topaz_lua_light_compile_expression__char_ok(srcIter, src, working);                
+                i++;
+            }            
+        }
+        
+        if (ch == '"') {
+            break;
+        }        
+    }
+}
+
+
+static topazString_t * topaz_lua_light_compile_expression__extract_var_name(
+    int * srcIter,
+    topazString_t * src,
+    
+    topazString_t * working
+) {
+    topazString_t * varname = topaz_string_create();
+    int i;
+    for(i = *srcIter; i < topaz_string_get_length(src); ++i) {
+        int ch = topaz_string_get_char(src, i);
+        if (i == 0) {
+            if (!isalpha(ch)) {
+                // whoops, not a lua identifier/name
+                return varname;            
+            }
+            
+            topaz_string_append_char(varname, ch);
+            (*srcIter) ++;
+        } else {
+            if (!(isalnum(ch) || ch == '_')) {
+                // end lua identifier/name
+                return varname;                        
+            } else {
+                topaz_string_append_char(varname, ch);
+                (*srcIter) ++;            
+            }        
+        }
+    }
+    return varname;
+}
+static void topaz_lua_light_compile_expression__consume_str_index(
+    int * srcIter,
+    topazString_t * src,
+    
+    topazString_t * working
+) {
+    topaz_lua_light_compile_expression__char_ok(srcIter, src, working);
+    int i;
+    for(i = *srcIter; i < topaz_string_get_length(src); ++i) {
+        int ch = topaz_string_get_char(src, i);
+        if (isspace(ch)) {
+            topaz_lua_light_compile_expression__char_ok(srcIter, src, working);        
+        } else {
+            break;
+        }
+    }
+    
+    
+    topazString_t * str = topaz_lua_light_compile_expression__extract_var_name(srcIter, src, working);
+    topaz_string_concat(working, str);
+    topaz_string_destroy(str);
+}
+
+
+static void topaz_lua_light_compile_expression__wrap_varname(
+    int debugLevel,
+    int * srcIter,
+    topazString_t * src,
+    
+    topazString_t * working
+) {
+    topazString_t * name = topaz_lua_light_compile_expression__extract_var_name(srcIter, src, working);
+    topazString_t * namewrapped = topaz_string_create_from_c_str(
+        "(Topaz.Lua.getLocal('%s', %d))",
+        topaz_string_get_c_str(name),
+        debugLevel + 3 
+    );
+    topaz_string_concat(working, namewrapped);
+    topaz_string_destroy(namewrapped);
+    topaz_string_destroy(name);
+}    
+
+
+
+
+static topazString_t * topaz_lua_light_compile_expression(
+    int debugLevel,
+    const char * orig
+) {
+    topazString_t * working = topaz_string_create();
+    topazString_t * src = topaz_string_create_from_c_str("%s", orig);
+    
+    int srcIter = 0;
+    while(srcIter < topaz_string_get_length(src)) {
+        int ch = topaz_string_get_char(src, srcIter);
+        
+        switch(ch) {
+            case '\'':
+                topaz_lua_light_compile_expression__consume_string__single(&srcIter, src, working);
+                continue;
+                break;
+            case '"':
+                topaz_lua_light_compile_expression__consume_string__double(&srcIter, src, working);
+                continue;
+                break;
+
+                
+            case '.':
+            case ':':
+                topaz_lua_light_compile_expression__consume_str_index(&srcIter, src, working);
+                continue;
+                break;
+            default:;
+        }
+                
+        if (isalpha(ch)) {
+            topaz_lua_light_compile_expression__wrap_varname(debugLevel, &srcIter, src,  working);
+        } else {
+            topaz_lua_light_compile_expression__char_ok(&srcIter, src, working);        
+        }
+    }
+    
+    
+
+    topazString_t * output = topaz_string_create_from_c_str(
+        "return(Topaz.Lua.objectToString(%s))",
+        topaz_string_get_c_str(working)
+    );
+    topaz_string_destroy(working);
+    topaz_string_destroy(src);
+    return output;
+}
+
 void topaz_lua_debug_send_command(
     topazScript_t * scr, 
     void * data, 
@@ -1734,17 +1979,17 @@ void topaz_lua_debug_send_command(
         topazString_t * number = topaz_string_clone(topaz_string_chain_start(str, TOPAZ_STR_CAST(":")));
         int scope = atoi(topaz_string_get_c_str(number));
 
-
-        topazString_t * command = topaz_string_create_from_c_str(
-            "return(Topaz.objectToString(%s))",
+        topazString_t * command = topaz_lua_light_compile_expression(
+            scope,
             topaz_string_get_c_str(topaz_string_get_substr(
                 str, 
                 topaz_string_get_length(number)+1, // skip the :
                 topaz_string_get_length(str)-1
-            ))
+            ))            
         );
 
 
+ 
         topazScript_DebugCommand_t c = topazScript_DebugCommand_ScopedEval;
         topaz_array_push(ctx->lastCommand, c); 
         topaz_array_push(ctx->lastCommandArgs, command);
@@ -1767,7 +2012,10 @@ const topazScript_DebugState_t * topaz_lua_debug_get_state(topazScript_t * scr, 
 
 
 
-
+const topazString_t * topaz_lua_file_extension(topazScript_t * src, void * data) {
+    TOPAZLUA * ctx = data;
+    return ctx->ext;
+} 
 
 static void NOOP(){};
 
@@ -1840,6 +2088,7 @@ void topaz_system_script_lua__backend(
     api->script_create_empty_object = topaz_lua_create_empty_object;
     api->script_throw_error = topaz_lua_throw_error;
     api->script_bootstrap = topaz_lua_bootstrap;
+    api->script_file_extension = topaz_lua_file_extension;
 
 
     api->script_debug_start = topaz_lua_debug_start;

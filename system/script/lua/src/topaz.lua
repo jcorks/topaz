@@ -1,3 +1,5 @@
+-- ALL input and output arrays are 1-indexed. It makes me sad!!!!!!!!!
+
 Topaz = {};
 (function() 
 
@@ -7,11 +9,12 @@ Topaz = {};
         output.x = v.x;
         output.y = v.y;
         output.z = v.z;
+        return output;
     end
     
     local copyMatrix = function(m) 
         local output = {};
-        for i=0, 16 do 
+        for i=1, 16 do 
             output[i] = m[i]
         end 
         return output;
@@ -23,6 +26,7 @@ Topaz = {};
         output.g = c.g;
         output.b = c.b;
         output.a = c.a;
+        return output;
     end
 
 
@@ -183,9 +187,9 @@ Topaz = {};
         
         local getSamples = function(REFi) 
             local output = {};
-            for i=0, topaz_sound__get_sample_count(REFi) do
-                output[i] = (topaz_sound__get_nth_sample_left(REFi, i));
-                output[i] = (topaz_sound__get_nth_sample_right(REFi, i));
+            for i=1, topaz_sound__get_sample_count(REFi) do
+                output[i] = (topaz_sound__get_nth_sample_left(REFi, i-1));
+                output[i] = (topaz_sound__get_nth_sample_right(REFi, i-1));
             end
             return output;
         end
@@ -526,11 +530,11 @@ Topaz = {};
         
         local getCollider = function(REFi) 
             local _collider = {};
-            local iter = 0;
+            local iter = 1;
             local len = topaz_object2d__get_collider_len(REFi);
-            for i=0,len do 
-                _collider[iter] = topaz_object2d__get_collider_point_x(REFi, i); iter = iter + 1;
-                _collider[iter] = topaz_object2d__get_collider_point_y(REFi, i); iter = iter + 1;
+            for i=1,len do 
+                _collider[iter] = topaz_object2d__get_collider_point_x(REFi, i-1); iter = iter + 1;
+                _collider[iter] = topaz_object2d__get_collider_point_y(REFi, i-1); iter = iter + 1;
             end    
             return _collider;
         end
@@ -613,7 +617,7 @@ Topaz = {};
 
         local copyVertex = function(vtx) 
             local output = {};
-            for i=0,12 do 
+            for i=1,12 do 
                 output[i] = vtx[i];
             end            
             return output;
@@ -690,15 +694,15 @@ Topaz = {};
 
         local getProgramData = function(REFi) 
             local output = {};
-            for i=0, 28 do 
-                output[i] = topaz_material__get_program_data(REFi, i);
+            for i=1, 28 do 
+                output[i] = topaz_material__get_program_data(REFi, i-1);
             end
             return output;
         end
         
         local setProgramData = function(REFi, data) 
-            for i=0, 28 do 
-                topaz_material__set_program_data(REFi, i, data[i]);
+            for i=1, 28 do 
+                topaz_material__set_program_data(REFi, i-1, data[i]);
             end
         end
         
@@ -801,8 +805,8 @@ Topaz = {};
         
         local getChildren = function(REFi) 
             local output = {};
-            for i=0, topaz_filesystem_path__get_child_count(REFi) do 
-                output[i] = topaz_filesystem_path__get_nth_child(REFi, i);
+            for i=1, topaz_filesystem_path__get_child_count(REFi) do 
+                output[i] = topaz_filesystem_path__get_nth_child(REFi, i-1);
                 if (output[i].__mapped == nil) then
                     initializer__filesystem_path(output[i]);
                 end
@@ -911,8 +915,8 @@ Topaz = {};
         
         local getAsBytes = function(REFi) 
             local bytes = {};
-            for i=0, topaz_data__get_byte_count(REFi) do 
-                bytes[i] = topaz_data__get_nth_byte(REFi, i);
+            for i=1, topaz_data__get_byte_count(REFi) do 
+                bytes[i] = topaz_data__get_nth_byte(REFi, i-1);
             end
             return bytes;
         end
@@ -1279,8 +1283,8 @@ Topaz = {};
         local getChildren = function(REFi) 
             local n = topaz_entity__get_child_count(REFi);
             local output = {};
-            for i=0, n do
-                output[i] = topaz_entity__get_nth_child(REFi, i);
+            for i=1, n do
+                output[i] = topaz_entity__get_nth_child(REFi, i-1);
                 if (output[i].__mapped == nil) then
                     initializer__entity(output[i])
                 end
@@ -1462,8 +1466,8 @@ Topaz = {};
         local getComponents = function(REFi) 
             local n = topaz_entity__get_component_count(REFi);
             local output = {};
-            for i=0, n do 
-                output[i] = topaz_entity__get_nth_component(REFi, i);
+            for i=1, n do 
+                output[i] = topaz_entity__get_nth_component(REFi, i-1);
                 if (output[i].__mapped == nil) then
                     initializer__component(output[i]);
                 end
@@ -2010,8 +2014,8 @@ Topaz = {};
                 
                 getAll = function()
                     local output = {};
-                    for i=0, topaz_view_manager__get_display_count() do 
-                        output[i] = topaz_view_manager__get_display(i);
+                    for i=1, topaz_view_manager__get_display_count() do 
+                        output[i] = topaz_view_manager__get_display(i-1);
                         if (output[i].__mapped == nil) then
                             initializer__display(output[i]);
                         end
@@ -2331,8 +2335,8 @@ Topaz = {};
                 
                 queryPads = function()
                     local output = {};
-                    for i=0, topaz_input__query_pad_count() do
-                        output[i] = topaz_input__query_pad_id(i);
+                    for i=1, topaz_input__query_pad_count() do
+                        output[i] = topaz_input__query_pad_id(i-1);
                     end
                     return output;
                 end,
@@ -2872,7 +2876,145 @@ Topaz = {};
         Topaz.frameStart = function(FPS) 
             topaz__frame_start(FPS);
         end
+        
+        Topaz.Lua = {
+        
+            import = function(path)
+                local asset = Topaz.Resources.fetchAsset(path);
+                if (asset == nil) then 
+                    asset = Topaz.Resources.createDataAssetFromPath(path, path);
+                else 
+                    return; --Already loaded.
+                end
+                
+                if (asset == nil) then 
+                    error('Could not load lua script from path '..path..'!');
+                    return
+                end
 
+                if (asset:getType() ~= Topaz.Asset.Type.Data) then 
+                    error('Tried to load lua script '..path..', but it isn\'t a data asset!');
+                end
+
+                topaz_script__run(path, asset:getAsString());
+            end,
+            
+            getLocal = function(l, level)
+                local val;
+                local funcIter = level;
+                if (funcIter == nil) then 
+                    funcIter = 2;
+                end
+                
+                if (funcIter < 2) then 
+                    error('Cannot be level 1 or lower');
+                end
+                
+                local fInfo = debug.getinfo(funcIter); 
+                if (fInfo == nil) then
+                    error("Could not access invalid function index.");
+                end
+
+                local localIter = 1;
+                while(true) do 
+                    name, value = debug.getlocal(funcIter, localIter);
+                    if (name == nil) then
+                        break;
+                    end
+                    
+                    Topaz.Console.print('name: '..tostring(name)..', value: '..tostring(value));
+
+                    if (name == l) then 
+                        return value
+                    end
+                        
+
+                    localIter = localIter + 1;
+                end
+                
+                localIter = 1
+                while(true) do 
+                    name, value = debug.getupvalue(fInfo.func, localIter);
+                    if (name == nil) then
+                        break;
+                    end
+                    
+                    Topaz.Console.print('name: '..tostring(name)..', value: '..tostring(value));
+
+                    if (name == l) then 
+                        return value
+                    end
+                        
+
+                    localIter = localIter + 1;
+                end                    
+                
+                -- Fallback on global index
+                if (val == nil) then
+                    return _G[l];
+                else
+                    return val;
+                end
+            end,
+            
+            
+            objectToString = function(value)
+                local already = {}
+                local pspace = function(level) 
+                    local str = '';
+                    for i=1,level do
+                        str = str..'  ';
+                    end
+                    return str;
+                end
+                
+                
+                local helper
+                
+                helper = function(obj, level)
+                    local poself = helper;
+
+                    local t= type(obj);
+                    if    (t == 'string')   then return '(string): \''..obj..'\''
+                    elseif(t == 'number')   then return '(number): '..obj 
+                    elseif(t == 'boolean')  then return '(boolean): '..obj
+                    elseif(t == 'function') then return '(function) '
+                    elseif(t == 'nil')      then return '<nil>'
+                    elseif(t == 'table')    then
+                        if (already[obj] == true) then
+                            return '(table): [already printed]';
+                        end
+
+                        already[obj] = true;
+
+                        local output = '(table): {';
+
+                        local multi = false;
+                        for key,val in pairs(obj) do                        
+                            if (multi) then 
+                                output = output..',\n'; 
+                            else 
+                                output = output..'\n'; 
+                            end
+
+                            output = output..pspace(level+1)..(''..key)..' = '..poself(val, level+1);
+                            multi = true;
+                        end
+                        
+                        if (multi) then 
+                            output = output..pspace(level)..'\n'..pspace(level)..'}'
+                        else 
+                            output = output..pspace(level)..'}'    
+                        end
+                        
+                        return output;                
+                    else 
+                        return ''
+                    end
+                end
+                return pspace(1) .. helper(value, 1);
+            end
+        }
     end)();
 
 end)()

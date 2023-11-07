@@ -240,6 +240,14 @@ void topaz_script_register_source(
 );
 
 
+/// Gets the file extension preferred for files 
+/// within the scripting context.
+const topazString_t * topaz_script_get_file_extension(
+    /// The script to query.
+    topazScript_t * s
+);
+
+
 
 /// Runs the given script logic within the given string.
 /// 

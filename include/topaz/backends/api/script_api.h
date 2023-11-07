@@ -215,8 +215,8 @@ struct topazScriptAPI_t {
     void (*script_bootstrap)          (topazScript_t *, void *);
 
 
-
-
+    // Returns the file extension used or preferred by this language
+    const topazString_t * (*script_file_extension)(topazScript_t *, void*);
 
 
     // called by the script when a user has unlocked debugging capabilities.

@@ -32,89 +32,6 @@ static int run_script(topaz_t * ctx, topazScript_t * script, const topazString_t
 }
 
 
-static void preload_all_bundles(topaz_t * ctx) {
-    
-    // load all .mt files in the first in case theyre going to be included.
-    const topazFilesystem_Path_t * s = topaz_filesystem_get_path(
-        topaz_context_get_filesystem(ctx),
-        topazFilesystem_DefaultNode_Bundles
-    );
-    
-    const topazArray_t * sources = topaz_filesystem_path_get_children(s);
-    uint32_t i;
-    uint32_t len = topaz_array_get_size(sources);
-    for(i = 0; i < len; ++i) {
-
-        topazAsset_t * asset = topaz_resources_create_data_asset_from_path(
-            topaz_context_get_resources(ctx),
-            topaz_filesystem_path_as_string(
-                topaz_array_at(
-                    sources, 
-                    topazFilesystem_Path_t *, 
-                    i
-                )
-            ), 
-            topaz_filesystem_path_get_name(
-                topaz_array_at(
-                    sources, 
-                    topazFilesystem_Path_t *, 
-                    i
-                )
-            )
-        );
-        topaz_resources_convert_asset(
-            topaz_context_get_resources(ctx),
-            TOPAZ_STR_CAST("bundle"),
-            asset
-        );
-        
-    }
-}
-
-static void preload_all_scripts(topaz_t * ctx) {
-    
-    // load all .mt files in the first in case theyre going to be included.
-    const topazFilesystem_Path_t * s = topaz_filesystem_get_path(
-        topaz_context_get_filesystem(ctx),
-        topazFilesystem_DefaultNode_Resources
-    );
-    
-    const topazArray_t * sources = topaz_filesystem_path_get_children(s);
-    uint32_t i;
-    uint32_t len = topaz_array_get_size(sources);
-    for(i = 0; i < len; ++i) {
-        if (topaz_string_test_contains(
-                topaz_filesystem_path_as_string(
-                    topaz_array_at(
-                        sources, 
-                        topazFilesystem_Path_t *, 
-                        i
-                    )
-                ), 
-                
-                TOPAZ_STR_CAST(".mt")
-            )
-        ) {
-            topaz_resources_create_data_asset_from_path(
-                topaz_context_get_resources(ctx),
-                topaz_filesystem_path_as_string(
-                    topaz_array_at(
-                        sources, 
-                        topazFilesystem_Path_t *, 
-                        i
-                    )
-                ), 
-                topaz_filesystem_path_get_name(
-                    topaz_array_at(
-                        sources, 
-                        topazFilesystem_Path_t *, 
-                        i
-                    )
-                )
-            );
-        }
-    }
-}
 
 static void window_close_callback(
     /// The display responding to the event.
@@ -126,9 +43,9 @@ static void window_close_callback(
 }
 
 int main(int argc, char ** argv) {
-    char * path = "main.mt";
+    topazString_t * path = NULL;
     if (argc > 1)
-        path = argv[1];
+        path = topaz_string_create_from_c_str(argv[1]);
  
     // Create the context and window
     topaz_t * ctx = topaz_context_create();
@@ -141,17 +58,14 @@ int main(int argc, char ** argv) {
         topazScriptManager_Permission_All
     );
 
+    if (path == NULL) {
+        path = topaz_string_create_from_c_str("main.");
+        topaz_string_concat(path, topaz_script_get_file_extension(script));
+    }
+        
 
 
-    // first, load all and any bundles into memory. This 
-    // just means loading them as assets + converting them 
-    // so that they are ready to unpack.
-    preload_all_bundles(ctx);
 
-    
-    // the script can import other scripts.
-    // The scripts that can be imported are through resources
-    preload_all_scripts(ctx);
     
 
 
@@ -167,14 +81,14 @@ int main(int argc, char ** argv) {
 
     run_script(ctx, script, TOPAZ_STR_CAST("preload"));
 
-    if (!run_script(ctx, script, TOPAZ_STR_CAST(path))) {
+    if (!run_script(ctx, script, path)) {
 
         // We want to enable use of the debugging console.
         //
         topazConsole_t * console = topaz_context_get_console(ctx);
         topaz_console_enable(console, TRUE);
 
-        topazString_t * message = topaz_string_create_from_c_str("Script \"%s\" could not be opened or was empty.", path);
+        topazString_t * message = topaz_string_create_from_c_str("Script \"%s\" could not be opened or was empty.", topaz_string_get_c_str(path));
         topaz_console_print(console, message);
         topaz_string_destroy(message);
     } 
