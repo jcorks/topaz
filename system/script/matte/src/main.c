@@ -154,6 +154,8 @@ typedef struct {
 
     int debugOneOff;
     
+    matteString_t * ext;
+    
 } TOPAZMATTE;
 
 typedef struct {
@@ -575,6 +577,15 @@ static uint32_t topaz_matte_import(
         res,
         TOPAZ_STR_CAST(importName)
     );
+    
+    // try to load it in from a path
+    if (!asset) {
+        asset = topaz_resources_create_data_asset_from_path(
+            res,
+            TOPAZ_STR_CAST(importName),
+            TOPAZ_STR_CAST(importName)
+        );
+    }
     if (!asset) {
         PERROR(ctx->ctx, ctx->script, topaz_string_create_from_c_str("Could not find source asset %s", importName));        
         return 0;
