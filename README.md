@@ -2,22 +2,16 @@
 
 *(STILL UNDER HEAVY DEVELOPMENT. No APIs are guaranteed yet as stable.)*
 
-Standalone, embeddable program that acts as a game scripting toolkit.
-The most common way to use topaz is to run it in a directory with 
-a root file (main.mt) that contains the logic to to your game.
+A code-focused game development toolkit: no IDE, no asset manager, just pure code.
+Written in plain C in an Object-Oriented style, topaz features a small but powerful 
+API that focuses on 2D and simple 3D graphics.
 
-Examples can be found under ./examples/. ./examples/README explains 
-more.
-
-
-
-Scripting is done with the Matte language, an 
-imperative C-like that features simplified, readable code.
-
-Matte language overview @ https://jcorks.github.io/matte/doc-quick.html
-
-API Documentation @ https://jcorks.github.io/topaz/api/
-
-
+ - Minimal requirements. On Windows, no additional DLLs are required to run EXEs.
+ - High-level, Node / hierarchy based design, giving tree-like control to scenes all in code.
+ - Built-in scripting support which provides bindings for the core C API, including Lua
+ - Multi-window support.
+ - Graphics, input, audio, resource manager, and more with system-agnostic API.
+ - Customizable console with scripting debug support in GDB style commands.
+ - Raw mesh and texture access for all visuals.
 
 
