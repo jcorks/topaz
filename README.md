@@ -1,4 +1,4 @@
-# Topaz
+# topaz
 
 *(STILL UNDER HEAVY DEVELOPMENT. No APIs are guaranteed yet as stable.)*
 
@@ -15,3 +15,4 @@ API that focuses on 2D and simple 3D graphics.
  - Raw mesh and texture access for all visuals.
 
 
+See [SCRIPTING.md](https://github.com/jcorks/topaz/blob/main/SCRIPTING.md) for more information on the scripting API and making a decision on which language to use.
