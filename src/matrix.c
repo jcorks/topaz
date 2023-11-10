@@ -321,6 +321,49 @@ void topaz_matrix_scale(topazMatrix_t * m, float x, float y, float z) {
 }
 
 
+topazMatrix_t topaz_matrix_projection_perspective(
+    float fovy, float ratio, float zNear, float zFar
+) {
+    topazMatrix_t out;
+    topaz_matrix_set_identity(&out);
+    float * projection = &out.data[0];
+    float perspective[4];
+    perspective[0] = fovy * (topaz_math_pi / 180.f);
+    perspective[1] = ratio;
+    perspective[2] = zNear;
+    perspective[3] = zFar;
+
+    float f = 1.f / (tan(perspective[0] / 2.f));
+    projection[0] = f / perspective[1];
+    projection[5] = f;
+    projection[10] = (perspective[2] + perspective[3]) /
+                       (perspective[2] - perspective[3]);
+
+    projection[11] = (perspective[2] * perspective[3] * 2) /
+                       (perspective[2] - perspective[3]);
+
+    projection[14] = -1.f;
+
+    return out;
+
+}
+topazMatrix_t topaz_matrix_projection_orthographic(
+    float left,    float right,
+    float bottom,  float top,
+    float zNear,   float zFar
+) {
+    topazMatrix_t out;
+    topaz_matrix_set_identity(&out);
+    float * projection = out.data+0;
+    projection[0] = (2)  / (right - left);
+    projection[5] = (2)  / (top - bottom);
+    projection[10] = (-2) / (zFar - zNear);
+
+    projection[3]  = -(right + left) / (right - left);
+    projection[7]  = -(top + bottom) / (top - bottom);
+    projection[11] = -(zFar + zNear) / (zFar - zNear);
+    return out;
+}
 
 
 

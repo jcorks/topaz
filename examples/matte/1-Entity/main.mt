@@ -51,6 +51,6 @@ room.attach(child:r2);
 
 @:display = Topaz.ViewManager.getDefault();
 display.setName(name:"Example 1");
-display.setRoot(newRoot:room);
+display.getViewport().attach(child:room);
 
 

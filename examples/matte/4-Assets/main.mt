@@ -77,4 +77,4 @@ display.addParameterCallback(
 
 reposition();
 
-display.setRoot(newRoot:entity);
+display.getViewport().attach(child:entity);

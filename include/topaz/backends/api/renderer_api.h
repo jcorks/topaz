@@ -257,7 +257,7 @@ struct topazRenderer_FramebufferAPI_t {
     void *                  (*renderer_framebuffer_create)              (topazRendererAPI_t *, topazRenderer_FramebufferAPI_t *);
     void                    (*renderer_framebuffer_destroy)             (void *);
 
-
+    void *                  (*renderer_framebuffer_get_texture)         (void *);
     int      (*renderer_framebuffer_resize)(void *, int w, int h);
     void *   (*renderer_framebuffer_get_handle)(void *);
     int      (*renderer_framebuffer_get_raw_data)(void *, uint8_t *);

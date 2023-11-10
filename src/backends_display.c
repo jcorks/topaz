@@ -1,11 +1,11 @@
 #include <topaz/compat.h>
 #include <topaz/backends/renderer.h>
 #include <topaz/backends/display.h>
-#include <topaz/camera.h>
 #include <topaz/topaz.h>
 #include <topaz/entity.h>
 #include <topaz/modules/graphics.h>
 #include <topaz/assets/image.h>
+#include <topaz/viewport.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -20,15 +20,10 @@ struct topazDisplay_t {
     topazDisplayAPI_t api;
     topazSystem_Backend_t * backend;
     topazEntity_t * camera2d;
-    topazEntity_t * camera3d;
-
-    topazRenderer_Framebuffer_t * fbs[4];
-    int currentfb;
-    int autoRefresh;
+    topazViewport_t * viewport;
     void * apiData;
 
 
-    topazEntity_t * root;
     topazArray_t * resizeCBs;
     topazArray_t * closeCBs;
 
@@ -67,20 +62,10 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
     topazDisplay_t * out = calloc(1, sizeof(topazDisplay_t));
     out->api = api;
     out->backend = b;
-    out->camera2d = topaz_camera_create(ctx);
-    out->camera3d = topaz_camera_create(ctx);
-    topaz_camera_set_type(out->camera3d, topazCamera_Type_Perspective3D);
+    out->viewport = topaz_viewport_create();
     topazRenderer_t * r = topaz_graphics_get_renderer(topaz_context_get_graphics(ctx));
-    out->fbs[0] = topaz_renderer_framebuffer_create(r);
-    out->fbs[1] = topaz_renderer_framebuffer_create(r);
-    out->fbs[2] = topaz_renderer_framebuffer_create(r);
-    out->fbs[3] = topaz_renderer_framebuffer_create(r);
 
     out->ctx = ctx;
-    out->autoRefresh = TRUE;
-    topaz_context_attach_post_manager(ctx, out->camera2d);
-    topaz_context_attach_post_manager(ctx, out->camera3d);
-    out->root = topaz_entity_null();
 
     out->resizeCBs = topaz_array_create(sizeof(DisplayCB));
     out->closeCBs = topaz_array_create(sizeof(DisplayCB));
@@ -110,6 +95,9 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
         topazDisplay_Parameter_Active, 
         1
     );
+    
+    t->api.display_set_name(t, t->apiData, TOPAZ_STR_CAST("topaz"));
+
 
     return out;
 }
@@ -120,12 +108,7 @@ void topaz_display_destroy(topazDisplay_t * t) {
         assert(t && "topazSystem_Backend_t pointer cannot be NULL.");
     #endif
     t->api.display_destroy(t, t->apiData);
-    topaz_entity_remove(t->camera2d);
-    topaz_entity_remove(t->camera3d);
-    topaz_renderer_framebuffer_destroy(t->fbs[0]);
-    topaz_renderer_framebuffer_destroy(t->fbs[1]);
-    topaz_renderer_framebuffer_destroy(t->fbs[2]);
-    topaz_renderer_framebuffer_destroy(t->fbs[3]);
+    topaz_entity_remove(t->viewport);
     topaz_array_destroy(t->resizeCBs);
     topaz_array_destroy(t->closeCBs);
     free(t);
@@ -152,12 +135,8 @@ topazDisplayAPI_t topaz_display_get_api(topazDisplay_t * t) {
 }
 
 
-topazEntity_t * topaz_display_get_2d_camera(topazDisplay_t * t) {
-    return t->camera2d;
-}
-
-topazEntity_t * topaz_display_get_3d_camera(topazDisplay_t * t) {
-    return t->camera3d;
+topazEntity_t * topaz_display_get_viewport(topazDisplay_t * t) {
+    return t->viewport;
 }
 
 
@@ -192,14 +171,6 @@ int topaz_display_is_parameter_modifiable(topazDisplay_t * t, topazDisplay_Param
     return t->api.display_is_parameter_modifiable(t, t->apiData, p);
 }
 
-
-topazEntity_t * topaz_display_get_root(const topazDisplay_t * t) {
-    return t->root;
-}
-
-void topaz_display_set_root(topazDisplay_t * t, topazEntity_t * r) {
-    t->root = r;
-}
 
 
 
@@ -292,93 +263,9 @@ void topaz_display_signal_close(topazDisplay_t * t) {
 
 
 
-topazRenderer_Framebuffer_t * topaz_display_get_framebuffer(
-    topazDisplay_t * d,
-    topazDisplay_Framebuffer i
-) {
-    int id = i;
-    if (id < 0 || id >= 4) return d->fbs[0];
-    return d->fbs[id];
-}
-
-void topaz_display_use_framebuffer(
-    topazDisplay_t * d,
-    topazDisplay_Framebuffer f
-) {
-    d->currentfb = f;
-    if (d->currentfb < 0) d->currentfb = 0;
-    if (d->currentfb >=4) d->currentfb = 3;
-    
-}
-
-topazRenderer_Framebuffer_t * topaz_display_get_main_framebuffer(
-    topazDisplay_t * d
-) {
-    return d->fbs[d->currentfb];
-}
-
-void topaz_display_clear_main_framebuffer(
-    topazDisplay_t * d,
-    topazRenderer_DataLayer layer
-) {
-    topazRenderer_t * r = topaz_graphics_get_renderer(topaz_context_get_graphics(d->ctx));
-    topazRenderer_Framebuffer_t * old = topaz_renderer_get_target(r);
-
-    if (old != d->fbs[d->currentfb]) {
-        topaz_renderer_sync(r);
-        topaz_renderer_attach_target(r, d->fbs[d->currentfb]);
-        topaz_renderer_clear_layer(r, layer);
-        topaz_renderer_attach_target(r, old);
-    } else {
-        topaz_renderer_clear_layer(r, layer);
-    }
-}
-
-
-void topaz_display_capture_main_framebuffer(
-    /// The display to query.
-    topazDisplay_t * d,
-    /// The image to populate.
-    topazAsset_t * image
-) {
-    topazRenderer_Framebuffer_t * fb = d->fbs[d->currentfb];
-    while (topaz_image_get_frame_count(image) > 1) {
-        topaz_image_remove_frame(image, topaz_image_get_frame_count(image)-1);
-    }
-
-    int w = topaz_renderer_framebuffer_get_width(fb);
-    int h = topaz_renderer_framebuffer_get_height(fb);
-
-    if (topaz_image_get_width(image) != w ||
-        topaz_image_get_height(image) != h)
-        topaz_image_resize(image, w, h);
-
-    if (topaz_image_get_frame_count(image) < 1)   
-        topaz_image_add_frame(image);
-
-
-
-
-    uint8_t * data = malloc(w*h*4);
-    topaz_renderer_framebuffer_get_raw_data(fb, data);
-    topaz_image_set_frame_rgba_data(image, 0, data);
-    free(data);
-}
-
-
-
-
-
-
-
 void topaz_display_update(topazDisplay_t * t) {
-    topazRenderer_Framebuffer_t * fb = t->fbs[t->currentfb];
+    topazRenderer_Framebuffer_t * fb = topaz_viewport_get_complete_framebuffer(t->viewport);
     t->api.display_update(t, t->apiData, fb);
-
-
-    if (t->autoRefresh) {
-        topaz_display_clear_main_framebuffer(t, topazRenderer_DataLayer_All);
-    }
 }
 
 
@@ -417,9 +304,6 @@ void topaz_display_set_current_clipboard(topazDisplay_t * t, const topazArray_t 
     t->api.display_set_current_clipboard(t, t->apiData, s);
 }
 
-void topaz_display_auto_clear_framebuffer(topazDisplay_t * d, int doIt) {
-    d->autoRefresh = doIt;
-}
 
 
 

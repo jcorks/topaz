@@ -51,6 +51,6 @@ room:attach(r2);
 
 local display = Topaz.ViewManager.getDefault();
 display:setName("Example 1");
-display:setRoot(room);
+display:getViewport():attach(room);
 
 

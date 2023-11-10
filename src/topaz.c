@@ -256,7 +256,7 @@ void topaz_context_resume(topaz_t * t) {
 }
     
 void topaz_context_step(topaz_t * t) {
-    topazEntity_t * root = topaz_display_get_root(t->display);
+    topazEntity_t * root = topaz_display_get_viewport(t->display);
     /////// step 
     // Order:
     /*
@@ -313,7 +313,7 @@ topazDisplay_t * topaz_context_get_iteration_display(
     return context->display;
 }
 void topaz_context_draw(topaz_t * t) {
-    topazEntity_t * root = topaz_display_get_root(t->display);
+    topazEntity_t * root = topaz_display_get_viewport(t->display);
 
     
     /////// render 
@@ -381,13 +381,6 @@ void topaz_context_iterate(topaz_t * t) {
     for(i = 0; i < len; ++i) {
         topazDisplay_t * d = topaz_array_at(views, topazDisplay_t *, i);
         t->display = d;
-        topazRenderer_Framebuffer_t * fb = topaz_display_get_main_framebuffer(d);
-        topaz_renderer_attach_target(
-            topaz_graphics_get_renderer(
-                topaz_context_get_graphics(t)
-            ),
-            fb
-        );
         topaz_input_poll(t->input);
         topaz_display_update(d);
         topaz_graphics_reset_scene(t->graphics);

@@ -23,16 +23,6 @@ TSO_SCRIPT_API_FN(shape3d_api__set_texture) {
 }
 
 
-TSO_SCRIPT_API_FN(shape3d_api__set_sample_framebuffer) {
-    TSO_ARG_0;
-    TSO_ARG_1;
-    TSO_NATIVIZE(topazComponent_t *, TSO_OBJECT_ID__SHAPE3D);   
-    TSO_NATIVIZE_1(topazRenderer_Framebuffer_t *, TSO_OBJECT_ID__FRAMEBUFFER);   
-
-    topaz_shape3d_set_sample_framebuffer(native, native1);
-    TSO_NO_RETURN;
-}
-
 
 TSO_SCRIPT_API_FN(shape3d_api__set_mesh) {
     TSO_ARG_0;
@@ -195,7 +185,6 @@ static void add_refs__shape3d_api(topazScript_t * script, topazScriptManager_t *
     TS_MAP_NATIVE_FN("topaz_shape3d__create", shape3d_api__create, 0);
 
     TS_MAP_NATIVE_FN("topaz_shape3d__set_texture", shape3d_api__set_texture, 3);
-    TS_MAP_NATIVE_FN("topaz_shape3d__set_sample_framebuffer", shape3d_api__set_sample_framebuffer, 2);
     TS_MAP_NATIVE_FN("topaz_shape3d__set_mesh", shape3d_api__set_mesh, 2);
     TS_MAP_NATIVE_FN("topaz_shape3d__set_material", shape3d_api__set_material, 2);
 

@@ -30,6 +30,123 @@ Topaz = {};
     end
 
 
+    local initializer__viewport = (function() 
+        local tempMatrix = {};
+        local tempMatrixSetter = function(a, b, c, d, e, f, g, h, j, i , k , l, m ,n, o, p) 
+            tempMatrix[1] = a;
+            tempMatrix[2] = b;
+            tempMatrix[3] = c;
+            tempMatrix[4] = d;
+
+            tempMatrix[5] = e;
+            tempMatrix[6] = f;
+            tempMatrix[7] = g;
+            tempMatrix[8] = h;
+
+            tempMatrix[9] = i;
+            tempMatrix[10] = j;
+            tempMatrix[11] = k;
+            tempMatrix[12] = l;
+
+            tempMatrix[13] = m;
+            tempMatrix[14] = n;
+            tempMatrix[15] = o;
+            tempMatrix[16] = p;
+        end
+        local temp = {};
+        local tempSetter = function(a, b, c) 
+            temp.x = a;
+            temp.y = b;
+            temp.z = c;
+        end            
+    
+        local getImage = function(REFi) 
+            local out = topaz_viewport__get_image(REFi);
+            if (out.__mapped == nil) then
+                initializer__asset(out);
+                initializer__image(out);
+            end            
+            return out;
+        end
+        
+        
+        local resize = function(REFi, width, height)
+            topaz_viewport__resize(REFi, width, height)
+        end
+        
+        local getWidth = function(REFi)
+            return topaz_viewport__get_width(REFi)
+        end
+
+        local getHeight = function(REFi)
+            return topaz_viewport__get_height(REFi)
+        end
+        
+        local getProjection3d = function(REFi)
+            topaz_viewport__get_projection_3d(REFi, tempMatrixSetter);
+            return copyMatrix(tempMatrix);
+        end
+        
+        local setFiltered = function(REFi, enabled)
+            topaz_viewport__set_filtered(REFi, enabled);
+        end
+
+        local setProjection3dAutoMode = function(REFi, enabled)
+            topaz_viewport__set_projection_3d_auto_mode(REFi, enabled);
+        end
+        
+        local setProjection3d = function(REFi, m)
+            topaz_viewport__set_projection_3d(REFi, m);
+        end
+        
+        local world3dToScreen = function(REFi, point)
+            topaz_viewport__world_3d_to_screen(REFi, point.x, point.y, point.z, tempSetter);
+            return copyVec(temp);
+        end
+
+        local screenToWorld3d = function(REFi, point)
+            topaz_viewport__screen_to_world_3d(REFi, point.x, point.y, point.z, tempSetter);
+            return copyVec(temp);
+        end
+        
+        local clear = function(REFi, layer)
+            topaz_viewport__screen_clear(REFi, layer);            
+        end
+
+
+        local setAutoClear = function(REFi, enable)
+            topaz_viewport__set_auto_clear(REFi, enable);            
+        end  
+
+        local swapBuffers = function(REFi)
+            topaz_viewport__swap_buffers(REFi);
+        end
+
+        local sync = function(REFi)
+            topaz_viewport__sync(REFi);
+        end      
+        
+        return function(v) 
+            v.__mapped = MAPPED;
+            
+            v.getImage = getImage;
+            v.resize = resize;
+            v.getWidth = getWidth; 
+            v.getHeight = getHeight;
+            v.getProjection3d = getProjection3d;
+            v.setFiltered = setFiltered;
+            v.setProjection3dAutoMode = setProjection3dAutoMode;
+            v.setProjection3d = setProjection3d;
+            v.world3dToScreen = world3dToScreen;
+            v.screenToWorld3d = screenToWorld3d;
+            v.clear = clear;
+            v.setAutoClear = setAutoClear;
+            v.swapBuffers = swapBuffers;
+            v.sync = v.sync;
+        end
+    end)()
+
+
     local initializer__text2d = (function() 
         local setText = function(REFi, text) 
             topaz_text2d__set_text(REFi, text);
@@ -252,10 +369,6 @@ Topaz = {};
             topaz_shape3d__set_texture(REFi, slot, image);
         end
         
-        local setSampleFramebuffer = function(REFi, framebuffer) 
-            topaz_shape3d__set_sample_framebuffer(REFi, framebuffer);
-        end
-        
         local setMesh = function(REFi, mesh) 
             topaz_shape3d__set_mesh(REFi, mesh);
         end
@@ -287,7 +400,6 @@ Topaz = {};
             s.getScale = getScale;
             
             s.setTexture = setTexture;
-            s.setSampleFramebuffer = setSampleFramebuffer;
             s.setMesh = setMesh;
             s.setMaterial = setMaterial;
             s.setAttribute = setAttribute;
@@ -1083,91 +1195,25 @@ Topaz = {};
     end)()
 
 
-    local initializer__framebuffer = (function() 
 
-        local getWidth = function(REFi) 
-            return topaz_framebuffer__get_width(REFi);
-        end
-
-        local getHeight = function(REFi) 
-            return topaz_framebuffer__get_height(REFi);
-        end
-
-        local resize = function(REFi, width, height) 
-            topaz_framebuffer__resize(REFi, width, height);
-        end
-        
-        local getFilteredHint = function(REFi) 
-            return topaz_framebuffer__get_filtered_hint(REFi);
-        end
-        
-        local setFilteredHint = function(REFi, filter) 
-            topaz_framebuffer__set_filtered_hint(REFi, filter);
-        end
-        
-        return function(f) 
-            f.__mapped = MAPPED;
-            
-            f.getWidth = getWidth;
-            f.getHeight = getHeight;
-            f.resize = resize;
-            f.getFilteredHint = getFilteredHint;
-            f.setFilteredHint = setFilteredHint;
-        end
-    end)()
     local initializer__display = (function() 
 
-        local get2DCamera = function(REFi) 
-            local out = topaz_display__get_camera_2d(REFi);
+        local getViewport = function(REFi) 
+            local out = topaz_display__get_viewport(REFi);
             if (out.__mapped == nil) then
                 initializer__entity(out);
+                initializer__viewport(out);
             end
-            --initializer__camera(out);
             return out;
         end
         
-        local get3DCamera = function(REFi) 
-            local out = topaz_display__get_camera_3d(REFi);
-            if (out.__mapped == nil) then
-                initializer__entity(out);
-            end
-            --initializer__camera(out);
-            return out;        
-        end
-
-        local getFramebuffer = function(REFi, which) 
-            local out = topaz_display__get_framebuffer(REFi, which);
-            if (out.__mapped == nil) then
-                initializer__framebuffer(out);
-            end
-            return out;    
-        end
-        
-        
-        local useFramebuffer = function(REFi, which) 
-            topaz_display__use_framebuffer(REFi, which);
-        end
         
         
         local setPostProcessShader = function(REFi, vertexShader, fragmentShader) 
             topaz_display__set_post_process_shader(REFi, vertexShader, fragmentShader);
         end
 
-        local getMainFramebuffer = function(REFi) 
-            local out = topaz_display__get_main_framebuffer(REFi);
-            if (out.__mapped == nil) then
-                initializer__framebuffer(out);
-            end
-            return out;
-        end
         
-        local clearMainFramebuffer = function(REFi, layer) 
-            topaz_display__clear_main_framebuffer(REFi, layer);
-        end
-        
-        local captureMainFramebuffer = function(REFi, image) 
-            topaz_display__capture_main_framebuffer(REFi, image);
-        end
         
         local setParameter = function(REFi, param, value) 
             topaz_display__set_parameter(REFi, param, value);
@@ -1180,10 +1226,7 @@ Topaz = {};
         local getParameter = function(REFi, param) 
             return topaz_display__get_parameter(REFi, param);
         end
-        
-        local autoClearFramebuffer = function(REFi, enable) 
-            topaz_display__auto_clear_framebuffer(REFi, enable);
-        end
+       
         
         local setName = function(REFi, name) 
             topaz_display__set_name(REFi, name);
@@ -1200,18 +1243,7 @@ Topaz = {};
         local removeCallback = function(REFi, id) 
             topaz_display__remove_callback(REFi, id);
         end
-
-        local getRoot = function(REFi) 
-            local out = topaz_display__get_root(REFi);
-            if (out.__mapped == nil) then
-                initializer__entity(out);
-            end
-            return out;
-        end
         
-        local setRoot = function(REFi, newRoot) 
-            topaz_display__set_root(REFi, newRoot);
-        end
         
         local update = function(REFi) 
             topaz_display__update(REFi);
@@ -1220,24 +1252,15 @@ Topaz = {};
         return function(d) 
             d.__mapped = MAPPED;
             
-            d.get2DCamera = get2DCamera;
-            d.get3DCamera = get3DCamera;
-            d.getFramebuffer = getFramebuffer;
-            d.useFramebuffer = useFramebuffer;
+            d.getViewport = getViewport;
             d.setPostProcessShader = setPostProcessShader;
-            d.getMainFramebuffer = getMainFramebuffer;
-            d.clearMainFramebuffer = clearMainFramebuffer;
-            d.captureMainFramebuffer = captureMainFramebuffer;
             d.setParameter = setParameter;
             d.isParameterModifiable = isParameterModifiable;
             d.getParameter = getParameter;
-            d.autoClearFramebuffer = autoClearFramebuffer;
             d.setName = setName;
             d.addParameterCallback = addParameterCallback;
             d.addCloseCallback = addCloseCallback;
             d.removeCallback = removeCallback;
-            d.getRoot = getRoot;
-            d.setRoot = setRoot;
             d.update = update;
         end
 
@@ -1422,25 +1445,25 @@ Topaz = {};
         
         local tempMatrix = {};
         local tempMatrixSetter = function(a, b, c, d, e, f, g, h, j, i , k , l, m ,n, o, p) 
-            tempMatrix[0] = a;
-            tempMatrix[1] = b;
-            tempMatrix[2] = c;
-            tempMatrix[3] = d;
+            tempMatrix[1] = a;
+            tempMatrix[2] = b;
+            tempMatrix[3] = c;
+            tempMatrix[4] = d;
 
-            tempMatrix[4] = e;
-            tempMatrix[5] = f;
-            tempMatrix[6] = g;
-            tempMatrix[7] = h;
+            tempMatrix[5] = e;
+            tempMatrix[6] = f;
+            tempMatrix[7] = g;
+            tempMatrix[8] = h;
 
-            tempMatrix[8] = i;
-            tempMatrix[9] = j;
-            tempMatrix[10] = k;
-            tempMatrix[11] = l;
+            tempMatrix[9] = i;
+            tempMatrix[10] = j;
+            tempMatrix[11] = k;
+            tempMatrix[12] = l;
 
-            tempMatrix[12] = m;
-            tempMatrix[13] = n;
-            tempMatrix[14] = o;
-            tempMatrix[15] = p;
+            tempMatrix[13] = m;
+            tempMatrix[14] = n;
+            tempMatrix[15] = o;
+            tempMatrix[16] = p;
         end
         
         
@@ -2044,15 +2067,19 @@ Topaz = {};
                 InputFocus = 9,
                 Active = 10,
                 Decorated = 11
-            },
-            
-            Framebuffer = {
-                A = 0,
-                B = 1,
-                C = 2,
-                D = 3
             }
         },
+        
+        Viewport = (function()
+            return {
+                create = function()
+                    local out = topaz_viewport__create();
+                    initializer__entity(out);
+                    initializer__viewport(out);
+                    return out;
+                end
+            }
+        end)(),
 
         Color = (function() 
 
@@ -2081,6 +2108,113 @@ Topaz = {};
             }
         end)(),
         
+        Matrix = (function()
+            local temp = {};
+            local tempSetter = function(a, b, c) 
+                temp.x = a;
+                temp.y = b;
+                temp.z = c;
+            end
+            
+            local tempMatrix = {};
+            local tempMatrixSetter = function(a, b, c, d, e, f, g, h, j, i , k , l, m ,n, o, p) 
+                tempMatrix[1] = a;
+                tempMatrix[2] = b;
+                tempMatrix[3] = c;
+                tempMatrix[4] = d;
+
+                tempMatrix[5] = e;
+                tempMatrix[6] = f;
+                tempMatrix[7] = g;
+                tempMatrix[8] = h;
+
+                tempMatrix[9] = i;
+                tempMatrix[10] = j;
+                tempMatrix[11] = k;
+                tempMatrix[12] = l;
+
+                tempMatrix[13] = m;
+                tempMatrix[14] = n;
+                tempMatrix[15] = o;
+                tempMatrix[16] = p;
+            end
+            
+            return {
+                setIdentity = function(m)
+                    topaz_matrix__set_identity(m, tempMatrixSetter);
+                    for i=1,16 do 
+                        m[i] = tempMatrix[i]
+                    end
+                end,
+                
+                transform = function(m, point)
+                    topaz_matrix__transform(m, point.x, point.y, point.z, tempSetter);
+                    return copyVec(temp);
+                end,
+                
+                toString = function(m) 
+                    return topaz_matrix__to_string(m);
+                end,
+                
+                transpose = function(m)
+                    topaz_matrix__transpose(m, tempMatrixSetter);
+                    for i=1,16 do 
+                        m[i] = tempMatrix[i]
+                    end                    
+                end,
+
+                reverseMajority = function(m) 
+                    topaz_matrix__reverse_majority(m, tempMatrixSetter);
+                    for i=1,16 do 
+                        m[i] = tempMatrix[i]
+                    end                                    
+                end,
+                
+                multiply = function(a, b)
+                    topaz_matrix__multiply(a, b, tempSetter);
+                    return copyMatrix(tempMatrix);
+                end,
+                
+                rotateByAngles = function(m, x, y, z)
+                    topaz_matrix__rotate_by_angles(m, x, y, z, tempSetter);
+                    for i=1,16 do 
+                        m[i] = tempMatrix[i]
+                    end                                    
+                end,
+
+                rotateByAxis = function(m, x, y, z, degrees)
+                    topaz_matrix__rotate_by_axis(m, x, y, z, degrees, tempSetter);
+                    for i=1,16 do 
+                        m[i] = tempMatrix[i]
+                    end                                    
+                end,
+                
+
+                translate = function(m, x, y, z)
+                    topaz_matrix__translate(m, x, y, z, tempSetter);
+                    for i=1,16 do 
+                        m[i] = tempMatrix[i]
+                    end                                    
+                end,
+                
+                scale = function(m, x, y, z)
+                    topaz_matrix__scale(m, x, y, z, tempSetter);
+                    for i=1,16 do 
+                        m[i] = tempMatrix[i]
+                    end                                    
+                end,
+                
+                projectionPerspective = function(fovy, ratio, zNear, zFar)
+                    topaz_matrix__projection_perspective(fovy, ratio, zNear, zFar, tempSetter);
+                    return copyMatrix(tempMatrix);
+                end,                
+                
+                projectionOrthographic = function(left, right, bottom, top, zNear, zFar) 
+                    topaz_matrix__projection_orthographic(left, right, bottom, top, zNear, zFar, tempSetter);
+                    return copyMatrix(tempMatrix);
+                end
+            }            
+        end)(),
         
         Vector = (function() 
             

@@ -8,6 +8,7 @@ struct topazGL3_FB_t {
     int w;
     int h;
     GLuint handle[2];
+    topazGL3_Texture_t * tex;
 };
 
 topazGL3_FB_t * topaz_gl3_fb_create() {
@@ -28,6 +29,7 @@ topazGL3_FB_t * topaz_gl3_fb_create() {
         GL_TEXTURE_MAG_FILTER,
         GL_NEAREST
     ); TOPAZ_GLES_CALL_CHECK;
+
 
 
 
@@ -89,7 +91,8 @@ topazGL3_FB_t * topaz_gl3_fb_create() {
 
     out->handle[0] = out->fbo;
     out->handle[1] = out->tex;
-
+    
+    out->tex = topaz_gl3_texture_from_object(out->handle[1]);
     return out;
 
 }
@@ -142,6 +145,7 @@ int topaz_gl3_fb_resize(topazGL3_FB_t * out, int w, int h) {
     }
     #endif
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    topaz_gl3_texture_force_resize(out->tex);
 
     return 1;
 }

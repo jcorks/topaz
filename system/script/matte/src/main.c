@@ -436,7 +436,7 @@ static void topaz_matte_run__error(const matteString_t * s, uint32_t line, uint3
         matte_string_get_c_str(s)
     );
 
-    matteString_t * errm = matte_string_create_from_c_str("%s", topaz_string_get_c_str(str));
+    topazString_t * errm = topaz_string_create_from_c_str("%s", topaz_string_get_c_str(str));
     //matte_vm_raise_error_string(ctx->vm, errm);
     //matte_string_destroy(errm);    
     PERROR(ctx->ctx, ctx->script, errm);

@@ -180,7 +180,44 @@ void topaz_matrix_scale(
     float z
 );
 
+/// Creates a new matrix representing perspective 
+/// projection matrix
+topazMatrix_t topaz_matrix_projection_perspective(
+    /// Field of view in the Y direction
+    float fovy, 
     
+    /// Ratio between view width and height
+    float ratio, 
+    
+    /// The near viewing plane.
+    float zNear, 
+    
+    /// The far viewing plane.
+    float zFar
+);
+
+/// Creates a new matrix representing an orthographic 
+/// projection matrix.
+topazMatrix_t topaz_matrix_projection_orthographic(
+    /// The left clip.
+    float left,    
+    
+    /// The right clip.
+    float right,
+
+    /// The bottom clip.
+    float bottom,  
+    
+    /// The top clip.
+    float top,
+    
+    /// The near clip.
+    float zNear,   
+    
+    /// The far clip.
+    float zFar
+);
+
 
 
 #endif

@@ -42,7 +42,7 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/entity.h>
 #include <topaz/assets/material.h>
 #include <topaz/assets/mesh.h>
-#include <topaz/backends/display.h>
+#include <topaz/backends/viewport.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -89,11 +89,8 @@ typedef struct {
 
 static void shape3d__on_draw(topazComponent_t * c, Shape3D * s) {
     // need to recommit buffers;
-    topazEntity_t * cam = topaz_display_get_3d_camera(topaz_context_get_iteration_display(s->ctx));
-    topazMatrix_t modelview = topaz_matrix_multiply(
-        topaz_camera_get_view_transform(cam),
-        topaz_spatial_get_global_transform(s->spatial)
-    );
+    topazEntity_t * cam = topaz_graphics_get_current_viewport(topaz_context_get_graphics(s->ctx));
+    topazMatrix_t modelview = *topaz_spatial_get_global_transform(s->spatial);
     
     topaz_renderer_buffer_update(
         s->d3.modelviewMatrix,
@@ -103,7 +100,7 @@ static void shape3d__on_draw(topazComponent_t * c, Shape3D * s) {
 
     topaz_renderer_buffer_update(
         s->d3.projectionMatrix,
-        (float*)topaz_camera_get_projection_transform(cam),
+        (float*)topaz_viewport_get_projection_3d(cam),
         0, 16
     );    
 
@@ -323,14 +320,6 @@ void topaz_shape3d_set_texture(
 }
 
 
-void topaz_shape3d_set_sample_framebuffer(
-    topazComponent_t * shape3d,
-    topazRenderer_Framebuffer_t * framebuffer
-) {
-    Shape3D * s = shape3d__retrieve(shape3d);
-    s->d3.sampleFramebuffer = framebuffer;
-
-}
 
 
 void topaz_shape3d_set_mesh(

@@ -47,9 +47,6 @@ static void object_on_linked_buffer_commit(topazGL3_Buffer_t * buffer, void * ob
 // forces reforming of the vbo and other tasks
 static void object_prepare_renderable(GL3Object *);
 
-// Called when a texture has changed its atlas coordinates
-static void object_texture_changed(topazArray_t *, void *);
-
 
 
 
@@ -66,7 +63,6 @@ topazGL3_2D_t * topaz_gl3_2d_create(topazGL3_TexMan_t * t) {
     out->program = topaz_gl3_p2d_create();
     out->textureManager = t;
     textureManager_staticIDs = (GLuint*)topaz_gl3_texman_gl_textures(t);
-    out->texmanCallbackID = topaz_gl3_texman_add_change_callback(t, object_texture_changed, out);
     return out;
 }
 
@@ -227,27 +223,10 @@ static void object_prepare_renderable(GL3Object * o) {
 
 
         if (o->texture) {
-            // need to convert local coordinates to ones used in the 
-            // actual openGL texture.
-            int atlasIndex;
-            uint32_t i;
-            for(i = 0; i < o->pdata.vboVertexCount; ++i) {
-                vtx[i] = vtxSrc[i];
-                topaz_gl3_texture_local_coords_to_atlas(
-                    o->texture,
-                    vtx[i].texX,
-                    vtx[i].texY,
-                    &vtx[i].texX,
-                    &vtx[i].texY,
-                    &atlasIndex
-                );
-            }
-            o->pdata.texture = textureManager_staticIDs[atlasIndex];
-        } else {
-            // no texture? blind copy! easy!
-            memcpy(vtx, vtxSrc, sizeof(topazRenderer_2D_Vertex_t)*o->pdata.vboVertexCount);
-            o->pdata.texture = 0;
-        }
+            o->pdata.texture = topaz_gl3_texture_get_handle(o->texture);
+        } 
+        memcpy(vtx, vtxSrc, sizeof(topazRenderer_2D_Vertex_t)*o->pdata.vboVertexCount);
+        o->pdata.texture = 0;
             
         glBindBuffer(GL_ARRAY_BUFFER, o->pdata.vbo); TOPAZ_GLES_CALL_CHECK;
         glBufferData(GL_ARRAY_BUFFER, sizeof(topazRenderer_2D_Vertex_t)*o->pdata.vboVertexCount, vtx, GL_DYNAMIC_DRAW);TOPAZ_GLES_CALL_CHECK;
@@ -263,26 +242,7 @@ static void object_prepare_renderable(GL3Object * o) {
 
 
  
-static void object_texture_changed(topazArray_t * textures, void * src) {
-    topazGL3_2D_t * d2 = src;
-    topazArray_t * all = topaz_bin_get_all(d2->objects);
-    uint32_t i;
-    uint32_t n;
-    uint32_t tlen = topaz_array_get_size(textures);
-    uint32_t len = topaz_array_get_size(all);
 
-    for(i = 0; i < len; ++i) {
-        GL3Object * o = topaz_array_at(all, GL3Object *, i);
-        if (!o->texture) continue;
-
-        for(n = 0; n < tlen; ++n) {
-            if (o->texture == topaz_array_at(textures, topazGL3_Texture_t *, n)) {
-                object_prepare_renderable(o);
-                break;
-            }
-        }
-    }
-}
 
  
 

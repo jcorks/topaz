@@ -284,4 +284,4 @@ manager:attach(createInputListExample());
 
 -- Finally, insert the base of the tree into 
 -- the default display itself.
-Topaz.ViewManager.getDefault():setRoot(manager);
+Topaz.ViewManager.getDefault():getViewport():attach(manager);

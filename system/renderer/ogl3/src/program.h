@@ -74,9 +74,6 @@ void topaz_gl3_program_render(
     topazGL3_Buffer_t * vertexBuffer,
     
 
-    // samp (0 if not used)
-    GLuint framebufferTexID,    
-    
     // indices
     const uint32_t * indices,
 

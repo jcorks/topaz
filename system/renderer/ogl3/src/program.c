@@ -106,10 +106,6 @@ static char * fragment_pre =
 "}\n"
 
 
-"vec4 topazSampleFramebuffer(in vec2 uvs) {\n"
-"   return texture2D(_topaz_t_fb, uvs);\n"
-"}\n"
-
 "vec4 topazSampleTexture0(in vec2 uvs) {\n"
 "   vec2 uvs_conv = vec2(_topaz_t0.x + uvs.x * _topaz_t0.y, _topaz_t0.z + uvs.y * _topaz_t0.w);\n"
 "   return texture2D(_topaz_t_0, uvs_conv);\n"
@@ -261,7 +257,6 @@ topazGL3_Program_t * topaz_gl3_program_create(
     out->locationVertexUniform_Proj = glGetUniformLocation(out->program, "topaz_mat_projection");TOPAZ_GLES_CALL_CHECK;
     out->locationVertexUniform_Normal = glGetUniformLocation(out->program, "topaz_mat_normal");TOPAZ_GLES_CALL_CHECK;
 
-    out->locationFragmentUniform_TextureSampler_FB = glGetUniformLocation(out->program, "_topaz_t_fb");TOPAZ_GLES_CALL_CHECK;
     out->locationFragmentUniform_TextureSampler_0 = glGetUniformLocation(out->program, "_topaz_t_0");TOPAZ_GLES_CALL_CHECK;
     out->locationFragmentUniform_TextureSampler_1 = glGetUniformLocation(out->program, "_topaz_t_1");TOPAZ_GLES_CALL_CHECK;
     out->locationFragmentUniform_TextureSampler_2 = glGetUniformLocation(out->program, "_topaz_t_2");TOPAZ_GLES_CALL_CHECK;
@@ -293,7 +288,6 @@ topazGL3_Program_t * topaz_gl3_program_create(
 
 
     glUseProgram(out->program);TOPAZ_GLES_CALL_CHECK;
-    glUniform1i(out->locationFragmentUniform_TextureSampler_FB, 0);TOPAZ_GLES_CALL_CHECK;
     glUniform1i(out->locationFragmentUniform_TextureSampler_0, 1);TOPAZ_GLES_CALL_CHECK;
     glUniform1i(out->locationFragmentUniform_TextureSampler_1, 2);TOPAZ_GLES_CALL_CHECK;
     glUniform1i(out->locationFragmentUniform_TextureSampler_2, 3);TOPAZ_GLES_CALL_CHECK;
@@ -522,9 +516,6 @@ void topaz_gl3_program_render(
     topazGL3_Program_t * p,
     // 3 3 2 4 buffer
     topazGL3_Buffer_t * vertexBuffer,
-
-    // samp (-1 if not used)
-    GLuint framebufferTexID,    
     
     // indices
     const uint32_t * indices,
@@ -538,12 +529,6 @@ void topaz_gl3_program_render(
     glUseProgram(p->program); TOPAZ_GLES_CALL_CHECK;
 
     
-    
-    if (p->locationFragmentUniform_TextureSampler_FB > -1 && framebufferTexID > 0) {
-        glActiveTexture(GL_TEXTURE0+3);TOPAZ_GLES_CALL_CHECK;
-        glBindTexture(GL_TEXTURE_2D, framebufferTexID);
-        glUniform1i(p->locationFragmentUniform_TextureSampler_FB, 3);
-    }
 
     
     glBindVertexArray(p->vao);

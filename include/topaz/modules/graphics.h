@@ -69,6 +69,28 @@ void topaz_graphics_destroy(
 );
 
 
+/// Pushes a viewport that the graphics instance should use.
+/// The top viewport is used for graphics operations.
+///
+void topaz_graphics_push_viewport(
+    topazGraphics_t * graphics,
+    topazViewport_t * viewport
+);
+
+/// Pops the top viewport, if any. 
+/// Note that this does not sync the viewport, but does 
+/// detach the target framebuffer, so be sure everything 
+/// desired is sync'd
+///
+void topaz_graphics_pop_viewport(
+    topazGraphics_t * graphics
+);
+
+/// Returns the current top viewport. NULL if none.
+topazViewport_t * topaz_graphics_get_current_viewport(
+    topazGraphics_t *
+);
+
 
 /// Gets the backend rendering object for this topaz instance.
 ///

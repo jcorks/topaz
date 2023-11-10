@@ -74,6 +74,54 @@ int topaz_renderer_buffer_get_size(topazRenderer_Buffer_t * t) {
 
 
 
+/////////////// Texture 
+struct  topazRenderer_Texture_t {
+    topazRenderer_TextureAPI_t * api;
+    int w;
+    int h;
+    void * data;
+    topazRenderer_t * src;
+    uint32_t binID;
+};
+
+topazRenderer_Texture_t * topaz_renderer_texture_create(topazRenderer_t * t, int w, int h, const uint8_t * rgbaTextureData) {
+    topazRenderer_Texture_t * out = calloc(1, sizeof(topazRenderer_Texture_t));
+    out->w = w;
+    out->h = h;
+    out->api = &(t->api.texture);
+    out->data = out->api->renderer_texture_create(&t->api, w, h, rgbaTextureData);
+    out->binID = topaz_bin_add(t->textureList, out);
+    out->src = t;
+    return out;
+}
+
+void topaz_renderer_texture_destroy(topazRenderer_Texture_t * t) {
+    t->api->renderer_texture_destroy(t->data);
+    topaz_bin_remove(t->src->textureList, t->binID);
+    free(t);
+}
+
+void topaz_renderer_texture_update(topazRenderer_Texture_t * t, const uint8_t * newData) {
+    t->api->renderer_texture_update(t->data, newData);
+}
+
+
+void topaz_renderer_texture_get(topazRenderer_Texture_t * t, uint8_t * data) {
+    t->api->renderer_texture_update(t->data, data);
+}
+
+
+int topaz_renderer_texture_get_width(topazRenderer_Texture_t * t) {
+    return t->w;
+}
+
+int topaz_renderer_texture_get_height(topazRenderer_Texture_t * t) {
+    return t->h;
+}
+
+
+
+
 ////////////////////// framebuffer 
 struct topazRenderer_Framebuffer_t {
     topazRenderer_FramebufferAPI_t * api;
@@ -83,6 +131,7 @@ struct topazRenderer_Framebuffer_t {
     uint32_t binID;
     void * framebufferData;
     topazRenderer_t * src;
+    topazRenderer_Texture_t * tex;
 };
 
 
@@ -99,7 +148,23 @@ topazRenderer_Framebuffer_t * topaz_renderer_framebuffer_create(topazRenderer_t 
     out->filterHint = TRUE;
     out->framebufferData = out->api->renderer_framebuffer_create(&t->api, out->api);
     out->binID = topaz_bin_add(t->framebufferList, out);
+    
+    
+
+    topazRenderer_Texture_t * tex = calloc(1, sizeof(topazRenderer_Texture_t));
+    tex->w = -1;
+    tex->h = -1;
+    tex->api = &(t->api.texture);
+    tex->data = out->api->renderer_framebuffer_get_texture(&t->api, w, h, rgbaTextureData);
+    tex->binID = topaz_bin_add(t->textureList, out);
+    tex->src = t;
+    
+    out->tex = tex;
     return out;
+}
+
+topazRenderer_Texture_t * topaz_renderer_get_texture(topazRenderer_Framebuffer_t * t) {
+    return t->tex;
 }
 
 
@@ -114,6 +179,10 @@ int topaz_renderer_framebuffer_resize(topazRenderer_Framebuffer_t * t, int newW,
     if (t->api->renderer_framebuffer_resize(t->framebufferData, newW, newH)) {
         t->w = newW;
         t->h = newH;
+        
+        t->tex->w = newW;
+        t->tex->h = newH;
+        
         return TRUE;    
     }
     return FALSE;
@@ -226,50 +295,6 @@ void topaz_renderer_program_destroy(topazRenderer_Program_t * t) {
 
 
 
-/////////////// Texture 
-struct  topazRenderer_Texture_t {
-    topazRenderer_TextureAPI_t * api;
-    int w;
-    int h;
-    void * data;
-    topazRenderer_t * src;
-    uint32_t binID;
-};
-
-topazRenderer_Texture_t * topaz_renderer_texture_create(topazRenderer_t * t, int w, int h, const uint8_t * rgbaTextureData) {
-    topazRenderer_Texture_t * out = calloc(1, sizeof(topazRenderer_Texture_t));
-    out->w = w;
-    out->h = h;
-    out->api = &(t->api.texture);
-    out->data = out->api->renderer_texture_create(&t->api, w, h, rgbaTextureData);
-    out->binID = topaz_bin_add(t->textureList, out);
-    out->src = t;
-    return out;
-}
-
-void topaz_renderer_texture_destroy(topazRenderer_Texture_t * t) {
-    t->api->renderer_texture_destroy(t->data);
-    topaz_bin_remove(t->src->textureList, t->binID);
-    free(t);
-}
-
-void topaz_renderer_texture_update(topazRenderer_Texture_t * t, const uint8_t * newData) {
-    t->api->renderer_texture_update(t->data, newData);
-}
-
-
-void topaz_renderer_texture_get(topazRenderer_Texture_t * t, uint8_t * data) {
-    t->api->renderer_texture_update(t->data, data);
-}
-
-
-int topaz_renderer_texture_get_width(topazRenderer_Texture_t * t) {
-    return t->w;
-}
-
-int topaz_renderer_texture_get_height(topazRenderer_Texture_t * t) {
-    return t->h;
-}
 
 
 

@@ -2,6 +2,7 @@
 #define H_TOPAZGL3FB_INCLUDED
 
 typedef struct topazGL3_FB_t topazGL3_FB_t;
+typedef struct topazGL3_Texture_t topazGL3_Texture_t;
 
 #include <topaz/backends/renderer.h>
 #include "context.h"
@@ -19,6 +20,10 @@ int topaz_gl3_fb_resize(topazGL3_FB_t *, int w, int h);
 // [0] == framebuffer object
 // [1] == texture target object
 GLuint * topaz_gl3_fb_get_handle(topazGL3_FB_t *);
+
+// Gets the texture associated with the framebuffer for public use.
+// persists with the framebuffer.
+topazGL3_Texture_t * topaz_gl3_gb_get_texture(const topazGL3_FB_t *);
 
 // Gets pixel data from the framebuffer
 //

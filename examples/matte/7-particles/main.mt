@@ -98,4 +98,4 @@ Topaz.Input.addPointerListener(
         }
     }
 );
-Topaz.ViewManager.getDefault().setRoot(newRoot:emitter);
+Topaz.ViewManager.getDefault().getViewport().attach(child:emitter);

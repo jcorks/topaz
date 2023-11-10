@@ -218,6 +218,33 @@ void topaz_image_set_frame_from_texture(
 );
 
 
+/// Sets a frame to be a texture proxy. This means 
+/// the texture is being lent to the image with no modification, 
+/// making the image a wrapper for the texture.
+///
+/// Note that the Image instance will not modify proxy'd 
+/// texture frames in any way, so its up to the caller 
+/// to ensure that the texture state matches the image state,
+/// such as image vs texture size. Its also up to the caller 
+/// to ensure that the lifetime of the texture matches that 
+/// of the image, as the image will not destroy the texture,
+/// nor will the image check of the proxy texture is valid.
+///
+/// This is not normally used and is mostly for implementation 
+/// purposes, but is exposed in case someone wants to do 
+/// some more performant image work.
+///
+/// (No script mapping) 
+///
+void topaz_image_set_frame_from_texture_proxy(
+    /// Image to modify
+    topazAsset_t * image,
+    
+    uint32_t frame,
+    
+    /// Texture to clone from. 
+    topazRenderer_Texture_t * t
+);
 
 
 /// Gets the texture handle for the frame.

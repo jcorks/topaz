@@ -6,6 +6,6 @@ Topaz.Lua.import('piece.lua');
 
 
 Game.Parameters.Manager = Game.createManager();
-Topaz.ViewManager.getDefault():setRoot(Game.Parameters.Manager);
+Topaz.ViewManager.getDefault():getViewport():attach(Game.Parameters.Manager);
 
 

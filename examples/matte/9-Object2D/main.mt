@@ -28,6 +28,6 @@ Topaz.Input.addPointerListener(
 );
 
 room.attach(child:floor);
-Topaz.ViewManager.getDefault().setRoot(newRoot:room);
+Topaz.ViewManager.getDefault().getViewport().attach(child:room);
 
 

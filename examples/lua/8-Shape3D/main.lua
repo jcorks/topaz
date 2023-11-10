@@ -101,4 +101,4 @@ b:setScale({x=0.7, y=0.3, z=0.3})
 
 
 a:attach(b);
-Topaz.ViewManager.getDefault():setRoot(a);
+Topaz.ViewManager.getDefault():getViewport():attach(a);

@@ -840,6 +840,9 @@ void topaz_renderer_framebuffer_destroy(
 
 
 /// Resizes the framebuffer. Success is returned.
+/// On success, this also changes the size of the texture.
+///
+/// (No script mapping)
 ///
 int topaz_renderer_framebuffer_resize(
     /// The framebuffer to resize.
@@ -853,12 +856,16 @@ int topaz_renderer_framebuffer_resize(
 
 /// Returns the width of the framebuffer.
 ///
+/// (No script mapping)
+///
 int topaz_renderer_framebuffer_get_width(
     /// The framebuffer to query.
     topazRenderer_Framebuffer_t * fb
 );
 
 /// Returns the height of the framebuffer.
+///
+/// (No script mapping)
 ///
 int topaz_renderer_framebuffer_get_height(
     /// The framebuffer to query.
@@ -891,19 +898,15 @@ void * topaz_renderer_framebuffer_get_handle(
 
 
 
-/// returns a RGBF pixel reduction by setting the
-/// buffer given. if this isnt possible, false is returned.
-/// the buffer should be of size Width*Height*4. Note that on
-/// hardware-accelerated implementations, calling this could be very costly.
-/// Alpha color information is always 1.f
+/// Returns the texture representing this 
+/// framebuffer's sync'd contents. The 
+/// lifetime of the texture matches the framebuffer.
 ///
 /// (No script mapping)
 ///
-int topaz_renderer_framebuffer_get_raw_data(
+topazRenderer_Texture_t * topaz_renderer_framebuffer_get_texture(
     /// The framebuffer to query.
-    topazRenderer_Framebuffer_t * fb, 
-    /// The buffer to populate with the framebuffer's current contents.
-    uint8_t * buffer
+    topazRenderer_Framebuffer_t * fb
 );
 
 /// Sets whether to interpret the Framebuffer's data
@@ -919,6 +922,9 @@ int topaz_renderer_framebuffer_get_raw_data(
 /// to be a purely cosmetic effect after all graphics processing as finished. 
 /// The default is true. This does not affect the retrieval of pixels from 
 /// topaz_renderer_framebuffer_get_raw_data().
+///
+/// (No script mapping)
+///
 void topaz_renderer_framebuffer_set_filtered_hint(
     /// The framebuffer to modify.
     topazRenderer_Framebuffer_t * fb, 
@@ -927,10 +933,12 @@ void topaz_renderer_framebuffer_set_filtered_hint(
     int filter
 );
 
-/// \brief Returns whether to interpret the Framebuffer's data in a filtered
+/// Returns whether to interpret the Framebuffer's data in a filtered
 /// way.
 ///
 /// See set_filtered_hint().
+/// (No script mapping)
+///
 int topaz_renderer_framebuffer_get_filtered_hint(
     /// The framebuffer to query.
     topazRenderer_Framebuffer_t * fb
@@ -983,11 +991,6 @@ struct topazRenderer_3D_t {
     ///
     topazRenderer_Buffer_t * material;  
 
-    /// the source framebuffer optionally accessible 
-    /// during rendering. If the samplebuffer is null,
-    /// the no source framebuffer will be made available
-    ///
-    topazRenderer_Framebuffer_t * sampleFramebuffer;
 
     /// The Textures to use. Simply null if a slot isnt used.
     topazRenderer_Texture_t * sampleTexture0;

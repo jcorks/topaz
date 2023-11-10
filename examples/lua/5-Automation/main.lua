@@ -103,5 +103,5 @@ root:attach(createRectangleLinear());
 root:attach(createRectangleAccel());
 root:attach(createRectangleSlow());
 
-Topaz.ViewManager.getDefault():setRoot(root);
+Topaz.ViewManager.getDefault():getViewport():attach(root);
 

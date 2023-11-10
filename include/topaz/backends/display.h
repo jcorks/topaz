@@ -182,21 +182,6 @@ enum topazDisplay_Parameter {
 
 };
 
-/// Every display has built in framebuffers that can be 
-/// used and exchanged between for advanced rendering effects.
-///
-typedef enum topazDisplay_Framebuffer topazDisplay_Framebuffer;
-enum topazDisplay_Framebuffer {
-    /// The default framebuffer.
-    topazDisplay_Framebuffer_A,
-    /// The second framebuffer.
-    topazDisplay_Framebuffer_B,
-    /// The 3rd framebuffer.
-    topazDisplay_Framebuffer_C,
-    /// The 4th framebuffer.
-    topazDisplay_Framebuffer_D
-};
-
 
 /// Callback for responding to display events,
 typedef void (*topaz_display_callback)(
@@ -250,46 +235,10 @@ void topaz_display_destroy(
     topazDisplay_t * display
 );
 
-
-/// Retrieves the camera associated with the display thats 
-/// used for 2d operations. This camera is used when the display is set as 
-/// the main display. see topazViewManager_t
-///
-topazEntity_t * topaz_display_get_2d_camera(
-    /// The display to query.
+topazEntity_t * topaz_display_get_viewport(
     topazDisplay_t * display
 );
 
-/// Retrieves the camera associated with the display thats 
-/// used for 3d operations. This camera is used when the display is set as 
-/// the main display. see topazViewManager_t
-///
-topazEntity_t * topaz_display_get_3d_camera(
-    /// The display to query.
-    topazDisplay_t * display
-);
-
-
-
-
-
-
-/// Gets the framebuffer specified.
-topazRenderer_Framebuffer_t * topaz_display_get_framebuffer(
-    /// The disply in question.
-    topazDisplay_t * display,
-    /// The framebuffer to get.
-    topazDisplay_Framebuffer which
-);
-
-/// Sets the framebuffer as the main framebuffer. This framebuffer 
-/// is rendered into the display every frame.
-void topaz_display_use_framebuffer(
-    /// The display to modify.
-    topazDisplay_t * display,
-    /// The framebuffer to use.
-    topazDisplay_Framebuffer which
-);
 
 
 /// Sets a custom post-processing rendering that affects how the 
@@ -322,35 +271,6 @@ topazRenderer_Framebuffer_t * topaz_display_get_main_framebuffer(
     /// The disply in question.
     topazDisplay_t * display
 );
-
-/// Forces clearing of the results of drawing stored within the current framebuffer.
-///
-void topaz_display_clear_main_framebuffer(
-    /// The display to modify
-    topazDisplay_t * display,
-    
-    /// which information channel to clear.
-    topazRenderer_DataLayer layer
-);
-
-
-/// Gets the contents of the current framebuffer and 
-/// puts the data into an image asset frame. 
-/// The input image is cleared, resized to match the 
-/// framebuffer size, and given one frame which matches the 
-/// the framebuffer data.
-///
-/// NOTE: in general, this operation is considered "slow" as 
-/// it requires a lot of communication between the backend 
-/// renderer and engine, which are most likely on different 
-/// devices. Use sparringly!
-void topaz_display_capture_main_framebuffer(
-    /// The display to query.
-    topazDisplay_t * display,
-    /// The image to populate.
-    topazAsset_t * image
-);
-
 
 
 
@@ -417,15 +337,6 @@ float topaz_display_get_parameter(
 
 
 
-/// Sets whether clearing of the framebuffer's contents is done automatically. 
-/// The default is "true".
-///
-void topaz_display_auto_clear_framebuffer(
-    /// The display to modify.
-    topazDisplay_t * display, 
-    /// Whether to auto-update.
-    int enable
-);
 
 
 
@@ -493,29 +404,6 @@ void topaz_display_remove_callback(
     int id
 );
 
-
-/// Returns the toplevel Entity. 
-///
-/// From here, you can 
-/// set the Entity that holds the toplevel of the project. 
-/// By default there is none.
-topazEntity_t *topaz_display_get_root(
-    /// The context to query.
-    const topazDisplay_t * display
-);
-
-
-/// Sets the root entity for the context.
-/// From this entity, all other entities will be updated.
-/// topaz handles entities in a hierarchical structure,
-/// so the root must be populated and managed.
-void topaz_display_set_root(
-    /// The context to modify.
-    topazDisplay_t * display, 
-
-    /// The new root to use.
-    topazEntity_t * newRoot
-);
 
 
 

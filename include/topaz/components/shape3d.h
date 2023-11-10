@@ -94,14 +94,6 @@ void topaz_shape3d_set_texture(
 );
 
 
-/// Sets the special framebuffer source item.
-void topaz_shape3d_set_sample_framebuffer(
-    /// The shape to modify.
-    topazComponent_t * shape3d,
-    /// The framebuffer to act as a source.
-    topazRenderer_Framebuffer_t * framebuffer;
-);
-
 
 /// Sets the mesh to use for this shape.
 void topaz_shape3d_set_mesh(

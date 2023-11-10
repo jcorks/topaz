@@ -381,6 +381,7 @@ void topaz_system_renderer_ogl3__backend(
     api->fb.renderer_framebuffer_create = topaz_api_gl3__framebuffer_create;
     api->fb.renderer_framebuffer_destroy = (void (*)(void *)) topaz_gl3_fb_destroy;
     api->fb.renderer_framebuffer_resize = (int (*)(void *, int w, int h)) topaz_gl3_fb_resize;
+    api->fb.renderer_framebuffer_get_texture = (void *(*)(void *)) topaz_gl3_fb_get_texture;
     api->fb.renderer_framebuffer_get_handle = (void * (*)(void *)) topaz_gl3_fb_get_handle;
     api->fb.renderer_framebuffer_get_raw_data = (int (*)(void *, uint8_t *)) topaz_gl3_get_raw_data;
     api->fb.renderer_framebuffer_set_filtered_hint = (void (*)(void *, int)) topaz_gl3_set_filtered_hint;

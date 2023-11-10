@@ -102,4 +102,4 @@ b.setScale(value:{x:0.7, y:0.3, z:0.3})
 
 
 a.attach(child:b);
-Topaz.ViewManager.getDefault().setRoot(newRoot:a);
+Topaz.ViewManager.getDefault().getViewport().attach(child:a);

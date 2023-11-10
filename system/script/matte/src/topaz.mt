@@ -6,6 +6,129 @@
 
 }
 
+
+@:initializer__viewport = ::<= {
+    @:topaz_viewport__get_image = getExternalFunction(name:'topaz_viewport__get_image');
+    @:topaz_viewport__resize = getExternalFunction(name:'topaz_viewport__resize');
+    @:topaz_viewport__get_width = getExternalFunction(name:'topaz_viewport__get_width');
+    @:topaz_viewport__get_height = getExternalFunction(name:'topaz_viewport__get_height');
+    @:topaz_viewport__get_projection_3d = getExternalFunction(name:'topaz_viewport__get_projection_3d');
+    @:topaz_viewport__set_filtered = getExternalFunction(name:'topaz_viewport__set_filtered');
+    @:topaz_viewport__set_projection_3d_auto_mode = getExternalFunction(name:'topaz_viewport__set_projection_3d_auto_mode');
+    @:topaz_viewport__set_projection_3d = getExternalFunction(name:'topaz_viewport__set_projection_3d');
+    @:topaz_viewport__world_3d_to_screen = getExternalFunction(name:'topaz_viewport__world_3d_to_screen');
+    @:topaz_viewport__screen_to_world_3d = getExternalFunction(name:'topaz_viewport__screen_to_world_3d');
+    @:topaz_viewport__clear = getExternalFunction(name:'topaz_viewport__clear');
+    @:topaz_viewport__set_auto_clear = getExternalFunction(name:'topaz_viewport__set_auto_clear');
+    @:topaz_viewport__swap_buffers = getExternalFunction(name:'topaz_viewport__swap_buffers');
+    @:topaz_viewport__sync = getExternalFunction(name:'topaz_viewport__sync');
+    
+    
+    @:tempMatrix = {};
+    @:tempMatrixSetter = ::(a, b, c, d, e, f, g, h, j, i , k , l, m ,n, o, p) {
+        tempMatrix[0] = a;
+        tempMatrix[1] = b;
+        tempMatrix[2] = c;
+        tempMatrix[3] = d;
+
+        tempMatrix[4] = e;
+        tempMatrix[5] = f;
+        tempMatrix[6] = g;
+        tempMatrix[7] = h;
+
+        tempMatrix[8] = i;
+        tempMatrix[9] = j;
+        tempMatrix[10] = k;
+        tempMatrix[11] = l;
+
+        tempMatrix[12] = m;
+        tempMatrix[13] = n;
+        tempMatrix[14] = o;
+        tempMatrix[15] = p;
+    }
+    
+    
+    @:temp = {};
+    @:tempSetter = ::(a, b, c) {
+        temp.x = a;
+        temp.y = b;
+        temp.z = c;
+    }        
+    @:getImage ::($) {
+        @:out = topaz_viewport__get_image(a:$);
+        if (out.__mapped == empty) ::<= {
+            initializer__asset(a:out);
+            initializer__image(i:out);      
+        }
+        return out;
+    }
+    
+    
+    @:resize ::($, width, height) {
+        topaz_viewport__resize(a:$, b:width, c:height);
+    }
+    
+    @:getWidth ::($) <- topaz_viewport__get_width(a:$)
+    @:getHeight ::($) <- topaz_viewport__get_height(a:$)
+    
+    @:getProjection3d ::($) {
+        topaz_viewport__get_projection_3d(a:$, b:tempMatrixSetter);
+        return {...tempMatrix};
+    }
+    
+    @:setFiltered ::($, enabled) {
+        topaz_viewport__set_filtered(a:$, b:enabled);
+    }
+    
+    @:setProjection3dAutoMode ::($, enabled) {
+        topaz_viewport__set_projection_3d_auto_mode(a:$, b:enabled);
+    }
+    
+    @:setProjection3d ::($, m) {
+        topaz_viewport__set_projection_3d(a:$, b:m);
+    }
+    
+    @:world3dToScreen ::($, point) {
+        topaz_viewport__world_3d_to_screen(a:$, b:point.x, c:point.y, d:point.z, e:tempSetter);
+        return {...temp};
+    }
+    
+    @:screenToWorld3d ::($, point) {
+        topaz_viewport__screen_to_world_3d(a:$, b:point.x, c:point.y, d:point.z, e:tempSetter);
+        return {...temp};    
+    }
+    
+    @:clear ::($) <- topaz_viewport__clear(a:$);
+    
+    @:setAutoClear ::($, enabled) {
+        topaz_viewport__set_auto_clear(a:$, b:enabled);
+    }
+    
+    @:swapBuffers ::($) <- topaz_viewport__swap_buffers(a:$);
+    
+    @:sync ::($) <- topaz_viewport__sync(a:$);
+    
+    
+    return ::(v) {
+        v.__mapped = MAPPED;
+
+        v.getImage = getImage;
+        v.resize = resize;
+        v.getWidth = getWidth; 
+        v.getHeight = getHeight;
+        v.getProjection3d = getProjection3d;
+        v.setFiltered = setFiltered;
+        v.setProjection3dAutoMode = setProjection3dAutoMode;
+        v.setProjection3d = setProjection3d;
+        v.world3dToScreen = world3dToScreen;
+        v.screenToWorld3d = screenToWorld3d;
+        v.clear = clear;
+        v.setAutoClear = setAutoClear;
+        v.swapBuffers = swapBuffers;
+        v.sync = v.sync;    
+    }
+}
+
 @:initializer__text2d = ::<= {
     @:topaz_text2d__get_text = getExternalFunction(name:'topaz_text2d__get_text');
     @:topaz_text2d__set_text = getExternalFunction(name:'topaz_text2d__set_text');
@@ -229,7 +352,6 @@
     @:topaz_shape3d__get_attribute = getExternalFunction(name:'topaz_shape3d__get_attribute');
     @:topaz_shape3d__set_texture = getExternalFunction(name:'topaz_shape3d__set_texture');
     @:topaz_shape3d__set_mesh = getExternalFunction(name:'topaz_shape3d__set_mesh');
-    @:topaz_shape3d__set_sample_framebuffer = getExternalFunction(name:'topaz_shape3d__set_sample_framebuffer');
     @:topaz_shape3d__set_material = getExternalFunction(name:'topaz_shape3d__set_material');
 
     @:temp = {};
@@ -270,9 +392,6 @@
         topaz_shape3d__set_texture(a:$, b:slot, c:image);
     }
     
-    @:setSampleFramebuffer ::($, framebuffer) {
-        topaz_shape3d__set_sample_framebuffer(a:$, b:framebuffer);
-    }
     
     @:setMesh ::($, mesh) {
         topaz_shape3d__set_mesh(a:$, b:mesh);
@@ -305,7 +424,6 @@
         s.getScale = getScale;
         
         s.setTexture = setTexture;
-        s.setSampleFramebuffer = setSampleFramebuffer;
         s.setMesh = setMesh;
         s.setMaterial = setMaterial;
         s.setAttribute = setAttribute;
@@ -1207,111 +1325,37 @@
 }
 
 
-@:initializer__framebuffer = ::<= {
-    @:topaz_framebuffer__get_width = getExternalFunction(name:'topaz_framebuffer__get_width');
-    @:topaz_framebuffer__get_height = getExternalFunction(name:'topaz_framebuffer__get_height');
-    @:topaz_framebuffer__resize = getExternalFunction(name:'topaz_framebuffer__resize');
-    @:topaz_framebuffer__get_filtered_hint = getExternalFunction(name:'topaz_framebuffer__get_filtered_hint');
-    @:topaz_framebuffer__set_filtered_hint = getExternalFunction(name:'topaz_framebuffer__set_filtered_hint');
 
-    @:getWidth ::($) {
-        return topaz_framebuffer__get_width(a:$);
-    }
-
-    @:getHeight ::($) {
-        return topaz_framebuffer__get_height(a:$);
-    }
-
-    @:resize ::($, width, height) {
-        topaz_framebuffer__resize(a:$, b:width, c:height);
-    }
-    
-    @:getFilteredHint = ::($) {
-        return topaz_framebuffer__get_filtered_hint(a:$);
-    }
-    
-    @:setFilteredHint = ::($, filter) {
-        topaz_framebuffer__set_filtered_hint(a:$, b:filter);
-    }
-    
-    return ::(f) {
-        f.__mapped = MAPPED;
-        
-        f.getWidth = getWidth;
-        f.getHeight = getHeight;
-        f.resize = resize;
-        f.getFilteredHint = getFilteredHint;
-        f.setFilteredHint = setFilteredHint;
-    }
-}
 @:initializer__display = ::<= {
-    @:topaz_display__get_camera_2d = getExternalFunction(name:'topaz_display__get_camera_2d');
-    @:topaz_display__get_camera_3d = getExternalFunction(name:'topaz_display__get_camera_3d');
-    @:topaz_display__get_framebuffer = getExternalFunction(name:'topaz_display__get_framebuffer');
-    @:topaz_display__use_framebuffer = getExternalFunction(name:'topaz_display__use_framebuffer');
+    @:topaz_display__get_viewport = getExternalFunction(name:'topaz_display__get_viewport');
     @:topaz_display__set_post_process_shader = getExternalFunction(name:'topaz_display__set_post_process_shader');
-    @:topaz_display__get_main_framebuffer = getExternalFunction(name:'topaz_display__get_main_framebuffer');
-    @:topaz_display__clear_main_framebuffer = getExternalFunction(name:'topaz_display__clear_main_framebuffer');
-    @:topaz_display__capture_main_framebuffer = getExternalFunction(name:'topaz_display__capture_main_framebuffer');
     @:topaz_display__set_parameter = getExternalFunction(name:'topaz_display__set_parameter');
     @:topaz_display__is_parameter_modifiable = getExternalFunction(name:'topaz_display__is_parameter_modifiable');
     @:topaz_display__get_parameter = getExternalFunction(name:'topaz_display__get_parameter');
-    @:topaz_display__auto_clear_framebuffer = getExternalFunction(name:'topaz_display__auto_clear_framebuffer');
     @:topaz_display__set_name = getExternalFunction(name:'topaz_display__set_name');
     @:topaz_display__add_parameter_callback = getExternalFunction(name:'topaz_display__add_parameter_callback');
     @:topaz_display__add_close_callback = getExternalFunction(name:'topaz_display__add_close_callback');
     @:topaz_display__remove_callback = getExternalFunction(name:'topaz_display__remove_callback');
-    @:topaz_display__set_root = getExternalFunction(name:'topaz_display__set_root');
-    @:topaz_display__get_root = getExternalFunction(name:'topaz_display__get_root');
     @:topaz_display__update = getExternalFunction(name:'topaz_display__update');
 
-    @:get2DCamera ::($) {
-        @:out = topaz_display__get_camera_2d(a:$);
-        if (out.__mapped == empty)
+    @:getViewport ::($) {
+        @:out = topaz_display__get_viewport(a:$);
+        if (out.__mapped == empty) ::<= {
             initializer__entity(e:out);
-        //initializer__camera(c:out);
+            initializer__viewport(e:out);
+        }
         return out;
     }
-    
-    @:get3DCamera ::($) {
-        @:out = topaz_display__get_camera_3d(a:$);
-        if (out.__mapped == empty)
-            initializer__entity(e:out);
-        //initializer__camera(c:out);
-        return out;        
-    }
 
-    @:getFramebuffer ::($, which) {
-        @:out = topaz_display__get_framebuffer(a:$, b:which);
-        if (out.__mapped == empty)
-            initializer__framebuffer(f:out);
-        return out;    
-    }
-    
-    
-    @:useFramebuffer ::($, which) {
-        topaz_display__use_framebuffer(a:$, b:which);
-    }
+
+
     
     
     @:setPostProcessShader ::($, vertexShader, fragmentShader) {
         topaz_display__set_post_process_shader(a:$, b:vertexShader, c:fragmentShader);
     }
 
-    @:getMainFramebuffer ::($) {
-        @:out = topaz_display__get_main_framebuffer(a:$);
-        if (out.__mapped == empty)
-            initializer__framebuffer(f:out);
-        return out;
-    }
-    
-    @:clearMainFramebuffer ::($, layer) {
-        topaz_display__clear_main_framebuffer(a:$, b:layer);
-    }
-    
-    @:captureMainFramebuffer ::($, image) {
-        topaz_display__capture_main_framebuffer(a:$, b:image);
-    }
+
     
     @:setParameter ::($, param, value) {
         topaz_display__set_parameter(a:$, b:param, c:value);
@@ -1324,10 +1368,7 @@
     @:getParameter ::($, param) {
         return topaz_display__get_parameter(a:$, b:param);
     }
-    
-    @:autoClearFramebuffer ::($, enable) {
-        topaz_display__auto_clear_framebuffer(a:$, b:enable);
-    }
+
     
     @:setName ::($, name) {
         topaz_display__set_name(a:$, b:name);
@@ -1345,16 +1386,6 @@
         topaz_display__remove_callback(a:$, b:id);
     }
 
-    @:getRoot ::($) {
-        @:out = topaz_display__get_root(a:$);
-        if (out.__mapped == empty)
-            initializer__entity(e:out);
-        return out;
-    }
-    
-    @:setRoot ::($, newRoot) {
-        topaz_display__set_root(a:$, b:newRoot);
-    }
     
     @:update ::($) {
         topaz_display__update(a:$);
@@ -1363,24 +1394,15 @@
     return ::(d) {
         d.__mapped = MAPPED;
         
-        d.get2DCamera = get2DCamera;
-        d.get3DCamera = get3DCamera;
-        d.getFramebuffer = getFramebuffer;
-        d.useFramebuffer = useFramebuffer;
+        d.getViewport = getViewport;
         d.setPostProcessShader = setPostProcessShader;
-        d.getMainFramebuffer = getMainFramebuffer;
-        d.clearMainFramebuffer = clearMainFramebuffer;
-        d.captureMainFramebuffer = captureMainFramebuffer;
         d.setParameter = setParameter;
         d.isParameterModifiable = isParameterModifiable;
         d.getParameter = getParameter;
-        d.autoClearFramebuffer = autoClearFramebuffer;
         d.setName = setName;
         d.addParameterCallback = addParameterCallback;
         d.addCloseCallback = addCloseCallback;
         d.removeCallback = removeCallback;
-        d.getRoot = getRoot;
-        d.setRoot = setRoot;
         d.update = update;
     }
 
@@ -2294,13 +2316,6 @@
             InputFocus : 9,
             Active : 10,
             Decorated:11
-        },
-        
-        Framebuffer : {
-            A : 0,
-            B : 1,
-            C : 2,
-            D : 3
         }
     },
 
@@ -2333,6 +2348,123 @@
         }
     },
     
+    Matrix : ::<= {
+        @:topaz_matrix__set_identity = getExternalFunction(name:'topaz_matrix__set_identity');
+        @:topaz_matrix__transform = getExternalFunction(name:'topaz_matrix__transform');
+        @:topaz_matrix__to_string = getExternalFunction(name:'topaz_matrix__to_string');
+        @:topaz_matrix__transpose = getExternalFunction(name:'topaz_matrix__transpose');
+        @:topaz_matrix__invert = getExternalFunction(name:'topaz_matrix__invert');
+        @:topaz_matrix__reverse_majority = getExternalFunction(name:'topaz_matrix__reverse_majority');
+        @:topaz_matrix__multiply = getExternalFunction(name:'topaz_matrix__multiply');
+        @:topaz_matrix__rotate_by_angles = getExternalFunction(name:'topaz_matrix__rotate_by_angles');
+        @:topaz_matrix__rotate_by_angles = getExternalFunction(name:'topaz_matrix__rotate_by_angles');
+        @:topaz_matrix__translate = getExternalFunction(name:'topaz_matrix__translate');
+        @:topaz_matrix__scale = getExternalFunction(name:'topaz_matrix__scale');
+        @:topaz_matrix__projection_perspective = getExternalFunction(name:'topaz_matrix__projection_perspective');
+        @:topaz_matrix__projection_orthographic = getExternalFunction(name:'topaz_matrix__projection_orthographic');
+        
+        @:temp = {};
+        @:tempSetter = ::(a, b, c) {
+            temp.x = a;
+            temp.y = b;
+            temp.z = c;
+        }        
+
+        @:tempMatrix = {};
+        @:tempMatrixSetter = ::(a, b, c, d, e, f, g, h, j, i , k , l, m ,n, o, p) {
+            tempMatrix[0] = a;
+            tempMatrix[1] = b;
+            tempMatrix[2] = c;
+            tempMatrix[3] = d;
+
+            tempMatrix[4] = e;
+            tempMatrix[5] = f;
+            tempMatrix[6] = g;
+            tempMatrix[7] = h;
+
+            tempMatrix[8] = i;
+            tempMatrix[9] = j;
+            tempMatrix[10] = k;
+            tempMatrix[11] = l;
+
+            tempMatrix[12] = m;
+            tempMatrix[13] = n;
+            tempMatrix[14] = o;
+            tempMatrix[15] = p;
+        }
+        
+        @:matCopy ::(m) {
+            for(0, 16) ::(i) {
+                m[i] = tempMatrix[i];            
+            }
+        }
+        
+        return {
+            setIdentity::(m) {
+                topaz_matrix__set_identity(a:m, tempMatrixSetter);
+                matCopy(m);
+            },
+            
+            transform::(m, point) {
+                topaz_matrix__transform(a:m, b:point.x, c:point.y, d:point.z, e:tempSetter);
+                return {...temp};
+            },
+            
+            toString ::(m) {
+                return topaz_matrix__to_string(a:m);
+            },
+            
+            transpose ::(m) {
+                topaz_matrix__transpose(a:m, b:tempMatrixSetter);
+                matCopy(m);
+            },
+            
+            invert ::(m) {
+                topaz_matrix__invert(a:m, b:tempMatrixSetter);
+                matCopy(m);
+            },
+            
+            reverseMajority ::(m) {
+                topaz_matrix__reverse_majority(a:m, b:tempMatrixSetter);
+                matCopy(m);
+            },
+            
+            multiply ::(a, b) {
+                topaz_matrix__multiply(a, b, c:tempMatrixSetter);
+                return {...tempMatrix};
+            },
+            
+            rotateByAngles ::(m, x, y, z) {
+                topaz_matrix__rotate_by_angles(a:m, b:x, c:y, d:z, e:tempMatrixSetter);
+                matCopy(m);
+            },
+            
+            rotateByAxis ::(m, x, y, z, degrees) {
+                topaz_matrix__rotate_by_axis(a:m, b:x, c:y, d:z, e:degrees, f:tempMatrixSetter);
+                matCopy(m);
+            },
+            
+            translate ::(m, x, y, z) {
+                topaz_matrix__translate(a:m, b:x, c:y, d:z, e:tempMatrixSetter);
+                matCopy(m);
+            },
+            
+            scale ::(m, x, y, z) {
+                topaz_matrix__scale(a:m, b:x, c:y, d:z, e:tempMatrixSetter);
+                matCopy(m);
+            },
+            
+            projectionPerspective(fovy, ratio, zNear, zFar) {
+                topaz_matrix__projection_perspective(a:fovy, b:ratio, c:zNear, d:zFar, e:tempMatrixSetter);
+                return {...tempMatrix};
+            },
+            
+            projectionOrthographic(left, right, bottom, top, zNear, zFar) {
+                topaz_matrix__projection_orthographic(a:left, b:right, c:bottom, d:top, e:zNear, f:zFar, g:tempMatrixSetter);
+                return {...tempMatrix};
+            }
+        }
+    },
     
     Vector : ::<= {
         @:topaz_vector__from_string = getExternalFunction(name:'topaz_vector__from_string');

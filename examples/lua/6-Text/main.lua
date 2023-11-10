@@ -42,6 +42,6 @@ ent.update('Hello world!\nThis is text.');
 
 
 
-Topaz.ViewManager.getDefault():setRoot(ent);
+Topaz.ViewManager.getDefault():getViewport():attach(ent);
 
 
