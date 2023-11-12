@@ -30,12 +30,6 @@ struct topazGL3_Program_t {
     GLint locationFragmentUniform_TextureSampler_2;
 
 
-    // vec4
-    GLint locationFragmentUniform_Texture0Data;
-    // vec4
-    GLint locationFragmentUniform_Texture1Data;
-    // vec4
-    GLint locationFragmentUniform_Texture2Data;
 
 
     // 9 vectors
@@ -92,9 +86,7 @@ static char * fragment_pre =
 "uniform sampler2D _topaz_t_0;\n"
 "uniform sampler2D _topaz_t_1;\n"
 "uniform sampler2D _topaz_t_2;\n"
-"uniform vec4 _topaz_t0;\n"
-"uniform vec4 _topaz_t1;\n"
-"uniform vec4 _topaz_t2;\n"
+
 
 
 "uniform vec4 topaz_material[9];\n"
@@ -107,18 +99,15 @@ static char * fragment_pre =
 
 
 "vec4 topazSampleTexture0(in vec2 uvs) {\n"
-"   vec2 uvs_conv = vec2(_topaz_t0.x + uvs.x * _topaz_t0.y, _topaz_t0.z + uvs.y * _topaz_t0.w);\n"
-"   return texture2D(_topaz_t_0, uvs_conv);\n"
+"   return texture2D(_topaz_t_0, uvs);\n"
 "}\n"
 
 "vec4 topazSampleTexture1(in vec2 uvs) {\n"
-"   vec2 uvs_conv = vec2(_topaz_t1.x + uvs.x * _topaz_t1.y, _topaz_t1.z + uvs.y * _topaz_t1.w);\n"
-"   return texture2D(_topaz_t_1, uvs_conv);\n"
+"   return texture2D(_topaz_t_1, uvs);\n"
 "}\n"
 
 "vec4 topazSampleTexture2(in vec2 uvs) {\n"
-"   vec2 uvs_conv = vec2(_topaz_t2.x + uvs.x * _topaz_t2.y, _topaz_t2.z + uvs.y * _topaz_t2.w);\n"
-"   return texture2D(_topaz_t_2, uvs_conv);\n"
+"   return texture2D(_topaz_t_2, uvs);\n"
 "}\n"
 
 "vec4 topazGetUserData() {\n"
@@ -261,9 +250,6 @@ topazGL3_Program_t * topaz_gl3_program_create(
     out->locationFragmentUniform_TextureSampler_1 = glGetUniformLocation(out->program, "_topaz_t_1");TOPAZ_GLES_CALL_CHECK;
     out->locationFragmentUniform_TextureSampler_2 = glGetUniformLocation(out->program, "_topaz_t_2");TOPAZ_GLES_CALL_CHECK;
 
-    out->locationFragmentUniform_Texture0Data = glGetUniformLocation(out->program, "_topaz_t0");TOPAZ_GLES_CALL_CHECK;
-    out->locationFragmentUniform_Texture1Data = glGetUniformLocation(out->program, "_topaz_t1");TOPAZ_GLES_CALL_CHECK;
-    out->locationFragmentUniform_Texture2Data = glGetUniformLocation(out->program, "_topaz_t2");TOPAZ_GLES_CALL_CHECK;
 
 
 
@@ -410,36 +396,13 @@ topazGL3_Buffer_t * topaz_gl3_program_get_static_buffer(
 }
 
 
-// sets the parameters to texture slots.
-// raw data:
 
-//
-// sampler2D topaz_tex[index]_realID
-// vec4      topaz_tex[index]_data = {
-/*      
-        C_x, // = (localX / atlasWidth) + (localWidth / atlasWidth)
-        atlasWidth,
-        C_y, // = (localY / atlasHeight) + (localHeight / atlasHeight)
-        atlasHeight
-*/
-// 
-// }
-//
-// In shader, localUV to realUV looks like:
-//
-//  realU = C_x + localU / atlasWidth;
-//  realV = C_y + localV / atlasHeight;
 void topaz_gl3_program_bind_texture(
     topazGL3_Program_t * program,
     int slotIndex, // either 0, 1, or 2
-    topazGL3_Texture_t * tex 
+    topazGL3_Texture_t * tex,
+    int filter
 ) {
-    float local_x;
-    float local_y;
-    float local_w;
-    float local_h;
-    float atlas_w;
-    float atlas_h;
     GLuint id;
     
     TOPAZ_GLES_FN_IN;
@@ -452,7 +415,6 @@ void topaz_gl3_program_bind_texture(
         if (location < 0) return;
         glActiveTexture(GL_TEXTURE0+0);TOPAZ_GLES_CALL_CHECK;
         glUniform1i(location, 0);
-        location = program->locationFragmentUniform_Texture0Data;
         break;
 
       case 1: 
@@ -461,7 +423,6 @@ void topaz_gl3_program_bind_texture(
         if (location < 0) return;
         glActiveTexture(GL_TEXTURE0+1);TOPAZ_GLES_CALL_CHECK;
         glUniform1i(location, 1);
-        location = program->locationFragmentUniform_Texture1Data;
         break;
 
       case 2: 
@@ -470,43 +431,16 @@ void topaz_gl3_program_bind_texture(
         if (location < 0) return;
         glActiveTexture(GL_TEXTURE0+2);TOPAZ_GLES_CALL_CHECK;
         glUniform1i(location, 2);
-        location = program->locationFragmentUniform_Texture2Data;
         break;
 
 
     }
     
     if (location < 0) return;
-    topaz_gl3_texture_get_info(
-        tex,
-        &local_x,
-        &local_y,
-        &local_w,
-        &local_h,
-
-        &atlas_w,
-        &atlas_h,
-        &id
-    );
-
+    id = topaz_gl3_texture_get_handle(tex);
     glBindTexture(GL_TEXTURE_2D, id);TOPAZ_GLES_CALL_CHECK;
 
-
-
-    float values[4];
-    values[0] = local_x / (float)atlas_w;
-    values[1] = local_w / (float)atlas_w;
-    values[2] = local_y / (float)atlas_h;
-    values[3] = local_h / (float)atlas_h;
-    
-
-        
-    glUniform4fv(
-        location,
-        1,
-        values
-    );TOPAZ_GLES_CALL_CHECK;
-
+    topaz_gl3_texture_set_filter(tex, filter);
 }
 
 

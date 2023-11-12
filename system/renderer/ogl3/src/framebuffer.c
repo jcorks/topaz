@@ -8,7 +8,7 @@ struct topazGL3_FB_t {
     int w;
     int h;
     GLuint handle[2];
-    topazGL3_Texture_t * tex;
+    topazGL3_Texture_t * texT;
 };
 
 topazGL3_FB_t * topaz_gl3_fb_create() {
@@ -92,7 +92,7 @@ topazGL3_FB_t * topaz_gl3_fb_create() {
     out->handle[0] = out->fbo;
     out->handle[1] = out->tex;
     
-    out->tex = topaz_gl3_texture_from_object(out->handle[1]);
+    out->texT = topaz_gl3_texture_from_object(out->handle[1]);
     return out;
 
 }
@@ -145,7 +145,7 @@ int topaz_gl3_fb_resize(topazGL3_FB_t * out, int w, int h) {
     }
     #endif
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    topaz_gl3_texture_force_resize(out->tex);
+    topaz_gl3_texture_force_set_size(out->texT, out->w, out->h);
 
     return 1;
 }
@@ -196,6 +196,10 @@ void topaz_gl3_set_filtered_hint(topazGL3_FB_t * fb, int doIt) {
     glBindTexture(GL_TEXTURE_2D, fb->tex);TOPAZ_GLES_CALL_CHECK;
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, doIt ? GL_LINEAR : GL_NEAREST);TOPAZ_GLES_CALL_CHECK;
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, doIt ? GL_LINEAR : GL_NEAREST);TOPAZ_GLES_CALL_CHECK;
+}
+
+topazGL3_Texture_t * topaz_gl3_fb_get_texture(const topazGL3_FB_t * fb) {
+    return fb->texT;
 }
 
 topazRenderer_Framebuffer_Handle topaz_gl3_fb_get_handle_type(topazGL3_FB_t * t) {

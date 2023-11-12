@@ -29,7 +29,288 @@ Topaz = {};
         return output;
     end
 
+    local initializer__entity;
+    local initializer__component;
+    local initializer__asset;
+    local initializer__image;
+    initializer__entity = (function() 
 
+        local setTypeID = function(REFi, typeID) 
+            topaz_entity__set_type_id(REFi, typeID);
+        end
+        
+        local getTypeID = function(REFi) 
+            return topaz_entity__get_type_id(REFi);
+        end
+        
+        local isValid = function(REFi) 
+            return topaz_entity__is_valid(REFi);
+        end
+        
+        local remove = function(REFi) 
+            topaz_entity__remove(REFi);
+        end
+        
+        local getChildren = function(REFi) 
+            local n = topaz_entity__get_child_count(REFi);
+            local output = {};
+            for i=1, n do
+                output[i] = topaz_entity__get_nth_child(REFi, i-1);
+                if (output[i].__mapped == nil) then
+                    initializer__entity(output[i])
+                end
+            end
+            return output;
+        end
+        
+        local step = function(REFi) 
+            topaz_entity__step(REFi);
+        end
+
+        local draw = function(REFi) 
+            topaz_entity__draw(REFi);
+        end
+        
+        local attach = function(REFi, child) 
+            topaz_entity__attach(REFi, child);
+        end
+        
+        local detach = function(REFi) 
+            topaz_entity__detach(REFi);
+        end
+        
+        local getParent = function(REFi) 
+            local entity = topaz_entity__get_parent(REFi);
+            if (entity.__mapped == nil) then
+                initializer__entity(entity);
+            end
+            return entity;
+        end
+        
+        local query = function(REFi, name) 
+            local entity = topaz_entity__query(REFi, name);
+            if (entity.__mapped == nil) then
+                initializer__entity(entity);
+            end
+            return entity;
+        end
+        
+        local search = function(REFi, name) 
+            local entity = topaz_entity__search(REFi, name);
+            if (entity.__mapped == nil) then
+                initializer__entity(entity);
+            end
+            return entity;
+        end
+        
+        local setPriority = function(REFi, priority) 
+            topaz_entity__set_priority(REFi, priority);
+        end
+        
+        local setPriorityLast = function(REFi) 
+            topaz_entity__set_priority_last(REFi);
+        end
+
+        local setPriorityFirst = function(REFi) 
+            topaz_entity__set_priority_first(REFi);
+        end
+
+        local getPriority = function(REFi) 
+            topaz_entity__get_priority(REFi);
+        end
+        
+        local temp = {};
+        local tempSetter = function(a, b, c) 
+            temp.x = a;
+            temp.y = b;
+            temp.z = c;
+        end
+        
+        local getRotation = function(REFi) 
+            topaz_entity__get_rotation(REFi, tempSetter);
+            return copyVec(temp);
+        end
+
+        local getPosition = function(REFi) 
+            topaz_entity__get_position(REFi, tempSetter);
+            return copyVec(temp);
+        end
+
+        local getScale = function(REFi) 
+            topaz_entity__get_scale(REFi, tempSetter);
+            return copyVec(temp);
+        end
+        
+        local setRotation = function(REFi, value) 
+            topaz_entity__set_rotation(REFi, value.x, value.y, value.z);
+        end
+
+        local setPosition = function(REFi, value) 
+            topaz_entity__set_position(REFi, value.x, value.y, value.z);
+        end
+
+        local setScale = function(REFi, value) 
+            topaz_entity__set_scale(REFi, value.x, value.y, value.z);
+        end
+        
+        local lookAt = function(REFi, target, up) 
+            topaz_entity__look_at(
+                REFi,
+                target.x, target.y, target.z,
+                up.x, up.y, up.z
+            );
+        end
+        
+        local getGlobalPosition = function(REFi) 
+            topaz_entity__get_global_position(REFi, tempSetter);
+            return copyVec(temp);
+        end
+
+        local isStepping = function(REFi) 
+            return topaz_entity__is_stepping(REFi);
+        end
+
+        local isDrawing = function(REFi) 
+            return topaz_entity__is_drawing(REFi);
+        end
+        
+        local setStepping = function(REFi, enable) 
+            topaz_entity__set_stepping(REFi, enable);
+        end
+
+        local setDrawing = function(REFi, enable) 
+            topaz_entity__set_drawing(REFi, enable);
+        end
+
+        local getStepping = function(REFi) 
+            return topaz_entity__get_stepping(REFi);
+        end
+
+        local getDrawing = function(REFi) 
+            return topaz_entity__get_drawing(REFi);
+        end
+        
+        
+        local tempMatrix = {};
+        local tempMatrixSetter = function(a, b, c, d, e, f, g, h, j, i , k , l, m ,n, o, p) 
+            tempMatrix[1] = a;
+            tempMatrix[2] = b;
+            tempMatrix[3] = c;
+            tempMatrix[4] = d;
+
+            tempMatrix[5] = e;
+            tempMatrix[6] = f;
+            tempMatrix[7] = g;
+            tempMatrix[8] = h;
+
+            tempMatrix[9] = i;
+            tempMatrix[10] = j;
+            tempMatrix[11] = k;
+            tempMatrix[12] = l;
+
+            tempMatrix[13] = m;
+            tempMatrix[14] = n;
+            tempMatrix[15] = o;
+            tempMatrix[16] = p;
+        end
+        
+        
+        
+        local getLocalMatrix = function(REFi) 
+            topaz_entity__get_local_matrix(REFi, tempMatrixSetter);
+            return copyMatrix(tempMatrix);
+        end
+
+        local getGlobalMatrix = function(REFi) 
+            topaz_entity__get_global_matrix(REFi, tempMatrixSetter);
+            return copyMatrix(tempMatrix);
+        end
+        
+        local addComponent = function(REFi, component) 
+            topaz_entity__add_component(REFi, component);
+        end;
+
+        local addComponentAfter = function(REFi, component) 
+            topaz_entity__add_component_after(REFi, component);
+        end;
+        
+        local getComponents = function(REFi) 
+            local n = topaz_entity__get_component_count(REFi);
+            local output = {};
+            for i=1, n do 
+                output[i] = topaz_entity__get_nth_component(REFi, i-1);
+                if (output[i].__mapped == nil) then
+                    initializer__component(output[i]);
+                end
+            end
+            return output;    
+        end
+        
+        local queryComponent = function(REFi, tag) 
+            local c = topaz_entity__query_component(REFi, tag);
+            if (c.__mapped == nil) then
+                initializer__component(c);
+            end
+            return c;
+
+        end
+        
+        local removeComponent = function(REFi, component) 
+            topaz_entity__remove_component(REFi, component);
+        end
+        
+        local setName = function(REFi, newName) 
+            topaz_entity__set_name(REFi, newName);
+        end
+        
+        local getName = function(REFi) 
+            return topaz_entity__get_name(REFi);
+        end
+
+        
+        return function(e) 
+            e.__mapped = MAPPED;
+
+            e.setTypeID = setTypeID;
+            e.getTypeID = getTypeID;
+            e.isValid = isValid;
+            e.remove = remove;
+            e.getChildren = getChildren;
+            e.step = step;
+            e.draw = draw;
+            e.attach = attach;
+            e.detach = detach;
+            e.getParent = getParent;
+            e.query = query;
+            e.search = search;
+            e.setPriority = setPriority;
+            e.setPriorityLast = setPriorityLast;
+            e.setPriorityFirst = setPriorityFirst;
+            e.getRotation = getRotation;
+            e.getPosition = getPosition;
+            e.getScale = getScale;
+            e.setRotation = setRotation;
+            e.setPosition = setPosition;
+            e.setScale = setScale;
+            e.lookAt = lookAt;
+            e.getGlobalPosition = getGlobalPosition;
+            e.isStepping = isStepping;
+            e.isDrawing = isDrawing;
+            e.setStepping = setStepping;
+            e.setDrawing = setDrawing;
+            e.getStepping = getStepping;
+            e.getDrawing = getDrawing;
+            e.getLocalMatrix = getLocalMatrix;
+            e.getGlobalMatrix = getGlobalMatrix;
+            e.addComponent = addComponent;
+            e.addComponentAfter = addComponentAfter;
+            e.getComponents = getComponents;
+            e.queryComponent = queryComponent;
+            e.removeComponent = removeComponent;
+            e.setName = setName;
+            e.getName = getName;
+        end
+    end)()
     local initializer__viewport = (function() 
         local tempMatrix = {};
         local tempMatrixSetter = function(a, b, c, d, e, f, g, h, j, i , k , l, m ,n, o, p) 
@@ -836,7 +1117,7 @@ Topaz = {};
         end
     end)()
 
-    local initializer__image = (function() 
+    initializer__image = (function() 
 
         local addFrame = function(REFi) 
             return topaz_image__add_frame(REFi);
@@ -1266,7 +1547,7 @@ Topaz = {};
 
     end)()
 
-    local initializer__asset = (function() 
+    initializer__asset = (function() 
 
         local getType = function(REFi) 
             return topaz_asset__get_type(REFi);
@@ -1285,284 +1566,7 @@ Topaz = {};
     end)()
 
 
-    local initializer__entity = (function() 
 
-        local setTypeID = function(REFi, typeID) 
-            topaz_entity__set_type_id(REFi, typeID);
-        end
-        
-        local getTypeID = function(REFi) 
-            return topaz_entity__get_type_id(REFi);
-        end
-        
-        local isValid = function(REFi) 
-            return topaz_entity__is_valid(REFi);
-        end
-        
-        local remove = function(REFi) 
-            topaz_entity__remove(REFi);
-        end
-        
-        local getChildren = function(REFi) 
-            local n = topaz_entity__get_child_count(REFi);
-            local output = {};
-            for i=1, n do
-                output[i] = topaz_entity__get_nth_child(REFi, i-1);
-                if (output[i].__mapped == nil) then
-                    initializer__entity(output[i])
-                end
-            end
-            return output;
-        end
-        
-        local step = function(REFi) 
-            topaz_entity__step(REFi);
-        end
-
-        local draw = function(REFi) 
-            topaz_entity__draw(REFi);
-        end
-        
-        local attach = function(REFi, child) 
-            topaz_entity__attach(REFi, child);
-        end
-        
-        local detach = function(REFi) 
-            topaz_entity__detach(REFi);
-        end
-        
-        local getParent = function(REFi) 
-            local entity = topaz_entity__get_parent(REFi);
-            if (entity.__mapped == nil) then
-                initializer__entity(entity);
-            end
-            return entity;
-        end
-        
-        local query = function(REFi, name) 
-            local entity = topaz_entity__query(REFi, name);
-            if (entity.__mapped == nil) then
-                initializer__entity(entity);
-            end
-            return entity;
-        end
-        
-        local search = function(REFi, name) 
-            local entity = topaz_entity__search(REFi, name);
-            if (entity.__mapped == nil) then
-                initializer__entity(entity);
-            end
-            return entity;
-        end
-        
-        local setPriority = function(REFi, priority) 
-            topaz_entity__set_priority(REFi, priority);
-        end
-        
-        local setPriorityLast = function(REFi) 
-            topaz_entity__set_priority_last(REFi);
-        end
-
-        local setPriorityFirst = function(REFi) 
-            topaz_entity__set_priority_first(REFi);
-        end
-
-        local getPriority = function(REFi) 
-            topaz_entity__get_priority(REFi);
-        end
-        
-        local temp = {};
-        local tempSetter = function(a, b, c) 
-            temp.x = a;
-            temp.y = b;
-            temp.z = c;
-        end
-        
-        local getRotation = function(REFi) 
-            topaz_entity__get_rotation(REFi, tempSetter);
-            return copyVec(temp);
-        end
-
-        local getPosition = function(REFi) 
-            topaz_entity__get_position(REFi, tempSetter);
-            return copyVec(temp);
-        end
-
-        local getScale = function(REFi) 
-            topaz_entity__get_scale(REFi, tempSetter);
-            return copyVec(temp);
-        end
-        
-        local setRotation = function(REFi, value) 
-            topaz_entity__set_rotation(REFi, value.x, value.y, value.z);
-        end
-
-        local setPosition = function(REFi, value) 
-            topaz_entity__set_position(REFi, value.x, value.y, value.z);
-        end
-
-        local setScale = function(REFi, value) 
-            topaz_entity__set_scale(REFi, value.x, value.y, value.z);
-        end
-        
-        local lookAt = function(REFi, target, up) 
-            topaz_entity__look_at(
-                REFi,
-                target.x, target.y, target.z,
-                up.x, up.y, up.z
-            );
-        end
-        
-        local getGlobalPosition = function(REFi) 
-            topaz_entity__get_global_position(REFi, tempSetter);
-            return copyVec(temp);
-        end
-
-        local isStepping = function(REFi) 
-            return topaz_entity__is_stepping(REFi);
-        end
-
-        local isDrawing = function(REFi) 
-            return topaz_entity__is_drawing(REFi);
-        end
-        
-        local setStepping = function(REFi, enable) 
-            topaz_entity__set_stepping(REFi, enable);
-        end
-
-        local setDrawing = function(REFi, enable) 
-            topaz_entity__set_drawing(REFi, enable);
-        end
-
-        local getStepping = function(REFi) 
-            return topaz_entity__get_stepping(REFi);
-        end
-
-        local getDrawing = function(REFi) 
-            return topaz_entity__get_drawing(REFi);
-        end
-        
-        
-        local tempMatrix = {};
-        local tempMatrixSetter = function(a, b, c, d, e, f, g, h, j, i , k , l, m ,n, o, p) 
-            tempMatrix[1] = a;
-            tempMatrix[2] = b;
-            tempMatrix[3] = c;
-            tempMatrix[4] = d;
-
-            tempMatrix[5] = e;
-            tempMatrix[6] = f;
-            tempMatrix[7] = g;
-            tempMatrix[8] = h;
-
-            tempMatrix[9] = i;
-            tempMatrix[10] = j;
-            tempMatrix[11] = k;
-            tempMatrix[12] = l;
-
-            tempMatrix[13] = m;
-            tempMatrix[14] = n;
-            tempMatrix[15] = o;
-            tempMatrix[16] = p;
-        end
-        
-        
-        
-        local getLocalMatrix = function(REFi) 
-            topaz_entity__get_local_matrix(REFi, tempMatrixSetter);
-            return copyMatrix(tempMatrix);
-        end
-
-        local getGlobalMatrix = function(REFi) 
-            topaz_entity__get_global_matrix(REFi, tempMatrixSetter);
-            return copyMatrix(tempMatrix);
-        end
-        
-        local addComponent = function(REFi, component) 
-            topaz_entity__add_component(REFi, component);
-        end;
-
-        local addComponentAfter = function(REFi, component) 
-            topaz_entity__add_component_after(REFi, component);
-        end;
-        
-        local getComponents = function(REFi) 
-            local n = topaz_entity__get_component_count(REFi);
-            local output = {};
-            for i=1, n do 
-                output[i] = topaz_entity__get_nth_component(REFi, i-1);
-                if (output[i].__mapped == nil) then
-                    initializer__component(output[i]);
-                end
-            end
-            return output;    
-        end
-        
-        local queryComponent = function(REFi, tag) 
-            local c = topaz_entity__query_component(REFi, tag);
-            if (c.__mapped == nil) then
-                initializer__component(c);
-            end
-            return c;
-
-        end
-        
-        local removeComponent = function(REFi, component) 
-            topaz_entity__remove_component(REFi, component);
-        end
-        
-        local setName = function(REFi, newName) 
-            topaz_entity__set_name(REFi, newName);
-        end
-        
-        local getName = function(REFi) 
-            return topaz_entity__get_name(REFi);
-        end
-
-        
-        return function(e) 
-            e.__mapped = MAPPED;
-
-            e.setTypeID = setTypeID;
-            e.getTypeID = getTypeID;
-            e.isValid = isValid;
-            e.remove = remove;
-            e.getChildren = getChildren;
-            e.step = step;
-            e.draw = draw;
-            e.attach = attach;
-            e.detach = detach;
-            e.getParent = getParent;
-            e.query = query;
-            e.search = search;
-            e.setPriority = setPriority;
-            e.setPriorityLast = setPriorityLast;
-            e.setPriorityFirst = setPriorityFirst;
-            e.getRotation = getRotation;
-            e.getPosition = getPosition;
-            e.getScale = getScale;
-            e.setRotation = setRotation;
-            e.setPosition = setPosition;
-            e.setScale = setScale;
-            e.lookAt = lookAt;
-            e.getGlobalPosition = getGlobalPosition;
-            e.isStepping = isStepping;
-            e.isDrawing = isDrawing;
-            e.setStepping = setStepping;
-            e.setDrawing = setDrawing;
-            e.getStepping = getStepping;
-            e.getDrawing = getDrawing;
-            e.getLocalMatrix = getLocalMatrix;
-            e.getGlobalMatrix = getGlobalMatrix;
-            e.addComponent = addComponent;
-            e.addComponentAfter = addComponentAfter;
-            e.getComponents = getComponents;
-            e.queryComponent = queryComponent;
-            e.removeComponent = removeComponent;
-            e.setName = setName;
-            e.getName = getName;
-        end
-    end)()
 
 
 

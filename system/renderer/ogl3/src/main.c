@@ -76,8 +76,6 @@ static void topaz_api_gl3__renderer_draw_3d(
     void * program,
     void * material,
 
-    void * sampleFramebuffer,
-
     void * sampleTexture0,
     void * sampleTexture1,
     void * sampleTexture2,
@@ -104,25 +102,30 @@ static void topaz_api_gl3__renderer_draw_3d(
         projectionMatrix ? topaz_gl3_buffer_get_offline_ptr(projectionMatrix) : NULL
     );
     
+    int filter = attribs->textureFilter == topazRenderer_TextureFilterHint_Linear;
+    
     if (sampleTexture0) {
         topaz_gl3_program_bind_texture(
             program,
             0,
-            sampleTexture0
+            sampleTexture0,
+            filter
         );
     }
     if (sampleTexture1) {
         topaz_gl3_program_bind_texture(
             program,
             1,
-            sampleTexture1
+            sampleTexture1,
+            filter
         );
     }
     if (sampleTexture2) {
         topaz_gl3_program_bind_texture(
             program,
             2,
-            sampleTexture2
+            sampleTexture2,
+            filter            
         );
     }
     
@@ -131,12 +134,10 @@ static void topaz_api_gl3__renderer_draw_3d(
     topaz_gl3_start(api->implementationData);
     topaz_gl3_commit_process_attribs(api->implementationData, attribs);
     GLuint * ids = NULL;
-    if (sampleFramebuffer)
-        ids = topaz_gl3_fb_get_handle(sampleFramebuffer);
+
     topaz_gl3_program_render(
         program,
         vertices,
-        ids ? ids[1] : 0,
         topaz_array_get_data(indices), 
         topaz_array_get_size(indices)
     );
@@ -179,7 +180,6 @@ void * topaz_api_gl3__buffer_create(topazRendererAPI_t * api, float * data, uint
 
 void * topaz_api_gl3__texture_create(topazRendererAPI_t * api, int w, int h, const uint8_t * rgbaTextureData) {
     return topaz_gl3_texture_create(
-        topaz_gl3_get_texture_manager(api->implementationData),
         w,
         h,
         rgbaTextureData
@@ -188,14 +188,12 @@ void * topaz_api_gl3__texture_create(topazRendererAPI_t * api, int w, int h, con
 
 void * topaz_api_gl3__2d_create(topazRendererAPI_t * api) {
     return topaz_gl3_2d_create(
-        topaz_gl3_get_texture_manager(api->implementationData)
     );
 }
 
 void * topaz_api_gl3__framebuffer_create(topazRendererAPI_t * api, topazRenderer_FramebufferAPI_t * fb) {
     return topaz_gl3_fb_create();
 }
-
 
 
  

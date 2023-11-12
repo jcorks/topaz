@@ -36,9 +36,6 @@ topazGL3_t * topaz_gl3_create();
 // Destroys the instance
 void topaz_gl3_destroy(topazGL3_t *);
 
-// gets the es2 instance's texture manager
-topazGL3_TexMan_t * topaz_gl3_get_texture_manager(topazGL3_t *);
-
 // creates a 2d instance from this one
 topazGL3_2D_t * topaz_gl3_create_2d(topazGL3_t *);
 

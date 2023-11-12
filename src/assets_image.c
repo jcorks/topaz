@@ -254,7 +254,6 @@ topazAsset_t * topaz_image_create(topaz_t * t, const topazString_t * name) {
     img->frames = topaz_array_create(sizeof(topazImage_Frame_t *));
     img->ctx = t;
     img->notifs = topaz_bin_create();
-    img->proxy = FALSE;
 
     topazAsset_Attributes_t attribs = {};
     attribs.on_destroy = image__destroy;
@@ -331,7 +330,7 @@ void topaz_image_resize(
     for(i = 0; i < len; ++i) {
         f = topaz_array_at(img->frames, topazImage_Frame_t *, i);
         notify_event(img, a, topazImage_TextureEvent_Removed, i);
-        if (!frame->proxy) {
+        if (!f->proxy) {
             topaz_renderer_texture_destroy(f->object);
             f->object = topaz_renderer_texture_create(
                 topaz_graphics_get_renderer(
@@ -401,7 +400,7 @@ void topaz_image_set_frame_from_texture_proxy(
         topaz_renderer_texture_destroy(f->object);
     f->object = t;    
     f->proxy = TRUE;
-    notify_event(f->img, f->asset, topazImage_TextureEvent_Changed, index);
+    notify_event(f->img, f->asset, topazImage_TextureEvent_Changed, (int)frame);
 
 }
 

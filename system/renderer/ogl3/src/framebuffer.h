@@ -23,7 +23,7 @@ GLuint * topaz_gl3_fb_get_handle(topazGL3_FB_t *);
 
 // Gets the texture associated with the framebuffer for public use.
 // persists with the framebuffer.
-topazGL3_Texture_t * topaz_gl3_gb_get_texture(const topazGL3_FB_t *);
+topazGL3_Texture_t * topaz_gl3_fb_get_texture(const topazGL3_FB_t *);
 
 // Gets pixel data from the framebuffer
 //

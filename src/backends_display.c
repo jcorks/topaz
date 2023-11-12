@@ -19,8 +19,7 @@ struct topazDisplay_t {
     topaz_t * ctx;
     topazDisplayAPI_t api;
     topazSystem_Backend_t * backend;
-    topazEntity_t * camera2d;
-    topazViewport_t * viewport;
+    topazEntity_t * viewport;
     void * apiData;
 
 
@@ -62,7 +61,7 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
     topazDisplay_t * out = calloc(1, sizeof(topazDisplay_t));
     out->api = api;
     out->backend = b;
-    out->viewport = topaz_viewport_create();
+    out->viewport = topaz_viewport_create(ctx);
     topazRenderer_t * r = topaz_graphics_get_renderer(topaz_context_get_graphics(ctx));
 
     out->ctx = ctx;
@@ -96,7 +95,7 @@ topazDisplay_t * topaz_display_create(topaz_t * ctx, topazSystem_Backend_t * b, 
         1
     );
     
-    t->api.display_set_name(t, t->apiData, TOPAZ_STR_CAST("topaz"));
+    topaz_display_set_name(out, TOPAZ_STR_CAST("topaz"));
 
 
     return out;
@@ -238,9 +237,8 @@ void topaz_display_signal_parameter_change(
     if (param == topazDisplay_Parameter_Width ||
         param == topazDisplay_Parameter_Height) {
         if (t->params[topazDisplay_Parameter_ViewPolicy] == topazDisplay_ViewPolicy_MatchSize) {
-            topazRenderer_Framebuffer_t * fb = t->fbs[t->currentfb];
-            topaz_renderer_framebuffer_resize(
-                fb,
+            topaz_viewport_resize(
+                t->viewport,
                 (int)t->params[topazDisplay_Parameter_Width], 
                 (int)t->params[topazDisplay_Parameter_Height]
             );

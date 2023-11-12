@@ -249,6 +249,20 @@ void topaz_gl3_p2d_render(
         if (lastTexture != current->texture) {       
             glBindTexture(GL_TEXTURE_2D, current->texture);TOPAZ_GLES_CALL_CHECK;
             lastTexture = current->texture;
+            
+            // TODO: better handling for filtering
+            glTexParameteri(
+                GL_TEXTURE_2D,
+                GL_TEXTURE_MIN_FILTER,
+                attribs->textureFilter == topazRenderer_TextureFilterHint_Linear ? GL_LINEAR : GL_NEAREST
+            ); TOPAZ_GLES_CALL_CHECK;
+
+
+            glTexParameteri(
+                GL_TEXTURE_2D,
+                GL_TEXTURE_MAG_FILTER,
+                attribs->textureFilter == topazRenderer_TextureFilterHint_Linear ? GL_LINEAR : GL_NEAREST
+            ); TOPAZ_GLES_CALL_CHECK;            
         }
 
         glUniformMatrix4fv(

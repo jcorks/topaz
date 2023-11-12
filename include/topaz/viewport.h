@@ -54,7 +54,7 @@ typedef struct topazAsset_t topazAsset_t;
 ///    will not be reflected in the draw operations. Use child entities 
 ///    for drawing.
 ///
-typedef struct topazViewport_t topazViewManager_t;
+typedef struct topazViewport_t topazViewport_t;
 
 
 
@@ -99,7 +99,7 @@ topazRenderer_Framebuffer_t * topaz_viewport_get_complete_framebuffer(
 /// the attached image asset, and, if automatic updating for it is 
 /// enabled, the 3D transform aspect ratio.
 void topaz_viewport_resize(
-    topazEntity_t *
+    topazEntity_t *,
     int width,
     int height
 );
@@ -181,7 +181,7 @@ topazVector_t topaz_viewport_screen_to_world_3d(
 /// the working framebuffer.
 ///
 void topaz_viewport_clear(
-    topazEntity_t * 
+    topazEntity_t * ,
     
     /// which information channel to clear.
     topazRenderer_DataLayer layer
@@ -191,7 +191,7 @@ void topaz_viewport_clear(
 /// The default is "true".
 ///
 void topaz_viewport_set_auto_clear(
-    topazEntity_t * 
+    topazEntity_t * ,
     /// Whether to auto-update.
     int enabled
 );

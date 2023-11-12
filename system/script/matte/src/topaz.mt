@@ -1342,7 +1342,7 @@
         @:out = topaz_display__get_viewport(a:$);
         if (out.__mapped == empty) ::<= {
             initializer__entity(e:out);
-            initializer__viewport(e:out);
+            initializer__viewport(v:out);
         }
         return out;
     }
@@ -2357,7 +2357,7 @@
         @:topaz_matrix__reverse_majority = getExternalFunction(name:'topaz_matrix__reverse_majority');
         @:topaz_matrix__multiply = getExternalFunction(name:'topaz_matrix__multiply');
         @:topaz_matrix__rotate_by_angles = getExternalFunction(name:'topaz_matrix__rotate_by_angles');
-        @:topaz_matrix__rotate_by_angles = getExternalFunction(name:'topaz_matrix__rotate_by_angles');
+        @:topaz_matrix__rotate_by_axis = getExternalFunction(name:'topaz_matrix__rotate_by_axis');
         @:topaz_matrix__translate = getExternalFunction(name:'topaz_matrix__translate');
         @:topaz_matrix__scale = getExternalFunction(name:'topaz_matrix__scale');
         @:topaz_matrix__projection_perspective = getExternalFunction(name:'topaz_matrix__projection_perspective');
@@ -2454,12 +2454,12 @@
                 matCopy(m);
             },
             
-            projectionPerspective(fovy, ratio, zNear, zFar) {
+            projectionPerspective::(fovy, ratio, zNear, zFar) {
                 topaz_matrix__projection_perspective(a:fovy, b:ratio, c:zNear, d:zFar, e:tempMatrixSetter);
                 return {...tempMatrix};
             },
             
-            projectionOrthographic(left, right, bottom, top, zNear, zFar) {
+            projectionOrthographic::(left, right, bottom, top, zNear, zFar) {
                 topaz_matrix__projection_orthographic(a:left, b:right, c:bottom, d:top, e:zNear, f:zFar, g:tempMatrixSetter);
                 return {...tempMatrix};
             }
@@ -3267,6 +3267,18 @@
                 @:out = topaz_text2d__create();
                 initializer__component(c:out);
                 initializer__text2d(t:out);
+                return out;
+            }
+        }
+    },
+    
+    Viewport : ::<= {
+        @:topaz_viewport__create = getExternalFunction(name:'topaz_viewport__create');
+        return {
+            create ::{
+                @:out = topaz_viewport__create();
+                initializer__entity(e:out);
+                initializer__viewport(v:out);
                 return out;
             }
         }

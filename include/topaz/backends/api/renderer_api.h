@@ -297,8 +297,6 @@ struct topazRenderer_CoreAPI_t {
         void * program_programObject,
         void * material_bufferObject,
 
-        void * sampleFramebuffer_framebufferObject,
-
         void * sampleTexture0_textureObject,
         void * sampleTexture1_textureObject,
         void * sampleTexture2_textureObject,

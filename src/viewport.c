@@ -1,3 +1,47 @@
+/*
+Copyright (c) 2020, Johnathan Corkery. (jcorkery@umich.edu)
+All rights reserved.
+
+This file is part of the topaz project (https://github.com/jcorks/topaz)
+topaz was released under the MIT License, as detailed below.
+
+
+
+Permission is hereby granted, free of charge, to any person obtaining a copy 
+of this software and associated documentation files (the "Software"), to deal 
+in the Software without restriction, including without limitation the rights 
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+copies of the Software, and to permit persons to whom the Software is furnished 
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall
+be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+DEALINGS IN THE SOFTWARE.
+
+
+*/
+
+#include <topaz/compat.h>
+#include <topaz/assets/image.h>
+#include <topaz/containers/string.h>
+#include <topaz/containers/array.h>
+#include <topaz/containers/bin.h>
+#include <topaz/topaz.h>
+#include <topaz/backends/renderer.h>
+#include <topaz/modules/graphics.h>
+#include <topaz/modules/resources.h>
+#include <topaz/entity.h>
+#include <topaz/matrix.h>
+#include <topaz/viewport.h>
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef TOPAZDC_DEBUG
 static char * MAGIC_ID__VIEWPORT = "t0p4zc4m3r4";
@@ -37,16 +81,17 @@ static topazViewport_t * viewport__retrieve(topazEntity_t * e) {
 static void viewport__on_pre_draw(topazEntity_t * e, void * data) {
     topazViewport_t * v = data;
     if (v->autoRefresh) {
-        topaz_viewport_clear_working_framebuffer(v, topazRenderer_DataLayer_All);
+        topaz_viewport_clear(e, topazRenderer_DataLayer_All);
     }
-    topaz_graphics_push_viewport(graphics, e);
+    topaz_graphics_push_viewport(topaz_context_get_graphics(v->ctx), e);
 }
 
 static void viewport__on_draw(topazEntity_t * e, void * data) {
     topazViewport_t * v = data;
+    topazGraphics_t * graphics = topaz_context_get_graphics(v->ctx);
     topaz_graphics_sync(graphics);
-    topaz_graphics_pop_viewport(graphics, e);
-    topaz_viewport_swap_buffers(v);
+    topaz_graphics_pop_viewport(graphics);
+    topaz_viewport_swap_buffers(e);
 }
 
 static void viewport__on_remove(topazEntity_t * e, void * data) {
@@ -75,8 +120,9 @@ topazEntity_t * topaz_viewport_create(
     v->h = DEFAULT_HEIGHT;
     
     v->image = topaz_resources_create_asset(
+        res,
         NULL,
-        res
+        topazAsset_Type_Image
     );
     
     
@@ -143,14 +189,15 @@ topazRenderer_Framebuffer_t * topaz_viewport_get_complete_framebuffer(
 }
 
 void topaz_viewport_resize(
-    topazEntity_t * e
+    topazEntity_t * e,
     int w,
     int h
 ) {
     topazViewport_t * v = viewport__retrieve(e);
-            
-    topaz_renderer_framebuffer_resize(c->front, v->w, v->h);
-    topaz_renderer_framebuffer_resize(c->back, v->w, v->h);
+    v->w = w;
+    v->h = h;         
+    topaz_renderer_framebuffer_resize(v->front, v->w, v->h);
+    topaz_renderer_framebuffer_resize(v->back, v->w, v->h);
 
     topaz_image_resize(v->image, v->w, v->h);
     
@@ -219,13 +266,12 @@ topazVector_t topaz_viewport_world_3d_to_screen(
 ) {
     topazViewport_t * v = viewport__retrieve(e);
 
-    topazSpatial_t * s = topaz_entity_get_spatial(e);
 
-    topazVector_t out = topaz_matrix_transform(topaz_spatial_get_global_transform(s), p);
-    out = topaz_matrix_transform(&c->projection3d, &out);
+    topazVector_t out = topaz_matrix_transform(topaz_entity_get_global_matrix(e), p);
+    out = topaz_matrix_transform(&v->projection3d, &out);
 
     out.x = (out.x)*(v->w/2.f) + v->w/2.f;
-    out.y = h - ((out.y)*(v->h/2.f) + v->h/2.f);
+    out.y = v->h - ((out.y)*(v->h/2.f) + v->h/2.f);
     return out;
 }
 
@@ -238,11 +284,10 @@ topazVector_t topaz_viewport_screen_to_world_3d(
 
     topazVector_t in;
     in.x = (p->x/v->w)*2 - 1;
-    in.y = ((h-p->y)/v->h)*2 - 1;
-    in.z = ((p->z+c->nearClip)/c->farClip);
+    in.y = ((v->h-p->y)/v->h)*2 - 1;
+    in.z = p->z;
 
-    topazSpatial_t * s = topaz_entity_get_spatial(e);
-    topazMatrix_t mvInv = *topaz_spatial_get_global_transform(s);
+    topazMatrix_t mvInv = *topaz_entity_get_global_matrix(e);
     topazMatrix_t pjInv = v->projection3d;
 
     topaz_matrix_invert(&mvInv);
@@ -266,13 +311,13 @@ void topaz_viewport_set_projection_3d_auto_mode(
 }
 
 void topaz_viewport_clear(
-    topazEntity_t * e
+    topazEntity_t * e,
     
     /// which information channel to clear.
     topazRenderer_DataLayer layer
 ) {
     topazViewport_t * v = viewport__retrieve(e);
-    topazRenderer_t * r = topaz_graphics_get_renderer(topaz_context_get_graphics(d->ctx));
+    topazRenderer_t * r = topaz_graphics_get_renderer(topaz_context_get_graphics(v->ctx));
     topazRenderer_Framebuffer_t * old = topaz_renderer_get_target(r);
 
 
@@ -288,7 +333,7 @@ void topaz_viewport_clear(
 
 
 void topaz_viewport_set_auto_clear(
-    topazEntity_t * e
+    topazEntity_t * e,
     /// Whether to auto-update.
     int enable
 ) {

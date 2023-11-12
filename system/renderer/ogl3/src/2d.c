@@ -28,7 +28,6 @@ typedef struct {
 struct topazGL3_2D_t {
     topazBin_t * objects;
     topazArray_t * queued; // of type topazGL3_Program2D_Renderable_t *
-    topazGL3_TexMan_t * textureManager;
     topazGL3_Program2D_t * program;
     int texmanCallbackID;
 };
@@ -54,22 +53,18 @@ static void object_prepare_renderable(GL3Object *);
 
 
 
-static GLuint * textureManager_staticIDs;
 
-topazGL3_2D_t * topaz_gl3_2d_create(topazGL3_TexMan_t * t) {
+topazGL3_2D_t * topaz_gl3_2d_create() {
     topazGL3_2D_t * out = calloc(1, sizeof(topazGL3_2D_t));
     out->objects = topaz_bin_create();
     out->queued = topaz_array_create(sizeof(topazGL3_Program2D_Renderable_t*));
     out->program = topaz_gl3_p2d_create();
-    out->textureManager = t;
-    textureManager_staticIDs = (GLuint*)topaz_gl3_texman_gl_textures(t);
     return out;
 }
 
 void topaz_gl3_2d_destroy(topazGL3_2D_t * t) {
     topaz_bin_destroy(t->objects);
     topaz_array_destroy(t->queued);
-    topaz_gl3_texman_remove_change_callback(t->textureManager, t->texmanCallbackID);
     free(t);
 }
 
@@ -215,6 +210,11 @@ static void object_on_linked_buffer_commit(topazGL3_Buffer_t * buffer, void * ob
 static void object_prepare_renderable(GL3Object * o) {
     TOPAZ_GLES_FN_IN;
 
+
+    if (o->texture) {
+        o->pdata.texture = topaz_gl3_texture_get_handle(o->texture);
+    } 
+
     // has to populate a vbo
     if (o->linkedBuffer) {
         o->pdata.vboVertexCount = topaz_gl3_buffer_get_float_count(o->linkedBuffer) / 8; // 2d vertex is always 8 floats
@@ -222,11 +222,7 @@ static void object_prepare_renderable(GL3Object * o) {
         topazRenderer_2D_Vertex_t * vtx    = malloc(sizeof(topazRenderer_2D_Vertex_t)*o->pdata.vboVertexCount);
 
 
-        if (o->texture) {
-            o->pdata.texture = topaz_gl3_texture_get_handle(o->texture);
-        } 
         memcpy(vtx, vtxSrc, sizeof(topazRenderer_2D_Vertex_t)*o->pdata.vboVertexCount);
-        o->pdata.texture = 0;
             
         glBindBuffer(GL_ARRAY_BUFFER, o->pdata.vbo); TOPAZ_GLES_CALL_CHECK;
         glBufferData(GL_ARRAY_BUFFER, sizeof(topazRenderer_2D_Vertex_t)*o->pdata.vboVertexCount, vtx, GL_DYNAMIC_DRAW);TOPAZ_GLES_CALL_CHECK;

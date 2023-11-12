@@ -469,7 +469,7 @@ void topaz_input_poll(topazInput_t * t) {
     float oldX = t->mouseX;
     float oldY = t->mouseY;
     {
-        topazEntity_t * e = topaz_display_get_2d_camera(display);
+        topazEntity_t * e = topaz_display_get_viewport(display);
         const topazMatrix_t * m = topaz_spatial_get_global_transform(topaz_entity_get_spatial(e));
         topazVector_t p = {
             inputX->current - topaz_display_get_parameter(display, topazDisplay_Parameter_Width)/2.0,

@@ -1,9 +1,9 @@
 #include "context.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 struct topazGL3_t {
     topazGL3_FB_t * fb;
-    topazGL3_TexMan_t * texm;
 
     int lastDepthTest;
     int lastAlphaRule;
@@ -16,7 +16,6 @@ struct topazGL3_t {
 topazGL3_t * topaz_gl3_create() {
     topazGL3_t * out = calloc(1, sizeof(topazGL3_t));
     out->fb = 0;
-    out->texm = topaz_gl3_texman_create();
 
     out->lastAlphaRule = -1;
     out->lastDepthTest = -1;
@@ -28,16 +27,11 @@ topazGL3_t * topaz_gl3_create() {
 }
 
 void topaz_gl3_destroy(topazGL3_t * e) {
-    topaz_gl3_texman_destroy(e->texm);
     free(e);
 }
 
-topazGL3_TexMan_t * topaz_gl3_get_texture_manager(topazGL3_t * e) {
-    return e->texm;
-}
-
 topazGL3_2D_t * topaz_gl3_create_2d(topazGL3_t * e) {
-    return topaz_gl3_2d_create(e->texm);
+    return topaz_gl3_2d_create();
 }
 
 topazGL3_FB_t * topaz_gl3_get_target(topazGL3_t * e) {
@@ -178,19 +172,6 @@ void topaz_gl3_commit_process_attribs(
             break;
         }
 
-    }
-
-    if (p->lastTextureFilter != attribs->textureFilter) {
-        p->lastTextureFilter = attribs->textureFilter;
-        switch(p->lastTextureFilter) {
-          case topazRenderer_TextureFilterHint_Linear:
-            topaz_gl3_texman_set_filter(p->texm, 1);
-            break;
-
-          case topazRenderer_TextureFilterHint_None:
-            topaz_gl3_texman_set_filter(p->texm, 0);
-            break;
-        }
     }
 
 

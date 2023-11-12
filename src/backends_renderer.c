@@ -155,7 +155,7 @@ topazRenderer_Framebuffer_t * topaz_renderer_framebuffer_create(topazRenderer_t 
     tex->w = -1;
     tex->h = -1;
     tex->api = &(t->api.texture);
-    tex->data = out->api->renderer_framebuffer_get_texture(&t->api, w, h, rgbaTextureData);
+    tex->data = out->api->renderer_framebuffer_get_texture(out->framebufferData);
     tex->binID = topaz_bin_add(t->textureList, out);
     tex->src = t;
     
@@ -163,7 +163,7 @@ topazRenderer_Framebuffer_t * topaz_renderer_framebuffer_create(topazRenderer_t 
     return out;
 }
 
-topazRenderer_Texture_t * topaz_renderer_get_texture(topazRenderer_Framebuffer_t * t) {
+topazRenderer_Texture_t * topaz_renderer_framebuffer_get_texture(topazRenderer_Framebuffer_t * t) {
     return t->tex;
 }
 
@@ -579,7 +579,6 @@ void topaz_renderer_draw_3d(
         d3->program->data,
         d3->material->bufferData,
         
-        d3->sampleFramebuffer ? d3->sampleFramebuffer->framebufferData : NULL,
         d3->sampleTexture0 ? d3->sampleTexture0->data : NULL,
         d3->sampleTexture1 ? d3->sampleTexture1->data : NULL,
         d3->sampleTexture2 ? d3->sampleTexture2->data : NULL,

@@ -10,7 +10,7 @@
 static void topaz_script_return_matrix(
     topazScript_t * script, 
     topazScript_Object_t * fn,
-    topazMatrix_t * a
+    const topazMatrix_t * a
 ) {
 
     topazScript_Object_t * args[] = {
@@ -282,7 +282,7 @@ TSO_SCRIPT_API_FN(matrix_api__projection_orthographic) {
         topaz_script_object_as_number(arg2),
         topaz_script_object_as_number(arg3),
         topaz_script_object_as_number(arg4),
-        topaz_script_object_as_number(arg5),
+        topaz_script_object_as_number(arg5)
     );
     topaz_script_return_matrix(script, arg6, &a);
     TSO_NO_RETURN;
@@ -301,7 +301,7 @@ static void add_refs__matrix_api(topazScript_t * script, topazScriptManager_t * 
     TS_MAP_NATIVE_FN("topaz_matrix__reverse_majority", matrix_api__reverse_majority, 2);
     TS_MAP_NATIVE_FN("topaz_matrix__multiply", matrix_api__multiply, 4);
     TS_MAP_NATIVE_FN("topaz_matrix__rotate_by_angles", matrix_api__rotate_by_angles, 5);
-    TS_MAP_NATIVE_FN("topaz_matrix__rotate_by_angles", matrix_api__rotate_by_axis, 6);
+    TS_MAP_NATIVE_FN("topaz_matrix__rotate_by_axis", matrix_api__rotate_by_axis, 6);
     TS_MAP_NATIVE_FN("topaz_matrix__translate", matrix_api__translate, 5);
     TS_MAP_NATIVE_FN("topaz_matrix__scale", matrix_api__scale, 5);
     TS_MAP_NATIVE_FN("topaz_matrix__projection_perspective", matrix_api__projection_perspective, 5);

@@ -1,12 +1,12 @@
 #include <topaz/modules/graphics.h>
 #include <topaz/backends/renderer.h>
 #include <topaz/render2d.h>
-#include <topaz/backends/viewport.h>
+#include <topaz/viewport.h>
 #include <topaz/modules/view_manager.h>
 #include <topaz/matrix.h>
 #include <topaz/system.h>
+#include <topaz/entity.h>
 #include <topaz/topaz.h>
-#include <topaz/camera.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -34,7 +34,7 @@ topazGraphics_t * topaz_graphics_create(topaz_t * ctx) {
     out->renderer   = topaz_renderer_create(ref, api);
     out->renderer2d = topaz_renderer_2d_create(out->renderer);    
     out->ctx2d.transform = &out->ctxMatrix;
-    out->viewports = topaz_array_create(sizeof(topazViewport_t*));
+    out->viewports = topaz_array_create(sizeof(topazEntity_t*));
     topaz_matrix_set_identity(&out->ctxMatrix);
     return out;
 }
@@ -47,7 +47,7 @@ void topaz_graphics_destroy(topazGraphics_t * g) {
 
 void topaz_graphics_push_viewport(
     topazGraphics_t * g,
-    topazViewport_t * viewport
+    topazEntity_t * viewport
 ) {
     topaz_array_push(g->viewports, viewport);
     topaz_renderer_attach_target(
@@ -63,7 +63,7 @@ void topaz_graphics_pop_viewport(
     uint32_t len = topaz_array_get_size(g->viewports);
     if (len == 0) return;
     topaz_array_set_size(g->viewports, len-1);
-    topazViewport_t * view = graphics__get_top_view(g);
+    topazEntity_t * view = topaz_graphics_get_current_viewport(g);
     if (view) {
         topaz_renderer_attach_target(
             g->renderer,
@@ -74,12 +74,12 @@ void topaz_graphics_pop_viewport(
     }
 }
 
-topazViewport_t * topaz_graphics_get_current_viewport(
+topazEntity_t * topaz_graphics_get_current_viewport(
     topazGraphics_t * g
 ) {
     uint32_t len = topaz_array_get_size(g->viewports);
     if (len == 0) return NULL;
-    return topaz_array_at(g->viewports, topazViewport_t *, len-1);
+    return topaz_array_at(g->viewports, topazEntity_t *, len-1);
 }
 
 
@@ -128,7 +128,7 @@ void topaz_graphics_request_draw_2d(topazGraphics_t * g, topazRender2D_t * objec
     set_display_mode_2d(g, &attribs);
 
 
-    topazViewport_t * viewport = topaz_graphics_get_current_viewport(g);
+    topazEntity_t * viewport = topaz_graphics_get_current_viewport(g);
     
 
 
@@ -138,7 +138,7 @@ void topaz_graphics_request_draw_2d(topazGraphics_t * g, topazRender2D_t * objec
         (int)g->ctx2d.height != (int)topaz_viewport_get_height(viewport)) {
 
         g->ctx2d.width = topaz_viewport_get_width(viewport);
-        g->ctx2d.height = topaz_viewport_get_width(viewport);
+        g->ctx2d.height = topaz_viewport_get_height(viewport);
     }
 
 
@@ -178,6 +178,7 @@ void topaz_graphics_sync(topazGraphics_t * g) {
         &g->lastAttr
     );
     topaz_renderer_sync(g->renderer);
+    topaz_renderer_2d_clear_queue(g->renderer2d);
 }
 
 

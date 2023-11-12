@@ -36,13 +36,12 @@ DEALINGS IN THE SOFTWARE.
 #include <topaz/topaz.h>
 #include <topaz/modules/graphics.h>
 #include <topaz/modules/view_manager.h>
-#include <topaz/camera.h>
 #include <topaz/matrix.h>
 #include <topaz/spatial.h>
 #include <topaz/entity.h>
 #include <topaz/assets/material.h>
 #include <topaz/assets/mesh.h>
-#include <topaz/backends/viewport.h>
+#include <topaz/viewport.h>
 
 #include <stdlib.h>
 #include <string.h>

@@ -19,7 +19,7 @@ topazGL3_Texture_t * topaz_gl3_texture_from_object(GLint);
 
 
 // forces a resize. No public API does this.
-void topaz_gl3_texture_force_resize(topazGL3_Texture_t *);
+void topaz_gl3_texture_force_set_size(topazGL3_Texture_t *, int w, int h);
 
 // Destroys a texture according to the topaz rendering api. No wrapper needed.
 void topaz_gl3_texture_destroy(topazGL3_Texture_t *);

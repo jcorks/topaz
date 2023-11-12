@@ -39,6 +39,7 @@ typedef struct topazRenderer_2D_t topazRenderer_2D_t;
 typedef struct topazRenderer_3D_t topazRenderer_3D_t;
 typedef struct topazRenderer_Attributes_t topazRenderer_Attributes_t;
 typedef struct topazRenderer_t topazRenderer_t;
+typedef struct topazEntity_t topazEntity_t;
 
 /// The main graphics controller. It manages the context's renderer 
 /// and attempts to make interaction with it more efficient.
@@ -74,7 +75,7 @@ void topaz_graphics_destroy(
 ///
 void topaz_graphics_push_viewport(
     topazGraphics_t * graphics,
-    topazViewport_t * viewport
+    topazEntity_t * viewport
 );
 
 /// Pops the top viewport, if any. 
@@ -87,7 +88,7 @@ void topaz_graphics_pop_viewport(
 );
 
 /// Returns the current top viewport. NULL if none.
-topazViewport_t * topaz_graphics_get_current_viewport(
+topazEntity_t * topaz_graphics_get_current_viewport(
     topazGraphics_t *
 );
 
@@ -135,13 +136,6 @@ void topaz_graphics_request_draw_3d(
 ///
 void topaz_graphics_sync(
     /// The graphics instance to sync.
-    topazGraphics_t * graphics
-);
-
-/// Clears the current display and resets any requested 2d drawn objects.
-/// 
-void topaz_graphics_reset_scene(
-    /// The graphics instance to reset.
     topazGraphics_t * graphics
 );
 

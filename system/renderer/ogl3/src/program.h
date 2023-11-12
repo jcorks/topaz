@@ -62,7 +62,8 @@ topazGL3_Buffer_t * topaz_gl3_program_get_static_buffer(
 void topaz_gl3_program_bind_texture(
     topazGL3_Program_t * program,
     int slotIndex, // either 0, 1, or 2
-    topazGL3_Texture_t * tex 
+    topazGL3_Texture_t * tex,
+    int filter
 );
 
 

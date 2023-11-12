@@ -32,7 +32,7 @@ SRCS := \
     src/backends_time.c\
     src/backends_script.c\
     src/backends_iox.c\
-    src/camera.c\
+    src/viewport.c\
     src/color.c\
     src/component.c\
     src/components_scheduler.c\

@@ -16,7 +16,7 @@ typedef struct topazGL3_2D_t topazGL3_2D_t;
 
 
 // creates a 2d context. will use the texture manager and stuff from the context
-topazGL3_2D_t * topaz_gl3_2d_create(topazGL3_TexMan_t *);
+topazGL3_2D_t * topaz_gl3_2d_create();
 
 // destroys a 2d context
 void topaz_gl3_2d_destroy(topazGL3_2D_t *);

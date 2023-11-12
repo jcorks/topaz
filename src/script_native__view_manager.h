@@ -1,7 +1,6 @@
 #include <topaz/modules/view_manager.h>
 #include <topaz/modules/graphics.h>
 #include <topaz/backends/display.h>
-#include <topaz/camera.h>
 
 
 
@@ -267,7 +266,7 @@ TSO_SCRIPT_API_FN(display_api__get_viewport) {
     TSO_ARG_0;
     TSO_NATIVIZE(topazDisplay_t *, TSO_OBJECT_ID__DISPLAY);
     topazEntity_t * out = topaz_display_get_viewport(native);
-    TSO_OBJECT_NEW_VALUE(out, TSO_OBJECT_TYPE__ENTITY | TSO_OBJECT_TYPE__VIEWPORT, NULL, NULL);
+    TSO_OBJECT_NEW_VALUE(out, TSO_OBJECT_TYPE__ENTITY | TSO_OBJECT_ID__VIEWPORT, NULL, NULL);
     return object;    
 }
 

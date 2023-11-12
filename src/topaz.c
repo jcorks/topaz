@@ -383,11 +383,9 @@ void topaz_context_iterate(topaz_t * t) {
         t->display = d;
         topaz_input_poll(t->input);
         topaz_display_update(d);
-        topaz_graphics_reset_scene(t->graphics);
         topaz_context_step(t); // could have had recursive updates. Re-instate display
         t->display = d;
         topaz_context_draw(t);
-        topaz_graphics_sync(t->graphics);
     }
     t->display = NULL;
     topaz_array_destroy(views);

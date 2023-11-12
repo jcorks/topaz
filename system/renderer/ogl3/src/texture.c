@@ -24,7 +24,7 @@ topazGL3_Texture_t * topaz_gl3_texture_create(
     t->w = w;
     t->h = h;
     
-    glGenTextures(&t->object, 1);
+    glGenTextures(1, &t->object);TOPAZ_GLES_CALL_CHECK;
     topaz_gl3_texture_update(t, data);
     return t;
 }
@@ -36,17 +36,17 @@ topazGL3_Texture_t * topaz_gl3_texture_from_object(GLint object) {
     topazGL3_Texture_t * t = calloc(1, sizeof(topazGL3_Texture_t));
     glBindTexture(GL_TEXTURE_2D, object); TOPAZ_GLES_CALL_CHECK;
     
-    glGetTexLevelParameter(
+    glGetTexLevelParameteriv(
         GL_TEXTURE_2D, 
         0,
         GL_TEXTURE_WIDTH,
         &(t->w)
     ); TOPAZ_GLES_CALL_CHECK;
 
-    glGetTexLevelParameter(
+    glGetTexLevelParameteriv(
         GL_TEXTURE_2D, 
         0,
-        GL_TEXTURE_WIDTH,
+        GL_TEXTURE_HEIGHT,
         &(t->h)
     ); TOPAZ_GLES_CALL_CHECK;
 
@@ -55,26 +55,15 @@ topazGL3_Texture_t * topaz_gl3_texture_from_object(GLint object) {
 }
 
 // forces a resize. No public API does this.
-void topaz_gl3_texture_force_resize(topazGL3_Texture_t * t) {
-    TOPAZ_GLES_FN_IN;
-    glBindTexture(GL_TEXTURE_2D, t->object); TOPAZ_GLES_CALL_CHECK;
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        GL_RGBA,
-        t->w,
-        t->h,
-        0,
-        GL_RGBA,
-        GL_UNSIGNED_BYTE,
-        NULL
-    ); TOPAZ_GLES_CALL_CHECK;
+void topaz_gl3_texture_force_set_size(topazGL3_Texture_t * t, int w, int h) {
+    t->w = w;
+    t->h = h;
 }
 
 // Destroys a texture according to the topaz rendering api. No wrapper needed.
 void topaz_gl3_texture_destroy(topazGL3_Texture_t * t) {
     TOPAZ_GLES_FN_IN;
-    glDeleteTextures(&t->object, 1); TOPAZ_GLES_CALL_CHECK;
+    glDeleteTextures(1, &t->object); TOPAZ_GLES_CALL_CHECK;
     free(t);
 }
 
@@ -97,14 +86,14 @@ void topaz_gl3_texture_update(topazGL3_Texture_t * t, const uint8_t * data) {
 }
 
 // Fetches a texture's texels RGBA according to the topaz rendering API. no wrapper needed.
-void topaz_gl3_texture_get(topazGL3_Texture_t *, uint8_t * data) {
+void topaz_gl3_texture_get(topazGL3_Texture_t * t, uint8_t * data) {
     TOPAZ_GLES_FN_IN;
     glReadPixels(
         0, 0,
         t->w, t->h,
         GL_RGBA,
         GL_UNSIGNED_BYTE,
-        target
+        data
     ); TOPAZ_GLES_CALL_CHECK;
 }
 
