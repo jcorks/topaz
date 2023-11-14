@@ -114,7 +114,12 @@ static uint8_t * topaz_freetype_render(
     }
 
     // handle basic space cases.
-    if (isspace(charcode)) {
+    if (charcode == ' ' ||
+        charcode == '\n' ||
+        charcode == '\r' ||
+        charcode == '\t' ||
+        charcode == '\v' ||
+        charcode == '\f') {
         *w = 1;
         *h = 1;
         uint8_t * out = malloc(sizeof(uint8_t)*4);

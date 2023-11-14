@@ -249,6 +249,13 @@ void topaz_context_frame_start(
     int FPS
 );
 
+/// When running the main iteration loop
+///, determines the target frames per second.
+/// The default is 60.
+void topaz_context_set_target_frame_rate(
+    topaz_t * context,
+    int FPS
+);
 
 /// Sleeps until the time required for the target frames-per-second is reached.
 /// The actual resolution is machine-dependent, but it tends to be millisecond resolution.
@@ -267,7 +274,7 @@ uint64_t topaz_context_get_time(
     topaz_t * context
 );
 
-/// Gets the amount of time that passed for the previous frame.
+/// Gets the amount of time that passed for the previous frame in seconds.
 ///
 double topaz_context_get_delta_time(
     /// The context to query.

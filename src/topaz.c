@@ -173,6 +173,9 @@ topazSystem_t * topaz_context_get_system(const topaz_t * t) {
     return t->system;
 }
 
+void topaz_context_set_target_frame_rate(topaz_t * t, int fps) {
+    t->fps = fps;
+}
 
 void topaz_context_destroy(topaz_t * t) {
     topaz_time_destroy(t->timeRef);
@@ -490,7 +493,7 @@ uint64_t topaz_context_get_time(topaz_t * t) {
 double topaz_context_get_delta_time(
     topaz_t * t
 ) {
-    return t->frameLast;
+    return t->frameLast / 1000.0;
 }
 
 topazFilesystem_t * topaz_context_get_filesystem(topaz_t * t) {

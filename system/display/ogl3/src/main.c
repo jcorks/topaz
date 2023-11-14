@@ -406,10 +406,9 @@ static void topaz_glfw_request_parameter_change(
         glfwSetWindowAttrib(d->window, GLFW_DECORATED, (int)value);
         break;
       case topazDisplay_Parameter_Fullscreen:
-              /*
         TopazGLFWWindow * d = api;      
         const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        if (doIt) {
+        if (value > 0) {
             glfwSetWindowMonitor(
                 d->window,
                 glfwGetPrimaryMonitor(),
@@ -430,7 +429,6 @@ static void topaz_glfw_request_parameter_change(
                 mode->refreshRate
             );
         } 
-        */
         break;
       default:;  
     }

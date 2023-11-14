@@ -2751,6 +2751,10 @@
                 return topaz_input__get_state(a:input);
             },
             
+            getPadState ::(padIndex, input) {
+                return topaz_input__get_pad_state(a:padIndex, b:input);
+            },
+            
             getMappedState ::(input, name) {
                 return topaz_input__get_mapped_state(a:input, b:name);
             },
@@ -3315,6 +3319,7 @@
     @:topaz__attach_post_manager = getExternalFunction(name:'topaz__attach_post_manager');
     @:topaz__attach_post_manager_unpausable = getExternalFunction(name:'topaz__attach_post_manager_unpausable');
     @:topaz__frame_start = getExternalFunction(name:'topaz__frame_start');
+    @:topaz__set_target_frame_rate = getExternalFunction(name:'topaz__set_target_frame_rate');
 
     Topaz.attachPreManager = ::(entity) {
         topaz__attach_pre_manager(a:entity);
@@ -3332,6 +3337,9 @@
         topaz__attach_post_manager_unpausable(a:entity);
     }
 
+    Topaz.setTargetFrameRate = ::(FPS) {
+        topaz__set_target_frame_rate(a:FPS);
+    }
 
     Topaz.frameStart = ::(FPS) {
         topaz__frame_start(a:FPS);

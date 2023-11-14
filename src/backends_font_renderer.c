@@ -162,7 +162,7 @@ void topaz_font_renderer_image_unref(
     topazTable_t * charTable = topaz_table_find_by_int(r->refs, pixelSize);
     if (!charTable) return;
 
-    GlyphReference * g = topaz_table_find_by_int(r->refs, charcode);
+    GlyphReference * g = topaz_table_find_by_int(charTable, charcode);
     if (!g) return;
 
     g->refCount--;

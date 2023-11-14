@@ -3015,6 +3015,10 @@ Topaz = {};
             topaz__frame_start(FPS);
         end
         
+        Topaz.setTargetFrameRate = function(FPS)
+            topaz__set_target_frame_rate(FPS);
+        end
+        
         Topaz.Lua = {
         
             import = function(path)

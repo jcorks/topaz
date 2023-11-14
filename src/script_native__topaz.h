@@ -140,6 +140,15 @@ TSO_SCRIPT_API_FN(topaz_api__debug) {
     TSO_NO_RETURN;
 }
 
+
+TSO_SCRIPT_API_FN(topaz_api__set_target_frame_rate) {
+    TSO_ARG_0;
+    topazScriptManager_t * mgr = context;
+    topaz_context_set_target_frame_rate(mgr->ctx, topaz_script_object_as_number(arg0));
+    TSO_NO_RETURN;
+}
+
+
 static void add_refs__topaz_api(topazScript_t * script, topazScriptManager_t * context) {
     TS_MAP_NATIVE_FN("topaz__run", topaz_api__run, 0);
     TS_MAP_NATIVE_FN("topaz__pause", topaz_api__pause, 0);
@@ -155,9 +164,10 @@ static void add_refs__topaz_api(topazScript_t * script, topazScriptManager_t * c
     TS_MAP_NATIVE_FN("topaz__frame_start", topaz_api__frame_start, 1);
     TS_MAP_NATIVE_FN("topaz__frame_end", topaz_api__frame_end, 0);
     TS_MAP_NATIVE_FN("topaz__get_time", topaz_api__get_time, 0);
-    TS_MAP_NATIVE_FN("topaz__get_delta_time", topaz_api__get_time, 0);
+    TS_MAP_NATIVE_FN("topaz__get_delta_time", topaz_api__get_delta_time, 0);
     TS_MAP_NATIVE_FN("topaz__get_version_micro", topaz_api__get_version_micro, 0);
     TS_MAP_NATIVE_FN("topaz__get_version_minor", topaz_api__get_version_minor, 0);
     TS_MAP_NATIVE_FN("topaz__get_version_major", topaz_api__get_version_major, 0);
     TS_MAP_NATIVE_FN("topaz__debug", topaz_api__debug, 0);
+    TS_MAP_NATIVE_FN("topaz__set_target_frame_rate", topaz_api__set_target_frame_rate, 1);
 }
