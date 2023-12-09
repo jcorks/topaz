@@ -123,11 +123,12 @@ void topaz_data_set_from_string(topazAsset_t * a, const topazString_t * str) {
     TopazAssetData * d = data__retrieve(a);
     topaz_array_set_size(d->data, 0);
 
-    uint64_t len = topaz_string_get_length(str);
+    const char * cstr = topaz_string_get_c_str(str);
+    uint64_t len = strlen(cstr);
     topaz_array_set_size(d->data, len+1);
     memcpy(
         topaz_array_get_data(d->data),
-        topaz_string_get_c_str(str),
+        cstr,
         len+1
     );
 }
