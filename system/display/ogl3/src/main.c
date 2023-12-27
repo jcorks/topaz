@@ -405,7 +405,7 @@ static void topaz_glfw_request_parameter_change(
       case topazDisplay_Parameter_Decorated:
         glfwSetWindowAttrib(d->window, GLFW_DECORATED, (int)value);
         break;
-      case topazDisplay_Parameter_Fullscreen:
+      case topazDisplay_Parameter_Fullscreen: {
         TopazGLFWWindow * d = api;      
         const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         if (value > 0) {
@@ -430,6 +430,7 @@ static void topaz_glfw_request_parameter_change(
             );
         } 
         break;
+      }
       default:;  
     }
 }

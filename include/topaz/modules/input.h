@@ -301,6 +301,41 @@ float topaz_input_get_pad_state(
     int input
 );
 
+
+/// Returns whether the specified pad is a "standard"
+/// game pad. This provides standard and expected mappings for:
+///     topazPad_a
+///     topazPad_b
+///     topazPad_x
+///     topazPad_y
+///     topazPad_start
+///     topazPad_select
+///     topazPad_r
+///     topazPad_l
+///     topazPad_r3 <- hat button
+///     topazPad_l3 <- hat button
+///     topazPad_d_up
+///     topazPad_d_down
+///     topazPad_d_left
+///     topazPad_d_right
+///     topazPad_d_right
+///     topazPad_axisX <- left stick
+///     topazPad_axisY
+///     topazPad_axisX2 <- right stick
+///     topazPad_axisY2
+///     topazPad_axisX3 <- triggers
+///     topazPad_axisY3
+/// If a pad is not a standard gamepad, there are very little 
+/// guarantees provided for what the 
+///
+int topaz_input_is_pad_standard(
+    /// The input instance to query
+    const topazInput_t * query,
+    
+    /// The index of the pad to query.
+    int padIndex
+);
+
 /// Returns the current state of the device input for a mapped input
 ///
 float topaz_input_get_mapped_state(
