@@ -2692,6 +2692,7 @@
         @:topaz_input__remove_listener = getExternalFunction(name:'topaz_input__remove_listener');
         @:topaz_input__get_state = getExternalFunction(name:'topaz_input__get_state');
         @:topaz_input__get_pad_state = getExternalFunction(name:'topaz_input__get_pad_state');
+        @:topaz_input__is_pad_standard = getExternalFunction(name:'topaz_input__is_pad_standard');
         @:topaz_input__get_mapped_state = getExternalFunction(name:'topaz_input__get_mapped_state');
         @:topaz_input__set_deadzone = getExternalFunction(name:'topaz_input__set_deadzone');
         @:topaz_input__query_pad_count = getExternalFunction(name:'topaz_input__query_pad_count');
@@ -2754,9 +2755,13 @@
             getPadState ::(padIndex, input) {
                 return topaz_input__get_pad_state(a:padIndex, b:input);
             },
+
+            isPadStandard ::(padIndex) {
+                return topaz_input__is_pad_standard(a:padIndex)==1;
+            },
             
-            getMappedState ::(input, name) {
-                return topaz_input__get_mapped_state(a:input, b:name);
+            getMappedState ::(name) {
+                return topaz_input__get_mapped_state(a:name);
             },
             
             setDeadzone ::(padID, input, deadZone) {
@@ -2766,7 +2771,7 @@
             queryPads ::{
                 @:output = [];
                 for(0, topaz_input__query_pad_count()) ::(i) {
-                    output[i] = topaz_input__query_pad_id(i);
+                    output[i] = topaz_input__query_pad_id(a:i);
                 }
                 return output;
             },

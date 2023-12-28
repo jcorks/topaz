@@ -2462,9 +2462,17 @@ Topaz = {};
                 getState = function(input) 
                     return topaz_input__get_state(input);
                 end,
+
+                getPadState = function(padID, input) 
+                    return topaz_input__get_pad_state(padID, input);
+                end,
+
+                isPadStandard = function(padID) 
+                    return topaz_input__is_pad_standard(padID)==1;
+                end,
                 
-                getMappedState = function(input, name) 
-                    return topaz_input__get_mapped_state(input, name);
+                getMappedState = function(name) 
+                    return topaz_input__get_mapped_state(name);
                 end,
                 
                 setDeadzone = function(padID, input, deadZone) 

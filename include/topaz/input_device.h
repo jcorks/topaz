@@ -55,6 +55,11 @@ enum topazInputDevice_Class {
     ///
     topaz_InputDevice_Class_Gamepad,
 
+    /// Input device id for a gamepad that has 
+    /// standard, modern controller mappings.
+    ///
+    topaz_InputDevice_Class_GamepadStandard,
+
     /// Input device id for a pointer/touchpad.
     ///
     topaz_InputDevice_Class_Pointer,

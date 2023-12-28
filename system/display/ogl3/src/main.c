@@ -430,7 +430,7 @@ static void topaz_glfw_request_parameter_change(
             );
         } 
         break;
-        }
+      }
       default:;  
     }
 }

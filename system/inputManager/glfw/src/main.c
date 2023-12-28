@@ -49,9 +49,20 @@ DEALINGS IN THE SOFTWARE.
 static topazTable_t * glfww2im = NULL;
 
 
+#define MAX_BUTTONS 128
+#define MAX_AXES 64
+
 typedef struct {
     int connected;
+
+    int isGamepad;
+    // used and updated if isGamepad is true
     GLFWgamepadstate state;
+
+    char buttons[MAX_BUTTONS];
+    int buttonCount;
+    float axes[MAX_AXES];
+    int axisCount;
 } GLFWPad;
 
 
@@ -257,23 +268,18 @@ static void topaz_glfw_im_cursor_callback(
 // joystick callbacks are a PAIN because they are completely GLOBAL and 
 // are not instanced. So we need to keep track of this on our own.
 
-static GLFWPad topaz_glfw_im_get_pad_state(int padID) {
-    int glfwPad;
-    switch(padID) {
-      case 0: glfwPad = GLFW_JOYSTICK_1; break;
-      case 1: glfwPad = GLFW_JOYSTICK_2; break;
-      case 2: glfwPad = GLFW_JOYSTICK_3; break;
-      case 3: glfwPad = GLFW_JOYSTICK_4; break;
-    }
+static GLFWPad topaz_glfw_im_get_gamepad_state(int glfwPad) {
 
     GLFWPad out = {};
     out.connected = glfwJoystickIsGamepad(glfwPad);
+    out.isGamepad = 1;
     if (!out.connected) return out;
     glfwGetGamepadState(glfwPad, &out.state);
     return out;
 }
 
-static int topaz_glfw_im_get_pad_event_delta(
+
+static int topaz_glfw_im_get_gamepad_event_delta(
     GLFWIM  * im,
     int padID,
     const GLFWPad * oldState,
@@ -284,7 +290,7 @@ static int topaz_glfw_im_get_pad_event_delta(
         newState->connected) {
         hasChanges = TRUE;
         if (newState->connected) {
-            im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_Gamepad);
+            im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_GamepadStandard);
         }
 
 
@@ -322,7 +328,7 @@ static int topaz_glfw_im_get_pad_event_delta(
             evt.state = newState->state.buttons[i] != 0;
             // might have missed the connected signal
             if (!im->pad[padID]) {
-                im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_Gamepad);
+                im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_GamepadStandard);
             }
 
             topaz_input_device_push_event(im->pad[padID], &evt);
@@ -345,6 +351,93 @@ static int topaz_glfw_im_get_pad_event_delta(
             }
 
             evt.state = newState->state.axes[i];
+            // might have missed the connected signal
+            if (!im->pad[padID]) {
+                im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_GamepadStandard);
+            }
+
+            topaz_input_device_push_event(im->pad[padID], &evt);
+            hasChanges = TRUE;
+        }
+    }
+    return hasChanges;
+}
+
+
+
+
+static GLFWPad topaz_glfw_im_get_pad_state(int glfwPad) {
+
+    GLFWPad out = {};
+    out.connected = glfwJoystickPresent(glfwPad);
+    out.isGamepad = 0;
+    if (!out.connected) return out;
+
+    const char * b = glfwGetJoystickButtons(glfwPad, &out.buttonCount);
+    const float * f = glfwGetJoystickAxes(glfwPad, &out.axisCount);
+
+    if (out.buttonCount > MAX_BUTTONS) out.buttonCount = MAX_BUTTONS;
+    if (out.axisCount > MAX_AXES)      out.axisCount = MAX_AXES;
+
+    memcpy(out.buttons, b, sizeof(char)*out.buttonCount);
+    memcpy(out.axes,    f, sizeof(float)*out.axisCount);
+
+    return out;
+}
+
+
+static int topaz_glfw_im_get_pad_event_delta(
+    GLFWIM  * im,
+    int padID,
+    const GLFWPad * oldState,
+    const GLFWPad * newState
+) {
+    int hasChanges = 0;
+    if (oldState->connected !=
+        newState->connected) {
+        hasChanges = TRUE;
+        if (newState->connected) {
+            im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_Gamepad);
+        }
+
+
+        if (newState->connected == 0) {
+            topaz_input_device_destroy(im->pad[padID]);
+            im->pad[padID] = NULL;
+            return hasChanges;
+        }
+    }
+
+
+    int i;
+    int buttonCount = oldState->buttonCount < newState->buttonCount ? oldState->buttonCount : newState->buttonCount;
+    if (buttonCount > (int)topazPad_b32) buttonCount = (int)topazPad_b32;
+    for(i = 0; i < buttonCount; ++i) {
+        if (oldState->buttons[i] != 
+            newState->buttons[i]) {
+            topazInputDevice_Event_t evt = {};
+
+            evt.id = ((int)(topazPad_a)) + i;
+            evt.state = newState->buttons[i] != 0;
+            // might have missed the connected signal
+            if (!im->pad[padID]) {
+                im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_Gamepad);
+            }
+
+            topaz_input_device_push_event(im->pad[padID], &evt);
+            hasChanges = TRUE;
+        }
+    }
+
+    int axisCount = oldState->axisCount < newState->axisCount ? oldState->axisCount : newState->axisCount;
+    if (axisCount > (int)topazPad_axisL4) axisCount = (int)topazPad_axisL4;
+    for(i = 0; i < axisCount; ++i) {
+        if (oldState->axes[i] != 
+            newState->axes[i]) {
+            topazInputDevice_Event_t evt = {};
+
+            evt.id = ((int)topazPad_axisX) + i;
+            evt.state = newState->axes[i];
             // might have missed the connected signal
             if (!im->pad[padID]) {
                 im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_Gamepad);
@@ -461,10 +554,28 @@ static int topaz_glfw_im_handle_events(topazInputManager_t * imSrc, void * userD
     topaz_array_set_size(im->queuedPointerEvents, 0);
 
     for(i = 0; i < 4; ++i) {
-        GLFWPad pad = topaz_glfw_im_get_pad_state(i);
-        if (topaz_glfw_im_get_pad_event_delta(im, i, &im->padState[i], &pad)) {
-            hasEvents = TRUE;
-            im->padState[i] = pad;
+        int glfwPad;
+        switch(i) {
+          case 0: glfwPad = GLFW_JOYSTICK_1; break;
+          case 1: glfwPad = GLFW_JOYSTICK_2; break;
+          case 2: glfwPad = GLFW_JOYSTICK_3; break;
+          case 3: glfwPad = GLFW_JOYSTICK_4; break;
+        }
+
+
+        if (glfwJoystickIsGamepad(glfwPad)) {
+
+            GLFWPad pad = topaz_glfw_im_get_gamepad_state(glfwPad);
+            if (topaz_glfw_im_get_gamepad_event_delta(im, i, &im->padState[i], &pad)) {
+                hasEvents = TRUE;
+                im->padState[i] = pad;
+            }
+        } else if (glfwJoystickPresent(glfwPad)) {
+            GLFWPad pad = topaz_glfw_im_get_pad_state(glfwPad);
+            if (topaz_glfw_im_get_pad_event_delta(im, i, &im->padState[i], &pad)) {
+                hasEvents = TRUE;
+                im->padState[i] = pad;
+            }            
         }
     }
 
