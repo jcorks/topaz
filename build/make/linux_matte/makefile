@@ -120,8 +120,8 @@ INCS := -I../../../include/ -I. -I/usr/include/freetype2/
 
 
 FLAGS = -O2
-LIBS :=  -lvorbisfile -lvorbis -logg-static -lfreetype -lglfw -lGL -lasound -lm -pthread -ldl -static
-
+#LIBS := -lvorbisfile -lvorbis -logg-static -lfreetype -lglfw -lGL -lasound -lm -pthread -ldl -static
+LIBS = $(shell pkg-config --libs alsa ogg vorbis vorbisfile opengl freetype2 glfw3 x11) -lm -ldl
 
 %.o: %.c 
 	$(CC) -c $(FLAGS) $(DEFS) $(INCS) $< -o $@
