@@ -1,6 +1,3 @@
 [submodule "system/script/lua/lua"]
 	path = system/script/lua/lua
 	url = https://github.com/lua/lua
-[submodule "system/script/lua/src/lua"]
-	path = system/script/lua/src/lua
-	url = https://github.com/lua/lua
