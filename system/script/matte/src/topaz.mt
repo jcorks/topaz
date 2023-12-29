@@ -3319,12 +3319,15 @@
 
 
 ::<= {
+    @:topaz__get_argument_count = getExternalFunction(name:'topaz__get_argument_count');
+    @:topaz__get_argument = getExternalFunction(name:'topaz__get_argument');
     @:topaz__attach_pre_manager = getExternalFunction(name:'topaz__attach_pre_manager');
     @:topaz__attach_pre_manager_unpausable = getExternalFunction(name:'topaz__attach_pre_manager_unpausable');
     @:topaz__attach_post_manager = getExternalFunction(name:'topaz__attach_post_manager');
     @:topaz__attach_post_manager_unpausable = getExternalFunction(name:'topaz__attach_post_manager_unpausable');
     @:topaz__frame_start = getExternalFunction(name:'topaz__frame_start');
     @:topaz__set_target_frame_rate = getExternalFunction(name:'topaz__set_target_frame_rate');
+
 
     Topaz.attachPreManager = ::(entity) {
         topaz__attach_pre_manager(a:entity);
@@ -3348,6 +3351,14 @@
 
     Topaz.frameStart = ::(FPS) {
         topaz__frame_start(a:FPS);
+    }
+    
+    Topaz.getArguments = :: {
+        @:out = [];
+        for(0, topaz__get_argument_count()) ::(i) {
+            out[i] = topaz__get_argument(a:i);
+        }
+        return out;
     }
 
 };

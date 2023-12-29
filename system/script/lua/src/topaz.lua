@@ -3022,10 +3022,19 @@ Topaz = {};
         Topaz.frameStart = function(FPS) 
             topaz__frame_start(FPS);
         end
+
+        Topaz.getArguments = function()
+            local out = {};
+            for i=1,topaz__get_argument_count() do
+                out[i] = topaz__get_argument(i-1);                
+            end
+            return out;
+        end
         
         Topaz.setTargetFrameRate = function(FPS)
             topaz__set_target_frame_rate(FPS);
         end
+        
         
         Topaz.Lua = {
         

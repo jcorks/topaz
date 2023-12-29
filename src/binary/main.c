@@ -44,11 +44,16 @@ static void window_close_callback(
 
 int main(int argc, char ** argv) {
     topazString_t * path = NULL;
-    if (argc > 1)
-        path = topaz_string_create_from_c_str(argv[1]);
+    int i;
+    for(i = 0; i < argc; ++i) {
+        if (strstr(argv[i], "start:") == argv[i]) {
+            path = topaz_string_create_from_c_str("%s", argv[1]+strlen("start:"));            
+            break;
+        }
+    }
  
     // Create the context and window
-    topaz_t * ctx = topaz_context_create();
+    topaz_t * ctx = topaz_context_create(argc, argv);
 
 
     // Creates a script instance. The permissions can 

@@ -62,10 +62,24 @@ typedef struct topaz_t topaz_t;
 
 
 /// Creates a new topaz context. Default system backends are used.
+/// Arguments to the topaz runtime can be specified as well.
+/// Most commonly, these are forwarded from the C runtime.
 ///
 /// (No script mapping)
 ///
-topaz_t * topaz_context_create();
+topaz_t * topaz_context_create(
+    /// The number of string arguments to pass to the runtime 
+    /// These are exposed by topaz_context_get_arguments()
+    ///
+    int argc, 
+
+    /// The string arguments to pass to the runtime. They are copied 
+    /// to the runtime, so the lifetime of argv's strings do not 
+    /// need to be preserved.
+    /// These are exposed by topaz_context_get_arguments()
+    ///
+    char ** argv
+);
 
 
 /// Creates a new topaz context with the given topazSystem_t configuration.
@@ -101,7 +115,6 @@ void topaz_context_destroy();
 
 
 
-
 /// Begins the Engine execution loop.
 ///
 /// Once run is initiated, all drawing to the screen and logic updating
@@ -109,6 +122,16 @@ void topaz_context_destroy();
 /// debugging features such as the console and Entity debugger.
 int topaz_context_run(
     /// The context to run.
+    topaz_t * context
+);
+
+/// Gets the arguments passed to the created runtime.
+/// The returned array is owned by the context and contains 
+/// topazString_t * instances which are also owned by 
+/// the context.
+///
+topazArray_t * topaz_context_get_arguments(
+    /// The context to query.
     topaz_t * context
 );
     

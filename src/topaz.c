@@ -80,6 +80,7 @@ struct topaz_t {
     topazFilesystem_t * fsRef;
     topazTime_t * timeRef;
     topazDisplay_t * display;
+    topazArray_t * args;
     double frameEnd;
     double frameStart;
     double frameNext;
@@ -93,11 +94,21 @@ struct topaz_t {
 };
 static int configured = 0;
 
-topaz_t * topaz_context_create() {
+topaz_t * topaz_context_create(int argc, char ** argv) {
     if (!configured)
         topaz_system_configure();
 
-    return topaz_context_create_from_system(topaz_system_create_default());
+    topazArray_t * args = topaz_array_create(sizeof(topazString_t*));
+    int i;
+    for(i = 0; i < argc; ++i) {
+        topazString_t * str = topaz_string_create_from_c_str("%s", argv[i]);
+        topaz_array_push(args, str);
+    }
+
+
+    topaz_t * out = topaz_context_create_from_system(topaz_system_create_default());
+    out->args = args;
+    return out;
 }
 topaz_t * topaz_context_create_from_system(topazSystem_t * a) {
     if (!configured)
@@ -221,7 +232,7 @@ topaz_t * topaz_context_create_empty() {
     topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("display"),      TOPAZ_STR_CAST("noDisplay"));
     topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("time"),         TOPAZ_STR_CAST("noTime"));
     topaz_system_set_backend_handler(sys, TOPAZ_STR_CAST("filesystem"),   TOPAZ_STR_CAST("noFilesystem"));
-    return topaz_context_create(sys);
+    return topaz_context_create_from_system(sys);
 }
 
 
@@ -239,6 +250,14 @@ int topaz_context_run(topaz_t * t) {
 
     return 0;
 }
+
+topazArray_t * topaz_context_get_arguments(
+    topaz_t * context
+) {
+    return context->args;
+}
+    
+    
     
     
 void topaz_context_pause(topaz_t * t) {
