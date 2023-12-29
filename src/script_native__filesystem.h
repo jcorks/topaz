@@ -30,13 +30,13 @@ TSO_SCRIPT_API_FN(filesystem_api__get_path_from_string) {
     TSO_ARG_1;
 
 
-    if (topaz_script_object_get_type(arg1) == topazScript_Object_Type_Undefined) {
+    if (topaz_script_object_get_type(arg0) == topazScript_Object_Type_Undefined) {
 
         topazFilesystem_t * fs = topaz_context_get_filesystem(((topazScriptManager_t*)context)->ctx);
         const topazFilesystem_Path_t * ptr = topaz_filesystem_get_path_from_string(
             fs,
             NULL,
-            topaz_script_object_as_string(arg0)
+            topaz_script_object_as_string(arg1)
         ); 
         
         if (!ptr) {

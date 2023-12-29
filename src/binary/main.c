@@ -1,14 +1,18 @@
 #include <topaz/topaz.h>
 #include <topaz/modules/view_manager.h>
 #include <topaz/all.h>
-
+#include <string.h>
 
 static int run_script(topaz_t * ctx, topazScript_t * script, const topazString_t * name) {
     // extract the script data
     topazFilesystem_t * fs = topaz_context_get_filesystem(ctx);
     const topazFilesystem_Path_t * path = topaz_filesystem_get_path_from_string(
         fs, 
-        topaz_filesystem_get_path(fs, topazFilesystem_DefaultNode_Resources),
+        topaz_filesystem_get_path_from_string(
+            fs,
+            NULL,
+            topaz_resources_get_path(topaz_context_get_resources(ctx))
+        ),
         name    
     );
     if (!path) {
@@ -44,10 +48,16 @@ static void window_close_callback(
 
 int main(int argc, char ** argv) {
     topazString_t * path = NULL;
+    topazString_t * location = NULL;
     int i;
     for(i = 0; i < argc; ++i) {
         if (strstr(argv[i], "start:") == argv[i]) {
             path = topaz_string_create_from_c_str("%s", argv[1]+strlen("start:"));            
+            break;
+        }
+
+        if (strstr(argv[i], "location:") == argv[i]) {
+            location = topaz_string_create_from_c_str("%s", argv[1]+strlen("location:"));            
             break;
         }
     }
@@ -62,6 +72,23 @@ int main(int argc, char ** argv) {
         topaz_context_get_script_manager(ctx),
         topazScriptManager_Permission_All
     );
+
+    if (location != NULL) {
+        if (!topaz_resources_set_path(
+            topaz_context_get_resources(ctx),
+            location
+        )) {
+
+            topazConsole_t * console = topaz_context_get_console(ctx);
+            topaz_console_enable(console, TRUE);
+
+            topazString_t * message = topaz_string_create_from_c_str("Could not change directory to %s", topaz_string_get_c_str(location));
+            topaz_console_print(console, message);
+            topaz_string_destroy(message);
+            return 10;
+        }
+        
+    }
 
     if (path == NULL) {
         path = topaz_string_create_from_c_str("main.");
