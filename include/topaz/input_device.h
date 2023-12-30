@@ -90,7 +90,10 @@ struct topazInputDevice_Event_t {
 ///
 topazInputDevice_t * topaz_input_device_create(
     /// The device class of the new device.
-    topazInputDevice_Class cls;
+    topazInputDevice_Class cls,
+    
+    /// The name hint of the device
+    const topazString_t * name
 );
 
 /// Destroys an input device.
@@ -159,6 +162,13 @@ void topaz_input_device_set_deadzone(
 
     /// The new deadzone.
     float newDeadzone
+);
+
+/// Gets the name hint for the device.
+///
+const topazString_t * topaz_input_device_get_name(
+    /// The device to query.
+    const topazInputDevice_t * device
 );
 
 

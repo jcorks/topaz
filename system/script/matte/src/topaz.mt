@@ -2692,6 +2692,7 @@
         @:topaz_input__remove_listener = getExternalFunction(name:'topaz_input__remove_listener');
         @:topaz_input__get_state = getExternalFunction(name:'topaz_input__get_state');
         @:topaz_input__get_pad_state = getExternalFunction(name:'topaz_input__get_pad_state');
+        @:topaz_input__get_pad_name = getExternalFunction(name:'topaz_input__get_pad_name');
         @:topaz_input__is_pad_standard = getExternalFunction(name:'topaz_input__is_pad_standard');
         @:topaz_input__get_mapped_state = getExternalFunction(name:'topaz_input__get_mapped_state');
         @:topaz_input__set_deadzone = getExternalFunction(name:'topaz_input__set_deadzone');
@@ -2755,6 +2756,11 @@
             getPadState ::(padIndex, input) {
                 return topaz_input__get_pad_state(a:padIndex, b:input);
             },
+
+            getPadName ::(padIndex) {
+                return topaz_input__get_pad_name(a:padIndex);
+            },
+
 
             isPadStandard ::(padIndex) {
                 return topaz_input__is_pad_standard(a:padIndex)==1;

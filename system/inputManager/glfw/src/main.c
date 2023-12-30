@@ -282,6 +282,7 @@ static GLFWPad topaz_glfw_im_get_gamepad_state(int glfwPad) {
 static int topaz_glfw_im_get_gamepad_event_delta(
     GLFWIM  * im,
     int padID,
+    int glfwPad,
     const GLFWPad * oldState,
     const GLFWPad * newState
 ) {
@@ -290,7 +291,10 @@ static int topaz_glfw_im_get_gamepad_event_delta(
         newState->connected) {
         hasChanges = TRUE;
         if (newState->connected) {
-            im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_GamepadStandard);
+            im->pad[padID] = topaz_input_device_create(
+                topaz_InputDevice_Class_GamepadStandard,
+                TOPAZ_STR_CAST(glfwGetJoystickName(glfwPad))
+            );
         }
 
 
@@ -328,7 +332,10 @@ static int topaz_glfw_im_get_gamepad_event_delta(
             evt.state = newState->state.buttons[i] != 0;
             // might have missed the connected signal
             if (!im->pad[padID]) {
-                im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_GamepadStandard);
+                im->pad[padID] = topaz_input_device_create(
+                    topaz_InputDevice_Class_GamepadStandard,
+                    TOPAZ_STR_CAST(glfwGetJoystickName(glfwPad))
+                );
             }
 
             topaz_input_device_push_event(im->pad[padID], &evt);
@@ -353,7 +360,10 @@ static int topaz_glfw_im_get_gamepad_event_delta(
             evt.state = newState->state.axes[i];
             // might have missed the connected signal
             if (!im->pad[padID]) {
-                im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_GamepadStandard);
+                im->pad[padID] = topaz_input_device_create(
+                    topaz_InputDevice_Class_GamepadStandard,
+                    TOPAZ_STR_CAST(glfwGetJoystickName(glfwPad))
+                );
             }
 
             topaz_input_device_push_event(im->pad[padID], &evt);
@@ -389,6 +399,7 @@ static GLFWPad topaz_glfw_im_get_pad_state(int glfwPad) {
 static int topaz_glfw_im_get_pad_event_delta(
     GLFWIM  * im,
     int padID,
+    int glfwPad,
     const GLFWPad * oldState,
     const GLFWPad * newState
 ) {
@@ -397,7 +408,10 @@ static int topaz_glfw_im_get_pad_event_delta(
         newState->connected) {
         hasChanges = TRUE;
         if (newState->connected) {
-            im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_Gamepad);
+            im->pad[padID] = topaz_input_device_create(
+                topaz_InputDevice_Class_Gamepad,
+                TOPAZ_STR_CAST(glfwGetJoystickName(glfwPad))
+            );
         }
 
 
@@ -421,7 +435,10 @@ static int topaz_glfw_im_get_pad_event_delta(
             evt.state = newState->buttons[i] != 0;
             // might have missed the connected signal
             if (!im->pad[padID]) {
-                im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_Gamepad);
+                im->pad[padID] = topaz_input_device_create(
+                    topaz_InputDevice_Class_Gamepad,
+                    TOPAZ_STR_CAST(glfwGetJoystickName(glfwPad))
+                );
             }
 
             topaz_input_device_push_event(im->pad[padID], &evt);
@@ -440,7 +457,10 @@ static int topaz_glfw_im_get_pad_event_delta(
             evt.state = newState->axes[i];
             // might have missed the connected signal
             if (!im->pad[padID]) {
-                im->pad[padID] = topaz_input_device_create(topaz_InputDevice_Class_Gamepad);
+                im->pad[padID] = topaz_input_device_create(
+                    topaz_InputDevice_Class_Gamepad,
+                    TOPAZ_STR_CAST(glfwGetJoystickName(glfwPad))
+                );
             }
 
             topaz_input_device_push_event(im->pad[padID], &evt);
@@ -499,8 +519,8 @@ static void * topaz_glfw_im_create(topazInputManager_t * api, topaz_t * ctx) {
     
     GLFWIM * out = calloc(1, sizeof(GLFWIM));
     out->ctx = NULL;
-    out->keyboard = topaz_input_device_create(topaz_InputDevice_Class_Keyboard);
-    out->mouse    = topaz_input_device_create(topaz_InputDevice_Class_Pointer);
+    out->keyboard = topaz_input_device_create(topaz_InputDevice_Class_Keyboard, TOPAZ_STR_CAST("Keyboard"));
+    out->mouse    = topaz_input_device_create(topaz_InputDevice_Class_Pointer, TOPAZ_STR_CAST("Pointer"));
     out->queuedKeyboardEvents = topaz_array_create(sizeof(topazInputDevice_Event_t));
     out->queuedPointerEvents  = topaz_array_create(sizeof(topazInputDevice_Event_t));
 
@@ -566,13 +586,13 @@ static int topaz_glfw_im_handle_events(topazInputManager_t * imSrc, void * userD
         if (glfwJoystickIsGamepad(glfwPad)) {
 
             GLFWPad pad = topaz_glfw_im_get_gamepad_state(glfwPad);
-            if (topaz_glfw_im_get_gamepad_event_delta(im, i, &im->padState[i], &pad)) {
+            if (topaz_glfw_im_get_gamepad_event_delta(im, i, glfwPad, &im->padState[i], &pad)) {
                 hasEvents = TRUE;
                 im->padState[i] = pad;
             }
         } else if (glfwJoystickPresent(glfwPad)) {
             GLFWPad pad = topaz_glfw_im_get_pad_state(glfwPad);
-            if (topaz_glfw_im_get_pad_event_delta(im, i, &im->padState[i], &pad)) {
+            if (topaz_glfw_im_get_pad_event_delta(im, i, glfwPad, &im->padState[i], &pad)) {
                 hasEvents = TRUE;
                 im->padState[i] = pad;
             }            

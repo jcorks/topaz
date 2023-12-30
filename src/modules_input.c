@@ -296,6 +296,11 @@ struct DeviceState {
         return input;
     }
 
+    static const topazString_t * device_state_get_name(DeviceState * d) {
+        if (d->device == NULL) return TOPAZ_STR_CAST("");
+        return topaz_input_device_get_name(d->device);
+    }
+
 
     static void device_state_update(topazInput_t * t, DeviceState * d) {
 
@@ -641,6 +646,13 @@ float topaz_input_get_pad_state(const topazInput_t * t, int pad, int i) {
     InputState * input = device_state_get_input(t->devices[topazInputManager_DefaultDevice_Pad1+pad], i);
     return input->current;
 }
+
+const topazString_t * topaz_input_get_pad_name(const topazInput_t * t, int pad) {
+    if (pad >= 4) return TOPAZ_STR_CAST("");
+    DeviceState * state = t->devices[topazInputManager_DefaultDevice_Pad1+pad];
+    return device_state_get_name(state);
+}
+
 
 int topaz_input_is_pad_standard(
     const topazInput_t * t,

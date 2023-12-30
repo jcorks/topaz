@@ -301,6 +301,18 @@ float topaz_input_get_pad_state(
     int input
 );
 
+/// Returns the name of the input device.
+/// This is the name hint reported by the driver for the device.
+/// It may or may not be unique, but should give a human-readable
+/// identifier.
+const topazString_t * topaz_input_get_pad_name(
+    /// The input instance to query.
+    const topazInput_t * query,
+    
+    /// The pad to query.
+    int padIndex
+);
+
 
 /// Returns whether the specified pad is a "standard"
 /// game pad. This provides standard and expected mappings for:

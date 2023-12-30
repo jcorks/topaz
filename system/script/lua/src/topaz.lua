@@ -2467,6 +2467,10 @@ Topaz = {};
                     return topaz_input__get_pad_state(padID, input);
                 end,
 
+                getPadName = function(padID) 
+                    return topaz_input__get_pad_state(padID);
+                end,
+
                 isPadStandard = function(padID) 
                     return topaz_input__is_pad_standard(padID)==1;
                 end,

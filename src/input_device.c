@@ -14,6 +14,7 @@
 struct topazInputDevice_t {
     topazTable_t * deadZone;
     topazInputDevice_Event_t * data;
+    topazString_t * name;
     int allocated;
     int iterFront;
     int iterBack;
@@ -25,12 +26,13 @@ struct topazInputDevice_t {
 
 /// Creates a new input device
 ///
-topazInputDevice_t * topaz_input_device_create(topazInputDevice_Class c) {
+topazInputDevice_t * topaz_input_device_create(topazInputDevice_Class c, const topazString_t * name) {
     topazInputDevice_t * out = calloc(1, sizeof(topazInputDevice_t));
     out->data = calloc(sizeof(topazInputDevice_Event_t), default_action_queue_size);
     out->allocated = default_action_queue_size;
     out->deadZone = topaz_table_create_hash_pointer();
     out->type = c;
+    out->name = topaz_string_clone(name);
     return out;
 }
 
@@ -46,6 +48,7 @@ void topaz_input_device_destroy(topazInputDevice_t * t) {
         free((void*)topaz_table_iter_get_key(iter));
     }
     topaz_table_destroy(t->deadZone);
+    topaz_string_destroy(t->name);
     free(t->data);
     free(t);
 }
@@ -119,4 +122,9 @@ void topaz_input_device_set_deadzone(topazInputDevice_t * t, int id, float f) {
     *v = f;
 }
 
+const topazString_t * topaz_input_device_get_name(
+    const topazInputDevice_t * device
+) {
+    return device->name;
+}
 
