@@ -69,8 +69,7 @@ SRCS := \
     src/topaz.c\
     src/transform.c\
     src/vector.c\
-    src/wbuffer.c\
-    src/binary/main.c
+    src/wbuffer.c
 
 
 SRCS += system/audioManager/alsa/src/main.c
@@ -113,6 +112,8 @@ SRCS += system/time/posix/src/time_posix_topaz.c
 SRCS := $(addprefix ../../../,$(SRCS))
 OBJS := $(SRCS:.c=.o)
 
+SRC_MAIN := ../../../src/binary/main.c
+SRC_OBJ  := $(SRC_MAIN:.c=.o)
 
 INCS := -I../../../include/ -I. -I/usr/include/freetype2/
 
@@ -128,7 +129,8 @@ LIBS = $(shell pkg-config --libs alsa ogg vorbis vorbisfile opengl freetype2 glf
 
 all: $(OBJS)
 	@echo linking 
-	$(CC) $(FLAGS) $(OBJS) $(INCS)  -o ./topaz $(LIBS) 
+	ar rcs libtopaz.a $(OBJS)
+	$(CC) $(FLAGS) $(SRC_MAIN) $(INCS)  -o ./topaz libtopaz.a $(LIBS) 
 
 debug: $(OBJS)
 	$(CC) $(FLAGS) $(OBJS) $(INCS)  -o ./topaz $(LIBS) 
@@ -137,4 +139,4 @@ update-bootstrap-rom:
 	cd ../../../system/script/matte/src; $(CC) m2s/mt_to_string.c -o m2s_bin; ./m2s_bin
 
 clean: 
-	rm -f $(OBJS) ./scripts
+	rm -f $(OBJS) ./scripts ./libtopaz.a
