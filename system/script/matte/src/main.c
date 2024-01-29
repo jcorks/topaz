@@ -893,6 +893,10 @@ void topaz_matte_bootstrap(topazScript_t * script, void * n) {
 
 }
 
+void * topaz_matte_get_context(topazScript_t * script, void * data) {
+    TOPAZMATTE * ctx = data;
+    return ctx->matte;
+}
 
 
 
@@ -1459,6 +1463,7 @@ void topaz_system_script_matte__backend(
     api->script_throw_error = topaz_matte_throw_error;
     api->script_bootstrap = topaz_matte_bootstrap;
     api->script_file_extension = topaz_matte_file_extension;
+    api->script_get_context = topaz_matte_get_context;
 
 
     api->script_debug_start = topaz_matte_debug_start;

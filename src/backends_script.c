@@ -107,6 +107,7 @@ topazScript_t * topaz_script_create(topaz_t * t, topazSystem_Backend_t * b, cons
         assert(api->script_run);
         assert(api->script_expression);
         assert(api->script_bootstrap);
+        assert(api->script_get_context);
     #endif
 
     out->implementationData = out->api.script_create(out, t);
@@ -170,6 +171,14 @@ int topaz_script_map_native_function(
         argumentCount,
         fn,
         userData
+    );
+}
+
+void * topaz_script_get_context(
+    topazScript_t * s
+) {
+    return s->api.script_get_context(
+        s, s->implementationData
     );
 }
 

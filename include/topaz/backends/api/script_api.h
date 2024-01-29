@@ -214,6 +214,10 @@ struct topazScriptAPI_t {
     // 
     void (*script_bootstrap)          (topazScript_t *, void *);
 
+    // This is used to get language-specific behavior. Only really useful if 
+    // your project is tied to a specific language.
+    void * (*script_get_context) (topazScript_t *, void *);
+
 
     // Returns the file extension used or preferred by this language
     const topazString_t * (*script_file_extension)(topazScript_t *, void*);

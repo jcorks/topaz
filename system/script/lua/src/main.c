@@ -1029,6 +1029,11 @@ void topaz_lua_bootstrap(topazScript_t * script, void * n) {
 }
 
 
+void * topaz_lua_get_context(topazScript_t * script, void * data) {
+    TOPAZLUA * ctx = data;
+    return ctx->lua;    
+}
+
 
 
 
@@ -2089,7 +2094,7 @@ void topaz_system_script_lua__backend(
     api->script_throw_error = topaz_lua_throw_error;
     api->script_bootstrap = topaz_lua_bootstrap;
     api->script_file_extension = topaz_lua_file_extension;
-
+    api->script_get_context = topaz_lua_get_context;
 
     api->script_debug_start = topaz_lua_debug_start;
     api->script_debug_send_command = topaz_lua_debug_send_command;

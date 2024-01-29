@@ -187,6 +187,19 @@ void topaz_script_destroy(
     topazScript_t * script
 );
 
+/// Retrieves the backend instance of the script context.
+/// This is a language-specific reference, usually pointing to 
+/// the toplevel runtime instance of an embedded language 
+/// manager.
+/// For the built-in supported languages, these are the return values:
+///
+/// Matte -> matte_t * instance 
+/// Lua -> lua_State * instance
+/// NoScript -> NULL
+void * topaz_script_get_context(
+    /// The script instance to query.
+    topazScript_t * script
+);
 
 /// Retrieves the backend for this script object.
 ///
