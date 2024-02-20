@@ -567,6 +567,7 @@ static void topaz_matte_fatal(matteVM_t * vm, uint32_t file, int lineNumber, mat
 static uint32_t topaz_matte_import(
     matte_t * m,
     const char * importName,
+    const char * alias,
     void * usrdata
 ) {
     TOPAZMATTE * ctx = usrdata;
@@ -595,7 +596,7 @@ static uint32_t topaz_matte_import(
 
     uint32_t fileid = matte_vm_get_new_file_id(
         matte_get_vm(m),
-        MATTE_VM_STR_CAST(matte_get_vm(m), importName)
+        MATTE_VM_STR_CAST(matte_get_vm(m), alias? alias : importName)
     );
 
 
@@ -634,7 +635,7 @@ static uint32_t topaz_matte_import(
     }           
     matte_deallocate(bytecode);
 
-    topaz_script_register_source(ctx->script, TOPAZ_STR_CAST(importName), srcstr);
+    topaz_script_register_source(ctx->script, TOPAZ_STR_CAST(alias ? alias : importName), srcstr);
     topaz_string_destroy(srcstr);
 
     return fileid;
