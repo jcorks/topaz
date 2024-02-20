@@ -32,7 +32,7 @@ SRCS := \
     src/backends_time.c\
     src/backends_script.c\
     src/backends_iox.c\
-    src/camera.c\
+    src/viewport.c\
     src/color.c\
     src/component.c\
     src/components_scheduler.c\
@@ -69,8 +69,7 @@ SRCS := \
     src/topaz.c\
     src/transform.c\
     src/vector.c\
-    src/wbuffer.c\
-    src/binary/main.c
+    src/wbuffer.c
 
 
 SRCS += system/audioManager/wasapi/src/main.c
@@ -114,6 +113,8 @@ SRCS += system/time/winapi/src/time_winapi_topaz.c
 SRCS := $(addprefix ../../../,$(SRCS))
 OBJS := $(SRCS:.c=.o)
 
+SRC_MAIN := ../../../src/binary/main.c
+SRC_OBJ  := $(SRC_MAIN:.c=.o)
 
 INCS := -I../../../include/ -I. -I/mingw64/include/freetype2/
 
@@ -121,7 +122,7 @@ INCS := -I../../../include/ -I. -I/mingw64/include/freetype2/
 
 
 
-FLAGS = -static 
+FLAGS = -static -mwindows -O2
 LIBS :=  -lvorbisfile  -lwinmm -lvorbis -logg -lharfbuzz -lfreetype -lharfbuzz -lfreetype -lglfw3 -lOpenGL32 -lshlwapi  -lusp10 -lgraphite2 -lstdc++ -lpng -lGDI32 -lz  -lbz2 -lrpcrt4 -lole32 -lbrotlidec -lbrotlicommon
 
 
@@ -130,7 +131,8 @@ LIBS :=  -lvorbisfile  -lwinmm -lvorbis -logg -lharfbuzz -lfreetype -lharfbuzz -
 
 all: $(OBJS)
 	@echo linking 
-	$(CC) -mwindows -O2 $(FLAGS) $(OBJS) $(INCS) -o ./topaz $(LIBS) 
+	ar rcs libtopaz.a $(OBJS)
+	$(CC) $(FLAGS) $(SRC_MAIN) $(INCS)  -o ./topaz libtopaz.a $(LIBS) 
 
 debug: $(OBJS)
 	$(CC) -g $(FLAGS) $(OBJS) $(INCS) -o ./topaz $(LIBS) 
