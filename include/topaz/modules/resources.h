@@ -155,6 +155,17 @@ topazAsset_t * topaz_resources_create_data_asset_from_path(
 );
 
 
+/// Reads bytes from the filesystem and replaces an existing 
+/// data asset's contents with these bytes.
+///
+/// Success is returned.
+int topaz_resources_read_data_asset_from_path(
+    topazResources_t * res,
+    /// The asset to modify.
+    topazAsset_t * asset,
+    /// The path to the asset.
+    const topazString_t * path
+);
 
 
 /// Converts an existing data asset

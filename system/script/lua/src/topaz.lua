@@ -2862,6 +2862,10 @@ Topaz = {};
                     return out;
                 end,
                 
+                readDataAssetFromPath = function(asset, path)
+                    return topaz_resources__read_data_asset_from_path(asset, path);                
+                end,
+                
                 convertAsset = function(fileType, asset) 
                     local out = topaz_resources__convert_asset(fileType, asset);
                     if (out == nil) then return nil end;

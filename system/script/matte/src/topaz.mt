@@ -3105,6 +3105,7 @@
         @:topaz_resources__fetch_asset = getExternalFunction(name:'topaz_resources__fetch_asset');
         @:topaz_resources__create_asset = getExternalFunction(name:'topaz_resources__create_asset');
         @:topaz_resources__create_data_asset_from_path = getExternalFunction(name:'topaz_resources__create_data_asset_from_path');
+        @:topaz_resources__read_data_asset_from_path = getExternalFunction(name:'topaz_resources__read_data_asset_from_path');
         @:topaz_resources__convert_asset = getExternalFunction(name:'topaz_resources__convert_asset');
         @:topaz_resources__write_asset = getExternalFunction(name:'topaz_resources__write_asset');
         @:topaz_resources__remove_asset = getExternalFunction(name:'topaz_resources__remove_asset');
@@ -3163,6 +3164,11 @@
                 initializer__data(d:out);
                 return out;
             },
+
+            readDataAssetFromPath ::(asset, path) {
+                return topaz_resources__read_data_asset_from_path(a:asset, b:path);
+            },
+
             
             convertAsset ::(fileType, asset) {
                 @:out = topaz_resources__convert_asset(a:fileType, b:asset);

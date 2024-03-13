@@ -212,6 +212,26 @@ topazAsset_t * topaz_resources_create_data_asset_from_path(
         return NULL;
     }
 
+    if(!topaz_resources_read_data_asset_from_path(
+        r,
+        a,
+        path
+    )) {
+        topaz_asset_destroy(a);
+        topaz_table_remove(r->name2asset, name);    
+    }
+    
+    return a;
+}
+
+int topaz_resources_read_data_asset_from_path(
+    topazResources_t * r,
+    /// The asset to modify.
+    topazAsset_t * a,
+    /// The path to the asset.
+    const topazString_t * path
+) {
+
     // at this point, we want a data buffer 
     topazFilesystem_t * fs = topaz_context_get_filesystem(r->ctx);
     const topazFilesystem_Path_t * p = topaz_filesystem_get_path_from_string(fs, r->path, path);
@@ -227,9 +247,7 @@ topazAsset_t * topaz_resources_create_data_asset_from_path(
 
     // check to see if read failed.
     if (!data) {
-        topaz_asset_destroy(a);
-        topaz_table_remove(r->name2asset, name);
-        return NULL;
+        return 0;
     } 
 
     // populate data asset
@@ -242,7 +260,7 @@ topazAsset_t * topaz_resources_create_data_asset_from_path(
     );
 
     topaz_rbuffer_destroy(data);
-    return a;
+    return 1;
 }
 
 //// PRIVATE:

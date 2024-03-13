@@ -102,6 +102,23 @@ TSO_SCRIPT_API_FN(resources_api__create_data_asset_from_path) {
     return object;
 }
 
+TSO_SCRIPT_API_FN(resources_api__read_data_asset_from_path) {
+    TSO_ARG_0;
+    TSO_ARG_1;
+    TSO_NATIVIZE(topazAsset_t *, TSO_OBJECT_TYPE__ASSET);   
+
+    topazResources_t * r = topaz_context_get_resources(((topazScriptManager_t*)context)->ctx);
+
+    return topaz_script_object_from_int(
+        script,
+        topaz_resources_read_data_asset_from_path(
+            r,
+            native,
+            topaz_script_object_as_string(arg1)
+        )
+    );
+}
+
 
 
 
@@ -420,6 +437,7 @@ static void add_refs__resources_api(topazScript_t * script, topazScriptManager_t
     TS_MAP_NATIVE_FN("topaz_resources__fetch_asset", resources_api__fetch_asset, 1);
 
     TS_MAP_NATIVE_FN("topaz_resources__create_data_asset_from_path",  resources_api__create_data_asset_from_path, 2);
+    TS_MAP_NATIVE_FN("topaz_resources__read_data_asset_from_path",  resources_api__read_data_asset_from_path, 2);
 
     TS_MAP_NATIVE_FN("topaz_resources__convert_asset", resources_api__convert_asset, 2);
     TS_MAP_NATIVE_FN("topaz_resources__write_asset", resources_api__write_asset, 3);
