@@ -113,40 +113,36 @@ TSO_SCRIPT_API_FN(filesystem_api_path__get_parent) {
 }
 
 
-TSO_SCRIPT_API_FN(filesystem_api_path__get_child_count) {
-    TSO_ARG_0;
-    TSO_NATIVIZE(topazFilesystem_Path_t *, TSO_OBJECT_ID__FILESYSTEM_PATH);
-
-    uint32_t size = topaz_array_get_size(topaz_filesystem_path_get_children(native));
-    return topaz_script_object_from_int(
-        script,
-        size
-    );
-}
-
-
-TSO_SCRIPT_API_FN(filesystem_api_path__get_nth_child) {
+TSO_SCRIPT_API_FN(filesystem_api_path__get_children) {
     TSO_ARG_0;
     TSO_ARG_1;
     TSO_NATIVIZE(topazFilesystem_Path_t *, TSO_OBJECT_ID__FILESYSTEM_PATH);
-
     const topazArray_t * children = topaz_filesystem_path_get_children(native);
-    uint32_t size = topaz_array_get_size(children);
-    int n = topaz_script_object_as_int(arg1);
-    if (n < 0 || n >= size) {
-        TSO_NO_RETURN;
+
+
+    uint32_t i;
+    uint32_t len = topaz_array_get_size(children);
+    topazArray_t * arr = topaz_array_create(sizeof(topazScript_Object_t*));
+    topaz_array_set_size(arr, 1);
+
+    for(i = 0; i < len; ++i) {
+        const topazFilesystem_Path_t * ptr = topaz_array_at(children, topazFilesystem_Path_t *, i);
+        // creates new object and sets native pointer
+        TSO_OBJECT_NEW_VALUE((void*)ptr, TSO_OBJECT_ID__FILESYSTEM_PATH, NULL, NULL);
+
+        (topaz_array_at(arr, topazScript_Object_t *, 0)) = object;
+        topaz_script_object_destroy(
+            topaz_script_object_reference_call(
+                arg1,
+                arr
+            )
+        );
     }
-
-    const topazFilesystem_Path_t * ptr = topaz_array_at(children, topazFilesystem_Path_t *, n);
-    if (!ptr) {
-        TSO_NO_RETURN;
-    }
-
-
-    // creates new object and sets native pointer
-    TSO_OBJECT_NEW_VALUE((void*)ptr, TSO_OBJECT_ID__FILESYSTEM_PATH, NULL, NULL);
-    return object;    
+    topaz_array_destroy(arr);
+    TSO_NO_RETURN;
 }
+
+
 
 
 
@@ -157,8 +153,7 @@ static void add_refs__filesystem_api(topazScript_t * script, topazScriptManager_
     TS_MAP_NATIVE_FN("topaz_filesystem_path__as_string", filesystem_api_path__as_string, 1);
     TS_MAP_NATIVE_FN("topaz_filesystem_path__get_name", filesystem_api_path__get_name, 1);
     TS_MAP_NATIVE_FN("topaz_filesystem_path__get_parent", filesystem_api_path__get_parent, 1);
-    TS_MAP_NATIVE_FN("topaz_filesystem_path__get_child_count", filesystem_api_path__get_child_count, 1);
-    TS_MAP_NATIVE_FN("topaz_filesystem_path__get_nth_child", filesystem_api_path__get_nth_child, 2);
+    TS_MAP_NATIVE_FN("topaz_filesystem_path__get_children", filesystem_api_path__get_children, 2);
 
     // reading / writing need to be done via resources.
 }

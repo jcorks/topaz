@@ -1198,12 +1198,19 @@ Topaz = {};
         
         local getChildren = function(REFi) 
             local output = {};
-            for i=1, topaz_filesystem_path__get_child_count(REFi) do 
-                output[i] = topaz_filesystem_path__get_nth_child(REFi, i-1);
-                if (output[i].__mapped == nil) then
-                    initializer__filesystem_path(output[i]);
+            local i = 1;
+
+            topaz_filesystem_path__get_children(
+                REFi,
+                function(child) 
+                    if (child.__mapped == nil) then
+                        initializer__filesystem_path(child);
+                    end
+
+                    output[i] = child;
+                    i = i + 1;
                 end
-            end
+            )
             return output;
         end
 

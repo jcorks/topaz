@@ -991,8 +991,7 @@
     @:topaz_filesystem_path__as_string = getExternalFunction(name:'topaz_filesystem_path__as_string');
     @:topaz_filesystem_path__get_name = getExternalFunction(name:'topaz_filesystem_path__get_name');
     @:topaz_filesystem_path__get_parent = getExternalFunction(name:'topaz_filesystem_path__get_parent');
-    @:topaz_filesystem_path__get_nth_child = getExternalFunction(name:'topaz_filesystem_path__get_nth_child');
-    @:topaz_filesystem_path__get_child_count = getExternalFunction(name:'topaz_filesystem_path__get_child_count');
+    @:topaz_filesystem_path__get_children = getExternalFunction(name:'topaz_filesystem_path__get_children');
 
     @:asString ::($) {
         return topaz_filesystem_path__as_string(a:$);
@@ -1011,11 +1010,15 @@
     
     @:getChildren ::($) {
         @:output = [];
-        for(0, topaz_filesystem_path__get_child_count(a:$)) ::(i) {
-            output[i] = topaz_filesystem_path__get_nth_child(a:$, b:i);
-            if (output[i].__mapped == empty)
-                initializer__filesystem_path(f:output[i]);
-        }
+        topaz_filesystem_path__get_children(
+            a:$,
+            b::(a) {
+                @:child = a;
+                if (child.__mapped == empty)
+                    initializer__filesystem_path(f:child);
+                output->push(value:child);
+            }
+        );
         return output;
     }
 
