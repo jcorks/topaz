@@ -259,7 +259,7 @@ static void debug_populate_state(TOPAZMATTE * ctx) {
         matteBytecodeStubInstruction_t inst = matte_bytecode_stub_get_instructions(frame.stub, &ct)[frame.pc];
         debug_state_add_frame(
             s,
-            inst.lineNumber,
+            matte_bytecode_stub_get_starting_line(frame.stub) + inst.info.lineOffset,
             matte_string_get_c_str(
                 matte_vm_get_script_name_by_id(
                     vm, 
@@ -272,7 +272,7 @@ static void debug_populate_state(TOPAZMATTE * ctx) {
             matte_string_get_c_str(frame.prettyName)
         );
         if (i == 0) {
-            ctx->lastLine = inst.lineNumber;
+            ctx->lastLine = matte_bytecode_stub_get_starting_line(frame.stub) + inst.info.lineOffset;
             ctx->lastFile = matte_bytecode_stub_get_file_id(
                 frame.stub
             );
@@ -294,10 +294,12 @@ static topazString_t * topaz_matte_stack_where(TOPAZMATTE * ctx) {
         uint32_t fileid = matte_bytecode_stub_get_file_id(frame.stub);
         const matteString_t * fileName = matte_vm_get_script_name_by_id(ctx->vm, fileid);
 
+        int lineNumber = matte_bytecode_stub_get_starting_line(frame.stub) + inst[frame.pc].info.lineOffset;
+
         if (i == ctx->debugLevel) {
-            topaz_string_concat_printf(str, " -> @%d: <%s>, line %d\n", i, fileName ? matte_string_get_c_str(fileName) : "???", (int)inst[frame.pc].lineNumber);
+            topaz_string_concat_printf(str, " -> @%d: <%s>, line %d\n", i, fileName ? matte_string_get_c_str(fileName) : "???", lineNumber);
         } else {
-            topaz_string_concat_printf(str, "    @%d: <%s>, line %d\n", i, fileName ? matte_string_get_c_str(fileName) : "???", (int)inst[frame.pc].lineNumber);
+            topaz_string_concat_printf(str, "    @%d: <%s>, line %d\n", i, fileName ? matte_string_get_c_str(fileName) : "???", lineNumber);
         }
     }
     return str;
@@ -397,12 +399,12 @@ static void * topaz_matte_object_wrap(void * ctxSrc, matteValue_t val) {
 // creates a new topaz script object from a value on the duk stack
 static topazScript_Object_t * topaz_matte_value_to_tso(TOPAZMATTE * ctx, matteValue_t val) {    
     topazScript_Object_t * o = NULL;
-    switch(val.binID) {
+    switch(matte_value_type(val)) {
       case MATTE_VALUE_TYPE_BOOLEAN:
         o = topaz_script_object_from_int(ctx->script, val.value.boolean);
         break;
       case MATTE_VALUE_TYPE_NUMBER:    
-        o = topaz_script_object_from_number(ctx->script, val.value.number);
+        o = topaz_script_object_from_number(ctx->script, matte_value_get_number(val));
         break;
 
       case MATTE_VALUE_TYPE_STRING:
@@ -532,10 +534,10 @@ static void topaz_matte_fatal(matteVM_t * vm, uint32_t file, int lineNumber, mat
 
         const matteString_t * rep = NULL;
         
-        if (value.binID == MATTE_VALUE_TYPE_OBJECT) {
+        if (matte_value_type(value) == MATTE_VALUE_TYPE_OBJECT) {
             rep = matte_value_string_get_string_unsafe(store,  matte_value_object_access_string(store, value, MATTE_VM_STR_CAST(vm, "summary")));
             hadSummary = 1;
-        } else if (value.binID == MATTE_VALUE_TYPE_STRING) {
+        } else if (matte_value_type(value) == MATTE_VALUE_TYPE_STRING) {
             rep = matte_value_string_get_string_unsafe(store, value);
         }
         const matteString_t * filename =  (matte_vm_get_script_name_by_id(vm, file));
@@ -945,7 +947,7 @@ static int topaz_matte_object_reference_get_feature_mask(topazScript_Object_t * 
     int out = 0;
     if (matte_value_is_function(t->selfID)) {
         out |= topazScript_Object_Feature_Callable;
-    } else if (t->selfID.binID == MATTE_VALUE_TYPE_OBJECT) {
+    } else if (matte_value_type(t->selfID) == MATTE_VALUE_TYPE_OBJECT) {
         out |= topazScript_Object_Feature_Map;
         out |= topazScript_Object_Feature_Array;
     }
