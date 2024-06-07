@@ -105,6 +105,8 @@ SRCS +=  system/script/matte/src/main.c\
          system/script/matte/src/matte/src/matte_string.c\
          system/script/matte/src/matte/src/matte_table.c\
          system/script/matte/src/matte/src/matte_vm.c\
+         system/script/matte/src/matte/src/matte_au32.c\
+         system/script/matte/src/matte/src/matte_mvt2.c\
          system/script/matte/src/matte/src/matte_OS_WINDOWS.c\
          system/script/matte/src/matte/src/rom/native.c
 
