@@ -219,6 +219,7 @@ topazAsset_t * topaz_resources_create_data_asset_from_path(
     )) {
         topaz_asset_destroy(a);
         topaz_table_remove(r->name2asset, name);    
+        return NULL;
     }
     
     return a;
