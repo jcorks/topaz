@@ -500,7 +500,9 @@ void topaz_script_object_destroy(topazScript_Object_t * o) {
         if (o->api->object_reference_destroy)
             o->api->object_reference_destroy(o, o->apiData);
     }
-
+    if (o->dataString) {
+        topaz_string_clear(o->dataString);
+    }
     object_pool_recycle(o->context, o);
 }
 

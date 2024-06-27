@@ -248,6 +248,17 @@ void topaz_array_set_size(
     uint32_t size
 );
 
+/// Sets the size and allocation size of the array.
+/// For large arrays with a static size, this can 
+/// save on memory usage.
+void topaz_array_set_size_exact(
+    /// The array to modify
+    topazArray_t * t, 
+    /// The new size, and allocation, of the array
+    uint32_t size
+);
+
+
 
 
 #endif

@@ -322,5 +322,10 @@ const topazString_t * topaz_string_chain_proceed(
     topazString_t * t
 );
 
+/// Releases the memory required to keep a cached C-String.
+/// Specifically useful if the string was used to store 
+/// data or long information.
+void topaz_string_clear_c_str(topazString_t * t);
+
 #endif
 

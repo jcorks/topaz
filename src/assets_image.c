@@ -207,6 +207,7 @@ static void notify_event(
             a, index, event, n->data
         );
     }
+    topaz_array_destroy(arr);
 }
 
 

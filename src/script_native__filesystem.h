@@ -137,6 +137,7 @@ TSO_SCRIPT_API_FN(filesystem_api_path__get_children) {
                 arr
             )
         );
+        topaz_script_object_destroy(object);
     }
     topaz_array_destroy(arr);
     TSO_NO_RETURN;

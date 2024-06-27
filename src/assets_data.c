@@ -111,7 +111,7 @@ void topaz_data_set_from_bytes(topazAsset_t * a, const topazArray_t * dataIn) {
     topaz_array_set_size(d->data, 0);
 
     uint64_t numBytes = topaz_array_get_size(dataIn) * topaz_array_get_type_size(dataIn);
-    topaz_array_set_size(d->data, numBytes);
+    topaz_array_set_size_exact(d->data, numBytes);
     memcpy(
         topaz_array_get_data(d->data),
         topaz_array_get_data(dataIn),
@@ -125,12 +125,14 @@ void topaz_data_set_from_string(topazAsset_t * a, const topazString_t * str) {
 
     const char * cstr = topaz_string_get_c_str(str);
     uint64_t len = strlen(cstr);
-    topaz_array_set_size(d->data, len+1);
+    topaz_array_set_size_exact(d->data, len+1);
     memcpy(
         topaz_array_get_data(d->data),
         cstr,
         len+1
     );
+    // can / will take a lot of data, so clear it.
+    topaz_string_clear_c_str(str);
 }
 
 void topaz_data_set_from_base64(topazAsset_t * a, const topazString_t * str) {

@@ -113,6 +113,7 @@ struct topazString_t {
 
 static void topaz_string_resize_fit(topazString_t * s, uint32_t len) {
     while (s->len + len + 1 >= s->alloc) {
+        s->alloc++;
         s->alloc*=1.4;
         s->codepoints = realloc(s->codepoints, s->alloc * sizeof(uint32_t));
     }
@@ -198,6 +199,9 @@ void topaz_string_destroy(topazString_t * s) {
 
 void topaz_string_clear(topazString_t * s) {
     s->len = 0;
+    free(s->codepoints);
+    s->codepoints = NULL;
+    s->alloc = 0;
     if (s->utf8) free(s->utf8);
     s->utf8 = NULL;
 }
@@ -283,6 +287,12 @@ const char * topaz_string_get_c_str(const topazString_t * t) {
     *iter = 0;
     return t->utf8;
 }
+
+void topaz_string_clear_c_str(topazString_t * t) {
+    free(t->utf8);
+    t->utf8 = NULL;
+}
+
 
 uint32_t topaz_string_get_length(const topazString_t * t) {
     return t->len;

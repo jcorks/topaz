@@ -407,9 +407,19 @@ static topazScript_Object_t * topaz_matte_value_to_tso(TOPAZMATTE * ctx, matteVa
         o = topaz_script_object_from_number(ctx->script, matte_value_get_number(val));
         break;
 
-      case MATTE_VALUE_TYPE_STRING:
-        o = topaz_script_object_from_string(ctx->script, TOPAZ_STR_CAST(matte_string_get_c_str(matte_value_string_get_string_unsafe(matte_vm_get_store(matte_get_vm(ctx->matte)), val))));
+      case MATTE_VALUE_TYPE_STRING: {
+        topazString_t * str = topaz_string_create_from_c_str(
+            matte_string_get_c_str(
+                matte_value_string_get_string_unsafe(
+                    matte_vm_get_store(matte_get_vm(ctx->matte)), 
+                    val
+                )
+            )
+        );
+        o = topaz_script_object_from_string(ctx->script, str);
+        topaz_string_destroy(str);
         break;
+      }
 
       case MATTE_VALUE_TYPE_OBJECT: {
         o = topaz_script_object_wrapper(ctx->script, topaz_matte_object_wrap(ctx, val));        
@@ -499,7 +509,6 @@ static matteValue_t topaz_matte_native_function_internal(matteVM_t * vm, matteVa
     uint32_t i;
     topazScript_Object_t * argsD[src->argCount];
     for(i = 0; i < src->argCount; ++i) {
-        
         argsD[i] = topaz_matte_value_to_tso(ctx, args[i]);
     }
 
