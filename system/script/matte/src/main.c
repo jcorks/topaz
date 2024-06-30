@@ -409,6 +409,7 @@ static topazScript_Object_t * topaz_matte_value_to_tso(TOPAZMATTE * ctx, matteVa
 
       case MATTE_VALUE_TYPE_STRING: {
         topazString_t * str = topaz_string_create_from_c_str(
+            "%s",
             matte_string_get_c_str(
                 matte_value_string_get_string_unsafe(
                     matte_vm_get_store(matte_get_vm(ctx->matte)), 
@@ -483,7 +484,7 @@ static matteValue_t topaz_matte_tso_to_value(TOPAZMATTE * ctx, topazScript_Objec
         break;
 
       case topazScript_Object_Type_String: {
-        matteString_t * str = matte_string_create_from_c_str(topaz_string_get_c_str(topaz_script_object_as_string(o)));
+        matteString_t * str = matte_string_create_from_c_str("%s", topaz_string_get_c_str(topaz_script_object_as_string(o)));
         matte_value_into_string(ctx->store, &out, str);
         matte_string_destroy(str);
         break;
@@ -729,7 +730,7 @@ static int topaz_matte_map_native_function(
 
 ) {
     TOPAZMATTE * ctx = data;
-    matteString_t * name = matte_string_create_from_c_str(topaz_string_get_c_str(pname));
+    matteString_t * name = matte_string_create_from_c_str("%s", topaz_string_get_c_str(pname));
 
     TOPAZMATTENativeFunction * native = calloc(1, sizeof(TOPAZMATTENativeFunction));
     native->ctx = ctx;
@@ -762,7 +763,7 @@ static topazScript_Object_t * topaz_matte_expression(
         PERROR(ctx->ctx, ctx->script, str);
         return topaz_script_object_undefined(ctx->script);   
     }
-    matteString_t * exprM = matte_string_create_from_c_str(topaz_string_get_c_str(expr));
+    matteString_t * exprM = matte_string_create_from_c_str("%s", topaz_string_get_c_str(expr));
     topazScript_Object_t * out = topaz_matte_value_to_tso(
         ctx,
         matte_vm_run_scoped_debug_source(
@@ -1315,7 +1316,7 @@ void topaz_matte_debug_send_command(
         int lineNumber = atoi(topaz_string_get_c_str(iter));
          
 
-        matteString_t * filename_m = matte_string_create_from_c_str(topaz_string_get_c_str(filename));
+        matteString_t * filename_m = matte_string_create_from_c_str("%s", topaz_string_get_c_str(filename));
         TopazMatteBreakpoint bp;
         bp.id = ctx->debugIDpool++;
         bp.file = matte_vm_get_file_id_by_name(ctx->vm, filename_m);
