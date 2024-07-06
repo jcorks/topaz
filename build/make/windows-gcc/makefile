@@ -124,7 +124,7 @@ INCS := -I../../../include/ -I. -I/mingw64/include/freetype2/
 
 
 
-FLAGS = -static -mwindows -O2
+FLAGS = -static -mwindows -O2 -DMATTE_USE_SYSTEM_EXTENSIONS -DMATTE_USE_SYSTEM_EXTENSIONS__BASIC
 LIBS :=  -lvorbisfile  -lwinmm -lvorbis -logg -lharfbuzz -lfreetype -lharfbuzz -lfreetype -lglfw3 -lOpenGL32 -lshlwapi  -lusp10 -lgraphite2 -lstdc++ -lpng -lGDI32 -lz  -lbz2 -lrpcrt4 -lole32 -lbrotlidec -lbrotlicommon
 
 
